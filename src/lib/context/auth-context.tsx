@@ -24,12 +24,13 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   clearError: () => void;
+  isInitialized: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useLocalStorage<User | null>('mali-gamepass-user', null);
+  const [user, setUser, isInitialized] = useLocalStorage<User | null>('mali-gamepass-user', null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isAuthenticated = !!user;
@@ -41,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkSession = async () => {
       // For now we just rely on localStorage user data
     };
-    
+
     checkSession();
   }, []);
 
@@ -49,11 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // In frontend-only mode, this validates against mock data
       const user = await validateUser(email, password);
-      
+
       if (user) {
         setUser(user);
         setIsLoading(false);
@@ -69,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
     }
   };
-  
+
   // Simulate logout
   const logout = () => {
     setUser(null);
@@ -81,15 +82,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      isLoading, 
-      error, 
-      isAuthenticated, 
+    <AuthContext.Provider value={{
+      user,
+      isLoading,
+      error,
+      isAuthenticated,
       isAdmin,
-      login, 
+      login,
       logout,
-      clearError
+      clearError,
+      isInitialized
     }}>
       {children}
     </AuthContext.Provider>

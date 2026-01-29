@@ -11,17 +11,14 @@ const GAMES = Array(16).fill(null).map((_, i) => ({
   id: `game-${i + 1}`,
   name: `${getGameName(i)}`,
   category: i % 5 === 0 ? "Popular" : i % 4 === 0 ? "RPG" : i % 3 === 0 ? "MOBA" : i % 2 === 0 ? "FPS" : "Adventure",
-  price: 5 + Math.floor(Math.random() * 95),
-  discountPercent: i % 4 === 0 ? Math.floor(Math.random() * 30) : 0,
+  price: 5 + ((i * 17) % 95),
+  discountPercent: i % 4 === 0 ? ((i * 11) % 30) : 0,
   image: `https://placehold.co/400x300?text=${getGameName(i).replace(/\s+/g, '+')}`,
   publisher: getPublisherName(i),
-  rating: (3.5 + Math.random() * 1.5).toFixed(1)
+  rating: (3.5 + ((i * 7) % 15) / 10).toFixed(1)
 }));
 
-function getRandomColor() {
-  const colors = ["1E88E5", "5E35B1", "D81B60", "7CB342", "FB8C00", "6D4C41", "546E7A", "EC407A", "5C6BC0", "26A69A"];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
+
 
 function getGameName(index: number) {
   const gameNames = [
@@ -43,7 +40,7 @@ function getPublisherName(index: number) {
 }
 
 function getCategoryIcon(category: string) {
-  switch(category.toLowerCase()) {
+  switch (category.toLowerCase()) {
     case 'popular': return <Flame size={16} />;
     case 'fps': return <Gamepad2 size={16} />;
     case 'moba': return <TrendingUp size={16} />;
@@ -147,15 +144,14 @@ export default function DirectTopupPage() {
               <motion.button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${
-                  selectedCategory === category.id 
-                    ? "bg-mali-blue/30 text-white" 
-                    : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
-                }`}
+                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedCategory === category.id
+                  ? "bg-mali-blue/30 text-white"
+                  : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
+                  }`}
                 whileHover={{ x: 3 }}
               >
                 {selectedCategory === category.id && (
-                  <motion.div 
+                  <motion.div
                     layoutId="active-game-category-indicator"
                     className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
                     initial={{ opacity: 0 }}
@@ -372,7 +368,7 @@ export default function DirectTopupPage() {
                         <div className="absolute top-2 right-2 flex items-center bg-mali-blue/70 backdrop-blur-sm text-white text-xs px-1.5 py-0.5 rounded">
                           <Star size={10} className="mr-0.5 text-yellow-400" /> {game.rating}
                         </div>
-                        
+
                         <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-xs px-2 py-0.5 rounded-sm backdrop-blur-sm">
                           {game.category}
                         </div>

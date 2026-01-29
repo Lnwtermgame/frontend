@@ -3,29 +3,32 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { 
-  Plus, 
-  Minus, 
-  CreditCard, 
-  Wallet, 
-  CircleDollarSign, 
-  ArrowRight, 
-  CheckCircle, 
-  DollarSign, 
-  CreditCard as CreditCardIcon, 
-  BanknoteIcon, 
-  Smartphone, 
-  Shield, 
+import {
+  Plus,
+  Minus,
+  CreditCard,
+  Wallet,
+  CircleDollarSign,
+  ArrowRight,
+  CheckCircle,
+  DollarSign,
+  CreditCard as CreditCardIcon,
+  BanknoteIcon,
+  Smartphone,
+  Shield,
   Check,
   ChevronDown
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import Image from "next/image";
 
+// Dummy translation helper
+const t = (str: string) => str === 'topUp' ? 'Top Up' : str;
+
 export default function TopUpPage() {
   const router = useRouter();
-  const { user } = useAuth();
-  
+  const { user, isInitialized } = useAuth();
+
   const [amount, setAmount] = useState(20);
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [loading, setLoading] = useState(false);
@@ -33,10 +36,10 @@ export default function TopUpPage() {
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -60,7 +63,7 @@ export default function TopUpPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     // Simulate API call for processing top-up
     setTimeout(() => {
       setLoading(false);
@@ -71,7 +74,7 @@ export default function TopUpPage() {
   const currencySymbol = currency === 'USD' ? '$' : currency === 'THB' ? '฿' : '€';
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="page-container text-center">
         <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">
@@ -90,24 +93,17 @@ export default function TopUpPage() {
 
   return (
     <div className="page-container">
-      {/* Page Header with blur effect */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-        
-        <motion.h1 
-          className="text-3xl font-bold text-white mb-2 relative"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
+
+        <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
           {t('topUp')}
         </motion.h1>
         <p className="text-mali-text-secondary relative">Add funds to your account balance</p>
       </div>
-      
+
       {/* Promotional banner */}
-      <motion.div 
+      <motion.div
         className="mb-8 rounded-xl overflow-hidden relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -117,11 +113,11 @@ export default function TopUpPage() {
           <div className="bg-gradient-to-r from-[#111A38] to-[#161F42] rounded-[calc(0.75rem-1px)] overflow-hidden">
             <div className="flex flex-col md:flex-row items-center p-6 relative">
               <div className="absolute top-0 left-0 w-full h-full bg-[url('https://placehold.co/400x200/0a1123/2a2f4e')] opacity-20 bg-cover bg-center"></div>
-              
+
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-mali-blue-light via-mali-blue to-mali-purple flex items-center justify-center mb-4 md:mb-0 md:mr-6 relative z-10">
                 <CircleDollarSign size={36} className="text-white" />
               </div>
-              
+
               <div className="md:flex-1 text-center md:text-left relative z-10">
                 <h2 className="text-2xl font-bold text-white mb-2">Get 10% Bonus Credits</h2>
                 <p className="text-mali-text-secondary mb-4">Top up ฿500 or more and receive 10% extra credits instantly!</p>
@@ -131,7 +127,7 @@ export default function TopUpPage() {
                   </span>
                 </div>
               </div>
-              
+
               <div className="mt-4 md:mt-0 relative z-10">
                 <motion.button
                   className="bg-gradient-to-r from-mali-blue-light to-mali-purple text-white font-medium px-6 py-2.5 rounded-md transition-all shadow-blue-glow"
@@ -145,11 +141,11 @@ export default function TopUpPage() {
           </div>
         </div>
       </motion.div>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left column - Top up details */}
-          <motion.div 
+          <motion.div
             className="lg:col-span-2 space-y-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -165,15 +161,14 @@ export default function TopUpPage() {
                   </span>
                   Select Amount
                 </h2>
-                
+
                 {/* Currency selector */}
                 <div className="mb-6 flex justify-end">
                   <div className="relative inline-block">
                     <div className="flex items-center gap-1 bg-mali-blue/20 hover:bg-mali-blue/30 text-white rounded-lg px-3 py-1.5 text-sm cursor-pointer">
-                      <span className={`inline-flex items-center justify-center w-5 h-5 ${
-                        currency === 'USD' ? 'bg-blue-500' : 
+                      <span className={`inline-flex items-center justify-center w-5 h-5 ${currency === 'USD' ? 'bg-blue-500' :
                         currency === 'THB' ? 'bg-red-500' : 'bg-yellow-500'
-                      } rounded-full text-xs text-white font-medium mr-1`}>
+                        } rounded-full text-xs text-white font-medium mr-1`}>
                         {currency === 'USD' ? '$' : currency === 'THB' ? '฿' : '€'}
                       </span>
                       {currency}
@@ -182,18 +177,17 @@ export default function TopUpPage() {
                     {/* Currency dropdown would go here in a real implementation */}
                   </div>
                 </div>
-                
+
                 {/* Preset amounts */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
                   {[10, 20, 50, 100, 200, 500].map((value) => (
                     <motion.button
                       key={value}
                       type="button"
-                      className={`rounded-lg py-4 px-3 text-center transition-all ${
-                        amount === value 
-                          ? 'bg-gradient-to-r from-mali-blue-light to-mali-purple border-none text-white shadow-blue-glow' 
-                          : 'border border-mali-blue/20 bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white'
-                      }`}
+                      className={`rounded-lg py-4 px-3 text-center transition-all ${amount === value
+                        ? 'bg-gradient-to-r from-mali-blue-light to-mali-purple border-none text-white shadow-blue-glow'
+                        : 'border border-mali-blue/20 bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white'
+                        }`}
                       onClick={() => setAmount(value)}
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
@@ -202,7 +196,7 @@ export default function TopUpPage() {
                     </motion.button>
                   ))}
                 </div>
-                
+
                 {/* Custom amount */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-mali-text-secondary mb-2">Or enter custom amount</label>
@@ -216,7 +210,7 @@ export default function TopUpPage() {
                     >
                       <Minus size={18} />
                     </motion.button>
-                    
+
                     <div className="relative flex-1">
                       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                         <span className="text-mali-text-secondary">{currencySymbol}</span>
@@ -230,7 +224,7 @@ export default function TopUpPage() {
                         max={1000}
                       />
                     </div>
-                    
+
                     <motion.button
                       type="button"
                       className="bg-mali-blue/20 hover:bg-mali-blue/30 text-white rounded-r-lg p-3 transition-colors"
@@ -245,7 +239,7 @@ export default function TopUpPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Payment methods */}
             <div className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover">
               <div className="h-1 w-full bg-gradient-to-r from-mali-blue-accent to-mali-purple"></div>
@@ -257,12 +251,11 @@ export default function TopUpPage() {
                   Select Payment Method
                 </h2>
                 <div className="space-y-3">
-                  <motion.div 
-                    className={`relative rounded-lg overflow-hidden transition-all ${
-                      paymentMethod === 'credit-card' 
-                        ? 'ring-2 ring-mali-blue-accent shadow-blue-glow' 
-                        : 'hover:scale-[1.01]'
-                    }`}
+                  <motion.div
+                    className={`relative rounded-lg overflow-hidden transition-all ${paymentMethod === 'credit-card'
+                      ? 'ring-2 ring-mali-blue-accent shadow-blue-glow'
+                      : 'hover:scale-[1.01]'
+                      }`}
                     onClick={() => setPaymentMethod('credit-card')}
                     whileTap={{ scale: 0.99 }}
                   >
@@ -292,13 +285,12 @@ export default function TopUpPage() {
                       </div>
                     </div>
                   </motion.div>
-                  
-                  <motion.div 
-                    className={`relative rounded-lg overflow-hidden transition-all ${
-                      paymentMethod === 'bank-transfer' 
-                        ? 'ring-2 ring-mali-blue-accent shadow-blue-glow' 
-                        : 'hover:scale-[1.01]'
-                    }`}
+
+                  <motion.div
+                    className={`relative rounded-lg overflow-hidden transition-all ${paymentMethod === 'bank-transfer'
+                      ? 'ring-2 ring-mali-blue-accent shadow-blue-glow'
+                      : 'hover:scale-[1.01]'
+                      }`}
                     onClick={() => setPaymentMethod('bank-transfer')}
                     whileTap={{ scale: 0.99 }}
                   >
@@ -325,13 +317,12 @@ export default function TopUpPage() {
                       </div>
                     </div>
                   </motion.div>
-                  
-                  <motion.div 
-                    className={`relative rounded-lg overflow-hidden transition-all ${
-                      paymentMethod === 'e-wallet' 
-                        ? 'ring-2 ring-mali-blue-accent shadow-blue-glow' 
-                        : 'hover:scale-[1.01]'
-                    }`}
+
+                  <motion.div
+                    className={`relative rounded-lg overflow-hidden transition-all ${paymentMethod === 'e-wallet'
+                      ? 'ring-2 ring-mali-blue-accent shadow-blue-glow'
+                      : 'hover:scale-[1.01]'
+                      }`}
                     onClick={() => setPaymentMethod('e-wallet')}
                     whileTap={{ scale: 0.99 }}
                   >
@@ -364,7 +355,7 @@ export default function TopUpPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Payment Security */}
             <div className="bg-mali-blue/10 rounded-xl border border-mali-blue/20 p-4">
               <div className="flex items-start">
@@ -378,7 +369,7 @@ export default function TopUpPage() {
               </div>
             </div>
           </motion.div>
-          
+
           {/* Right column - Summary and checkout */}
           <motion.div
             className="relative"
@@ -395,18 +386,18 @@ export default function TopUpPage() {
                   </span>
                   Order Summary
                 </h2>
-                
+
                 <div className="space-y-4">
                   <div className="flex justify-between py-3 border-b border-mali-blue/20">
                     <span className="text-mali-text-secondary">Amount</span>
                     <span className="text-white font-medium">{currencySymbol}{amount.toFixed(2)}</span>
                   </div>
-                  
+
                   <div className="flex justify-between py-3 border-b border-mali-blue/20">
                     <span className="text-mali-text-secondary">Fee</span>
                     <span className="text-white font-medium">{currencySymbol}0.00</span>
                   </div>
-                  
+
                   <div className="flex justify-between py-3">
                     <span className="text-white font-medium">Total</span>
                     <div className="text-right">
@@ -414,7 +405,7 @@ export default function TopUpPage() {
                       <div className="text-green-400 text-xs font-medium">+ 0 Bonus Credits</div>
                     </div>
                   </div>
-                  
+
                   <div className="pt-3">
                     <motion.button
                       type="submit"
@@ -423,18 +414,18 @@ export default function TopUpPage() {
                       whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(78, 137, 232, 0.5)" }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      {loading ? 'Processing...' : 'Continue to Payment'} 
+                      {loading ? 'Processing...' : 'Continue to Payment'}
                       {!loading && <ArrowRight className="h-4 w-4" />}
                     </motion.button>
                   </div>
-                  
+
                   <div className="flex items-center justify-center text-mali-text-secondary text-xs mt-2">
                     <Shield className="mr-1 h-3 w-3" />
                     <span>Secure Payment Processing</span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-mali-blue/10 p-4 border-t border-mali-blue/20">
                 <div className="flex items-center mb-3">
                   <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500/20 text-green-400">
@@ -450,7 +441,7 @@ export default function TopUpPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Need help section */}
             <div className="mt-6 bg-mali-blue/10 rounded-xl border border-mali-blue/20 p-4 text-center">
               <p className="text-sm text-mali-text-secondary mb-2">Need help with your top-up?</p>

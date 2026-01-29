@@ -126,18 +126,13 @@ export function GameCard({
             )}
           </div>
           
-          {/* Hover overlay with glow effect */}
+          {/* Hover overlay with button */}
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-t from-mali-blue/40 to-mali-blue/0 opacity-0 transition-opacity flex items-center justify-center"
+            className="absolute inset-0 bg-black/60 opacity-0 transition-opacity flex items-center justify-center backdrop-blur-[2px]"
             animate={{ opacity: isHovered ? 1 : 0 }}
           >
-            <motion.div
-              className="absolute inset-0 bg-glow-gradient opacity-0"
-              animate={{ opacity: isHovered ? 0.8 : 0 }}
-              transition={{ delay: 0.1 }}
-            />
             <motion.div 
-              className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium relative z-10 shadow-button-glow"
+              className="bg-mali-blue-accent text-white px-6 py-2 rounded font-bold text-sm relative z-10 hover:bg-white hover:text-black transition-colors border border-transparent hover:border-white"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
               transition={{ delay: 0.1 }}

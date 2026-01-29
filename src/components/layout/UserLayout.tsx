@@ -13,15 +13,15 @@ interface UserLayoutProps {
 
 export default function UserLayout({ children, title }: UserLayoutProps) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="page-container text-center">
         <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">

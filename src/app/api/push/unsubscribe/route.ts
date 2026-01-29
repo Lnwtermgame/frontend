@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     // In a real application, you would remove the subscription from your database
     // Here we just remove the cookie
     
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.delete('push_subscription_id');
     
     return NextResponse.json({

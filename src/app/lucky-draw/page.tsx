@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { 
-  Gift, Calendar, Trophy, History, ArrowRight, Sparkles, Info, 
+import {
+  Gift, Calendar, Trophy, History, ArrowRight, Sparkles, Info,
   AlertTriangle, Clock, ChevronRight, Users, Award, Star, Timer,
   CheckCircle
 } from "lucide-react";
@@ -72,11 +72,11 @@ const drawHistory = [
 
 export default function LuckyDrawPage() {
   const router = useRouter();
-  const { user } = useAuth();
-  
+  const { user, isInitialized } = useAuth();
+
   const [activeTab, setActiveTab] = useState("active");
   const [loading, setLoading] = useState(false);
-  const [currentEntries, setCurrentEntries] = useState<{[key: string]: number}>({
+  const [currentEntries, setCurrentEntries] = useState<{ [key: string]: number }>({
     "DRAW1": 0,
     "DRAW2": 1,
     "DRAW3": 0
@@ -84,15 +84,15 @@ export default function LuckyDrawPage() {
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
   // Handle lucky draw entry
   const handleEnterDraw = (drawId: string) => {
     setLoading(true);
-    
+
     // Simulate API call to enter the draw
     setTimeout(() => {
       setCurrentEntries(prev => ({
@@ -113,9 +113,9 @@ export default function LuckyDrawPage() {
   const getTimeRemaining = (endDateString: string) => {
     const endDate = new Date(endDateString);
     const now = new Date();
-    
+
     const diffInDays = Math.floor((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     if (diffInDays < 0) {
       return "Ended";
     } else if (diffInDays === 0) {
@@ -128,7 +128,7 @@ export default function LuckyDrawPage() {
   };
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="page-container flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
@@ -142,7 +142,7 @@ export default function LuckyDrawPage() {
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <motion.div 
+      <motion.div
         className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-8 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -164,61 +164,57 @@ export default function LuckyDrawPage() {
           </motion.div>
         </div>
       </motion.div>
-      
+
       {/* Main Content */}
-      <motion.div 
+      <motion.div
         className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
       >
         <div className="flex border-b border-mali-blue/20 overflow-x-auto">
-          <button 
-            className={`px-6 py-4 text-sm font-medium flex items-center ${
-              activeTab === 'active' 
-                ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent' 
-                : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
-            }`}
+          <button
+            className={`px-6 py-4 text-sm font-medium flex items-center ${activeTab === 'active'
+              ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent'
+              : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
+              }`}
             onClick={() => setActiveTab('active')}
           >
             <Gift size={18} className="mr-2" />
             Active Draws
           </button>
-          <button 
-            className={`px-6 py-4 text-sm font-medium flex items-center ${
-              activeTab === 'history' 
-                ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent' 
-                : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
-            }`}
+          <button
+            className={`px-6 py-4 text-sm font-medium flex items-center ${activeTab === 'history'
+              ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent'
+              : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
+              }`}
             onClick={() => setActiveTab('history')}
           >
             <History size={18} className="mr-2" />
             Draw History
           </button>
-          <button 
-            className={`px-6 py-4 text-sm font-medium flex items-center ${
-              activeTab === 'winners' 
-                ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent' 
-                : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
-            }`}
+          <button
+            className={`px-6 py-4 text-sm font-medium flex items-center ${activeTab === 'winners'
+              ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent'
+              : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
+              }`}
             onClick={() => setActiveTab('winners')}
           >
             <Trophy size={18} className="mr-2" />
             Winner List
           </button>
-          <button 
-            className={`px-6 py-4 text-sm font-medium flex items-center ${
-              activeTab === 'rules' 
-                ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent' 
-                : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
-            }`}
+          <button
+            className={`px-6 py-4 text-sm font-medium flex items-center ${activeTab === 'rules'
+              ? 'text-mali-blue-accent border-b-2 border-mali-blue-accent'
+              : 'text-mali-text-secondary hover:text-white hover:bg-mali-blue/10'
+              }`}
             onClick={() => setActiveTab('rules')}
           >
             <Info size={18} className="mr-2" />
             Rules & FAQ
           </button>
         </div>
-        
+
         <div className="p-6">
           {activeTab === 'active' && (
             <div>
@@ -226,7 +222,7 @@ export default function LuckyDrawPage() {
                 <Gift className="mr-3 text-mali-blue-accent" />
                 Active Lucky Draws
               </h2>
-              
+
               {activeDraws.length === 0 ? (
                 <div className="text-center py-12">
                   <Gift size={48} className="mx-auto text-mali-text-secondary mb-4" />
@@ -238,7 +234,7 @@ export default function LuckyDrawPage() {
               ) : (
                 <div className="space-y-6">
                   {activeDraws.map((draw) => (
-                    <motion.div 
+                    <motion.div
                       key={draw.id}
                       whileHover={{ y: -5 }}
                       transition={{ duration: 0.2 }}
@@ -246,8 +242,8 @@ export default function LuckyDrawPage() {
                     >
                       <div className="grid grid-cols-1 md:grid-cols-3">
                         <div className="md:col-span-1 relative">
-                          <img 
-                            src={draw.image} 
+                          <img
+                            src={draw.image}
                             alt={draw.name}
                             className="w-full h-48 md:h-full object-cover"
                           />
@@ -272,16 +268,15 @@ export default function LuckyDrawPage() {
                             </div>
                             <div className="flex items-center bg-mali-blue/20 px-2.5 py-1 rounded-lg text-xs">
                               <Timer className="h-3.5 w-3.5 mr-1.5 text-mali-blue-accent" />
-                              <span className={`${
-                                getTimeRemaining(draw.endDate).includes("day") 
-                                  ? "text-white" 
-                                  : "text-red-400"
-                              }`}>
+                              <span className={`${getTimeRemaining(draw.endDate).includes("day")
+                                ? "text-white"
+                                : "text-red-400"
+                                }`}>
                                 {getTimeRemaining(draw.endDate)}
                               </span>
                             </div>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-4 mb-5">
                             <div className="bg-mali-blue/20 rounded-lg p-3">
                               <div className="text-mali-text-secondary text-xs mb-1">Total Prizes</div>
@@ -298,21 +293,20 @@ export default function LuckyDrawPage() {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex flex-col sm:flex-row items-center gap-3 sm:justify-between">
                             <div className="flex items-center">
                               <span className="text-mali-text-secondary mr-2">End Date:</span>
                               <span className="text-white">{formatDate(draw.endDate)}</span>
                             </div>
-                            
-                            <button 
+
+                            <button
                               onClick={() => handleEnterDraw(draw.id)}
                               disabled={loading || (draw.entryType === "vip" && currentEntries[draw.id] > 0)}
-                              className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center ${
-                                draw.entryType === "vip" && currentEntries[draw.id] > 0
-                                  ? 'bg-mali-blue/20 text-mali-text-secondary cursor-not-allowed'
-                                  : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white'
-                              }`}
+                              className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center ${draw.entryType === "vip" && currentEntries[draw.id] > 0
+                                ? 'bg-mali-blue/20 text-mali-text-secondary cursor-not-allowed'
+                                : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white'
+                                }`}
                             >
                               {loading ? (
                                 <div className="flex items-center">
@@ -339,14 +333,14 @@ export default function LuckyDrawPage() {
               )}
             </div>
           )}
-          
+
           {activeTab === 'history' && (
             <div>
               <h2 className="text-xl font-bold text-white mb-6 flex items-center">
                 <History className="mr-3 text-mali-blue-accent" />
                 Your Draw History
               </h2>
-              
+
               {drawHistory.length === 0 ? (
                 <div className="text-center py-12">
                   <History size={48} className="mx-auto text-mali-text-secondary mb-4" />
@@ -354,7 +348,7 @@ export default function LuckyDrawPage() {
                   <p className="text-mali-text-secondary mb-6">
                     You haven't participated in any lucky draws yet.
                   </p>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('active')}
                     className="bg-mali-blue hover:bg-mali-blue/90 text-white py-2 px-4 rounded-lg font-medium inline-flex items-center"
                   >
@@ -375,18 +369,17 @@ export default function LuckyDrawPage() {
                     </thead>
                     <tbody className="divide-y divide-mali-blue/10">
                       {drawHistory.map((history) => (
-                        <tr 
-                          key={history.id} 
+                        <tr
+                          key={history.id}
                           className="hover:bg-mali-blue/5 transition-colors"
                         >
                           <td className="px-4 py-4 text-white font-medium">{history.name}</td>
                           <td className="px-4 py-4 text-mali-text-secondary">{formatDate(history.endDate)}</td>
                           <td className="px-4 py-4">
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                              history.status === "won" 
-                                ? "bg-green-900/30 text-green-400" 
-                                : "bg-blue-900/30 text-blue-400"
-                            }`}>
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${history.status === "won"
+                              ? "bg-green-900/30 text-green-400"
+                              : "bg-blue-900/30 text-blue-400"
+                              }`}>
                               {history.status === "won" ? "Winner" : "Participated"}
                             </span>
                           </td>
@@ -401,14 +394,14 @@ export default function LuckyDrawPage() {
               )}
             </div>
           )}
-          
+
           {activeTab === 'winners' && (
             <div>
               <h2 className="text-xl font-bold text-white mb-6 flex items-center">
                 <Trophy className="mr-3 text-yellow-500" />
                 Recent Winners
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden">
                   <div className="p-5 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 border-b border-mali-blue/30">
@@ -417,7 +410,7 @@ export default function LuckyDrawPage() {
                       Halloween Special Winners
                     </h3>
                   </div>
-                  
+
                   <div className="p-5 space-y-3">
                     <div className="bg-mali-blue/10 border border-mali-blue/20 p-4 rounded-lg flex items-center">
                       <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center mr-4 text-white font-bold">J</div>
@@ -429,7 +422,7 @@ export default function LuckyDrawPage() {
                         1st Prize
                       </div>
                     </div>
-                    
+
                     <div className="bg-mali-blue/10 border border-mali-blue/20 p-4 rounded-lg flex items-center">
                       <div className="h-10 w-10 rounded-full bg-green-600 flex items-center justify-center mr-4 text-white font-bold">S</div>
                       <div className="flex-1">
@@ -440,7 +433,7 @@ export default function LuckyDrawPage() {
                         2nd Prize
                       </div>
                     </div>
-                    
+
                     <div className="bg-mali-blue/10 border border-mali-blue/20 p-4 rounded-lg flex items-center">
                       <div className="h-10 w-10 rounded-full bg-purple-600 flex items-center justify-center mr-4 text-white font-bold">R</div>
                       <div className="flex-1">
@@ -453,7 +446,7 @@ export default function LuckyDrawPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden">
                   <div className="p-5 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 border-b border-mali-blue/30">
                     <h3 className="text-lg font-bold text-white flex items-center">
@@ -461,7 +454,7 @@ export default function LuckyDrawPage() {
                       September Bonus Draw Winners
                     </h3>
                   </div>
-                  
+
                   <div className="p-5 space-y-3">
                     <div className="bg-mali-blue/10 border border-mali-blue/20 p-4 rounded-lg flex items-center">
                       <div className="h-10 w-10 rounded-full bg-red-600 flex items-center justify-center mr-4 text-white font-bold">A</div>
@@ -473,7 +466,7 @@ export default function LuckyDrawPage() {
                         1st Prize
                       </div>
                     </div>
-                    
+
                     <div className="bg-mali-blue/10 border border-mali-blue/20 p-4 rounded-lg flex items-center">
                       <div className="h-10 w-10 rounded-full bg-orange-600 flex items-center justify-center mr-4 text-white font-bold">M</div>
                       <div className="flex-1">
@@ -487,9 +480,9 @@ export default function LuckyDrawPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-center mt-6">
-                <Link 
+                <Link
                   href="/lucky-draw/winners"
                   className="inline-flex items-center text-mali-blue-accent hover:text-mali-blue-accent/80 font-medium"
                 >
@@ -498,16 +491,16 @@ export default function LuckyDrawPage() {
               </div>
             </div>
           )}
-          
+
           {activeTab === 'rules' && (
             <div>
               <h2 className="text-xl font-bold text-white mb-6 flex items-center">
                 <Info className="mr-3 text-mali-blue-accent" />
                 Lucky Draw Rules & FAQ
               </h2>
-              
+
               <div className="space-y-6">
-                <motion.div 
+                <motion.div
                   className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -527,8 +520,8 @@ export default function LuckyDrawPage() {
                     </div>
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -565,8 +558,8 @@ export default function LuckyDrawPage() {
                     </div>
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -605,8 +598,8 @@ export default function LuckyDrawPage() {
                     </div>
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -646,9 +639,9 @@ export default function LuckyDrawPage() {
           )}
         </div>
       </motion.div>
-      
+
       {/* VIP Status */}
-      <motion.div 
+      <motion.div
         className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -660,31 +653,31 @@ export default function LuckyDrawPage() {
               <Star className="mr-2 text-yellow-500" />
               VIP Status
             </h2>
-            <Link 
-              href="/vip" 
+            <Link
+              href="/vip"
               className="text-mali-blue-accent hover:text-mali-blue-accent/80 flex items-center font-medium text-sm"
             >
               Upgrade Now <ChevronRight size={16} className="ml-1" />
             </Link>
           </div>
-          
+
           <div className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-mali-blue/30 p-5 rounded-xl relative overflow-hidden">
             <div className="relative z-10">
               <div className="mb-4">
                 <div className="text-mali-text-secondary text-sm mb-1">Your Status</div>
                 <div className="text-white font-bold">Standard Member</div>
               </div>
-              
+
               <div className="mb-4">
                 <div className="text-mali-text-secondary text-sm mb-1">Benefits</div>
                 <div className="text-white">Upgrade to VIP for exclusive lucky draws with bigger prizes!</div>
               </div>
-              
+
               <button className="mt-2 bg-gradient-to-r from-amber-600 to-yellow-500 hover:opacity-90 text-white px-4 py-2 rounded-lg font-medium">
                 Become VIP
               </button>
             </div>
-            
+
             <div className="absolute right-4 bottom-4 opacity-20">
               <Trophy className="h-24 w-24 text-yellow-500" />
             </div>

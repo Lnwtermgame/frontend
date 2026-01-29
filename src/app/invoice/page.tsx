@@ -53,41 +53,41 @@ const invoices = [
 
 export default function InvoicePage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [filteredInvoices, setFilteredInvoices] = useState(invoices);
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
   // Filter invoices based on search term and filter status
   useEffect(() => {
     let result = invoices;
-    
+
     // Apply status filter
     if (filter !== "all") {
       result = result.filter(invoice => invoice.status.toLowerCase() === filter);
     }
-    
+
     // Apply search filter
     if (searchTerm) {
-      result = result.filter(invoice => 
+      result = result.filter(invoice =>
         invoice.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         invoice.orderReference.toLowerCase().includes(searchTerm.toLowerCase()) ||
         invoice.items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-    
+
     setFilteredInvoices(result);
   }, [searchTerm, filter]);
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="page-container text-center">
         <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">
@@ -110,7 +110,7 @@ export default function InvoicePage() {
       <div className="relative mb-8">
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
         <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-        
+
         <div className="flex justify-between items-start mb-2">
           <div>
             <h1 className="text-3xl font-bold text-white">
@@ -130,7 +130,7 @@ export default function InvoicePage() {
             Total: {filteredInvoices.length} Invoices
           </span>
         </div>
-        
+
         <div className="flex w-full sm:w-auto space-x-3">
           <div className="relative w-full sm:w-64">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -144,9 +144,9 @@ export default function InvoicePage() {
               className="w-full rounded-lg bg-mali-blue/10 border border-mali-blue/20 pl-10 pr-4 py-2.5 text-sm text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-colors"
             />
           </div>
-          
+
           <div className="relative">
-            <select 
+            <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               className="appearance-none rounded-lg bg-mali-blue/10 border border-mali-blue/20 px-4 py-2.5 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-colors"
@@ -164,7 +164,7 @@ export default function InvoicePage() {
       </div>
 
       {filteredInvoices.length === 0 ? (
-        <motion.div 
+        <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 p-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -177,7 +177,7 @@ export default function InvoicePage() {
           <p className="text-mali-text-secondary mb-4">You don't have any invoices matching your search criteria.</p>
         </motion.div>
       ) : (
-        <motion.div 
+        <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -197,8 +197,8 @@ export default function InvoicePage() {
               </thead>
               <tbody>
                 {filteredInvoices.map((invoice, index) => (
-                  <motion.tr 
-                    key={invoice.id} 
+                  <motion.tr
+                    key={invoice.id}
                     className="border-t border-mali-blue/10 hover:bg-mali-blue/10 transition-colors"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -213,26 +213,25 @@ export default function InvoicePage() {
                     </td>
                     <td className="px-4 py-4 text-white font-medium">${invoice.amount.toFixed(2)}</td>
                     <td className="px-4 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        invoice.status === "Paid" 
-                          ? "bg-green-500/20 text-green-400" 
-                          : invoice.status === "Refunded"
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${invoice.status === "Paid"
+                        ? "bg-green-500/20 text-green-400"
+                        : invoice.status === "Refunded"
                           ? "bg-amber-500/20 text-amber-400"
                           : "bg-blue-500/20 text-blue-400"
-                      }`}>
+                        }`}>
                         {invoice.status}
                       </span>
                     </td>
                     <td className="px-4 py-4 text-right">
                       <div className="flex items-center justify-end space-x-2">
-                        <motion.button 
+                        <motion.button
                           className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           <Download className="h-4 w-4 text-mali-blue-light" />
                         </motion.button>
-                        <motion.button 
+                        <motion.button
                           className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
@@ -249,9 +248,9 @@ export default function InvoicePage() {
           </div>
         </motion.div>
       )}
-      
+
       {/* Footer info */}
-      <motion.div 
+      <motion.div
         className="mt-4 text-center text-mali-text-secondary text-xs"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

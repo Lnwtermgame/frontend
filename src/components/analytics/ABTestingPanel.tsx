@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
-import { Target, BarChart3, PlusCircle, LineChart, Check, X } from "lucide-react";
+import { 
+  BarChart3, 
+  Target, 
+  PlusCircle, 
+  X, 
+  Check, 
+  LineChart 
+} from "lucide-react";
+
+// Dummy translation helper
+const t = (str: any) => str;
 
 interface ABTest {
   id: string;

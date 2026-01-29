@@ -138,17 +138,10 @@ export default function SpecialEventsPage() {
 
   return (
     <div className="page-container">
-      {/* Page header with light bloom effect */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-mali-blue-light/20 blur-3xl"></div>
-        <div className="absolute top-10 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
         
-        <motion.h1 
-          className="text-3xl font-bold text-white mb-2 relative"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
           โปรโมชั่นพิเศษ
         </motion.h1>
         <p className="text-mali-text-secondary relative">ดีลพิเศษและโปรโมชั่นตามเทศกาล</p>

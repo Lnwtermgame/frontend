@@ -40,32 +40,32 @@ module.exports = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
-        // MaliGamePass theme colors - Refined to perfectly match reference UI
+        // SEAGM-inspired Gaming Theme - Flat, High Contrast, Bento Grid
         mali: {
-          dark: "#0e1633",        // Main background color
-          darker: "#0a1029",      // Darker background variant
-          navy: "#1a2547",        // Secondary background color
+          dark: "#0a0b0f",        // Main background - Very dark blue-black
+          darker: "#050608",      // Darker background variant
+          navy: "#12141c",        // Card background
           blue: {
-            DEFAULT: "#2a3f66",   // Border color and lighter backgrounds
-            light: "#4e89e8",     // Lighter blue accents
-            accent: "#3a7bec",    // Main blue accent color
-            glow: "#4e89e8"       // Glowing accent for hover effects
+            DEFAULT: "#23263a",   // Borders / Dividers
+            light: "#2a2d45",     // Hover states
+            accent: "#ff6b00",    // Primary Orange Accent (Replaces Blue Accent)
+            glow: "transparent"   // Removed glow
           },
           purple: {
-            DEFAULT: "#7953f5",   // Purple accent
-            dark: "#6237d0",      // Darker purple
-            glow: "#7953f580"     // Purple glow for effects
+            DEFAULT: "#00ff94",   // Secondary Green Accent (Replaces Purple)
+            dark: "#00cc76",      // Darker Green
+            glow: "transparent"   // Removed glow
           },
-          pink: "#e936a2",        // Pink accent
-          red: "#ff4655",         // Red accent (from valorant)
-          green: "#28c76f",       // Success color
-          card: "#192545",        // Card background color
-          sidebar: "#101b33",     // Sidebar background color
-          sidebar2: "#182040",    // Alternative sidebar color
+          pink: "#ff0055",        // Error / Hot
+          red: "#ff2a2a",         // Notification / Sale
+          green: "#00ff94",       // Success
+          card: "#12141c",        // Main card background
+          sidebar: "#0e1016",     // Sidebar background
+          sidebar2: "#12141c",    // Alternative sidebar
           text: {
-            primary: "#ffffff",   // Main text color
-            secondary: "#a7b1d9", // Secondary text color
-            muted: "#6a7199"      // Muted text color
+            primary: "#ffffff",   // High contrast white
+            secondary: "#9ca3af", // Neutral grey for secondary text
+            muted: "#6b7280"      // Darker muted text
           }
         },
       },
@@ -81,27 +81,25 @@ module.exports = {
         inter: ["Inter", "system-ui", "sans-serif"],
       },
       backgroundImage: {
-        'mali-gradient': 'linear-gradient(180deg, #0e1633 0%, #1a2547 100%)',
-        'card-gradient': 'linear-gradient(135deg, rgba(42, 63, 102, 0.8) 0%, rgba(26, 37, 71, 0.8) 100%)',
-        'button-gradient': 'linear-gradient(135deg, #4e89e8 0%, #7953f5 100%)',
-        'accent-gradient': 'linear-gradient(135deg, #e936a2 0%, #7953f5 100%)',
-        'game-card-gradient': 'linear-gradient(to top, rgba(14, 22, 51, 0.95) 0%, rgba(14, 22, 51, 0) 100%)',
-        'glow-gradient': 'radial-gradient(circle, rgba(78,137,232,0.3) 0%, rgba(121,83,245,0.1) 50%, rgba(14,22,51,0) 70%)',
+        'mali-gradient': 'linear-gradient(180deg, #0a0b0f 0%, #0a0b0f 100%)', // Flat
+        'card-gradient': 'linear-gradient(180deg, #12141c 0%, #12141c 100%)', // Flat
+        'button-gradient': 'linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%)', // Vibrant Orange
+        'accent-gradient': 'linear-gradient(90deg, #00ff94 0%, #00d179 100%)', // Vibrant Green
+        'game-card-gradient': 'linear-gradient(to top, rgba(18, 20, 28, 0.95) 0%, rgba(18, 20, 28, 0) 100%)',
+        'glow-gradient': 'none', // Removed
       },
       boxShadow: {
-        'button-glow': '0 0 15px rgba(78,137,232,0.5)',
-        'blue-glow': '0 0 8px rgba(58,123,236,0.6)',
-        'purple-glow': '0 0 12px rgba(121,83,245,0.5)',
-        'card-hover': '0 4px 20px rgba(26, 32, 77, 0.4)',
+        'button-glow': 'none', // Removed
+        'blue-glow': 'none', // Removed
+        'purple-glow': 'none', // Removed
+        'card-hover': '0 10px 30px -10px rgba(0, 0, 0, 0.5)', // Deep, sharp shadow
+        'bento': '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', // Subtle depth
       },
       animation: {
-        'pulse-glow': 'pulse-glow 2s infinite',
+        // Removed pulse-glow
       },
       keyframes: {
-        'pulse-glow': {
-          '0%, 100%': { opacity: 0.8 },
-          '50%': { opacity: 1 },
-        },
+        // Removed pulse-glow
       },
     },
   },

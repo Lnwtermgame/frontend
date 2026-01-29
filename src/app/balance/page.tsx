@@ -17,22 +17,16 @@ export default function BalancePage() {
 
   return (
     <div className="page-container">
-      {/* Page Header with blur effect */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <h1 className="text-3xl font-bold text-white thai-font">
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
+        
+        <h1 className="text-3xl font-bold text-white mb-2 relative">
               ยอดเงิน
             </h1>
             <p className="text-mali-text-secondary mt-1 thai-font">
               เติมเงินเข้าบัญชีของคุณ
             </p>
           </div>
-        </div>
-      </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Balance display */}

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     subscriptions.set(userToken, subscription);
     
     // Set a cookie to remember this subscription on the client
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set('push_subscription_id', userToken, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year

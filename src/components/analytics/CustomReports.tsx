@@ -15,6 +15,9 @@ import {
   Users 
 } from "lucide-react";
 
+// Dummy translation helper
+const t = (str: any) => str;
+
 interface Report {
   id: string;
   title: string;

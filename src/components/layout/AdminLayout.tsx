@@ -68,16 +68,16 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout, isInitialized } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (isInitialized && !isAdmin) {
       router.push("/");
     }
-  }, [isAdmin, router]);
+  }, [isAdmin, router, isInitialized]);
 
-  if (!isAdmin) {
+  if (!isInitialized || !isAdmin) {
     return (
       <div className="page-container text-center">
         <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">

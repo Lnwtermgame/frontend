@@ -49,17 +49,10 @@ export default function AccountPage() {
 
   return (
     <div className="page-container">
-      {/* Page Header with blur effect */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-
-        <motion.h1
-          className="text-3xl font-bold text-white mb-2 relative thai-font"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+            {/* Page Header */}
+            <div className="relative mb-8 pt-4">
+              
+              <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
           บัญชีของฉัน
         </motion.h1>
         <p className="text-mali-text-secondary relative thai-font">จัดการการตั้งค่าและความชอบของบัญชีของคุณ</p>

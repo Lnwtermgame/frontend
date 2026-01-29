@@ -5,14 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
-import { 
-  ArrowLeft, 
-  Download, 
-  Printer, 
-  Copy, 
-  Check, 
-  Clock, 
-  CreditCard, 
+import {
+  ArrowLeft,
+  Download,
+  Printer,
+  Copy,
+  Check,
+  Clock,
+  CreditCard,
   CheckCircle,
   AlertCircle,
   FileText,
@@ -37,19 +37,19 @@ const invoicesData = {
       phone: "+1 555-123-4567"
     },
     items: [
-      { 
-        id: "ITEM001", 
-        name: "Steam Gift Card", 
-        value: "$20", 
-        quantity: 1, 
+      {
+        id: "ITEM001",
+        name: "Steam Gift Card",
+        value: "$20",
+        quantity: 1,
         price: 20.99,
         image: "https://placehold.co/100x60/2a429b/white?text=Steam"
       },
-      { 
-        id: "ITEM002", 
-        name: "Processing Fee", 
-        value: "Service", 
-        quantity: 1, 
+      {
+        id: "ITEM002",
+        name: "Processing Fee",
+        value: "Service",
+        quantity: 1,
         price: 9.00,
         image: null
       }
@@ -76,11 +76,11 @@ const invoicesData = {
       phone: "+1 555-987-6543"
     },
     items: [
-      { 
-        id: "ITEM003", 
-        name: "Google Play Gift Card", 
-        value: "$50", 
-        quantity: 1, 
+      {
+        id: "ITEM003",
+        name: "Google Play Gift Card",
+        value: "$50",
+        quantity: 1,
         price: 49.99,
         image: "https://placehold.co/100x60/4caf50/white?text=Google"
       }
@@ -95,7 +95,7 @@ const invoicesData = {
 
 export default function InvoiceDetailPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -113,7 +113,7 @@ export default function InvoiceDetailPage() {
 
   // Fetch invoice data - in a real app, this would be an API call
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
       return;
     }
@@ -121,19 +121,19 @@ export default function InvoiceDetailPage() {
     // Simulate API fetch with timeout
     const timer = setTimeout(() => {
       setLoading(false);
-      
+
       if (typeof invoiceId !== 'string') {
         setError("Invalid invoice ID");
         return;
       }
-      
+
       const foundInvoice = invoicesData[invoiceId as keyof typeof invoicesData];
-      
+
       if (!foundInvoice) {
         setError("Invoice not found");
         return;
       }
-      
+
       setInvoice(foundInvoice);
     }, 500);
 
@@ -162,7 +162,7 @@ export default function InvoiceDetailPage() {
   if (error) {
     return (
       <div className="page-container">
-        <motion.div 
+        <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 p-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -173,7 +173,7 @@ export default function InvoiceDetailPage() {
           </div>
           <h2 className="text-xl font-bold text-white mb-2">Error</h2>
           <p className="text-mali-text-secondary mb-6">{error}</p>
-          <button 
+          <button
             onClick={() => router.push('/invoice')}
             className="inline-flex items-center bg-gradient-to-r from-mali-blue-light to-mali-purple text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-blue-glow transition-all hover:shadow-lg"
           >
@@ -184,7 +184,7 @@ export default function InvoiceDetailPage() {
       </div>
     );
   }
-  
+
   if (!invoice) {
     return null;
   }
@@ -195,18 +195,18 @@ export default function InvoiceDetailPage() {
       <div className="relative mb-8">
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
         <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-        
+
         <div className="flex justify-between items-start mb-6">
           <div>
-            <Link 
-              href="/invoice" 
+            <Link
+              href="/invoice"
               className="text-mali-blue-light hover:text-mali-blue-accent inline-flex items-center text-sm mb-3"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" /> 
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Invoices
             </Link>
           </div>
-          
+
           <div className="flex gap-2">
             <motion.button
               className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors inline-flex items-center text-mali-blue-light"
@@ -216,7 +216,7 @@ export default function InvoiceDetailPage() {
             >
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             </motion.button>
-            
+
             <motion.button
               className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors inline-flex items-center text-mali-blue-light"
               whileHover={{ scale: 1.05 }}
@@ -224,7 +224,7 @@ export default function InvoiceDetailPage() {
             >
               <Printer className="h-4 w-4" />
             </motion.button>
-            
+
             <motion.button
               className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors inline-flex items-center text-mali-blue-light"
               whileHover={{ scale: 1.05 }}
@@ -232,7 +232,7 @@ export default function InvoiceDetailPage() {
             >
               <Download className="h-4 w-4" />
             </motion.button>
-            
+
             <motion.button
               className="px-5 py-2 rounded-lg bg-mali-blue-accent hover:bg-mali-blue-light text-white font-medium inline-flex items-center shadow-blue-glow"
               whileHover={{ scale: 1.05 }}
@@ -242,7 +242,7 @@ export default function InvoiceDetailPage() {
             </motion.button>
           </div>
         </div>
-        
+
         <div>
           <h1 className="text-3xl font-bold text-white relative">
             Invoice #{invoice.id}
@@ -251,19 +251,18 @@ export default function InvoiceDetailPage() {
             <p className="text-mali-text-secondary">
               {new Date(invoice.date).toLocaleDateString()}
             </p>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-              invoice.status === "Paid" 
-                ? "bg-green-500/20 text-green-400" 
-                : invoice.status === "Refunded"
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${invoice.status === "Paid"
+              ? "bg-green-500/20 text-green-400"
+              : invoice.status === "Refunded"
                 ? "bg-amber-500/20 text-amber-400"
                 : "bg-blue-500/20 text-blue-400"
-            }`}>
+              }`}>
               {invoice.status}
             </span>
           </div>
         </div>
       </div>
-      
+
       {/* Invoice Content */}
       <div className="space-y-6">
         {/* Invoice Summary Card */}
@@ -281,7 +280,7 @@ export default function InvoiceDetailPage() {
               <p className="text-mali-text-secondary text-sm">{invoice.customerEmail}</p>
               <p className="text-mali-text-secondary text-sm mt-1">{invoice.billingAddress.phone}</p>
             </div>
-            
+
             {/* Payment Info */}
             <div>
               <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3">Payment Details</h3>
@@ -298,15 +297,15 @@ export default function InvoiceDetailPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Order Info */}
             <div>
               <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3">Order Information</h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-mali-text-secondary text-sm">Order Ref:</span>
-                  <Link 
-                    href={`/orders/${invoice.orderReference}`} 
+                  <Link
+                    href={`/orders/${invoice.orderReference}`}
                     className="text-mali-blue-light hover:text-mali-blue-accent hover:underline transition-colors flex items-center text-sm"
                   >
                     {invoice.orderReference}
@@ -327,7 +326,7 @@ export default function InvoiceDetailPage() {
             </div>
           </div>
         </motion.div>
-        
+
         {/* Invoice Items */}
         <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-lg"
@@ -337,7 +336,7 @@ export default function InvoiceDetailPage() {
         >
           <div className="p-6">
             <h3 className="text-lg font-semibold text-white mb-4">Invoice Items</h3>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -376,7 +375,7 @@ export default function InvoiceDetailPage() {
                 </tbody>
               </table>
             </div>
-            
+
             {/* Invoice Summary */}
             <div className="mt-6 border-t border-mali-blue/20 pt-4">
               <div className="flex flex-col items-end">
@@ -398,7 +397,7 @@ export default function InvoiceDetailPage() {
             </div>
           </div>
         </motion.div>
-        
+
         {/* Notes & Info */}
         <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-lg"
@@ -409,7 +408,7 @@ export default function InvoiceDetailPage() {
           <div className="p-6">
             <h3 className="text-lg font-semibold text-white mb-4">Notes</h3>
             <p className="text-mali-text-secondary">{invoice.notes}</p>
-            
+
             <div className="mt-6 border-t border-mali-blue/20 pt-6">
               <div className="flex items-center gap-2 text-mali-text-secondary">
                 <Clock className="h-4 w-4" />
@@ -421,7 +420,7 @@ export default function InvoiceDetailPage() {
           </div>
         </motion.div>
       </div>
-      
+
       {/* Footer Actions */}
       <motion.div
         className="mt-8 flex flex-col sm:flex-row justify-between items-center"
@@ -430,8 +429,8 @@ export default function InvoiceDetailPage() {
         transition={{ duration: 0.3, delay: 0.5 }}
       >
         <div className="text-center sm:text-left mb-4 sm:mb-0">
-          <Link 
-            href="/invoice" 
+          <Link
+            href="/invoice"
             className="inline-flex items-center px-4 py-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors text-mali-blue-light"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />

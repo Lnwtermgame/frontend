@@ -69,5 +69,5 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   // Return initial value during SSR/hydration, stored value after client init
   const valueToReturn = isInitialized ? storedValue : initialValue;
 
-  return [valueToReturn, setValue] as const;
+  return [valueToReturn, setValue, isInitialized] as const;
 } 

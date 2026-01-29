@@ -8,8 +8,8 @@ import { buttonAnimation, cardHoverAnimation } from '@/lib/framer-exports';
 
 type HoverEffectType = 'button' | 'card' | 'lift' | 'glow' | 'scale';
 
-interface HoverAnimationProps extends HTMLMotionProps<"div"> {
-  children: ReactNode;
+interface HoverAnimationProps extends Omit<HTMLMotionProps<"div">, "children"> {
+  children: ReactNode | ((props: { isHovered: boolean; disabled: boolean }) => ReactNode);
   type?: HoverEffectType;
   className?: string;
   hoverClass?: string;
@@ -70,7 +70,7 @@ export default function HoverAnimation({
       initial="rest"
       whileHover={disabled ? undefined : "hover"}
       whileTap={disabled ? undefined : "tap"}
-      variants={getVariants()}
+      variants={getVariants() as any}
       {...props}
     >
       {typeof children === 'function' 

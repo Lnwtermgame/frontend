@@ -37,18 +37,18 @@ const orders = [
 
 export default function OrdersPage() {
   const router = useRouter();
-  const { user } = useAuth();
-  
+  const { user, isInitialized } = useAuth();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrders, setFilteredOrders] = useState(orders);
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
   // Filter orders based on search term
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function OrdersPage() {
   }, []);
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="page-container text-center">
         <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">
@@ -205,17 +205,10 @@ export default function OrdersPage() {
 
   return (
     <div className="page-container">
-      {/* Page Header with blur effect */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
 
-        <motion.h1
-          className="text-3xl font-bold text-white mb-2 relative flex items-center"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
           <ShoppingBag className="h-7 w-7 text-mali-blue-light mr-3" />
           My Orders
         </motion.h1>

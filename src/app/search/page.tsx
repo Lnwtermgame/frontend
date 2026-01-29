@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Filter, SlidersHorizontal, Clock, ChevronDown, CheckCircle2, Tag } from 'lucide-react';
 import { motion } from '@/lib/framer-exports';
@@ -46,10 +46,10 @@ const cardTypes = [
   { id: 'subscriptions', name: 'Subscriptions' },
 ];
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const queryParam = searchParams.get('q') || '';
-  
+
   const [searchQuery, setSearchQuery] = useState(queryParam);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCardType, setSelectedCardType] = useState('all');
@@ -57,36 +57,36 @@ export default function SearchPage() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<GameData[]>([]);
-  
+
   // Search function
   const performSearch = (query: string) => {
     if (!query) {
       setSearchResults([]);
       return;
     }
-    
+
     const lowerQuery = query.toLowerCase();
-    const results = allGames.filter(game => 
+    const results = allGames.filter(game =>
       game.title.toLowerCase().includes(lowerQuery) ||
       game.type.toLowerCase().includes(lowerQuery) ||
       game.region.toLowerCase().includes(lowerQuery)
     );
-    
+
     setSearchResults(results);
   };
-  
+
   // Apply filters to search results
   const applyFilters = (results: GameData[]) => {
     let filtered = [...results];
-    
+
     // Apply category filter
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(game => game.type === selectedCategory);
     }
-    
+
     // Apply price range filter
     filtered = filtered.filter(game => game.price >= priceRange[0] && game.price <= priceRange[1]);
-    
+
     // Apply sorting
     switch (selectedSort) {
       case 'price-asc':
@@ -103,10 +103,10 @@ export default function SearchPage() {
         break;
       // relevance is default
     }
-    
+
     return filtered;
   };
-  
+
   // Initial search and when URL parameters change
   useEffect(() => {
     if (queryParam) {
@@ -114,44 +114,44 @@ export default function SearchPage() {
       performSearch(queryParam);
     }
   }, [queryParam]);
-  
+
   // Apply filters when filter options change
   useEffect(() => {
     if (searchResults.length > 0) {
       setSearchResults(applyFilters(searchResults));
     }
   }, [selectedCategory, selectedCardType, selectedSort, priceRange]);
-  
+
   const handleSearchSubmit = (query: string) => {
     setSearchQuery(query);
     performSearch(query);
   };
-  
+
   // Handle category filter change
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
   };
-  
+
   // Toggle filter menu on mobile
   const toggleFilterMenu = () => {
     setFilterMenuOpen(prev => !prev);
   };
-  
+
   return (
     <div className="page-container pb-8">
       <div className="space-y-6">
         {/* Search Header */}
         <div className="space-y-4">
           <h1 className="text-2xl font-bold text-white">Search Results</h1>
-          
+
           {/* Main search bar */}
-          <SmartSearchBar 
-            placeholder="Search games, cards, and more..." 
+          <SmartSearchBar
+            placeholder="Search games, cards, and more..."
             className="w-full max-w-3xl"
             onSearch={handleSearchSubmit}
             maxResults={5}
           />
-          
+
           {/* Search status */}
           {searchQuery ? (
             <p className="text-mali-text-secondary">
@@ -163,7 +163,7 @@ export default function SearchPage() {
             </p>
           )}
         </div>
-        
+
         {/* Search results area */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Filters Sidebar - Desktop */}
@@ -175,11 +175,10 @@ export default function SearchPage() {
                 {categories.map((category) => (
                   <button
                     key={category.id}
-                    className={`w-full text-left py-1.5 px-2 rounded-md flex items-center justify-between ${
-                      selectedCategory === category.id
+                    className={`w-full text-left py-1.5 px-2 rounded-md flex items-center justify-between ${selectedCategory === category.id
                         ? 'bg-mali-blue/30 text-white'
                         : 'text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white'
-                    }`}
+                      }`}
                     onClick={() => handleCategoryChange(category.id)}
                   >
                     <span className="text-sm">{category.name}</span>
@@ -190,7 +189,7 @@ export default function SearchPage() {
                 ))}
               </div>
             </div>
-            
+
             {/* Price Range Filter */}
             <div className="glass-card p-4">
               <h3 className="font-medium text-white mb-3">Price Range</h3>
@@ -199,17 +198,17 @@ export default function SearchPage() {
                   <span>${priceRange[0].toFixed(2)}</span>
                   <span>${priceRange[1].toFixed(2)}</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="100" 
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
                   className="w-full accent-mali-blue cursor-pointer"
                 />
               </div>
             </div>
-            
+
             {/* Sort Options */}
             <div className="glass-card p-4">
               <h3 className="font-medium text-white mb-3">Sort By</h3>
@@ -217,11 +216,10 @@ export default function SearchPage() {
                 {sortOptions.map((option) => (
                   <button
                     key={option.id}
-                    className={`w-full text-left py-1.5 px-2 rounded-md text-sm ${
-                      selectedSort === option.id
+                    className={`w-full text-left py-1.5 px-2 rounded-md text-sm ${selectedSort === option.id
                         ? 'bg-mali-blue/30 text-white'
                         : 'text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white'
-                    }`}
+                      }`}
                     onClick={() => setSelectedSort(option.id)}
                   >
                     {option.name}
@@ -229,7 +227,7 @@ export default function SearchPage() {
                 ))}
               </div>
             </div>
-            
+
             {/* Type Filter */}
             <div className="glass-card p-4">
               <h3 className="font-medium text-white mb-3">Type</h3>
@@ -237,11 +235,10 @@ export default function SearchPage() {
                 {cardTypes.map((type) => (
                   <button
                     key={type.id}
-                    className={`w-full text-left py-1.5 px-2 rounded-md text-sm ${
-                      selectedCardType === type.id
+                    className={`w-full text-left py-1.5 px-2 rounded-md text-sm ${selectedCardType === type.id
                         ? 'bg-mali-blue/30 text-white'
                         : 'text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white'
-                    }`}
+                      }`}
                     onClick={() => setSelectedCardType(type.id)}
                   >
                     {type.name}
@@ -249,7 +246,7 @@ export default function SearchPage() {
                 ))}
               </div>
             </div>
-            
+
             {/* Recent Searches */}
             <div className="glass-card p-4">
               <h3 className="font-medium text-white mb-3">Recent Searches</h3>
@@ -265,10 +262,10 @@ export default function SearchPage() {
               </div>
             </div>
           </div>
-          
+
           {/* Mobile Filters Button */}
           <div className="lg:hidden">
-            <button 
+            <button
               onClick={toggleFilterMenu}
               className="w-full bg-mali-blue/20 text-mali-blue-light border border-mali-blue/30 py-3 rounded-lg flex items-center justify-center"
             >
@@ -276,7 +273,7 @@ export default function SearchPage() {
               <span>Filters & Sorting</span>
               <ChevronDown size={18} className={`ml-2 transition-transform ${filterMenuOpen ? 'rotate-180' : ''}`} />
             </button>
-            
+
             {/* Mobile Filter Menu */}
             {filterMenuOpen && (
               <div className="mt-4 glass-card p-4 divide-y divide-mali-blue/20">
@@ -287,11 +284,10 @@ export default function SearchPage() {
                     {sortOptions.map((option) => (
                       <button
                         key={option.id}
-                        className={`py-1.5 px-2 rounded-md text-sm ${
-                          selectedSort === option.id
+                        className={`py-1.5 px-2 rounded-md text-sm ${selectedSort === option.id
                             ? 'bg-mali-blue/30 text-white'
                             : 'text-mali-text-secondary bg-mali-blue/10'
-                        }`}
+                          }`}
                         onClick={() => setSelectedSort(option.id)}
                       >
                         {option.name}
@@ -299,7 +295,7 @@ export default function SearchPage() {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Categories */}
                 <div className="py-4">
                   <h3 className="font-medium text-white mb-2">Categories</h3>
@@ -307,11 +303,10 @@ export default function SearchPage() {
                     {categories.slice(0, 5).map((category) => (
                       <button
                         key={category.id}
-                        className={`py-1 px-2 rounded-md text-xs ${
-                          selectedCategory === category.id
+                        className={`py-1 px-2 rounded-md text-xs ${selectedCategory === category.id
                             ? 'bg-mali-blue text-white'
                             : 'bg-mali-blue/20 text-mali-text-secondary'
-                        }`}
+                          }`}
                         onClick={() => handleCategoryChange(category.id)}
                       >
                         {category.name}
@@ -319,7 +314,7 @@ export default function SearchPage() {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Price Range */}
                 <div className="py-4">
                   <h3 className="font-medium text-white mb-2">Price Range</h3>
@@ -328,10 +323,10 @@ export default function SearchPage() {
                       <span>${priceRange[0].toFixed(2)}</span>
                       <span>${priceRange[1].toFixed(2)}</span>
                     </div>
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="100" 
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
                       value={priceRange[1]}
                       onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
                       className="w-full accent-mali-blue cursor-pointer"
@@ -341,7 +336,7 @@ export default function SearchPage() {
               </div>
             )}
           </div>
-          
+
           {/* Search Results */}
           <div className="flex-1">
             {searchResults.length > 0 ? (
@@ -366,7 +361,7 @@ export default function SearchPage() {
                 ))}
               </div>
             ) : searchQuery ? (
-              <motion.div 
+              <motion.div
                 className="glass-card p-8 text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -387,7 +382,7 @@ export default function SearchPage() {
                 </div>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 className="glass-card p-8 text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -414,7 +409,7 @@ export default function SearchPage() {
                 </div>
               </motion.div>
             )}
-            
+
             {/* Browse Categories */}
             {!searchQuery && (
               <div className="mt-8">
@@ -435,5 +430,21 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="page-container min-h-screen flex items-center justify-center">
+        <div className="relative w-20 h-20 animate-pulse-glow">
+          <div className="absolute inset-0 bg-glow-gradient animate-glow"></div>
+          <div className="absolute inset-0 border-2 border-mali-blue-light rounded-full animate-spin"></div>
+          <div className="absolute inset-2 border-2 border-mali-purple rounded-full animate-spin-slow"></div>
+        </div>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 } 

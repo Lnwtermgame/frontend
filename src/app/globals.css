@@ -47,121 +47,226 @@
     font-family: var(--font-thai) !important;
   }
 
-  * {
-    @apply border-border;
-  }
+    * {
 
-  body {
-    @apply bg-mali-dark text-mali-text-primary antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    min-height: 100vh;
-    background-image: radial-gradient(circle at 50% 0%, rgba(26, 37, 71, 0.3) 0%, rgba(14, 22, 51, 0) 70%);
-    background-repeat: no-repeat;
-  }
-}
+      @apply border-border;
 
-@layer components {
-  .nav-item {
-    @apply flex items-center space-x-2 p-2.5 rounded-md transition-colors text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white relative overflow-hidden;
-  }
-
-  .nav-item.active {
-    @apply bg-mali-blue/30 text-white;
-  }
-
-  .nav-item.active::before {
-    content: "";
-    @apply absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple;
-  }
-
-  .btn-primary {
-    @apply bg-button-gradient hover:opacity-90 text-white font-medium py-2 px-4 rounded-md transition-colors shadow-button-glow;
-  }
-
-  .btn-secondary {
-    @apply bg-mali-blue hover:bg-mali-blue/90 text-white font-medium py-2 px-4 rounded-md transition-colors;
-  }
-
-  .btn-outline {
-    @apply border border-mali-blue-accent text-mali-blue-accent hover:bg-mali-blue-accent/10 font-medium py-2 px-4 rounded-md transition-colors;
-  }
-
-  .btn-accent {
-    @apply bg-accent-gradient hover:opacity-90 text-white font-medium py-2 px-4 rounded-md transition-colors shadow-purple-glow;
-  }
-
-  .btn-cart {
-    @apply bg-button-gradient hover:opacity-90 text-white font-medium py-2 px-4 w-full rounded-md transition-colors shadow-button-glow;
-  }
-
-  .card {
-    @apply bg-mali-card rounded-lg p-4 border border-mali-blue/20 hover:border-mali-blue/40 transition-all;
-  }
-
-  .card-hover {
-    @apply transition-all duration-200 hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover;
-  }
-
-  .game-card {
-    @apply rounded-lg overflow-hidden relative;
-  }
-
-  .page-container {
-    @apply container mx-auto px-4 py-6 max-w-screen-xl;
-  }
-
-  .glass {
-    @apply bg-mali-blue/10 backdrop-blur-md border border-mali-blue/20;
-  }
-
-  .glass-card {
-    @apply rounded-lg bg-mali-blue/10 backdrop-blur-md border border-mali-blue/20;
-  }
-
-  /* Glow effects */
-  .blue-glow {
-    box-shadow: 0 0 15px rgba(78, 137, 232, 0.4);
-  }
-
-  .purple-glow {
-    box-shadow: 0 0 15px rgba(121, 83, 245, 0.4);
-  }
-
-  .pink-glow {
-    box-shadow: 0 0 15px rgba(233, 54, 162, 0.4);
-  }
-
-  /* Animated glow effect */
-  .animate-glow {
-    animation: glow 2s infinite alternate;
-  }
-
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 5px rgba(78, 137, 232, 0.2);
     }
 
-    to {
-      box-shadow: 0 0 20px rgba(78, 137, 232, 0.6);
+    body {
+
+      @apply bg-mali-dark text-mali-text-primary antialiased;
+
+      font-feature-settings: "rlig" 1, "calt" 1;
+
+      min-height: 100vh;
+
+      background-color: #0a0b0f; /* Flat dark background */
+
     }
+
   }
 
-  /* Custom scrollbar for the dark theme */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+  
 
-  ::-webkit-scrollbar-track {
-    background: rgba(14, 22, 51, 0.6);
-  }
+  @layer components {
 
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #4e89e8, #7953f5);
-    border-radius: 3px;
-  }
+    .nav-item {
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to bottom, #3a7bec, #6237d0);
+      @apply flex items-center space-x-2 p-2.5 rounded-md transition-colors text-mali-text-secondary hover:text-white relative overflow-hidden hover:bg-white/5;
+
+    }
+
+    
+
+    .nav-item.active {
+
+      @apply bg-white/10 text-white font-medium;
+
+    }
+
+    
+
+    .nav-item.active::before {
+
+      content: "";
+
+      @apply absolute left-0 top-2 bottom-2 w-1 bg-mali-blue-accent rounded-r;
+
+    }
+
+    
+
+    .btn-primary {
+
+      @apply bg-button-gradient hover:opacity-90 text-white font-bold py-2 px-4 rounded-md transition-all shadow-sm active:scale-95;
+
+    }
+
+    
+
+    .btn-secondary {
+
+      @apply bg-mali-blue hover:bg-mali-blue-light text-white font-medium py-2 px-4 rounded-md transition-all border border-mali-blue-light/20;
+
+    }
+
+    
+
+    .btn-outline {
+
+      @apply border border-mali-blue-light text-white hover:bg-white/5 font-medium py-2 px-4 rounded-md transition-all;
+
+    }
+
+    
+
+    .btn-accent {
+
+      @apply bg-accent-gradient hover:opacity-90 text-mali-dark font-bold py-2 px-4 rounded-md transition-all shadow-sm;
+
+    }
+
+    
+
+    .btn-cart {
+
+      @apply bg-button-gradient hover:opacity-90 text-white font-bold py-2 px-4 w-full rounded-md transition-all shadow-sm;
+
+    }
+
+    
+
+    .card {
+
+      @apply bg-mali-card rounded-xl p-4 border border-mali-blue transition-all;
+
+    }
+
+    
+
+    .card-hover {
+
+      @apply transition-all duration-200 hover:-translate-y-1 hover:border-mali-blue-light hover:shadow-card-hover;
+
+    }
+
+    
+
+    .game-card {
+
+      @apply rounded-xl overflow-hidden relative bg-mali-card border border-mali-blue transition-all hover:border-mali-blue-light;
+
+    }
+
+    
+
+    .page-container {
+
+      @apply container mx-auto px-4 py-8 max-w-screen-xl;
+
+    }
+
+    
+
+    /* Legacy class mappings for backward compatibility but new aesthetic */
+
+    .glass {
+
+      @apply bg-mali-navy border border-mali-blue;
+
+      backdrop-filter: none;
+
+    }
+
+    
+
+    .glass-card {
+
+      @apply rounded-xl bg-mali-card border border-mali-blue shadow-sm;
+
+      backdrop-filter: none;
+
+    }
+
+  
+
+    /* Redefine glow classes to be "accent borders" or "flat highlights" instead */
+
+    .blue-glow {
+
+      box-shadow: none;
+
+      @apply border-mali-blue-accent;
+
+    }
+
+    
+
+    .purple-glow {
+
+      box-shadow: none;
+
+      @apply border-mali-purple;
+
+    }
+
+    
+
+    .pink-glow {
+
+      box-shadow: none;
+
+      @apply border-mali-pink;
+
+    }
+
+    
+
+    /* Remove animations */
+
+    .animate-glow {
+
+      animation: none;
+
+    }
+
+  
+
+    /* Custom scrollbar for the dark theme */
+
+    ::-webkit-scrollbar {
+
+      width: 8px;
+
+      height: 8px;
+
+    }
+
+  
+
+    ::-webkit-scrollbar-track {
+
+      background: #0a0b0f;
+
+    }
+
+  
+
+    ::-webkit-scrollbar-thumb {
+
+      background: #2a2d45;
+
+      border-radius: 4px;
+
+    }
+
+  
+
+    ::-webkit-scrollbar-thumb:hover {
+
+      background: #ff6b00; /* Orange accent on hover */
+
+    }
+
   }
-}

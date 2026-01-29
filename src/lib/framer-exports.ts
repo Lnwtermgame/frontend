@@ -26,16 +26,16 @@ import {
 export const transitions = {
   ease: {
     duration: 0.4,
-    ease: [0.25, 0.1, 0.25, 1] // Smooth cubic-bezier easing
+    ease: [0.25, 0.1, 0.25, 1] as const // Smooth cubic-bezier easing
   },
   spring: {
-    type: "spring",
+    type: "spring" as const,
     stiffness: 400,
     damping: 30,
     mass: 1
   },
   bounce: {
-    type: "spring",
+    type: "spring" as const,
     stiffness: 300,
     damping: 10,
   },
@@ -173,7 +173,7 @@ export const pageTransition = {
     y: 0,
     transition: {
       duration: 0.4,
-      ease: [0.25, 0.1, 0.25, 1]
+      ease: [0.25, 0.1, 0.25, 1] as const
     }
   },
   exit: {
@@ -181,7 +181,7 @@ export const pageTransition = {
     y: 10,
     transition: {
       duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1]
+      ease: [0.25, 0.1, 0.25, 1] as const
     }
   }
 };

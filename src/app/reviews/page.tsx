@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { 
-  Star, Search, ThumbsUp, ThumbsDown, Filter, 
+import {
+  Star, Search, ThumbsUp, ThumbsDown, Filter,
   MessageSquare, ChevronDown, Clock, User,
   Calendar, BadgeCheck, ArrowRight, MoreHorizontal
 } from "lucide-react";
@@ -215,12 +215,12 @@ const popularGames = [
   { name: "Fortnite", value: "Fortnite" }
 ];
 
-export default function ReviewsPage() {
+function ReviewsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const { user } = useAuth();
-  
+
   // State
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState("all");
@@ -231,7 +231,7 @@ export default function ReviewsPage() {
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [likedReviews, setLikedReviews] = useState<string[]>([]);
   const [dislikedReviews, setDislikedReviews] = useState<string[]>([]);
-  
+
   // Set initial filters from URL parameters
   useEffect(() => {
     const platform = searchParams.get("platform");
@@ -239,51 +239,51 @@ export default function ReviewsPage() {
     const game = searchParams.get("game");
     const query = searchParams.get("q");
     const verified = searchParams.get("verified") === "true";
-    
+
     if (platform) setSelectedPlatform(platform);
     if (rating) setSelectedRating(rating);
     if (game) setSelectedGame(game);
     if (query) setSearchQuery(query);
     if (verified) setVerifiedOnly(verified);
   }, [searchParams]);
-  
+
   // Filter reviews based on selected filters
   useEffect(() => {
     let filtered = [...reviews];
-    
+
     // Apply platform filter
     if (selectedPlatform !== "all") {
       filtered = filtered.filter(review => review.platform === selectedPlatform);
     }
-    
+
     // Apply rating filter
     if (selectedRating !== "all") {
       const minRating = parseInt(selectedRating);
       filtered = filtered.filter(review => review.rating >= minRating);
     }
-    
+
     // Apply game filter
     if (selectedGame !== "all") {
       filtered = filtered.filter(review => review.gameName === selectedGame);
     }
-    
+
     // Apply verified purchase filter
     if (verifiedOnly) {
       filtered = filtered.filter(review => review.isVerifiedPurchase);
     }
-    
+
     // Apply search query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(review => 
-        review.title.toLowerCase().includes(query) || 
-        review.content.toLowerCase().includes(query) || 
-        review.gameName.toLowerCase().includes(query) || 
+      filtered = filtered.filter(review =>
+        review.title.toLowerCase().includes(query) ||
+        review.content.toLowerCase().includes(query) ||
+        review.gameName.toLowerCase().includes(query) ||
         review.username.toLowerCase().includes(query) ||
         review.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
-    
+
     // Apply sorting
     switch (sortBy) {
       case "date":
@@ -296,28 +296,28 @@ export default function ReviewsPage() {
         filtered.sort((a, b) => b.likes - a.likes);
         break;
     }
-    
+
     setFilteredReviews(filtered);
   }, [selectedPlatform, selectedRating, selectedGame, verifiedOnly, searchQuery, sortBy]);
-  
+
   // Format date
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
-  
+
   // Handle like/dislike
   const handleLikeReview = (reviewId: string, isLike: boolean) => {
     if (isLike) {
       // If already liked, remove like
       if (likedReviews.includes(reviewId)) {
         setLikedReviews(likedReviews.filter(id => id !== reviewId));
-      } 
+      }
       // If disliked, remove dislike and add like
       else if (dislikedReviews.includes(reviewId)) {
         setDislikedReviews(dislikedReviews.filter(id => id !== reviewId));
         setLikedReviews([...likedReviews, reviewId]);
-      } 
+      }
       // Add like
       else {
         setLikedReviews([...likedReviews, reviewId]);
@@ -326,19 +326,19 @@ export default function ReviewsPage() {
       // If already disliked, remove dislike
       if (dislikedReviews.includes(reviewId)) {
         setDislikedReviews(dislikedReviews.filter(id => id !== reviewId));
-      } 
+      }
       // If liked, remove like and add dislike
       else if (likedReviews.includes(reviewId)) {
         setLikedReviews(likedReviews.filter(id => id !== reviewId));
         setDislikedReviews([...dislikedReviews, reviewId]);
-      } 
+      }
       // Add dislike
       else {
         setDislikedReviews([...dislikedReviews, reviewId]);
       }
     }
   };
-  
+
   // Calculate adjusted likes/dislikes based on user interactions
   const getAdjustedLikes = (review: GameReview) => {
     let adjustedLikes = review.likes;
@@ -346,20 +346,20 @@ export default function ReviewsPage() {
     if (dislikedReviews.includes(review.id) && !likedReviews.includes(review.id)) adjustedLikes--;
     return adjustedLikes < 0 ? 0 : adjustedLikes;
   };
-  
+
   const getAdjustedDislikes = (review: GameReview) => {
     let adjustedDislikes = review.dislikes;
     if (dislikedReviews.includes(review.id)) adjustedDislikes++;
     if (likedReviews.includes(review.id) && !dislikedReviews.includes(review.id)) adjustedDislikes--;
     return adjustedDislikes < 0 ? 0 : adjustedDislikes;
   };
-  
+
   // Render stars for rating
   const renderStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    
+
     return (
       <div className="flex items-center">
         {[...Array(fullStars)].map((_, i) => (
@@ -379,11 +379,11 @@ export default function ReviewsPage() {
       </div>
     );
   };
-  
+
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <motion.div 
+      <motion.div
         className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-6 md:p-8 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -403,7 +403,7 @@ export default function ReviewsPage() {
               Browse user reviews and ratings for popular games, or share your own experience
             </p>
           </motion.div>
-          
+
           {/* Search Bar */}
           <div className="relative mb-2">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -419,9 +419,9 @@ export default function ReviewsPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Filters Section */}
-      <motion.div 
+      <motion.div
         className="mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -447,7 +447,7 @@ export default function ReviewsPage() {
                   <ChevronDown size={16} className="text-mali-text-secondary" />
                 </div>
               </div>
-              
+
               {/* Platform Filter */}
               <div className="relative">
                 <select
@@ -465,7 +465,7 @@ export default function ReviewsPage() {
                   <ChevronDown size={16} className="text-mali-text-secondary" />
                 </div>
               </div>
-              
+
               {/* Rating Filter */}
               <div className="relative">
                 <select
@@ -483,7 +483,7 @@ export default function ReviewsPage() {
                   <ChevronDown size={16} className="text-mali-text-secondary" />
                 </div>
               </div>
-              
+
               {/* Verified Purchasers Only */}
               <div className="flex items-center">
                 <label className="flex items-center cursor-pointer">
@@ -500,7 +500,7 @@ export default function ReviewsPage() {
                 </label>
               </div>
             </div>
-            
+
             {/* Sort Options */}
             <div className="relative">
               <select
@@ -521,13 +521,13 @@ export default function ReviewsPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Results Count */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-medium text-white">
           {filteredReviews.length} {filteredReviews.length === 1 ? 'Review' : 'Reviews'} Found
         </h2>
-        
+
         {/* Clear Filters Button (visible only when filters are applied) */}
         {(selectedPlatform !== "all" || selectedRating !== "all" || selectedGame !== "all" || verifiedOnly || searchQuery) && (
           <button
@@ -545,7 +545,7 @@ export default function ReviewsPage() {
           </button>
         )}
       </div>
-      
+
       {/* Write Review Button */}
       <div className="mb-8">
         <Link href={user ? "/reviews/write" : "/login?redirect=/reviews/write"} className="inline-block">
@@ -555,10 +555,10 @@ export default function ReviewsPage() {
           </button>
         </Link>
       </div>
-      
+
       {/* Reviews List */}
       {filteredReviews.length > 0 ? (
-        <motion.div 
+        <motion.div
           className="space-y-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -575,8 +575,8 @@ export default function ReviewsPage() {
               <div className="border-b border-mali-blue/20 bg-mali-blue/10 px-6 py-4 flex flex-wrap justify-between items-center">
                 <Link href={`/games/${review.gameId}`} className="flex items-center group">
                   <div className="w-12 h-12 bg-mali-card border border-mali-blue/20 rounded-lg overflow-hidden mr-3">
-                    <img 
-                      src={review.gameImage} 
+                    <img
+                      src={review.gameImage}
                       alt={review.gameName}
                       className="w-full h-full object-cover"
                     />
@@ -586,11 +586,10 @@ export default function ReviewsPage() {
                       {review.gameName}
                     </h3>
                     <div className="flex items-center text-xs text-mali-text-secondary">
-                      <span className={`px-2 py-0.5 rounded-full mr-2 ${
-                        review.platform === "mobile" ? "bg-blue-900/30 text-blue-400" :
-                        review.platform === "pc" ? "bg-purple-900/30 text-purple-400" :
-                        "bg-green-900/30 text-green-400"
-                      }`}>
+                      <span className={`px-2 py-0.5 rounded-full mr-2 ${review.platform === "mobile" ? "bg-blue-900/30 text-blue-400" :
+                          review.platform === "pc" ? "bg-purple-900/30 text-purple-400" :
+                            "bg-green-900/30 text-green-400"
+                        }`}>
                         {review.platform.charAt(0).toUpperCase() + review.platform.slice(1)}
                       </span>
                       <Calendar size={12} className="mr-1" />
@@ -598,19 +597,19 @@ export default function ReviewsPage() {
                     </div>
                   </div>
                 </Link>
-                
+
                 <div className="flex items-center mt-2 sm:mt-0">
                   {renderStars(review.rating)}
                   <span className="ml-2 text-lg font-bold text-white">{review.rating.toFixed(1)}</span>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-mali-blue/20">
-                      <img 
-                        src={review.userAvatar} 
+                      <img
+                        src={review.userAvatar}
                         alt={review.username}
                         className="w-full h-full object-cover"
                       />
@@ -625,23 +624,23 @@ export default function ReviewsPage() {
                       )}
                     </div>
                   </div>
-                  
+
                   <button className="text-mali-text-secondary hover:text-white p-1">
                     <MoreHorizontal size={18} />
                   </button>
                 </div>
-                
+
                 <h4 className="text-xl font-bold text-white mb-3">{review.title}</h4>
-                
+
                 <p className="text-mali-text-secondary mb-4">
                   {review.content}
                 </p>
-                
+
                 {/* Tags */}
                 {review.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
                     {review.tags.map((tag, i) => (
-                      <span 
+                      <span
                         key={i}
                         className="bg-mali-blue/10 text-mali-text-secondary text-xs px-3 py-1.5 rounded-full"
                       >
@@ -650,35 +649,33 @@ export default function ReviewsPage() {
                     ))}
                   </div>
                 )}
-                
+
                 {/* Review Actions */}
                 <div className="flex items-center justify-between pt-4 border-t border-mali-blue/20">
                   <div className="flex items-center gap-4">
-                    <button 
-                      className={`flex items-center gap-1 ${
-                        likedReviews.includes(review.id) 
-                        ? "text-mali-blue-accent" 
-                        : "text-mali-text-secondary hover:text-mali-blue-accent"
-                      }`}
+                    <button
+                      className={`flex items-center gap-1 ${likedReviews.includes(review.id)
+                          ? "text-mali-blue-accent"
+                          : "text-mali-text-secondary hover:text-mali-blue-accent"
+                        }`}
                       onClick={() => handleLikeReview(review.id, true)}
                     >
                       <ThumbsUp size={16} className={likedReviews.includes(review.id) ? "fill-mali-blue-accent" : ""} />
                       <span>{getAdjustedLikes(review)}</span>
                     </button>
-                    
-                    <button 
-                      className={`flex items-center gap-1 ${
-                        dislikedReviews.includes(review.id) 
-                        ? "text-red-500" 
-                        : "text-mali-text-secondary hover:text-red-500"
-                      }`}
+
+                    <button
+                      className={`flex items-center gap-1 ${dislikedReviews.includes(review.id)
+                          ? "text-red-500"
+                          : "text-mali-text-secondary hover:text-red-500"
+                        }`}
                       onClick={() => handleLikeReview(review.id, false)}
                     >
                       <ThumbsDown size={16} className={dislikedReviews.includes(review.id) ? "fill-red-500" : ""} />
                       <span>{getAdjustedDislikes(review)}</span>
                     </button>
                   </div>
-                  
+
                   <button className="text-mali-blue-accent hover:text-mali-blue-accent/80 text-sm flex items-center">
                     View full review
                     <ArrowRight size={14} className="ml-1" />
@@ -687,7 +684,7 @@ export default function ReviewsPage() {
               </div>
             </motion.div>
           ))}
-          
+
           {/* Load More Button */}
           {filteredReviews.length >= 5 && (
             <div className="mt-8 text-center">
@@ -719,5 +716,21 @@ export default function ReviewsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ReviewsPage() {
+  return (
+    <Suspense fallback={
+      <div className="page-container min-h-screen flex items-center justify-center">
+        <div className="relative w-20 h-20 animate-pulse-glow">
+          <div className="absolute inset-0 bg-glow-gradient animate-glow"></div>
+          <div className="absolute inset-0 border-2 border-mali-blue-light rounded-full animate-spin"></div>
+          <div className="absolute inset-2 border-2 border-mali-purple rounded-full animate-spin-slow"></div>
+        </div>
+      </div>
+    }>
+      <ReviewsContent />
+    </Suspense>
   );
 } 

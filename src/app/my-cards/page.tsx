@@ -57,7 +57,7 @@ const cards = [
 
 export default function MyCardsPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedCards, setExpandedCards] = useState<string[]>([]);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -66,16 +66,16 @@ export default function MyCardsPage() {
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
   // Filter cards based on search term
   useEffect(() => {
     if (searchTerm) {
       setFilteredCards(
-        cards.filter(card => 
+        cards.filter(card =>
           card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           card.value.toLowerCase().includes(searchTerm.toLowerCase()) ||
           card.code.toLowerCase().includes(searchTerm.toLowerCase())
@@ -88,16 +88,16 @@ export default function MyCardsPage() {
 
   // Toggle card expansion
   const toggleCardExpansion = (cardId: string) => {
-    setExpandedCards(prev => 
-      prev.includes(cardId) 
-        ? prev.filter(id => id !== cardId) 
+    setExpandedCards(prev =>
+      prev.includes(cardId)
+        ? prev.filter(id => id !== cardId)
         : [...prev, cardId]
     );
   };
 
   // Toggle code visibility
   const toggleCodeVisibility = (cardId: string) => {
-    setVisibleCodes(prev => 
+    setVisibleCodes(prev =>
       prev.includes(cardId)
         ? prev.filter(id => id !== cardId)
         : [...prev, cardId]
@@ -116,21 +116,21 @@ export default function MyCardsPage() {
     if (visibleCodes.includes(cardId)) {
       return code;
     }
-    
+
     const segments = code.split('-');
     if (segments.length > 1) {
       // Keep first segment visible, mask the rest
-      return segments.map((segment, index) => 
+      return segments.map((segment, index) =>
         index === 0 ? segment : 'XXXX'
       ).join('-');
     }
-    
+
     // Simple masking if no segments
     return code.substring(0, 4) + '-XXXX-XXXX-XXXX';
   };
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="page-container text-center">
         <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">
@@ -149,21 +149,15 @@ export default function MyCardsPage() {
 
   return (
     <div className="page-container">
-      {/* Page Header with blur effect - redesigned to match the preferred style */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-        
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <h1 className="text-3xl font-bold text-white">
-              My Cards
-            </h1>
-            <p className="text-mali-text-secondary mt-1">
-              Manage your gift cards and redemption codes
-            </p>
-          </div>
-        </div>
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
+
+        <h1 className="text-3xl font-bold text-white mb-2 relative">
+          My Cards
+        </h1>
+        <p className="text-mali-text-secondary mt-1">
+          Manage your gift cards and redemption codes
+        </p>
       </div>
 
       {/* Search and Actions Bar */}
@@ -173,7 +167,7 @@ export default function MyCardsPage() {
             Total: {filteredCards.length} Cards
           </span>
           <div className="h-4 border-r border-mali-blue/30"></div>
-          <Link 
+          <Link
             href="/card"
             className="flex items-center gap-1.5 text-mali-text-secondary hover:text-white transition-colors text-sm"
           >
@@ -181,7 +175,7 @@ export default function MyCardsPage() {
             <span>Browse Gift Cards</span>
           </Link>
         </div>
-        
+
         <div className="relative w-full sm:w-64">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-4 w-4 text-mali-text-secondary" />
@@ -197,7 +191,7 @@ export default function MyCardsPage() {
       </div>
 
       {filteredCards.length === 0 ? (
-        <motion.div 
+        <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 p-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -208,8 +202,8 @@ export default function MyCardsPage() {
           </div>
           <h2 className="text-xl font-bold text-white mb-2">No cards found</h2>
           <p className="text-mali-text-secondary mb-6">You don't have any gift cards matching your search criteria.</p>
-          <Link 
-            href="/card" 
+          <Link
+            href="/card"
             className="inline-flex items-center bg-gradient-to-r from-mali-blue-light to-mali-purple text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-blue-glow transition-all hover:shadow-lg"
           >
             Browse Gift Cards
@@ -218,14 +212,14 @@ export default function MyCardsPage() {
       ) : (
         <div className="space-y-4">
           {filteredCards.map((card, index) => (
-            <motion.div 
-              key={card.id} 
+            <motion.div
+              key={card.id}
               className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
             >
-              <div 
+              <div
                 className="p-5 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-mali-blue/10 transition-colors"
                 onClick={() => toggleCardExpansion(card.id)}
               >
@@ -241,8 +235,8 @@ export default function MyCardsPage() {
                 <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
                   <div className="sm:mr-8">
                     <div className={`text-xs px-3 py-1 rounded-full inline-flex items-center
-                      ${card.status === 'Active' 
-                        ? 'bg-green-500/20 text-green-400' 
+                      ${card.status === 'Active'
+                        ? 'bg-green-500/20 text-green-400'
                         : 'bg-gray-500/20 text-gray-400'}`}>
                       {card.status}
                     </div>
@@ -250,10 +244,9 @@ export default function MyCardsPage() {
                       Exp: {new Date(card.expiryDate).toLocaleDateString()}
                     </div>
                   </div>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    expandedCards.includes(card.id) 
-                      ? 'bg-mali-blue/30 text-mali-blue-light' 
-                      : 'bg-mali-blue/10 text-mali-text-secondary'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${expandedCards.includes(card.id)
+                    ? 'bg-mali-blue/30 text-mali-blue-light'
+                    : 'bg-mali-blue/10 text-mali-text-secondary'}`}>
                     {expandedCards.includes(card.id) ? (
                       <ChevronUp className="h-5 w-5" />
                     ) : (
@@ -262,7 +255,7 @@ export default function MyCardsPage() {
                   </div>
                 </div>
               </div>
-              
+
               {expandedCards.includes(card.id) && (
                 <div className="p-5 border-t border-mali-blue/20 bg-mali-blue/5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -284,8 +277,8 @@ export default function MyCardsPage() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-mali-text-secondary">Order Reference:</span>
-                          <Link 
-                            href={`/orders/${card.orderReference}`} 
+                          <Link
+                            href={`/orders/${card.orderReference}`}
                             className="text-mali-blue-accent hover:text-mali-blue-light transition-colors flex items-center"
                           >
                             {card.orderReference}
@@ -294,7 +287,7 @@ export default function MyCardsPage() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-mali-blue/10 p-5 rounded-lg border border-mali-blue/20">
                       <div className="flex justify-between items-center mb-4">
                         <h3 className="text-white text-sm font-medium flex items-center">
@@ -321,7 +314,7 @@ export default function MyCardsPage() {
                               <Eye className="h-3.5 w-3.5 ml-1.5" />
                             )}
                           </motion.button>
-                          <motion.button 
+                          <motion.button
                             onClick={(e) => {
                               e.stopPropagation();
                               copyToClipboard(card.code, card.id);
@@ -352,7 +345,7 @@ export default function MyCardsPage() {
                         )}
                       </div>
                       <div className="mt-4 flex justify-end">
-                        <motion.button 
+                        <motion.button
                           className="px-3 py-1.5 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors flex items-center text-xs text-mali-blue-light"
                           whileHover={{ scale: 1.03 }}
                           whileTap={{ scale: 0.95 }}

@@ -4,22 +4,22 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
-import { 
-  ShoppingCart, 
-  Search, 
-  ChevronLeft, 
-  ChevronRight, 
-  Package, 
-  Clock, 
-  Ban, 
-  Edit, 
-  Check, 
-  X, 
-  AlertCircle, 
-  Filter, 
-  Calendar, 
-  ChevronDown, 
-  Trash2 
+import {
+  ShoppingCart,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+  Clock,
+  Ban,
+  Edit,
+  Check,
+  X,
+  AlertCircle,
+  Filter,
+  Calendar,
+  ChevronDown,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -122,7 +122,7 @@ type SortOption = "newest" | "oldest" | "high_value" | "low_value";
 
 export default function OrderManagementPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const [orders, setOrders] = useState(mockOrders);
   const [filteredOrders, setFilteredOrders] = useState(mockOrders);
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,13 +135,13 @@ export default function OrderManagementPage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [actionStatus, setActionStatus] = useState<"idle" | "success" | "error">("idle");
   const [orderToModify, setOrderToModify] = useState<string | null>(null);
-  
+
   // Date formatting helper
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('th-TH', { 
-      year: 'numeric', 
-      month: 'long', 
+    return new Intl.DateTimeFormat('th-TH', {
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -150,30 +150,30 @@ export default function OrderManagementPage() {
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
   }, [user, router]);
-  
+
   // Apply filters and search
   useEffect(() => {
     let result = [...mockOrders];
-    
+
     // Apply status filter
     if (filterStatus !== "all") {
       result = result.filter(order => order.status === filterStatus);
     }
-    
+
     // Apply search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
-        order => 
-          order.id.toLowerCase().includes(query) || 
+        order =>
+          order.id.toLowerCase().includes(query) ||
           order.items.some(item => item.name.toLowerCase().includes(query))
       );
     }
-    
+
     // Apply sorting
     switch (sortOption) {
       case "newest":
@@ -189,7 +189,7 @@ export default function OrderManagementPage() {
         result = result.sort((a, b) => a.total - b.total);
         break;
     }
-    
+
     setFilteredOrders(result);
   }, [filterStatus, searchQuery, sortOption]);
 
@@ -201,31 +201,31 @@ export default function OrderManagementPage() {
   // Submit cancellation
   const submitCancellation = () => {
     if (!orderToCancel || !cancelReason) return;
-    
+
     setIsCancelling(true);
-    
+
     // Simulate API call
     setTimeout(() => {
-      setOrders(prevOrders => 
-        prevOrders.map(order => 
-          order.id === orderToCancel 
-            ? { ...order, status: "cancelled", cancellationReason: cancelReason, allowCancel: false, allowModify: false } 
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderToCancel
+            ? { ...order, status: "cancelled", cancellationReason: cancelReason, allowCancel: false, allowModify: false }
             : order
         )
       );
-      
+
       // Update filtered orders
-      setFilteredOrders(prevOrders => 
-        prevOrders.map(order => 
-          order.id === orderToCancel 
-            ? { ...order, status: "cancelled", cancellationReason: cancelReason, allowCancel: false, allowModify: false } 
+      setFilteredOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderToCancel
+            ? { ...order, status: "cancelled", cancellationReason: cancelReason, allowCancel: false, allowModify: false }
             : order
         )
       );
-      
+
       setActionStatus("success");
       setIsCancelling(false);
-      
+
       // Close cancellation dialog
       setTimeout(() => {
         setOrderToCancel(null);
@@ -243,7 +243,7 @@ export default function OrderManagementPage() {
   };
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <p className="text-lg text-mali-text-secondary">Loading...</p>
@@ -268,7 +268,7 @@ export default function OrderManagementPage() {
 
       {/* Action status notification */}
       {actionStatus === "success" && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-mali-green/20 border border-mali-green/30 text-mali-green rounded-md p-3 mb-6 flex items-center"
@@ -278,7 +278,7 @@ export default function OrderManagementPage() {
         </motion.div>
       )}
       {actionStatus === "error" && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-mali-red/20 border border-mali-red/30 text-mali-red rounded-md p-3 mb-6 flex items-center"
@@ -296,18 +296,18 @@ export default function OrderManagementPage() {
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <Search className="h-5 w-5 text-mali-text-secondary" />
               </div>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ค้นหาจากรหัสคำสั่งซื้อหรือชื่อสินค้า"
                 className="bg-mali-navy border border-mali-blue/30 rounded-lg pl-10 pr-3 py-2 w-full text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
               />
             </div>
-            
+
             <div className="flex gap-3">
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
                   className="bg-mali-blue/20 border border-mali-blue/30 text-white px-4 py-2 rounded-lg flex items-center"
                 >
@@ -317,17 +317,17 @@ export default function OrderManagementPage() {
                   </span>
                   <ChevronDown className={`h-4 w-4 ml-2 transition-transform ${isFilterDropdownOpen ? 'transform rotate-180' : ''}`} />
                 </button>
-                
+
                 {isFilterDropdownOpen && (
                   <div className="absolute z-10 mt-2 w-48 right-0 bg-mali-navy border border-mali-blue/30 rounded-lg shadow-lg py-1">
-                    <button 
+                    <button
                       onClick={() => { setFilterStatus("all"); setIsFilterDropdownOpen(false); }}
                       className={`w-full text-left px-4 py-2 hover:bg-mali-blue/10 ${filterStatus === "all" ? 'text-mali-blue-light' : 'text-white'}`}
                     >
                       ทั้งหมด
                     </button>
                     {Object.entries(orderStatuses).map(([key, value]) => (
-                      <button 
+                      <button
                         key={key}
                         onClick={() => { setFilterStatus(key as FilterStatus); setIsFilterDropdownOpen(false); }}
                         className={`w-full text-left px-4 py-2 hover:bg-mali-blue/10 ${filterStatus === key ? 'text-mali-blue-light' : 'text-white'} flex items-center`}
@@ -339,42 +339,42 @@ export default function OrderManagementPage() {
                   </div>
                 )}
               </div>
-              
+
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
                   className="bg-mali-blue/20 border border-mali-blue/30 text-white px-4 py-2 rounded-lg flex items-center"
                 >
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>
-                    {sortOption === "newest" ? "ใหม่สุด" : 
-                     sortOption === "oldest" ? "เก่าสุด" : 
-                     sortOption === "high_value" ? "ราคาสูงสุด" : "ราคาต่ำสุด"}
+                    {sortOption === "newest" ? "ใหม่สุด" :
+                      sortOption === "oldest" ? "เก่าสุด" :
+                        sortOption === "high_value" ? "ราคาสูงสุด" : "ราคาต่ำสุด"}
                   </span>
                   <ChevronDown className={`h-4 w-4 ml-2 transition-transform ${isSortDropdownOpen ? 'transform rotate-180' : ''}`} />
                 </button>
-                
+
                 {isSortDropdownOpen && (
                   <div className="absolute z-10 mt-2 w-48 right-0 bg-mali-navy border border-mali-blue/30 rounded-lg shadow-lg py-1">
-                    <button 
+                    <button
                       onClick={() => { setSortOption("newest"); setIsSortDropdownOpen(false); }}
                       className={`w-full text-left px-4 py-2 hover:bg-mali-blue/10 ${sortOption === "newest" ? 'text-mali-blue-light' : 'text-white'}`}
                     >
                       ใหม่สุด
                     </button>
-                    <button 
+                    <button
                       onClick={() => { setSortOption("oldest"); setIsSortDropdownOpen(false); }}
                       className={`w-full text-left px-4 py-2 hover:bg-mali-blue/10 ${sortOption === "oldest" ? 'text-mali-blue-light' : 'text-white'}`}
                     >
                       เก่าสุด
                     </button>
-                    <button 
+                    <button
                       onClick={() => { setSortOption("high_value"); setIsSortDropdownOpen(false); }}
                       className={`w-full text-left px-4 py-2 hover:bg-mali-blue/10 ${sortOption === "high_value" ? 'text-mali-blue-light' : 'text-white'}`}
                     >
                       ราคาสูงสุด
                     </button>
-                    <button 
+                    <button
                       onClick={() => { setSortOption("low_value"); setIsSortDropdownOpen(false); }}
                       className={`w-full text-left px-4 py-2 hover:bg-mali-blue/10 ${sortOption === "low_value" ? 'text-mali-blue-light' : 'text-white'}`}
                     >
@@ -392,7 +392,7 @@ export default function OrderManagementPage() {
       <div className="space-y-6">
         {filteredOrders.length > 0 ? (
           filteredOrders.map(order => (
-            <motion.div 
+            <motion.div
               key={order.id}
               className="glass-card overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
@@ -409,7 +409,7 @@ export default function OrderManagementPage() {
                     {orderStatuses[order.status as keyof typeof orderStatuses].label}
                   </span>
                 </div>
-                
+
                 <div className="mt-3 sm:mt-0">
                   <Link href={`/orders/${order.id}`}>
                     <button className="bg-mali-blue/20 hover:bg-mali-blue/30 text-white text-sm px-4 py-1.5 rounded-lg transition-colors">
@@ -418,7 +418,7 @@ export default function OrderManagementPage() {
                   </Link>
                 </div>
               </div>
-              
+
               <div className="p-4">
                 <div className="mb-4 space-y-3">
                   {order.items.map(item => (
@@ -441,13 +441,13 @@ export default function OrderManagementPage() {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="border-t border-mali-blue/20 pt-4 flex items-center justify-between">
                   <div className="text-sm">
                     <span className="text-mali-text-secondary">ยอดรวม:</span>
                     <span className="text-white font-bold text-lg ml-2">${order.total.toFixed(2)}</span>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     {order.allowModify && (
                       <button
@@ -458,7 +458,7 @@ export default function OrderManagementPage() {
                         แก้ไข
                       </button>
                     )}
-                    
+
                     {order.allowCancel && (
                       <button
                         onClick={() => handleCancelOrder(order.id)}
@@ -470,7 +470,7 @@ export default function OrderManagementPage() {
                     )}
                   </div>
                 </div>
-                
+
                 {order.status === "cancelled" && order.cancellationReason && (
                   <div className="mt-4 text-sm text-mali-text-secondary">
                     <span className="font-medium">เหตุผลที่ยกเลิก:</span>
@@ -491,9 +491,9 @@ export default function OrderManagementPage() {
                 ? "ไม่พบคำสั่งซื้อที่ตรงกับเงื่อนไขการค้นหา โปรดลองเปลี่ยนตัวกรองหรือคำค้นหา"
                 : "คุณยังไม่มีคำสั่งซื้อ เริ่มต้นด้วยการซื้อเครดิตเกมหรือบัตรของขวัญ"}
             </p>
-            
+
             {(searchQuery || filterStatus !== "all") ? (
-              <button 
+              <button
                 onClick={() => { setSearchQuery(""); setFilterStatus("all"); }}
                 className="btn-primary"
               >
@@ -509,32 +509,32 @@ export default function OrderManagementPage() {
           </div>
         )}
       </div>
-      
+
       {/* Order Cancellation Modal */}
       {orderToCancel && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-mali-dark/80">
-          <motion.div 
+          <motion.div
             className="bg-mali-navy border border-mali-blue/30 rounded-xl max-w-md w-full p-6"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">ยืนยันการยกเลิกคำสั่งซื้อ</h3>
-              <button 
+              <button
                 onClick={() => setOrderToCancel(null)}
                 className="text-mali-text-secondary hover:text-white transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            
+
             <p className="text-mali-text-secondary mb-4">
               คุณกำลังจะยกเลิกคำสั่งซื้อ {orderToCancel}. การดำเนินการนี้ไม่สามารถย้อนกลับได้.
             </p>
-            
+
             <div className="mb-4">
               <label className="block text-mali-text-secondary mb-2">เหตุผลในการยกเลิก</label>
-              <select 
+              <select
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 className="w-full bg-mali-dark border border-mali-blue/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
@@ -546,24 +546,24 @@ export default function OrderManagementPage() {
                 <option value="สั่งซื้อผิด">สั่งซื้อผิด</option>
                 <option value="อื่นๆ">อื่นๆ</option>
               </select>
-              
+
               {cancelReason === "อื่นๆ" && (
-                <textarea 
+                <textarea
                   placeholder="ระบุเหตุผล..."
                   className="w-full mt-2 bg-mali-dark border border-mali-blue/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
                   rows={3}
                 ></textarea>
               )}
             </div>
-            
+
             <div className="flex justify-between gap-4">
-              <button 
-                onClick={() => setOrderToCancel(null)} 
+              <button
+                onClick={() => setOrderToCancel(null)}
                 className="flex-1 bg-mali-navy border border-mali-blue/30 hover:bg-mali-blue/10 text-white py-2 rounded-lg transition-colors"
               >
                 ยกเลิก
               </button>
-              <button 
+              <button
                 onClick={submitCancellation}
                 disabled={!cancelReason || isCancelling}
                 className={`flex-1 bg-mali-red text-white py-2 rounded-lg flex items-center justify-center ${(!cancelReason || isCancelling) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-mali-red/90'}`}
@@ -587,7 +587,7 @@ export default function OrderManagementPage() {
           </motion.div>
         </div>
       )}
-      
+
       {/* Pagination (if needed) */}
       {filteredOrders.length > 0 && (
         <div className="flex justify-center mt-8">

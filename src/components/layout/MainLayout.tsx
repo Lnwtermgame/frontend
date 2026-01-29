@@ -77,8 +77,8 @@ const NavItem = memo(function NavItem({
 
       {isActive && (
         <motion.div
-          className="absolute inset-0 bg-glow-gradient opacity-0"
-          animate={{ opacity: 0.1 }}
+          className="absolute inset-0 bg-white/5 opacity-0"
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         />
       )}
@@ -240,7 +240,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="sticky top-0 z-20 bg-mali-sidebar/90 backdrop-blur-md border-b border-mali-blue/20">
+        <header className="sticky top-0 z-20 bg-mali-sidebar border-b border-mali-blue/20">
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
             {/* Mobile Logo and Menu */}
             <div className="flex items-center space-x-4 lg:hidden">
@@ -343,7 +343,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center space-x-1 text-white bg-button-gradient px-3 py-1.5 rounded-md text-sm shadow-button-glow hover:opacity-90 transition-opacity"
+                  className="flex items-center space-x-1 text-white bg-button-gradient px-3 py-1.5 rounded-md text-sm hover:opacity-90 transition-opacity"
                 >
                   <span>เข้าสู่ระบบ</span>
                 </Link>

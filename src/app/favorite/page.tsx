@@ -52,7 +52,7 @@ const favorites = [
 
 export default function FavoritePage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [userFavorites, setUserFavorites] = useState(favorites);
@@ -60,10 +60,10 @@ export default function FavoritePage() {
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (!user) {
+    if (isInitialized && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
   // Filter favorites based on search term and type
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function FavoritePage() {
   };
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!user) {
+  if (!isInitialized || !user) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <p className="text-lg text-mali-text-secondary">Loading...</p>

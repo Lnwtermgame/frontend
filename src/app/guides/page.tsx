@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { 
-  BookOpen, Search, Filter, Calendar, Star, 
+import {
+  BookOpen, Search, Filter, Calendar, Star,
   Clock, User, ChevronDown, ArrowRight, Tag,
   ListFilter, Grid2X2, LayoutList
 } from "lucide-react";
@@ -184,11 +184,13 @@ const difficulties = [
   { name: "Expert", value: "expert" }
 ];
 
-export default function GuidesPage() {
+import { Suspense } from "react";
+
+function GuidesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  
+
+
   // State
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -197,49 +199,49 @@ export default function GuidesPage() {
   const [sortBy, setSortBy] = useState("date");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filteredGuides, setFilteredGuides] = useState<GameGuide[]>(guides);
-  
+
   // Set initial filters from URL parameters
   useEffect(() => {
     const category = searchParams.get("category");
     const game = searchParams.get("game");
     const difficulty = searchParams.get("difficulty");
     const query = searchParams.get("q");
-    
+
     if (category) setSelectedCategory(category);
     if (game) setSelectedGame(game);
     if (difficulty) setSelectedDifficulty(difficulty);
     if (query) setSearchQuery(query);
   }, [searchParams]);
-  
+
   // Filter guides based on selected filters
   useEffect(() => {
     let filtered = [...guides];
-    
+
     // Apply category filter
     if (selectedCategory !== "all") {
       filtered = filtered.filter(guide => guide.category === selectedCategory);
     }
-    
+
     // Apply game filter
     if (selectedGame !== "all") {
       filtered = filtered.filter(guide => guide.game === selectedGame);
     }
-    
+
     // Apply difficulty filter
     if (selectedDifficulty !== "all") {
       filtered = filtered.filter(guide => guide.difficulty === selectedDifficulty);
     }
-    
+
     // Apply search query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(guide => 
-        guide.title.toLowerCase().includes(query) || 
-        guide.excerpt.toLowerCase().includes(query) || 
+      filtered = filtered.filter(guide =>
+        guide.title.toLowerCase().includes(query) ||
+        guide.excerpt.toLowerCase().includes(query) ||
         guide.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
-    
+
     // Apply sorting
     switch (sortBy) {
       case "date":
@@ -252,16 +254,16 @@ export default function GuidesPage() {
         filtered.sort((a, b) => b.likes - a.likes);
         break;
     }
-    
+
     setFilteredGuides(filtered);
   }, [selectedCategory, selectedGame, selectedDifficulty, searchQuery, sortBy]);
-  
+
   // Format date
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
-  
+
   // Get difficulty color
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -277,11 +279,11 @@ export default function GuidesPage() {
         return "bg-mali-blue/30 text-mali-blue-accent";
     }
   };
-  
+
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <motion.div 
+      <motion.div
         className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-6 md:p-8 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -301,7 +303,7 @@ export default function GuidesPage() {
               Level up your gameplay with our collection of in-depth guides, tutorials, and strategies
             </p>
           </motion.div>
-          
+
           {/* Search Bar */}
           <div className="relative mb-2">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -317,9 +319,9 @@ export default function GuidesPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Filters Section */}
-      <motion.div 
+      <motion.div
         className="mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -345,7 +347,7 @@ export default function GuidesPage() {
                   <ChevronDown size={16} className="text-mali-text-secondary" />
                 </div>
               </div>
-              
+
               {/* Game Filter */}
               <div className="relative">
                 <select
@@ -363,7 +365,7 @@ export default function GuidesPage() {
                   <ChevronDown size={16} className="text-mali-text-secondary" />
                 </div>
               </div>
-              
+
               {/* Difficulty Filter */}
               <div className="relative">
                 <select
@@ -382,7 +384,7 @@ export default function GuidesPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex gap-4 items-center">
               {/* Sort Options */}
               <div className="relative">
@@ -399,7 +401,7 @@ export default function GuidesPage() {
                   <ChevronDown size={16} className="text-mali-text-secondary" />
                 </div>
               </div>
-              
+
               {/* View Mode Toggles */}
               <div className="flex bg-mali-blue/10 border border-mali-blue/20 rounded-lg overflow-hidden">
                 <button
@@ -421,13 +423,13 @@ export default function GuidesPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Results Count */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-medium text-white">
           {filteredGuides.length} {filteredGuides.length === 1 ? 'Guide' : 'Guides'} Found
         </h2>
-        
+
         {/* Clear Filters Button (visible only when filters are applied) */}
         {(selectedCategory !== "all" || selectedGame !== "all" || selectedDifficulty !== "all" || searchQuery) && (
           <button
@@ -444,7 +446,7 @@ export default function GuidesPage() {
           </button>
         )}
       </div>
-      
+
       {/* Guides Grid/List View */}
       {filteredGuides.length > 0 ? (
         <>
@@ -466,8 +468,8 @@ export default function GuidesPage() {
                   <Link href={`/guides/${guide.id}`}>
                     <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden h-full hover:border-mali-blue/50 group cursor-pointer">
                       <div className="aspect-[16/9] bg-gradient-to-br from-blue-900/50 to-purple-900/50 relative">
-                        <img 
-                          src={guide.image} 
+                        <img
+                          src={guide.image}
                           alt={guide.title}
                           className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                         />
@@ -480,25 +482,25 @@ export default function GuidesPage() {
                           </span>
                         </div>
                       </div>
-                      
+
                       <div className="p-5">
                         <h3 className="text-lg font-bold text-white mb-2 group-hover:text-mali-blue-accent transition-colors line-clamp-2">
                           {guide.title}
                         </h3>
-                        
+
                         <p className="text-mali-text-secondary text-sm mb-4 line-clamp-2">
                           {guide.excerpt}
                         </p>
-                        
+
                         <div className="flex justify-between items-center text-xs text-mali-text-secondary">
                           <div className="flex items-center">
                             <Clock size={12} className="mr-1" />
                             <span className="mr-3">{guide.readTime} min read</span>
-                            
+
                             <Star size={12} className="mr-1 text-amber-400" />
                             <span>{guide.likes}</span>
                           </div>
-                          
+
                           <span>{formatDate(guide.date)}</span>
                         </div>
                       </div>
@@ -508,7 +510,7 @@ export default function GuidesPage() {
               ))}
             </motion.div>
           )}
-          
+
           {/* List View */}
           {viewMode === "list" && (
             <motion.div
@@ -528,13 +530,13 @@ export default function GuidesPage() {
                     <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden hover:border-mali-blue/50 group cursor-pointer">
                       <div className="flex flex-col md:flex-row">
                         <div className="md:w-1/4 aspect-video md:aspect-auto bg-gradient-to-br from-blue-900/50 to-purple-900/50 relative">
-                          <img 
-                            src={guide.image} 
+                          <img
+                            src={guide.image}
                             alt={guide.title}
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                           />
                         </div>
-                        
+
                         <div className="p-5 md:w-3/4">
                           <div className="flex gap-2 mb-2">
                             <span className="bg-mali-blue/20 text-mali-blue-accent text-xs font-medium px-2 py-1 rounded-full">
@@ -547,30 +549,30 @@ export default function GuidesPage() {
                               {guide.category.charAt(0).toUpperCase() + guide.category.slice(1)}
                             </span>
                           </div>
-                          
+
                           <h3 className="text-lg font-bold text-white mb-2 group-hover:text-mali-blue-accent transition-colors">
                             {guide.title}
                           </h3>
-                          
+
                           <p className="text-mali-text-secondary text-sm mb-4">
                             {guide.excerpt}
                           </p>
-                          
+
                           <div className="flex justify-between items-center">
                             <div className="flex items-center text-xs text-mali-text-secondary">
                               <User size={12} className="mr-1" />
                               <span className="mr-3">{guide.author}</span>
-                              
+
                               <Calendar size={12} className="mr-1" />
                               <span className="mr-3">{formatDate(guide.date)}</span>
-                              
+
                               <Clock size={12} className="mr-1" />
                               <span className="mr-3">{guide.readTime} min read</span>
-                              
+
                               <Star size={12} className="mr-1 text-amber-400" />
                               <span>{guide.likes}</span>
                             </div>
-                            
+
                             <span className="text-mali-blue-accent text-sm font-medium flex items-center group-hover:translate-x-1 transition-transform">
                               Read Guide
                               <ArrowRight size={14} className="ml-1" />
@@ -605,7 +607,7 @@ export default function GuidesPage() {
           </button>
         </div>
       )}
-      
+
       {/* Popular Tags */}
       <motion.div
         className="mt-12 p-6 bg-mali-card border border-mali-blue/20 rounded-xl"
@@ -617,7 +619,7 @@ export default function GuidesPage() {
           <Tag size={18} className="mr-2 text-mali-blue-accent" />
           Popular Topics
         </h3>
-        
+
         <div className="flex flex-wrap gap-2">
           {Array.from(new Set(guides.flatMap(guide => guide.tags)))
             .sort()
@@ -633,5 +635,21 @@ export default function GuidesPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function GuidesPage() {
+  return (
+    <Suspense fallback={
+      <div className="page-container min-h-screen flex items-center justify-center">
+        <div className="relative w-20 h-20 animate-pulse-glow">
+          <div className="absolute inset-0 bg-glow-gradient animate-glow"></div>
+          <div className="absolute inset-0 border-2 border-mali-blue-light rounded-full animate-spin"></div>
+          <div className="absolute inset-2 border-2 border-mali-purple rounded-full animate-spin-slow"></div>
+        </div>
+      </div>
+    }>
+      <GuidesContent />
+    </Suspense>
   );
 } 

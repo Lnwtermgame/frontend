@@ -7,6 +7,9 @@ import {   BarChart3,   Users,   TrendingUp,   LineChart,   PieChart,   Target, 
 import ABTestingPanel from "@/components/analytics/ABTestingPanel";
 import CustomReports from "@/components/analytics/CustomReports";
 
+// Dummy translation helper
+const t = (str: any) => str;
+
 // Mock data for analytics metrics
 const mockMetrics = {
   userMetrics: {

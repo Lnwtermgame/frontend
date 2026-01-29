@@ -152,10 +152,8 @@ export default function HomePage() {
 
   return (
     <div className="page-container">
-      {/* Page Header with blur effect */}
-      <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
         
         <motion.h1 
           className="text-3xl font-bold text-white mb-2 relative"
@@ -222,15 +220,15 @@ export default function HomePage() {
       {/* Featured Promotion Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {/* AI Game Assistant */}
-        <div className="col-span-1 md:col-span-2 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-6 relative overflow-hidden shadow-purple-glow">
+        <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-mali-blue to-black rounded-xl p-6 relative overflow-hidden border border-mali-blue/50 group">
           <div className="relative z-10">
-            <div className="text-white text-xs mb-1 bg-white/20 px-2 py-0.5 rounded-full inline-block backdrop-blur-sm">ใหม่ปี! 2025</div>
+            <div className="text-white text-xs mb-1 bg-mali-blue-accent px-2 py-0.5 rounded font-bold inline-block">ใหม่ปี! 2025</div>
             <h3 className="font-bold text-white text-xl mb-2">AI Game Assistant</h3>
             <p className="text-white/80 text-sm mb-4 max-w-md">
               เช่วยให้ผู้เล่นสามารถจัดการเกมได้ง่ายขึ้น และช่วยเหลือผู้เล่นทุกเกม
             </p>
             <motion.button 
-              className="bg-white text-purple-900 px-4 py-1.5 rounded-md text-sm font-medium shadow-button-glow"
+              className="bg-white text-black px-4 py-1.5 rounded-md text-sm font-bold hover:bg-gray-200 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -238,12 +236,13 @@ export default function HomePage() {
             </motion.button>
           </div>
           
-          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-300/20 rounded-full blur-xl"></div>
-          <div className="absolute right-10 bottom-10 w-20 h-20 bg-pink-300/30 rounded-full blur-lg"></div>
+          <div className="absolute right-0 bottom-0 opacity-10">
+             <Gamepad2 size={120} />
+          </div>
         </div>
         
         {/* Game Promotion */}
-        <div className="bg-mali-card rounded-xl p-6 relative overflow-hidden shadow-card-hover border border-mali-blue/20">
+        <div className="bg-mali-card rounded-xl p-6 relative overflow-hidden border border-mali-blue/50">
           <div className="relative z-10">
             <h3 className="font-bold text-white text-lg mb-1">เติมเกมรับเครดิตเพิ่ม 50%</h3>
             <p className="text-white/70 text-xs mb-4">
@@ -272,10 +271,10 @@ export default function HomePage() {
           {categories.map((category) => (
             <motion.button
               key={category.id}
-              className={`px-4 py-2 rounded-md text-sm flex items-center space-x-2 ${
+              className={`px-4 py-2 rounded-md text-sm flex items-center space-x-2 border transition-colors ${
                 activeCategory === category.id
-                  ? "bg-mali-blue text-white shadow-blue-glow"
-                  : "bg-mali-blue/20 text-mali-text-secondary hover:text-white"
+                  ? "bg-mali-blue-accent text-white border-mali-blue-accent font-bold"
+                  : "bg-mali-card border-mali-blue text-mali-text-secondary hover:text-white hover:border-mali-blue-light"
               }`}
               onClick={() => setActiveCategory(category.id)}
               whileHover={{ y: -2 }}

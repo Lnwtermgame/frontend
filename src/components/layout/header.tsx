@@ -68,7 +68,7 @@ export function Header() {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 500,
         damping: 30
       }
@@ -87,7 +87,7 @@ export function Header() {
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 500,
         damping: 30,
         staggerChildren: 0.05

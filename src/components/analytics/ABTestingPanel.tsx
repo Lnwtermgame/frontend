@@ -1,0 +1,370 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "@/lib/framer-exports";
+import { Target, BarChart3, PlusCircle, LineChart, Check, X } from "lucide-react";
+import { useTranslations } from "@/lib/context/language-context";
+
+interface ABTest {
+  id: string;
+  name: string;
+  description: string;
+  status: "active" | "completed" | "paused";
+  startDate: string;
+  endDate: string | null;
+  variants: {
+    name: string;
+    visitors: number;
+    conversion: number;
+    change: number;
+  }[];
+}
+
+interface ABTestingPanelProps {
+  initialTests?: ABTest[];
+}
+
+export default function ABTestingPanel({ initialTests = [] }: ABTestingPanelProps) {
+  const { t } = useTranslations();
+  const [tests, setTests] = useState<ABTest[]>(initialTests.length > 0 ? initialTests : [
+    {
+      id: "test1",
+      name: "Homepage Layout Test",
+      description: "Testing header design variants",
+      status: "active",
+      startDate: "2023-11-28",
+      endDate: null,
+      variants: [
+        { name: "Variant A", visitors: 4532, conversion: 2.8, change: 0.3 },
+        { name: "Variant B", visitors: 4489, conversion: 3.2, change: 0.7 }
+      ]
+    },
+    {
+      id: "test2",
+      name: "Checkout Flow Test",
+      description: "Testing single-page vs multi-step checkout",
+      status: "active",
+      startDate: "2023-12-05",
+      endDate: null,
+      variants: [
+        { name: "Single-page", visitors: 2145, conversion: 64.3, change: -2.1 },
+        { name: "Multi-step", visitors: 2168, conversion: 72.8, change: 6.4 }
+      ]
+    },
+    {
+      id: "test3",
+      name: "Call-to-Action Test",
+      description: "Testing button colors and text",
+      status: "completed",
+      startDate: "2023-10-15",
+      endDate: "2023-11-15",
+      variants: [
+        { name: "Blue Button", visitors: 3245, conversion: 4.2, change: 0.0 },
+        { name: "Green Button", visitors: 3198, conversion: 5.1, change: 0.9 },
+        { name: "Red Button", visitors: 3267, conversion: 3.8, change: -0.4 }
+      ]
+    }
+  ]);
+  const [selectedTab, setSelectedTab] = useState<"active" | "completed" | "all">("active");
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  const filteredTests = 
+    selectedTab === "all" 
+      ? tests 
+      : tests.filter(test => selectedTab === "active" 
+        ? test.status === "active" 
+        : test.status === "completed");
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "active":
+        return <span className="px-3 py-1 rounded-full text-xs bg-green-900/30 text-green-400">Active</span>;
+      case "completed":
+        return <span className="px-3 py-1 rounded-full text-xs bg-blue-900/30 text-blue-400">Completed</span>;
+      case "paused":
+        return <span className="px-3 py-1 rounded-full text-xs bg-yellow-900/30 text-yellow-400">Paused</span>;
+      default:
+        return <span className="px-3 py-1 rounded-full text-xs bg-gray-900/30 text-gray-400">Unknown</span>;
+    }
+  };
+
+  // Find the winning variant for completed tests
+  const getWinningVariant = (variants: ABTest["variants"]) => {
+    if (variants.length <= 1) return null;
+    return variants.reduce((prev, current) => 
+      current.conversion > prev.conversion ? current : prev
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <h3 className="text-lg font-semibold text-white flex items-center mb-4 lg:mb-0">
+          <Target className="mr-2 h-5 w-5 text-mali-blue" />
+          {t("A/B Testing" as any)}
+        </h3>
+        
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex bg-mali-900/50 rounded-lg overflow-hidden mr-2">
+            {[
+              { id: "active", label: "Active Tests" },
+              { id: "completed", label: "Completed" },
+              { id: "all", label: "All Tests" }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                className={`px-3 py-1.5 text-sm transition-colors ${
+                  selectedTab === tab.id 
+                    ? "bg-mali-blue text-white" 
+                    : "text-mali-blue/70 hover:bg-mali-blue/10"
+                }`}
+                onClick={() => setSelectedTab(tab.id as any)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          
+          <button 
+            className="px-3 py-1.5 rounded-lg bg-mali-blue text-white text-sm hover:bg-mali-blue/80 transition-colors flex items-center"
+            onClick={() => setShowCreateForm(true)}
+          >
+            <PlusCircle className="h-4 w-4 mr-1.5" />
+            {t("New Test" as any)}
+          </button>
+        </div>
+      </div>
+      
+      {showCreateForm && (
+        <motion.div 
+          className="bg-mali-900/70 rounded-lg border border-mali-blue/20 p-5 mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex justify-between items-start mb-4">
+            <h4 className="text-lg font-medium text-white">Create New A/B Test</h4>
+            <button 
+              className="p-1 rounded-full hover:bg-mali-blue/10 text-mali-blue/70 hover:text-mali-blue"
+              onClick={() => setShowCreateForm(false)}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm text-mali-blue/70 mb-1.5">Test Name</label>
+              <input 
+                type="text" 
+                className="w-full bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                placeholder="e.g., Homepage Hero Image Test"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-mali-blue/70 mb-1.5">Description</label>
+              <input 
+                type="text" 
+                className="w-full bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                placeholder="e.g., Testing different hero images for conversion"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-mali-blue/70 mb-1.5">Target Page</label>
+              <input 
+                type="text" 
+                className="w-full bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                placeholder="e.g., /homepage"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm text-mali-blue/70 mb-1.5">Test Duration</label>
+              <select 
+                className="w-full bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+              >
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm text-mali-blue/70 mb-1.5">Variants</label>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <input 
+                  type="text" 
+                  className="flex-1 bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                  placeholder="Variant A"
+                />
+                <input 
+                  type="text" 
+                  className="flex-1 bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                  placeholder="Description for Variant A"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input 
+                  type="text" 
+                  className="flex-1 bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                  placeholder="Variant B"
+                />
+                <input 
+                  type="text" 
+                  className="flex-1 bg-mali-900/50 border border-mali-blue/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-mali-blue"
+                  placeholder="Description for Variant B"
+                />
+              </div>
+            </div>
+            <button className="mt-2 text-sm text-mali-blue hover:text-mali-blue/80 flex items-center">
+              <PlusCircle className="h-3.5 w-3.5 mr-1" />
+              Add Another Variant
+            </button>
+          </div>
+          
+          <div className="flex justify-end space-x-3">
+            <button 
+              className="px-4 py-2 rounded-lg border border-mali-blue/30 text-mali-blue text-sm hover:bg-mali-blue/10 transition-colors"
+              onClick={() => setShowCreateForm(false)}
+            >
+              Cancel
+            </button>
+            <button className="px-4 py-2 rounded-lg bg-mali-blue text-white text-sm hover:bg-mali-blue/80 transition-colors">
+              Create Test
+            </button>
+          </div>
+        </motion.div>
+      )}
+      
+      {filteredTests.length === 0 ? (
+        <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8 text-center">
+          <div className="inline-block p-3 bg-mali-blue/10 rounded-full mb-3">
+            <Target className="h-6 w-6 text-mali-blue" />
+          </div>
+          <h3 className="text-lg font-medium text-white mb-2">No {selectedTab} tests found</h3>
+          <p className="text-mali-blue/70 mb-4">
+            {selectedTab === "active" 
+              ? "You don't have any active tests running."
+              : selectedTab === "completed" 
+                ? "You don't have any completed tests yet."
+                : "You haven't created any A/B tests yet."
+            }
+          </p>
+          <button 
+            className="px-4 py-2 rounded-lg bg-mali-blue text-white text-sm hover:bg-mali-blue/80 transition-colors"
+            onClick={() => setShowCreateForm(true)}
+          >
+            Create Your First Test
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredTests.map((test) => (
+            <motion.div 
+              key={test.id}
+              className="bg-mali-card rounded-xl border border-mali-blue/20 p-5"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <div className="flex items-center">
+                    <h4 className="text-white font-medium">{test.name}</h4>
+                    <span className="text-xs text-mali-blue/70 ml-3">
+                      ID: {test.id}
+                    </span>
+                  </div>
+                  <p className="text-mali-blue/70 text-sm">{test.description}</p>
+                </div>
+                <div className="flex flex-col items-end">
+                  {getStatusBadge(test.status)}
+                  <span className="text-xs text-mali-blue/50 mt-1">
+                    {test.startDate} {test.endDate ? `to ${test.endDate}` : ''}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+                {test.variants.map((variant, idx) => {
+                  const winningVariant = test.status === "completed" ? getWinningVariant(test.variants) : null;
+                  const isWinner = winningVariant && variant.name === winningVariant.name;
+                  
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`p-3 rounded-lg ${
+                        isWinner 
+                          ? "bg-green-900/20 border border-green-600/30" 
+                          : "bg-mali-900/30 border border-mali-blue/10"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`text-sm font-medium ${isWinner ? "text-green-400" : "text-white"}`}>
+                          {variant.name}
+                          {isWinner && <Check className="inline-block h-3.5 w-3.5 ml-1.5 text-green-400" />}
+                        </span>
+                        <span className="text-xs text-mali-blue/70">{variant.visitors.toLocaleString()} visitors</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-mali-blue/70">Conversion: {variant.conversion}%</span>
+                        <span className={`text-xs ${variant.change > 0 ? 'text-green-400' : variant.change < 0 ? 'text-red-400' : 'text-mali-blue/50'}`}>
+                          {variant.change > 0 ? '+' : ''}{variant.change}%
+                        </span>
+                      </div>
+                      
+                      {/* Simple bar visualization */}
+                      <div className="mt-2 w-full bg-mali-blue/10 rounded-full h-1.5">
+                        <div 
+                          className={`h-1.5 rounded-full ${
+                            isWinner 
+                              ? "bg-gradient-to-r from-green-500 to-green-400" 
+                              : "bg-gradient-to-r from-mali-blue to-indigo-500"
+                          }`}
+                          style={{ width: `${Math.min(100, variant.conversion * 5)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              {test.status === "active" && (
+                <div className="flex gap-2 mt-3">
+                  <button className="px-3 py-1.5 text-xs rounded-lg bg-mali-blue/20 text-mali-blue hover:bg-mali-blue/30 flex items-center">
+                    <LineChart className="h-3.5 w-3.5 mr-1.5" />
+                    View Full Stats
+                  </button>
+                  <button className="px-3 py-1.5 text-xs rounded-lg bg-mali-900/40 border border-mali-blue/20 text-mali-blue/80 hover:bg-mali-blue/10">
+                    Stop Test
+                  </button>
+                  <button className="px-3 py-1.5 text-xs rounded-lg bg-mali-900/40 border border-mali-blue/20 text-mali-blue/80 hover:bg-mali-blue/10">
+                    Edit
+                  </button>
+                </div>
+              )}
+              
+              {test.status === "completed" && (
+                <div className="flex gap-2 mt-3">
+                  <button className="px-3 py-1.5 text-xs rounded-lg bg-mali-blue/20 text-mali-blue hover:bg-mali-blue/30 flex items-center">
+                    <BarChart3 className="h-3.5 w-3.5 mr-1.5" />
+                    View Report
+                  </button>
+                  <button className="px-3 py-1.5 text-xs rounded-lg bg-green-600/30 text-green-400 hover:bg-green-600/40 flex items-center">
+                    <Check className="h-3.5 w-3.5 mr-1.5" />
+                    Apply Winner
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+} 

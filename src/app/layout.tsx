@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import Script from "next/script";
+import { ReactGrabInit } from "@/components/ReactGrabInit";
 import "./globals.css";
 import { AuthProvider } from "@/lib/context/auth-context";
 import { LanguageProvider } from "@/lib/context/language-context";
@@ -218,12 +220,21 @@ export default function RootLayout({
             })();
           `
         }} />
+        {/* react-grab for development */}
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
       </head>
       <body
         className={cn(
           "min-h-screen bg-mali-dark font-sans antialiased",
         )}
       >
+        <ReactGrabInit />
         <AuthProvider>
           <LanguageProvider>
             <NotificationProvider>

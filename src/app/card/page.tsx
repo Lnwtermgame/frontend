@@ -1,0 +1,284 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Search, Filter, Tag, Gift, ChevronRight, Star, CreditCard, ShoppingBag, PlayCircle, Music, Video, MessageCircle } from "lucide-react";
+import { motion } from "@/lib/framer-exports";
+
+// Mock cards data
+const CARDS = Array(16).fill(null).map((_, i) => ({
+  id: `card-${i + 1}`,
+  name: `${getCardName(i)} Card`,
+  category: i % 5 === 0 ? "Popular" : i % 4 === 0 ? "Gaming" : i % 3 === 0 ? "Entertainment" : i % 2 === 0 ? "Shopping" : "Social",
+  price: 10 + Math.floor(Math.random() * 90),
+  discountPercent: i % 3 === 0 ? Math.floor(Math.random() * 30) : 0,
+  image: `https://placehold.co/400x300?text=${getCardName(i)}+Card`
+}));
+
+function getRandomColor() {
+  const colors = ["1E88E5", "5E35B1", "D81B60", "7CB342", "FB8C00", "6D4C41", "546E7A", "EC407A", "5C6BC0", "26A69A"];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function getCardName(index: number) {
+  const cardNames = [
+    "Steam", "PlayStation", "Xbox", "Nintendo", "Google Play", 
+    "iTunes", "Amazon", "Netflix", "Spotify", "Roblox",
+    "PUBG", "Fortnite", "App Store", "Battle.net", "Epic Games",
+    "Razer Gold", "Discord", "Twitch", "Facebook", "TikTok"
+  ];
+  return cardNames[index % cardNames.length];
+}
+
+function getCategoryIcon(category: string) {
+  switch(category.toLowerCase()) {
+    case 'popular': return <Star size={16} />;
+    case 'gaming': return <PlayCircle size={16} />;
+    case 'entertainment': return <Video size={16} />;
+    case 'shopping': return <ShoppingBag size={16} />;
+    case 'social': return <MessageCircle size={16} />;
+    default: return <Gift size={16} />;
+  }
+}
+
+// Categories for the sidebar
+const CATEGORIES = [
+  { id: "all", name: "All Cards", count: CARDS.length, icon: <CreditCard size={16} /> },
+  { id: "popular", name: "Popular", count: CARDS.filter(g => g.category === "Popular").length, icon: <Star size={16} /> },
+  { id: "gaming", name: "Gaming", count: CARDS.filter(g => g.category === "Gaming").length, icon: <PlayCircle size={16} /> },
+  { id: "entertainment", name: "Entertainment", count: CARDS.filter(g => g.category === "Entertainment").length, icon: <Video size={16} /> },
+  { id: "shopping", name: "Shopping", count: CARDS.filter(g => g.category === "Shopping").length, icon: <ShoppingBag size={16} /> },
+  { id: "social", name: "Social", count: CARDS.filter(g => g.category === "Social").length, icon: <MessageCircle size={16} /> },
+];
+
+export default function CardPage() {
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Filter cards based on selected category and search query
+  const filteredCards = CARDS.filter(card => {
+    const matchesCategory = selectedCategory === "all" || card.category.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesSearch = !searchQuery || card.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  return (
+    <div className="space-y-6">
+      {/* Hero Banner */}
+      <motion.div 
+        className="w-full rounded-xl overflow-hidden relative shadow-card-hover"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="relative aspect-[21/9] w-full overflow-hidden">
+          <div className="absolute inset-0 bg-card-gradient opacity-40"></div>
+          <img
+            src="https://placehold.co/1200x600?text=Gift+Cards+Promotion"
+            alt="Gift cards promotion"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-mali-dark/80 to-transparent" />
+          
+          <div className="absolute bottom-8 left-8 max-w-md">
+            <span className="bg-mali-blue-light/20 text-mali-blue-light text-xs px-3 py-1 rounded-full backdrop-blur-sm inline-block mb-3">
+              บัตรดิจิตอล
+            </span>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-lg">
+              บัตรเกมและบัตรเติมเงินดิจิทัล
+            </h2>
+            <p className="text-white/80 mb-4 text-sm">
+              สามารถเลือกซื้อได้ทันที ปลอดภัย ราคาพิเศษ ส่งโค้ดเข้าอีเมลทันที
+            </p>
+            <motion.button
+              className="bg-button-gradient text-white px-6 py-2 rounded-md font-medium shadow-button-glow"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ดูโปรโมชั่น
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar */}
+        <motion.div 
+          className="w-full lg:w-64 shrink-0 bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="p-4 border-b border-mali-blue/20 bg-mali-sidebar">
+            <h2 className="text-white font-bold text-lg flex items-center">
+              <CreditCard size={18} className="text-mali-blue-light mr-2" />
+              ประเภทบัตร
+            </h2>
+          </div>
+          <div className="p-4 space-y-1">
+            {CATEGORIES.map(category => (
+              <motion.button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${
+                  selectedCategory === category.id 
+                    ? "bg-mali-blue/30 text-white" 
+                    : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
+                }`}
+                whileHover={{ x: 3 }}
+              >
+                {selectedCategory === category.id && (
+                  <motion.div 
+                    layoutId="active-category-indicator"
+                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                )}
+                <div className="flex items-center gap-3">
+                  <span className={`${selectedCategory === category.id ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"}`}>
+                    {category.icon}
+                  </span>
+                  <span className="text-sm font-medium">{category.name}</span>
+                </div>
+                <span className="text-xs bg-mali-blue/30 px-2 py-0.5 rounded-full">{category.count}</span>
+              </motion.button>
+            ))}
+          </div>
+          
+          <div className="p-4 mt-4 space-y-3 border-t border-mali-blue/20">
+            <h3 className="text-white font-medium text-sm mb-2 flex items-center">
+              <Star size={14} className="text-mali-blue-light mr-2" />
+              Popular Cards
+            </h3>
+            
+            {CARDS.slice(0, 3).map(card => (
+              <Link href={`/card/${card.id}`} key={`popular-${card.id}`}>
+                <motion.div 
+                  className="flex items-center gap-3 p-2 rounded-md hover:bg-mali-blue/20 transition-colors"
+                  whileHover={{ x: 3 }}
+                >
+                  <div className="w-10 h-10 rounded-md overflow-hidden bg-mali-navy flex items-center justify-center">
+                    <img 
+                      src={card.image !== undefined ? card.image : `https://placehold.co/80x80/${getRandomColor()}/FFFFFF?text=${card.name.substring(0, 2)}`}
+                      alt={card.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-xs font-medium truncate">{card.name}</p>
+                    <p className="text-mali-text-secondary text-xs">From ${card.price}</p>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+            
+            <Link href="/card">
+              <div className="text-center mt-4 text-mali-blue-light hover:text-mali-blue-accent text-xs">
+                View all cards
+              </div>
+            </Link>
+          </div>
+        </motion.div>
+        
+        <div className="flex-1 space-y-6">
+          {/* Header with search and filters */}
+          <motion.div 
+            className="bg-mali-card rounded-xl border border-mali-blue/20 p-4 shadow-card-hover"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h1 className="text-white text-xl font-bold flex items-center">
+                  <CreditCard size={20} className="text-mali-blue-light mr-2" />
+                  บัตรเกม & บัตรเติมเงิน
+                </h1>
+                <p className="text-mali-text-secondary text-sm mt-1">เลือกซื้อบัตรเกมและบัตรเติมเงินได้ทันที</p>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="ค้นหาบัตร..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full md:w-64 rounded-md bg-mali-blue/20 border border-mali-blue/30 pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all"
+                  />
+                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mali-text-secondary" />
+                </div>
+                
+                <button className="bg-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/30 text-xs px-3 py-2 rounded-md flex items-center gap-1.5 transition-colors">
+                  <Filter size={14} /> ตัวกรอง
+                </button>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Cards grid */}
+          <motion.div
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            {filteredCards.map((card, index) => (
+              <motion.div
+                key={card.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
+              >
+                <Link href={`/card/${card.id}`}>
+                  <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover group">
+                    {card.discountPercent > 0 && (
+                      <div className="absolute top-2 right-2 z-10 bg-mali-pink px-2 py-0.5 text-xs font-medium text-white rounded shadow-purple-glow">
+                        -{card.discountPercent}%
+                      </div>
+                    )}
+                    
+                    <div className="relative h-32 md:h-36 w-full overflow-hidden">
+                      <img 
+                        src={card.image !== undefined ? card.image : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`}
+                        alt={card.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
+                      
+                      <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-xs px-2 py-0.5 rounded-sm backdrop-blur-sm">
+                        {card.category}
+                      </div>
+                    </div>
+                    
+                    <div className="p-3">
+                      <p className="text-white text-sm font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-light transition-colors">{card.name}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          {getCategoryIcon(card.category)}
+                          <span className="text-mali-text-secondary text-xs ml-1">Digital</span>
+                        </div>
+                        <div className="text-xs text-white font-medium">From ${card.price}</div>
+                      </div>
+                    </div>
+                    
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-mali-blue/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform shadow-button-glow">
+                        View Card
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+} 

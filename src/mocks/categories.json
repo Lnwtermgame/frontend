@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "Mobile Games",
+    "slug": "mobile-games",
+    "image": "https://placehold.co/400x200?text=Mobile+Games"
+  },
+  {
+    "id": "2",
+    "name": "PC Games",
+    "slug": "pc-games",
+    "image": "https://placehold.co/400x200?text=PC+Games"
+  },
+  {
+    "id": "3",
+    "name": "Console Games",
+    "slug": "console-games",
+    "image": "https://placehold.co/400x200?text=Console+Games"
+  },
+  {
+    "id": "4",
+    "name": "Gift Cards",
+    "slug": "gift-cards",
+    "image": "https://placehold.co/400x200?text=Gift+Cards"
+  }
+] 

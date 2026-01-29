@@ -1,0 +1,73 @@
+"use client";
+
+import { useState, useEffect, useCallback } from 'react';
+
+function getStorageValue<T>(key: string, initialValue: T): T {
+  if (typeof window === 'undefined') {
+    return initialValue;
+  }
+  try {
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : initialValue;
+  } catch (error) {
+    console.error(`Error reading localStorage key "${key}":`, error);
+    return initialValue;
+  }
+}
+
+export function useLocalStorage<T>(key: string, initialValue: T) {
+  // State to store our value - initialize with initialValue to avoid SSR issues
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Effect to load from localStorage after mount (client-side only)
+  useEffect(() => {
+    if (!isInitialized) {
+      const value = getStorageValue(key, initialValue);
+      setStoredValue(value);
+      setIsInitialized(true);
+    }
+  }, [key, initialValue, isInitialized]);
+
+  // Return a wrapped version of useState's setter function that
+  // persists the new value to localStorage.
+  const setValue = useCallback((value: T | ((val: T) => T)) => {
+    try {
+      // Allow value to be a function so we have same API as useState
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+
+      // Save state
+      setStoredValue(valueToStore);
+
+      // Save to local storage
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  }, [key, storedValue]);
+
+  // Listen for changes to this localStorage key in other tabs/windows
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+
+    function handleStorageChange(e: StorageEvent) {
+      if (e.key === key && e.newValue) {
+        setStoredValue(JSON.parse(e.newValue));
+      }
+    }
+
+    // Listen for changes to localStorage
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [key]);
+
+  // Return initial value during SSR/hydration, stored value after client init
+  const valueToReturn = isInitialized ? storedValue : initialValue;
+
+  return [valueToReturn, setValue] as const;
+} 

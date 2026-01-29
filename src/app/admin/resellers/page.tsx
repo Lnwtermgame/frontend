@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { useTranslations } from "@/lib/context/language-context";
 import { Plus, Search, Users, Edit, ChartBar, Trash2, MoreHorizontal, BadgePercent, Link as LinkIcon, ShieldCheck, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
@@ -84,7 +83,7 @@ const mockResellers = [
 ];
 
 export default function AdminResellers() {
-  const { t } = useTranslations();
+  
   const [resellers, setResellers] = useState(mockResellers);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");

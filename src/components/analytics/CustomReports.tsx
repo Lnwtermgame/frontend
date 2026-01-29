@@ -14,7 +14,6 @@ import {
   Settings, 
   Users 
 } from "lucide-react";
-import { useTranslations } from "@/lib/context/language-context";
 
 interface Report {
   id: string;
@@ -31,7 +30,7 @@ interface CustomReportsProps {
 }
 
 export default function CustomReports({ initialReports = [] }: CustomReportsProps) {
-  const { t } = useTranslations();
+  
   const [reports, setReports] = useState<Report[]>(initialReports.length > 0 ? initialReports : [
     {
       id: "rep1",

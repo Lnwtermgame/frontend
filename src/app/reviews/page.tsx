@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 import { useAuth } from "@/lib/hooks/use-auth";
 
 // Define review type
@@ -219,7 +218,7 @@ const popularGames = [
 export default function ReviewsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { t } = useTranslations();
+  
   const { user } = useAuth();
   
   // State

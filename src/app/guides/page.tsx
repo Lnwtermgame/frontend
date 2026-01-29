@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Define game guide type
 interface GameGuide {
@@ -188,7 +187,7 @@ const difficulties = [
 export default function GuidesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { t } = useTranslations();
+  
   
   // State
   const [searchQuery, setSearchQuery] = useState("");

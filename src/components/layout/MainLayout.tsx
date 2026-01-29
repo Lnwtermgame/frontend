@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
+import {
   Search,
-  Home, 
-  ShoppingCart, 
-  CreditCard, 
-  Gift, 
+  Home,
+  ShoppingCart,
+  CreditCard,
+  Gift,
   MessageCircle,
   Bell,
   Menu,
@@ -18,22 +18,14 @@ import {
   Coins,
   Ticket,
   Heart,
-  Star,
   LogOut,
-  Globe,
-  ChevronRight,
   ChevronDown,
-  Moon,
-  Languages,
   Zap,
   Share2,
-  Mail
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useState, useEffect, useMemo, memo } from "react";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useTranslations, useLanguage } from "@/lib/context/language-context";
 import { Footer } from "./footer";
 import { useAuth } from "@/lib/context/auth-context";
 import SearchBar from "@/components/layout/SearchBar";
@@ -55,18 +47,18 @@ const NavItem = memo(function NavItem({
   isActive: boolean;
 }) {
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       className={cn(
         "group flex items-center gap-3 px-3 py-2.5 rounded-md transition-all relative overflow-hidden",
-        isActive 
-          ? "bg-mali-blue/30 text-white font-medium" 
+        isActive
+          ? "bg-mali-blue/30 text-white font-medium"
           : "hover:bg-mali-blue/20 text-mali-text-secondary hover:text-white"
       )}
       prefetch={false}
     >
       {isActive && (
-        <motion.div 
+        <motion.div
           layoutId="active-nav-indicator"
           className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
           initial={{ opacity: 0 }}
@@ -82,9 +74,9 @@ const NavItem = memo(function NavItem({
         {icon}
       </span>
       <span className="text-sm font-medium relative z-10">{label}</span>
-      
+
       {isActive && (
-        <motion.div 
+        <motion.div
           className="absolute inset-0 bg-glow-gradient opacity-0"
           animate={{ opacity: 0.1 }}
           transition={{ duration: 0.5 }}
@@ -108,11 +100,11 @@ const MobileNavItem = memo(function MobileNavItem({
   onClick?: () => void;
 }) {
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       className={cn(
         "flex items-center justify-center flex-col gap-1 py-2 w-full",
-        isActive 
+        isActive
           ? "text-white"
           : "text-mali-text-secondary"
       )}
@@ -137,17 +129,8 @@ const MobileNavItem = memo(function MobileNavItem({
 
 export function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { t } = useTranslations();
-  const { locale, isLoaded } = useLanguage();
   const { user, isAuthenticated, logout } = useAuth();
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Effect to handle client-side mounting
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Toggle user menu dropdown
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -160,76 +143,47 @@ export function MainLayout({ children }: MainLayoutProps) {
     setIsUserMenuOpen(false);
   };
 
-  // Create memoized nav items to prevent unnecessary re-renders
+  // Create memoized nav items with hardcoded Thai text
   const mainNavItems = useMemo(() => [
-    { href: "/", label: t("home"), icon: <Home size={20} /> },
-    { href: "/games", label: t("allGames"), icon: <Gamepad2 size={20} /> },
-    { href: "/direct-topup", label: t("directTopup"), icon: <DollarSign size={20} /> },
-    { href: "/card", label: t("card"), icon: <CreditCard size={20} /> },
-    { href: "/favorite", label: t("myFavorite"), icon: <Heart size={20} /> },
-    { href: "/flash-sales", label: t("flashSales"), icon: <Zap size={20} /> },
-    { href: "/cashback", label: t("cashback"), icon: <Coins size={20} /> },
-    { href: "/referral", label: t("referral"), icon: <Share2 size={20} /> },
-    { href: "/support", label: t("support"), icon: <MessageCircle size={20} /> },
-  ], [t]);
+    { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
+    { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
+    { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <DollarSign size={20} /> },
+    { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
+    { href: "/favorite", label: "รายการโปรด", icon: <Heart size={20} /> },
+    { href: "/flash-sales", label: "แฟลชเซลล์", icon: <Zap size={20} /> },
+    { href: "/cashback", label: "เงินคืน", icon: <Coins size={20} /> },
+    { href: "/referral", label: "ชวนเพื่อน", icon: <Share2 size={20} /> },
+    { href: "/support", label: "ช่วยเหลือ", icon: <MessageCircle size={20} /> },
+  ], []);
 
   const mobileNavItems = useMemo(() => [
-    { href: "/", label: t("home"), icon: <Home size={20} /> },
-    { href: "/games", label: t("allGames"), icon: <Gamepad2 size={20} /> },
-    { href: "/direct-topup", label: t("directTopup"), icon: <DollarSign size={20} /> },
-    { href: "/orders", label: t("myOrders"), icon: <ShoppingCart size={20} /> },
-    { href: "/account", label: t("myAccount"), icon: <User size={20} /> },
-  ], [t]);
+    { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
+    { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
+    { href: "/direct-topup", label: "เติมเงิน", icon: <DollarSign size={20} /> },
+    { href: "/orders", label: "คำสั่งซื้อ", icon: <ShoppingCart size={20} /> },
+    { href: "/account", label: "บัญชี", icon: <User size={20} /> },
+  ], []);
 
   const accountMenuItems = useMemo(() => [
-    { href: "/account", label: t("myAccount"), icon: <User size={18} /> },
-    { href: "/top-up", label: t("topUp"), icon: <DollarSign size={18} /> },
-    { href: "/direct-topup", label: t("directTopup"), icon: <Gamepad2 size={18} /> },
-    { href: "/card", label: t("card"), icon: <CreditCard size={18} /> },
-    { href: "/my-cards", label: t("myCards"), icon: <CreditCard size={18} /> },
-    { href: "/invoice", label: t("myInvoice"), icon: <FileText size={18} /> },
-    { href: "/balance", label: t("balance"), icon: <DollarSign size={18} /> },
-    { href: "/credits", label: t("credits"), icon: <Coins size={18} /> },
-    { href: "/coupons", label: t("myCoupons"), icon: <Ticket size={18} /> },
-    { href: "/favorite", label: t("myFavorite"), icon: <Heart size={18} /> },
-    { href: "/lucky-draw", label: t("myLuckyDraw"), icon: <Gift size={18} /> },
-    { href: "/flash-sales", label: t("flashSales"), icon: <Zap size={18} /> },
-    { href: "/cashback", label: t("cashback"), icon: <Coins size={18} /> },
-    { href: "/referral", label: t("referral"), icon: <Share2 size={18} /> },
-    { href: "/notifications", label: t("notifications"), icon: <Bell size={18} /> },
-  ], [t]);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
-  };
-  
-  // Calculate container classes once
-  const containerClasses = cn(
-    "flex min-h-screen bg-mali-dark",
-    locale === 'th' && isMounted ? 'thai-font' : '',
-    (!isLoaded || !isMounted) ? 'opacity-0' : ''
-  );
-
-  // This inline style function helps avoid hydration issues by only applying
-  // client-side specific styles after mounting
-  const getThaiFont = () => {
-    if (!isMounted) return {};
-    return locale === "th" ? { fontFamily: "var(--font-thai)" } : {};
-  };
-
-  // If not loaded, return a minimal skeleton to avoid layout shift
-  if (!isLoaded && !isMounted) {
-    return (
-      <div className="flex min-h-screen bg-mali-dark"></div>
-    );
-  }
+    { href: "/account", label: "บัญชีของฉัน", icon: <User size={18} /> },
+    { href: "/top-up", label: "เติมเงิน", icon: <DollarSign size={18} /> },
+    { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <Gamepad2 size={18} /> },
+    { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
+    { href: "/my-cards", label: "บัตรของฉัน", icon: <CreditCard size={18} /> },
+    { href: "/invoice", label: "ใบแจ้งหนี้", icon: <FileText size={18} /> },
+    { href: "/balance", label: "ยอดเงิน", icon: <DollarSign size={18} /> },
+    { href: "/credits", label: "เครดิต", icon: <Coins size={18} /> },
+    { href: "/coupons", label: "คูปอง", icon: <Ticket size={18} /> },
+    { href: "/favorite", label: "รายการโปรด", icon: <Heart size={18} /> },
+    { href: "/lucky-draw", label: "ชิงโชค", icon: <Gift size={18} /> },
+    { href: "/flash-sales", label: "แฟลชเซลล์", icon: <Zap size={18} /> },
+    { href: "/cashback", label: "เงินคืน", icon: <Coins size={18} /> },
+    { href: "/referral", label: "ชวนเพื่อน", icon: <Share2 size={18} /> },
+    { href: "/notifications", label: "การแจ้งเตือน", icon: <Bell size={18} /> },
+  ], []);
 
   return (
-    <div className={containerClasses}>
+    <div className="flex min-h-screen bg-mali-dark thai-font">
       {/* Sidebar */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-mali-sidebar z-30 hidden lg:flex flex-col border-r border-mali-blue/20">
         {/* Logo */}
@@ -245,9 +199,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Navigation */}
         <nav className="flex-1 pt-2 px-3 space-y-1 overflow-y-auto">
           {mainNavItems.map((item) => {
-            const isActive = pathname === item.href || 
+            const isActive = pathname === item.href ||
               (item.href !== '/' && pathname.startsWith(item.href));
-            
+
             return (
               <NavItem
                 key={item.href}
@@ -260,34 +214,16 @@ export function MainLayout({ children }: MainLayoutProps) {
           })}
         </nav>
 
-        <div className="p-4 mt-auto border-t border-mali-blue/20">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <Moon size={16} className="text-mali-text-secondary" />
-              <span className="text-xs text-mali-text-secondary">Dark Mode</span>
-            </div>
-            <div className="w-10 h-5 bg-mali-blue/30 rounded-full flex items-center p-0.5">
-              <div className="w-4 h-4 rounded-full bg-mali-blue-accent ml-auto shadow-blue-glow"></div>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Languages size={16} className="text-mali-text-secondary" />
-              <span className="text-xs text-mali-text-secondary">Language</span>
-            </div>
-            <LanguageSwitcher />
-          </div>
-        </div>
+
       </aside>
 
       {/* Mobile navbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-mali-sidebar border-t border-mali-blue/20 lg:hidden">
         <div className="flex justify-around items-center">
           {mobileNavItems.map((item) => {
-            const isActive = pathname === item.href || 
+            const isActive = pathname === item.href ||
               (item.href !== '/' && pathname.startsWith(item.href));
-              
+
             return (
               <MobileNavItem
                 key={item.href}
@@ -324,10 +260,10 @@ export function MainLayout({ children }: MainLayoutProps) {
 
             {/* Search */}
             <div className="hidden md:block flex-1 max-w-md mx-auto">
-              <SearchBar 
-                variant="header" 
-                placeholder="ค้นหาเกม" 
-                />
+              <SearchBar
+                variant="header"
+                placeholder="ค้นหาเกม"
+              />
             </div>
 
             {/* Right Section */}
@@ -339,28 +275,26 @@ export function MainLayout({ children }: MainLayoutProps) {
                 </span>
               </button>
 
-              <LanguageSwitcher />
-
               {isAuthenticated ? (
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={toggleUserMenu}
                     className="flex items-center space-x-2 text-white"
                   >
                     <div className="w-8 h-8 rounded-full bg-mali-blue flex items-center justify-center overflow-hidden border-2 border-mali-blue-light/30">
-                      <img 
-                        src={user?.avatar || "https://placehold.co/200x200?text=User"} 
+                      <img
+                        src={user?.avatar || "https://placehold.co/200x200?text=User"}
                         alt={`${user?.name} avatar`}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <span className="hidden md:inline-block text-sm font-medium">{user?.name}</span>
+                    <span className="hidden md:inline-block text-sm font-medium w-[100px] truncate text-left">{user?.name}</span>
                     <ChevronDown size={14} />
                   </button>
-                  
+
                   <AnimatePresence>
                     {isUserMenuOpen && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
@@ -372,11 +306,11 @@ export function MainLayout({ children }: MainLayoutProps) {
                           <p className="text-mali-text-secondary text-xs">{user?.email}</p>
                           {user?.isPremium && (
                             <div className="mt-1 bg-yellow-600/20 text-yellow-400 text-xs px-2 py-0.5 rounded inline-block">
-                              Premium Member
+                              สมาชิกพรีเมียม
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Credits display */}
                         <div className="p-3 border-b border-mali-blue/20 bg-mali-blue/10">
                           <div className="flex justify-between items-center">
@@ -399,7 +333,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                             className="w-full px-4 py-2 text-sm text-red-400 hover:bg-mali-blue/20 flex items-center space-x-2"
                           >
                             <LogOut size={18} />
-                            <span>Sign Out</span>
+                            <span>ออกจากระบบ</span>
                           </button>
                         </div>
                       </motion.div>
@@ -407,11 +341,11 @@ export function MainLayout({ children }: MainLayoutProps) {
                   </AnimatePresence>
                 </div>
               ) : (
-                <Link 
+                <Link
                   href="/login"
                   className="flex items-center space-x-1 text-white bg-button-gradient px-3 py-1.5 rounded-md text-sm shadow-button-glow hover:opacity-90 transition-opacity"
                 >
-                  <span>เข้าระบบ</span>
+                  <span>เข้าสู่ระบบ</span>
                 </Link>
               )}
             </div>
@@ -422,10 +356,10 @@ export function MainLayout({ children }: MainLayoutProps) {
         <main className="py-4 px-4 md:px-6 container mx-auto flex-grow">
           {children}
         </main>
-        
+
         {/* Footer */}
         <Footer />
       </div>
     </div>
   );
-} 
+}

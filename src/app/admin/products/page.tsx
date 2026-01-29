@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { useTranslations } from "@/lib/context/language-context";
 import { Plus, Search, Filter, Edit, Trash2, MoreHorizontal, Package } from "lucide-react";
 
 // Mock product data
@@ -83,7 +82,7 @@ const mockProducts = [
 ];
 
 export default function AdminProducts() {
-  const { t } = useTranslations();
+  
   const [products, setProducts] = useState(mockProducts);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");

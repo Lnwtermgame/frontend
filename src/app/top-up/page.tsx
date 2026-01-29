@@ -20,13 +20,12 @@ import {
   ChevronDown
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 import Image from "next/image";
 
 export default function TopUpPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useTranslations();
+  
   const [amount, setAmount] = useState(20);
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [loading, setLoading] = useState(false);

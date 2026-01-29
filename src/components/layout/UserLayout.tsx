@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import UserSidebar from "@/components/account/UserSidebar";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 interface UserLayoutProps {
   children: React.ReactNode;
@@ -15,7 +14,6 @@ interface UserLayoutProps {
 export default function UserLayout({ children, title }: UserLayoutProps) {
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useTranslations();
 
   useEffect(() => {
     if (!user) {
@@ -44,7 +42,7 @@ export default function UserLayout({ children, title }: UserLayoutProps) {
     <div className="page-container">
       {title && (
         <motion.h1
-          className="text-2xl font-bold text-white mb-6"
+          className="text-2xl font-bold text-white mb-6 thai-font"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -78,4 +76,4 @@ export default function UserLayout({ children, title }: UserLayoutProps) {
       </div>
     </div>
   );
-} 
+}

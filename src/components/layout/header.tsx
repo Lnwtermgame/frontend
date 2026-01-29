@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { 
-  ShoppingCart, 
+import {
+  ShoppingCart,
   Search,
   ChevronDown,
   Download,
@@ -49,7 +49,7 @@ export function Header() {
     if (isMounted) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -64,8 +64,8 @@ export function Header() {
   // Animation variants
   const menuItemVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         type: "spring",
@@ -82,9 +82,9 @@ export function Header() {
 
   const dropdownVariants = {
     hidden: { opacity: 0, y: -10, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
       transition: {
         type: "spring",
@@ -93,16 +93,16 @@ export function Header() {
         staggerChildren: 0.05
       }
     },
-    exit: { 
-      opacity: 0, 
-      y: -10, 
+    exit: {
+      opacity: 0,
+      y: -10,
       scale: 0.95,
       transition: { duration: 0.2 }
     }
   };
 
   return (
-    <motion.header 
+    <motion.header
       className="w-full bg-mali-navy border-b border-mali-blue/20"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -122,7 +122,7 @@ export function Header() {
           </motion.div>
         </div>
         <div className="flex items-center space-x-4">
-          <motion.div 
+          <motion.div
             className="flex items-center space-x-1 cursor-pointer"
             whileHover={{ opacity: 1 }}
             initial={{ opacity: 0.8 }}
@@ -153,8 +153,8 @@ export function Header() {
             </Link>
           </motion.div>
 
-          <nav className="hidden lg:flex items-center space-x-6">
-            <motion.div 
+          <nav className="hidden lg:grid grid-cols-3 gap-4 items-center justify-items-center min-w-[400px]">
+            <motion.div
               className="group relative"
               whileHover={{ y: -2 }}
             >
@@ -162,7 +162,7 @@ export function Header() {
                 CARD <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="group relative"
               whileHover={{ y: -2 }}
             >
@@ -181,36 +181,36 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <motion.div 
+          <motion.div
             className="relative w-64"
             whileHover={{ scale: 1.02 }}
           >
-            <input 
-              type="text" 
-              placeholder="Search Games" 
+            <input
+              type="text"
+              placeholder="Search Games"
               className="w-full rounded-sm bg-mali-blue/20 border border-mali-blue/30 px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
             />
             <Search className="absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mali-text-secondary" />
           </motion.div>
-          
+
           <div className="flex items-center space-x-4">
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               className="text-mali-text-secondary hover:text-white transition-colors"
             >
               <Bell size={20} />
             </motion.button>
 
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               className="text-mali-text-secondary hover:text-white transition-colors"
             >
               <Globe size={20} />
             </motion.button>
-            
+
             {user ? (
               <div className="relative" ref={isMounted ? userMenuRef : null}>
-                <motion.button 
+                <motion.button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center space-x-1 text-white text-xs hover:text-gray-200"
                   whileHover={{ scale: 1.05 }}
@@ -220,10 +220,10 @@ export function Header() {
                   <span>{user.name.split(' ')[0]}</span>
                   <ChevronDown className="h-3 w-3" />
                 </motion.button>
-                
+
                 <AnimatePresence>
                   {isMounted && showUserMenu && (
-                    <motion.div 
+                    <motion.div
                       className="absolute right-0 mt-2 w-64 bg-mali-card border border-mali-blue/20 rounded-md shadow-lg z-50"
                       variants={dropdownVariants}
                       initial="hidden"
@@ -231,7 +231,7 @@ export function Header() {
                       exit="exit"
                     >
                       <div className="p-4 border-b border-mali-blue/20 flex items-center">
-                        <motion.div 
+                        <motion.div
                           className="h-10 w-10 rounded-full bg-mali-blue-accent flex items-center justify-center mr-3 shadow-lg"
                           whileHover={{ scale: 1.1 }}
                         >
@@ -242,7 +242,7 @@ export function Header() {
                           <div className="text-mali-text-secondary text-xs truncate">{user.email}</div>
                         </div>
                       </div>
-                      
+
                       <div className="py-2">
                         <motion.button
                           variants={menuItemVariants}
@@ -256,7 +256,7 @@ export function Header() {
                           <User className="h-4 w-4 mr-3" />
                           <span>My Account</span>
                         </motion.button>
-                        
+
                         <motion.button
                           variants={menuItemVariants}
                           whileHover="hover"
@@ -269,7 +269,7 @@ export function Header() {
                           <Coins className="h-4 w-4 mr-3" />
                           <span>Credits</span>
                         </motion.button>
-                        
+
                         <motion.button
                           variants={menuItemVariants}
                           whileHover="hover"
@@ -282,7 +282,7 @@ export function Header() {
                           <ShoppingCart className="h-4 w-4 mr-3" />
                           <span>Order History</span>
                         </motion.button>
-                        
+
                         <motion.button
                           variants={menuItemVariants}
                           whileHover="hover"

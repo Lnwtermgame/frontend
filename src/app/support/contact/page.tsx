@@ -8,7 +8,6 @@ import {
   HelpCircle, ChevronDown, ChevronUp, Headphones, 
   Clock, AlertCircle, CheckCircle
 } from "lucide-react";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Mock FAQs
 const faqs = [
@@ -51,7 +50,7 @@ const contactCategories = [
 ];
 
 export default function ContactPage() {
-  const { t } = useTranslations();
+  
   const [expandedFaqs, setExpandedFaqs] = useState<number[]>([]);
   const [formData, setFormData] = useState({
     name: "",

@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Mock data for recently viewed items
 const recentlyViewedItems = [
@@ -216,7 +215,7 @@ const categories = ["All", "MOBA", "RPG", "Battle Royale", "FPS", "Game Currency
 
 export default function RecommendationsPage() {
   const router = useRouter();
-  const { t } = useTranslations();
+  
   
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showRecentlyViewed, setShowRecentlyViewed] = useState(true);

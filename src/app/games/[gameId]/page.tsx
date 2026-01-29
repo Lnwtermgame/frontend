@@ -10,7 +10,6 @@ import {
   Package, Award, Clock, Calendar, Monitor, Smartphone, 
   CreditCard, Info, DollarSign, Gift, AlertCircle, Check 
 } from 'lucide-react';
-import { useTranslations } from "@/lib/context/language-context";
 import { GameRelatedProducts, RelatedProduct } from '@/components/GameRelatedProducts';
 import { PremiumUpsellCard } from '@/components/PremiumUpsellCard';
 
@@ -161,8 +160,7 @@ const partialGameData = {
 
 export default function GameDetailsPage() {
   const { gameId } = useParams();
-  const { t } = useTranslations();
-  const [game, setGame] = useState<any>(null);
+    const [game, setGame] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('topup');
   const [selectedScreenshotIndex, setSelectedScreenshotIndex] = useState(0);

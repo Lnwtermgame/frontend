@@ -3,13 +3,12 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { useTranslations } from "@/lib/context/language-context";
 import { Tag, Calendar, Save, ChevronLeft, X, Clock, Percent, CreditCard, Gamepad, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminPromotionCreate() {
-  const { t } = useTranslations();
+  
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   

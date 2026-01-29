@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import { Target, BarChart3, PlusCircle, LineChart, Check, X } from "lucide-react";
-import { useTranslations } from "@/lib/context/language-context";
 
 interface ABTest {
   id: string;
@@ -25,7 +24,7 @@ interface ABTestingPanelProps {
 }
 
 export default function ABTestingPanel({ initialTests = [] }: ABTestingPanelProps) {
-  const { t } = useTranslations();
+  
   const [tests, setTests] = useState<ABTest[]>(initialTests.length > 0 ? initialTests : [
     {
       id: "test1",

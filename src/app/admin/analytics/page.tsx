@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { useTranslations } from "@/lib/context/language-context";
 import {   BarChart3,   Users,   TrendingUp,   LineChart,   PieChart,   Target,   Activity,  Calendar,  ArrowUpRight,  ArrowDownRight,  Filter,  Table as TableIcon} from "lucide-react";
 import ABTestingPanel from "@/components/analytics/ABTestingPanel";
 import CustomReports from "@/components/analytics/CustomReports";
@@ -50,7 +49,7 @@ const mockMetrics = {
 };
 
 export default function AnalyticsDashboard() {
-  const { t } = useTranslations();
+  
   const [metrics, setMetrics] = useState(mockMetrics);
   const [timeRange, setTimeRange] = useState("30days");
   const [activeTab, setActiveTab] = useState<"overview" | "testing" | "reports">("overview");

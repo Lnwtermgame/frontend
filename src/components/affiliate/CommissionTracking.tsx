@@ -6,7 +6,6 @@ import {
   ArrowUpRight, ArrowDownRight, DollarSign, Calendar, 
   Download, ArrowRight, TrendingUp, Filter, PieChart
 } from 'lucide-react';
-import { useTranslations } from "@/lib/context/language-context";
 
 export interface Commission {
   id: string;
@@ -52,7 +51,7 @@ export function CommissionTracking({
   onExport,
   onViewDetails
 }: CommissionTrackingProps) {
-  const { t } = useTranslations();
+  
   const [activeTab, setActiveTab] = useState<'earnings' | 'commissions'>('earnings');
   const [dateRange, setDateRange] = useState<'all' | '7days' | '30days' | '90days'>('30days');
   

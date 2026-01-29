@@ -5,7 +5,6 @@ import { motion } from '@/lib/framer-exports';
 import { Trophy, Medal, Users, ChevronRight, Star, Sparkles, Calendar, Search, Filter } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslations } from "@/lib/context/language-context";
 
 export interface Agent {
   id: string;
@@ -38,7 +37,7 @@ export function AgentRankings({
   onSearch,
   className = ''
 }: AgentRankingsProps) {
-  const { t } = useTranslations();
+  
   const [searchQuery, setSearchQuery] = useState('');
   
   // Handle search submission

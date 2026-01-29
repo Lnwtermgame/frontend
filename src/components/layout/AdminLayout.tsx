@@ -17,44 +17,44 @@ import {
   FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "@/lib/context/language-context";
 import { useAuth } from "@/lib/context/auth-context";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
+// Hardcoded Thai navigation items
 const adminNavItems = [
   {
-    title: "adminDashboard",
+    title: "แดชบอร์ด",
     href: "/admin",
     icon: <Home className="w-5 h-5" />
   },
   {
-    title: "adminProducts",
+    title: "สินค้า",
     href: "/admin/products",
     icon: <Package className="w-5 h-5" />
   },
   {
-    title: "adminPromotions",
+    title: "โปรโมชั่น",
     href: "/admin/promotions",
     icon: <Tag className="w-5 h-5" />
   },
   {
-    title: "adminResellers",
+    title: "ตัวแทนขาย",
     href: "/admin/resellers",
     icon: <Users className="w-5 h-5" />
   },
   {
-    title: "adminAnalytics",
+    title: "วิเคราะห์",
     href: "/admin/analytics",
     icon: <BarChart3 className="w-5 h-5" />
   },
   {
-    title: "adminReports",
+    title: "รายงาน",
     href: "/admin/reports",
     icon: <FileText className="w-5 h-5" />
   },
   {
-    title: "adminSettings",
+    title: "ตั้งค่า",
     href: "/admin/settings",
     icon: <Settings className="w-5 h-5" />
   }
@@ -69,7 +69,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAdmin, logout } = useAuth();
-  const { t } = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -99,7 +98,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
     <div className="page-container">
       {/* Mobile header */}
       <div className="lg:hidden flex items-center justify-between mb-6 bg-mali-card rounded-xl border border-mali-blue/20 p-4">
-        <h1 className="text-xl font-bold text-white">{title || "Admin Panel"}</h1>
+        <h1 className="text-xl font-bold text-white thai-font">{title || "แผงควบคุมผู้ดูแลระบบ"}</h1>
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-mali-blue">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {isMenuOpen ? (
@@ -114,7 +113,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="lg:hidden fixed inset-0 bg-black/70 z-50 flex justify-end">
-          <motion.div 
+          <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -122,7 +121,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             className="w-64 bg-mali-card h-full shadow-xl p-4"
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-bold text-xl text-white">Admin</h2>
+              <h2 className="font-bold text-xl text-white thai-font">ผู้ดูแลระบบ</h2>
               <button onClick={() => setIsMenuOpen(false)} className="text-mali-blue">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6L6 18M6 6l12 12" />
@@ -132,25 +131,25 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             <nav className="space-y-2">
               {adminNavItems.map((item) => (
                 <Link href={item.href} key={item.href}>
-                  <div 
+                  <div
                     className={cn(
-                      "flex items-center py-3 px-4 rounded-lg text-gray-300 hover:bg-mali-blue/20 hover:text-white transition-colors",
+                      "flex items-center py-3 px-4 rounded-lg text-gray-300 hover:bg-mali-blue/20 hover:text-white transition-colors thai-font",
                       pathname === item.href && "bg-mali-blue/20 text-white"
                     )}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <span className="text-mali-blue mr-3">{item.icon}</span>
-                    {t(item.title as any)}
+                    {item.title}
                   </div>
                 </Link>
               ))}
               <hr className="border-mali-blue/20 my-4" />
-              <button 
-                onClick={() => logout()} 
-                className="flex items-center w-full py-3 px-4 rounded-lg text-gray-300 hover:bg-red-500/20 hover:text-white transition-colors"
+              <button
+                onClick={() => logout()}
+                className="flex items-center w-full py-3 px-4 rounded-lg text-gray-300 hover:bg-red-500/20 hover:text-white transition-colors thai-font"
               >
                 <LogOut className="w-5 h-5 mr-3 text-red-500" />
-                {t("logout")}
+                ออกจากระบบ
               </button>
             </nav>
           </motion.div>
@@ -159,7 +158,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Desktop sidebar */}
-        <motion.div 
+        <motion.div
           className="hidden lg:block col-span-1"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -167,22 +166,22 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         >
           <div className="bg-mali-card rounded-xl border border-mali-blue/20 sticky top-24">
             <div className="p-6 border-b border-mali-blue/20">
-              <h2 className="font-bold text-lg text-white flex items-center">
+              <h2 className="font-bold text-lg text-white flex items-center thai-font">
                 <DollarSign className="w-5 h-5 mr-2 text-mali-blue" />
-                Admin Panel
+                แผงควบคุมผู้ดูแลระบบ
               </h2>
             </div>
             <nav className="p-4 space-y-2">
               {adminNavItems.map((item) => (
                 <Link href={item.href} key={item.href}>
-                  <div 
+                  <div
                     className={cn(
-                      "flex items-center py-3 px-4 rounded-lg text-gray-300 hover:bg-mali-blue/20 hover:text-white transition-colors",
+                      "flex items-center py-3 px-4 rounded-lg text-gray-300 hover:bg-mali-blue/20 hover:text-white transition-colors thai-font",
                       pathname === item.href && "bg-mali-blue/20 text-white"
                     )}
                   >
                     <span className="text-mali-blue mr-3">{item.icon}</span>
-                    {t(item.title as any)}
+                    {item.title}
                     <ChevronRight className="w-4 h-4 ml-auto opacity-50" />
                   </div>
                 </Link>
@@ -195,23 +194,23 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                   </div>
                   <div>
                     <div className="text-sm font-medium text-white">{user?.name || user?.email}</div>
-                    <div className="text-xs text-gray-400">Administrator</div>
+                    <div className="text-xs text-gray-400 thai-font">ผู้ดูแลระบบ</div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => logout()} 
-                  className="flex items-center justify-center w-full py-2 px-4 rounded-lg text-red-500 hover:bg-red-500/20 transition-colors text-sm"
+                <button
+                  onClick={() => logout()}
+                  className="flex items-center justify-center w-full py-2 px-4 rounded-lg text-red-500 hover:bg-red-500/20 transition-colors text-sm thai-font"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
-                  {t("logout")}
+                  ออกจากระบบ
                 </button>
               </div>
             </nav>
           </div>
         </motion.div>
-        
+
         {/* Main content */}
-        <motion.div 
+        <motion.div
           className="col-span-1 lg:col-span-4 space-y-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -219,8 +218,8 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         >
           {title && (
             <div className="hidden lg:block">
-              <motion.h1 
-                className="text-2xl font-bold text-white mb-6"
+              <motion.h1
+                className="text-2xl font-bold text-white mb-6 thai-font"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
@@ -229,10 +228,10 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               </motion.h1>
             </div>
           )}
-          
+
           {children}
         </motion.div>
       </div>
     </div>
   );
-} 
+}

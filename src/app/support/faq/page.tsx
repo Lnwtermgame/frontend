@@ -8,7 +8,6 @@ import {
   Tag, Filter, ArrowLeft, MessageSquare, 
   ThumbsUp, ThumbsDown, Clock
 } from "lucide-react";
-import { useTranslations } from "@/lib/context/language-context";
 
 // FAQ Categories
 const faqCategories = [
@@ -243,7 +242,7 @@ const faqData = [
 ];
 
 export default function FaqPage() {
-  const { t } = useTranslations();
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);

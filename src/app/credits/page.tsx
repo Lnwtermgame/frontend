@@ -6,7 +6,6 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { Coins, Gift, Calendar, ChevronRight, Globe, Award, InfoIcon, History, ExternalLink, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Mock credits activity data
 const creditsActivity = [
@@ -61,7 +60,7 @@ const rewards = [
 export default function CreditsPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useTranslations();
+  
   const [credits, setCredits] = useState(175);
   const [period, setPeriod] = useState("all");
   const [filteredActivity, setFilteredActivity] = useState(creditsActivity);

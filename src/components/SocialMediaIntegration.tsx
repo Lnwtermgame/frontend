@@ -5,7 +5,6 @@ import { motion } from '@/lib/framer-exports';
 import { Facebook, Twitter, Instagram, Twitch, Youtube, Globe, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTranslations } from "@/lib/context/language-context";
 
 export interface SocialPlatform {
   id: string;
@@ -31,7 +30,7 @@ export function SocialMediaIntegration({
   onDisconnect,
   className = ""
 }: SocialMediaIntegrationProps) {
-  const { t } = useTranslations();
+  
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

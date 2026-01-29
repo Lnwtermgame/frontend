@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Define article type
 interface NewsArticle {
@@ -226,8 +225,7 @@ const getRelatedArticles = (currentArticle: NewsArticle, count = 3): NewsArticle
 export default function NewsArticlePage() {
   const router = useRouter();
   const params = useParams();
-  const { t } = useTranslations();
-  const [article, setArticle] = useState<NewsArticle | null>(null);
+    const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [likes, setLikes] = useState<number>(0);

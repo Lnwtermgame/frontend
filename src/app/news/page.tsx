@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Mock categories
 const categories = [
@@ -133,7 +132,7 @@ const newsArticles = [
 
 export default function NewsPage() {
   const router = useRouter();
-  const { t } = useTranslations();
+  
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [savedArticles, setSavedArticles] = useState<string[]>([]);

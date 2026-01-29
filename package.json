@@ -9,9 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.0.15",
     "@fontsource/noto-sans-thai": "^5.2.5",
-    "@fontsource/poppins": "^5.0.8",
     "@radix-ui/react-scroll-area": "^1.2.8",
     "@radix-ui/react-tabs": "^1.1.11",
     "axios": "^1.9.0",

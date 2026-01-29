@@ -5,8 +5,6 @@ import { motion } from "@/lib/framer-exports";
 import { Search, Gamepad2, Filter, ChevronDown, Clock, Tag, Star, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useTranslations } from "@/lib/context/language-context";
-
 // Mock categories
 const categories = [
   { id: "action", name: "Action" },
@@ -158,34 +156,33 @@ const gamesData = [
 ];
 
 export default function GamesPage() {
-  const { t } = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("popular");
   const [filteredGames, setFilteredGames] = useState(gamesData);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
-  
+
   // Filter and sort games
   useEffect(() => {
     let result = [...gamesData];
-    
+
     // Filter by search term
     if (searchTerm) {
-      result = result.filter(game => 
+      result = result.filter(game =>
         game.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     // Filter by category
     if (selectedCategory !== 'all') {
-      result = result.filter(game => 
+      result = result.filter(game =>
         game.category.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
-    
+
     // Sort games
-    switch(sortBy) {
+    switch (sortBy) {
       case 'popular':
         result.sort((a, b) => (a.isPopular === b.isPopular ? 0 : a.isPopular ? -1 : 1));
         break;
@@ -202,18 +199,18 @@ export default function GamesPage() {
         result.sort((a, b) => b.title.localeCompare(a.title));
         break;
     }
-    
+
     setFilteredGames(result);
   }, [searchTerm, selectedCategory, sortBy]);
-  
+
   return (
     <div className="page-container">
       {/* Page Header with blur effect */}
       <div className="relative mb-8">
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
         <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-        
-        <motion.h1 
+
+        <motion.h1
           className="text-3xl font-bold text-white mb-2 relative flex items-center"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -224,7 +221,7 @@ export default function GamesPage() {
         </motion.h1>
         <p className="text-mali-text-secondary relative">Browse our collection of top games and find your next gaming adventure</p>
       </div>
-      
+
       {/* Game filters and search */}
       <motion.div
         className="bg-mali-card rounded-xl border border-mali-blue/20 p-6 mb-6 shadow-card-hover"
@@ -244,7 +241,7 @@ export default function GamesPage() {
             />
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-mali-text-secondary" size={18} />
           </div>
-          
+
           {/* Category Filter */}
           <div className="relative">
             <button
@@ -260,18 +257,17 @@ export default function GamesPage() {
               </div>
               <ChevronDown size={16} className={`transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
             </button>
-            
+
             {isCategoryOpen && (
-              <motion.div 
+              <motion.div
                 className="absolute z-30 mt-2 w-full bg-mali-card border border-mali-blue/30 rounded-xl shadow-lg py-2 overflow-y-auto max-h-64"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <button
-                  className={`w-full text-left px-4 py-2 hover:bg-mali-blue/20 flex items-center ${
-                    selectedCategory === 'all' ? 'text-mali-blue-accent' : 'text-white'
-                  }`}
+                  className={`w-full text-left px-4 py-2 hover:bg-mali-blue/20 flex items-center ${selectedCategory === 'all' ? 'text-mali-blue-accent' : 'text-white'
+                    }`}
                   onClick={() => {
                     setSelectedCategory('all');
                     setIsCategoryOpen(false);
@@ -280,13 +276,12 @@ export default function GamesPage() {
                   <Gamepad2 size={14} className="mr-2" />
                   All Categories
                 </button>
-                
+
                 {categories.map(category => (
                   <button
                     key={category.id}
-                    className={`w-full text-left px-4 py-2 hover:bg-mali-blue/20 ${
-                      selectedCategory === category.id ? 'text-mali-blue-accent' : 'text-white'
-                    }`}
+                    className={`w-full text-left px-4 py-2 hover:bg-mali-blue/20 ${selectedCategory === category.id ? 'text-mali-blue-accent' : 'text-white'
+                      }`}
                     onClick={() => {
                       setSelectedCategory(category.id);
                       setIsCategoryOpen(false);
@@ -298,7 +293,7 @@ export default function GamesPage() {
               </motion.div>
             )}
           </div>
-          
+
           {/* Sort By */}
           <div className="relative">
             <button
@@ -311,17 +306,17 @@ export default function GamesPage() {
               <div className="flex items-center">
                 <Filter size={18} className="mr-2 text-mali-blue-light" />
                 <span>
-                  {sortBy === 'popular' ? 'Popular' : 
-                  sortBy === 'newest' ? 'Newest' : 
-                  sortBy === 'rating' ? 'Top Rated' : 
-                  sortBy === 'az' ? 'A-Z' : 'Z-A'}
+                  {sortBy === 'popular' ? 'Popular' :
+                    sortBy === 'newest' ? 'Newest' :
+                      sortBy === 'rating' ? 'Top Rated' :
+                        sortBy === 'az' ? 'A-Z' : 'Z-A'}
                 </span>
               </div>
               <ChevronDown size={16} className={`transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
             </button>
-            
+
             {isSortOpen && (
-              <motion.div 
+              <motion.div
                 className="absolute z-30 mt-2 w-full bg-mali-card border border-mali-blue/30 rounded-xl shadow-lg py-2"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -336,9 +331,8 @@ export default function GamesPage() {
                 ].map(option => (
                   <button
                     key={option.id}
-                    className={`w-full text-left px-4 py-2 hover:bg-mali-blue/20 flex items-center ${
-                      sortBy === option.id ? 'text-mali-blue-accent' : 'text-white'
-                    }`}
+                    className={`w-full text-left px-4 py-2 hover:bg-mali-blue/20 flex items-center ${sortBy === option.id ? 'text-mali-blue-accent' : 'text-white'
+                      }`}
                     onClick={() => {
                       setSortBy(option.id);
                       setIsSortOpen(false);
@@ -353,7 +347,7 @@ export default function GamesPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Results count */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-mali-text-secondary">
@@ -362,7 +356,7 @@ export default function GamesPage() {
           {searchTerm && ` for "${searchTerm}"`}
         </p>
       </div>
-      
+
       {/* Games Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {filteredGames.length > 0 ? (
@@ -385,7 +379,7 @@ export default function GamesPage() {
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       />
                     </div>
-                    
+
                     {/* Badge overlay */}
                     <div className="absolute top-0 left-0 w-full p-3 flex justify-between">
                       <div>
@@ -400,7 +394,7 @@ export default function GamesPage() {
                           </span>
                         )}
                       </div>
-                      <button 
+                      <button
                         className="bg-mali-dark/60 text-mali-text-secondary hover:text-white p-1.5 rounded-full backdrop-blur-sm transition-colors"
                         onClick={(e) => {
                           e.preventDefault();
@@ -411,22 +405,22 @@ export default function GamesPage() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="p-4 flex-grow flex flex-col">
                     <h3 className="font-medium text-white mb-1">{game.title}</h3>
                     <div className="text-mali-text-secondary text-sm mb-2">{game.category}</div>
-                    
+
                     <div className="mt-auto">
                       <div className="flex justify-between items-center">
                         <div className="flex items-center">
                           <Star className="h-4 w-4 text-yellow-400 mr-1" />
                           <span className="text-white text-sm">{game.rating}</span>
                         </div>
-                        
+
                         <div className="flex flex-wrap gap-1">
                           {game.platforms.map(platform => (
-                            <span 
-                              key={platform} 
+                            <span
+                              key={platform}
                               className="text-xs bg-mali-blue/20 text-mali-blue-accent px-1.5 py-0.5 rounded"
                             >
                               {platform}
@@ -442,7 +436,7 @@ export default function GamesPage() {
           ))
         ) : (
           <div className="col-span-full text-center py-12">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="bg-mali-blue/10 rounded-xl p-8 border border-mali-blue/20"

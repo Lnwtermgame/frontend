@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Mock user loyalty data
 const userLoyalty = {
@@ -168,7 +167,7 @@ const tierRewards = [
 export default function StarProgramPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useTranslations();
+  
   const [period, setPeriod] = useState("all");
   const [filteredHistory, setFilteredHistory] = useState(pointsHistory);
   const [selectedTab, setSelectedTab] = useState("overview");

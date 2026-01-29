@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 
 // Mock active lucky draws
 const activeDraws = [
@@ -74,7 +73,7 @@ const drawHistory = [
 export default function LuckyDrawPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useTranslations();
+  
   const [activeTab, setActiveTab] = useState("active");
   const [loading, setLoading] = useState(false);
   const [currentEntries, setCurrentEntries] = useState<{[key: string]: number}>({

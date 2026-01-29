@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { ShoppingBag, ChevronRight, Search, ShoppingCart, Clock, CheckCircle, AlertCircle, Filter, FileText, Eye, ArrowDownUp, Calendar, Package } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
-import { useTranslations } from "@/lib/context/language-context";
 import Link from "next/link";
 
 // Mock orders data
@@ -19,7 +18,7 @@ const orders = [
     image: "https://placehold.co/300x200?text=Steam+Gift+Card" // Replaced with placehold.co
   },
   {
-    id: "ORD-1002", 
+    id: "ORD-1002",
     date: "2023-11-15",
     product: "Mobile Legends Diamonds",
     amount: "$19.99",
@@ -28,7 +27,7 @@ const orders = [
   },
   {
     id: "ORD-1003",
-    date: "2023-11-10", 
+    date: "2023-11-10",
     product: "PlayStation Store Card",
     amount: "$25.00",
     status: "pending",
@@ -39,7 +38,7 @@ const orders = [
 export default function OrdersPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useTranslations();
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrders, setFilteredOrders] = useState(orders);
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
@@ -55,7 +54,7 @@ export default function OrdersPage() {
   useEffect(() => {
     if (searchTerm) {
       setFilteredOrders(
-        orders.filter(order => 
+        orders.filter(order =>
           order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.product.toLowerCase().includes(searchTerm.toLowerCase())
         )
@@ -70,13 +69,13 @@ export default function OrdersPage() {
     const handleResize = () => {
       setViewMode(window.innerWidth < 768 ? 'card' : 'table');
     };
-    
+
     // Set initial view mode
     handleResize();
-    
+
     // Add event listener
     window.addEventListener('resize', handleResize);
-    
+
     // Cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -101,7 +100,7 @@ export default function OrdersPage() {
 
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
-    switch(status) {
+    switch (status) {
       case "completed":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20">
@@ -145,9 +144,9 @@ export default function OrdersPage() {
             <div className="flex items-start p-4">
               <div className="h-16 w-16 rounded-lg overflow-hidden bg-mali-blue/20 mr-4 flex-shrink-0">
                 {order.image ? (
-                  <img 
-                    src={order.image} 
-                    alt={order.product} 
+                  <img
+                    src={order.image}
+                    alt={order.product}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -156,13 +155,13 @@ export default function OrdersPage() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-white font-medium">{order.product}</h3>
                   <div>{renderStatusBadge(order.status)}</div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <p className="text-mali-text-secondary">Order ID</p>
@@ -177,9 +176,9 @@ export default function OrdersPage() {
                     <p className="text-mali-text-secondary">{order.date}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end mt-3 gap-3">
-                  <motion.button 
+                  <motion.button
                     className="text-mali-blue-accent flex items-center text-xs"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -187,7 +186,7 @@ export default function OrdersPage() {
                     <Eye className="h-3 w-3 mr-1" />
                     <span>View</span>
                   </motion.button>
-                  <motion.button 
+                  <motion.button
                     className="text-mali-text-secondary flex items-center text-xs"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -210,8 +209,8 @@ export default function OrdersPage() {
       <div className="relative mb-8">
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
         <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
-        
-        <motion.h1 
+
+        <motion.h1
           className="text-3xl font-bold text-white mb-2 relative flex items-center"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -222,7 +221,7 @@ export default function OrdersPage() {
         </motion.h1>
         <p className="text-mali-text-secondary relative">Track and manage your purchases</p>
       </div>
-      
+
       {/* Search and filter bar */}
       <motion.div
         className="bg-mali-card rounded-xl border border-mali-blue/20 p-5 mb-6 shadow-card-hover"
@@ -241,26 +240,26 @@ export default function OrdersPage() {
             />
             <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-mali-text-secondary h-4 w-4" />
           </div>
-          
+
           <div className="flex items-center gap-3">
             <motion.div
               className="bg-mali-blue/20 rounded-lg p-1"
               whileHover={{ scale: 1.03 }}
             >
-              <button 
+              <button
                 className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'table' ? 'bg-mali-blue text-white' : 'text-mali-text-secondary'}`}
                 onClick={() => setViewMode('table')}
               >
                 Table
               </button>
-              <button 
+              <button
                 className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'card' ? 'bg-mali-blue text-white' : 'text-mali-text-secondary'}`}
                 onClick={() => setViewMode('card')}
               >
                 Cards
               </button>
             </motion.div>
-            
+
             <motion.button
               className="w-9 h-9 flex items-center justify-center bg-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
               whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
@@ -268,7 +267,7 @@ export default function OrdersPage() {
             >
               <Calendar className="h-4 w-4" />
             </motion.button>
-            
+
             <motion.button
               className="w-9 h-9 flex items-center justify-center bg-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
               whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
@@ -279,9 +278,9 @@ export default function OrdersPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Orders list */}
-      <motion.div 
+      <motion.div
         className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -303,7 +302,7 @@ export default function OrdersPage() {
               <tbody className="divide-y divide-mali-blue/10">
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
-                    <motion.tr 
+                    <motion.tr
                       key={order.id}
                       className="hover:bg-mali-blue/5 transition-colors"
                       initial={{ opacity: 0, x: -10 }}
@@ -315,9 +314,9 @@ export default function OrdersPage() {
                         <div className="flex items-center">
                           <div className="h-10 w-10 rounded overflow-hidden mr-3 bg-mali-blue/10">
                             {order.image ? (
-                              <img 
-                                src={order.image} 
-                                alt={order.product} 
+                              <img
+                                src={order.image}
+                                alt={order.product}
                                 className="h-full w-full object-cover"
                               />
                             ) : (

@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { useTranslations } from "@/lib/context/language-context";
 import { Settings, Save, ChevronLeft, Tag, ToggleLeft, ToggleRight } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminPromotionSettings() {
-  const { t } = useTranslations();
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state for coupon settings

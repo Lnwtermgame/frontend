@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { useTranslations } from "@/lib/context/language-context";
 import { Plus, Search, Tag, Edit, Calendar, Trash2, MoreHorizontal, Info, Clock, ExternalLink, Settings } from "lucide-react";
 import Link from "next/link";
 
@@ -24,7 +23,7 @@ interface Promotion {
 const emptyPromotions: Promotion[] = [];
 
 export default function AdminPromotions() {
-  const { t } = useTranslations();
+  
   const [promotions, setPromotions] = useState<Promotion[]>(emptyPromotions);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");

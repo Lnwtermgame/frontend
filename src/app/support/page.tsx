@@ -25,7 +25,6 @@ import {
   Headphones
 } from 'lucide-react';
 import Link from 'next/link';
-import { useTranslations } from "@/lib/context/language-context";
 
 // Support category tiles
 const supportCategories = [
@@ -129,7 +128,7 @@ export default function SupportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const { t } = useTranslations();
+  
 
   const handleCreateTicket = async (e: React.FormEvent) => {
     e.preventDefault();

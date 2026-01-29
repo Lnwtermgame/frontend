@@ -5,7 +5,6 @@ import { motion } from '@/lib/framer-exports';
 import { Download, Copy, Check, Image as ImageIcon, FileText, Video, Code, Monitor, Link as LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslations } from "@/lib/context/language-context";
 
 export interface MarketingAsset {
   id: string;
@@ -37,7 +36,7 @@ export function MarketingMaterials({
   categories = [],
   className = ''
 }: MarketingMaterialsProps) {
-  const { t } = useTranslations();
+  
   const [activeCategory, setActiveCategory] = useState<string>(categories.length > 0 ? categories[0].id : '');
   const [copiedAssets, setCopiedAssets] = useState<Record<string, boolean>>({});
   

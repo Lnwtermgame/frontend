@@ -408,12 +408,7 @@ export default function CouponsPage() {
               >
                 Subscribe to Newsletter
               </Link>
-              <Link
-                href="/referral"
-                className="block p-2 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20 rounded-md text-sm transition-colors"
-              >
-                Refer a Friend
-              </Link>
+
             </div>
           </div>
         </div>

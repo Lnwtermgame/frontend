@@ -270,3 +270,24 @@
     }
 
   }
+
+  @layer utilities {
+    /* Hide scrollbar utility */
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Prevent overflow in flex/grid containers */
+    .min-w-0 {
+      min-width: 0;
+    }
+
+    /* Container query helpers for responsive grids */
+    .grid-auto-fit {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+  }

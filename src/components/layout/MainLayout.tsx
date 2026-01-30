@@ -147,12 +147,10 @@ export function MainLayout({ children }: MainLayoutProps) {
   const mainNavItems = useMemo(() => [
     { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
     { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
-    { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <DollarSign size={20} /> },
+
     { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
     { href: "/favorite", label: "รายการโปรด", icon: <Heart size={20} /> },
-    { href: "/flash-sales", label: "แฟลชเซลล์", icon: <Zap size={20} /> },
-    { href: "/cashback", label: "เงินคืน", icon: <Coins size={20} /> },
-    { href: "/referral", label: "ชวนเพื่อน", icon: <Share2 size={20} /> },
+
     { href: "/support", label: "ช่วยเหลือ", icon: <MessageCircle size={20} /> },
   ], []);
 
@@ -169,16 +167,14 @@ export function MainLayout({ children }: MainLayoutProps) {
     { href: "/top-up", label: "เติมเงิน", icon: <DollarSign size={18} /> },
     { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <Gamepad2 size={18} /> },
     { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
-    { href: "/my-cards", label: "บัตรของฉัน", icon: <CreditCard size={18} /> },
+
     { href: "/invoice", label: "ใบแจ้งหนี้", icon: <FileText size={18} /> },
-    { href: "/balance", label: "ยอดเงิน", icon: <DollarSign size={18} /> },
+
     { href: "/credits", label: "เครดิต", icon: <Coins size={18} /> },
     { href: "/coupons", label: "คูปอง", icon: <Ticket size={18} /> },
     { href: "/favorite", label: "รายการโปรด", icon: <Heart size={18} /> },
-    { href: "/lucky-draw", label: "ชิงโชค", icon: <Gift size={18} /> },
-    { href: "/flash-sales", label: "แฟลชเซลล์", icon: <Zap size={18} /> },
-    { href: "/cashback", label: "เงินคืน", icon: <Coins size={18} /> },
-    { href: "/referral", label: "ชวนเพื่อน", icon: <Share2 size={18} /> },
+
+
     { href: "/notifications", label: "การแจ้งเตือน", icon: <Bell size={18} /> },
   ], []);
 
@@ -238,7 +234,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
         {/* Header */}
         <header className="sticky top-0 z-20 bg-mali-sidebar border-b border-mali-blue/20">
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">

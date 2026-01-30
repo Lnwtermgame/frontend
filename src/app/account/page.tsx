@@ -49,10 +49,10 @@ export default function AccountPage() {
 
   return (
     <div className="page-container">
-            {/* Page Header */}
-            <div className="relative mb-8 pt-4">
-              
-              <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
+      {/* Page Header */}
+      <div className="relative mb-8 pt-4">
+
+        <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
           บัญชีของฉัน
         </motion.h1>
         <p className="text-mali-text-secondary relative thai-font">จัดการการตั้งค่าและความชอบของบัญชีของคุณ</p>
@@ -212,52 +212,7 @@ export default function AccountPage() {
 
         <div className="lg:col-span-1">
           <div className="grid gap-6">
-            {/* Balance section - Enhanced with better gradients */}
-            <motion.div
-              className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-            >
-              <div className="h-1 w-full bg-gradient-to-r from-mali-blue-accent to-mali-purple"></div>
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-white thai-font">ยอดเงิน</h2>
-                  <Link
-                    href="/balance"
-                    className="bg-mali-blue/20 hover:bg-mali-blue/30 w-8 h-8 rounded-full flex items-center justify-center text-mali-blue-accent hover:text-mali-blue-light transition-colors"
-                  >
-                    <ChevronRight size={16} />
-                  </Link>
-                </div>
-                <div className="mb-6">
-                  <div className="bg-gradient-to-br from-mali-blue/30 to-mali-purple/20 p-5 rounded-lg w-full border border-mali-blue/30 relative overflow-hidden">
-                    <div className="absolute -right-10 -bottom-20 w-40 h-40 bg-mali-purple/10 rounded-full blur-2xl"></div>
-                    <div className="absolute -left-5 -top-10 w-20 h-20 bg-mali-blue/20 rounded-full blur-xl"></div>
 
-                    <div className="flex items-center">
-                      <img
-                        src="https://placehold.co/20x14/ff0000/white?text=TH"
-                        alt="Thailand"
-                        className="mr-2 rounded-sm"
-                      />
-                      <span className="text-2xl font-bold text-white">฿ 0.00</span>
-                    </div>
-                    <div className="mt-3 text-sm text-mali-text-secondary flex items-center thai-font">
-                      <Shield size={14} className="mr-1 text-mali-blue-light" />
-                      <span>ยอดเงินปลอดภัย</span>
-                    </div>
-                  </div>
-                </div>
-                <motion.button
-                  className="w-full bg-gradient-to-r from-mali-blue-light to-mali-purple text-white font-medium py-2.5 px-4 rounded-lg transition-all shadow-blue-glow thai-font"
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(78, 137, 232, 0.5)" }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  เติมเงิน
-                </motion.button>
-              </div>
-            </motion.div>
 
             {/* Account Links - New section */}
             <motion.div

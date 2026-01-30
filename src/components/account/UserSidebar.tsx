@@ -85,11 +85,7 @@ const UserSidebar = memo(function UserSidebar() {
       label: "คำสั่งซื้อของฉัน",
       icon: <ShoppingCart className="w-5 h-5" />
     },
-    {
-      href: "/my-cards",
-      label: "บัตรของฉัน",
-      icon: <CreditCard className="w-5 h-5" />
-    },
+
     {
       href: "/invoice",
       label: "ใบแจ้งหนี้ของฉัน",
@@ -105,16 +101,8 @@ const UserSidebar = memo(function UserSidebar() {
       label: "รายการโปรด",
       icon: <Heart className="w-5 h-5" />
     },
-    {
-      href: "/lucky-draw",
-      label: "ชิงโชค",
-      icon: <Gift className="w-5 h-5" />
-    },
-    {
-      href: "/balance",
-      label: "ยอดเงิน",
-      icon: <DollarSign className="w-5 h-5" />
-    },
+
+
     {
       href: "/credits",
       label: "เครดิต",

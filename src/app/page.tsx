@@ -140,13 +140,13 @@ const seasonalEvents: SeasonalEventProps[] = [
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeCategory, setActiveCategory] = useState("all");
-  
+
   // Auto rotate hero slides
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -154,8 +154,8 @@ export default function HomePage() {
     <div className="page-container">
       {/* Page Header */}
       <div className="relative mb-8 pt-4">
-        
-        <motion.h1 
+
+        <motion.h1
           className="text-3xl font-bold text-white mb-2 relative"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -165,16 +165,16 @@ export default function HomePage() {
         </motion.h1>
         <p className="text-mali-text-secondary relative">Your one-stop shop for game top-ups and credits</p>
       </div>
-      
+
       {/* Hero Section with Promotions */}
       <section className="relative w-full rounded-xl overflow-hidden shadow-card-hover mb-8">
         <div className="relative aspect-[21/9] w-full overflow-hidden">
           {heroSlides.map((slide, index) => (
-            <motion.div 
+            <motion.div
               key={slide.id}
               className="absolute inset-0"
               initial={{ opacity: 0 }}
-              animate={{ 
+              animate={{
                 opacity: index === currentSlide ? 1 : 0,
                 zIndex: index === currentSlide ? 10 : 0
               }}
@@ -186,7 +186,7 @@ export default function HomePage() {
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-mali-dark/80 to-transparent" />
-              
+
               <div className="absolute bottom-8 left-8 max-w-md">
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-lg">
                   {slide.title}
@@ -202,21 +202,20 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
-        
+
         {/* Slide indicators */}
         <div className="absolute bottom-4 right-4 flex space-x-2">
           {heroSlides.map((_, index) => (
             <button
               key={index}
-              className={`w-2 h-2 rounded-full ${
-                index === currentSlide ? "bg-white shadow-blue-glow" : "bg-white/30"
-              }`}
+              className={`w-2 h-2 rounded-full ${index === currentSlide ? "bg-white shadow-blue-glow" : "bg-white/30"
+                }`}
               onClick={() => setCurrentSlide(index)}
             />
           ))}
         </div>
       </section>
-      
+
       {/* Featured Promotion Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {/* AI Game Assistant */}
@@ -227,7 +226,7 @@ export default function HomePage() {
             <p className="text-white/80 text-sm mb-4 max-w-md">
               เช่วยให้ผู้เล่นสามารถจัดการเกมได้ง่ายขึ้น และช่วยเหลือผู้เล่นทุกเกม
             </p>
-            <motion.button 
+            <motion.button
               className="bg-white text-black px-4 py-1.5 rounded-md text-sm font-bold hover:bg-gray-200 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -235,12 +234,12 @@ export default function HomePage() {
               ทดลองใช้เลย
             </motion.button>
           </div>
-          
+
           <div className="absolute right-0 bottom-0 opacity-10">
-             <Gamepad2 size={120} />
+            <Gamepad2 size={120} />
           </div>
         </div>
-        
+
         {/* Game Promotion */}
         <div className="bg-mali-card rounded-xl p-6 relative overflow-hidden border border-mali-blue/50">
           <div className="relative z-10">
@@ -264,18 +263,17 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      
+
       {/* Filter bar */}
       <section className="flex flex-wrap items-center justify-between gap-4 py-2 mb-6">
         <div className="flex items-center space-x-2">
           {categories.map((category) => (
             <motion.button
               key={category.id}
-              className={`px-4 py-2 rounded-md text-sm flex items-center space-x-2 border transition-colors ${
-                activeCategory === category.id
+              className={`px-4 py-2 rounded-md text-sm flex items-center space-x-2 border transition-colors ${activeCategory === category.id
                   ? "bg-mali-blue-accent text-white border-mali-blue-accent font-bold"
                   : "bg-mali-card border-mali-blue text-mali-text-secondary hover:text-white hover:border-mali-blue-light"
-              }`}
+                }`}
               onClick={() => setActiveCategory(category.id)}
               whileHover={{ y: -2 }}
               whileTap={{ y: 0 }}
@@ -285,8 +283,8 @@ export default function HomePage() {
               <span>{category.name}</span>
             </motion.button>
           ))}
-          
-          <motion.button 
+
+          <motion.button
             className="px-4 py-2 rounded-md bg-mali-blue/20 text-mali-text-secondary hover:text-white text-sm flex items-center space-x-2"
             whileHover={{ y: -2 }}
             whileTap={{ y: 0 }}
@@ -296,7 +294,7 @@ export default function HomePage() {
             <span>Filter</span>
           </motion.button>
         </div>
-        
+
         <div className="relative">
           <input
             type="text"
@@ -306,7 +304,7 @@ export default function HomePage() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-mali-text-secondary" size={16} />
         </div>
       </section>
-      
+
       {/* Featured Games */}
       <section className="mb-10">
         <div className="flex items-center justify-between mb-4">
@@ -315,10 +313,10 @@ export default function HomePage() {
             View all games
           </Link>
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {featuredGames.map((game) => (
-            <motion.div 
+            <motion.div
               key={game.id}
               whileHover={{ y: -5 }}
               transition={{ duration: 0.2 }}
@@ -326,8 +324,8 @@ export default function HomePage() {
               <Link href={`/games/${game.id}`}>
                 <div className="bg-mali-card rounded-xl overflow-hidden border border-mali-blue/20 shadow-card-hover">
                   <div className="aspect-[4/3] relative overflow-hidden">
-                    <img 
-                      src={game.image} 
+                    <img
+                      src={game.image}
                       alt={game.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
@@ -335,7 +333,7 @@ export default function HomePage() {
                       {game.region}
                     </div>
                   </div>
-                  
+
                   <div className="p-4">
                     <h3 className="font-medium text-white mb-1">{game.title}</h3>
                     <div className="flex justify-between items-center">
@@ -343,22 +341,22 @@ export default function HomePage() {
                         {game.originalPrice ? (
                           <>
                             <span className="text-mali-text-secondary line-through text-xs">
-                              ${game.originalPrice.toFixed(2)}
+                              ฿{game.originalPrice.toFixed(2)}
                             </span>
                             <span className="text-mali-green font-medium">
-                              ${game.price.toFixed(2)}
+                              ฿{game.price.toFixed(2)}
                             </span>
                           </>
                         ) : (
-                          <span className="text-white">${game.price.toFixed(2)}</span>
+                          <span className="text-white">฿{game.price.toFixed(2)}</span>
                         )}
                       </div>
                       <div className={`
                         px-2 py-0.5 rounded text-xs font-medium
-                        ${game.type === 'riot' ? 'bg-red-500/20 text-red-400' : 
-                          game.type === 'garena' ? 'bg-orange-500/20 text-orange-400' : 
-                          game.type === 'steam' ? 'bg-blue-500/20 text-blue-400' : 
-                          'bg-mali-blue/20 text-mali-blue-accent'}
+                        ${game.type === 'riot' ? 'bg-red-500/20 text-red-400' :
+                          game.type === 'garena' ? 'bg-orange-500/20 text-orange-400' :
+                            game.type === 'steam' ? 'bg-blue-500/20 text-blue-400' :
+                              'bg-mali-blue/20 text-mali-blue-accent'}
                       `}>
                         {game.type}
                       </div>
@@ -370,7 +368,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      
+
       {/* Special Events Section */}
       <section className="mb-12">
         <SeasonalEventsGrid
@@ -383,7 +381,7 @@ export default function HomePage() {
           maxItems={1}
         />
       </section>
-      
+
       {/* News Section */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -392,7 +390,7 @@ export default function HomePage() {
             View all news
           </Link>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {newsItems.map((item) => (
             <motion.div
@@ -403,8 +401,8 @@ export default function HomePage() {
             >
               <Link href={`/news/${item.id}`}>
                 <div className="aspect-video relative overflow-hidden">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
@@ -412,7 +410,7 @@ export default function HomePage() {
                     {item.category}
                   </div>
                 </div>
-                
+
                 <div className="p-4">
                   <h3 className="font-medium text-white mb-2">{item.title}</h3>
                   <div className="flex items-center text-mali-text-secondary text-xs">

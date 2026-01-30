@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import {   BarChart3,   Users,   TrendingUp,   LineChart,   PieChart,   Target,   Activity,  Calendar,  ArrowUpRight,  ArrowDownRight,  Filter,  Table as TableIcon} from "lucide-react";
+import { BarChart3, Users, TrendingUp, LineChart, PieChart, Target, Activity, Calendar, ArrowUpRight, ArrowDownRight, Filter, Table as TableIcon } from "lucide-react";
 import ABTestingPanel from "@/components/analytics/ABTestingPanel";
 import CustomReports from "@/components/analytics/CustomReports";
 
@@ -46,19 +46,19 @@ const mockMetrics = {
       { name: "/games/free-fire", views: 18432 },
       { name: "/top-up", views: 15843 },
       { name: "/special-events", views: 9876 },
-      { name: "/flash-sales", views: 8765 }
+
     ]
   }
 };
 
 export default function AnalyticsDashboard() {
-  
+
   const [metrics, setMetrics] = useState(mockMetrics);
   const [timeRange, setTimeRange] = useState("30days");
   const [activeTab, setActiveTab] = useState<"overview" | "testing" | "reports">("overview");
-  
-    const tabItems = [    { id: "overview", label: "Overview", icon: <BarChart3 className="w-4 h-4" /> },    { id: "testing", label: "A/B Testing", icon: <Target className="w-4 h-4" /> },    { id: "reports", label: "Custom Reports", icon: <TableIcon className="w-4 h-4" /> }  ];
-  
+
+  const tabItems = [{ id: "overview", label: "Overview", icon: <BarChart3 className="w-4 h-4" /> }, { id: "testing", label: "A/B Testing", icon: <Target className="w-4 h-4" /> }, { id: "reports", label: "Custom Reports", icon: <TableIcon className="w-4 h-4" /> }];
+
   return (
     <AdminLayout title={"Advanced Analytics" as any}>
       <div className="space-y-8">
@@ -67,11 +67,10 @@ export default function AnalyticsDashboard() {
           {tabItems.map((tab) => (
             <button
               key={tab.id}
-              className={`flex items-center px-6 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
-                activeTab === tab.id 
-                  ? "border-mali-blue text-white" 
+              className={`flex items-center px-6 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${activeTab === tab.id
+                  ? "border-mali-blue text-white"
                   : "border-transparent text-mali-blue/70 hover:text-mali-blue hover:border-mali-blue/30"
-              }`}
+                }`}
               onClick={() => setActiveTab(tab.id as any)}
             >
               <span className="mr-2">{tab.icon}</span>
@@ -79,10 +78,10 @@ export default function AnalyticsDashboard() {
             </button>
           ))}
         </div>
-        
+
         {/* Time Range (only for Overview) */}
         {activeTab === "overview" && (
-          <motion.div 
+          <motion.div
             className="flex flex-wrap items-center justify-between gap-4 bg-mali-card rounded-xl border border-mali-blue/20 p-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,16 +94,15 @@ export default function AnalyticsDashboard() {
                 {["7days", "30days", "90days", "year"].map((range) => (
                   <button
                     key={range}
-                    className={`px-4 py-2 text-sm transition-colors ${
-                      timeRange === range 
-                        ? "bg-mali-blue text-white" 
+                    className={`px-4 py-2 text-sm transition-colors ${timeRange === range
+                        ? "bg-mali-blue text-white"
                         : "text-mali-blue/70 hover:bg-mali-blue/10"
-                    }`}
+                      }`}
                     onClick={() => setTimeRange(range)}
                   >
                     {range === "7days" ? "7 Days" :
-                     range === "30days" ? "30 Days" :
-                     range === "90days" ? "3 Months" : "1 Year"}
+                      range === "30days" ? "30 Days" :
+                        range === "90days" ? "3 Months" : "1 Year"}
                   </button>
                 ))}
               </div>
@@ -115,13 +113,13 @@ export default function AnalyticsDashboard() {
             </button>
           </motion.div>
         )}
-        
+
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <>
             {/* User Behavior Metrics */}
             <div className="space-y-5">
-              <motion.h2 
+              <motion.h2
                 className="text-xl font-semibold text-white flex items-center"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -130,30 +128,30 @@ export default function AnalyticsDashboard() {
                 <Users className="mr-2 h-5 w-5 text-mali-blue" />
                 {t("User Behavior Metrics" as any)}
               </motion.h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <MetricCard 
+                <MetricCard
                   title="Total Users"
                   value={metrics.userMetrics.totalUsers.toLocaleString()}
                   trend={null}
                   icon={<Users className="h-5 w-5" />}
                   color="blue"
                 />
-                <MetricCard 
+                <MetricCard
                   title="Active Users"
                   value={metrics.userMetrics.activeUsers.toLocaleString()}
                   trend={null}
                   icon={<Activity className="h-5 w-5" />}
                   color="purple"
                 />
-                <MetricCard 
+                <MetricCard
                   title="New Users"
                   value={metrics.userMetrics.newUsers.toLocaleString()}
                   trend={metrics.userMetrics.newUsersTrend}
                   icon={<Users className="h-5 w-5" />}
                   color="emerald"
                 />
-                <MetricCard 
+                <MetricCard
                   title="Bounce Rate"
                   value={`${metrics.userMetrics.bounceRate}%`}
                   trend={metrics.userMetrics.bounceRateTrend}
@@ -162,8 +160,8 @@ export default function AnalyticsDashboard() {
                   color="rose"
                 />
               </div>
-              
-              <motion.div 
+
+              <motion.div
                 className="bg-mali-card rounded-xl border border-mali-blue/20 p-5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -183,7 +181,7 @@ export default function AnalyticsDashboard() {
 
             {/* Sales Performance Metrics */}
             <div className="space-y-5">
-              <motion.h2 
+              <motion.h2
                 className="text-xl font-semibold text-white flex items-center"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -192,23 +190,23 @@ export default function AnalyticsDashboard() {
                 <TrendingUp className="mr-2 h-5 w-5 text-mali-blue" />
                 {t("Sales Performance Metrics" as any)}
               </motion.h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <MetricCard 
+                <MetricCard
                   title="Total Revenue"
                   value={`$${metrics.salesMetrics.totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
                   trend={metrics.salesMetrics.revenueTrend}
                   icon={<TrendingUp className="h-5 w-5" />}
                   color="blue"
                 />
-                <MetricCard 
+                <MetricCard
                   title="Avg Order Value"
                   value={`$${metrics.salesMetrics.avgOrderValue.toFixed(2)}`}
                   trend={metrics.salesMetrics.avgOrderTrend}
                   icon={<ArrowUpRight className="h-5 w-5" />}
                   color="purple"
                 />
-                <MetricCard 
+                <MetricCard
                   title="Conversion Rate"
                   value={`${metrics.salesMetrics.conversionRate}%`}
                   trend={metrics.salesMetrics.conversionTrend}
@@ -216,9 +214,9 @@ export default function AnalyticsDashboard() {
                   color="emerald"
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <motion.div 
+                <motion.div
                   className="bg-mali-card rounded-xl border border-mali-blue/20 p-5"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -233,8 +231,8 @@ export default function AnalyticsDashboard() {
                       {metrics.salesMetrics.topSellingCategories.map((category, i) => (
                         <div key={i} className="flex items-center">
                           <div className="w-full bg-mali-blue/10 rounded-full h-2.5">
-                            <div 
-                              className="h-2.5 rounded-full bg-gradient-to-r from-mali-blue to-indigo-500" 
+                            <div
+                              className="h-2.5 rounded-full bg-gradient-to-r from-mali-blue to-indigo-500"
                               style={{ width: `${category.value}%` }}
                             ></div>
                           </div>
@@ -245,8 +243,8 @@ export default function AnalyticsDashboard() {
                     </div>
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="bg-mali-card rounded-xl border border-mali-blue/20 p-5"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -266,7 +264,7 @@ export default function AnalyticsDashboard() {
             </div>
           </>
         )}
-        
+
         {/* A/B Testing Tab */}
         {activeTab === "testing" && (
           <motion.div
@@ -279,7 +277,7 @@ export default function AnalyticsDashboard() {
             <ABTestingPanel />
           </motion.div>
         )}
-        
+
         {/* Custom Reports Tab */}
         {activeTab === "reports" && (
           <motion.div
@@ -325,7 +323,7 @@ function MetricCard({ title, value, trend, invertTrend = false, icon, color }: M
   const isPositive = invertTrend ? (trend !== null ? trend < 0 : false) : (trend !== null ? trend > 0 : false);
 
   return (
-    <motion.div 
+    <motion.div
       className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl border p-6 flex flex-col`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -337,7 +335,7 @@ function MetricCard({ title, value, trend, invertTrend = false, icon, color }: M
           {icon}
         </span>
       </div>
-      
+
       <div className="mt-3">
         <span className="text-2xl font-bold text-white">{value}</span>
         {trend !== null && (

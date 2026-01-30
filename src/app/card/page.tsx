@@ -23,7 +23,7 @@ function getRandomColor() {
 
 function getCardName(index: number) {
   const cardNames = [
-    "Steam", "PlayStation", "Xbox", "Nintendo", "Google Play", 
+    "Steam", "PlayStation", "Xbox", "Nintendo", "Google Play",
     "iTunes", "Amazon", "Netflix", "Spotify", "Roblox",
     "PUBG", "Fortnite", "App Store", "Battle.net", "Epic Games",
     "Razer Gold", "Discord", "Twitch", "Facebook", "TikTok"
@@ -32,7 +32,7 @@ function getCardName(index: number) {
 }
 
 function getCategoryIcon(category: string) {
-  switch(category.toLowerCase()) {
+  switch (category.toLowerCase()) {
     case 'popular': return <Star size={16} />;
     case 'gaming': return <PlayCircle size={16} />;
     case 'entertainment': return <Video size={16} />;
@@ -55,7 +55,7 @@ const CATEGORIES = [
 export default function CardPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Filter cards based on selected category and search query
   const filteredCards = CARDS.filter(card => {
     const matchesCategory = selectedCategory === "all" || card.category.toLowerCase() === selectedCategory.toLowerCase();
@@ -65,46 +65,10 @@ export default function CardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Banner */}
-      <motion.div 
-        className="w-full rounded-xl overflow-hidden relative shadow-card-hover"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="relative aspect-[21/9] w-full overflow-hidden">
-          <div className="absolute inset-0 bg-card-gradient opacity-40"></div>
-          <img
-            src="https://placehold.co/1200x600?text=Gift+Cards+Promotion"
-            alt="Gift cards promotion"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-mali-dark/80 to-transparent" />
-          
-          <div className="absolute bottom-8 left-8 max-w-md">
-            <span className="bg-mali-blue-light/20 text-mali-blue-light text-xs px-3 py-1 rounded-full backdrop-blur-sm inline-block mb-3">
-              บัตรดิจิตอล
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-lg">
-              บัตรเกมและบัตรเติมเงินดิจิทัล
-            </h2>
-            <p className="text-white/80 mb-4 text-sm">
-              สามารถเลือกซื้อได้ทันที ปลอดภัย ราคาพิเศษ ส่งโค้ดเข้าอีเมลทันที
-            </p>
-            <motion.button
-              className="bg-button-gradient text-white px-6 py-2 rounded-md font-medium shadow-button-glow"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              ดูโปรโมชั่น
-            </motion.button>
-          </div>
-        </div>
-      </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar */}
-        <motion.div 
+        <motion.div
           className="w-full lg:w-64 shrink-0 bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -121,15 +85,14 @@ export default function CardPage() {
               <motion.button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${
-                  selectedCategory === category.id 
-                    ? "bg-mali-blue/30 text-white" 
-                    : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
-                }`}
+                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedCategory === category.id
+                  ? "bg-mali-blue/30 text-white"
+                  : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
+                  }`}
                 whileHover={{ x: 3 }}
               >
                 {selectedCategory === category.id && (
-                  <motion.div 
+                  <motion.div
                     layoutId="active-category-indicator"
                     className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
                     initial={{ opacity: 0 }}
@@ -148,21 +111,21 @@ export default function CardPage() {
               </motion.button>
             ))}
           </div>
-          
+
           <div className="p-4 mt-4 space-y-3 border-t border-mali-blue/20">
             <h3 className="text-white font-medium text-sm mb-2 flex items-center">
               <Star size={14} className="text-mali-blue-light mr-2" />
               Popular Cards
             </h3>
-            
+
             {CARDS.slice(0, 3).map(card => (
               <Link href={`/card/${card.id}`} key={`popular-${card.id}`}>
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-3 p-2 rounded-md hover:bg-mali-blue/20 transition-colors"
                   whileHover={{ x: 3 }}
                 >
                   <div className="w-10 h-10 rounded-md overflow-hidden bg-mali-navy flex items-center justify-center">
-                    <img 
+                    <img
                       src={card.image !== undefined ? card.image : `https://placehold.co/80x80/${getRandomColor()}/FFFFFF?text=${card.name.substring(0, 2)}`}
                       alt={card.name}
                       className="w-full h-full object-cover"
@@ -170,12 +133,12 @@ export default function CardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-xs font-medium truncate">{card.name}</p>
-                    <p className="text-mali-text-secondary text-xs">From ${card.price}</p>
+                    <p className="text-mali-text-secondary text-xs">เริ่มต้น ฿{card.price}</p>
                   </div>
                 </motion.div>
               </Link>
             ))}
-            
+
             <Link href="/card">
               <div className="text-center mt-4 text-mali-blue-light hover:text-mali-blue-accent text-xs">
                 View all cards
@@ -183,10 +146,10 @@ export default function CardPage() {
             </Link>
           </div>
         </motion.div>
-        
+
         <div className="flex-1 space-y-6">
           {/* Header with search and filters */}
-          <motion.div 
+          <motion.div
             className="bg-mali-card rounded-xl border border-mali-blue/20 p-4 shadow-card-hover"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -200,7 +163,7 @@ export default function CardPage() {
                 </h1>
                 <p className="text-mali-text-secondary text-sm mt-1">เลือกซื้อบัตรเกมและบัตรเติมเงินได้ทันที</p>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <div className="relative">
                   <input
@@ -212,14 +175,14 @@ export default function CardPage() {
                   />
                   <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mali-text-secondary" />
                 </div>
-                
+
                 <button className="bg-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/30 text-xs px-3 py-2 rounded-md flex items-center gap-1.5 transition-colors">
                   <Filter size={14} /> ตัวกรอง
                 </button>
               </div>
             </div>
           </motion.div>
-          
+
           {/* Cards grid */}
           <motion.div
             className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
@@ -241,20 +204,20 @@ export default function CardPage() {
                         -{card.discountPercent}%
                       </div>
                     )}
-                    
+
                     <div className="relative h-32 md:h-36 w-full overflow-hidden">
-                      <img 
+                      <img
                         src={card.image !== undefined ? card.image : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`}
                         alt={card.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
-                      
+
                       <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-xs px-2 py-0.5 rounded-sm backdrop-blur-sm">
                         {card.category}
                       </div>
                     </div>
-                    
+
                     <div className="p-3">
                       <p className="text-white text-sm font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-light transition-colors">{card.name}</p>
                       <div className="flex items-center justify-between">
@@ -262,10 +225,10 @@ export default function CardPage() {
                           {getCategoryIcon(card.category)}
                           <span className="text-mali-text-secondary text-xs ml-1">Digital</span>
                         </div>
-                        <div className="text-xs text-white font-medium">From ${card.price}</div>
+                        <div className="text-xs text-white font-medium">เริ่มต้น ฿{card.price}</div>
                       </div>
                     </div>
-                    
+
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-mali-blue/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <div className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform shadow-button-glow">

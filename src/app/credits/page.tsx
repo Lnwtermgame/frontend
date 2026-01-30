@@ -205,13 +205,7 @@ export default function CreditsPage() {
                   View Transaction History
                 </Link>
 
-                <Link
-                  href="/referral"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white text-center py-3 px-4 rounded-lg font-medium flex items-center justify-center"
-                >
-                  <Gift size={18} className="mr-2" />
-                  Earn More Credits
-                </Link>
+
               </div>
             </div>
           </motion.div>
@@ -265,10 +259,7 @@ export default function CreditsPage() {
               </div>
 
               <div className="mt-4 pt-4 border-t border-mali-blue/20">
-                <Link href="/referral" className="text-mali-blue-accent hover:text-mali-blue-accent/80 flex items-center justify-between">
-                  <span>Learn more about earning credits</span>
-                  <ChevronRight size={16} />
-                </Link>
+
               </div>
             </div>
           </motion.div>
@@ -406,13 +397,7 @@ export default function CreditsPage() {
                 <p className="text-mali-text-secondary mb-6">
                   You don't have any credits activity in the selected period
                 </p>
-                <Link
-                  href="/referral"
-                  className="bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent py-2 px-4 rounded-lg font-medium inline-flex items-center"
-                >
-                  <Gift size={18} className="mr-2" />
-                  Earn Your First Credits
-                </Link>
+
               </div>
             )}
           </div>

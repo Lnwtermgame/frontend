@@ -31,9 +31,9 @@ export function GameCard({
 }: GameCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [favorite, setFavorite] = useState(isFavorite);
-  
+
   const discount = originalPrice && price ? Math.round((1 - price / originalPrice) * 100) : 0;
-  
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -70,14 +70,14 @@ export function GameCard({
           <div className={`absolute top-2 left-2 z-10 px-2 py-1 text-xs font-medium text-white rounded ${getBadgeColor()}`}>
             {type.toUpperCase()}
           </div>
-          
+
           {/* Region Badge if exists */}
           {region && (
             <div className="absolute top-2 right-2 z-10 px-2 py-1 text-xs font-medium text-white bg-mali-blue/80 rounded">
               {region}
             </div>
           )}
-          
+
           {/* Favorite Button */}
           <button
             onClick={handleFavoriteClick}
@@ -87,7 +87,7 @@ export function GameCard({
               className={`h-4 w-4 transition-colors ${favorite ? 'fill-red-500 text-red-500' : 'text-white'}`}
             />
           </button>
-          
+
           {/* Image */}
           <div className="relative h-full w-full">
             <img
@@ -95,28 +95,28 @@ export function GameCard({
               alt={title}
               className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
             />
-            
+
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-game-card-gradient opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
-          
+
           {/* Content */}
           <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
             <h3 className="text-white font-medium text-sm mb-1 line-clamp-1 group-hover:text-mali-blue-light transition-colors">{title}</h3>
-            
+
             {price !== undefined && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {originalPrice && originalPrice > price && (
                     <span className="text-mali-text-secondary line-through text-xs">
-                      ${originalPrice.toFixed(2)}
+                      ฿{originalPrice.toFixed(2)}
                     </span>
                   )}
                   <span className="text-white font-bold group-hover:text-mali-blue-light transition-colors">
-                    ${price.toFixed(2)}
+                    ฿{price.toFixed(2)}
                   </span>
                 </div>
-                
+
                 {discount > 0 && (
                   <span className="bg-mali-pink px-1.5 py-0.5 text-xs font-medium text-white rounded">
                     -{discount}%
@@ -125,13 +125,13 @@ export function GameCard({
               </div>
             )}
           </div>
-          
+
           {/* Hover overlay with button */}
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-black/60 opacity-0 transition-opacity flex items-center justify-center backdrop-blur-[2px]"
             animate={{ opacity: isHovered ? 1 : 0 }}
           >
-            <motion.div 
+            <motion.div
               className="bg-mali-blue-accent text-white px-6 py-2 rounded font-bold text-sm relative z-10 hover:bg-white hover:text-black transition-colors border border-transparent hover:border-white"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}

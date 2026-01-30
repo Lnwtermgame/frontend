@@ -41,10 +41,10 @@ export function GameRelatedProducts({
   itemsToShow = 4
 }: GameRelatedProductsProps) {
   const [scrollPosition, setScrollPosition] = useState(0);
-  
+
   // Get title and icon based on type
   const getTitleAndIcon = () => {
-    switch(type) {
+    switch (type) {
       case 'up-sell':
         return {
           defaultTitle: "Upgrade your experience",
@@ -62,13 +62,13 @@ export function GameRelatedProducts({
         };
     }
   };
-  
+
   const { defaultTitle, icon } = getTitleAndIcon();
   const displayTitle = title || defaultTitle;
-  
+
   // Get tag color class
   const getTagColorClass = (color?: string) => {
-    switch(color) {
+    switch (color) {
       case 'blue': return 'bg-mali-blue-light';
       case 'green': return 'bg-mali-green';
       case 'purple': return 'bg-mali-purple';
@@ -77,7 +77,7 @@ export function GameRelatedProducts({
       default: return 'bg-mali-blue-light';
     }
   };
-  
+
   // Handle horizontal scrolling
   const scroll = (direction: 'left' | 'right') => {
     const container = document.getElementById('related-products-container');
@@ -87,11 +87,11 @@ export function GameRelatedProducts({
       setScrollPosition(container.scrollLeft + scrollAmount);
     }
   };
-  
+
   if (products.length === 0) {
     return null;
   }
-  
+
   return (
     <div className={`${className}`}>
       {/* Header */}
@@ -105,7 +105,7 @@ export function GameRelatedProducts({
             {subtitle && <p className="text-mali-text-secondary text-sm">{subtitle}</p>}
           </div>
         </div>
-        
+
         {viewAllUrl && (
           <Link
             href={viewAllUrl}
@@ -116,7 +116,7 @@ export function GameRelatedProducts({
           </Link>
         )}
       </div>
-      
+
       {/* Products Slider */}
       <div className="relative">
         {/* Left Scroll Arrow */}
@@ -127,9 +127,9 @@ export function GameRelatedProducts({
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
-        
+
         {/* Products Container */}
-        <div 
+        <div
           id="related-products-container"
           className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4 -mx-2 px-2"
           style={{ scrollBehavior: 'smooth' }}
@@ -152,21 +152,21 @@ export function GameRelatedProducts({
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    
+
                     {/* Discount Tag */}
                     {product.discount && (
                       <div className="absolute top-2 right-2 bg-mali-red text-white text-xs px-2 py-0.5 rounded font-medium">
                         {product.discount}
                       </div>
                     )}
-                    
+
                     {/* Custom Tag */}
                     {product.tag && (
                       <div className={`absolute top-2 left-2 ${getTagColorClass(product.tagColor)} text-white text-xs px-2 py-0.5 rounded font-medium`}>
                         {product.tag}
                       </div>
                     )}
-                    
+
                     {/* Region Badge */}
                     {product.region && (
                       <div className="absolute bottom-2 left-2 bg-mali-navy/80 backdrop-blur-sm text-mali-text-secondary text-xs px-2 py-0.5 rounded">
@@ -174,29 +174,29 @@ export function GameRelatedProducts({
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Product Info */}
                   <div className="p-3 flex flex-col flex-grow">
                     <h4 className="font-medium text-white mb-1 line-clamp-2">{product.title}</h4>
-                    
+
                     <div className="flex items-center justify-between mt-auto pt-2">
                       <div className="flex items-baseline">
                         <span className="text-white font-semibold">
-                          ${product.price.toFixed(2)}
+                          ฿{product.price.toFixed(2)}
                         </span>
                         {product.originalPrice && (
                           <span className="text-mali-text-secondary line-through text-xs ml-2">
-                            ${product.originalPrice.toFixed(2)}
+                            ฿{product.originalPrice.toFixed(2)}
                           </span>
                         )}
                       </div>
-                      
+
                       <div className={`
                         px-1.5 py-0.5 rounded text-xs 
-                        ${product.type === 'game' ? 'bg-blue-500/20 text-blue-400' : 
-                          product.type === 'card' ? 'bg-green-500/20 text-green-400' : 
-                          product.type === 'subscription' ? 'bg-purple-500/20 text-purple-400' :
-                          'bg-amber-500/20 text-amber-400'}
+                        ${product.type === 'game' ? 'bg-blue-500/20 text-blue-400' :
+                          product.type === 'card' ? 'bg-green-500/20 text-green-400' :
+                            product.type === 'subscription' ? 'bg-purple-500/20 text-purple-400' :
+                              'bg-amber-500/20 text-amber-400'}
                       `}>
                         {product.type}
                       </div>
@@ -207,7 +207,7 @@ export function GameRelatedProducts({
             </motion.div>
           ))}
         </div>
-        
+
         {/* Right Scroll Arrow */}
         <button
           onClick={() => scroll('right')}
@@ -217,17 +217,16 @@ export function GameRelatedProducts({
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      
+
       {/* Scroll Indicator Dots */}
       <div className="flex justify-center space-x-1 mt-4">
         {[...Array(Math.ceil(products.length / itemsToShow))].map((_, i) => (
           <div
             key={i}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i * itemsToShow <= scrollPosition && scrollPosition < (i + 1) * itemsToShow
+            className={`h-1.5 rounded-full transition-all duration-300 ${i * itemsToShow <= scrollPosition && scrollPosition < (i + 1) * itemsToShow
                 ? 'w-6 bg-mali-blue-light'
                 : 'w-1.5 bg-mali-blue/30'
-            }`}
+              }`}
           />
         ))}
       </div>

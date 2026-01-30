@@ -25,7 +25,7 @@ export default function LoginPage() {
     try {
       const success = await login(email, password);
       if (success) {
-        router.push("/account");
+        router.push("/dashboard/account");
       }
     } finally {
       setIsLoading(false);
@@ -37,7 +37,7 @@ export default function LoginPage() {
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px] max-w-full">
         {showDemo && (
           <div className="bg-[#2a312d] border border-[#3a413d] p-4 rounded-md mb-4 relative">
-            <button 
+            <button
               className="absolute top-2 right-2 text-gray-400 hover:text-white"
               onClick={() => setShowDemo(false)}
             >
@@ -51,7 +51,7 @@ export default function LoginPage() {
             </div>
           </div>
         )}
-        
+
         <div className="bg-[#1a201c] rounded-md p-6 border border-[#2a312d]">
           <div className="flex flex-col space-y-2 text-center mb-6">
             <h1 className="text-2xl font-semibold tracking-tight text-white">
@@ -82,7 +82,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium leading-none text-gray-300" htmlFor="password">
@@ -106,14 +106,14 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            
+
             {error && (
               <div className="bg-red-900/30 text-red-400 text-sm p-3 rounded-md flex items-start">
                 <AlertCircle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
-            
+
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -124,7 +124,7 @@ export default function LoginPage() {
                 Remember me
               </label>
             </div>
-            
+
             <button
               className="w-full rounded-md bg-[#3B82F6] px-4 py-2 text-sm font-medium text-white hover:bg-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1a201c] disabled:opacity-50 flex justify-center items-center"
               type="submit"
@@ -173,7 +173,7 @@ export default function LoginPage() {
               </svg>
               Google
             </button>
-            
+
             <button
               type="button"
               className="flex items-center justify-center gap-2 rounded-md bg-[#1877F2] px-4 py-2 text-sm font-medium text-white hover:bg-[#0C63D4] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1a201c]"

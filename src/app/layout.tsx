@@ -35,35 +35,7 @@ export default function RootLayout({
   return (
     <html lang="th" className="dark">
       <head>
-        {/* Critical inline CSS */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            /* Thai font settings */
-            @font-face {
-              font-family: 'Noto Sans Thai';
-              font-style: normal;
-              font-weight: 400;
-              font-display: block;
-              src: url('/fonts/noto-sans-thai-regular.ttf') format('truetype');
-            }
-            
-            html {
-              -webkit-font-smoothing: antialiased;
-              -moz-osx-font-smoothing: grayscale;
-              text-rendering: optimizeLegibility;
-              font-family: 'Noto Sans Thai', 'Thonburi', 'Tahoma', sans-serif !important;
-            }
-            
-            /* Theme critical styling */
-            body {
-              background-color: #0b1021;
-              color: #ffffff;
-              -webkit-font-smoothing: antialiased;
-              -moz-osx-font-smoothing: grayscale;
-              text-rendering: optimizeLegibility;
-            }
-          `
-        }} />
+
 
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (

@@ -38,24 +38,36 @@ const PLATFORMS = [
   { id: "console", name: "คอนโซล", count: GAMES.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} /> },
 ];
 
-// Top-up methods
-const TOPUP_METHODS = [
-  { id: "direct", name: "เติมเงินโดยตรง", count: GAMES.length, icon: <Zap size={16} /> },
-  { id: "giftcard", name: "บัตรของขวัญ", count: Math.floor(GAMES.length * 0.5), icon: <Tag size={16} /> },
-  { id: "gamecard", name: "บัตรเกม", count: Math.floor(GAMES.length * 0.7), icon: <Gamepad2 size={16} /> },
-];
+
 
 export default function DirectTopupPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedPlatform, setSelectedPlatform] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter games based on selected category and search query
   const filteredGames = GAMES.filter(game => {
+    // Category filter
     const matchesCategory = selectedCategory === "all" ||
       game.category.toLowerCase() === selectedCategory.toLowerCase() ||
       (selectedCategory === "popular" && (game.category === "Popular" || game.rating >= 4.5));
+
+    // Search filter
     const matchesSearch = !searchQuery || game.title.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+
+    // Platform filter
+    let matchesPlatform = true;
+    if (selectedPlatform !== "all") {
+      if (selectedPlatform === "mobile") {
+        matchesPlatform = game.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS");
+      } else if (selectedPlatform === "pc") {
+        matchesPlatform = game.platforms.some(p => p === "PC" || p === "Mac");
+      } else if (selectedPlatform === "console") {
+        matchesPlatform = game.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox");
+      }
+    }
+
+    return matchesCategory && matchesSearch && matchesPlatform;
   });
 
   return (
@@ -107,29 +119,7 @@ export default function DirectTopupPage() {
             ))}
           </div>
 
-          <div className="p-4 border-t border-mali-blue/20">
-            <h3 className="text-white font-medium text-sm mb-3 flex items-center">
-              <Zap size={16} className="text-mali-blue-light mr-2" />
-              วิธีเติมเงิน
-            </h3>
-            <div className="space-y-1">
-              {TOPUP_METHODS.map(method => (
-                <motion.button
-                  key={method.id}
-                  className="w-full flex justify-between items-center text-left p-2 rounded-md text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white group"
-                  whileHover={{ x: 3 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-mali-text-secondary group-hover:text-white">
-                      {method.icon}
-                    </span>
-                    <span className="text-sm">{method.name}</span>
-                  </div>
-                  <ChevronRight size={14} className="text-mali-text-secondary group-hover:text-white" />
-                </motion.button>
-              ))}
-            </div>
-          </div>
+
 
           <div className="p-4 border-t border-mali-blue/20">
             <h3 className="text-white font-medium text-sm mb-3 flex items-center">
@@ -140,14 +130,28 @@ export default function DirectTopupPage() {
               {PLATFORMS.map(platform => (
                 <motion.button
                   key={platform.id}
-                  className="w-full flex justify-between items-center text-left p-2 rounded-md text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white group"
+                  onClick={() => setSelectedPlatform(platform.id)}
+                  className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedPlatform === platform.id
+                    ? "bg-mali-blue/30 text-white"
+                    : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
+                    }`}
                   whileHover={{ x: 3 }}
                 >
+                  {selectedPlatform === platform.id && (
+                    <motion.div
+                      layoutId="active-game-platform-indicator"
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                  )}
                   <div className="flex items-center gap-3">
-                    <span className="text-mali-text-secondary group-hover:text-white">
+                    <span className={`${selectedPlatform === platform.id ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"}`}>
                       {platform.icon}
                     </span>
-                    <span className="text-sm">{platform.name}</span>
+                    <span className="text-sm font-medium">{platform.name}</span>
                   </div>
                   <span className="text-xs bg-mali-blue/30 px-2 py-0.5 rounded-full">{platform.count}</span>
                 </motion.button>

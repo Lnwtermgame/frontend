@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { Ticket, Copy, Check, ChevronDown, ChevronUp, Clock, Search, Plus, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { motion } from "@/lib/framer-exports";
 
 // Mock coupons data
 const coupons = [
@@ -140,8 +141,14 @@ export default function CouponsPage() {
   // If the user is not loaded yet or not logged in, show loading
   if (!isInitialized || !user) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-lg text-mali-text-secondary">Loading...</p>
+      <div className="animate-pulse flex space-x-4">
+        <div className="flex-1 space-y-4 py-1">
+          <div className="h-4 bg-mali-blue/20 rounded w-3/4"></div>
+          <div className="space-y-2">
+            <div className="h-4 bg-mali-blue/20 rounded"></div>
+            <div className="h-4 bg-mali-blue/20 rounded w-5/6"></div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -150,77 +157,92 @@ export default function CouponsPage() {
   const activeCouponCount = coupons.filter(coupon => coupon.status === "active").length;
 
   return (
-    <div className="page-container">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-1">My Coupons</h1>
-          <p className="text-mali-text-secondary text-sm">You have {activeCouponCount} active coupons</p>
+    <div>
+      {/* Page Header */}
+      <div className="relative mb-6">
+        <motion.h2
+          className="text-xl font-bold text-white mb-1 relative"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          My Coupons
+        </motion.h2>
+        <p className="text-mali-text-secondary text-sm relative">You have {activeCouponCount} active coupons</p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            placeholder="Search coupons..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-full bg-mali-blue/10 px-4 py-2 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent pl-10 transition-all"
+          />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary" />
         </div>
 
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3 mt-4 sm:mt-0">
-          <div className="relative w-full sm:w-64">
-            <input
-              type="text"
-              placeholder="Search coupons..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-md bg-mali-navy px-3 py-2 text-sm text-white border border-mali-blue focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
-            />
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary" />
-          </div>
-
-          <div className="relative w-full sm:w-auto">
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="appearance-none w-full rounded-md bg-mali-navy px-3 py-2 pr-8 text-sm text-white border border-mali-blue focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
-            >
-              <option value="all">All Coupons</option>
-              <option value="active">Active</option>
-              <option value="used">Used</option>
-              <option value="expired">Expired</option>
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary pointer-events-none" />
-          </div>
+        <div className="relative w-full sm:w-auto ml-auto">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="appearance-none w-full rounded-full bg-mali-blue/10 px-4 py-2 pr-10 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-all cursor-pointer"
+          >
+            <option value="all">All Coupons</option>
+            <option value="active">Active</option>
+            <option value="used">Used</option>
+            <option value="expired">Expired</option>
+          </select>
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary pointer-events-none" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           {filteredCoupons.length === 0 ? (
-            <div className="glass-card p-8 text-center">
-              <Ticket className="h-16 w-16 mx-auto text-mali-text-secondary mb-4" />
+            <motion.div
+              className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Ticket className="h-16 w-16 mx-auto text-mali-text-secondary mb-4 opacity-50" />
               <h2 className="text-xl font-bold text-white mb-2">No coupons found</h2>
               <p className="text-mali-text-secondary mb-6">You don't have any coupons matching your criteria.</p>
-              <Link href="/rewards" className="btn-primary inline-flex items-center">
+              <Link href="/rewards" className="bg-mali-blue hover:bg-mali-blue/90 text-white px-4 py-2 rounded-lg inline-flex items-center transition-all">
                 Browse Rewards
               </Link>
-            </div>
+            </motion.div>
           ) : (
             <div className="space-y-4">
-              {filteredCoupons.map((coupon) => (
-                <div key={coupon.id} className="glass-card overflow-hidden">
+              {filteredCoupons.map((coupon, index) => (
+                <motion.div
+                  key={coupon.id}
+                  className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden hover:border-mali-blue/40 transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
                   <div
-                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-mali-blue/10 transition-colors"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-mali-blue/5 transition-colors"
                     onClick={() => toggleCouponExpansion(coupon.id)}
                   >
                     <div className="flex items-center mb-3 sm:mb-0">
-                      <div className="h-10 w-10 rounded-full flex items-center justify-center bg-mali-blue/30 mr-3">
-                        <Ticket className="h-5 w-5 text-mali-blue-light" />
+                      <div className="h-12 w-12 rounded-lg flex items-center justify-center bg-mali-blue/10 border border-mali-blue/20 mr-4">
+                        <Ticket className="h-6 w-6 text-mali-blue-light" />
                       </div>
                       <div>
-                        <div className="text-white font-medium">{coupon.description}</div>
-                        <div className="text-mali-text-secondary text-xs">Min. spend: ${coupon.minSpend.toFixed(2)}</div>
+                        <div className="text-white font-medium text-lg">{coupon.description}</div>
+                        <div className="text-mali-text-secondary text-sm">Min. spend: ${coupon.minSpend.toFixed(2)}</div>
                       </div>
                     </div>
                     <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
                       <div className="mr-4">
-                        <span className={`text-xs px-2 py-0.5 rounded-full inline-flex items-center
+                        <span className={`text-xs px-2.5 py-1 rounded-full inline-flex items-center font-medium
                           ${coupon.status === 'active'
-                            ? 'bg-mali-green/20 text-mali-green'
+                            ? 'bg-mali-green/20 text-mali-green border border-mali-green/20'
                             : coupon.status === 'used'
-                              ? 'bg-mali-blue/20 text-mali-blue-light'
-                              : 'bg-mali-red/20 text-mali-red'
+                              ? 'bg-mali-blue/20 text-mali-blue-light border border-mali-blue/20'
+                              : 'bg-mali-red/20 text-mali-red border border-mali-red/20'
                           }`}>
                           {coupon.status === 'active' ? 'Active' : coupon.status === 'used' ? 'Used' : 'Expired'}
                         </span>
@@ -234,33 +256,35 @@ export default function CouponsPage() {
                   </div>
 
                   {expandedCoupons.includes(coupon.id) && (
-                    <div className="p-4 border-t border-mali-blue/20">
+                    <div className="p-4 border-t border-mali-blue/20 bg-mali-blue/5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-mali-navy/50 p-4 rounded-md">
-                          <h3 className="text-white text-sm font-medium mb-3">Coupon Details</h3>
+                        <div className="bg-mali-card p-4 rounded-lg border border-mali-blue/10">
+                          <h3 className="text-white text-sm font-medium mb-3 flex items-center gap-2">
+                            <Clock size={14} className="text-mali-blue-accent" /> Coupon Details
+                          </h3>
                           <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
+                            <div className="flex justify-between p-2 rounded hover:bg-mali-blue/5 transition-colors">
                               <span className="text-mali-text-secondary">Discount:</span>
-                              <span className="text-white">{coupon.discount}</span>
+                              <span className="text-white font-medium">{coupon.discount}</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex justify-between p-2 rounded hover:bg-mali-blue/5 transition-colors">
                               <span className="text-mali-text-secondary">Max Discount:</span>
-                              <span className="text-white">${coupon.maxDiscount.toFixed(2)}</span>
+                              <span className="text-white font-medium">${coupon.maxDiscount.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex justify-between p-2 rounded hover:bg-mali-blue/5 transition-colors">
                               <span className="text-mali-text-secondary">Valid Until:</span>
-                              <span className={`${new Date() > new Date(coupon.expiryDate) ? 'text-mali-red' : 'text-white'}`}>
+                              <span className={`font-medium ${new Date() > new Date(coupon.expiryDate) ? 'text-mali-red' : 'text-white'}`}>
                                 {new Date(coupon.expiryDate).toLocaleDateString()}
                               </span>
                             </div>
                             {coupon.status === 'used' && coupon.usedDate && (
-                              <div className="flex justify-between">
+                              <div className="flex justify-between p-2 rounded hover:bg-mali-blue/5 transition-colors">
                                 <span className="text-mali-text-secondary">Used On:</span>
                                 <span className="text-white">{new Date(coupon.usedDate).toLocaleDateString()}</span>
                               </div>
                             )}
                             {coupon.status === 'used' && coupon.orderReference && (
-                              <div className="flex justify-between">
+                              <div className="flex justify-between p-2 rounded hover:bg-mali-blue/5 transition-colors">
                                 <span className="text-mali-text-secondary">Order:</span>
                                 <Link href={`/orders/${coupon.orderReference}`} className="text-mali-blue-light hover:text-mali-blue-accent hover:underline">
                                   {coupon.orderReference}
@@ -270,7 +294,7 @@ export default function CouponsPage() {
                           </div>
                         </div>
 
-                        <div className="bg-mali-navy/50 p-4 rounded-md">
+                        <div className="bg-mali-card p-4 rounded-lg border border-mali-blue/10">
                           <div className="flex justify-between items-center mb-3">
                             <h3 className="text-white text-sm font-medium">Coupon Code</h3>
                             {coupon.status === 'active' && (
@@ -279,7 +303,7 @@ export default function CouponsPage() {
                                   e.stopPropagation();
                                   copyToClipboard(coupon.code, coupon.id);
                                 }}
-                                className="text-xs text-mali-blue-light hover:text-mali-blue-accent hover:underline flex items-center"
+                                className="text-xs text-mali-blue-light hover:text-mali-blue-accent hover:underline flex items-center transition-colors"
                               >
                                 {copiedCode === coupon.id ? (
                                   <>
@@ -295,7 +319,7 @@ export default function CouponsPage() {
                               </button>
                             )}
                           </div>
-                          <div className="p-3 bg-mali-dark rounded-md font-mono text-white text-sm select-all">
+                          <div className="p-3 bg-mali-dark/50 border border-mali-blue/10 rounded-lg font-mono text-white text-sm select-all text-center tracking-wider">
                             {coupon.code}
                           </div>
 
@@ -303,7 +327,7 @@ export default function CouponsPage() {
                             <div className="mt-4 text-center">
                               <Link
                                 href="/checkout"
-                                className="btn-primary inline-flex items-center text-xs py-1.5 px-3"
+                                className="w-full bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent hover:text-white rounded-lg inline-flex items-center justify-center text-sm py-2 transition-all font-medium"
                               >
                                 Use Now
                               </Link>
@@ -313,19 +337,26 @@ export default function CouponsPage() {
                       </div>
                     </div>
                   )}
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
         </div>
 
         <div className="space-y-6">
-          <div className="glass-card p-4">
-            <h2 className="text-white font-medium mb-4">Add Coupon</h2>
+          <motion.div
+            className="bg-mali-card border border-mali-blue/20 rounded-xl p-5"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+              <Plus size={18} className="text-mali-blue-accent" /> Add Coupon
+            </h2>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-mali-text-secondary mb-1">Enter coupon code</label>
-                <div className="flex">
+                <label className="block text-sm text-mali-text-secondary mb-2">Enter coupon code</label>
+                <div className="flex gap-2">
                   <input
                     type="text"
                     placeholder="e.g. SAVE20"
@@ -334,83 +365,74 @@ export default function CouponsPage() {
                       setNewCouponCode(e.target.value.toUpperCase());
                       setErrorMessage("");
                     }}
-                    className="flex-1 rounded-l-md bg-mali-navy px-3 py-2 text-sm text-white border border-mali-blue focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
+                    className="flex-1 rounded-lg bg-mali-blue/10 px-3 py-2 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-all"
                   />
                   <button
                     onClick={handleAddCoupon}
-                    className="rounded-r-md bg-button-gradient shadow-button-glow hover:opacity-90 text-white px-3 py-2 flex items-center"
+                    className="rounded-lg bg-mali-blue hover:bg-mali-blue/90 text-white px-3 py-2 flex items-center transition-all shadow-button-glow"
                   >
                     <Plus className="h-4 w-4" />
                   </button>
                 </div>
                 {errorMessage && (
-                  <div className="mt-2 text-xs flex items-start text-mali-red">
+                  <motion.div
+                    className="mt-2 text-xs flex items-start text-mali-red bg-mali-red/10 p-2 rounded"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                  >
                     <AlertCircle className="h-3 w-3 mt-0.5 mr-1 flex-shrink-0" />
                     <span>{errorMessage}</span>
-                  </div>
+                  </motion.div>
                 )}
                 <p className="text-mali-text-secondary text-xs mt-2">
                   Enter a valid coupon code to add it to your account
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="glass-card p-4">
-            <h2 className="text-white font-medium mb-4">How to Use</h2>
+          {/* How to Use Section */}
+          <motion.div
+            className="bg-mali-card border border-mali-blue/20 rounded-xl p-5"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-white font-semibold mb-4">How to Use</h2>
             <div className="space-y-4">
               <div className="flex">
-                <div className="h-6 w-6 rounded-full bg-mali-blue/30 flex items-center justify-center mr-3 flex-shrink-0">
-                  <span className="text-white text-xs">1</span>
+                <div className="h-6 w-6 rounded-full bg-mali-blue/20 border border-mali-blue/30 text-mali-blue-accent flex items-center justify-center mr-3 flex-shrink-0 text-xs font-bold">
+                  1
                 </div>
                 <div>
-                  <p className="text-mali-text-secondary text-xs">Find a coupon or enter a coupon code</p>
+                  <p className="text-mali-text-secondary text-sm">Find a coupon or enter a coupon code</p>
                 </div>
               </div>
 
               <div className="flex">
-                <div className="h-6 w-6 rounded-full bg-mali-blue/30 flex items-center justify-center mr-3 flex-shrink-0">
-                  <span className="text-white text-xs">2</span>
+                <div className="h-6 w-6 rounded-full bg-mali-blue/20 border border-mali-blue/30 text-mali-blue-accent flex items-center justify-center mr-3 flex-shrink-0 text-xs font-bold">
+                  2
                 </div>
                 <div>
-                  <p className="text-mali-text-secondary text-xs">Copy the coupon code</p>
+                  <p className="text-mali-text-secondary text-sm">Copy the coupon code</p>
                 </div>
               </div>
 
               <div className="flex">
-                <div className="h-6 w-6 rounded-full bg-mali-blue/30 flex items-center justify-center mr-3 flex-shrink-0">
-                  <span className="text-white text-xs">3</span>
+                <div className="h-6 w-6 rounded-full bg-mali-blue/20 border border-mali-blue/30 text-mali-blue-accent flex items-center justify-center mr-3 flex-shrink-0 text-xs font-bold">
+                  3
                 </div>
                 <div>
-                  <p className="text-mali-text-secondary text-xs">Apply it during checkout or click "Use Now"</p>
+                  <p className="text-mali-text-secondary text-sm">Apply it during checkout or click "Use Now"</p>
                 </div>
               </div>
 
-              <div className="flex items-center mt-3">
+              <div className="flex items-center mt-3 pt-3 border-t border-mali-blue/10">
                 <Clock className="h-4 w-4 text-mali-blue-light mr-2" />
                 <span className="text-mali-text-secondary text-xs">Coupons have expiry dates, use them before they expire</span>
               </div>
             </div>
-          </div>
-
-          <div className="glass-card p-4">
-            <h2 className="text-white font-medium mb-4">Get More Coupons</h2>
-            <div className="space-y-2">
-              <Link
-                href="/rewards"
-                className="block p-2 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20 rounded-md text-sm transition-colors"
-              >
-                SEAGM Rewards Program
-              </Link>
-              <Link
-                href="/newsletter"
-                className="block p-2 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20 rounded-md text-sm transition-colors"
-              >
-                Subscribe to Newsletter
-              </Link>
-
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

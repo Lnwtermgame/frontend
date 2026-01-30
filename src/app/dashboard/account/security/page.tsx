@@ -5,11 +5,11 @@ import { motion } from '@/lib/framer-exports';
 import { useSecurity } from '@/lib/context/security-context';
 import { useAuth } from '@/lib/hooks/use-auth';
 import Image from 'next/image';
-import { 
-  Shield, 
-  KeyRound, 
-  Mail, 
-  Phone, 
+import {
+  Shield,
+  KeyRound,
+  Mail,
+  Phone,
   Smartphone,
   Check,
   X,
@@ -25,8 +25,8 @@ import {
 
 export default function SecurityPage() {
   const { user } = useAuth();
-  const { 
-    securitySettings, 
+  const {
+    securitySettings,
     updateSecuritySettings,
     sendVerificationEmail,
     setupTwoFactor,
@@ -39,7 +39,7 @@ export default function SecurityPage() {
     is2FAVerified,
     generateBackupCodes
   } = useSecurity();
-  
+
   // Component state
   const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);
   const [twoFactorMethod, setTwoFactorMethod] = useState<'2fa-app' | 'sms' | 'email'>('2fa-app');
@@ -50,11 +50,11 @@ export default function SecurityPage() {
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [disablePassword, setDisablePassword] = useState('');
   const [showPasswordInput, setShowPasswordInput] = useState(false);
-  
+
   // Handle setting up 2FA
   const handleSetup2FA = async () => {
     const result = await setupTwoFactor(twoFactorMethod);
-    
+
     if (result.success) {
       setTwoFactorSetupData({
         secret: result.secret,
@@ -62,17 +62,17 @@ export default function SecurityPage() {
       });
     }
   };
-  
+
   // Handle verifying 2FA code
   const handleVerify2FA = async () => {
     setVerificationError('');
-    
+
     const isValid = await verifyTwoFactorCode(twoFactorCode);
-    
+
     if (isValid) {
       setShowTwoFactorSetup(false);
       setTwoFactorCode('');
-      
+
       // Show backup codes
       const codes = await generateBackupCodes();
       setBackupCodes(codes);
@@ -81,11 +81,11 @@ export default function SecurityPage() {
       setVerificationError('Invalid verification code. Please try again.');
     }
   };
-  
+
   // Handle disabling 2FA
   const handleDisable2FA = async () => {
     const isValid = await disableTwoFactor(disablePassword);
-    
+
     if (isValid) {
       setShowPasswordInput(false);
       setDisablePassword('');
@@ -97,16 +97,20 @@ export default function SecurityPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-            <Shield className="text-mali-blue-accent" />
+        <div className="relative mb-6">
+          <motion.h2
+            className="text-xl font-bold text-white mb-1 relative flex items-center gap-2"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <Shield className="text-mali-blue-accent h-6 w-6" />
             Security Settings
-          </h1>
-          <p className="text-mali-text-secondary">
+          </motion.h2>
+          <p className="text-mali-text-secondary text-sm relative">
             Manage your account security and privacy settings
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Two-Factor Authentication */}
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
@@ -118,7 +122,7 @@ export default function SecurityPage() {
                 </span>
               )}
             </div>
-            
+
             <div className="p-6">
               {securitySettings.twoFactorEnabled ? (
                 <div className="space-y-4">
@@ -126,7 +130,7 @@ export default function SecurityPage() {
                     {securitySettings.twoFactorMethod === '2fa-app' && <Smartphone className="text-mali-blue-accent mt-1" />}
                     {securitySettings.twoFactorMethod === 'sms' && <Phone className="text-mali-blue-accent mt-1" />}
                     {securitySettings.twoFactorMethod === 'email' && <Mail className="text-mali-blue-accent mt-1" />}
-                    
+
                     <div>
                       <h3 className="font-medium text-white mb-1">
                         {securitySettings.twoFactorMethod === '2fa-app' && 'Authenticator App'}
@@ -138,7 +142,7 @@ export default function SecurityPage() {
                         {securitySettings.twoFactorMethod === 'sms' && 'You\'re receiving SMS messages with verification codes.'}
                         {securitySettings.twoFactorMethod === 'email' && 'You\'re receiving emails with verification codes.'}
                       </p>
-                      
+
                       <div className="flex gap-2">
                         <button
                           onClick={async () => {
@@ -160,7 +164,7 @@ export default function SecurityPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Password input for disabling 2FA */}
                   {showPasswordInput && (
                     <motion.div
@@ -175,7 +179,7 @@ export default function SecurityPage() {
                       <p className="text-sm text-mali-text-secondary mb-3">
                         Disabling two-factor authentication will make your account less secure.
                       </p>
-                      
+
                       <div className="flex flex-col gap-4">
                         <input
                           type="password"
@@ -184,11 +188,11 @@ export default function SecurityPage() {
                           placeholder="Enter your password"
                           className="w-full p-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"
                         />
-                        
+
                         {verificationError && (
                           <p className="text-sm text-red-400">{verificationError}</p>
                         )}
-                        
+
                         <div className="flex gap-2">
                           <button
                             onClick={() => {
@@ -228,39 +232,36 @@ export default function SecurityPage() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                         <button
                           onClick={() => setTwoFactorMethod('2fa-app')}
-                          className={`p-3 rounded-lg border flex flex-col items-center ${
-                            twoFactorMethod === '2fa-app' 
-                              ? 'border-mali-blue-accent bg-mali-blue/20' 
+                          className={`p-3 rounded-lg border flex flex-col items-center ${twoFactorMethod === '2fa-app'
+                              ? 'border-mali-blue-accent bg-mali-blue/20'
                               : 'border-mali-blue/20 hover:bg-mali-blue/10'
-                          }`}
+                            }`}
                         >
                           <Smartphone size={24} className={twoFactorMethod === '2fa-app' ? 'text-mali-blue-accent' : 'text-mali-text-secondary'} />
                           <span className={`text-sm mt-2 ${twoFactorMethod === '2fa-app' ? 'text-white' : 'text-mali-text-secondary'}`}>
                             Authenticator App
                           </span>
                         </button>
-                        
+
                         <button
                           onClick={() => setTwoFactorMethod('sms')}
-                          className={`p-3 rounded-lg border flex flex-col items-center ${
-                            twoFactorMethod === 'sms' 
-                              ? 'border-mali-blue-accent bg-mali-blue/20' 
+                          className={`p-3 rounded-lg border flex flex-col items-center ${twoFactorMethod === 'sms'
+                              ? 'border-mali-blue-accent bg-mali-blue/20'
                               : 'border-mali-blue/20 hover:bg-mali-blue/10'
-                          }`}
+                            }`}
                         >
                           <Phone size={24} className={twoFactorMethod === 'sms' ? 'text-mali-blue-accent' : 'text-mali-text-secondary'} />
                           <span className={`text-sm mt-2 ${twoFactorMethod === 'sms' ? 'text-white' : 'text-mali-text-secondary'}`}>
                             SMS
                           </span>
                         </button>
-                        
+
                         <button
                           onClick={() => setTwoFactorMethod('email')}
-                          className={`p-3 rounded-lg border flex flex-col items-center ${
-                            twoFactorMethod === 'email' 
-                              ? 'border-mali-blue-accent bg-mali-blue/20' 
+                          className={`p-3 rounded-lg border flex flex-col items-center ${twoFactorMethod === 'email'
+                              ? 'border-mali-blue-accent bg-mali-blue/20'
                               : 'border-mali-blue/20 hover:bg-mali-blue/10'
-                          }`}
+                            }`}
                         >
                           <Mail size={24} className={twoFactorMethod === 'email' ? 'text-mali-blue-accent' : 'text-mali-text-secondary'} />
                           <span className={`text-sm mt-2 ${twoFactorMethod === 'email' ? 'text-white' : 'text-mali-text-secondary'}`}>
@@ -268,7 +269,7 @@ export default function SecurityPage() {
                           </span>
                         </button>
                       </div>
-                      
+
                       <button
                         onClick={handleSetup2FA}
                         disabled={isLoadingSettings}
@@ -285,7 +286,7 @@ export default function SecurityPage() {
                       </button>
                     </div>
                   )}
-                  
+
                   {/* Step 2: Set up based on method */}
                   {twoFactorSetupData.secret && twoFactorMethod === '2fa-app' && (
                     <div>
@@ -299,7 +300,7 @@ export default function SecurityPage() {
                             </p>
                           </div>
                         </li>
-                        
+
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">2</span>
                           <div>
@@ -308,7 +309,7 @@ export default function SecurityPage() {
                             </p>
                             <div className="bg-white p-4 rounded-lg inline-block">
                               {twoFactorSetupData.qrCodeUrl && (
-                                <Image 
+                                <Image
                                   src={twoFactorSetupData.qrCodeUrl}
                                   alt="Two-Factor Authentication QR Code"
                                   width={150}
@@ -318,7 +319,7 @@ export default function SecurityPage() {
                             </div>
                           </div>
                         </li>
-                        
+
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">3</span>
                           <div>
@@ -330,7 +331,7 @@ export default function SecurityPage() {
                             </div>
                           </div>
                         </li>
-                        
+
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">4</span>
                           <div>
@@ -344,7 +345,7 @@ export default function SecurityPage() {
                               placeholder="000000"
                               className="w-full md:w-40 p-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent text-center font-mono"
                             />
-                            
+
                             {verificationError && (
                               <p className="text-sm text-red-400 mt-2">{verificationError}</p>
                             )}
@@ -353,7 +354,7 @@ export default function SecurityPage() {
                       </ol>
                     </div>
                   )}
-                  
+
                   {twoFactorSetupData.secret && twoFactorMethod === 'sms' && (
                     <div>
                       <h3 className="font-medium text-white mb-3">Set up SMS authentication</h3>
@@ -373,7 +374,7 @@ export default function SecurityPage() {
                             This is the phone number associated with your account
                           </p>
                         </div>
-                        
+
                         <div>
                           <p className="text-mali-text-secondary mb-2">
                             We've sent a 6-digit code to your phone. Enter it below:
@@ -385,7 +386,7 @@ export default function SecurityPage() {
                             placeholder="000000"
                             className="w-full md:w-40 p-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent text-center font-mono"
                           />
-                          
+
                           {verificationError && (
                             <p className="text-sm text-red-400 mt-2">{verificationError}</p>
                           )}
@@ -393,7 +394,7 @@ export default function SecurityPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   {twoFactorSetupData.secret && twoFactorMethod === 'email' && (
                     <div>
                       <h3 className="font-medium text-white mb-3">Set up email authentication</h3>
@@ -413,7 +414,7 @@ export default function SecurityPage() {
                             This is the email address associated with your account
                           </p>
                         </div>
-                        
+
                         <div>
                           <p className="text-mali-text-secondary mb-2">
                             We've sent a 6-digit code to your email. Enter it below:
@@ -425,7 +426,7 @@ export default function SecurityPage() {
                             placeholder="000000"
                             className="w-full md:w-40 p-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent text-center font-mono"
                           />
-                          
+
                           {verificationError && (
                             <p className="text-sm text-red-400 mt-2">{verificationError}</p>
                           )}
@@ -433,7 +434,7 @@ export default function SecurityPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Verification buttons */}
                   {twoFactorSetupData.secret && (
                     <div className="flex gap-3 justify-end">
@@ -479,7 +480,7 @@ export default function SecurityPage() {
                 </div>
               )}
             </div>
-            
+
             {/* Backup codes dialog */}
             {showBackupCodes && (
               <div className="p-4 border-t border-mali-blue/20 bg-mali-blue/5">
@@ -497,8 +498,8 @@ export default function SecurityPage() {
                 </p>
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   {backupCodes.map((code, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="bg-mali-blue/10 border border-mali-blue/20 rounded p-2 font-mono text-sm text-white text-center"
                     >
                       {code}
@@ -517,13 +518,13 @@ export default function SecurityPage() {
               </div>
             )}
           </div>
-          
+
           {/* Email Verification */}
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
             <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
               <h2 className="text-lg font-medium text-white">Email Verification</h2>
             </div>
-            
+
             <div className="p-6">
               <div className="flex items-start gap-3">
                 <div className="mt-1">
@@ -533,17 +534,17 @@ export default function SecurityPage() {
                     <AlertCircle className="text-amber-400" />
                   )}
                 </div>
-                
+
                 <div>
                   <h3 className="font-medium text-white mb-1">
                     {securitySettings.emailVerified ? 'Email verified' : 'Email not verified'}
                   </h3>
                   <p className="text-sm text-mali-text-secondary mb-3">
-                    {securitySettings.emailVerified 
-                      ? 'Your email address has been verified.' 
+                    {securitySettings.emailVerified
+                      ? 'Your email address has been verified.'
                       : 'Please verify your email address to enhance security.'}
                   </p>
-                  
+
                   {!securitySettings.emailVerified && (
                     <button
                       onClick={async () => {
@@ -568,7 +569,7 @@ export default function SecurityPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Recent Devices */}
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
           <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20 flex justify-between items-center">
@@ -591,7 +592,7 @@ export default function SecurityPage() {
               )}
             </button>
           </div>
-          
+
           <div className="divide-y divide-mali-blue/20">
             {securitySettings.recentDevices.map(device => (
               <div key={device.id} className="p-4 flex justify-between items-center">
@@ -642,14 +643,14 @@ export default function SecurityPage() {
             ))}
           </div>
         </div>
-        
+
         {/* Suspicious Activity */}
         {securitySettings.suspiciousActivities.length > 0 && (
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
             <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
               <h2 className="text-lg font-medium text-white">Suspicious Activity</h2>
             </div>
-            
+
             <div className="divide-y divide-mali-blue/20">
               {securitySettings.suspiciousActivities.map(activity => (
                 <div key={activity.id} className="p-4">
@@ -677,7 +678,7 @@ export default function SecurityPage() {
                         </div>
                       </div>
                     </div>
-                    
+
                     {activity.suspicious && !activity.resolved && (
                       <button
                         onClick={() => resolveActivity(activity.id)}
@@ -686,7 +687,7 @@ export default function SecurityPage() {
                         Mark as resolved
                       </button>
                     )}
-                    
+
                     {activity.resolved && (
                       <span className="text-xs bg-green-900/20 text-green-400 px-2 py-1 rounded-full">
                         Resolved
@@ -698,13 +699,13 @@ export default function SecurityPage() {
             </div>
           </div>
         )}
-        
+
         {/* Additional Settings */}
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
           <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
             <h2 className="text-lg font-medium text-white">Additional Settings</h2>
           </div>
-          
+
           <div className="divide-y divide-mali-blue/20">
             {/* Login Notifications */}
             <div className="p-4 flex justify-between items-center">
@@ -719,19 +720,17 @@ export default function SecurityPage() {
                   onClick={() => updateSecuritySettings({
                     loginNotifications: !securitySettings.loginNotifications
                   })}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                    securitySettings.loginNotifications ? 'bg-mali-blue-accent' : 'bg-mali-blue/20'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${securitySettings.loginNotifications ? 'bg-mali-blue-accent' : 'bg-mali-blue/20'
+                    }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                      securitySettings.loginNotifications ? 'translate-x-6' : 'translate-x-1'
-                    }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${securitySettings.loginNotifications ? 'translate-x-6' : 'translate-x-1'
+                      }`}
                   />
                 </button>
               </div>
             </div>
-            
+
             {/* Security Questions */}
             <div className="p-4 flex justify-between items-center">
               <div>
@@ -745,14 +744,12 @@ export default function SecurityPage() {
                   onClick={() => updateSecuritySettings({
                     securityQuestions: !securitySettings.securityQuestions
                   })}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                    securitySettings.securityQuestions ? 'bg-mali-blue-accent' : 'bg-mali-blue/20'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${securitySettings.securityQuestions ? 'bg-mali-blue-accent' : 'bg-mali-blue/20'
+                    }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                      securitySettings.securityQuestions ? 'translate-x-6' : 'translate-x-1'
-                    }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${securitySettings.securityQuestions ? 'translate-x-6' : 'translate-x-1'
+                      }`}
                   />
                 </button>
               </div>

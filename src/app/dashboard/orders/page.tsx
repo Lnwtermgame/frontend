@@ -83,16 +83,10 @@ export default function OrdersPage() {
   // If the user is not loaded yet or not logged in, show loading
   if (!isInitialized || !user) {
     return (
-      <div className="page-container text-center">
-        <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">
-          <div className="animate-pulse flex space-x-4 justify-center">
-            <div className="rounded-full bg-mali-blue/20 h-12 w-12"></div>
-            <div className="flex-1 space-y-4 max-w-md">
-              <div className="h-4 bg-mali-blue/20 rounded w-3/4"></div>
-              <div className="h-4 bg-mali-blue/20 rounded"></div>
-              <div className="h-4 bg-mali-blue/20 rounded w-5/6"></div>
-            </div>
-          </div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-mali-text-secondary">Loading...</p>
         </div>
       </div>
     );
@@ -204,71 +198,73 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="page-container">
+    <div>
       {/* Page Header */}
-      <div className="relative mb-8 pt-4">
-
-        <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
-          <ShoppingBag className="h-7 w-7 text-mali-blue-light mr-3" />
+      <div className="relative mb-6">
+        <motion.h2
+          className="text-xl font-bold text-white mb-1 relative"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
           My Orders
-        </motion.h1>
-        <p className="text-mali-text-secondary relative">Track and manage your purchases</p>
+        </motion.h2>
+        <p className="text-mali-text-secondary text-sm relative">
+          Track and manage your purchases
+        </p>
       </div>
 
       {/* Search and filter bar */}
       <motion.div
-        className="bg-mali-card rounded-xl border border-mali-blue/20 p-5 mb-6 shadow-card-hover"
+        className="flex flex-col md:flex-row gap-4 justify-between mb-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="flex flex-col md:flex-row gap-4 justify-between">
-          <div className="relative md:w-80">
-            <input
-              type="text"
-              placeholder="Search orders..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-mali-blue/20 border border-mali-blue/30 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all"
-            />
-            <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-mali-text-secondary h-4 w-4" />
-          </div>
+        <div className="relative md:w-80">
+          <input
+            type="text"
+            placeholder="Search orders..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-full text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all text-sm"
+          />
+          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-mali-text-secondary h-4 w-4" />
+        </div>
 
-          <div className="flex items-center gap-3">
-            <motion.div
-              className="bg-mali-blue/20 rounded-lg p-1"
-              whileHover={{ scale: 1.03 }}
+        <div className="flex items-center gap-3">
+          <motion.div
+            className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-1"
+            whileHover={{ scale: 1.03 }}
+          >
+            <button
+              className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'table' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+              onClick={() => setViewMode('table')}
             >
-              <button
-                className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'table' ? 'bg-mali-blue text-white' : 'text-mali-text-secondary'}`}
-                onClick={() => setViewMode('table')}
-              >
-                Table
-              </button>
-              <button
-                className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'card' ? 'bg-mali-blue text-white' : 'text-mali-text-secondary'}`}
-                onClick={() => setViewMode('card')}
-              >
-                Cards
-              </button>
-            </motion.div>
+              Table
+            </button>
+            <button
+              className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'card' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+              onClick={() => setViewMode('card')}
+            >
+              Cards
+            </button>
+          </motion.div>
 
-            <motion.button
-              className="w-9 h-9 flex items-center justify-center bg-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
-              whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Calendar className="h-4 w-4" />
-            </motion.button>
+          <motion.button
+            className="w-9 h-9 flex items-center justify-center bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
+            whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Calendar className="h-4 w-4" />
+          </motion.button>
 
-            <motion.button
-              className="w-9 h-9 flex items-center justify-center bg-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
-              whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Filter className="h-4 w-4" />
-            </motion.button>
-          </div>
+          <motion.button
+            className="w-9 h-9 flex items-center justify-center bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
+            whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Filter className="h-4 w-4" />
+          </motion.button>
         </div>
       </motion.div>
 
@@ -305,7 +301,7 @@ export default function OrdersPage() {
                       <td className="px-6 py-4 text-sm font-medium text-mali-blue-accent">{order.id}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 rounded overflow-hidden mr-3 bg-mali-blue/10">
+                          <div className="h-10 w-10 rounded overflow-hidden mr-3 bg-mali-blue/10 border border-mali-blue/20">
                             {order.image ? (
                               <img
                                 src={order.image}
@@ -325,7 +321,7 @@ export default function OrdersPage() {
                       <td className="px-6 py-4 text-sm text-white">{order.amount}</td>
                       <td className="px-6 py-4">{renderStatusBadge(order.status)}</td>
                       <td className="px-6 py-4 text-right">
-                        <Link href={`/orders/${order.id}`}>
+                        <Link href={`/dashboard/orders/${order.id}`}>
                           <motion.button
                             className="px-3 py-1.5 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-light text-xs flex items-center"
                             whileHover={{ scale: 1.05 }}

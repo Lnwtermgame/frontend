@@ -174,8 +174,8 @@ export default function InvoiceDetailPage() {
           <h2 className="text-xl font-bold text-white mb-2">Error</h2>
           <p className="text-mali-text-secondary mb-6">{error}</p>
           <button
-            onClick={() => router.push('/invoice')}
-            className="inline-flex items-center bg-gradient-to-r from-mali-blue-light to-mali-purple text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-blue-glow transition-all hover:shadow-lg"
+            onClick={() => router.push('/dashboard/invoice')}
+            className="inline-flex items-center bg-mali-blue hover:bg-mali-blue/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Invoices
@@ -193,13 +193,12 @@ export default function InvoiceDetailPage() {
     <div className="page-container">
       {/* Page Header with blur effect - redesigned to match the screenshot */}
       <div className="relative mb-8">
-        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-mali-purple/20 blur-3xl"></div>
-        <div className="absolute -top-10 right-10 w-80 h-80 rounded-full bg-mali-blue/20 blur-3xl"></div>
+
 
         <div className="flex justify-between items-start mb-6">
           <div>
             <Link
-              href="/invoice"
+              href="/dashboard/invoice"
               className="text-mali-blue-light hover:text-mali-blue-accent inline-flex items-center text-sm mb-3"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -234,7 +233,7 @@ export default function InvoiceDetailPage() {
             </motion.button>
 
             <motion.button
-              className="px-5 py-2 rounded-lg bg-mali-blue-accent hover:bg-mali-blue-light text-white font-medium inline-flex items-center shadow-blue-glow"
+              className="px-5 py-2 rounded-lg bg-mali-blue hover:bg-mali-blue/90 text-white font-medium inline-flex items-center shadow-lg shadow-blue-500/20"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -267,7 +266,7 @@ export default function InvoiceDetailPage() {
       <div className="space-y-6">
         {/* Invoice Summary Card */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-lg"
+          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
@@ -305,7 +304,7 @@ export default function InvoiceDetailPage() {
                 <div className="flex justify-between">
                   <span className="text-mali-text-secondary text-sm">Order Ref:</span>
                   <Link
-                    href={`/orders/${invoice.orderReference}`}
+                    href={`/dashboard/orders/${invoice.orderReference}`}
                     className="text-mali-blue-light hover:text-mali-blue-accent hover:underline transition-colors flex items-center text-sm"
                   >
                     {invoice.orderReference}
@@ -329,7 +328,7 @@ export default function InvoiceDetailPage() {
 
         {/* Invoice Items */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-lg"
+          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
@@ -400,7 +399,7 @@ export default function InvoiceDetailPage() {
 
         {/* Notes & Info */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-lg"
+          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.4 }}
@@ -430,7 +429,7 @@ export default function InvoiceDetailPage() {
       >
         <div className="text-center sm:text-left mb-4 sm:mb-0">
           <Link
-            href="/invoice"
+            href="/dashboard/invoice"
             className="inline-flex items-center px-4 py-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors text-mali-blue-light"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />

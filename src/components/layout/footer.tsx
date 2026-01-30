@@ -6,167 +6,106 @@ import { Facebook, Twitter, Instagram, Youtube, CreditCard, ShieldCheck, DollarS
 
 export function Footer() {
   const year = new Date().getFullYear();
-  
+
   return (
-    <footer className="bg-mali-sidebar pt-10 border-t border-mali-blue/20">
+    <footer className="bg-mali-sidebar pt-8 border-t border-mali-blue/20 text-sm">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8">
-          {/* Column 1: Logo and Social */}
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-6">
+          {/* Column 1: Logo and Social (4 cols) */}
+          <div className="md:col-span-4 space-y-3">
             <Link href="/">
-              <div className="font-bold text-xl flex items-center">
+              <div className="font-bold text-lg flex items-center">
                 <span className="text-blue-500">Mali</span>
                 <span className="text-white">GamePass</span>
               </div>
             </Link>
-            <p className="text-mali-text-secondary text-sm">
-              บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว ปลอดภัย และราคาดี
+            <p className="text-mali-text-secondary text-xs leading-relaxed max-w-sm">
+              บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว ปลอดภัย และราคาดีที่สุดในตลาด
             </p>
-            
-            <div className="flex space-x-3">
-              <motion.a 
-                href="https://facebook.com" 
-                target="_blank"
-                className="w-8 h-8 rounded-full bg-mali-blue/20 flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-mali-blue/30"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Facebook size={16} />
-              </motion.a>
-              <motion.a 
-                href="https://twitter.com" 
-                target="_blank"
-                className="w-8 h-8 rounded-full bg-mali-blue/20 flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-mali-blue/30"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Twitter size={16} />
-              </motion.a>
-              <motion.a 
-                href="https://instagram.com" 
-                target="_blank"
-                className="w-8 h-8 rounded-full bg-mali-blue/20 flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-mali-blue/30"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Instagram size={16} />
-              </motion.a>
-              <motion.a 
-                href="https://youtube.com" 
-                target="_blank"
-                className="w-8 h-8 rounded-full bg-mali-blue/20 flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-mali-blue/30"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Youtube size={16} />
-              </motion.a>
+
+            <div className="flex space-x-2 pt-1">
+              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
+                <motion.a
+                  key={i}
+                  href="#"
+                  className="w-7 h-7 rounded-full bg-mali-blue/10 flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-mali-blue/30 transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Icon size={14} />
+                </motion.a>
+              ))}
             </div>
           </div>
-          
-          {/* Column 2: Quick Links */}
-          <div>
-            <h3 className="text-white font-medium mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/games" className="text-mali-text-secondary hover:text-white">
-                  เกมทั้งหมด
-                </Link>
-              </li>
-              <li>
-                <Link href="/direct-topup" className="text-mali-text-secondary hover:text-white">
-                  เติมเกมโดยตรง
-                </Link>
-              </li>
-              <li>
-                <Link href="/card" className="text-mali-text-secondary hover:text-white">
-                  บัตรเกม
-                </Link>
-              </li>
-              <li>
-                <Link href="/promotions" className="text-mali-text-secondary hover:text-white">
-                  โปรโมชั่น
-                </Link>
-              </li>
-              <li>
-                <Link href="/support" className="text-mali-text-secondary hover:text-white">
-                  ติดต่อเรา
-                </Link>
-              </li>
+
+          {/* Column 2: Quick Links (2 cols) */}
+          <div className="md:col-span-2">
+            <h3 className="text-white font-medium mb-3 text-sm">Quick Links</h3>
+            <ul className="space-y-1.5 text-xs">
+              {['เกมทั้งหมด', 'เติมเกมโดยตรง', 'บัตรเกม', 'โปรโมชั่น', 'ติดต่อเรา'].map((item, i) => (
+                <li key={i}>
+                  <Link href="#" className="text-mali-text-secondary hover:text-white transition-colors">
+                    {item}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
-          
-          {/* Column 3: Contact Us */}
-          <div>
-            <h3 className="text-white font-medium mb-4">Contact Us</h3>
-            <ul className="space-y-3 text-sm">
+
+          {/* Column 3: Contact Us (3 cols) */}
+          <div className="md:col-span-3">
+            <h3 className="text-white font-medium mb-3 text-sm">Contact Us</h3>
+            <ul className="space-y-2 text-xs">
               <li className="flex items-center text-mali-text-secondary">
-                <Mail size={16} className="mr-2 text-mali-blue-light" />
-                <span>support@maligamepass.com</span>
+                <Mail size={14} className="mr-2 text-mali-blue-light flex-shrink-0" />
+                <span className="truncate">support@maligamepass.com</span>
               </li>
               <li className="flex items-center text-mali-text-secondary">
-                <Phone size={16} className="mr-2 text-mali-blue-light" />
+                <Phone size={14} className="mr-2 text-mali-blue-light flex-shrink-0" />
                 <span>Live Chat Support 24/7</span>
               </li>
             </ul>
           </div>
-          
-          {/* Column 4: Payment Methods */}
-          <div>
-            <h3 className="text-white font-medium mb-4">Payment Methods</h3>
-            <div className="grid grid-cols-3 gap-2">
-              <span className="px-2 py-1 bg-mali-blue/20 text-mali-text-secondary rounded text-xs flex items-center justify-center">Visa</span>
-              <span className="px-2 py-1 bg-mali-blue/20 text-mali-text-secondary rounded text-xs flex items-center justify-center">Mastercard</span>
-              <span className="px-2 py-1 bg-mali-blue/20 text-mali-text-secondary rounded text-xs flex items-center justify-center">JCB</span>
-              <span className="px-2 py-1 bg-mali-blue/20 text-mali-text-secondary rounded text-xs flex items-center justify-center">PromptPay</span>
-              <span className="px-2 py-1 bg-mali-blue/20 text-mali-text-secondary rounded text-xs flex items-center justify-center">TrueMoney</span>
-              <span className="px-2 py-1 bg-mali-blue/20 text-mali-text-secondary rounded text-xs flex items-center justify-center">ShopeePay</span>
+
+          {/* Column 4: Payment Methods (3 cols) */}
+          <div className="md:col-span-3">
+            <h3 className="text-white font-medium mb-3 text-sm">Payment Methods</h3>
+            <div className="grid grid-cols-3 gap-1.5">
+              {['Visa', 'Mastercard', 'JCB', 'PromptPay', 'TrueMoney', 'ShopeePay'].map((method) => (
+                <span key={method} className="px-2 py-1 bg-mali-blue/10 text-mali-text-secondary rounded text-[10px] flex items-center justify-center border border-mali-blue/5">
+                  {method}
+                </span>
+              ))}
             </div>
           </div>
         </div>
-        
+
         {/* Features bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-6 border-t border-mali-blue/10">
-          <div className="flex items-center text-mali-text-secondary">
-            <CreditCard className="mr-3 text-mali-blue-accent" size={20} />
-            <div className="text-sm">
-              <p className="text-white">หลากหลายช่องทางชำระเงิน</p>
-              <p>บัตรเครดิต บัตรเดบิต และอื่นๆ</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 border-t border-mali-blue/10 bg-mali-blue/5 rounded-lg mb-4 px-4">
+          {[
+            { icon: CreditCard, title: "ชำระเงินหลากหลาย", desc: "บัตรเครดิต/เดบิต และอื่นๆ" },
+            { icon: ShieldCheck, title: "ปลอดภัยสูงสุด", desc: "ระบบความปลอดภัยระดับสากล" },
+            { icon: DollarSign, title: "ราคาคุ้มค่า", desc: "ส่วนลดและโปรโมชั่นพิเศษ" },
+            { icon: Phone, title: "ดูแลตลอด 24 ชม.", desc: "ทีมงานพร้อมช่วยเหลือเสมอ" }
+          ].map((feature, i) => (
+            <div key={i} className="flex items-center text-mali-text-secondary">
+              <feature.icon className="mr-2 text-mali-blue-accent flex-shrink-0" size={16} />
+              <div className="text-xs">
+                <p className="text-white font-medium">{feature.title}</p>
+                <p className="opacity-70 text-[10px] hidden sm:block">{feature.desc}</p>
+              </div>
             </div>
-          </div>
-          
-          <div className="flex items-center text-mali-text-secondary">
-            <ShieldCheck className="mr-3 text-mali-blue-accent" size={20} />
-            <div className="text-sm">
-              <p className="text-white">การชำระเงินที่ปลอดภัย</p>
-              <p>ระบบความปลอดภัยระดับสูง</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center text-mali-text-secondary">
-            <DollarSign className="mr-3 text-mali-blue-accent" size={20} />
-            <div className="text-sm">
-              <p className="text-white">ราคาที่แข่งขันได้</p>
-              <p>ส่วนลดและโปรโมชั่นพิเศษ</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center text-mali-text-secondary">
-            <Phone className="mr-3 text-mali-blue-accent" size={20} />
-            <div className="text-sm">
-              <p className="text-white">ฝ่ายสนับสนุนตลอด 24/7</p>
-              <p>พร้อมช่วยเหลือทุกปัญหา</p>
-            </div>
-          </div>
+          ))}
         </div>
-        
+
         {/* Copyright */}
-        <div className="py-4 text-center border-t border-mali-blue/10 text-mali-text-secondary text-xs">
-          <div className="flex justify-center space-x-4">
-            <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
-            <Link href="/terms-of-service" className="hover:text-white">Terms of Service</Link>
-          </div>
-          <div className="mt-2">
+        <div className="py-4 flex flex-col md:flex-row justify-between items-center text-[10px] text-mali-text-secondary border-t border-mali-blue/10">
+          <div>
             &copy; {year} MaliGamePass. All rights reserved.
+          </div>
+          <div className="flex space-x-4 mt-2 md:mt-0">
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

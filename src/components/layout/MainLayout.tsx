@@ -22,12 +22,14 @@ import {
   ChevronDown,
   Zap,
   Share2,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo, useRef } from "react";
 import { Footer } from "./footer";
 import { useAuth } from "@/lib/context/auth-context";
+import { useNotifications } from "@/lib/context/notification-context";
 import SearchBar from "@/components/layout/SearchBar";
 
 interface MainLayoutProps {
@@ -143,13 +145,39 @@ export function MainLayout({ children }: MainLayoutProps) {
     setIsUserMenuOpen(false);
   };
 
+  // Notification state
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setIsNotificationOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+
+    if (isNotificationOpen || isUserMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNotificationOpen, isUserMenuOpen]);
+
   // Create memoized nav items with hardcoded Thai text
   const mainNavItems = useMemo(() => [
     { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
     { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
 
     { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
-    { href: "/favorite", label: "รายการโปรด", icon: <Heart size={20} /> },
+    { href: "/dashboard/favorite", label: "รายการโปรด", icon: <Heart size={20} /> },
 
     { href: "/support", label: "ช่วยเหลือ", icon: <MessageCircle size={20} /> },
   ], []);
@@ -158,24 +186,24 @@ export function MainLayout({ children }: MainLayoutProps) {
     { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
     { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
     { href: "/direct-topup", label: "เติมเงิน", icon: <DollarSign size={20} /> },
-    { href: "/orders", label: "คำสั่งซื้อ", icon: <ShoppingCart size={20} /> },
-    { href: "/account", label: "บัญชี", icon: <User size={20} /> },
+    { href: "/dashboard/orders", label: "คำสั่งซื้อ", icon: <ShoppingCart size={20} /> },
+    { href: "/dashboard/account", label: "บัญชี", icon: <User size={20} /> },
   ], []);
 
   const accountMenuItems = useMemo(() => [
-    { href: "/account", label: "บัญชีของฉัน", icon: <User size={18} /> },
-    { href: "/top-up", label: "เติมเงิน", icon: <DollarSign size={18} /> },
+    { href: "/dashboard/account", label: "บัญชีของฉัน", icon: <User size={18} /> },
+
     { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <Gamepad2 size={18} /> },
     { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
 
-    { href: "/invoice", label: "ใบแจ้งหนี้", icon: <FileText size={18} /> },
+    { href: "/dashboard/invoice", label: "ใบแจ้งหนี้", icon: <FileText size={18} /> },
 
-    { href: "/credits", label: "เครดิต", icon: <Coins size={18} /> },
-    { href: "/coupons", label: "คูปอง", icon: <Ticket size={18} /> },
-    { href: "/favorite", label: "รายการโปรด", icon: <Heart size={18} /> },
+    { href: "/dashboard/credits", label: "เครดิต", icon: <Coins size={18} /> },
+    { href: "/dashboard/coupons", label: "คูปอง", icon: <Ticket size={18} /> },
+    { href: "/dashboard/favorite", label: "รายการโปรด", icon: <Heart size={18} /> },
 
 
-    { href: "/notifications", label: "การแจ้งเตือน", icon: <Bell size={18} /> },
+    { href: "/dashboard/notifications", label: "การแจ้งเตือน", icon: <Bell size={18} /> },
   ], []);
 
   return (
@@ -263,72 +291,167 @@ export function MainLayout({ children }: MainLayoutProps) {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-5">
-              <button className="text-mali-text-secondary hover:text-white transition-colors relative">
-                <Bell size={20} />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-mali-red rounded-full flex items-center justify-center text-white text-xs">
-                  3
-                </span>
-              </button>
+            <div className="flex items-center gap-4">
+              {/* Notification Dropdown */}
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-white/5 transition-all relative"
+                >
+                  <Bell size={20} />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-mali-red rounded-full ring-2 ring-mali-sidebar flex items-center justify-center">
+                    </span>
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {isNotificationOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-80 rounded-xl shadow-lg bg-mali-card border border-mali-blue/30 overflow-hidden z-50 origin-top-right"
+                    >
+                      <div className="p-3 border-b border-mali-blue/20 flex justify-between items-center bg-mali-blue/5">
+                        <h3 className="text-white font-medium text-sm">การแจ้งเตือน</h3>
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={markAllAsRead}
+                            className="text-xs text-mali-blue-accent hover:text-mali-blue-light transition-colors"
+                          >
+                            อ่านทั้งหมด
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="max-h-[300px] overflow-y-auto">
+                        {notifications.length > 0 ? (
+                          notifications.map((notification) => (
+                            <div
+                              key={notification.id}
+                              className={cn(
+                                "p-3 border-b border-mali-blue/10 hover:bg-mali-blue/10 transition-colors flex gap-3 cursor-pointer",
+                                !notification.read && "bg-mali-blue/5"
+                              )}
+                              onClick={() => markAsRead(notification.id)}
+                            >
+                              <div className={cn(
+                                "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1",
+                                notification.type === 'success' ? "bg-green-500/20 text-green-400" :
+                                  notification.type === 'error' ? "bg-red-500/20 text-red-400" :
+                                    notification.type === 'warning' ? "bg-yellow-500/20 text-yellow-400" :
+                                      "bg-blue-500/20 text-blue-400"
+                              )}>
+                                {notification.type === 'success' ? <Zap size={14} /> :
+                                  notification.type === 'error' ? <LogOut size={14} /> :
+                                    <Bell size={14} />}
+                              </div>
+                              <div className="flex-1">
+                                <p className={cn("text-sm mb-1", !notification.read ? "text-white font-medium" : "text-mali-text-secondary")}>
+                                  {notification.title}
+                                </p>
+                                <p className="text-xs text-mali-text-secondary line-clamp-2">
+                                  {notification.message}
+                                </p>
+                                <p className="text-[10px] text-mali-text-secondary/60 mt-1">
+                                  {new Date(notification.createdAt).toLocaleTimeString()}
+                                </p>
+                              </div>
+                              {!notification.read && (
+                                <div className="w-2 h-2 rounded-full bg-mali-blue-accent mt-2 shrink-0" />
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-8 text-center text-mali-text-secondary flex flex-col items-center">
+                            <Bell size={24} className="mb-2 opacity-20" />
+                            <p className="text-sm">ไม่มีการแจ้งเตือนใหม่</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <Link href="/notifications" className="block p-2 text-center text-xs text-mali-blue-accent hover:bg-mali-blue/10 border-t border-mali-blue/20 transition-colors">
+                        ดูทั้งหมด
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Divider */}
+              <div className="h-8 w-[1px] bg-mali-blue/20 mx-1"></div>
 
               {isAuthenticated ? (
-                <div className="relative">
+                <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={toggleUserMenu}
-                    className="flex items-center space-x-2 text-white"
+                    className="flex items-center md:space-x-3 text-white pl-1 pr-2 py-1 rounded-full hover:bg-white/5 transition-all"
                   >
-                    <div className="w-8 h-8 rounded-full bg-mali-blue flex items-center justify-center overflow-hidden border-2 border-mali-blue-light/30">
+                    <div className="w-9 h-9 rounded-full bg-mali-blue flex items-center justify-center overflow-hidden border-2 border-mali-blue-light/30 shadow-sm">
                       <img
                         src={user?.avatar || "https://placehold.co/200x200?text=User"}
                         alt={`${user?.name} avatar`}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <span className="hidden md:inline-block text-sm font-medium w-[100px] truncate text-left">{user?.name}</span>
-                    <ChevronDown size={14} />
+                    <div className="hidden md:flex flex-col items-start">
+                      <span className="text-sm font-medium w-[100px] truncate text-left leading-tight">{user?.name}</span>
+                      <span className="text-[10px] text-mali-text-secondary">Member</span>
+                    </div>
+                    <ChevronDown size={14} className="text-mali-text-secondary ml-1" />
                   </button>
 
                   <AnimatePresence>
                     {isUserMenuOpen && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-mali-card border border-mali-blue/30 overflow-hidden z-50"
+                        className="absolute right-0 mt-2 w-64 rounded-xl shadow-xl bg-mali-card border border-mali-blue/30 overflow-hidden z-50 origin-top-right"
                       >
-                        <div className="p-3 border-b border-mali-blue/20">
-                          <p className="text-white font-medium">{user?.name}</p>
-                          <p className="text-mali-text-secondary text-xs">{user?.email}</p>
+                        <div className="p-4 border-b border-mali-blue/20 bg-gradient-to-br from-mali-blue/10 to-transparent">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <div className="w-12 h-12 rounded-full border-2 border-mali-blue-light/50 overflow-hidden">
+                              <img src={user?.avatar || "https://placehold.co/200x200?text=User"} alt="" className="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">{user?.name}</p>
+                              <p className="text-mali-text-secondary text-xs">{user?.email}</p>
+                            </div>
+                          </div>
+
                           {user?.isPremium && (
-                            <div className="mt-1 bg-yellow-600/20 text-yellow-400 text-xs px-2 py-0.5 rounded inline-block">
-                              สมาชิกพรีเมียม
+                            <div className="mb-3 bg-gradient-to-r from-yellow-600/20 to-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs px-2 py-1 rounded flex items-center">
+                              <Star size={12} className="mr-1 fill-yellow-400" /> สมาชิกพรีเมียม
                             </div>
                           )}
-                        </div>
 
-                        {/* Credits display */}
-                        <div className="p-3 border-b border-mali-blue/20 bg-mali-blue/10">
-                          <div className="flex justify-between items-center">
-                            <span className="text-mali-text-secondary text-xs">คะแนนสะสม:</span>
-                            <span className="text-white font-medium">{user?.credits?.toLocaleString()}</span>
+                          <div className="flex justify-between items-center bg-mali-dark/50 p-2 rounded-lg border border-mali-blue/20">
+                            <span className="text-mali-text-secondary text-xs">คะแนนสะสม</span>
+                            <span className="text-mali-blue-accent font-bold font-mono">{user?.credits?.toLocaleString()}</span>
                           </div>
                         </div>
 
-                        <div className="py-1">
+                        <div className="p-2">
                           {accountMenuItems.slice(0, 4).map((item) => (
                             <Link key={item.href} href={item.href}>
-                              <div className="px-4 py-2 text-sm text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white flex items-center space-x-2">
-                                <span>{item.icon}</span>
+                              <div className="px-3 py-2.5 rounded-lg text-sm text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white flex items-center space-x-3 transition-colors">
+                                <span className="opacity-70">{item.icon}</span>
                                 <span>{item.label}</span>
                               </div>
                             </Link>
                           ))}
+
+                          <div className="my-1 border-t border-mali-blue/10"></div>
+
                           <button
                             onClick={handleLogout}
-                            className="w-full px-4 py-2 text-sm text-red-400 hover:bg-mali-blue/20 flex items-center space-x-2"
+                            className="w-full px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center space-x-3 transition-colors"
                           >
-                            <LogOut size={18} />
+                            <LogOut size={18} className="opacity-70" />
                             <span>ออกจากระบบ</span>
                           </button>
                         </div>
@@ -339,8 +462,9 @@ export function MainLayout({ children }: MainLayoutProps) {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center space-x-1 text-white bg-button-gradient px-3 py-1.5 rounded-md text-sm hover:opacity-90 transition-opacity"
+                  className="flex items-center space-x-1 text-white bg-button-gradient px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 transition-all shadow-button-glow"
                 >
+                  <User size={16} />
                   <span>เข้าสู่ระบบ</span>
                 </Link>
               )}

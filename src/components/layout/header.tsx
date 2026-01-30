@@ -250,7 +250,7 @@ export function Header() {
                           className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
                           onClick={() => {
                             setShowUserMenu(false);
-                            router.push('/account');
+                            router.push('/dashboard/account');
                           }}
                         >
                           <User className="h-4 w-4 mr-3" />
@@ -263,7 +263,7 @@ export function Header() {
                           className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
                           onClick={() => {
                             setShowUserMenu(false);
-                            router.push('/credits');
+                            router.push('/dashboard/credits');
                           }}
                         >
                           <Coins className="h-4 w-4 mr-3" />
@@ -276,7 +276,7 @@ export function Header() {
                           className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
                           onClick={() => {
                             setShowUserMenu(false);
-                            router.push('/orders');
+                            router.push('/dashboard/orders');
                           }}
                         >
                           <ShoppingCart className="h-4 w-4 mr-3" />

@@ -27,45 +27,41 @@ export default function AccountSidebar() {
 
   const navItems: NavItem[] = [
     {
-      href: "/account",
+      href: "/dashboard/account",
       label: "My Account",
       icon: <User size={18} />
     },
+
     {
-      href: "/top-up",
-      label: "Top Up",
-      icon: <DollarSign size={18} />
-    },
-    {
-      href: "/orders",
+      href: "/dashboard/orders",
       label: "My Orders",
       icon: <ShoppingCart size={18} />
     },
 
     {
-      href: "/invoice",
+      href: "/dashboard/invoice",
       label: "My Invoice",
       icon: <FileText size={18} />
     },
     {
-      href: "/coupons",
+      href: "/dashboard/coupons",
       label: "My Coupons",
       icon: <Ticket size={18} />
     },
     {
-      href: "/favorite",
+      href: "/dashboard/favorite",
       label: "My Favorite",
       icon: <Heart size={18} />
     },
 
 
     {
-      href: "/credits",
+      href: "/dashboard/credits",
       label: "SEAGM Credits",
       icon: <Coins size={18} />
     },
     {
-      href: "/notifications",
+      href: "/dashboard/notifications",
       label: "Notifications",
       icon: <Bell size={18} />
     }

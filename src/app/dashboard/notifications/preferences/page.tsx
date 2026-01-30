@@ -209,7 +209,7 @@ export default function NotificationPreferencesPage() {
       {/* Page header with back navigation */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <Link href="/notifications" className="mr-4 text-mali-text-secondary hover:text-white transition-colors">
+          <Link href="/dashboard/notifications" className="text-mali-blue-light hover:text-white mb-4 inline-flex items-center text-sm">
             <ChevronLeft className="h-5 w-5" />
           </Link>
           <div>
@@ -221,7 +221,7 @@ export default function NotificationPreferencesPage() {
         <button
           onClick={savePreferences}
           disabled={isSaving || !hasPendingChanges}
-          className={`btn-primary flex items-center ${(!hasPendingChanges || isSaving) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`flex items-center bg-mali-blue hover:bg-mali-blue/90 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-all ${(!hasPendingChanges || isSaving) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {isSaving ? (
             <span className="flex items-center">
@@ -268,21 +268,21 @@ export default function NotificationPreferencesPage() {
       </div>
 
       {/* Contact information section */}
-      <div className="glass-card mb-8">
+      <div className="bg-mali-card border border-mali-blue/20 rounded-xl mb-8">
         <div className="p-6">
           <h2 className="text-lg font-bold text-white mb-4">ข้อมูลการติดต่อ</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-mali-text-secondary mb-1">อีเมล</label>
               <div className="flex">
-                <div className="bg-mali-blue/20 flex items-center justify-center px-3 rounded-l-md border border-mali-blue/30">
-                  <Mail className="h-5 w-5 text-mali-blue-light" />
+                <div className="bg-mali-blue/20 flex items-center justify-center px-3 rounded-l-lg border border-mali-blue/30 border-r-0">
+                  <Mail className="h-5 w-5 text-mali-text-secondary" />
                 </div>
                 <input
                   type="email"
                   value={contactInfo.email}
                   onChange={(e) => updateContactInfo("email", e.target.value)}
-                  className="flex-1 bg-mali-navy border border-mali-blue/30 border-l-0 rounded-r-md px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
+                  className="flex-1 bg-mali-blue/20 border border-mali-blue/30 rounded-r-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
                 />
               </div>
               <p className="text-mali-text-secondary text-xs mt-1">ใช้สำหรับการแจ้งเตือนทางอีเมล</p>
@@ -290,14 +290,14 @@ export default function NotificationPreferencesPage() {
             <div>
               <label className="block text-mali-text-secondary mb-1">เบอร์โทรศัพท์</label>
               <div className="flex">
-                <div className="bg-mali-blue/20 flex items-center justify-center px-3 rounded-l-md border border-mali-blue/30">
-                  <Smartphone className="h-5 w-5 text-mali-blue-light" />
+                <div className="bg-mali-blue/20 flex items-center justify-center px-3 rounded-l-lg border border-mali-blue/30 border-r-0">
+                  <Smartphone className="h-5 w-5 text-mali-text-secondary" />
                 </div>
                 <input
                   type="tel"
                   value={contactInfo.phone}
                   onChange={(e) => updateContactInfo("phone", e.target.value)}
-                  className="flex-1 bg-mali-navy border border-mali-blue/30 border-l-0 rounded-r-md px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
+                  className="flex-1 bg-mali-blue/20 border border-mali-blue/30 rounded-r-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
                 />
               </div>
               <p className="text-mali-text-secondary text-xs mt-1">ใช้สำหรับการแจ้งเตือนทาง SMS</p>
@@ -307,7 +307,7 @@ export default function NotificationPreferencesPage() {
       </div>
 
       {/* Notification preferences table */}
-      <div className="glass-card">
+      <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
         <div className="p-6">
           <h2 className="text-lg font-bold text-white mb-6">การตั้งค่าการแจ้งเตือน</h2>
 
@@ -355,7 +355,7 @@ export default function NotificationPreferencesPage() {
                           onChange={() => togglePreference("email", category.id)}
                           className="sr-only peer"
                         />
-                        <div className="relative w-11 h-6 bg-mali-navy rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-light"></div>
+                        <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
                       </label>
                     </td>
                     <td className="py-4 text-center">
@@ -366,7 +366,7 @@ export default function NotificationPreferencesPage() {
                           onChange={() => togglePreference("push", category.id)}
                           className="sr-only peer"
                         />
-                        <div className="relative w-11 h-6 bg-mali-navy rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-light"></div>
+                        <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
                       </label>
                     </td>
                     <td className="py-4 text-center">
@@ -377,7 +377,7 @@ export default function NotificationPreferencesPage() {
                           onChange={() => togglePreference("sms", category.id)}
                           className="sr-only peer"
                         />
-                        <div className="relative w-11 h-6 bg-mali-navy rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-light"></div>
+                        <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
                       </label>
                     </td>
                   </tr>
@@ -397,7 +397,7 @@ export default function NotificationPreferencesPage() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-mali-navy/50 p-3 rounded-md flex flex-col items-center">
+                  <div className="bg-mali-blue/10 border border-mali-blue/20 p-3 rounded-lg flex flex-col items-center">
                     <Mail className="h-4 w-4 text-mali-blue-light mb-2" />
                     <label className="inline-flex items-center cursor-pointer">
                       <input
@@ -406,11 +406,11 @@ export default function NotificationPreferencesPage() {
                         onChange={() => togglePreference("email", category.id)}
                         className="sr-only peer"
                       />
-                      <div className="relative w-11 h-6 bg-mali-navy rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-light"></div>
+                      <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
                     </label>
                   </div>
 
-                  <div className="bg-mali-navy/50 p-3 rounded-md flex flex-col items-center">
+                  <div className="bg-mali-blue/10 border border-mali-blue/20 p-3 rounded-lg flex flex-col items-center">
                     <Bell className="h-4 w-4 text-mali-blue-light mb-2" />
                     <label className="inline-flex items-center cursor-pointer">
                       <input
@@ -419,11 +419,11 @@ export default function NotificationPreferencesPage() {
                         onChange={() => togglePreference("push", category.id)}
                         className="sr-only peer"
                       />
-                      <div className="relative w-11 h-6 bg-mali-navy rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-light"></div>
+                      <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
                     </label>
                   </div>
 
-                  <div className="bg-mali-navy/50 p-3 rounded-md flex flex-col items-center">
+                  <div className="bg-mali-blue/10 border border-mali-blue/20 p-3 rounded-lg flex flex-col items-center">
                     <Smartphone className="h-4 w-4 text-mali-blue-light mb-2" />
                     <label className="inline-flex items-center cursor-pointer">
                       <input
@@ -432,7 +432,7 @@ export default function NotificationPreferencesPage() {
                         onChange={() => togglePreference("sms", category.id)}
                         className="sr-only peer"
                       />
-                      <div className="relative w-11 h-6 bg-mali-navy rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-light"></div>
+                      <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
                     </label>
                   </div>
                 </div>
@@ -448,7 +448,7 @@ export default function NotificationPreferencesPage() {
       </div>
 
       {/* Social Media Integration */}
-      <div className="glass-card mt-8">
+      <div className="bg-mali-card border border-mali-blue/20 rounded-xl mt-8">
         <div className="p-6">
           <h2 className="text-lg font-bold text-white mb-4">การเชื่อมต่อสื่อสังคม</h2>
           <SocialMediaIntegration

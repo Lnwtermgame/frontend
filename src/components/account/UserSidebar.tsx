@@ -32,33 +32,30 @@ const NavItem = memo(function NavItem({
   icon: React.ReactNode;
   isActive: boolean;
 }) {
-  // Pre-compute classes to avoid calculation during render
-  const linkClasses = cn(
-    "flex items-center gap-3 px-4 py-3 rounded-md relative overflow-hidden transition-all thai-font",
-    isActive
-      ? "bg-mali-blue/30 text-white font-medium"
-      : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
-  );
+
 
   return (
     <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.2 }}>
       <Link
         href={href}
-        className={linkClasses}
+        className={cn(
+          "flex items-center gap-3 px-4 py-3 rounded-lg relative overflow-hidden transition-all thai-font group",
+          isActive
+            ? "bg-mali-blue/20 text-white font-medium shadow-sm border border-mali-blue/30"
+            : "text-mali-text-secondary hover:bg-mali-blue/10 hover:text-white"
+        )}
         prefetch={false}
       >
         <span className={cn(
           "flex items-center justify-center relative z-10",
-          isActive ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"
+          isActive ? "text-white" : "text-mali-text-secondary group-hover:text-white"
         )}>
           {icon}
         </span>
         <span className="text-sm font-medium relative z-10 thai-font">
           {label}
         </span>
-        {isActive && (
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-mali-blue-accent rounded-r"></div>
-        )}
+
       </Link>
     </motion.div>
   );
@@ -71,45 +68,41 @@ const UserSidebar = memo(function UserSidebar() {
   // Create navigation items array with hardcoded Thai text
   const navItems = useMemo(() => [
     {
-      href: "/account",
+      href: "/dashboard/account",
       label: "บัญชีของฉัน",
       icon: <User className="w-5 h-5" />
     },
+
     {
-      href: "/top-up",
-      label: "เติมเงิน",
-      icon: <DollarSign className="w-5 h-5" />
-    },
-    {
-      href: "/orders",
+      href: "/dashboard/orders",
       label: "คำสั่งซื้อของฉัน",
       icon: <ShoppingCart className="w-5 h-5" />
     },
 
     {
-      href: "/invoice",
+      href: "/dashboard/invoice",
       label: "ใบแจ้งหนี้ของฉัน",
       icon: <FileText className="w-5 h-5" />
     },
     {
-      href: "/coupons",
+      href: "/dashboard/coupons",
       label: "คูปองของฉัน",
       icon: <Ticket className="w-5 h-5" />
     },
     {
-      href: "/favorite",
+      href: "/dashboard/favorite",
       label: "รายการโปรด",
       icon: <Heart className="w-5 h-5" />
     },
 
 
     {
-      href: "/credits",
+      href: "/dashboard/credits",
       label: "เครดิต",
       icon: <DollarSign className="w-5 h-5" />
     },
     {
-      href: "/notifications",
+      href: "/dashboard/notifications",
       label: "การแจ้งเตือน",
       icon: <Bell className="w-5 h-5" />
     }
@@ -117,8 +110,8 @@ const UserSidebar = memo(function UserSidebar() {
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="p-4 border-b border-mali-blue/20 bg-mali-sidebar">
-        <h3 className="text-white font-medium text-sm thai-font">เมนู</h3>
+      <div className="p-6 border-b border-mali-blue/20">
+        <h3 className="text-mali-text-secondary font-medium text-sm thai-font">เมนู</h3>
       </div>
       <div className="p-4 space-y-1">
         {navItems.map((item) => {

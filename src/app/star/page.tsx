@@ -372,20 +372,14 @@ export default function StarProgramPage() {
 
                   <div className="flex flex-col md:flex-row gap-4">
                     <Link
-                      href="/credits"
+                      href="/dashboard/credits"
                       className="flex-1 bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent text-center py-3 px-4 rounded-lg font-medium flex items-center justify-center"
                     >
                       <History size={18} className="mr-2" />
                       View Credits
                     </Link>
 
-                    <Link
-                      href="/top-up"
-                      className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:opacity-90 text-white text-center py-3 px-4 rounded-lg font-medium flex items-center justify-center"
-                    >
-                      <ArrowUp size={18} className="mr-2" />
-                      Earn More Points
-                    </Link>
+
                   </div>
                 </div>
               </motion.div>
@@ -726,13 +720,7 @@ export default function StarProgramPage() {
                 <p className="text-mali-text-secondary mb-6">
                   You don't have any points activity in the selected period
                 </p>
-                <Link
-                  href="/top-up"
-                  className="bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent py-2 px-4 rounded-lg font-medium inline-flex items-center"
-                >
-                  <Star size={18} className="mr-2" />
-                  Earn Your First Points
-                </Link>
+
               </div>
             )}
           </div>

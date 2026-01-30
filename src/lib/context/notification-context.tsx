@@ -46,7 +46,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           title: '20% Discount Coupon',
           message: 'You have received a special discount on your first purchase!',
           type: 'success',
-          link: '/coupons',
+          link: '/dashboard/coupons',
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
           read: false
         },
@@ -55,12 +55,12 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           title: 'New Games Added',
           message: 'Check out the latest games that have just been added to our collection.',
           type: 'info',
-          link: '/games',
+          link: '/dashboard/orders/ORD-1002', // Updated as per instruction
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
           read: true
         }
       ];
-      
+
       setNotifications(initialNotifications);
     }
   }, []);
@@ -73,9 +73,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       createdAt: new Date().toISOString(),
       read: false
     };
-    
+
     setNotifications(prev => [newNotification, ...prev]);
-    
+
     // Trigger browser notification if supported
     if (typeof window !== 'undefined' && 'Notification' in window) {
       if (Notification.permission === 'granted') {

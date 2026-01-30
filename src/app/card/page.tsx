@@ -66,10 +66,10 @@ export default function CardPage() {
   return (
     <div className="space-y-6">
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Sidebar */}
         <motion.div
-          className="w-full lg:w-64 shrink-0 bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover"
+          className="w-full lg:w-64 shrink-0 bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover sticky top-24"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}

@@ -130,17 +130,17 @@ const specialCoupons = [
 
 export default function SpecialEventsPage() {
   const [activeFilter, setActiveFilter] = useState<string>('all');
-  
+
   // Filter events based on the selected filter
-  const filteredEvents = activeFilter === 'all' 
-    ? seasonalEvents 
+  const filteredEvents = activeFilter === 'all'
+    ? seasonalEvents
     : seasonalEvents.filter(event => event.type === activeFilter);
 
   return (
     <div className="page-container">
       {/* Page Header */}
       <div className="relative mb-8 pt-4">
-        
+
         <motion.h1 className="text-3xl font-bold text-white mb-2 relative">
           โปรโมชั่นพิเศษ
         </motion.h1>
@@ -149,53 +149,48 @@ export default function SpecialEventsPage() {
 
       {/* Event type filters */}
       <div className="flex flex-wrap gap-2 mb-8">
-        <button 
-          onClick={() => setActiveFilter('all')} 
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeFilter === 'all' 
-              ? 'bg-mali-blue text-white shadow-button-glow' 
+        <button
+          onClick={() => setActiveFilter('all')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === 'all'
+              ? 'bg-mali-blue text-white shadow-button-glow'
               : 'bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20'
-          }`}
+            }`}
         >
           ทั้งหมด
         </button>
-        <button 
-          onClick={() => setActiveFilter('cashback')} 
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeFilter === 'cashback' 
-              ? 'bg-mali-blue text-white shadow-button-glow' 
+        <button
+          onClick={() => setActiveFilter('cashback')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === 'cashback'
+              ? 'bg-mali-blue text-white shadow-button-glow'
               : 'bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20'
-          }`}
+            }`}
         >
           เงินคืน
         </button>
-        <button 
-          onClick={() => setActiveFilter('discount')} 
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeFilter === 'discount' 
-              ? 'bg-mali-blue text-white shadow-button-glow' 
+        <button
+          onClick={() => setActiveFilter('discount')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === 'discount'
+              ? 'bg-mali-blue text-white shadow-button-glow'
               : 'bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20'
-          }`}
+            }`}
         >
           ส่วนลด
         </button>
-        <button 
-          onClick={() => setActiveFilter('bonus')} 
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeFilter === 'bonus' 
-              ? 'bg-mali-blue text-white shadow-button-glow' 
+        <button
+          onClick={() => setActiveFilter('bonus')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === 'bonus'
+              ? 'bg-mali-blue text-white shadow-button-glow'
               : 'bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20'
-          }`}
+            }`}
         >
           โบนัส
         </button>
-        <button 
-          onClick={() => setActiveFilter('special')} 
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeFilter === 'special' 
-              ? 'bg-mali-blue text-white shadow-button-glow' 
+        <button
+          onClick={() => setActiveFilter('special')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeFilter === 'special'
+              ? 'bg-mali-blue text-white shadow-button-glow'
               : 'bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20'
-          }`}
+            }`}
         >
           พิเศษ
         </button>
@@ -209,17 +204,17 @@ export default function SpecialEventsPage() {
           featuredLayout={true}
         />
       </section>
-      
+
       {/* Special coupon codes section */}
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-white">คูปองส่วนลดพิเศษ</h2>
-          <Link href="/coupons" className="text-mali-blue-light hover:text-white transition-colors flex items-center">
+          <Link href="/dashboard/coupons" className="text-mali-blue-light hover:text-white transition-colors flex items-center">
             ดูทั้งหมด
             <ChevronRight className="h-4 w-4 ml-1" />
           </Link>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {specialCoupons.map(coupon => (
             <motion.div
@@ -243,7 +238,7 @@ export default function SpecialEventsPage() {
                   {coupon.discount}
                 </div>
               </div>
-              
+
               <div className="mt-2 text-xs text-mali-text-secondary">
                 <div className="flex justify-between mb-1">
                   <span>ใช้ขั้นต่ำ: ฿{coupon.minSpend}</span>
@@ -252,7 +247,7 @@ export default function SpecialEventsPage() {
                 <div>หมดอายุ: {new Date(coupon.validUntil).toLocaleDateString('th-TH')}</div>
                 <div className="mt-1 text-mali-blue-light">{coupon.terms}</div>
               </div>
-              
+
               <button
                 className="w-full mt-3 bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-light py-2 rounded-md font-medium transition-colors"
               >

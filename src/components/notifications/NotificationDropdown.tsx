@@ -9,12 +9,12 @@ import { formatDistanceToNow } from 'date-fns';
 
 export function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { 
-    notifications, 
-    unreadCount, 
-    markAsRead, 
-    markAllAsRead, 
-    dismissNotification 
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    dismissNotification
   } = useNotifications();
 
   const toggleDropdown = () => {
@@ -65,7 +65,7 @@ export function NotificationDropdown() {
         onClick={toggleDropdown}
       >
         <Bell size={20} className="text-mali-text-secondary hover:text-white transition-colors" />
-        
+
         {/* Notification counter */}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white">
@@ -107,13 +107,13 @@ export function NotificationDropdown() {
               ) : (
                 <div className="divide-y divide-mali-blue/10">
                   {notifications.map((notification) => (
-                    <div 
-                      key={notification.id} 
+                    <div
+                      key={notification.id}
                       className={`p-3 hover:bg-mali-blue/10 relative ${notification.read ? 'opacity-75' : ''}`}
                     >
                       {/* Notification content */}
                       {notification.link ? (
-                        <Link 
+                        <Link
                           href={notification.link}
                           onClick={() => handleLinkClick(notification)}
                           className="block"
@@ -127,7 +127,7 @@ export function NotificationDropdown() {
                           {renderNotificationContent(notification)}
                         </div>
                       )}
-                      
+
                       {/* Dismiss button */}
                       <button
                         onClick={(e) => {
@@ -138,7 +138,7 @@ export function NotificationDropdown() {
                       >
                         <X size={14} />
                       </button>
-                      
+
                       {/* Unread indicator */}
                       {!notification.read && (
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-mali-blue-accent"></div>
@@ -151,9 +151,9 @@ export function NotificationDropdown() {
 
             {/* Footer */}
             <div className="p-2 border-t border-mali-blue/20 bg-mali-sidebar">
-              <Link 
-                href="/notifications"
-                className="block w-full text-center text-xs text-mali-text-secondary hover:text-white py-1 hover:bg-mali-blue/20 rounded-md"
+              <Link
+                href="/dashboard/notifications"
+                className="block p-3 text-center text-sm text-mali-blue-accent hover:bg-mali-blue/10 transition-colors border-t border-mali-blue/20 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
                 View all notifications

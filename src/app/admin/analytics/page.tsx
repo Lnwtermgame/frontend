@@ -44,7 +44,7 @@ const mockMetrics = {
     mostVisitedPages: [
       { name: "/games/pubg-mobile", views: 24563 },
       { name: "/games/free-fire", views: 18432 },
-      { name: "/top-up", views: 15843 },
+
       { name: "/special-events", views: 9876 },
 
     ]
@@ -68,8 +68,8 @@ export default function AnalyticsDashboard() {
             <button
               key={tab.id}
               className={`flex items-center px-6 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${activeTab === tab.id
-                  ? "border-mali-blue text-white"
-                  : "border-transparent text-mali-blue/70 hover:text-mali-blue hover:border-mali-blue/30"
+                ? "border-mali-blue text-white"
+                : "border-transparent text-mali-blue/70 hover:text-mali-blue hover:border-mali-blue/30"
                 }`}
               onClick={() => setActiveTab(tab.id as any)}
             >
@@ -95,8 +95,8 @@ export default function AnalyticsDashboard() {
                   <button
                     key={range}
                     className={`px-4 py-2 text-sm transition-colors ${timeRange === range
-                        ? "bg-mali-blue text-white"
-                        : "text-mali-blue/70 hover:bg-mali-blue/10"
+                      ? "bg-mali-blue text-white"
+                      : "text-mali-blue/70 hover:bg-mali-blue/10"
                       }`}
                     onClick={() => setTimeRange(range)}
                   >

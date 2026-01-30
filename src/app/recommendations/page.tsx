@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ThumbsUp, ThumbsDown, Star, ChevronRight, 
+import {
+  ThumbsUp, ThumbsDown, Star, ChevronRight,
   Heart, ArrowRight, ShoppingCart, Gamepad,
   Clock, Eye, Sparkles, RefreshCw, Filter,
   ChevronDown, Users, Zap, Bolt, Settings
@@ -215,8 +215,8 @@ const categories = ["All", "MOBA", "RPG", "Battle Royale", "FPS", "Game Currency
 
 export default function RecommendationsPage() {
   const router = useRouter();
-  
-  
+
+
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showRecentlyViewed, setShowRecentlyViewed] = useState(true);
   const [showPersonalized, setShowPersonalized] = useState(true);
@@ -227,46 +227,46 @@ export default function RecommendationsPage() {
     const date = new Date(dateStr);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
+
     if (diffInSeconds < 60) {
       return 'just now';
     }
-    
+
     const diffInMinutes = Math.floor(diffInSeconds / 60);
     if (diffInMinutes < 60) {
       return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`;
     }
-    
+
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) {
       return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`;
     }
-    
+
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) {
       return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`;
     }
-    
+
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   // Filter items by category
-  const filteredRecentlyViewed = selectedCategory === "All" 
-    ? recentlyViewedItems 
+  const filteredRecentlyViewed = selectedCategory === "All"
+    ? recentlyViewedItems
     : recentlyViewedItems.filter(item => item.category === selectedCategory);
-  
-  const filteredPersonalized = selectedCategory === "All" 
-    ? personalizedRecommendations 
+
+  const filteredPersonalized = selectedCategory === "All"
+    ? personalizedRecommendations
     : personalizedRecommendations.filter(item => item.category === selectedCategory);
-  
-  const filteredPopular = selectedCategory === "All" 
-    ? popularItemsShowcase 
+
+  const filteredPopular = selectedCategory === "All"
+    ? popularItemsShowcase
     : popularItemsShowcase.filter(item => item.category === selectedCategory);
 
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <motion.div 
+      <motion.div
         className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-6 md:p-8 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -296,8 +296,8 @@ export default function RecommendationsPage() {
             <Filter size={18} className="text-mali-blue-accent mr-2" />
             <h3 className="font-medium text-white">Filter by Category</h3>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => setSelectedCategory("All")}
             className="text-sm text-mali-blue-accent flex items-center"
           >
@@ -305,17 +305,16 @@ export default function RecommendationsPage() {
             Reset Filters
           </button>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-                selectedCategory === category
+              className={`px-4 py-2 rounded-lg text-sm transition-colors ${selectedCategory === category
                   ? 'bg-mali-blue text-white'
                   : 'bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white'
-              }`}
+                }`}
             >
               {category}
             </button>
@@ -336,18 +335,18 @@ export default function RecommendationsPage() {
               <Clock size={18} className="text-mali-blue-accent mr-2" />
               <h3 className="text-lg font-bold text-white">Recently Viewed</h3>
             </div>
-            
-            <button 
-              onClick={() => setShowRecentlyViewed(!showRecentlyViewed)} 
+
+            <button
+              onClick={() => setShowRecentlyViewed(!showRecentlyViewed)}
               className="text-mali-blue-accent"
             >
-              <ChevronDown 
-                size={20} 
-                className={`transition-transform ${showRecentlyViewed ? 'rotate-180' : ''}`} 
+              <ChevronDown
+                size={20}
+                className={`transition-transform ${showRecentlyViewed ? 'rotate-180' : ''}`}
               />
             </button>
           </div>
-          
+
           {showRecentlyViewed && (
             <div className="p-5">
               {filteredRecentlyViewed.length > 0 ? (
@@ -356,8 +355,8 @@ export default function RecommendationsPage() {
                     <Link href={`/games/${item.id}`} key={item.id}>
                       <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden hover:border-mali-blue/50 transition-colors">
                         <div className="aspect-[4/3] relative">
-                          <img 
-                            src={item.image} 
+                          <img
+                            src={item.image}
                             alt={item.title}
                             className="w-full h-full object-cover"
                           />
@@ -375,17 +374,17 @@ export default function RecommendationsPage() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="p-3">
                           <h4 className="font-medium text-white mb-2 truncate">{item.title}</h4>
-                          
+
                           <div className="flex justify-between items-center">
                             <div className="flex items-center">
                               <Star size={12} className="text-yellow-500 mr-1" />
                               <span className="text-xs text-white">{item.rating}</span>
                               <span className="text-xs text-mali-text-secondary ml-1">({item.reviewCount})</span>
                             </div>
-                            
+
                             <div>
                               {item.isFree ? (
                                 <span className="text-xs bg-green-900/30 text-green-400 px-2 py-0.5 rounded-full">
@@ -407,7 +406,7 @@ export default function RecommendationsPage() {
                 <div className="text-center py-10">
                   <Clock size={36} className="mx-auto mb-3 text-mali-text-secondary" />
                   <p className="text-mali-text-secondary">No recently viewed items in this category</p>
-                  <button 
+                  <button
                     onClick={() => setSelectedCategory("All")}
                     className="mt-3 text-mali-blue-accent text-sm hover:underline"
                   >
@@ -415,7 +414,7 @@ export default function RecommendationsPage() {
                   </button>
                 </div>
               )}
-              
+
               {filteredRecentlyViewed.length > 0 && (
                 <div className="mt-5 text-center">
                   <Link href="/history">
@@ -444,18 +443,18 @@ export default function RecommendationsPage() {
               <Zap size={18} className="text-mali-blue-accent mr-2" />
               <h3 className="text-lg font-bold text-white">Personalized For You</h3>
             </div>
-            
-            <button 
-              onClick={() => setShowPersonalized(!showPersonalized)} 
+
+            <button
+              onClick={() => setShowPersonalized(!showPersonalized)}
               className="text-mali-blue-accent"
             >
-              <ChevronDown 
-                size={20} 
-                className={`transition-transform ${showPersonalized ? 'rotate-180' : ''}`} 
+              <ChevronDown
+                size={20}
+                className={`transition-transform ${showPersonalized ? 'rotate-180' : ''}`}
               />
             </button>
           </div>
-          
+
           {showPersonalized && (
             <div className="p-5">
               {filteredPersonalized.length > 0 ? (
@@ -464,8 +463,8 @@ export default function RecommendationsPage() {
                     <Link href={`/games/${item.id}`} key={item.id}>
                       <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden hover:border-mali-blue/50 transition-colors h-full flex flex-col">
                         <div className="aspect-[16/9] relative">
-                          <img 
-                            src={item.image} 
+                          <img
+                            src={item.image}
                             alt={item.title}
                             className="w-full h-full object-cover"
                           />
@@ -483,16 +482,16 @@ export default function RecommendationsPage() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="p-4 flex-1 flex flex-col">
                           <h4 className="font-medium text-white mb-2">{item.title}</h4>
-                          
+
                           <div className="flex items-center mb-3">
                             <Star size={14} className="text-yellow-500 mr-1" />
                             <span className="text-sm text-white">{item.rating}</span>
                             <span className="text-xs text-mali-text-secondary ml-1">({item.reviewCount})</span>
                           </div>
-                          
+
                           <div className="mt-auto flex justify-between items-center">
                             <div>
                               {item.isFree ? (
@@ -505,7 +504,7 @@ export default function RecommendationsPage() {
                                 </span>
                               )}
                             </div>
-                            
+
                             <button className="bg-mali-blue/20 hover:bg-mali-blue/40 text-mali-blue-accent p-2 rounded-lg transition-colors">
                               <ShoppingCart size={16} />
                             </button>
@@ -519,7 +518,7 @@ export default function RecommendationsPage() {
                 <div className="text-center py-10">
                   <Zap size={36} className="mx-auto mb-3 text-mali-text-secondary" />
                   <p className="text-mali-text-secondary">No personalized recommendations in this category</p>
-                  <button 
+                  <button
                     onClick={() => setSelectedCategory("All")}
                     className="mt-3 text-mali-blue-accent text-sm hover:underline"
                   >
@@ -545,18 +544,18 @@ export default function RecommendationsPage() {
               <ThumbsUp size={18} className="text-mali-blue-accent mr-2" />
               <h3 className="text-lg font-bold text-white">Popular Among Gamers</h3>
             </div>
-            
-            <button 
-              onClick={() => setShowPopular(!showPopular)} 
+
+            <button
+              onClick={() => setShowPopular(!showPopular)}
               className="text-mali-blue-accent"
             >
-              <ChevronDown 
-                size={20} 
-                className={`transition-transform ${showPopular ? 'rotate-180' : ''}`} 
+              <ChevronDown
+                size={20}
+                className={`transition-transform ${showPopular ? 'rotate-180' : ''}`}
               />
             </button>
           </div>
-          
+
           {showPopular && (
             <div className="p-5">
               {filteredPopular.length > 0 ? (
@@ -565,8 +564,8 @@ export default function RecommendationsPage() {
                     <Link href={`/games/${item.id}`} key={item.id}>
                       <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-xl overflow-hidden hover:border-mali-blue/50 transition-colors h-full flex flex-col">
                         <div className="aspect-[16/9] relative">
-                          <img 
-                            src={item.image} 
+                          <img
+                            src={item.image}
                             alt={item.title}
                             className="w-full h-full object-cover"
                           />
@@ -584,16 +583,16 @@ export default function RecommendationsPage() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="p-4 flex-1 flex flex-col">
                           <h4 className="font-medium text-white mb-2">{item.title}</h4>
-                          
+
                           <div className="flex items-center mb-3">
                             <Star size={14} className="text-yellow-500 mr-1" />
                             <span className="text-sm text-white">{item.rating}</span>
                             <span className="text-xs text-mali-text-secondary ml-1">({item.reviewCount})</span>
                           </div>
-                          
+
                           <div className="mt-auto flex justify-between items-center">
                             <div>
                               {item.isFree ? (
@@ -606,7 +605,7 @@ export default function RecommendationsPage() {
                                 </span>
                               )}
                             </div>
-                            
+
                             <button className="bg-mali-blue hover:bg-mali-blue/90 text-white p-2 rounded-lg transition-colors">
                               <ShoppingCart size={16} />
                             </button>
@@ -620,7 +619,7 @@ export default function RecommendationsPage() {
                 <div className="text-center py-10">
                   <ThumbsUp size={36} className="mx-auto mb-3 text-mali-text-secondary" />
                   <p className="text-mali-text-secondary">No popular items in this category</p>
-                  <button 
+                  <button
                     onClick={() => setSelectedCategory("All")}
                     className="mt-3 text-mali-blue-accent text-sm hover:underline"
                   >
@@ -628,7 +627,7 @@ export default function RecommendationsPage() {
                   </button>
                 </div>
               )}
-              
+
               {filteredPopular.length > 0 && (
                 <div className="mt-5 text-center">
                   <Link href="/games">
@@ -655,7 +654,7 @@ export default function RecommendationsPage() {
         <p className="text-mali-text-secondary mb-6 max-w-2xl mx-auto">
           The more you browse, the better we can tailor recommendations to your gaming preferences
         </p>
-        
+
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/games">
             <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white py-3 px-6 rounded-lg font-medium flex items-center">
@@ -663,8 +662,8 @@ export default function RecommendationsPage() {
               Browse Games
             </button>
           </Link>
-          
-          <Link href="/account/preferences">
+
+          <Link href="/dashboard/account/preferences">
             <button className="bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent py-3 px-6 rounded-lg font-medium flex items-center">
               <Settings size={18} className="mr-2" />
               Adjust Preferences

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { Plus, Search, Filter, Edit, Trash2, MoreHorizontal, Package } from "lucide-react";

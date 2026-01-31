@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { motion } from '@/lib/framer-exports';
 import { Facebook, Twitter, Instagram, Twitch, Youtube, Globe, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export interface SocialPlatform {
   id: string;

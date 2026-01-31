@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { Coins, Gift, Calendar, ChevronRight, Globe, Award, InfoIcon, History, ExternalLink, CreditCard } from "lucide-react";
+import { Coins, Calendar, Award, InfoIcon, History, CreditCard, Check } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 
@@ -14,21 +14,21 @@ const creditsActivity = [
     date: "2023-11-15T14:30:00Z",
     amount: 50,
     type: "earned",
-    description: "Purchase: Steam Gift Card"
+    description: "ซื้อสินค้า: บัตรของขวัญ Steam"
   },
   {
     id: "CRED1002",
     date: "2023-11-10T09:45:00Z",
     amount: 100,
     type: "earned",
-    description: "First top-up bonus"
+    description: "โบนัสเติมเงินครั้งแรก"
   },
   {
     id: "CRED1003",
     date: "2023-11-05T16:20:00Z",
     amount: 25,
     type: "redeemed",
-    description: "Redeem: $5 Discount Voucher"
+    description: "แลกของรางวัล: คูปองส่วนลด $5"
   }
 ];
 
@@ -108,7 +108,7 @@ export default function CreditsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">Loading...</p>
+          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -123,9 +123,9 @@ export default function CreditsPage() {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          Credits
+          เครดิต
         </motion.h2>
-        <p className="text-mali-text-secondary text-sm relative">Earn and redeem credits for exclusive rewards</p>
+        <p className="text-mali-text-secondary text-sm relative thai-font">สะสมและแลกเครดิตเพื่อรับของรางวัลสุดพิเศษ</p>
       </div>
 
       {/* Credits Overview */}
@@ -143,11 +143,11 @@ export default function CreditsPage() {
                   <Coins size={32} />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-white">
-                    {credits.toLocaleString()} Credits
+                  <h2 className="text-3xl font-bold text-white thai-font">
+                    {credits.toLocaleString()} เครดิต
                   </h2>
-                  <p className="text-mali-text-secondary text-sm">
-                    Each credit is worth $0.01 USD in discount value
+                  <p className="text-mali-text-secondary text-sm thai-font">
+                    ทุกๆ 1 เครดิตมีมูลค่าส่วนลด $0.01 USD
                   </p>
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default function CreditsPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-mali-blue/5 border border-mali-blue/10 rounded-xl p-4 transition-colors hover:bg-mali-blue/10 hover:border-mali-blue/20">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-mali-text-secondary text-sm">Earned Credits</span>
+                    <span className="text-mali-text-secondary text-sm thai-font">เครดิตที่ได้รับ</span>
                     <span className="bg-green-900/30 text-green-400 text-xs px-2 py-0.5 rounded-full border border-green-500/20">
                       +150
                     </span>
@@ -165,7 +165,7 @@ export default function CreditsPage() {
 
                 <div className="bg-mali-blue/5 border border-mali-blue/10 rounded-xl p-4 transition-colors hover:bg-mali-blue/10 hover:border-mali-blue/20">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-mali-text-secondary text-sm">Redeemed Credits</span>
+                    <span className="text-mali-text-secondary text-sm thai-font">เครดิตที่ใช้ไป</span>
                     <span className="bg-amber-900/30 text-amber-400 text-xs px-2 py-0.5 rounded-full border border-mali-blue/10">
                       -25
                     </span>
@@ -175,9 +175,9 @@ export default function CreditsPage() {
 
                 <div className="bg-mali-blue/5 border border-mali-blue/10 rounded-xl p-4 transition-colors hover:bg-mali-blue/10 hover:border-mali-blue/20">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-mali-text-secondary text-sm">Expiring Soon</span>
+                    <span className="text-mali-text-secondary text-sm thai-font">กำลังจะหมดอายุ</span>
                     <span className="bg-red-900/30 text-red-400 text-xs px-2 py-0.5 rounded-full border border-mali-blue/10">
-                      30 days
+                      30 วัน
                     </span>
                   </div>
                   <div className="text-xl font-bold text-white">50</div>
@@ -187,10 +187,10 @@ export default function CreditsPage() {
               <div className="flex flex-col md:flex-row gap-4">
                 <Link
                   href="/dashboard/orders"
-                  className="flex-1 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent hover:text-white border border-mali-blue/20 text-center py-3 px-4 rounded-lg font-medium flex items-center justify-center transition-all"
+                  className="flex-1 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent hover:text-white border border-mali-blue/20 text-center py-3 px-4 rounded-lg font-medium flex items-center justify-center transition-all thai-font"
                 >
                   <History size={18} className="mr-2" />
-                  View Transaction History
+                  ดูประวัติธุรกรรม
                 </Link>
               </div>
             </div>
@@ -205,9 +205,9 @@ export default function CreditsPage() {
             transition={{ duration: 0.4, delay: 0.2 }}
           >
             <div className="p-5 border-b border-mali-blue/20 bg-mali-blue/5">
-              <h3 className="text-lg font-bold text-white flex items-center">
+              <h3 className="text-lg font-bold text-white flex items-center thai-font">
                 <InfoIcon size={18} className="text-mali-blue-accent mr-2" />
-                About Credits
+                เกี่ยวกับเครดิต
               </h3>
             </div>
 
@@ -218,8 +218,8 @@ export default function CreditsPage() {
                     <span className="font-bold text-sm">1</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-white mb-1">Earn Credits</h4>
-                    <p className="text-sm">Earn credits through purchases, promotions, and by referring friends.</p>
+                    <h4 className="font-medium text-white mb-1 thai-font">รับเครดิต</h4>
+                    <p className="text-sm thai-font">รับเครดิตจากการซื้อสินค้า โปรโมชั่น และการแนะนำเพื่อน</p>
                   </div>
                 </div>
 
@@ -228,8 +228,8 @@ export default function CreditsPage() {
                     <span className="font-bold text-sm">2</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-white mb-1">Redeem Credits</h4>
-                    <p className="text-sm">Use your credits for discounts on purchases or exchange for rewards.</p>
+                    <h4 className="font-medium text-white mb-1 thai-font">แลกเครดิต</h4>
+                    <p className="text-sm thai-font">ใช้เครดิตเป็นส่วนลดในการซื้อสินค้าหรือแลกของรางวัล</p>
                   </div>
                 </div>
 
@@ -238,8 +238,8 @@ export default function CreditsPage() {
                     <span className="font-bold text-sm">3</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-white mb-1">Credit Value</h4>
-                    <p className="text-sm">Each credit is worth $0.01 USD when used for discounts.</p>
+                    <h4 className="font-medium text-white mb-1 thai-font">มูลค่าเครดิต</h4>
+                    <p className="text-sm thai-font">ทุกๆ 1 เครดิตมีมูลค่า $0.01 USD เมื่อใช้เป็นส่วนลด</p>
                   </div>
                 </div>
               </div>
@@ -255,9 +255,9 @@ export default function CreditsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
       >
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center">
+        <h2 className="text-xl font-bold text-white mb-6 flex items-center thai-font">
           <Award className="mr-3 text-mali-blue-accent" />
-          Rewards
+          ของรางวัล
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -289,8 +289,8 @@ export default function CreditsPage() {
               <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-bold text-white pr-2">{reward.name}</h3>
-                  <span className="bg-mali-blue/20 text-mali-blue-accent px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border border-mali-blue/10">
-                    {reward.credits} Credits
+                  <span className="bg-mali-blue/20 text-mali-blue-accent px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border border-mali-blue/10 thai-font">
+                    {reward.credits} เครดิต
                   </span>
                 </div>
 
@@ -299,12 +299,12 @@ export default function CreditsPage() {
                 </p>
 
                 <button
-                  className={`w-full py-2.5 rounded-lg font-medium text-sm flex items-center justify-center transition-all
+                  className={`w-full py-2.5 rounded-lg font-medium text-sm flex items-center justify-center transition-all thai-font
                     ${selectedReward === reward.id
                       ? 'bg-mali-blue text-white shadow-button-glow'
                       : 'bg-mali-blue/10 text-mali-blue-accent hover:bg-mali-blue/20 hover:text-white'}`}
                 >
-                  {selectedReward === reward.id ? 'Selected' : 'Select Reward'}
+                  {selectedReward === reward.id ? 'เลือกแล้ว' : 'เลือกรางวัล'}
                 </button>
               </div>
             </div>
@@ -312,8 +312,8 @@ export default function CreditsPage() {
         </div>
 
         <div className={`mt-8 text-center transition-all duration-300 ${selectedReward ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4 pointer-events-none'}`}>
-          <button className="bg-mali-blue hover:bg-mali-blue/90 text-white py-3 px-8 rounded-xl font-bold text-lg shadow-button-glow transition-all flex items-center mx-auto hover:scale-105 active:scale-95">
-            Redeem Selected Reward
+          <button className="bg-mali-blue hover:bg-mali-blue/90 text-white py-3 px-8 rounded-xl font-bold text-lg shadow-button-glow transition-all flex items-center mx-auto hover:scale-105 active:scale-95 thai-font">
+            แลกของรางวัลที่เลือก
           </button>
         </div>
       </motion.div>
@@ -326,29 +326,29 @@ export default function CreditsPage() {
       >
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
           <div className="p-5 border-b border-mali-blue/20 bg-mali-blue/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h3 className="text-lg font-bold text-white flex items-center">
+            <h3 className="text-lg font-bold text-white flex items-center thai-font">
               <History size={18} className="text-mali-blue-accent mr-2" />
-              Credits History
+              ประวัติเครดิต
             </h3>
 
             <div className="flex bg-mali-blue/10 p-1 rounded-lg self-start sm:self-auto">
               <button
                 onClick={() => setPeriod('all')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${period === 'all' ? 'bg-mali-card text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all thai-font ${period === 'all' ? 'bg-mali-card text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
               >
-                All
+                ทั้งหมด
               </button>
               <button
                 onClick={() => setPeriod('month')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${period === 'month' ? 'bg-mali-card text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all thai-font ${period === 'month' ? 'bg-mali-card text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
               >
-                Month
+                เดือนนี้
               </button>
               <button
                 onClick={() => setPeriod('week')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${period === 'week' ? 'bg-mali-card text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all thai-font ${period === 'week' ? 'bg-mali-card text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
               >
-                Week
+                สัปดาห์นี้
               </button>
             </div>
           </div>
@@ -384,9 +384,9 @@ export default function CreditsPage() {
                 <div className="w-16 h-16 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Coins size={32} className="text-mali-text-secondary opacity-50" />
                 </div>
-                <h4 className="text-lg font-medium text-white mb-2">No Credits Activity</h4>
-                <p className="text-mali-text-secondary text-sm">
-                  You don't have any credits activity in the selected period
+                <h4 className="text-lg font-medium text-white mb-2 thai-font">ไม่มีรายการเคลื่อนไหวเครดิต</h4>
+                <p className="text-mali-text-secondary text-sm thai-font">
+                  คุณไม่มีรายการเคลื่อนไหวเครดิตในช่วงเวลาที่เลือก
                 </p>
               </div>
             )}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { usePushNotifications } from '@/lib/hooks/use-push-notifications';
-import { Bell, AlertCircle, Check, RefreshCw } from 'lucide-react';
+import { Bell, AlertCircle, RefreshCw } from 'lucide-react';
 import { motion } from '@/lib/framer-exports';
 
 interface PushNotificationManagerProps {

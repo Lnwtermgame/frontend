@@ -89,7 +89,7 @@ export default function FavoritePage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">Loading...</p>
+          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -104,10 +104,10 @@ export default function FavoritePage() {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          My Favorites
+          รายการโปรดของฉัน
         </motion.h2>
-        <p className="text-mali-text-secondary text-sm relative">
-          Manage your saved items for quick access
+        <p className="text-mali-text-secondary text-sm relative thai-font">
+          จัดการรายการที่คุณบันทึกไว้เพื่อการเข้าถึงที่รวดเร็ว
         </p>
       </div>
 
@@ -115,16 +115,16 @@ export default function FavoritePage() {
         <div className="relative w-full sm:w-80">
           <input
             type="text"
-            placeholder="Search favorites..."
+            placeholder="ค้นหารายการโปรด..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-full bg-mali-blue/10 px-4 py-2 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent pl-10 transition-all"
+            className="w-full rounded-full bg-mali-blue/10 px-4 py-2 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent pl-10 transition-all thai-font"
           />
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary" />
         </div>
 
-        <div className="ml-auto text-sm text-mali-text-secondary">
-          {filteredFavorites.length} items found
+        <div className="ml-auto text-sm text-mali-text-secondary thai-font">
+          พบ {filteredFavorites.length} รายการ
         </div>
       </div>
 
@@ -143,7 +143,7 @@ export default function FavoritePage() {
                   <button
                     onClick={(e) => removeFavorite(item.id, e)}
                     className="w-8 h-8 rounded-full bg-black/40 hover:bg-mali-red/20 text-white/70 hover:text-mali-red flex items-center justify-center backdrop-blur-sm transition-all"
-                    title="Remove from favorites"
+                    title="ลบออกจากรายการโปรด"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -163,8 +163,8 @@ export default function FavoritePage() {
 
                 {!item.inStock && (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-[1px]">
-                    <span className="bg-red-500/80 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10">
-                      Out of Stock
+                    <span className="bg-red-500/80 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10 thai-font">
+                      สินค้าหมด
                     </span>
                   </div>
                 )}
@@ -184,17 +184,17 @@ export default function FavoritePage() {
                 <div className="flex gap-2">
                   <Link
                     href={`/product/${item.productId}`}
-                    className="flex-1 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent hover:text-white border border-mali-blue/20 rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all"
+                    className="flex-1 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent hover:text-white border border-mali-blue/20 rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all thai-font"
                   >
                     <ExternalLink size={16} className="mr-2" />
-                    Details
+                    รายละเอียด
                   </Link>
                   <button
                     disabled={!item.inStock}
-                    className="flex-1 bg-mali-blue hover:bg-mali-blue/90 text-white rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all shadow-button-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="flex-1 bg-mali-blue hover:bg-mali-blue/90 text-white rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all shadow-button-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none thai-font"
                   >
                     <ShoppingCart size={16} className="mr-2" />
-                    Buy Now
+                    ซื้อเลย
                   </button>
                 </div>
               </div>
@@ -210,17 +210,17 @@ export default function FavoritePage() {
           <div className="w-20 h-20 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <Heart size={40} className="text-mali-text-secondary opacity-50" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">No favorites found</h2>
-          <p className="text-mali-text-secondary max-w-md mx-auto mb-8">
+          <h2 className="text-xl font-bold text-white mb-2 thai-font">ไม่พบรายการโปรด</h2>
+          <p className="text-mali-text-secondary max-w-md mx-auto mb-8 thai-font">
             {searchTerm
-              ? `We couldn't find any favorite items matching "${searchTerm}"`
-              : "You haven't added any items to your favorites yet. Browse product pages and click the heart icon to save them here."}
+              ? `เราไม่พบรายการโปรดที่ตรงกับ "${searchTerm}"`
+              : "คุณยังไม่ได้เพิ่มรายการใดๆ ลงในรายการโปรด เลือกดูสินค้าและคลิกไอคอนหัวใจเพื่อบันทึกไว้ที่นี่"}
           </p>
           <Link
             href="/"
-            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-xl font-medium shadow-button-glow inline-flex items-center transition-all hover:scale-105 active:scale-95"
+            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-xl font-medium shadow-button-glow inline-flex items-center transition-all hover:scale-105 active:scale-95 thai-font"
           >
-            Start Shopping
+            เริ่มช้อปปิ้ง
           </Link>
         </motion.div>
       )}

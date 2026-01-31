@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
-import { Bell, Mail, Globe, Smartphone, Tag, Gift, ChevronLeft, Save, AlertCircle, CheckCircle, Facebook, Twitter, Instagram } from "lucide-react";
+import { Bell, Mail, Globe, Smartphone, Tag, Gift, ChevronLeft, Save, AlertCircle, Facebook, Twitter, Instagram } from "lucide-react";
 import Link from "next/link";
 import { PushNotificationManager } from "@/components/notifications/PushNotificationManager";
 import { SocialMediaIntegration, SocialPlatform } from '@/components/SocialMediaIntegration';

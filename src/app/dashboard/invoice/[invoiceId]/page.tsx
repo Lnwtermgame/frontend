@@ -123,14 +123,14 @@ export default function InvoiceDetailPage() {
       setLoading(false);
 
       if (typeof invoiceId !== 'string') {
-        setError("Invalid invoice ID");
+        setError("รหัสใบแจ้งหนี้ไม่ถูกต้อง");
         return;
       }
 
       const foundInvoice = invoicesData[invoiceId as keyof typeof invoicesData];
 
       if (!foundInvoice) {
-        setError("Invoice not found");
+        setError("ไม่พบใบแจ้งหนี้");
         return;
       }
 
@@ -171,14 +171,14 @@ export default function InvoiceDetailPage() {
           <div className="w-16 h-16 rounded-full bg-mali-blue/10 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="h-8 w-8 text-red-400" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">Error</h2>
-          <p className="text-mali-text-secondary mb-6">{error}</p>
+          <h2 className="text-xl font-bold text-white mb-2 thai-font">ข้อผิดพลาด</h2>
+          <p className="text-mali-text-secondary mb-6 thai-font">{error}</p>
           <button
             onClick={() => router.push('/dashboard/invoice')}
-            className="inline-flex items-center bg-mali-blue hover:bg-mali-blue/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all"
+            className="inline-flex items-center bg-mali-blue hover:bg-mali-blue/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all thai-font"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Invoices
+            กลับไปหน้าใบแจ้งหนี้
           </button>
         </motion.div>
       </div>
@@ -199,10 +199,10 @@ export default function InvoiceDetailPage() {
           <div>
             <Link
               href="/dashboard/invoice"
-              className="text-mali-blue-light hover:text-mali-blue-accent inline-flex items-center text-sm mb-3"
+              className="text-mali-blue-light hover:text-mali-blue-accent inline-flex items-center text-sm mb-3 thai-font"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Invoices
+              กลับไปหน้าใบแจ้งหนี้
             </Link>
           </div>
 
@@ -233,18 +233,18 @@ export default function InvoiceDetailPage() {
             </motion.button>
 
             <motion.button
-              className="px-5 py-2 rounded-lg bg-mali-blue hover:bg-mali-blue/90 text-white font-medium inline-flex items-center shadow-lg shadow-blue-500/20"
+              className="px-5 py-2 rounded-lg bg-mali-blue hover:bg-mali-blue/90 text-white font-medium inline-flex items-center shadow-lg shadow-blue-500/20 thai-font"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Download PDF
+              ดาวน์โหลด PDF
             </motion.button>
           </div>
         </div>
 
         <div>
-          <h1 className="text-3xl font-bold text-white relative">
-            Invoice #{invoice.id}
+          <h1 className="text-3xl font-bold text-white relative thai-font">
+            ใบแจ้งหนี้ #{invoice.id}
           </h1>
           <div className="flex items-center gap-2 mt-1">
             <p className="text-mali-text-secondary">
@@ -274,7 +274,7 @@ export default function InvoiceDetailPage() {
           <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Customer Info */}
             <div>
-              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3">Customer</h3>
+              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3 thai-font">ลูกค้า</h3>
               <p className="text-white font-medium">{invoice.customerName}</p>
               <p className="text-mali-text-secondary text-sm">{invoice.customerEmail}</p>
               <p className="text-mali-text-secondary text-sm mt-1">{invoice.billingAddress.phone}</p>
@@ -282,7 +282,7 @@ export default function InvoiceDetailPage() {
 
             {/* Payment Info */}
             <div>
-              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3">Payment Details</h3>
+              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3 thai-font">รายละเอียดการชำระเงิน</h3>
               <div className="flex items-start gap-3">
                 <div className="rounded-full p-2 bg-mali-blue/20 text-mali-blue-light mt-0.5">
                   <CreditCard className="h-4 w-4" />
@@ -299,10 +299,10 @@ export default function InvoiceDetailPage() {
 
             {/* Order Info */}
             <div>
-              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3">Order Information</h3>
+              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3 thai-font">ข้อมูลคำสั่งซื้อ</h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-mali-text-secondary text-sm">Order Ref:</span>
+                  <span className="text-mali-text-secondary text-sm thai-font">อ้างอิงคำสั่งซื้อ:</span>
                   <Link
                     href={`/dashboard/orders/${invoice.orderReference}`}
                     className="text-mali-blue-light hover:text-mali-blue-accent hover:underline transition-colors flex items-center text-sm"
@@ -312,13 +312,13 @@ export default function InvoiceDetailPage() {
                   </Link>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mali-text-secondary text-sm">Delivery:</span>
+                  <span className="text-mali-text-secondary text-sm thai-font">การจัดส่ง:</span>
                   <span className="text-white text-sm">{invoice.deliveryMethod}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mali-text-secondary text-sm">Status:</span>
-                  <span className="text-green-400 text-sm flex items-center">
-                    <CheckCircle className="h-3.5 w-3.5 mr-1.5" /> Complete
+                  <span className="text-mali-text-secondary text-sm thai-font">สถานะ:</span>
+                  <span className="text-green-400 text-sm flex items-center thai-font">
+                    <CheckCircle className="h-3.5 w-3.5 mr-1.5" /> เสร็จสมบูรณ์
                   </span>
                 </div>
               </div>
@@ -334,16 +334,16 @@ export default function InvoiceDetailPage() {
           transition={{ duration: 0.3, delay: 0.3 }}
         >
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Invoice Items</h3>
+            <h3 className="text-lg font-semibold text-white mb-4 thai-font">รายการในใบแจ้งหนี้</h3>
 
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-mali-blue/20">
-                    <th className="text-left text-xs uppercase text-mali-text-secondary font-medium pb-4">Item</th>
-                    <th className="text-center text-xs uppercase text-mali-text-secondary font-medium pb-4">Value</th>
-                    <th className="text-center text-xs uppercase text-mali-text-secondary font-medium pb-4">Quantity</th>
-                    <th className="text-right text-xs uppercase text-mali-text-secondary font-medium pb-4">Amount</th>
+                    <th className="text-left text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">รายการ</th>
+                    <th className="text-center text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">มูลค่า</th>
+                    <th className="text-center text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">จำนวน</th>
+                    <th className="text-right text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">จำนวนเงิน</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -380,15 +380,15 @@ export default function InvoiceDetailPage() {
               <div className="flex flex-col items-end">
                 <div className="w-full max-w-xs space-y-2">
                   <div className="flex justify-between text-mali-text-secondary">
-                    <span>Subtotal:</span>
+                    <span className="thai-font">ยอดรวมย่อย:</span>
                     <span>${(invoice.amount - 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-mali-text-secondary">
-                    <span>Tax:</span>
+                    <span className="thai-font">ภาษี:</span>
                     <span>$0.00</span>
                   </div>
                   <div className="flex justify-between text-white font-bold border-t border-mali-blue/20 pt-2 mt-2">
-                    <span>Total:</span>
+                    <span className="thai-font">ยอดรวมทั้งหมด:</span>
                     <span>${invoice.amount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -405,14 +405,14 @@ export default function InvoiceDetailPage() {
           transition={{ duration: 0.3, delay: 0.4 }}
         >
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Notes</h3>
+            <h3 className="text-lg font-semibold text-white mb-4 thai-font">หมายเหตุ</h3>
             <p className="text-mali-text-secondary">{invoice.notes}</p>
 
             <div className="mt-6 border-t border-mali-blue/20 pt-6">
               <div className="flex items-center gap-2 text-mali-text-secondary">
                 <Clock className="h-4 w-4" />
-                <span className="text-sm">
-                  Invoice generated on {new Date(invoice.date).toLocaleDateString()} at {invoice.orderTime}
+                <span className="text-sm thai-font">
+                  ใบแจ้งหนี้สร้างเมื่อ {new Date(invoice.date).toLocaleDateString()} เวลา {invoice.orderTime}
                 </span>
               </div>
             </div>
@@ -430,14 +430,14 @@ export default function InvoiceDetailPage() {
         <div className="text-center sm:text-left mb-4 sm:mb-0">
           <Link
             href="/dashboard/invoice"
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors text-mali-blue-light"
+            className="inline-flex items-center px-4 py-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors text-mali-blue-light thai-font"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Invoices
+            กลับไปหน้าใบแจ้งหนี้
           </Link>
         </div>
-        <p className="text-mali-text-secondary text-sm">
-          If you have any questions, please contact our support team.
+        <p className="text-mali-text-secondary text-sm thai-font">
+          หากคุณมีคำถามใดๆ โปรดติดต่อทีมสนับสนุนของเรา
         </p>
       </motion.div>
     </div>

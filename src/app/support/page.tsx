@@ -4,18 +4,10 @@ import { useState } from 'react';
 import { motion } from '@/lib/framer-exports';
 import { useSupport } from '@/lib/context/support-context';
 import {
-  TicketPlus,
   Search,
   HelpCircle,
-  Tag,
   MessageSquare,
   Clock,
-  ChevronDown,
-  ChevronUp,
-  BookOpen,
-  ThumbsUp,
-  ThumbsDown,
-  Eye,
   Mail,
   FileText,
   AlertCircle,

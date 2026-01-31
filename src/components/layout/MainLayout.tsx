@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Search,
   Home,
   ShoppingCart,
   CreditCard,
-  Gift,
   MessageCircle,
   Bell,
   Menu,
@@ -21,7 +19,6 @@ import {
   LogOut,
   ChevronDown,
   Zap,
-  Share2,
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";

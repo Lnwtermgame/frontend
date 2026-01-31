@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Tag, Calendar, Save, ChevronLeft, X, Clock, Percent, CreditCard, Gamepad, Sparkles } from "lucide-react";
+import { Tag, Calendar, Save, ChevronLeft, X, Clock, Percent, CreditCard, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

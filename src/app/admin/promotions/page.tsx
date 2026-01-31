@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Plus, Search, Tag, Edit, Calendar, Trash2, MoreHorizontal, Info, Clock, ExternalLink, Settings } from "lucide-react";
+import { Plus, Search, Tag, Edit, Calendar, Trash2, Info, Clock, ExternalLink, Settings } from "lucide-react";
 import Link from "next/link";
 
 // Type for promotion data

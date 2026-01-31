@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift, CreditCard } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 
 function getCardDetails(id: string) {

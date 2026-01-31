@@ -68,7 +68,7 @@ export default function OrderDetailsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">Loading...</p>
+          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -79,25 +79,25 @@ export default function OrderDetailsPage() {
     switch (status) {
       case "completed":
         return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mali-green/20 text-mali-green border border-mali-green/20">
-            <CheckCircle className="w-4 h-4 mr-1.5" /> Completed
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
+            <CheckCircle className="w-4 h-4 mr-1.5" /> สำเร็จ
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-900/20 text-yellow-400 border border-yellow-400/20">
-            <Clock className="w-4 h-4 mr-1.5" /> Processing
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-900/20 text-yellow-400 border border-yellow-400/20 thai-font">
+            <Clock className="w-4 h-4 mr-1.5" /> กำลังดำเนินการ
           </span>
         );
       case "cancelled":
         return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mali-red/20 text-mali-red border border-mali-red/20">
-            <AlertCircle className="w-4 h-4 mr-1.5" /> Cancelled
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
+            <AlertCircle className="w-4 h-4 mr-1.5" /> ยกเลิกแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mali-blue/20 text-mali-blue-accent border border-mali-blue/20">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mali-blue/20 text-mali-blue-accent border border-mali-blue/20 thai-font">
             {status}
           </span>
         );
@@ -116,15 +116,15 @@ export default function OrderDetailsPage() {
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <motion.h2
-            className="text-xl font-bold text-white relative"
+            className="text-xl font-bold text-white relative thai-font"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            Order Details
+            รายละเอียดคำสั่งซื้อ
           </motion.h2>
         </div>
         <div className="flex items-center gap-2 text-sm text-mali-text-secondary ml-9">
-          <span>Order ID: <span className="text-white font-mono">{order.id}</span></span>
+          <span className="thai-font">รหัสคำสั่งซื้อ: <span className="text-white font-mono">{order.id}</span></span>
           <span className="w-1 h-1 bg-mali-text-secondary rounded-full"></span>
           <span>{new Date(order.date).toLocaleDateString()}</span>
         </div>
@@ -140,9 +140,9 @@ export default function OrderDetailsPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="p-5 border-b border-mali-blue/20 flex justify-between items-center bg-mali-blue/5">
-              <h3 className="font-semibold text-white flex items-center gap-2">
+              <h3 className="font-semibold text-white flex items-center gap-2 thai-font">
                 <Package className="h-5 w-5 text-mali-blue-accent" />
-                Items Ordered
+                รายการที่สั่งซื้อ
               </h3>
               {renderStatusBadge(order.status)}
             </div>
@@ -163,7 +163,7 @@ export default function OrderDetailsPage() {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h4 className="font-medium text-white text-lg">{item.name}</h4>
-                          <p className="text-mali-text-secondary text-sm">Qty: {item.quantity}</p>
+                          <p className="text-mali-text-secondary text-sm thai-font">จำนวน: {item.quantity}</p>
                         </div>
                         <p className="font-bold text-white">{item.price}</p>
                       </div>
@@ -171,7 +171,7 @@ export default function OrderDetailsPage() {
                       {/* Digital Codes */}
                       {order.status === 'completed' && item.codes && item.codes.length > 0 && (
                         <div className="mt-4 bg-mali-blue/10 rounded-lg p-4 border border-mali-blue/20">
-                          <p className="text-xs text-mali-blue-light uppercase font-semibold mb-2">Digital Code(s) / PIN</p>
+                          <p className="text-xs text-mali-blue-light uppercase font-semibold mb-2 thai-font">รหัสดิจิทัล / PIN</p>
                           <div className="space-y-2">
                             {item.codes.map((code, idx) => (
                               <div key={idx} className="flex items-center gap-2 bg-mali-dark/50 p-3 rounded border border-mali-blue/10 group">
@@ -179,16 +179,16 @@ export default function OrderDetailsPage() {
                                 <button
                                   onClick={() => copyToClipboard(code)}
                                   className="p-1.5 rounded hover:bg-mali-blue/20 text-mali-text-secondary hover:text-white transition-colors"
-                                  title="Copy code"
+                                  title="คัดลอกรหัส"
                                 >
                                   {copiedCode === code ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
                                 </button>
                               </div>
                             ))}
                           </div>
-                          <p className="text-xs text-mali-text-secondary mt-2 flex items-center gap-1">
+                          <p className="text-xs text-mali-text-secondary mt-2 flex items-center gap-1 thai-font">
                             <AlertCircle size={12} />
-                            Please redeem this code immediately.
+                            กรุณาใช้รหัสนี้ทันที
                           </p>
                         </div>
                       )}
@@ -207,27 +207,27 @@ export default function OrderDetailsPage() {
             transition={{ delay: 0.1 }}
           >
             <div className="p-5 border-b border-mali-blue/20 bg-mali-blue/5">
-              <h3 className="font-semibold text-white flex items-center gap-2">
+              <h3 className="font-semibold text-white flex items-center gap-2 thai-font">
                 <CreditCard className="h-5 w-5 text-mali-blue-accent" />
-                Payment Summary
+                สรุปการชำระเงิน
               </h3>
             </div>
 
             <div className="p-5 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-mali-text-secondary">Subtotal</span>
+                <span className="text-mali-text-secondary thai-font">ยอดรวมย่อย</span>
                 <span className="text-white">{order.subtotal}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-mali-text-secondary">Tax</span>
+                <span className="text-mali-text-secondary thai-font">ภาษี</span>
                 <span className="text-white">{order.tax}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-mali-text-secondary">Discount</span>
+                <span className="text-mali-text-secondary thai-font">ส่วนลด</span>
                 <span className="text-white">{order.discount}</span>
               </div>
               <div className="border-t border-mali-blue/10 my-2 pt-2 flex justify-between items-center">
-                <span className="font-medium text-white">Total</span>
+                <span className="font-medium text-white thai-font">ยอดรวมทั้งสิ้น</span>
                 <span className="font-bold text-xl text-mali-blue-accent">{order.total}</span>
               </div>
 
@@ -236,7 +236,7 @@ export default function OrderDetailsPage() {
                   <CreditCard size={16} />
                 </div>
                 <div>
-                  <p className="text-mali-text-secondary text-xs">Payment Method</p>
+                  <p className="text-mali-text-secondary text-xs thai-font">วิธีการชำระเงิน</p>
                   <p className="text-white font-medium">{order.paymentMethod}</p>
                 </div>
               </div>
@@ -254,9 +254,9 @@ export default function OrderDetailsPage() {
             transition={{ delay: 0.2 }}
           >
             <div className="p-5 border-b border-mali-blue/20 bg-mali-blue/5">
-              <h3 className="font-semibold text-white flex items-center gap-2">
+              <h3 className="font-semibold text-white flex items-center gap-2 thai-font">
                 <User className="h-5 w-5 text-mali-blue-accent" />
-                Customer Info
+                ข้อมูลลูกค้า
               </h3>
             </div>
             <div className="p-5 space-y-4">
@@ -265,7 +265,7 @@ export default function OrderDetailsPage() {
                   <User size={16} className="text-mali-text-secondary" />
                 </div>
                 <div>
-                  <p className="text-xs text-mali-text-secondary">Name</p>
+                  <p className="text-xs text-mali-text-secondary thai-font">ชื่อ</p>
                   <p className="text-sm text-white font-medium">{order.customer.name}</p>
                 </div>
               </div>
@@ -274,7 +274,7 @@ export default function OrderDetailsPage() {
                   <Mail size={16} className="text-mali-text-secondary" />
                 </div>
                 <div>
-                  <p className="text-xs text-mali-text-secondary">Email</p>
+                  <p className="text-xs text-mali-text-secondary thai-font">อีเมล</p>
                   <p className="text-sm text-white font-medium">{order.customer.email}</p>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function OrderDetailsPage() {
                   <Calendar size={16} className="text-mali-text-secondary" />
                 </div>
                 <div>
-                  <p className="text-xs text-mali-text-secondary">Order Date</p>
+                  <p className="text-xs text-mali-text-secondary thai-font">วันที่สั่งซื้อ</p>
                   <p className="text-sm text-white font-medium">{new Date(order.date).toLocaleString()}</p>
                 </div>
               </div>
@@ -298,20 +298,20 @@ export default function OrderDetailsPage() {
             transition={{ delay: 0.3 }}
           >
             <div className="p-5 border-b border-mali-blue/20 bg-mali-blue/5">
-              <h3 className="font-semibold text-white">Actions</h3>
+              <h3 className="font-semibold text-white thai-font">การดำเนินการ</h3>
             </div>
             <div className="p-3 space-y-2">
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-mali-blue/10 text-mali-text-secondary hover:text-white transition-colors text-sm font-medium">
+              <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-mali-blue/10 text-mali-text-secondary hover:text-white transition-colors text-sm font-medium thai-font">
                 <Printer size={18} />
-                Print Invoice
+                พิมพ์ใบเสร็จ
               </button>
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-mali-blue/10 text-mali-text-secondary hover:text-white transition-colors text-sm font-medium">
+              <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-mali-blue/10 text-mali-text-secondary hover:text-white transition-colors text-sm font-medium thai-font">
                 <Download size={18} />
-                Download PDF
+                ดาวน์โหลด PDF
               </button>
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-mali-blue/10 text-mali-text-secondary hover:text-white transition-colors text-sm font-medium">
+              <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-mali-blue/10 text-mali-text-secondary hover:text-white transition-colors text-sm font-medium thai-font">
                 <AlertCircle size={18} />
-                Report Issue
+                แจ้งปัญหา
               </button>
             </div>
           </motion.div>
@@ -319,9 +319,9 @@ export default function OrderDetailsPage() {
           <div className="text-center">
             <Link
               href="/dashboard/support"
-              className="text-xs text-mali-blue-accent hover:underline"
+              className="text-xs text-mali-blue-accent hover:underline thai-font"
             >
-              Need help with this order?
+              ต้องการความช่วยเหลือเกี่ยวกับคำสั่งซื้อนี้?
             </Link>
           </div>
         </div>

@@ -106,8 +106,8 @@ export default function SecurityPage() {
             <Shield className="text-mali-blue-accent h-6 w-6" />
             Security Settings
           </motion.h2>
-          <p className="text-mali-text-secondary text-sm relative">
-            Manage your account security and privacy settings
+          <p className="text-mali-text-secondary text-sm relative thai-font">
+            จัดการความปลอดภัยของบัญชีและการตั้งค่าความเป็นส่วนตัวของคุณ
           </p>
         </div>
 
@@ -115,10 +115,10 @@ export default function SecurityPage() {
           {/* Two-Factor Authentication */}
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
             <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20 flex justify-between items-center">
-              <h2 className="text-lg font-medium text-white">Two-Factor Authentication</h2>
+              <h2 className="text-lg font-medium text-white thai-font">การยืนยันตัวตนสองขั้นตอน</h2>
               {securitySettings.twoFactorEnabled && (
-                <span className="bg-green-900/30 text-green-400 border border-green-500/20 px-2 py-1 text-xs rounded-full">
-                  Enabled
+                <span className="bg-green-900/30 text-green-400 border border-green-500/20 px-2 py-1 text-xs rounded-full thai-font">
+                  เปิดใช้งานแล้ว
                 </span>
               )}
             </div>
@@ -132,15 +132,15 @@ export default function SecurityPage() {
                     {securitySettings.twoFactorMethod === 'email' && <Mail className="text-mali-blue-accent mt-1" />}
 
                     <div>
-                      <h3 className="font-medium text-white mb-1">
-                        {securitySettings.twoFactorMethod === '2fa-app' && 'Authenticator App'}
-                        {securitySettings.twoFactorMethod === 'sms' && 'SMS Authentication'}
-                        {securitySettings.twoFactorMethod === 'email' && 'Email Authentication'}
+                      <h3 className="font-medium text-white mb-1 thai-font">
+                        {securitySettings.twoFactorMethod === '2fa-app' && 'แอพ Authenticator'}
+                        {securitySettings.twoFactorMethod === 'sms' && 'ยืนยันผ่าน SMS'}
+                        {securitySettings.twoFactorMethod === 'email' && 'ยืนยันผ่านอีเมล'}
                       </h3>
-                      <p className="text-sm text-mali-text-secondary mb-2">
-                        {securitySettings.twoFactorMethod === '2fa-app' && 'You\'re using an authenticator app to generate verification codes.'}
-                        {securitySettings.twoFactorMethod === 'sms' && 'You\'re receiving SMS messages with verification codes.'}
-                        {securitySettings.twoFactorMethod === 'email' && 'You\'re receiving emails with verification codes.'}
+                      <p className="text-sm text-mali-text-secondary mb-2 thai-font">
+                        {securitySettings.twoFactorMethod === '2fa-app' && 'คุณกำลังใช้งานแอพ Authenticator ในการสร้างรหัสยืนยัน'}
+                        {securitySettings.twoFactorMethod === 'sms' && 'คุณกำลังรับข้อความ SMS พร้อมรหัสยืนยัน'}
+                        {securitySettings.twoFactorMethod === 'email' && 'คุณกำลังรับอีเมลพร้อมรหัสยืนยัน'}
                       </p>
 
                       <div className="flex gap-2">
@@ -150,16 +150,16 @@ export default function SecurityPage() {
                             setBackupCodes(codes);
                             setShowBackupCodes(true);
                           }}
-                          className="text-sm text-mali-blue-accent hover:underline"
+                          className="text-sm text-mali-blue-accent hover:underline thai-font"
                         >
-                          Get backup codes
+                          รับรหัสสำรอง
                         </button>
                         <span className="text-mali-text-secondary">•</span>
                         <button
                           onClick={() => setShowPasswordInput(true)}
-                          className="text-sm text-red-400 hover:underline"
+                          className="text-sm text-red-400 hover:underline thai-font"
                         >
-                          Disable 2FA
+                          ปิดการใช้งาน 2FA
                         </button>
                       </div>
                     </div>
@@ -172,12 +172,12 @@ export default function SecurityPage() {
                       animate={{ opacity: 1, y: 0 }}
                       className="border border-red-500/20 bg-red-900/10 rounded-lg p-4 mt-4"
                     >
-                      <h4 className="text-white font-medium mb-2 flex items-center gap-2">
+                      <h4 className="text-white font-medium mb-2 flex items-center gap-2 thai-font">
                         <AlertCircle size={18} className="text-red-400" />
-                        Confirm with your password
+                        ยืนยันด้วยรหัสผ่านของคุณ
                       </h4>
-                      <p className="text-sm text-mali-text-secondary mb-3">
-                        Disabling two-factor authentication will make your account less secure.
+                      <p className="text-sm text-mali-text-secondary mb-3 thai-font">
+                        การปิดใช้งานการยืนยันตัวตนสองขั้นตอนจะทำให้บัญชีของคุณมีความปลอดภัยลดลง
                       </p>
 
                       <div className="flex flex-col gap-4">
@@ -185,8 +185,8 @@ export default function SecurityPage() {
                           type="password"
                           value={disablePassword}
                           onChange={(e) => setDisablePassword(e.target.value)}
-                          placeholder="Enter your password"
-                          className="w-full p-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"
+                          placeholder="กรอกรหัสผ่านของคุณ"
+                          className="w-full p-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent thai-font"
                         />
 
                         {verificationError && (
@@ -228,30 +228,30 @@ export default function SecurityPage() {
                   {/* Step 1: Choose 2FA method */}
                   {!twoFactorSetupData.secret && (
                     <div>
-                      <h3 className="font-medium text-white mb-3">Choose authentication method</h3>
+                      <h3 className="font-medium text-white mb-3 thai-font">เลือกวิธีการยืนยันตัวตน</h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                         <button
                           onClick={() => setTwoFactorMethod('2fa-app')}
                           className={`p-3 rounded-lg border flex flex-col items-center ${twoFactorMethod === '2fa-app'
-                              ? 'border-mali-blue-accent bg-mali-blue/20'
-                              : 'border-mali-blue/20 hover:bg-mali-blue/10'
+                            ? 'border-mali-blue-accent bg-mali-blue/20'
+                            : 'border-mali-blue/20 hover:bg-mali-blue/10'
                             }`}
                         >
                           <Smartphone size={24} className={twoFactorMethod === '2fa-app' ? 'text-mali-blue-accent' : 'text-mali-text-secondary'} />
-                          <span className={`text-sm mt-2 ${twoFactorMethod === '2fa-app' ? 'text-white' : 'text-mali-text-secondary'}`}>
-                            Authenticator App
+                          <span className={`text-sm mt-2 thai-font ${twoFactorMethod === '2fa-app' ? 'text-white' : 'text-mali-text-secondary'}`}>
+                            แอพ Authenticator
                           </span>
                         </button>
 
                         <button
                           onClick={() => setTwoFactorMethod('sms')}
                           className={`p-3 rounded-lg border flex flex-col items-center ${twoFactorMethod === 'sms'
-                              ? 'border-mali-blue-accent bg-mali-blue/20'
-                              : 'border-mali-blue/20 hover:bg-mali-blue/10'
+                            ? 'border-mali-blue-accent bg-mali-blue/20'
+                            : 'border-mali-blue/20 hover:bg-mali-blue/10'
                             }`}
                         >
                           <Phone size={24} className={twoFactorMethod === 'sms' ? 'text-mali-blue-accent' : 'text-mali-text-secondary'} />
-                          <span className={`text-sm mt-2 ${twoFactorMethod === 'sms' ? 'text-white' : 'text-mali-text-secondary'}`}>
+                          <span className={`text-sm mt-2 thai-font ${twoFactorMethod === 'sms' ? 'text-white' : 'text-mali-text-secondary'}`}>
                             SMS
                           </span>
                         </button>
@@ -259,13 +259,13 @@ export default function SecurityPage() {
                         <button
                           onClick={() => setTwoFactorMethod('email')}
                           className={`p-3 rounded-lg border flex flex-col items-center ${twoFactorMethod === 'email'
-                              ? 'border-mali-blue-accent bg-mali-blue/20'
-                              : 'border-mali-blue/20 hover:bg-mali-blue/10'
+                            ? 'border-mali-blue-accent bg-mali-blue/20'
+                            : 'border-mali-blue/20 hover:bg-mali-blue/10'
                             }`}
                         >
                           <Mail size={24} className={twoFactorMethod === 'email' ? 'text-mali-blue-accent' : 'text-mali-text-secondary'} />
-                          <span className={`text-sm mt-2 ${twoFactorMethod === 'email' ? 'text-white' : 'text-mali-text-secondary'}`}>
-                            Email
+                          <span className={`text-sm mt-2 thai-font ${twoFactorMethod === 'email' ? 'text-white' : 'text-mali-text-secondary'}`}>
+                            อีเมล
                           </span>
                         </button>
                       </div>
@@ -273,15 +273,15 @@ export default function SecurityPage() {
                       <button
                         onClick={handleSetup2FA}
                         disabled={isLoadingSettings}
-                        className="w-full py-2 px-4 bg-mali-blue-accent text-white rounded-lg font-medium hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full py-2 px-4 bg-mali-blue-accent text-white rounded-lg font-medium hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font"
                       >
                         {isLoadingSettings ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            Setting up...
+                            กำลังตั้งค่า...
                           </>
                         ) : (
-                          'Continue'
+                          'ดำเนินการต่อ'
                         )}
                       </button>
                     </div>
@@ -290,13 +290,13 @@ export default function SecurityPage() {
                   {/* Step 2: Set up based on method */}
                   {twoFactorSetupData.secret && twoFactorMethod === '2fa-app' && (
                     <div>
-                      <h3 className="font-medium text-white mb-3">Set up authenticator app</h3>
+                      <h3 className="font-medium text-white mb-3 thai-font">ตั้งค่าแอพ Authenticator</h3>
                       <ol className="space-y-4 mb-6">
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">1</span>
                           <div>
-                            <p className="text-mali-text-secondary">
-                              Install an authenticator app like Google Authenticator, Authy, or Microsoft Authenticator
+                            <p className="text-mali-text-secondary thai-font">
+                              ติดตั้งแอพ Authenticator เช่น Google Authenticator, Authy หรือ Microsoft Authenticator
                             </p>
                           </div>
                         </li>
@@ -304,8 +304,8 @@ export default function SecurityPage() {
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">2</span>
                           <div>
-                            <p className="text-mali-text-secondary mb-3">
-                              Scan this QR code with your authenticator app
+                            <p className="text-mali-text-secondary mb-3 thai-font">
+                              สแกน QR Code นี้ด้วยแอพ Authenticator ของคุณ
                             </p>
                             <div className="bg-white p-4 rounded-lg inline-block">
                               {twoFactorSetupData.qrCodeUrl && (
@@ -323,8 +323,8 @@ export default function SecurityPage() {
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">3</span>
                           <div>
-                            <p className="text-mali-text-secondary">
-                              Or manually enter this code in your app:
+                            <p className="text-mali-text-secondary thai-font">
+                              หรือกรอกรหัสนี้ลงในแอพของคุณด้วยตนเอง:
                             </p>
                             <div className="font-mono text-white bg-mali-blue/10 py-1 px-2 rounded mt-1 text-center">
                               {twoFactorSetupData.secret}
@@ -335,8 +335,8 @@ export default function SecurityPage() {
                         <li className="flex gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mali-blue/20 text-mali-blue-accent flex items-center justify-center text-sm">4</span>
                           <div>
-                            <p className="text-mali-text-secondary mb-2">
-                              Enter the 6-digit code from your authenticator app
+                            <p className="text-mali-text-secondary mb-2 thai-font">
+                              กรอกรหัส 6 หลักจากแอพ Authenticator ของคุณ
                             </p>
                             <input
                               type="text"
@@ -357,11 +357,11 @@ export default function SecurityPage() {
 
                   {twoFactorSetupData.secret && twoFactorMethod === 'sms' && (
                     <div>
-                      <h3 className="font-medium text-white mb-3">Set up SMS authentication</h3>
+                      <h3 className="font-medium text-white mb-3 thai-font">ตั้งค่าการยืนยันผ่าน SMS</h3>
                       <div className="space-y-4 mb-6">
                         <div>
-                          <label className="block text-sm text-mali-text-secondary mb-2">
-                            Your phone number
+                          <label className="block text-sm text-mali-text-secondary mb-2 thai-font">
+                            เบอร์โทรศัพท์ของคุณ
                           </label>
                           <input
                             type="tel"
@@ -370,14 +370,14 @@ export default function SecurityPage() {
                             readOnly
                             value="+66 XX XXX XX89"
                           />
-                          <p className="text-xs text-mali-text-secondary mt-1">
-                            This is the phone number associated with your account
+                          <p className="text-xs text-mali-text-secondary mt-1 thai-font">
+                            นี่คือเบอร์โทรศัพท์ที่ผูกกับบัญชีของคุณ
                           </p>
                         </div>
 
                         <div>
-                          <p className="text-mali-text-secondary mb-2">
-                            We've sent a 6-digit code to your phone. Enter it below:
+                          <p className="text-mali-text-secondary mb-2 thai-font">
+                            เราได้ส่งรหัส 6 หลักไปยังเบอร์โทรศัพท์ของคุณแล้ว กรุณากรอกด้านล่าง:
                           </p>
                           <input
                             type="text"
@@ -397,11 +397,11 @@ export default function SecurityPage() {
 
                   {twoFactorSetupData.secret && twoFactorMethod === 'email' && (
                     <div>
-                      <h3 className="font-medium text-white mb-3">Set up email authentication</h3>
+                      <h3 className="font-medium text-white mb-3 thai-font">ตั้งค่าการยืนยันผ่านอีเมล</h3>
                       <div className="space-y-4 mb-6">
                         <div>
-                          <label className="block text-sm text-mali-text-secondary mb-2">
-                            Your email address
+                          <label className="block text-sm text-mali-text-secondary mb-2 thai-font">
+                            อีเมลของคุณ
                           </label>
                           <input
                             type="email"
@@ -410,14 +410,14 @@ export default function SecurityPage() {
                             readOnly
                             value={user?.email || 'user@example.com'}
                           />
-                          <p className="text-xs text-mali-text-secondary mt-1">
-                            This is the email address associated with your account
+                          <p className="text-xs text-mali-text-secondary mt-1 thai-font">
+                            นี่คืออีเมลที่ผูกกับบัญชีของคุณ
                           </p>
                         </div>
 
                         <div>
-                          <p className="text-mali-text-secondary mb-2">
-                            We've sent a 6-digit code to your email. Enter it below:
+                          <p className="text-mali-text-secondary mb-2 thai-font">
+                            เราได้ส่งรหัส 6 หลักไปยังอีเมลของคุณแล้ว กรุณากรอกด้านล่าง:
                           </p>
                           <input
                             type="text"
@@ -445,22 +445,22 @@ export default function SecurityPage() {
                           setTwoFactorCode('');
                           setVerificationError('');
                         }}
-                        className="px-3 py-1.5 bg-mali-blue/20 text-mali-text-secondary rounded-lg hover:bg-mali-blue/30 hover:text-white"
+                        className="px-3 py-1.5 bg-mali-blue/20 text-mali-text-secondary rounded-lg hover:bg-mali-blue/30 hover:text-white thai-font"
                       >
-                        Cancel
+                        ยกเลิก
                       </button>
                       <button
                         onClick={handleVerify2FA}
                         disabled={twoFactorCode.length !== 6 || isLoadingSettings}
-                        className="px-3 py-1.5 bg-mali-blue-accent text-white rounded-lg hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-3 py-1.5 bg-mali-blue-accent text-white rounded-lg hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 thai-font"
                       >
                         {isLoadingSettings ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            Verifying...
+                            กำลังยืนยัน...
                           </>
                         ) : (
-                          'Verify & Enable'
+                          'ยืนยันและเปิดใช้งาน'
                         )}
                       </button>
                     </div>
@@ -468,14 +468,14 @@ export default function SecurityPage() {
                 </div>
               ) : (
                 <div>
-                  <p className="text-mali-text-secondary mb-4">
-                    Two-factor authentication adds an extra layer of security to your account by requiring a verification code in addition to your password.
+                  <p className="text-mali-text-secondary mb-4 thai-font">
+                    การยืนยันตัวตนสองขั้นตอนเพิ่มความปลอดภัยอีกชั้นให้กับบัญชีของคุณ โดยต้องใช้รหัสยืนยันเสริมนอกเหนือจากรหัสผ่าน
                   </p>
                   <button
                     onClick={() => setShowTwoFactorSetup(true)}
-                    className="w-full py-2 px-4 bg-mali-blue-accent text-white rounded-lg font-medium hover:bg-mali-blue-accent/90"
+                    className="w-full py-2 px-4 bg-mali-blue-accent text-white rounded-lg font-medium hover:bg-mali-blue-accent/90 thai-font"
                   >
-                    Set up two-factor authentication
+                    ตั้งค่าการยืนยันตัวตนสองขั้นตอน
                   </button>
                 </div>
               )}
@@ -485,7 +485,7 @@ export default function SecurityPage() {
             {showBackupCodes && (
               <div className="p-4 border-t border-mali-blue/20 bg-mali-blue/5">
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium text-white">Backup Codes</h3>
+                  <h3 className="font-medium text-white thai-font">รหัสสำรอง</h3>
                   <button
                     onClick={() => setShowBackupCodes(false)}
                     className="text-mali-text-secondary hover:text-white"
@@ -493,8 +493,8 @@ export default function SecurityPage() {
                     <X size={18} />
                   </button>
                 </div>
-                <p className="text-sm text-mali-text-secondary mb-3">
-                  Save these backup codes in a secure place. You can use them to sign in if you lose access to your authentication device.
+                <p className="text-sm text-mali-text-secondary mb-3 thai-font">
+                  บันทึกรหัสสำรองเหล่านี้ไว้ในที่ปลอดภัย คุณสามารถใช้รหัสเหล่านี้เพื่อเข้าสู่ระบบหากคุณไม่สามารถเข้าถึงอุปกรณ์ยืนยันตัวตนได้
                 </p>
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   {backupCodes.map((code, index) => (
@@ -509,10 +509,10 @@ export default function SecurityPage() {
                 <div className="flex justify-end">
                   <button
                     onClick={() => setShowBackupCodes(false)}
-                    className="px-3 py-1.5 bg-mali-blue-accent text-white rounded-lg hover:bg-mali-blue-accent/90 flex items-center gap-2"
+                    className="px-3 py-1.5 bg-mali-blue-accent text-white rounded-lg hover:bg-mali-blue-accent/90 flex items-center gap-2 thai-font"
                   >
                     <Download size={16} />
-                    Download Codes
+                    ดาวน์โหลดรหัส
                   </button>
                 </div>
               </div>
@@ -522,7 +522,7 @@ export default function SecurityPage() {
           {/* Email Verification */}
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
             <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
-              <h2 className="text-lg font-medium text-white">Email Verification</h2>
+              <h2 className="text-lg font-medium text-white thai-font">การยืนยันอีเมล</h2>
             </div>
 
             <div className="p-6">
@@ -536,13 +536,13 @@ export default function SecurityPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-white mb-1">
-                    {securitySettings.emailVerified ? 'Email verified' : 'Email not verified'}
+                  <h3 className="font-medium text-white mb-1 thai-font">
+                    {securitySettings.emailVerified ? 'ยืนยันอีเมลแล้ว' : 'ยังไม่ได้ยืนยันอีเมล'}
                   </h3>
-                  <p className="text-sm text-mali-text-secondary mb-3">
+                  <p className="text-sm text-mali-text-secondary mb-3 thai-font">
                     {securitySettings.emailVerified
-                      ? 'Your email address has been verified.'
-                      : 'Please verify your email address to enhance security.'}
+                      ? 'อีเมลของคุณได้รับการยืนยันแล้ว'
+                      : 'กรุณายืนยันอีเมลของคุณเพื่อเพิ่มความปลอดภัย'}
                   </p>
 
                   {!securitySettings.emailVerified && (
@@ -552,15 +552,15 @@ export default function SecurityPage() {
                         updateSecuritySettings({ emailVerified: true }); // For demo purposes
                       }}
                       disabled={isLoadingSettings}
-                      className="py-1.5 px-3 bg-mali-blue-accent text-white rounded-lg text-sm hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="py-1.5 px-3 bg-mali-blue-accent text-white rounded-lg text-sm hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 thai-font"
                     >
                       {isLoadingSettings ? (
                         <>
                           <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                          Sending...
+                          กำลังส่ง...
                         </>
                       ) : (
-                        'Send Verification Email'
+                        'ส่งอีเมลยืนยัน'
                       )}
                     </button>
                   )}
@@ -573,21 +573,21 @@ export default function SecurityPage() {
         {/* Recent Devices */}
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
           <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20 flex justify-between items-center">
-            <h2 className="text-lg font-medium text-white">Recent Devices</h2>
+            <h2 className="text-lg font-medium text-white thai-font">อุปกรณ์ที่ใช้งานล่าสุด</h2>
             <button
               onClick={logoutAllDevices}
               disabled={isLoadingSettings}
-              className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+              className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 thai-font"
             >
               {isLoadingSettings ? (
                 <>
                   <div className="w-3 h-3 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"></div>
-                  Processing...
+                  กำลังดำเนินการ...
                 </>
               ) : (
                 <>
                   <LogOut size={14} />
-                  Log out all devices
+                  ออกจากระบบทุกอุปกรณ์
                 </>
               )}
             </button>
@@ -622,8 +622,8 @@ export default function SecurityPage() {
                 </div>
                 <div>
                   {device.isCurrent ? (
-                    <span className="text-xs bg-mali-blue/20 text-mali-blue-accent px-2 py-1 rounded-full">
-                      Current Device
+                    <span className="text-xs bg-mali-blue/20 text-mali-blue-accent px-2 py-1 rounded-full thai-font">
+                      อุปกรณ์ปัจจุบัน
                     </span>
                   ) : (
                     <button
@@ -648,7 +648,7 @@ export default function SecurityPage() {
         {securitySettings.suspiciousActivities.length > 0 && (
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
             <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
-              <h2 className="text-lg font-medium text-white">Suspicious Activity</h2>
+              <h2 className="text-lg font-medium text-white thai-font">กิจกรรมที่น่าสงสัย</h2>
             </div>
 
             <div className="divide-y divide-mali-blue/20">
@@ -682,15 +682,15 @@ export default function SecurityPage() {
                     {activity.suspicious && !activity.resolved && (
                       <button
                         onClick={() => resolveActivity(activity.id)}
-                        className="text-xs bg-mali-blue/20 text-mali-blue-accent px-2 py-1 rounded-full hover:bg-mali-blue/30"
+                        className="text-xs bg-mali-blue/20 text-mali-blue-accent px-2 py-1 rounded-full hover:bg-mali-blue/30 thai-font"
                       >
-                        Mark as resolved
+                        ทำเครื่องหมายว่าตรวจสอบแล้ว
                       </button>
                     )}
 
                     {activity.resolved && (
-                      <span className="text-xs bg-green-900/20 text-green-400 px-2 py-1 rounded-full">
-                        Resolved
+                      <span className="text-xs bg-green-900/20 text-green-400 px-2 py-1 rounded-full thai-font">
+                        ตรวจสอบแล้ว
                       </span>
                     )}
                   </div>
@@ -703,16 +703,16 @@ export default function SecurityPage() {
         {/* Additional Settings */}
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl">
           <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
-            <h2 className="text-lg font-medium text-white">Additional Settings</h2>
+            <h2 className="text-lg font-medium text-white thai-font">การตั้งค่าเพิ่มเติม</h2>
           </div>
 
           <div className="divide-y divide-mali-blue/20">
             {/* Login Notifications */}
             <div className="p-4 flex justify-between items-center">
               <div>
-                <h3 className="font-medium text-white">Login Notifications</h3>
-                <p className="text-sm text-mali-text-secondary mt-1">
-                  Receive notifications when someone logs into your account
+                <h3 className="font-medium text-white thai-font">แจ้งเตือนการเข้าสู่ระบบ</h3>
+                <p className="text-sm text-mali-text-secondary mt-1 thai-font">
+                  รับการแจ้งเตือนเมื่อมีคนเข้าสู่ระบบบัญชีของคุณ
                 </p>
               </div>
               <div>
@@ -734,9 +734,9 @@ export default function SecurityPage() {
             {/* Security Questions */}
             <div className="p-4 flex justify-between items-center">
               <div>
-                <h3 className="font-medium text-white">Security Questions</h3>
-                <p className="text-sm text-mali-text-secondary mt-1">
-                  Set up security questions to verify your identity
+                <h3 className="font-medium text-white thai-font">คำถามความปลอดภัย</h3>
+                <p className="text-sm text-mali-text-secondary mt-1 thai-font">
+                  ตั้งค่าคำถามความปลอดภัยเพื่อยืนยันตัวตนของคุณ
                 </p>
               </div>
               <div>

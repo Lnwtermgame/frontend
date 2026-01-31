@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Search, Filter, Tag, Gift, ChevronRight, Star, CreditCard, ShoppingBag, PlayCircle, Music, Video, MessageCircle } from "lucide-react";
+import { Search, Filter, Gift, Star, CreditCard, ShoppingBag, PlayCircle, Video, MessageCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 
 // Mock cards data
@@ -185,7 +184,7 @@ export default function CardPage() {
 
           {/* Cards grid */}
           <motion.div
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+            className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -205,7 +204,7 @@ export default function CardPage() {
                       </div>
                     )}
 
-                    <div className="relative h-32 md:h-36 w-full overflow-hidden">
+                    <div className="relative aspect-square w-full overflow-hidden">
                       <img
                         src={card.image !== undefined ? card.image : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`}
                         alt={card.name}
@@ -213,19 +212,19 @@ export default function CardPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
 
-                      <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-xs px-2 py-0.5 rounded-sm backdrop-blur-sm">
+                      <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-[10px] px-2 py-0.5 rounded-sm backdrop-blur-sm">
                         {card.category}
                       </div>
                     </div>
 
-                    <div className="p-3">
-                      <p className="text-white text-sm font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-light transition-colors">{card.name}</p>
+                    <div className="p-2">
+                      <p className="text-white text-xs font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-light transition-colors">{card.name}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           {getCategoryIcon(card.category)}
-                          <span className="text-mali-text-secondary text-xs ml-1">Digital</span>
+                          <span className="text-mali-text-secondary text-[10px] ml-1">Digital</span>
                         </div>
-                        <div className="text-xs text-white font-medium">เริ่มต้น ฿{card.price}</div>
+                        <div className="text-[10px] text-white font-medium">฿{card.price}</div>
                       </div>
                     </div>
 

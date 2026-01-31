@@ -8,9 +8,7 @@ import {
   X, 
   Send, 
   Smile, 
-  Paperclip, 
-  User,
-  MoveUpRight,
+  Paperclip,
   CheckCircle2,
 } from 'lucide-react';
 

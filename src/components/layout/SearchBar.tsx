@@ -8,23 +8,23 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export default function SearchBar({ 
-  variant = "header", 
-  placeholder = "Search games..." 
+export default function SearchBar({
+  variant = "header",
+  placeholder = "Search games..."
 }: SearchBarProps) {
   const router = useRouter();
-  
+
   const handleSearch = (query: string) => {
-    router.push(`/search?q=${encodeURIComponent(query)}`);
+    router.push(`/games?search=${encodeURIComponent(query)}`);
   };
-  
+
   // Apply different styles based on variant
-  const className = variant === "sidebar" ? "w-full" 
-    : variant === "full" ? "w-full max-w-3xl mx-auto" 
-    : "w-full";
-  
+  const className = variant === "sidebar" ? "w-full"
+    : variant === "full" ? "w-full max-w-3xl mx-auto"
+      : "w-full";
+
   return (
-    <SmartSearchBar 
+    <SmartSearchBar
       placeholder={placeholder}
       className={className}
       onSearch={handleSearch}

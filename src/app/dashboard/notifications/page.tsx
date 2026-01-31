@@ -10,8 +10,8 @@ import { motion, AnimatePresence } from "@/lib/framer-exports";
 const initialNotifications = [
   {
     id: "NOTIF1",
-    title: "Order Completed",
-    message: "Your order #ORD-1001 containing Steam Gift Card has been successfully processed.",
+    title: "คำสั่งซื้อสำเร็จ",
+    message: "คำสั่งซื้อ #ORD-1001 ของคุณที่ประกอบด้วย Steam Gift Card ได้รับการดำเนินการเรียบร้อยแล้ว",
     type: "success",
     date: "2023-11-20T14:30:00Z",
     read: false,
@@ -19,8 +19,8 @@ const initialNotifications = [
   },
   {
     id: "NOTIF2",
-    title: "New Reward Available",
-    message: "You have earned enough credits to redeem a $5 Discount Voucher!",
+    title: "ของรางวัลใหม่พร้อมให้แลก",
+    message: "คุณได้รับเครดิตเพียงพอที่จะแลกคูปองส่วนลด $5 แล้ว!",
     type: "reward",
     date: "2023-11-19T09:15:00Z",
     read: true,
@@ -28,8 +28,8 @@ const initialNotifications = [
   },
   {
     id: "NOTIF3",
-    title: "Account Security Alert",
-    message: "We noticed a login from a new device. If this wasn't you, please secure your account.",
+    title: "แจ้งเตือนความปลอดภัยบัญชี",
+    message: "เราพบการเข้าสู่ระบบจากอุปกรณ์ใหม่ หากไม่ใช่คุณ โปรดปกป้องบัญชีของคุณ",
     type: "warning",
     date: "2023-11-18T20:45:00Z",
     read: true,
@@ -37,8 +37,8 @@ const initialNotifications = [
   },
   {
     id: "NOTIF4",
-    title: "Winter Sale Is Here!",
-    message: "Get up to 50% off on selected game credits and gift cards. Limited time offer.",
+    title: "เทศกาล Winter Sale มาถึงแล้ว!",
+    message: "ลดสูงสุด 50% สำหรับเครดิตเกมและบัตรของขวัญที่ร่วมรายการ ข้อเสนอมีเวลาจำกัด",
     type: "promo",
     date: "2023-11-15T10:00:00Z",
     read: false,
@@ -46,8 +46,8 @@ const initialNotifications = [
   },
   {
     id: "NOTIF5",
-    title: "Payment Method Added",
-    message: "Your Visa ending in 4242 has been added to your payment methods.",
+    title: "เพิ่มวิธีการชำระเงินแล้ว",
+    message: "บัตร Visa ลงท้ายด้วย 4242 ได้ถูกเพิ่มในวิธีการชำระเงินของคุณแล้ว",
     type: "info",
     date: "2023-11-12T16:20:00Z",
     read: true,
@@ -100,7 +100,7 @@ export default function NotificationsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">Loading...</p>
+          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -149,22 +149,22 @@ export default function NotificationsPage() {
         <div className="flex justify-between items-start">
           <div>
             <motion.h2
-              className="text-xl font-bold text-white mb-1 relative"
+              className="text-xl font-bold text-white mb-1 relative thai-font"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              Notifications
+              การแจ้งเตือน
             </motion.h2>
-            <p className="text-mali-text-secondary text-sm relative">
-              Stay updated with your account activity
+            <p className="text-mali-text-secondary text-sm relative thai-font">
+              ติดตามความเคลื่อนไหวบัญชีของคุณ
             </p>
           </div>
 
           <button
             onClick={markAllAsRead}
-            className="text-xs text-mali-blue-accent hover:text-white transition-colors bg-mali-blue/10 hover:bg-mali-blue/20 px-3 py-1.5 rounded-lg border border-mali-blue/20"
+            className="text-xs text-mali-blue-accent hover:text-white transition-colors bg-mali-blue/10 hover:bg-mali-blue/20 px-3 py-1.5 rounded-lg border border-mali-blue/20 thai-font"
           >
-            Mark all as read
+            ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
           </button>
         </div>
       </div>
@@ -173,39 +173,39 @@ export default function NotificationsPage() {
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
         <button
           onClick={() => setFilter("all")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${filter === "all"
-              ? "bg-mali-blue text-white shadow-button-glow"
-              : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "all"
+            ? "bg-mali-blue text-white shadow-button-glow"
+            : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
             }`}
         >
-          All
+          ทั้งหมด
         </button>
         <button
           onClick={() => setFilter("unread")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${filter === "unread"
-              ? "bg-mali-blue text-white shadow-button-glow"
-              : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "unread"
+            ? "bg-mali-blue text-white shadow-button-glow"
+            : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
             }`}
         >
-          Unread
+          ยังไม่อ่าน
         </button>
         <button
           onClick={() => setFilter("success")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${filter === "success"
-              ? "bg-mali-blue text-white shadow-button-glow"
-              : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "success"
+            ? "bg-mali-blue text-white shadow-button-glow"
+            : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
             }`}
         >
-          Orders
+          คำสั่งซื้อ
         </button>
         <button
           onClick={() => setFilter("promo")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${filter === "promo"
-              ? "bg-mali-blue text-white shadow-button-glow"
-              : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "promo"
+            ? "bg-mali-blue text-white shadow-button-glow"
+            : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
             }`}
         >
-          Promotions
+          โปรโมชั่น
         </button>
       </div>
 
@@ -222,8 +222,8 @@ export default function NotificationsPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
                 className={`bg-mali-card rounded-xl border relative group overflow-hidden ${!notification.read
-                    ? "border-mali-blue-accent/50 shadow-[0_0_10px_rgba(78,137,232,0.1)]"
-                    : "border-mali-blue/20 hover:border-mali-blue/40"
+                  ? "border-mali-blue-accent/50 shadow-[0_0_10px_rgba(78,137,232,0.1)]"
+                  : "border-mali-blue/20 hover:border-mali-blue/40"
                   }`}
               >
                 {!notification.read && (
@@ -254,8 +254,8 @@ export default function NotificationsPage() {
                     </p>
 
                     <div className="flex justify-between items-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-xs text-mali-blue-accent font-medium hover:underline">
-                        View details
+                      <span className="text-xs text-mali-blue-accent font-medium hover:underline thai-font">
+                        ดูรายละเอียด
                       </span>
 
                       <div className="flex gap-2">
@@ -263,7 +263,7 @@ export default function NotificationsPage() {
                           <button
                             onClick={(e) => markAsRead(notification.id, e)}
                             className="p-1.5 rounded-lg bg-mali-blue/20 text-mali-blue-light hover:bg-mali-blue/40 hover:text-white transition-colors"
-                            title="Mark as read"
+                            title="ทำเครื่องหมายว่าอ่านแล้ว"
                           >
                             <Check size={14} />
                           </button>
@@ -271,7 +271,7 @@ export default function NotificationsPage() {
                         <button
                           onClick={(e) => deleteNotification(notification.id, e)}
                           className="p-1.5 rounded-lg bg-mali-red/10 text-mali-red hover:bg-mali-red/20 transition-colors"
-                          title="Delete"
+                          title="ลบ"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -290,11 +290,11 @@ export default function NotificationsPage() {
               <div className="w-16 h-16 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Bell size={32} className="text-mali-text-secondary opacity-50" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">No notifications</h3>
-              <p className="text-mali-text-secondary">
+              <h3 className="text-lg font-bold text-white mb-1 thai-font">ไม่มีการแจ้งเตือน</h3>
+              <p className="text-mali-text-secondary thai-font">
                 {filter !== "all"
-                  ? `You don't have any ${filter} notifications.`
-                  : "You're all caught up! Check back later for updates."}
+                  ? `คุณไม่มีการแจ้งเตือนในหมวดหมู่นี้`
+                  : "คุณอ่านครบแล้ว! กลับมาตรวจสอบใหม่ภายหลัง"}
               </p>
             </motion.div>
           )}

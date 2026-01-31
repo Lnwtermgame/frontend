@@ -18,8 +18,7 @@ import {
   domAnimation,
   domMax,
   MotionConfig,
-  Variants,
-  Transition
+  Variants
 } from 'framer-motion';
 
 // Standard transitions

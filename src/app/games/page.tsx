@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
-import { Search, Filter, Gamepad2, ChevronRight, Star, Tag, Zap, Globe, Flame, TrendingUp, Laptop, Monitor, Smartphone } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Search, Filter, Gamepad2, Star, Zap, Globe, Flame, TrendingUp, Laptop, Monitor, Smartphone } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { getAllGames } from "@/lib/data/games";
 
@@ -23,7 +24,6 @@ function getCategoryIcon(category: string) {
 // Categories for the sidebar
 const CATEGORIES = [
   { id: "all", name: "เกมทั้งหมด", count: GAMES.length, icon: <Gamepad2 size={16} /> },
-
   { id: "fps", name: "FPS", count: GAMES.filter(g => g.category === "FPS").length, icon: <Gamepad2 size={16} /> },
   { id: "moba", name: "MOBA", count: GAMES.filter(g => g.category === "MOBA").length, icon: <TrendingUp size={16} /> },
   { id: "rpg", name: "RPG", count: GAMES.filter(g => g.category === "RPG").length, icon: <Star size={16} /> },
@@ -38,12 +38,20 @@ const PLATFORMS = [
   { id: "console", name: "คอนโซล", count: GAMES.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} /> },
 ];
 
-
-
-export default function DirectTopupPage() {
+function DirectTopupContent() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("search") || "";
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPlatform, setSelectedPlatform] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+
+  // Update searchQuery when URL params change
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query !== null) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
 
   // Filter games based on selected category and search query
   const filteredGames = GAMES.filter(game => {
@@ -72,7 +80,6 @@ export default function DirectTopupPage() {
 
   return (
     <div className="space-y-6">
-
       <div className="flex flex-col lg:flex-row gap-6 min-w-0">
         {/* Sidebar */}
         <motion.div
@@ -118,8 +125,6 @@ export default function DirectTopupPage() {
               </motion.button>
             ))}
           </div>
-
-
 
           <div className="p-4 border-t border-mali-blue/20">
             <h3 className="text-white font-medium text-sm mb-3 flex items-center">
@@ -214,8 +219,6 @@ export default function DirectTopupPage() {
             </div>
           </motion.div>
 
-
-
           {/* Games grid */}
           <motion.div
             className="space-y-3"
@@ -230,7 +233,7 @@ export default function DirectTopupPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {filteredGames.map((game, index) => (
                 <motion.div
                   key={game.id}
@@ -246,7 +249,7 @@ export default function DirectTopupPage() {
                         </div>
                       ) : null}
 
-                      <div className="relative h-32 md:h-36 w-full overflow-hidden">
+                      <div className="relative aspect-square w-full overflow-hidden">
                         <img
                           src={game.mainImage}
                           alt={game.title}
@@ -254,8 +257,8 @@ export default function DirectTopupPage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
 
-                        <div className="absolute top-2 right-2 flex items-center bg-mali-blue/70 backdrop-blur-sm text-white text-xs px-1.5 py-0.5 rounded">
-                          <Star size={10} className="mr-0.5 text-yellow-400" /> {game.rating}
+                        <div className="absolute top-2 right-2 flex items-center bg-mali-blue/70 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded">
+                          <Star size={8} className="mr-0.5 text-yellow-400" /> {game.rating}
                         </div>
 
                         {/* Hover overlay */}
@@ -266,14 +269,14 @@ export default function DirectTopupPage() {
                         </div>
                       </div>
 
-                      <div className="p-3">
-                        <p className="text-white text-sm font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-accent transition-colors">{game.title}</p>
+                      <div className="p-2">
+                        <p className="text-white text-xs font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-accent transition-colors">{game.title}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
                             {getCategoryIcon(game.category)}
-                            <span className="text-mali-text-secondary text-xs ml-1">{game.publisher}</span>
+                            <span className="text-mali-text-secondary text-[10px] ml-1">{game.publisher}</span>
                           </div>
-                          <div className="text-xs text-white font-medium">฿{game.price}</div>
+                          <div className="text-[10px] text-white font-medium">฿{game.price}</div>
                         </div>
                       </div>
                     </div>
@@ -285,5 +288,13 @@ export default function DirectTopupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DirectTopupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-mali-dark flex items-center justify-center text-white">Loading...</div>}>
+      <DirectTopupContent />
+    </Suspense>
   );
 }

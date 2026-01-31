@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-import { GameCard } from "@/components/GameCard";
-import { Gamepad2, ChevronDown, Search, Filter, Star, Clock, TrendingUp } from "lucide-react";
+import { Gamepad2, Search, Filter, Clock } from "lucide-react";
 import { SeasonalEventsGrid } from "@/components/promotion/SeasonalEventsGrid";
 import { SeasonalEventProps } from "@/components/promotion/SeasonalEventCard";
 

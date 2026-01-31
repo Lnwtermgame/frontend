@@ -6,15 +6,11 @@ import {
   User,
   DollarSign,
   ShoppingCart,
-  CreditCard,
   FileText,
   Ticket,
   Heart,
-  Gift,
   Bell,
-  LogOut,
-  GamepadIcon,
-  CreditCard as CardIcon
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMemo, memo } from "react";

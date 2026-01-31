@@ -10,7 +10,6 @@ import {
   BadgePercent, 
   CircleDollarSign, 
   Shield, 
-  Plus, 
   Wallet, 
   ArrowRight,
   AlertCircle,

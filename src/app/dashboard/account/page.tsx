@@ -3,16 +3,9 @@
 import Link from "next/link";
 import {
   ChevronRight,
-  Edit,
   Star,
   Shield,
-  CreditCard,
-  History,
-  Gift,
-  Settings,
-  Heart,
-  User,
-  LogOut
+  History
 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
@@ -38,13 +31,7 @@ export default function AccountPage() {
   ];
 
   const accountLinks = [
-    { icon: <User size={18} />, label: 'ตั้งค่าโปรไฟล์', href: '/dashboard/account/profile' },
-    { icon: <Shield size={18} />, label: 'ความปลอดภัย', href: '/dashboard/account/security' },
-    { icon: <History size={18} />, label: 'ประวัติการซื้อ', href: '/dashboard/orders' },
-    { icon: <CreditCard size={18} />, label: 'วิธีการชำระเงิน', href: '/dashboard/account/payment' },
-    { icon: <Heart size={18} />, label: 'รายการโปรด', href: '/dashboard/favorite' },
-    { icon: <Gift size={18} />, label: 'คูปองของฉัน', href: '/dashboard/coupons' },
-    { icon: <LogOut size={18} />, label: 'ออกจากระบบ', href: '/logout' }
+    { icon: <Shield size={18} />, label: 'ความปลอดภัย', href: '/dashboard/account/security' }
   ];
 
   return (
@@ -96,14 +83,7 @@ export default function AccountPage() {
                       </div>
                     </div>
                   </div>
-                  <motion.button
-                    className="flex items-center gap-1.5 bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent hover:text-mali-blue-light px-3 py-1.5 rounded-full transition-all thai-font"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Edit size={14} />
-                    <span className="text-sm font-medium">แก้ไขโปรไฟล์</span>
-                  </motion.button>
+
                 </div>
               </div>
             </motion.div>

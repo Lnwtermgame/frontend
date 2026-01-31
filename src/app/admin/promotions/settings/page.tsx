@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Settings, Save, ChevronLeft, Tag, ToggleLeft, ToggleRight } from "lucide-react";
+import { Settings, Save, ChevronLeft, Tag } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminPromotionSettings() {

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "@/lib/framer-exports";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
+import { getAllGames } from "@/lib/data/games";
 
 // Types
 export interface SearchResult {
@@ -26,10 +27,26 @@ export interface SmartSearchProps {
 }
 
 // API function to be implemented by backend
+// API function to be implemented by backend (simulating with local data for now)
 const searchAPI = async (query: string): Promise<SearchResult[]> => {
-  // This will be implemented by backend developers
-  console.log('Search API called with query:', query);
-  return [];
+  const games = getAllGames();
+  const lowerQuery = query.toLowerCase();
+
+  const matchedGames = games.filter(game =>
+    game.title.toLowerCase().includes(lowerQuery) ||
+    game.category.toLowerCase().includes(lowerQuery) ||
+    game.id.includes(lowerQuery)
+  );
+
+  return matchedGames.map(game => ({
+    id: game.id,
+    type: 'game',
+    title: game.title,
+    subtitle: `${game.category} • ${game.publisher}`,
+    image: game.mainImage,
+    url: `/games/${game.id}`,
+    price: game.price
+  }));
 };
 
 // Recent searches storage
@@ -135,7 +152,7 @@ export function SmartSearchBar({
       if (onSearch) {
         onSearch(query);
       } else {
-        router.push(`/search?q=${encodeURIComponent(query)}`);
+        router.push(`/games?search=${encodeURIComponent(query)}`);
       }
 
       setIsDropdownOpen(false);

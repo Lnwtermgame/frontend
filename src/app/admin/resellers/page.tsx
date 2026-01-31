@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Plus, Search, Users, Edit, ChartBar, Trash2, MoreHorizontal, BadgePercent, Link as LinkIcon, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Plus, Search, Users, Edit, ChartBar, Trash2, BadgePercent, Link as LinkIcon, ShieldCheck, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 // Mock reseller data

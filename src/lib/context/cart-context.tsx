@@ -1,7 +1,7 @@
 "use client";
 
 // Types imports for cart items
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 import { useLocalStorage } from '../hooks/use-local-storage';
 
 // Product and cart item types

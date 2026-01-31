@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { ShoppingBag, ChevronRight, Search, ShoppingCart, Clock, CheckCircle, AlertCircle, Filter, FileText, Eye, ArrowDownUp, Calendar, Package } from "lucide-react";
+import { ShoppingBag, Search, Clock, CheckCircle, AlertCircle, Filter, FileText, Eye, Calendar, Package } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 
@@ -86,7 +86,7 @@ export default function OrdersPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">Loading...</p>
+          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -97,25 +97,25 @@ export default function OrdersPage() {
     switch (status) {
       case "completed":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20">
-            <CheckCircle className="w-3 h-3 mr-1" /> Completed
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
+            <CheckCircle className="w-3 h-3 mr-1" /> สำเร็จ
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900/20 text-yellow-400 border border-yellow-400/20">
-            <Clock className="w-3 h-3 mr-1" /> Processing
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900/20 text-yellow-400 border border-yellow-400/20 thai-font">
+            <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
       case "cancelled":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20">
-            <AlertCircle className="w-3 h-3 mr-1" /> Cancelled
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
+            <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-blue/20 text-mali-blue-accent border border-mali-blue/20">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-blue/20 text-mali-blue-accent border border-mali-blue/20 thai-font">
             {status}
           </span>
         );
@@ -158,15 +158,15 @@ export default function OrdersPage() {
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <p className="text-mali-text-secondary">Order ID</p>
+                    <p className="text-mali-text-secondary thai-font">รหัสคำสั่งซื้อ</p>
                     <p className="text-mali-blue-accent font-medium">{order.id}</p>
                   </div>
                   <div>
-                    <p className="text-mali-text-secondary">Amount</p>
+                    <p className="text-mali-text-secondary thai-font">จำนวนเงิน</p>
                     <p className="text-white">{order.amount}</p>
                   </div>
                   <div>
-                    <p className="text-mali-text-secondary">Date</p>
+                    <p className="text-mali-text-secondary thai-font">วันที่</p>
                     <p className="text-mali-text-secondary">{order.date}</p>
                   </div>
                 </div>
@@ -178,7 +178,7 @@ export default function OrdersPage() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Eye className="h-3 w-3 mr-1" />
-                    <span>View</span>
+                    <span className="thai-font">ดูรายละเอียด</span>
                   </motion.button>
                   <motion.button
                     className="text-mali-text-secondary flex items-center text-xs"
@@ -186,7 +186,7 @@ export default function OrdersPage() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <FileText className="h-3 w-3 mr-1" />
-                    <span>Receipt</span>
+                    <span className="thai-font">ใบเสร็จ</span>
                   </motion.button>
                 </div>
               </div>
@@ -202,14 +202,14 @@ export default function OrdersPage() {
       {/* Page Header */}
       <div className="relative mb-6">
         <motion.h2
-          className="text-xl font-bold text-white mb-1 relative"
+          className="text-xl font-bold text-white mb-1 relative thai-font"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          My Orders
+          คำสั่งซื้อของฉัน
         </motion.h2>
-        <p className="text-mali-text-secondary text-sm relative">
-          Track and manage your purchases
+        <p className="text-mali-text-secondary text-sm relative thai-font">
+          ติดตามและจัดการการสั่งซื้อของคุณ
         </p>
       </div>
 
@@ -223,10 +223,10 @@ export default function OrdersPage() {
         <div className="relative md:w-80">
           <input
             type="text"
-            placeholder="Search orders..."
+            placeholder="ค้นหาคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-full text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-full text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all text-sm thai-font"
           />
           <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-mali-text-secondary h-4 w-4" />
         </div>
@@ -237,16 +237,16 @@ export default function OrdersPage() {
             whileHover={{ scale: 1.03 }}
           >
             <button
-              className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'table' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+              className={`px-3 py-1 rounded-md text-sm transition-colors thai-font ${viewMode === 'table' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
               onClick={() => setViewMode('table')}
             >
-              Table
+              ตาราง
             </button>
             <button
-              className={`px-3 py-1 rounded-md text-sm transition-colors ${viewMode === 'card' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+              className={`px-3 py-1 rounded-md text-sm transition-colors thai-font ${viewMode === 'card' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
               onClick={() => setViewMode('card')}
             >
-              Cards
+              การ์ด
             </button>
           </motion.div>
 
@@ -280,11 +280,11 @@ export default function OrdersPage() {
             <table className="w-full text-left">
               <thead className="bg-mali-blue/10 border-b border-mali-blue/20">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary">Order ID</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary">Product</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary">Date</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary">Amount</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary">Status</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">รหัสคำสั่งซื้อ</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">สินค้า</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">วันที่</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">จำนวนเงิน</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">สถานะ</th>
                   <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary"></th>
                 </tr>
               </thead>
@@ -328,7 +328,7 @@ export default function OrdersPage() {
                             whileTap={{ scale: 0.95 }}
                           >
                             <Eye className="h-3 w-3 mr-1.5" />
-                            View
+                            <span className="thai-font">ดูรายละเอียด</span>
                           </motion.button>
                         </Link>
                       </td>
@@ -339,9 +339,9 @@ export default function OrdersPage() {
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="text-mali-text-secondary">
                         <ShoppingBag className="h-12 w-12 mx-auto opacity-50 mb-4" />
-                        <p className="text-white text-lg font-medium mb-1">No orders found</p>
-                        <p className="text-sm max-w-md mx-auto">
-                          {searchTerm ? `No results for "${searchTerm}"` : "You haven't placed any orders yet."}
+                        <p className="text-white text-lg font-medium mb-1 thai-font">ไม่พบคำสั่งซื้อ</p>
+                        <p className="text-sm max-w-md mx-auto thai-font">
+                          {searchTerm ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"` : "คุณยังไม่มีคำสั่งซื้อใดๆ"}
                         </p>
                       </div>
                     </td>

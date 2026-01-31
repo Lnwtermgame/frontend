@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { Search, Filter, Calendar, Download, MoreHorizontal, ChevronLeft, ChevronRight, Package, Truck, CheckCircle, AlertCircle, Clock } from "lucide-react";
-import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 
 // Mock management orders (perhaps for a seller or power user view?)
@@ -83,7 +82,7 @@ export default function OrderManagementPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">Loading...</p>
+          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -95,26 +94,26 @@ export default function OrderManagementPage() {
       case "delivered":
       case "completed":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20">
-            <CheckCircle className="w-3 h-3 mr-1" /> Delivered
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
+            <CheckCircle className="w-3 h-3 mr-1" /> จัดส่งแล้ว
           </span>
         );
       case "processing":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-blue/20 text-mali-blue-light border border-mali-blue/20">
-            <Clock className="w-3 h-3 mr-1" /> Processing
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-blue/20 text-mali-blue-light border border-mali-blue/20 thai-font">
+            <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
       case "shipped":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-purple/20 text-mali-purple border border-mali-purple/20">
-            <Truck className="w-3 h-3 mr-1" /> Shipped
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-purple/20 text-mali-purple border border-mali-purple/20 thai-font">
+            <Truck className="w-3 h-3 mr-1" /> จัดส่งสินค้าแล้ว
           </span>
         );
       case "cancelled":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20">
-            <AlertCircle className="w-3 h-3 mr-1" /> Cancelled
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
+            <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       default:
@@ -133,19 +132,19 @@ export default function OrderManagementPage() {
         <div className="flex justify-between items-start">
           <div>
             <motion.h2
-              className="text-xl font-bold text-white mb-1 relative"
+              className="text-xl font-bold text-white mb-1 relative thai-font"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              Order Management
+              การจัดการคำสั่งซื้อ
             </motion.h2>
-            <p className="text-mali-text-secondary text-sm relative">
-              Manage and track all orders
+            <p className="text-mali-text-secondary text-sm relative thai-font">
+              จัดการและติดตามคำสั่งซื้อทั้งหมด
             </p>
           </div>
-          <button className="bg-mali-blue hover:bg-mali-blue/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center shadow-button-glow">
+          <button className="bg-mali-blue hover:bg-mali-blue/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center shadow-button-glow thai-font">
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+            ส่งออกรายงาน
           </button>
         </div>
       </div>
@@ -155,10 +154,10 @@ export default function OrderManagementPage() {
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Search order ID or customer..."
+            placeholder="ค้นหารหัสคำสั่งซื้อหรือลูกค้า..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-colors"
+            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-colors thai-font"
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary" />
         </div>
@@ -167,13 +166,13 @@ export default function OrderManagementPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-mali-blue-accent cursor-pointer"
+            className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-mali-blue-accent cursor-pointer thai-font"
           >
-            <option value="all">All Status</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="all">สถานะทั้งหมด</option>
+            <option value="processing">กำลังดำเนินการ</option>
+            <option value="shipped">จัดส่งสินค้าแล้ว</option>
+            <option value="delivered">จัดส่งแล้ว</option>
+            <option value="cancelled">ยกเลิกแล้ว</option>
           </select>
 
           <button className="bg-mali-blue/10 border border-mali-blue/20 p-2 rounded-lg text-mali-text-secondary hover:text-white transition-colors">
@@ -196,13 +195,13 @@ export default function OrderManagementPage() {
           <table className="w-full text-left">
             <thead className="bg-mali-blue/10 border-b border-mali-blue/20 text-xs uppercase text-mali-text-secondary font-medium">
               <tr>
-                <th className="px-6 py-4">Order ID</th>
-                <th className="px-6 py-4">Customer</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Items</th>
-                <th className="px-6 py-4">Total</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4 thai-font">รหัสคำสั่งซื้อ</th>
+                <th className="px-6 py-4 thai-font">ลูกค้า</th>
+                <th className="px-6 py-4 thai-font">วันที่</th>
+                <th className="px-6 py-4 thai-font">รายการ</th>
+                <th className="px-6 py-4 thai-font">ยอดรวม</th>
+                <th className="px-6 py-4 thai-font">สถานะ</th>
+                <th className="px-6 py-4 text-right thai-font">การดำเนินการ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-mali-blue/10">
@@ -232,7 +231,7 @@ export default function OrderManagementPage() {
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-mali-text-secondary">
                     <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                    <p>No orders found matching your criteria</p>
+                    <p className="thai-font">ไม่พบคำสั่งซื้อที่ตรงตามเงื่อนไข</p>
                   </td>
                 </tr>
               )}
@@ -242,8 +241,8 @@ export default function OrderManagementPage() {
 
         {/* Pagination */}
         <div className="p-4 border-t border-mali-blue/20 flex items-center justify-between">
-          <p className="text-xs text-mali-text-secondary">
-            Showing <span className="font-medium text-white">1</span> to <span className="font-medium text-white">{filteredOrders.length}</span> of <span className="font-medium text-white">{filteredOrders.length}</span> results
+          <p className="text-xs text-mali-text-secondary thai-font">
+            แสดง <span className="font-medium text-white">1</span> ถึง <span className="font-medium text-white">{filteredOrders.length}</span> จาก <span className="font-medium text-white">{filteredOrders.length}</span> รายการ
           </p>
           <div className="flex gap-2">
             <button className="p-1.5 rounded-lg border border-mali-blue/20 text-mali-text-secondary opacity-50 cursor-not-allowed">

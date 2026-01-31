@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { ReactGrabInit } from "@/components/ReactGrabInit";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { AuthProvider } from "@/lib/context/auth-context";
 import { NotificationProvider } from "@/lib/context/notification-context";
@@ -61,6 +62,29 @@ export default function RootLayout({
                     <PromotionProvider>
                       <MainLayout>{children}</MainLayout>
                       <LiveChat />
+                      <Toaster
+                        position="bottom-right"
+                        toastOptions={{
+                          duration: 4000,
+                          style: {
+                            background: '#1a201c',
+                            color: '#fff',
+                            border: '1px solid #2a312d',
+                          },
+                          success: {
+                            iconTheme: {
+                              primary: '#3B82F6',
+                              secondary: '#fff',
+                            },
+                          },
+                          error: {
+                            iconTheme: {
+                              primary: '#ef4444',
+                              secondary: '#fff',
+                            },
+                          },
+                        }}
+                      />
                     </PromotionProvider>
                   </DeliveryProvider>
                 </SupportProvider>

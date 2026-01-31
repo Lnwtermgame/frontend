@@ -123,16 +123,6 @@ const UserSidebar = memo(function UserSidebar() {
             />
           );
         })}
-        <motion.div whileHover={{ x: 3 }} transition={{ duration: 0.2 }}>
-          <button
-            className="flex items-center gap-3 px-4 py-3 w-full text-left rounded-md text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white thai-font"
-          >
-            <LogOut className="w-5 h-5" />
-            <span className="text-sm font-medium thai-font">
-              ออกจากระบบ
-            </span>
-          </button>
-        </motion.div>
       </div>
     </div>
   );

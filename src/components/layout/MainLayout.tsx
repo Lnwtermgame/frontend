@@ -389,12 +389,12 @@ export function MainLayout({ children }: MainLayoutProps) {
                     <div className="w-9 h-9 rounded-full bg-mali-blue flex items-center justify-center overflow-hidden border-2 border-mali-blue-light/30 shadow-sm">
                       <img
                         src={user?.avatar || "https://placehold.co/200x200?text=User"}
-                        alt={`${user?.name} avatar`}
+                        alt={`${user?.username} avatar`}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="hidden md:flex flex-col items-start">
-                      <span className="text-sm font-medium w-[100px] truncate text-left leading-tight">{user?.name}</span>
+                      <span className="text-sm font-medium w-[100px] truncate text-left leading-tight">{user?.username}</span>
                       <span className="text-[10px] text-mali-text-secondary">Member</span>
                     </div>
                     <ChevronDown size={14} className="text-mali-text-secondary ml-1" />
@@ -415,7 +415,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                               <img src={user?.avatar || "https://placehold.co/200x200?text=User"} alt="" className="w-full h-full object-cover" />
                             </div>
                             <div>
-                              <p className="text-white font-medium">{user?.name}</p>
+                              <p className="text-white font-medium">{user?.username}</p>
                               <p className="text-mali-text-secondary text-xs">{user?.email}</p>
                             </div>
                           </div>

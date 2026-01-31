@@ -3,45 +3,74 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { ShoppingBag, Search, Clock, CheckCircle, AlertCircle, Filter, FileText, Eye, Calendar, Package } from "lucide-react";
+import { orderApi } from "@/lib/services/order-api";
+import { ShoppingBag, Search, Clock, CheckCircle, AlertCircle, Filter, FileText, Eye, Calendar, Package, XCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
-// Mock orders data
-const orders = [
-  {
-    id: "ORD-1001",
-    date: "2023-11-20",
-    product: "Steam Gift Card",
-    amount: "$50.00",
-    status: "completed",
-    image: "https://placehold.co/300x200?text=Steam+Gift+Card" // Replaced with placehold.co
-  },
-  {
-    id: "ORD-1002",
-    date: "2023-11-15",
-    product: "Mobile Legends Diamonds",
-    amount: "$19.99",
-    status: "completed",
-    image: "https://placehold.co/300x200?text=Mobile+Legends" // Replaced with placehold.co
-  },
-  {
-    id: "ORD-1003",
-    date: "2023-11-10",
-    product: "PlayStation Store Card",
-    amount: "$25.00",
-    status: "pending",
-    image: "https://placehold.co/300x200?text=PlayStation+Store" // Replaced with placehold.co
-  }
-];
+interface Order {
+  id: string;
+  orderNumber: string;
+  createdAt: string;
+  finalAmount: number;
+  status: string;
+  items: {
+    product: {
+      name: string;
+      imageUrl?: string;
+    };
+  }[];
+}
 
 export default function OrdersPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
 
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOrders, setFilteredOrders] = useState(orders);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
+  const [statusFilter, setStatusFilter] = useState<string>('');
+
+  // Fetch orders from API
+  useEffect(() => {
+    if (isInitialized && user) {
+      fetchOrders();
+    }
+  }, [isInitialized, user, statusFilter]);
+
+  const fetchOrders = async () => {
+    setIsLoading(true);
+    try {
+      const response = await orderApi.getOrders(1, 50, statusFilter);
+      if (response.success) {
+        setOrders(response.data);
+        setFilteredOrders(response.data);
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถโหลดคำสั่งซื้อได้');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Cancel order
+  const handleCancelOrder = async (orderId: string) => {
+    if (!confirm('คุณต้องการยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?')) return;
+
+    try {
+      const response = await orderApi.cancelOrder(orderId);
+      if (response.success) {
+        toast.success('ยกเลิกคำสั่งซื้อสำเร็จ');
+        fetchOrders();
+      }
+    } catch (error) {
+      const message = orderApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถยกเลิกคำสั่งซื้อได้');
+    }
+  };
 
   // If not logged in, redirect to login page
   useEffect(() => {
@@ -55,14 +84,14 @@ export default function OrdersPage() {
     if (searchTerm) {
       setFilteredOrders(
         orders.filter(order =>
-          order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.product.toLowerCase().includes(searchTerm.toLowerCase())
+          order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.items.some(item => item.product.name.toLowerCase().includes(searchTerm.toLowerCase()))
         )
       );
     } else {
       setFilteredOrders(orders);
     }
-  }, [searchTerm]);
+  }, [searchTerm, orders]);
 
   // Set view mode based on screen size
   useEffect(() => {
@@ -70,15 +99,27 @@ export default function OrdersPage() {
       setViewMode(window.innerWidth < 768 ? 'card' : 'table');
     };
 
-    // Set initial view mode
     handleResize();
-
-    // Add event listener
     window.addEventListener('resize', handleResize);
-
-    // Cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('th-TH', {
+      style: 'currency',
+      currency: 'THB'
+    }).format(amount);
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   // If the user is not loaded yet or not logged in, show loading
   if (!isInitialized || !user) {
@@ -95,22 +136,34 @@ export default function OrdersPage() {
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
     switch (status) {
-      case "completed":
+      case "COMPLETED":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
             <CheckCircle className="w-3 h-3 mr-1" /> สำเร็จ
           </span>
         );
-      case "pending":
+      case "PENDING":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900/20 text-yellow-400 border border-yellow-400/20 thai-font">
+            <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
+          </span>
+        );
+      case "PROCESSING":
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/20 text-blue-400 border border-blue-400/20 thai-font">
             <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
-      case "cancelled":
+      case "CANCELLED":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
-            <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
+            <XCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
+          </span>
+        );
+      case "REFUNDED":
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-900/20 text-gray-400 border border-gray-400/20 thai-font">
+            <AlertCircle className="w-3 h-3 mr-1" /> คืนเงินแล้ว
           </span>
         );
       default:
@@ -120,6 +173,11 @@ export default function OrdersPage() {
           </span>
         );
     }
+  };
+
+  // Can cancel order?
+  const canCancel = (status: string) => {
+    return status === 'PENDING' || status === 'PROCESSING';
   };
 
   // Render card view for mobile
@@ -137,10 +195,10 @@ export default function OrdersPage() {
           >
             <div className="flex items-start p-4">
               <div className="h-16 w-16 rounded-lg overflow-hidden bg-mali-blue/20 mr-4 flex-shrink-0">
-                {order.image ? (
+                {order.items[0]?.product?.imageUrl ? (
                   <img
-                    src={order.image}
-                    alt={order.product}
+                    src={order.items[0].product.imageUrl}
+                    alt={order.items[0].product.name}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -152,42 +210,49 @@ export default function OrdersPage() {
 
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-white font-medium">{order.product}</h3>
+                  <h3 className="text-white font-medium text-sm line-clamp-1">
+                    {order.items[0]?.product?.name || 'สินค้า'}
+                  </h3>
                   <div>{renderStatusBadge(order.status)}</div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <p className="text-mali-text-secondary thai-font">รหัสคำสั่งซื้อ</p>
-                    <p className="text-mali-blue-accent font-medium">{order.id}</p>
+                    <p className="text-mali-blue-accent font-medium">{order.orderNumber}</p>
                   </div>
                   <div>
                     <p className="text-mali-text-secondary thai-font">จำนวนเงิน</p>
-                    <p className="text-white">{order.amount}</p>
+                    <p className="text-white">{formatCurrency(order.finalAmount)}</p>
                   </div>
                   <div>
                     <p className="text-mali-text-secondary thai-font">วันที่</p>
-                    <p className="text-mali-text-secondary">{order.date}</p>
+                    <p className="text-mali-text-secondary">{formatDate(order.createdAt)}</p>
                   </div>
                 </div>
 
-                <div className="flex justify-end mt-3 gap-3">
-                  <motion.button
-                    className="text-mali-blue-accent flex items-center text-xs"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Eye className="h-3 w-3 mr-1" />
-                    <span className="thai-font">ดูรายละเอียด</span>
-                  </motion.button>
-                  <motion.button
-                    className="text-mali-text-secondary flex items-center text-xs"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <FileText className="h-3 w-3 mr-1" />
-                    <span className="thai-font">ใบเสร็จ</span>
-                  </motion.button>
+                <div className="flex justify-end mt-3 gap-2">
+                  {canCancel(order.status) && (
+                    <motion.button
+                      className="text-mali-red flex items-center text-xs px-2 py-1 rounded hover:bg-mali-red/10"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleCancelOrder(order.id)}
+                    >
+                      <XCircle className="h-3 w-3 mr-1" />
+                      <span className="thai-font">ยกเลิก</span>
+                    </motion.button>
+                  )}
+                  <Link href={`/dashboard/orders/${order.id}`}>
+                    <motion.button
+                      className="text-mali-blue-accent flex items-center text-xs px-2 py-1 rounded hover:bg-mali-blue/10"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Eye className="h-3 w-3 mr-1" />
+                      <span className="thai-font">ดูรายละเอียด</span>
+                    </motion.button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -232,6 +297,18 @@ export default function OrdersPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white text-sm focus:outline-none focus:border-mali-blue-accent thai-font"
+          >
+            <option value="">ทั้งหมด</option>
+            <option value="PENDING">รอดำเนินการ</option>
+            <option value="PROCESSING">กำลังดำเนินการ</option>
+            <option value="COMPLETED">สำเร็จ</option>
+            <option value="CANCELLED">ยกเลิก</option>
+          </select>
+
           <motion.div
             className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-1"
             whileHover={{ scale: 1.03 }}
@@ -249,22 +326,6 @@ export default function OrdersPage() {
               การ์ด
             </button>
           </motion.div>
-
-          <motion.button
-            className="w-9 h-9 flex items-center justify-center bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
-            whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Calendar className="h-4 w-4" />
-          </motion.button>
-
-          <motion.button
-            className="w-9 h-9 flex items-center justify-center bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white rounded-lg"
-            whileHover={{ scale: 1.05, backgroundColor: 'rgba(58, 76, 173, 0.3)' }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Filter className="h-4 w-4" />
-          </motion.button>
         </div>
       </motion.div>
 
@@ -275,7 +336,11 @@ export default function OrdersPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
       >
-        {viewMode === 'table' ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : viewMode === 'table' ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-mali-blue/10 border-b border-mali-blue/20">
@@ -298,14 +363,14 @@ export default function OrdersPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <td className="px-6 py-4 text-sm font-medium text-mali-blue-accent">{order.id}</td>
+                      <td className="px-6 py-4 text-sm font-medium text-mali-blue-accent">{order.orderNumber}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="h-10 w-10 rounded overflow-hidden mr-3 bg-mali-blue/10 border border-mali-blue/20">
-                            {order.image ? (
+                            {order.items[0]?.product?.imageUrl ? (
                               <img
-                                src={order.image}
-                                alt={order.product}
+                                src={order.items[0].product.imageUrl}
+                                alt={order.items[0].product.name}
                                 className="h-full w-full object-cover"
                               />
                             ) : (
@@ -314,23 +379,36 @@ export default function OrdersPage() {
                               </div>
                             )}
                           </div>
-                          <span className="text-white text-sm">{order.product}</span>
+                          <span className="text-white text-sm line-clamp-1">{order.items[0]?.product?.name || 'สินค้า'}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-mali-text-secondary">{order.date}</td>
-                      <td className="px-6 py-4 text-sm text-white">{order.amount}</td>
+                      <td className="px-6 py-4 text-sm text-mali-text-secondary">{formatDate(order.createdAt)}</td>
+                      <td className="px-6 py-4 text-sm text-white">{formatCurrency(order.finalAmount)}</td>
                       <td className="px-6 py-4">{renderStatusBadge(order.status)}</td>
                       <td className="px-6 py-4 text-right">
-                        <Link href={`/dashboard/orders/${order.id}`}>
-                          <motion.button
-                            className="px-3 py-1.5 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-light text-xs flex items-center"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Eye className="h-3 w-3 mr-1.5" />
-                            <span className="thai-font">ดูรายละเอียด</span>
-                          </motion.button>
-                        </Link>
+                        <div className="flex items-center justify-end gap-2">
+                          {canCancel(order.status) && (
+                            <motion.button
+                              className="px-3 py-1.5 rounded-lg bg-mali-red/20 hover:bg-mali-red/30 text-mali-red text-xs flex items-center"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => handleCancelOrder(order.id)}
+                            >
+                              <XCircle className="h-3 w-3 mr-1.5" />
+                              <span className="thai-font">ยกเลิก</span>
+                            </motion.button>
+                          )}
+                          <Link href={`/dashboard/orders/${order.id}`}>
+                            <motion.button
+                              className="px-3 py-1.5 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-light text-xs flex items-center"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <Eye className="h-3 w-3 mr-1.5" />
+                              <span className="thai-font">ดู</span>
+                            </motion.button>
+                          </Link>
+                        </div>
                       </td>
                     </motion.tr>
                   ))
@@ -356,4 +434,4 @@ export default function OrdersPage() {
       </motion.div>
     </div>
   );
-} 
+}

@@ -8,9 +8,23 @@ function getStorageValue<T>(key: string, initialValue: T): T {
   }
   try {
     const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : initialValue;
+    if (!item) return initialValue;
+
+    // Handle corrupted data: if item looks like a raw JWT token (starts with eyJ), return as-is
+    if (typeof item === 'string' && item.startsWith('eyJ')) {
+      console.warn(`[useLocalStorage] Found raw token in "${key}", migrating to JSON format`);
+      // JWT tokens are strings - return as string type
+      return item as T;
+    }
+
+    return JSON.parse(item);
   } catch (error) {
     console.error(`Error reading localStorage key "${key}":`, error);
+    // If parse fails and initialValue is a string, try returning the raw item
+    const item = window.localStorage.getItem(key);
+    if (typeof initialValue === 'string' && typeof item === 'string') {
+      return item as T;
+    }
     return initialValue;
   }
 }
@@ -57,7 +71,19 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 
     function handleStorageChange(e: StorageEvent) {
       if (e.key === key && e.newValue) {
-        setStoredValue(JSON.parse(e.newValue));
+        try {
+          // Handle corrupted data: if newValue looks like a raw JWT token, use as-is
+          if (e.newValue.startsWith('eyJ') && typeof initialValue === 'string') {
+            setStoredValue(e.newValue as T);
+          } else {
+            setStoredValue(JSON.parse(e.newValue));
+          }
+        } catch {
+          // If parse fails and initialValue is a string, use raw value
+          if (typeof initialValue === 'string') {
+            setStoredValue(e.newValue as T);
+          }
+        }
       }
     }
 

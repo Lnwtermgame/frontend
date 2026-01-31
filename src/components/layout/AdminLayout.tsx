@@ -193,7 +193,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                     <User className="w-6 h-6 text-mali-blue" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-white">{user?.name || user?.email}</div>
+                    <div className="text-sm font-medium text-white">{user?.username || user?.email}</div>
                     <div className="text-xs text-gray-400 thai-font">ผู้ดูแลระบบ</div>
                   </div>
                 </div>

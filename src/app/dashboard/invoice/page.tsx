@@ -3,52 +3,55 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { invoiceApi } from "@/lib/services/invoice-api";
 import { FileText, Download, Eye, Search, ChevronDown, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
+import toast from "react-hot-toast";
 
-// Mock invoice data
-const invoices = [
-  {
-    id: "INV-2023-001",
-    orderId: "ORD-1001",
-    date: "2023-11-20",
-    amount: "$50.00",
-    status: "paid",
-    items: "Steam Gift Card"
-  },
-  {
-    id: "INV-2023-002",
-    orderId: "ORD-1002",
-    date: "2023-11-15",
-    amount: "$19.99",
-    status: "paid",
-    items: "Mobile Legends Diamonds"
-  },
-  {
-    id: "INV-2023-003",
-    orderId: "ORD-1003",
-    date: "2023-11-10",
-    amount: "$25.00",
-    status: "pending",
-    items: "PlayStation Store Card"
-  },
-  {
-    id: "INV-2023-004",
-    orderId: "ORD-1004",
-    date: "2023-10-25",
-    amount: "$15.00",
-    status: "cancelled",
-    items: "iTunes Gift Card"
-  }
-];
+interface Invoice {
+  id: string;
+  invoiceNumber: string;
+  orderId: string;
+  orderNumber: string;
+  issuedAt: string;
+  totalAmount: number;
+  status: string;
+  items: {
+    productName: string;
+  }[];
+}
 
 export default function InvoicePage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [filteredInvoices, setFilteredInvoices] = useState(invoices);
+  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
+
+  // Fetch invoices from API
+  useEffect(() => {
+    if (isInitialized && user) {
+      fetchInvoices();
+    }
+  }, [isInitialized, user]);
+
+  const fetchInvoices = async () => {
+    setIsLoading(true);
+    try {
+      const response = await invoiceApi.getInvoices();
+      if (response.success) {
+        setInvoices(response.data);
+        setFilteredInvoices(response.data);
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถโหลดใบแจ้งหนี้ได้');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // If not logged in, redirect to login page
   useEffect(() => {
@@ -63,20 +66,37 @@ export default function InvoicePage() {
 
     // Apply status filter
     if (statusFilter !== "all") {
-      result = result.filter(invoice => invoice.status === statusFilter);
+      result = result.filter(invoice => invoice.status.toLowerCase() === statusFilter);
     }
 
     // Apply search filter
     if (searchTerm) {
       result = result.filter(invoice =>
-        invoice.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.items.toLowerCase().includes(searchTerm.toLowerCase())
+        invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        invoice.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        invoice.items.some(item => item.productName.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
     setFilteredInvoices(result);
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, invoices]);
+
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('th-TH', {
+      style: 'currency',
+      currency: 'THB'
+    }).format(amount);
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   // If the user is not loaded yet or not logged in, show loading
   if (!isInitialized || !user) {
@@ -92,7 +112,8 @@ export default function InvoicePage() {
 
   // Render status badge
   const renderStatusBadge = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
+      case "completed":
       case "paid":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
@@ -106,6 +127,7 @@ export default function InvoicePage() {
           </span>
         );
       case "cancelled":
+      case "refunded":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
             <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
@@ -155,7 +177,7 @@ export default function InvoicePage() {
             className="appearance-none w-full rounded-full bg-mali-blue/10 px-4 py-2 pr-10 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-all cursor-pointer thai-font"
           >
             <option value="all">ใบแจ้งหนี้ทั้งหมด</option>
-            <option value="paid">ชำระแล้ว</option>
+            <option value="completed">ชำระแล้ว</option>
             <option value="pending">รอดำเนินการ</option>
             <option value="cancelled">ยกเลิกแล้ว</option>
           </select>
@@ -168,83 +190,89 @@ export default function InvoicePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-mali-blue/10 border-b border-mali-blue/20">
-              <tr>
-                <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">รหัสใบแจ้งหนี้</th>
-                <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">วันที่</th>
-                <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">รหัสคำสั่งซื้อ</th>
-                <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">จำนวนเงิน</th>
-                <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">สถานะ</th>
-                <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap text-right thai-font">การกระทำ</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-mali-blue/10">
-              {filteredInvoices.length > 0 ? (
-                filteredInvoices.map((invoice, index) => (
-                  <motion.tr
-                    key={invoice.id}
-                    className="hover:bg-mali-blue/5 transition-colors group"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <td className="px-6 py-4 text-sm font-medium text-white group-hover:text-mali-blue-accent transition-colors">
-                      <div className="flex items-center gap-2">
-                        <FileText size={16} className="text-mali-blue-light" />
-                        {invoice.id}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-mali-text-secondary">
-                      {invoice.date}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-white font-mono text-xs bg-mali-blue/5 py-1 px-2 rounded w-fit">
-                      {invoice.orderId}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium text-white">
-                      {invoice.amount}
-                    </td>
-                    <td className="px-6 py-4">
-                      {renderStatusBadge(invoice.status)}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link href={`/dashboard/invoice/${invoice.id}`}>
-                          <button
-                            className="p-2 rounded-lg bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent transition-all hover:scale-105"
-                            title="ดูใบแจ้งหนี้"
-                          >
-                            <Eye size={16} />
-                          </button>
-                        </Link>
-                        <button
-                          className="p-2 rounded-lg bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-light transition-all hover:scale-105"
-                          title="ดาวน์โหลด PDF"
-                        >
-                          <Download size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))
-              ) : (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-mali-blue/10 border-b border-mali-blue/20">
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <div className="w-16 h-16 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FileText size={32} className="text-mali-text-secondary opacity-50" />
-                    </div>
-                    <p className="text-white text-lg font-medium mb-1 thai-font">ไม่พบใบแจ้งหนี้</p>
-                    <p className="text-sm text-mali-text-secondary max-w-md mx-auto thai-font">
-                      {searchTerm ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"` : "คุณยังไม่มีใบแจ้งหนี้ใดๆ"}
-                    </p>
-                  </td>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">รหัสใบแจ้งหนี้</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">วันที่</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">รหัสคำสั่งซื้อ</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">จำนวนเงิน</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">สถานะ</th>
+                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap text-right thai-font">การกระทำ</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-mali-blue/10">
+                {filteredInvoices.length > 0 ? (
+                  filteredInvoices.map((invoice, index) => (
+                    <motion.tr
+                      key={invoice.id}
+                      className="hover:bg-mali-blue/5 transition-colors group"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-white group-hover:text-mali-blue-accent transition-colors">
+                        <div className="flex items-center gap-2">
+                          <FileText size={16} className="text-mali-blue-light" />
+                          {invoice.invoiceNumber}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-mali-text-secondary">
+                        {formatDate(invoice.issuedAt)}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-white font-mono text-xs bg-mali-blue/5 py-1 px-2 rounded w-fit">
+                        {invoice.orderNumber}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-white">
+                        {formatCurrency(invoice.totalAmount)}
+                      </td>
+                      <td className="px-6 py-4">
+                        {renderStatusBadge(invoice.status)}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link href={`/dashboard/invoice/${invoice.id}`}>
+                            <button
+                              className="p-2 rounded-lg bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent transition-all hover:scale-105"
+                              title="ดูใบแจ้งหนี้"
+                            >
+                              <Eye size={16} />
+                            </button>
+                          </Link>
+                          <button
+                            className="p-2 rounded-lg bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-light transition-all hover:scale-105"
+                            title="ดาวน์โหลด PDF"
+                          >
+                            <Download size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center">
+                      <div className="w-16 h-16 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText size={32} className="text-mali-text-secondary opacity-50" />
+                      </div>
+                      <p className="text-white text-lg font-medium mb-1 thai-font">ไม่พบใบแจ้งหนี้</p>
+                      <p className="text-sm text-mali-text-secondary max-w-md mx-auto thai-font">
+                        {searchTerm ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"` : "คุณยังไม่มีใบแจ้งหนี้ใดๆ"}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </motion.div>
     </div>
   );
-} 
+}

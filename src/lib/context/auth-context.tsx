@@ -1,97 +1,285 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
+import toast from 'react-hot-toast';
 import { useLocalStorage } from '../hooks/use-local-storage';
-import { validateUser } from '../data/mock-users';
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  role: 'user' | 'admin';
-  credits: number;
-  isPremium: boolean;
-  createdAt: string;
-}
+import { authApi, User, AuthTokens } from '../services/auth-api';
 
 type AuthContextType = {
   user: User | null;
   isLoading: boolean;
-  error: string | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  clearError: () => void;
+  register: (username: string, email: string, password: string) => Promise<boolean>;
+  oauthLogin: (code: string, provider: 'google' | 'discord') => Promise<boolean>;
+  logout: () => Promise<void>;
+  updateProfile: (data: { username?: string; email?: string }) => Promise<boolean>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
   isInitialized: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Token expiration buffer (refresh 1 minute before expiry)
+const TOKEN_REFRESH_BUFFER = 60 * 1000; // 1 minute in milliseconds
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser, isInitialized] = useLocalStorage<User | null>('mali-gamepass-user', null);
+  const [token, setToken] = useLocalStorage<string | null>('auth_token', null);
+  const [refreshToken, setRefreshToken] = useLocalStorage<string | null>('auth_refresh_token', null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const isAuthenticated = !!user;
-  const isAdmin = user?.role === 'admin';
+  const [isHydrated, setIsHydrated] = useState(false);
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isAuthenticated = !!user && !!token;
+  const isAdmin = user?.role === 'ADMIN';
+
+  // Clear all auth data
+  const clearAuth = useCallback(() => {
+    setToken(null);
+    setRefreshToken(null);
+    setUser(null);
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+  }, [setToken, setRefreshToken, setUser]);
+
+  // Schedule token refresh
+  const scheduleTokenRefresh = useCallback((expiresIn: number) => {
+    // Clear existing timeout
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+    }
+
+    // Schedule refresh before token expires
+    const refreshDelay = (expiresIn * 1000) - TOKEN_REFRESH_BUFFER;
+    if (refreshDelay > 0) {
+      refreshTimeoutRef.current = setTimeout(() => {
+        performTokenRefresh();
+      }, refreshDelay);
+    }
+  }, []);
+
+  // Perform token refresh
+  const performTokenRefresh = useCallback(async () => {
+    const currentRefreshToken = refreshToken;
+    if (!currentRefreshToken) {
+      clearAuth();
+      return;
+    }
+
+    try {
+      const response = await authApi.refreshToken(currentRefreshToken);
+
+      if (response.success) {
+        setToken(response.data.accessToken);
+        setRefreshToken(response.data.refreshToken);
+        scheduleTokenRefresh(response.data.expiresIn);
+      } else {
+        // Refresh failed, clear auth
+        clearAuth();
+        toast.error('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
+      }
+    } catch {
+      // Refresh failed, clear auth
+      clearAuth();
+      toast.error('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
+    }
+  }, [refreshToken, setToken, setRefreshToken, clearAuth, scheduleTokenRefresh]);
+
+  // Hydration check
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Check for existing session on initial load
   useEffect(() => {
-    // We could perform token validation here in a real app
     const checkSession = async () => {
-      // For now we just rely on localStorage user data
+      if (token && !user) {
+        try {
+          const response = await authApi.getProfile();
+          if (response.success) {
+            setUser(response.data);
+            // Schedule token refresh if we have a refresh token
+            if (refreshToken) {
+              scheduleTokenRefresh(15 * 60); // Assume 15 min expiry for initial load
+            }
+          }
+        } catch {
+          // Token invalid, clear storage
+          clearAuth();
+        }
+      } else if (token && refreshToken) {
+        // We have both tokens, schedule refresh
+        scheduleTokenRefresh(15 * 60);
+      }
     };
 
-    checkSession();
-  }, []);
+    if (isHydrated) {
+      checkSession();
+    }
 
-  // Simulate login
-  const login = async (email: string, password: string) => {
+    // Cleanup on unmount
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+    };
+  }, [isHydrated, token, user, refreshToken, setUser, clearAuth, scheduleTokenRefresh]);
+
+  // Login with API
+  const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
-    setError(null);
 
     try {
-      // In frontend-only mode, this validates against mock data
-      const user = await validateUser(email, password);
+      const response = await authApi.login({ email, password });
 
-      if (user) {
-        setUser(user);
-        setIsLoading(false);
+      if (response.success) {
+        setUser(response.data.user);
+        setToken(response.data.tokens.accessToken);
+        setRefreshToken(response.data.tokens.refreshToken);
+        scheduleTokenRefresh(response.data.tokens.expiresIn);
+        toast.success('เข้าสู่ระบบสำเร็จ!');
         return true;
       } else {
-        setError('Invalid email or password');
-        setIsLoading(false);
+        toast.error(response.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
         return false;
       }
     } catch (err) {
-      setError('An error occurred during login');
-      setIsLoading(false);
+      const message = authApi.getErrorMessage(err);
+      toast.error(message);
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Simulate logout
-  const logout = () => {
-    setUser(null);
+  // Register with API
+  const register = async (username: string, email: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+
+    try {
+      const response = await authApi.register({ username, email, password });
+
+      if (response.success) {
+        setUser(response.data.user);
+        setToken(response.data.tokens.accessToken);
+        setRefreshToken(response.data.tokens.refreshToken);
+        scheduleTokenRefresh(response.data.tokens.expiresIn);
+        toast.success('สร้างบัญชีสำเร็จ!');
+        return true;
+      } else {
+        toast.error(response.message || 'ไม่สามารถสร้างบัญชีได้');
+        return false;
+      }
+    } catch (err) {
+      const message = authApi.getErrorMessage(err);
+      toast.error(message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Clear error state
-  const clearError = () => {
-    setError(null);
+  // Logout with API
+  const logout = async () => {
+    try {
+      if (token && refreshToken) {
+        await authApi.logout(refreshToken);
+      }
+    } catch {
+      // Ignore logout errors
+    } finally {
+      clearAuth();
+      toast.success('ออกจากระบบสำเร็จ');
+    }
+  };
+
+  // Update profile
+  const updateProfile = async (data: { username?: string; email?: string }): Promise<boolean> => {
+    setIsLoading(true);
+
+    try {
+      const response = await authApi.updateProfile(data);
+
+      if (response.success) {
+        setUser(response.data);
+        toast.success('อัปเดตโปรไฟล์สำเร็จ');
+        return true;
+      } else {
+        toast.error(response.message || 'ไม่สามารถอัปเดตโปรไฟล์ได้');
+        return false;
+      }
+    } catch (err) {
+      const message = authApi.getErrorMessage(err);
+      toast.error(message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Change password
+  const changePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
+    setIsLoading(true);
+
+    try {
+      console.log('[AuthContext] Sending change password request...');
+      const response = await authApi.changePassword({ currentPassword, newPassword });
+      console.log('[AuthContext] Change password response:', response);
+      toast.success('เปลี่ยนรหัสผ่านสำเร็จ');
+      return true;
+    } catch (err) {
+      console.error('[AuthContext] Change password error:', err);
+      const message = authApi.getErrorMessage(err);
+      toast.error(message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // OAuth login with Google or Discord
+  const oauthLogin = async (code: string, provider: 'google' | 'discord'): Promise<boolean> => {
+    setIsLoading(true);
+
+    try {
+      const response = await authApi.oauthLogin({ code, provider });
+
+      if (response.success) {
+        setUser(response.data.user);
+        setToken(response.data.tokens.accessToken);
+        setRefreshToken(response.data.tokens.refreshToken);
+        scheduleTokenRefresh(response.data.tokens.expiresIn);
+        toast.success(response.data.isNewUser ? 'สร้างบัญชีสำเร็จ!' : 'เข้าสู่ระบบสำเร็จ!');
+        return true;
+      } else {
+        toast.error(response.message || 'ไม่สามารถเข้าสู่ระบบได้');
+        return false;
+      }
+    } catch (err) {
+      const message = authApi.getErrorMessage(err);
+      toast.error(message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <AuthContext.Provider value={{
       user,
       isLoading,
-      error,
       isAuthenticated,
       isAdmin,
       login,
+      register,
+      oauthLogin,
       logout,
-      clearError,
-      isInitialized
+      updateProfile,
+      changePassword,
+      isInitialized: isInitialized && isHydrated
     }}>
       {children}
     </AuthContext.Provider>
@@ -105,4 +293,7 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}
+
+// Re-export User type for convenience
+export type { User } from '../services/auth-api';

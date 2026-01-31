@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from '@/lib/framer-exports';
 import { useSecurity } from '@/lib/context/security-context';
 import { useAuth } from '@/lib/hooks/use-auth';
+import toast from 'react-hot-toast';
 import Image from 'next/image';
 import {
   Shield,
@@ -20,11 +21,12 @@ import {
   LogOut,
   AlertTriangle,
   CheckCircle,
-  Download
+  Download,
+  Lock
 } from 'lucide-react';
 
 export default function SecurityPage() {
-  const { user } = useAuth();
+  const { user, changePassword } = useAuth();
   const {
     securitySettings,
     updateSecuritySettings,
@@ -50,6 +52,13 @@ export default function SecurityPage() {
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [disablePassword, setDisablePassword] = useState('');
   const [showPasswordInput, setShowPasswordInput] = useState(false);
+
+  // Change password state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Handle setting up 2FA
   const handleSetup2FA = async () => {
@@ -94,6 +103,38 @@ export default function SecurityPage() {
     }
   };
 
+  // Handle change password
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      toast.error('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน');
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษร');
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const success = await changePassword(currentPassword, newPassword);
+
+      if (success) {
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setShowChangePassword(false);
+      }
+    } catch (err) {
+      console.error('[ChangePassword] Error:', err);
+      toast.error('เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex flex-col gap-6">
@@ -112,6 +153,114 @@ export default function SecurityPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Change Password */}
+          <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
+            <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
+              <h2 className="text-lg font-medium text-white thai-font">เปลี่ยนรหัสผ่าน</h2>
+            </div>
+
+            <div className="p-6">
+              {showChangePassword ? (
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-mali-text-secondary mb-2 thai-font">
+                      รหัสผ่านปัจจุบัน
+                    </label>
+                    <input
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full p-2.5 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-mali-text-secondary mb-2 thai-font">
+                      รหัสผ่านใหม่
+                    </label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full p-2.5 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"
+                      required
+                      minLength={8}
+                    />
+                    <p className="text-xs text-mali-text-secondary mt-1 thai-font">
+                      รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-mali-text-secondary mb-2 thai-font">
+                      ยืนยันรหัสผ่านใหม่
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full p-2.5 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowChangePassword(false);
+                        setCurrentPassword('');
+                        setNewPassword('');
+                        setConfirmPassword('');
+                      }}
+                      className="flex-1 py-2.5 px-4 bg-mali-blue/20 text-mali-text-secondary rounded-lg hover:bg-mali-blue/30 hover:text-white transition-colors thai-font"
+                    >
+                      ยกเลิก
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isChangingPassword || !currentPassword || !newPassword || !confirmPassword}
+                      className="flex-1 py-2.5 px-4 bg-mali-blue-accent text-white rounded-lg hover:bg-mali-blue-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font"
+                    >
+                      {isChangingPassword ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          กำลังบันทึก...
+                        </>
+                      ) : (
+                        'เปลี่ยนรหัสผ่าน'
+                      )}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div>
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-mali-blue/20 flex items-center justify-center">
+                      <KeyRound className="text-mali-blue-accent" size={20} />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-white mb-1 thai-font">อัปเดตรหัสผ่าน</h3>
+                      <p className="text-sm text-mali-text-secondary thai-font">
+                        เปลี่ยนรหัสผ่านของคุณเพื่อความปลอดภัยที่ดีขึ้น
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowChangePassword(true)}
+                    className="w-full py-2.5 px-4 bg-mali-blue/20 text-white rounded-lg hover:bg-mali-blue/30 transition-colors thai-font"
+                  >
+                    เปลี่ยนรหัสผ่าน
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Two-Factor Authentication */}
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
             <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20 flex justify-between items-center">

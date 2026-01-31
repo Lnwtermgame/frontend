@@ -66,17 +66,17 @@ export default function AccountPage() {
                   <div className="flex items-center">
                     <div className="relative">
                       <div className="h-16 w-16 rounded-full bg-mali-blue/20 border border-mali-blue/30 flex items-center justify-center text-white text-xl font-bold overflow-hidden">
-                        {user?.name?.charAt(0) || 'S'}
+                        {user?.username?.charAt(0).toUpperCase() || 'U'}
                       </div>
                       <span className="absolute bottom-0 right-0 bg-mali-accent text-xs text-white font-medium px-1.5 py-0.5 rounded-full border-2 border-mali-card thai-font">
                         VIP
                       </span>
                     </div>
                     <div className="ml-4">
-                      <h2 className="text-xl font-semibold text-white">{user?.name || 'sanglovepb22'}</h2>
+                      <h2 className="text-xl font-semibold text-white">{user?.username || 'User'}</h2>
                       <div className="flex items-center mt-1">
                         <span className="text-mali-text-secondary text-sm thai-font">อีเมล:</span>
-                        <span className="text-mali-text-secondary text-sm ml-2">{user?.email || 'sanglovepb44@gmail.com'}</span>
+                        <span className="text-mali-text-secondary text-sm ml-2">{user?.email || 'user@example.com'}</span>
                         <span className="bg-mali-blue-accent/20 text-mali-blue-accent text-xs font-medium px-2 py-0.5 rounded-full ml-2 thai-font">
                           ยืนยันแล้ว
                         </span>

@@ -145,8 +145,18 @@ const createServiceClient = (service: string): AxiosInstance => {
   return client;
 };
 
+// Consolidated Service Clients (Backend microservices merged)
+// Auth Service (3001): auth + security
 export const authClient = createServiceClient('auth');
+// Product Service (3002): product + favorite
 export const productClient = createServiceClient('product');
+// Order Service (3003): order + cart + coupon
 export const orderClient = createServiceClient('order');
+// Payment Service (3004): payment + credit
 export const paymentClient = createServiceClient('payment');
-export const cartClient = createServiceClient('cart');
+
+// Legacy exports (kept for backward compatibility, map to same clients)
+// Cart API now uses orderClient - cart merged into order service
+export const cartClient = orderClient;
+// Credit API now uses paymentClient - credit merged into payment service
+export const creditClient = paymentClient;

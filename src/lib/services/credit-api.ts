@@ -1,4 +1,4 @@
-import { authClient } from '@/lib/client/gateway';
+import { paymentClient } from '@/lib/client/gateway';
 
 export interface CreditBalance {
   balance: number;
@@ -36,9 +36,10 @@ export interface CreditTopUpResponse {
   message?: string;
 }
 
+// Merged: Credit service now part of Payment service (port 3004)
 class CreditApiService {
   async getBalance(): Promise<CreditBalanceResponse> {
-    const response = await authClient.get<CreditBalanceResponse>('/api/credits/balance');
+    const response = await paymentClient.get<CreditBalanceResponse>('/api/credits/balance');
     return response.data;
   }
 
@@ -47,12 +48,12 @@ class CreditApiService {
     params.append('page', String(page));
     params.append('limit', String(limit));
 
-    const response = await authClient.get<CreditTransactionsResponse>(`/api/credits/transactions?${params}`);
+    const response = await paymentClient.get<CreditTransactionsResponse>(`/api/credits/transactions?${params}`);
     return response.data;
   }
 
   async topUp(amount: number, paymentMethod: string): Promise<CreditTopUpResponse> {
-    const response = await authClient.post<CreditTopUpResponse>('/api/credits/topup', {
+    const response = await paymentClient.post<CreditTopUpResponse>('/api/credits/topup', {
       amount,
       paymentMethod,
     });

@@ -1,4 +1,4 @@
-import { authClient } from '@/lib/client/gateway';
+import { productClient } from '@/lib/client/gateway';
 
 export interface FavoriteProduct {
   id: string;
@@ -40,25 +40,26 @@ export interface RemoveFavoriteResponse {
   message?: string;
 }
 
+// Merged: Favorite service now part of Product service (port 3002)
 class FavoriteApiService {
   async getFavorites(page = 1, limit = 20): Promise<FavoritesListResponse> {
     const params = new URLSearchParams();
     params.append('page', String(page));
     params.append('limit', String(limit));
 
-    const response = await authClient.get<FavoritesListResponse>(`/api/favorites?${params}`);
+    const response = await productClient.get<FavoritesListResponse>(`/api/favorites?${params}`);
     return response.data;
   }
 
   async addFavorite(productId: string): Promise<FavoriteResponse> {
-    const response = await authClient.post<FavoriteResponse>('/api/favorites', {
+    const response = await productClient.post<FavoriteResponse>('/api/favorites', {
       productId,
     });
     return response.data;
   }
 
   async removeFavorite(favoriteId: string): Promise<RemoveFavoriteResponse> {
-    const response = await authClient.delete<RemoveFavoriteResponse>(`/api/favorites/${favoriteId}`);
+    const response = await productClient.delete<RemoveFavoriteResponse>(`/api/favorites/${favoriteId}`);
     return response.data;
   }
 

@@ -64,12 +64,14 @@ export interface GenericResponse {
   message?: string;
 }
 
+// Merged: Security service now part of Auth service (port 3001)
+// All endpoints prefixed with /api/auth/security instead of /api/security
 class SecurityApiService {
   /**
    * Get user's devices
    */
   async getDevices(): Promise<DevicesResponse> {
-    const response = await authClient.get<DevicesResponse>('/api/security/devices');
+    const response = await authClient.get<DevicesResponse>('/api/auth/security/devices');
     return response.data;
   }
 
@@ -77,7 +79,7 @@ class SecurityApiService {
    * Remove a device
    */
   async removeDevice(deviceId: string): Promise<GenericResponse> {
-    const response = await authClient.delete<GenericResponse>(`/api/security/devices/${deviceId}`);
+    const response = await authClient.delete<GenericResponse>(`/api/auth/security/devices/${deviceId}`);
     return response.data;
   }
 
@@ -85,7 +87,7 @@ class SecurityApiService {
    * Logout from all devices
    */
   async logoutAllDevices(): Promise<GenericResponse> {
-    const response = await authClient.post<GenericResponse>('/api/security/logout-all');
+    const response = await authClient.post<GenericResponse>('/api/auth/security/logout-all');
     return response.data;
   }
 
@@ -93,7 +95,7 @@ class SecurityApiService {
    * Setup 2FA
    */
   async setupTwoFactor(method: '2fa-app' | 'sms' | 'email'): Promise<TwoFactorSetupResponse> {
-    const response = await authClient.post<TwoFactorSetupResponse>('/api/security/2fa/setup', { method });
+    const response = await authClient.post<TwoFactorSetupResponse>('/api/auth/security/2fa/setup', { method });
     return response.data;
   }
 
@@ -101,7 +103,7 @@ class SecurityApiService {
    * Verify 2FA code and enable 2FA
    */
   async verifyTwoFactor(code: string): Promise<{ success: boolean; data: { verified: boolean } }> {
-    const response = await authClient.post<{ success: boolean; data: { verified: boolean } }>('/api/security/2fa/verify', { code });
+    const response = await authClient.post<{ success: boolean; data: { verified: boolean } }>('/api/auth/security/2fa/verify', { code });
     return response.data;
   }
 
@@ -109,7 +111,7 @@ class SecurityApiService {
    * Disable 2FA
    */
   async disableTwoFactor(password: string): Promise<{ success: boolean; data: { disabled: boolean } }> {
-    const response = await authClient.post<{ success: boolean; data: { disabled: boolean } }>('/api/security/2fa/disable', { password });
+    const response = await authClient.post<{ success: boolean; data: { disabled: boolean } }>('/api/auth/security/2fa/disable', { password });
     return response.data;
   }
 
@@ -117,7 +119,7 @@ class SecurityApiService {
    * Get backup codes
    */
   async getBackupCodes(): Promise<BackupCodesResponse> {
-    const response = await authClient.get<BackupCodesResponse>('/api/security/backup-codes');
+    const response = await authClient.get<BackupCodesResponse>('/api/auth/security/backup-codes');
     return response.data;
   }
 
@@ -125,7 +127,7 @@ class SecurityApiService {
    * Regenerate backup codes
    */
   async regenerateBackupCodes(): Promise<BackupCodesResponse> {
-    const response = await authClient.post<BackupCodesResponse>('/api/security/backup-codes/regenerate');
+    const response = await authClient.post<BackupCodesResponse>('/api/auth/security/backup-codes/regenerate');
     return response.data;
   }
 
@@ -133,7 +135,7 @@ class SecurityApiService {
    * Get security settings
    */
   async getSecuritySettings(): Promise<SecuritySettingsResponse> {
-    const response = await authClient.get<SecuritySettingsResponse>('/api/security/settings');
+    const response = await authClient.get<SecuritySettingsResponse>('/api/auth/security/settings');
     return response.data;
   }
 
@@ -141,7 +143,7 @@ class SecurityApiService {
    * Update security settings
    */
   async updateSecuritySettings(settings: Partial<SecuritySettings>): Promise<GenericResponse> {
-    const response = await authClient.put<GenericResponse>('/api/security/settings', settings);
+    const response = await authClient.put<GenericResponse>('/api/auth/security/settings', settings);
     return response.data;
   }
 
@@ -149,7 +151,7 @@ class SecurityApiService {
    * Get suspicious activities
    */
   async getSuspiciousActivities(): Promise<ActivitiesResponse> {
-    const response = await authClient.get<ActivitiesResponse>('/api/security/activities');
+    const response = await authClient.get<ActivitiesResponse>('/api/auth/security/activities');
     return response.data;
   }
 
@@ -157,7 +159,7 @@ class SecurityApiService {
    * Resolve suspicious activity
    */
   async resolveActivity(activityId: string): Promise<GenericResponse> {
-    const response = await authClient.put<GenericResponse>(`/api/security/activities/${activityId}/resolve`);
+    const response = await authClient.put<GenericResponse>(`/api/auth/security/activities/${activityId}/resolve`);
     return response.data;
   }
 

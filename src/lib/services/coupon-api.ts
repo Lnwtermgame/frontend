@@ -1,4 +1,4 @@
-import { authClient } from '@/lib/client/gateway';
+import { orderClient } from '@/lib/client/gateway';
 
 export interface Coupon {
   id: string;
@@ -62,13 +62,14 @@ export interface ValidateCouponResponse {
   message?: string;
 }
 
+// Merged: Coupon service now part of Order service (port 3003)
 class CouponApiService {
   async getAvailableCoupons(page = 1, limit = 20): Promise<CouponsListResponse> {
     const params = new URLSearchParams();
     params.append('page', String(page));
     params.append('limit', String(limit));
 
-    const response = await authClient.get<CouponsListResponse>(`/api/coupons?${params}`);
+    const response = await orderClient.get<CouponsListResponse>(`/api/coupons?${params}`);
     return response.data;
   }
 
@@ -77,17 +78,17 @@ class CouponApiService {
     params.append('page', String(page));
     params.append('limit', String(limit));
 
-    const response = await authClient.get<UserCouponsListResponse>(`/api/coupons/my?${params}`);
+    const response = await orderClient.get<UserCouponsListResponse>(`/api/coupons/my?${params}`);
     return response.data;
   }
 
   async claimCoupon(couponId: string): Promise<CouponResponse> {
-    const response = await authClient.post<CouponResponse>(`/api/coupons/${couponId}/claim`);
+    const response = await orderClient.post<CouponResponse>(`/api/coupons/${couponId}/claim`);
     return response.data;
   }
 
   async validateCoupon(code: string, orderAmount?: number): Promise<ValidateCouponResponse> {
-    const response = await authClient.post<ValidateCouponResponse>('/api/coupons/validate', {
+    const response = await orderClient.post<ValidateCouponResponse>('/api/coupons/validate', {
       code,
       orderAmount,
     });

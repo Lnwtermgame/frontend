@@ -3,57 +3,42 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { favoriteApi, Favorite } from "@/lib/services/favorite-api";
 import { Heart, ShoppingCart, Trash2, Search, ExternalLink, Package } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
-
-// Mock favorite items
-const initialFavorites = [
-  {
-    id: "FAV1",
-    productId: "PROD101",
-    name: "Steam Wallet Code (US)",
-    image: "https://placehold.co/200x200?text=Steam",
-    price: "$10.00 - $100.00",
-    category: "Game Cards",
-    inStock: true
-  },
-  {
-    id: "FAV2",
-    productId: "PROD102",
-    name: "Mobile Legends Diamonds",
-    image: "https://placehold.co/200x200?text=Mobile+Legends",
-    price: "$1.00 - $100.00",
-    category: "Mobile Games",
-    inStock: true
-  },
-  {
-    id: "FAV3",
-    productId: "PROD103",
-    name: "Genshin Impact Genesis Crystals",
-    image: "https://placehold.co/200x200?text=Genshin",
-    price: "$0.99 - $99.99",
-    category: "Mobile Games",
-    inStock: true
-  },
-  {
-    id: "FAV4",
-    productId: "PROD104",
-    name: "Netflix Gift Card",
-    image: "https://placehold.co/200x200?text=Netflix",
-    price: "$25.00 - $50.00",
-    category: "Entertainment",
-    inStock: false
-  }
-];
+import toast from "react-hot-toast";
 
 export default function FavoritePage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
 
-  const [favorites, setFavorites] = useState(initialFavorites);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredFavorites, setFilteredFavorites] = useState(initialFavorites);
+  const [filteredFavorites, setFilteredFavorites] = useState<Favorite[]>([]);
+
+  // Fetch favorites from API
+  useEffect(() => {
+    if (isInitialized && user) {
+      fetchFavorites();
+    }
+  }, [isInitialized, user]);
+
+  const fetchFavorites = async () => {
+    setIsLoading(true);
+    try {
+      const response = await favoriteApi.getFavorites();
+      if (response.success) {
+        setFavorites(response.data);
+        setFilteredFavorites(response.data);
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถโหลดรายการโปรดได้');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // If not logged in, redirect to login page
   useEffect(() => {
@@ -67,8 +52,7 @@ export default function FavoritePage() {
     if (searchTerm) {
       setFilteredFavorites(
         favorites.filter(item =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.category.toLowerCase().includes(searchTerm.toLowerCase())
+          item.product.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     } else {
@@ -77,10 +61,28 @@ export default function FavoritePage() {
   }, [searchTerm, favorites]);
 
   // Remove item from favorites
-  const removeFavorite = (id: string, e: React.MouseEvent) => {
+  const removeFavorite = async (favoriteId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setFavorites(prev => prev.filter(item => item.id !== id));
+
+    try {
+      const response = await favoriteApi.removeFavorite(favoriteId);
+      if (response.success) {
+        toast.success('ลบออกจากรายการโปรดแล้ว');
+        setFavorites(prev => prev.filter(item => item.id !== favoriteId));
+      }
+    } catch (error) {
+      const message = favoriteApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถลบรายการโปรดได้');
+    }
+  };
+
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('th-TH', {
+      style: 'currency',
+      currency: 'THB'
+    }).format(amount);
   };
 
   // If the user is not loaded yet or not logged in, show loading
@@ -128,7 +130,11 @@ export default function FavoritePage() {
         </div>
       </div>
 
-      {filteredFavorites.length > 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : filteredFavorites.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredFavorites.map((item, index) => (
             <motion.div
@@ -150,48 +156,40 @@ export default function FavoritePage() {
                 </div>
 
                 <div className="absolute inset-0 flex items-center justify-center p-6">
-                  {item.image ? (
+                  {item.product.imageUrl ? (
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={item.product.imageUrl}
+                      alt={item.product.name}
                       className="w-full h-full object-contain drop-shadow-md transition-transform group-hover:scale-105 duration-300"
                     />
                   ) : (
                     <Package size={48} className="text-mali-blue-light/50" />
                   )}
                 </div>
-
-                {!item.inStock && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-[1px]">
-                    <span className="bg-red-500/80 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10 thai-font">
-                      สินค้าหมด
-                    </span>
-                  </div>
-                )}
               </div>
 
               <div className="p-4">
                 <div className="text-xs text-mali-blue-accent mb-1 font-medium bg-mali-blue/10 inline-block px-2 py-0.5 rounded-md">
-                  {item.category}
+                  สินค้า
                 </div>
                 <h3 className="text-white font-medium mb-1 line-clamp-1 group-hover:text-mali-blue-light transition-colors">
-                  {item.name}
+                  {item.product.name}
                 </h3>
                 <p className="text-mali-text-secondary text-sm mb-4">
-                  {item.price}
+                  {formatCurrency(item.product.price)}
                 </p>
 
                 <div className="flex gap-2">
                   <Link
-                    href={`/product/${item.productId}`}
+                    href={`/product/${item.product.slug}`}
                     className="flex-1 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent hover:text-white border border-mali-blue/20 rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all thai-font"
                   >
                     <ExternalLink size={16} className="mr-2" />
                     รายละเอียด
                   </Link>
                   <button
-                    disabled={!item.inStock}
-                    className="flex-1 bg-mali-blue hover:bg-mali-blue/90 text-white rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all shadow-button-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none thai-font"
+                    onClick={() => toast.success('เพิ่มลงตะกร้าแล้ว')}
+                    className="flex-1 bg-mali-blue hover:bg-mali-blue/90 text-white rounded-lg py-2 flex items-center justify-center text-sm font-medium transition-all shadow-button-glow thai-font"
                   >
                     <ShoppingCart size={16} className="mr-2" />
                     ซื้อเลย

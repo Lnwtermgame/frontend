@@ -3,63 +3,41 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { Bell, Check, Clock, Info, AlertTriangle, Gift, Tag, CheckCircle, Trash2 } from "lucide-react";
+import { notificationApi, Notification } from "@/lib/services/notification-api";
+import { Bell, Check, Clock, Info, AlertTriangle, Gift, Tag, CheckCircle, Trash2, ShoppingBag, CreditCard, Megaphone } from "lucide-react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-
-// Mock notifications data
-const initialNotifications = [
-  {
-    id: "NOTIF1",
-    title: "คำสั่งซื้อสำเร็จ",
-    message: "คำสั่งซื้อ #ORD-1001 ของคุณที่ประกอบด้วย Steam Gift Card ได้รับการดำเนินการเรียบร้อยแล้ว",
-    type: "success",
-    date: "2023-11-20T14:30:00Z",
-    read: false,
-    link: "/orders/ORD-1001"
-  },
-  {
-    id: "NOTIF2",
-    title: "ของรางวัลใหม่พร้อมให้แลก",
-    message: "คุณได้รับเครดิตเพียงพอที่จะแลกคูปองส่วนลด $5 แล้ว!",
-    type: "reward",
-    date: "2023-11-19T09:15:00Z",
-    read: true,
-    link: "/dashboard/credits"
-  },
-  {
-    id: "NOTIF3",
-    title: "แจ้งเตือนความปลอดภัยบัญชี",
-    message: "เราพบการเข้าสู่ระบบจากอุปกรณ์ใหม่ หากไม่ใช่คุณ โปรดปกป้องบัญชีของคุณ",
-    type: "warning",
-    date: "2023-11-18T20:45:00Z",
-    read: true,
-    link: "/dashboard/account/security"
-  },
-  {
-    id: "NOTIF4",
-    title: "เทศกาล Winter Sale มาถึงแล้ว!",
-    message: "ลดสูงสุด 50% สำหรับเครดิตเกมและบัตรของขวัญที่ร่วมรายการ ข้อเสนอมีเวลาจำกัด",
-    type: "promo",
-    date: "2023-11-15T10:00:00Z",
-    read: false,
-    link: "/promotions"
-  },
-  {
-    id: "NOTIF5",
-    title: "เพิ่มวิธีการชำระเงินแล้ว",
-    message: "บัตร Visa ลงท้ายด้วย 4242 ได้ถูกเพิ่มในวิธีการชำระเงินของคุณแล้ว",
-    type: "info",
-    date: "2023-11-12T16:20:00Z",
-    read: true,
-    link: "/dashboard/account/payment"
-  }
-];
+import toast from "react-hot-toast";
+import Link from "next/link";
 
 export default function NotificationsPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Fetch notifications from API
+  useEffect(() => {
+    if (isInitialized && user) {
+      fetchNotifications();
+    }
+  }, [isInitialized, user]);
+
+  const fetchNotifications = async () => {
+    setIsLoading(true);
+    try {
+      const response = await notificationApi.getNotifications(1, 50);
+      if (response.success) {
+        setNotifications(response.data);
+        setUnreadCount(response.unreadCount || 0);
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถโหลดการแจ้งเตือนได้');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // If not logged in, redirect to login page
   useEffect(() => {
@@ -69,30 +47,108 @@ export default function NotificationsPage() {
   }, [user, router, isInitialized]);
 
   // Mark all as read
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(notif => ({ ...notif, read: true })));
+  const markAllAsRead = async () => {
+    try {
+      const response = await notificationApi.markAllAsRead();
+      if (response.success) {
+        toast.success('ทำเครื่องหมายว่าอ่านแล้วทั้งหมด');
+        setNotifications(prev => prev.map(notif => ({ ...notif, isRead: true })));
+        setUnreadCount(0);
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้');
+    }
   };
 
   // Mark single as read
-  const markAsRead = (id: string, e: React.MouseEvent) => {
+  const markAsRead = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setNotifications(prev =>
-      prev.map(notif => notif.id === id ? { ...notif, read: true } : notif)
-    );
+    try {
+      const response = await notificationApi.markAsRead(id);
+      if (response.success) {
+        setNotifications(prev =>
+          prev.map(notif => notif.id === id ? { ...notif, isRead: true } : notif)
+        );
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้');
+    }
   };
 
   // Delete notification
-  const deleteNotification = (id: string, e: React.MouseEvent) => {
+  const deleteNotification = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setNotifications(prev => prev.filter(notif => notif.id !== id));
+    try {
+      const response = await notificationApi.deleteNotification(id);
+      if (response.success) {
+        toast.success('ลบการแจ้งเตือนแล้ว');
+        const deletedNotif = notifications.find(n => n.id === id);
+        setNotifications(prev => prev.filter(notif => notif.id !== id));
+        if (deletedNotif && !deletedNotif.isRead) {
+          setUnreadCount(prev => Math.max(0, prev - 1));
+        }
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถลบการแจ้งเตือนได้');
+    }
   };
 
   // Filter notifications
   const filteredNotifications = filter === "all"
     ? notifications
     : filter === "unread"
-      ? notifications.filter(n => !n.read)
-      : notifications.filter(n => n.type === filter);
+      ? notifications.filter(n => !n.isRead)
+      : notifications.filter(n => {
+          if (filter === "order") return n.type === "ORDER";
+          if (filter === "payment") return n.type === "PAYMENT";
+          if (filter === "promotion") return n.type === "PROMOTION";
+          if (filter === "system") return n.type === "SYSTEM";
+          return true;
+        });
+
+  // Get notification link based on type and data
+  const getNotificationLink = (notification: Notification): string => {
+    if (notification.data?.orderId) {
+      return `/dashboard/orders/${notification.data.orderId}`;
+    }
+    if (notification.data?.link) {
+      return notification.data.link;
+    }
+    return "#";
+  };
+
+  // Helper to render icon based on type
+  const renderIcon = (type: string) => {
+    switch (type) {
+      case "ORDER":
+        return <ShoppingBag className="text-blue-400" size={20} />;
+      case "PAYMENT":
+        return <CreditCard className="text-green-400" size={20} />;
+      case "PROMOTION":
+        return <Megaphone className="text-pink-400" size={20} />;
+      case "SYSTEM":
+        return <Info className="text-amber-400" size={20} />;
+      default:
+        return <Bell className="text-mali-blue-light" size={20} />;
+    }
+  };
+
+  // Helper for background color based on type
+  const getIconBg = (type: string) => {
+    switch (type) {
+      case "ORDER":
+        return "bg-blue-900/20 border-blue-500/20";
+      case "PAYMENT":
+        return "bg-green-900/20 border-green-500/20";
+      case "PROMOTION":
+        return "bg-pink-900/20 border-pink-500/20";
+      case "SYSTEM":
+        return "bg-amber-900/20 border-amber-500/20";
+      default:
+        return "bg-mali-blue/20 border-mali-blue/30";
+    }
+  };
 
   // If the user is not loaded yet or not logged in, show loading
   if (!isInitialized || !user) {
@@ -106,42 +162,6 @@ export default function NotificationsPage() {
     );
   }
 
-  // Helper to render icon based on type
-  const renderIcon = (type: string) => {
-    switch (type) {
-      case "success":
-        return <CheckCircle className="text-green-400" size={20} />;
-      case "warning":
-        return <AlertTriangle className="text-amber-400" size={20} />;
-      case "info":
-        return <Info className="text-blue-400" size={20} />;
-      case "reward":
-        return <Gift className="text-purple-400" size={20} />;
-      case "promo":
-        return <Tag className="text-pink-400" size={20} />;
-      default:
-        return <Bell className="text-mali-blue-light" size={20} />;
-    }
-  };
-
-  // Helper for background color based on type
-  const getIconBg = (type: string) => {
-    switch (type) {
-      case "success":
-        return "bg-green-900/20 border-green-500/20";
-      case "warning":
-        return "bg-amber-900/20 border-amber-500/20";
-      case "info":
-        return "bg-blue-900/20 border-blue-500/20";
-      case "reward":
-        return "bg-purple-900/20 border-purple-500/20";
-      case "promo":
-        return "bg-pink-900/20 border-pink-500/20";
-      default:
-        return "bg-mali-blue/20 border-mali-blue/30";
-    }
-  };
-
   return (
     <div>
       {/* Page Header */}
@@ -154,18 +174,25 @@ export default function NotificationsPage() {
               animate={{ opacity: 1, x: 0 }}
             >
               การแจ้งเตือน
+              {unreadCount > 0 && (
+                <span className="ml-2 bg-mali-blue-accent text-white text-xs px-2 py-0.5 rounded-full">
+                  {unreadCount} ใหม่
+                </span>
+              )}
             </motion.h2>
             <p className="text-mali-text-secondary text-sm relative thai-font">
               ติดตามความเคลื่อนไหวบัญชีของคุณ
             </p>
           </div>
 
-          <button
-            onClick={markAllAsRead}
-            className="text-xs text-mali-blue-accent hover:text-white transition-colors bg-mali-blue/10 hover:bg-mali-blue/20 px-3 py-1.5 rounded-lg border border-mali-blue/20 thai-font"
-          >
-            ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
-          </button>
+          {unreadCount > 0 && (
+            <button
+              onClick={markAllAsRead}
+              className="text-xs text-mali-blue-accent hover:text-white transition-colors bg-mali-blue/10 hover:bg-mali-blue/20 px-3 py-1.5 rounded-lg border border-mali-blue/20 thai-font"
+            >
+              ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
+            </button>
+          )}
         </div>
       </div>
 
@@ -190,8 +217,8 @@ export default function NotificationsPage() {
           ยังไม่อ่าน
         </button>
         <button
-          onClick={() => setFilter("success")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "success"
+          onClick={() => setFilter("order")}
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "order"
             ? "bg-mali-blue text-white shadow-button-glow"
             : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
             }`}
@@ -199,8 +226,17 @@ export default function NotificationsPage() {
           คำสั่งซื้อ
         </button>
         <button
-          onClick={() => setFilter("promo")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "promo"
+          onClick={() => setFilter("payment")}
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "payment"
+            ? "bg-mali-blue text-white shadow-button-glow"
+            : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
+            }`}
+        >
+          การชำระเงิน
+        </button>
+        <button
+          onClick={() => setFilter("promotion")}
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all thai-font ${filter === "promotion"
             ? "bg-mali-blue text-white shadow-button-glow"
             : "bg-mali-card border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:border-mali-blue/40"
             }`}
@@ -212,7 +248,11 @@ export default function NotificationsPage() {
       {/* Notifications List */}
       <div className="space-y-3">
         <AnimatePresence>
-          {filteredNotifications.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : filteredNotifications.length > 0 ? (
             filteredNotifications.map((notification, index) => (
               <motion.div
                 key={notification.id}
@@ -221,18 +261,18 @@ export default function NotificationsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
-                className={`bg-mali-card rounded-xl border relative group overflow-hidden ${!notification.read
+                className={`bg-mali-card rounded-xl border relative group overflow-hidden ${!notification.isRead
                   ? "border-mali-blue-accent/50 shadow-[0_0_10px_rgba(78,137,232,0.1)]"
                   : "border-mali-blue/20 hover:border-mali-blue/40"
                   }`}
               >
-                {!notification.read && (
+                {!notification.isRead && (
                   <div className="absolute top-0 right-0 w-3 h-3 bg-mali-blue-accent rounded-bl-lg z-10"></div>
                 )}
 
-                <div
-                  className="p-4 flex items-start gap-4 cursor-pointer hover:bg-mali-blue/5 transition-colors"
-                  onClick={() => router.push(notification.link)}
+                <Link
+                  href={getNotificationLink(notification)}
+                  className="p-4 flex items-start gap-4 cursor-pointer hover:bg-mali-blue/5 transition-colors block"
                 >
                   <div className={`p-3 rounded-xl border flex-shrink-0 ${getIconBg(notification.type)}`}>
                     {renderIcon(notification.type)}
@@ -240,16 +280,16 @@ export default function NotificationsPage() {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className={`font-semibold text-base truncate pr-2 ${!notification.read ? "text-white" : "text-white/80"}`}>
+                      <h3 className={`font-semibold text-base truncate pr-2 ${!notification.isRead ? "text-white" : "text-white/80"}`}>
                         {notification.title}
                       </h3>
                       <span className="text-xs text-mali-text-secondary flex-shrink-0 flex items-center gap-1">
                         <Clock size={12} />
-                        {new Date(notification.date).toLocaleDateString()}
+                        {new Date(notification.createdAt).toLocaleDateString('th-TH')}
                       </span>
                     </div>
 
-                    <p className={`text-sm mb-2 line-clamp-2 ${!notification.read ? "text-white/90" : "text-mali-text-secondary"}`}>
+                    <p className={`text-sm mb-2 line-clamp-2 ${!notification.isRead ? "text-white/90" : "text-mali-text-secondary"}`}>
                       {notification.message}
                     </p>
 
@@ -259,7 +299,7 @@ export default function NotificationsPage() {
                       </span>
 
                       <div className="flex gap-2">
-                        {!notification.read && (
+                        {!notification.isRead && (
                           <button
                             onClick={(e) => markAsRead(notification.id, e)}
                             className="p-1.5 rounded-lg bg-mali-blue/20 text-mali-blue-light hover:bg-mali-blue/40 hover:text-white transition-colors"
@@ -278,7 +318,7 @@ export default function NotificationsPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               </motion.div>
             ))
           ) : (
@@ -300,6 +340,16 @@ export default function NotificationsPage() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Preferences Link */}
+      <div className="mt-6 text-center">
+        <Link
+          href="/dashboard/notifications/preferences"
+          className="text-mali-text-secondary hover:text-mali-blue-accent text-sm transition-colors thai-font"
+        >
+          จัดการการตั้งค่าการแจ้งเตือน
+        </Link>
+      </div>
     </div>
   );
-} 
+}

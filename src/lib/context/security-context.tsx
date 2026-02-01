@@ -1,55 +1,30 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/use-local-storage';
+import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks/use-auth';
+import { securityApi, Device, SecurityActivity, SecuritySettings } from '../services/security-api';
+import toast from 'react-hot-toast';
 
-export interface SecuritySettings {
-  twoFactorEnabled: boolean;
-  twoFactorMethod: '2fa-app' | 'sms' | 'email' | null;
-  emailVerified: boolean;
+export interface SecuritySettingsExtended extends SecuritySettings {
   passwordLastChanged: string | null;
-  loginNotifications: boolean;
-  securityQuestions: boolean;
   recentDevices: Device[];
-  suspiciousActivities: Activity[];
-}
-
-export interface Device {
-  id: string;
-  name: string;
-  browser: string;
-  os: string;
-  ip: string;
-  location: string;
-  lastActive: string;
-  isCurrent: boolean;
-}
-
-export interface Activity {
-  id: string;
-  type: 'login' | 'password-change' | 'security-settings' | 'payment' | 'other';
-  description: string;
-  ip: string;
-  location: string;
-  timestamp: string;
-  suspicious: boolean;
-  resolved: boolean;
+  suspiciousActivities: SecurityActivity[];
 }
 
 type SecurityContextType = {
-  securitySettings: SecuritySettings;
-  updateSecuritySettings: (settings: Partial<SecuritySettings>) => void;
+  securitySettings: SecuritySettingsExtended;
+  updateSecuritySettings: (settings: Partial<SecuritySettingsExtended>) => void;
   sendVerificationEmail: () => Promise<boolean>;
   setupTwoFactor: (method: '2fa-app' | 'sms' | 'email') => Promise<{ success: boolean; secret?: string; qrCodeUrl?: string; }>;
   verifyTwoFactorCode: (code: string) => Promise<boolean>;
   disableTwoFactor: (password: string) => Promise<boolean>;
   logoutAllDevices: () => Promise<boolean>;
   removeDevice: (deviceId: string) => Promise<boolean>;
-  resolveActivity: (activityId: string) => void;
+  resolveActivity: (activityId: string) => Promise<void>;
   isLoadingSettings: boolean;
   is2FAVerified: boolean;
   generateBackupCodes: () => Promise<string[]>;
+  refreshSecurityData: () => Promise<void>;
 };
 
 export const SecurityContext = createContext<SecurityContextType | undefined>(undefined);
@@ -58,230 +33,240 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [is2FAVerified, setIs2FAVerified] = useState(false);
-  
-  // Mock security settings for demo purposes
-  const [securitySettings, setSecuritySettings] = useLocalStorage<SecuritySettings>('mali-gamepass-security', {
+
+  const [securitySettings, setSecuritySettings] = useState<SecuritySettingsExtended>({
     twoFactorEnabled: false,
     twoFactorMethod: null,
     emailVerified: false,
     passwordLastChanged: null,
     loginNotifications: true,
     securityQuestions: false,
-    recentDevices: [
-      {
-        id: 'device-1',
-        name: 'Current Device',
-        browser: 'Chrome',
-        os: 'Windows',
-        ip: '198.51.100.42',
-        location: 'Bangkok, Thailand',
-        lastActive: new Date().toISOString(),
-        isCurrent: true
-      },
-      {
-        id: 'device-2',
-        name: 'iPhone 13',
-        browser: 'Safari',
-        os: 'iOS 15',
-        ip: '203.0.113.75',
-        location: 'Bangkok, Thailand',
-        lastActive: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2 days ago
-        isCurrent: false
-      }
-    ],
-    suspiciousActivities: [
-      {
-        id: 'activity-1',
-        type: 'login',
-        description: 'Login attempt from unknown location',
-        ip: '203.0.113.100',
-        location: 'Moscow, Russia',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), // 3 days ago
-        suspicious: true,
-        resolved: false
-      }
-    ]
+    recentDevices: [],
+    suspiciousActivities: []
   });
 
-  const updateSecuritySettings = (settings: Partial<SecuritySettings>) => {
+  // Fetch security data from API
+  const refreshSecurityData = useCallback(async () => {
+    if (!user) return;
+
+    setIsLoadingSettings(true);
+    try {
+      const [settingsRes, devicesRes, activitiesRes] = await Promise.all([
+        securityApi.getSecuritySettings(),
+        securityApi.getDevices(),
+        securityApi.getSuspiciousActivities()
+      ]);
+
+      if (settingsRes.success) {
+        setSecuritySettings(prev => ({
+          ...prev,
+          twoFactorEnabled: settingsRes.data.twoFactorEnabled,
+          twoFactorMethod: settingsRes.data.twoFactorMethod,
+          emailVerified: settingsRes.data.emailVerified,
+          loginNotifications: settingsRes.data.loginNotifications,
+          securityQuestions: settingsRes.data.securityQuestions,
+        }));
+      }
+
+      if (devicesRes.success) {
+        setSecuritySettings(prev => ({
+          ...prev,
+          recentDevices: devicesRes.data
+        }));
+      }
+
+      if (activitiesRes.success) {
+        setSecuritySettings(prev => ({
+          ...prev,
+          suspiciousActivities: activitiesRes.data
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching security data:', error);
+      toast.error('ไม่สามารถโหลดข้อมูลความปลอดภัยได้');
+    } finally {
+      setIsLoadingSettings(false);
+    }
+  }, [user]);
+
+  // Load security data on mount
+  useEffect(() => {
+    if (user) {
+      refreshSecurityData();
+    }
+  }, [user, refreshSecurityData]);
+
+  const updateSecuritySettings = (settings: Partial<SecuritySettingsExtended>) => {
     setSecuritySettings(prevSettings => ({
       ...prevSettings,
       ...settings
     }));
   };
 
-  // Mock sending verification email
   const sendVerificationEmail = async (): Promise<boolean> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
+      // This would typically call an API endpoint
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      toast.success('ส่งอีเมลยืนยันแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ');
       return true;
     } catch (error) {
       console.error('Error sending verification email:', error);
+      toast.error('ไม่สามารถส่งอีเมลยืนยันได้');
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  // Mock setting up 2FA
   const setupTwoFactor = async (method: '2fa-app' | 'sms' | 'email'): Promise<{ success: boolean; secret?: string; qrCodeUrl?: string; }> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const secret = 'JBSWY3DPEHPK3PXP'; // Mock secret
-      const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/MaliGamePass:${user?.email || 'user'}?secret=${secret}&issuer=MaliGamePass&algorithm=SHA1&digits=6&period=30`;
-      
-      return {
-        success: true,
-        secret,
-        qrCodeUrl
-      };
+      const response = await securityApi.setupTwoFactor(method);
+
+      if (response.success) {
+        updateSecuritySettings({ twoFactorMethod: method });
+        return {
+          success: true,
+          secret: response.data.secret,
+          qrCodeUrl: response.data.qrCodeUrl
+        };
+      }
+      return { success: false };
     } catch (error) {
-      console.error('Error setting up 2FA:', error);
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถตั้งค่า 2FA ได้');
       return { success: false };
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  // Mock verifying 2FA code
   const verifyTwoFactorCode = async (code: string): Promise<boolean> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Always succeed if code is 123456 (for demo)
-      const isValid = code === '123456';
-      
-      if (isValid) {
+      const response = await securityApi.verifyTwoFactor(code);
+
+      if (response.success && response.data.verified) {
         setIs2FAVerified(true);
         updateSecuritySettings({
-          twoFactorEnabled: true,
-          twoFactorMethod: securitySettings.twoFactorMethod || '2fa-app'
+          twoFactorEnabled: true
         });
+        toast.success('เปิดใช้งาน 2FA สำเร็จ');
+        return true;
       }
-      
-      return isValid;
+      return false;
     } catch (error) {
-      console.error('Error verifying 2FA code:', error);
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'รหัสยืนยันไม่ถูกต้อง');
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  // Mock disabling 2FA
   const disableTwoFactor = async (password: string): Promise<boolean> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Always succeed with 'password' (for demo)
-      const isValid = password === 'password';
-      
-      if (isValid) {
+      const response = await securityApi.disableTwoFactor(password);
+
+      if (response.success && response.data.disabled) {
         updateSecuritySettings({
           twoFactorEnabled: false,
           twoFactorMethod: null
         });
+        toast.success('ปิดใช้งาน 2FA สำเร็จ');
+        return true;
       }
-      
-      return isValid;
+      return false;
     } catch (error) {
-      console.error('Error disabling 2FA:', error);
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'รหัสผ่านไม่ถูกต้อง');
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  // Mock logout from all devices
   const logoutAllDevices = async (): Promise<boolean> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Update devices to only keep current one
-      updateSecuritySettings({
-        recentDevices: securitySettings.recentDevices.filter(device => device.isCurrent)
-      });
-      
-      return true;
+      const response = await securityApi.logoutAllDevices();
+
+      if (response.success) {
+        // Refresh devices list
+        const devicesRes = await securityApi.getDevices();
+        if (devicesRes.success) {
+          updateSecuritySettings({
+            recentDevices: devicesRes.data
+          });
+        }
+        toast.success('ออกจากระบบทุกอุปกรณ์สำเร็จ');
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.error('Error logging out all devices:', error);
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถออกจากระบบทุกอุปกรณ์ได้');
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  // Mock removing a device
   const removeDevice = async (deviceId: string): Promise<boolean> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Cannot remove current device
-      const device = securitySettings.recentDevices.find(d => d.id === deviceId);
-      if (device?.isCurrent) {
-        return false;
+      const response = await securityApi.removeDevice(deviceId);
+
+      if (response.success) {
+        // Update local state
+        updateSecuritySettings({
+          recentDevices: securitySettings.recentDevices.filter(d => d.id !== deviceId)
+        });
+        toast.success('ลบอุปกรณ์สำเร็จ');
+        return true;
       }
-      
-      // Update devices list
-      updateSecuritySettings({
-        recentDevices: securitySettings.recentDevices.filter(device => device.id !== deviceId)
-      });
-      
-      return true;
+      return false;
     } catch (error) {
-      console.error('Error removing device:', error);
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถลบอุปกรณ์ได้');
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  // Mark suspicious activity as resolved
-  const resolveActivity = (activityId: string) => {
-    updateSecuritySettings({
-      suspiciousActivities: securitySettings.suspiciousActivities.map(activity =>
-        activity.id === activityId ? { ...activity, resolved: true } : activity
-      )
-    });
+  const resolveActivity = async (activityId: string): Promise<void> => {
+    try {
+      const response = await securityApi.resolveActivity(activityId);
+
+      if (response.success) {
+        updateSecuritySettings({
+          suspiciousActivities: securitySettings.suspiciousActivities.map(activity =>
+            activity.id === activityId ? { ...activity, resolved: true } : activity
+          )
+        });
+        toast.success('ทำเครื่องหมายว่าตรวจสอบแล้ว');
+      }
+    } catch (error) {
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถอัปเดตสถานะได้');
+    }
   };
 
-  // Generate backup codes for 2FA
   const generateBackupCodes = async (): Promise<string[]> => {
     setIsLoadingSettings(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Generate 10 random backup codes
-      const codes = Array.from({ length: 10 }, () => {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        return `${code.slice(0, 3)}-${code.slice(3)}`;
-      });
-      
-      return codes;
+      const response = await securityApi.regenerateBackupCodes();
+
+      if (response.success) {
+        return response.data;
+      }
+      return [];
     } catch (error) {
-      console.error('Error generating backup codes:', error);
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || 'ไม่สามารถสร้างรหัสสำรองได้');
       return [];
     } finally {
       setIsLoadingSettings(false);
@@ -302,7 +287,8 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         resolveActivity,
         isLoadingSettings,
         is2FAVerified,
-        generateBackupCodes
+        generateBackupCodes,
+        refreshSecurityData
       }}
     >
       {children}
@@ -317,4 +303,4 @@ export function useSecurity() {
     throw new Error('useSecurity must be used within a SecurityProvider');
   }
   return context;
-} 
+}

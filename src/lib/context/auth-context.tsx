@@ -24,6 +24,44 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 // Token expiration buffer (refresh 1 minute before expiry)
 const TOKEN_REFRESH_BUFFER = 60 * 1000; // 1 minute in milliseconds
 
+// Default token lifetime in seconds (15 minutes)
+const DEFAULT_TOKEN_LIFETIME = 15 * 60;
+
+/**
+ * Decode JWT token to get expiration time
+ * Returns null if token is invalid
+ */
+function decodeToken(token: string): { exp?: number } | null {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Calculate remaining time until token expires
+ * Returns seconds until expiration, or default lifetime if can't decode
+ */
+function getTokenRemainingTime(token: string): number {
+  const decoded = decodeToken(token);
+  if (!decoded?.exp) {
+    return DEFAULT_TOKEN_LIFETIME;
+  }
+  const now = Math.floor(Date.now() / 1000);
+  const remaining = decoded.exp - now;
+  return remaining > 0 ? remaining : 0;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser, isInitialized] = useLocalStorage<User | null>('mali-gamepass-user', null);
   const [token, setToken] = useLocalStorage<string | null>('auth_token', null);
@@ -103,7 +141,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(response.data);
             // Schedule token refresh if we have a refresh token
             if (refreshToken) {
-              scheduleTokenRefresh(15 * 60); // Assume 15 min expiry for initial load
+              const remainingTime = getTokenRemainingTime(token);
+              if (remainingTime > 0) {
+                scheduleTokenRefresh(remainingTime);
+              } else {
+                // Token already expired, try to refresh immediately
+                performTokenRefresh();
+              }
             }
           }
         } catch {
@@ -111,8 +155,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           clearAuth();
         }
       } else if (token && refreshToken) {
-        // We have both tokens, schedule refresh
-        scheduleTokenRefresh(15 * 60);
+        // We have both tokens, schedule refresh based on actual token expiration
+        const remainingTime = getTokenRemainingTime(token);
+        if (remainingTime > 0) {
+          scheduleTokenRefresh(remainingTime);
+        } else {
+          // Token already expired, try to refresh immediately
+          performTokenRefresh();
+        }
       }
     };
 
@@ -126,7 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearTimeout(refreshTimeoutRef.current);
       }
     };
-  }, [isHydrated, token, user, refreshToken, setUser, clearAuth, scheduleTokenRefresh]);
+  }, [isHydrated, token, user, refreshToken, setUser, clearAuth, scheduleTokenRefresh, performTokenRefresh]);
 
   // Login with API
   const login = async (email: string, password: string): Promise<boolean> => {

@@ -1,9 +1,25 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import { useAuth } from '../hooks/use-auth';
-import { securityApi, Device, SecurityActivity, SecuritySettings } from '../services/security-api';
-import toast from 'react-hot-toast';
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
+import { useAuth } from "../hooks/use-auth";
+import {
+  securityApi,
+  Device,
+  SecurityActivity,
+  SecuritySettings,
+} from "../services/security-api";
+import toast from "react-hot-toast";
+
+// Minimum time between security data refreshes (5 seconds)
+const MIN_REFRESH_INTERVAL = 5000;
 
 export interface SecuritySettingsExtended extends SecuritySettings {
   passwordLastChanged: string | null;
@@ -15,7 +31,9 @@ type SecurityContextType = {
   securitySettings: SecuritySettingsExtended;
   updateSecuritySettings: (settings: Partial<SecuritySettingsExtended>) => void;
   sendVerificationEmail: () => Promise<boolean>;
-  setupTwoFactor: (method: '2fa-app' | 'sms' | 'email') => Promise<{ success: boolean; secret?: string; qrCodeUrl?: string; }>;
+  setupTwoFactor: (
+    method: "2fa-app" | "sms" | "email",
+  ) => Promise<{ success: boolean; secret?: string; qrCodeUrl?: string }>;
   verifyTwoFactorCode: (code: string) => Promise<boolean>;
   disableTwoFactor: (password: string) => Promise<boolean>;
   logoutAllDevices: () => Promise<boolean>;
@@ -27,66 +45,100 @@ type SecurityContextType = {
   refreshSecurityData: () => Promise<void>;
 };
 
-export const SecurityContext = createContext<SecurityContextType | undefined>(undefined);
+export const SecurityContext = createContext<SecurityContextType | undefined>(
+  undefined,
+);
 
 export function SecurityProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [is2FAVerified, setIs2FAVerified] = useState(false);
 
-  const [securitySettings, setSecuritySettings] = useState<SecuritySettingsExtended>({
-    twoFactorEnabled: false,
-    twoFactorMethod: null,
-    emailVerified: false,
-    passwordLastChanged: null,
-    loginNotifications: true,
-    securityQuestions: false,
-    recentDevices: [],
-    suspiciousActivities: []
-  });
+  // Refs for request deduplication
+  const lastFetchTime = useRef<number>(0);
+  const isFetching = useRef<boolean>(false);
+  const pendingPromise = useRef<Promise<void> | null>(null);
 
-  // Fetch security data from API
+  const [securitySettings, setSecuritySettings] =
+    useState<SecuritySettingsExtended>({
+      twoFactorEnabled: false,
+      twoFactorMethod: null,
+      emailVerified: false,
+      passwordLastChanged: null,
+      loginNotifications: true,
+      securityQuestions: false,
+      recentDevices: [],
+      suspiciousActivities: [],
+    });
+
+  // Fetch security data from API with deduplication
   const refreshSecurityData = useCallback(async () => {
     if (!user) return;
 
-    setIsLoadingSettings(true);
-    try {
-      const [settingsRes, devicesRes, activitiesRes] = await Promise.all([
-        securityApi.getSecuritySettings(),
-        securityApi.getDevices(),
-        securityApi.getSuspiciousActivities()
-      ]);
-
-      if (settingsRes.success) {
-        setSecuritySettings(prev => ({
-          ...prev,
-          twoFactorEnabled: settingsRes.data.twoFactorEnabled,
-          twoFactorMethod: settingsRes.data.twoFactorMethod,
-          emailVerified: settingsRes.data.emailVerified,
-          loginNotifications: settingsRes.data.loginNotifications,
-          securityQuestions: settingsRes.data.securityQuestions,
-        }));
-      }
-
-      if (devicesRes.success) {
-        setSecuritySettings(prev => ({
-          ...prev,
-          recentDevices: devicesRes.data
-        }));
-      }
-
-      if (activitiesRes.success) {
-        setSecuritySettings(prev => ({
-          ...prev,
-          suspiciousActivities: activitiesRes.data
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching security data:', error);
-      toast.error('ไม่สามารถโหลดข้อมูลความปลอดภัยได้');
-    } finally {
-      setIsLoadingSettings(false);
+    // Return existing promise if fetch is already in progress
+    if (pendingPromise.current) {
+      return pendingPromise.current;
     }
+
+    // Skip if fetched recently (within MIN_REFRESH_INTERVAL)
+    const now = Date.now();
+    if (
+      now - lastFetchTime.current < MIN_REFRESH_INTERVAL &&
+      !isFetching.current
+    ) {
+      return;
+    }
+
+    // Create the fetch promise
+    const fetchPromise = (async () => {
+      isFetching.current = true;
+      setIsLoadingSettings(true);
+
+      try {
+        const [settingsRes, devicesRes, activitiesRes] = await Promise.all([
+          securityApi.getSecuritySettings(),
+          securityApi.getDevices(),
+          securityApi.getSuspiciousActivities(),
+        ]);
+
+        if (settingsRes.success) {
+          setSecuritySettings((prev) => ({
+            ...prev,
+            twoFactorEnabled: settingsRes.data.twoFactorEnabled,
+            twoFactorMethod: settingsRes.data.twoFactorMethod,
+            emailVerified: settingsRes.data.emailVerified,
+            loginNotifications: settingsRes.data.loginNotifications,
+            securityQuestions: settingsRes.data.securityQuestions,
+          }));
+        }
+
+        if (devicesRes.success) {
+          setSecuritySettings((prev) => ({
+            ...prev,
+            recentDevices: devicesRes.data,
+          }));
+        }
+
+        if (activitiesRes.success) {
+          setSecuritySettings((prev) => ({
+            ...prev,
+            suspiciousActivities: activitiesRes.data,
+          }));
+        }
+
+        lastFetchTime.current = Date.now();
+      } catch (error) {
+        console.error("Error fetching security data:", error);
+        toast.error("ไม่สามารถโหลดข้อมูลความปลอดภัยได้");
+      } finally {
+        setIsLoadingSettings(false);
+        isFetching.current = false;
+        pendingPromise.current = null;
+      }
+    })();
+
+    pendingPromise.current = fetchPromise;
+    return fetchPromise;
   }, [user]);
 
   // Load security data on mount
@@ -96,10 +148,12 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     }
   }, [user, refreshSecurityData]);
 
-  const updateSecuritySettings = (settings: Partial<SecuritySettingsExtended>) => {
-    setSecuritySettings(prevSettings => ({
+  const updateSecuritySettings = (
+    settings: Partial<SecuritySettingsExtended>,
+  ) => {
+    setSecuritySettings((prevSettings) => ({
       ...prevSettings,
-      ...settings
+      ...settings,
     }));
   };
 
@@ -107,19 +161,21 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     setIsLoadingSettings(true);
     try {
       // This would typically call an API endpoint
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success('ส่งอีเมลยืนยันแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ');
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      toast.success("ส่งอีเมลยืนยันแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ");
       return true;
     } catch (error) {
-      console.error('Error sending verification email:', error);
-      toast.error('ไม่สามารถส่งอีเมลยืนยันได้');
+      console.error("Error sending verification email:", error);
+      toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
   };
 
-  const setupTwoFactor = async (method: '2fa-app' | 'sms' | 'email'): Promise<{ success: boolean; secret?: string; qrCodeUrl?: string; }> => {
+  const setupTwoFactor = async (
+    method: "2fa-app" | "sms" | "email",
+  ): Promise<{ success: boolean; secret?: string; qrCodeUrl?: string }> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.setupTwoFactor(method);
@@ -129,13 +185,13 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         return {
           success: true,
           secret: response.data.secret,
-          qrCodeUrl: response.data.qrCodeUrl
+          qrCodeUrl: response.data.qrCodeUrl,
         };
       }
       return { success: false };
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'ไม่สามารถตั้งค่า 2FA ได้');
+      toast.error(message || "ไม่สามารถตั้งค่า 2FA ได้");
       return { success: false };
     } finally {
       setIsLoadingSettings(false);
@@ -150,15 +206,15 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       if (response.success && response.data.verified) {
         setIs2FAVerified(true);
         updateSecuritySettings({
-          twoFactorEnabled: true
+          twoFactorEnabled: true,
         });
-        toast.success('เปิดใช้งาน 2FA สำเร็จ');
+        toast.success("เปิดใช้งาน 2FA สำเร็จ");
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'รหัสยืนยันไม่ถูกต้อง');
+      toast.error(message || "รหัสยืนยันไม่ถูกต้อง");
       return false;
     } finally {
       setIsLoadingSettings(false);
@@ -173,15 +229,15 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       if (response.success && response.data.disabled) {
         updateSecuritySettings({
           twoFactorEnabled: false,
-          twoFactorMethod: null
+          twoFactorMethod: null,
         });
-        toast.success('ปิดใช้งาน 2FA สำเร็จ');
+        toast.success("ปิดใช้งาน 2FA สำเร็จ");
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'รหัสผ่านไม่ถูกต้อง');
+      toast.error(message || "รหัสผ่านไม่ถูกต้อง");
       return false;
     } finally {
       setIsLoadingSettings(false);
@@ -198,16 +254,16 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         const devicesRes = await securityApi.getDevices();
         if (devicesRes.success) {
           updateSecuritySettings({
-            recentDevices: devicesRes.data
+            recentDevices: devicesRes.data,
           });
         }
-        toast.success('ออกจากระบบทุกอุปกรณ์สำเร็จ');
+        toast.success("ออกจากระบบทุกอุปกรณ์สำเร็จ");
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'ไม่สามารถออกจากระบบทุกอุปกรณ์ได้');
+      toast.error(message || "ไม่สามารถออกจากระบบทุกอุปกรณ์ได้");
       return false;
     } finally {
       setIsLoadingSettings(false);
@@ -222,15 +278,17 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       if (response.success) {
         // Update local state
         updateSecuritySettings({
-          recentDevices: securitySettings.recentDevices.filter(d => d.id !== deviceId)
+          recentDevices: securitySettings.recentDevices.filter(
+            (d) => d.id !== deviceId,
+          ),
         });
-        toast.success('ลบอุปกรณ์สำเร็จ');
+        toast.success("ลบอุปกรณ์สำเร็จ");
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'ไม่สามารถลบอุปกรณ์ได้');
+      toast.error(message || "ไม่สามารถลบอุปกรณ์ได้");
       return false;
     } finally {
       setIsLoadingSettings(false);
@@ -243,15 +301,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
 
       if (response.success) {
         updateSecuritySettings({
-          suspiciousActivities: securitySettings.suspiciousActivities.map(activity =>
-            activity.id === activityId ? { ...activity, resolved: true } : activity
-          )
+          suspiciousActivities: securitySettings.suspiciousActivities.map(
+            (activity) =>
+              activity.id === activityId
+                ? { ...activity, resolved: true }
+                : activity,
+          ),
         });
-        toast.success('ทำเครื่องหมายว่าตรวจสอบแล้ว');
+        toast.success("ทำเครื่องหมายว่าตรวจสอบแล้ว");
       }
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'ไม่สามารถอัปเดตสถานะได้');
+      toast.error(message || "ไม่สามารถอัปเดตสถานะได้");
     }
   };
 
@@ -266,7 +327,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       return [];
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || 'ไม่สามารถสร้างรหัสสำรองได้');
+      toast.error(message || "ไม่สามารถสร้างรหัสสำรองได้");
       return [];
     } finally {
       setIsLoadingSettings(false);
@@ -288,7 +349,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         isLoadingSettings,
         is2FAVerified,
         generateBackupCodes,
-        refreshSecurityData
+        refreshSecurityData,
       }}
     >
       {children}
@@ -300,7 +361,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
 export function useSecurity() {
   const context = useContext(SecurityContext);
   if (context === undefined) {
-    throw new Error('useSecurity must be used within a SecurityProvider');
+    throw new Error("useSecurity must be used within a SecurityProvider");
   }
   return context;
 }

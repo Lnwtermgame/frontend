@@ -3,25 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { orderApi } from "@/lib/services/order-api";
+import { orderApi, Order } from "@/lib/services/order-api";
 import { ShoppingBag, Search, Clock, CheckCircle, AlertCircle, Filter, FileText, Eye, Calendar, Package, XCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import toast from "react-hot-toast";
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  createdAt: string;
-  finalAmount: number;
-  status: string;
-  items: {
-    product: {
-      name: string;
-      imageUrl?: string;
-    };
-  }[];
-}
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -85,7 +71,7 @@ export default function OrdersPage() {
       setFilteredOrders(
         orders.filter(order =>
           order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.items.some(item => item.product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          order.items.some(item => item.productName?.toLowerCase().includes(searchTerm.toLowerCase()))
         )
       );
     } else {
@@ -195,12 +181,10 @@ export default function OrdersPage() {
           >
             <div className="flex items-start p-4">
               <div className="h-16 w-16 rounded-lg overflow-hidden bg-mali-blue/20 mr-4 flex-shrink-0">
-                {order.items[0]?.product?.imageUrl ? (
-                  <img
-                    src={order.items[0].product.imageUrl}
-                    alt={order.items[0].product.name}
-                    className="h-full w-full object-cover"
-                  />
+                {order.items[0]?.productId ? (
+                  <div className="h-full w-full flex items-center justify-center">
+                    <Package className="h-8 w-8 text-mali-blue-accent" />
+                  </div>
                 ) : (
                   <div className="h-full w-full flex items-center justify-center">
                     <Package className="h-8 w-8 text-mali-blue-accent" />
@@ -211,7 +195,7 @@ export default function OrdersPage() {
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-white font-medium text-sm line-clamp-1">
-                    {order.items[0]?.product?.name || 'สินค้า'}
+                    {order.items[0]?.productName || 'สินค้า'}
                   </h3>
                   <div>{renderStatusBadge(order.status)}</div>
                 </div>
@@ -367,19 +351,17 @@ export default function OrdersPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="h-10 w-10 rounded overflow-hidden mr-3 bg-mali-blue/10 border border-mali-blue/20">
-                            {order.items[0]?.product?.imageUrl ? (
-                              <img
-                                src={order.items[0].product.imageUrl}
-                                alt={order.items[0].product.name}
-                                className="h-full w-full object-cover"
-                              />
+                            {order.items[0]?.productId ? (
+                              <div className="h-full w-full flex items-center justify-center">
+                                <Package className="h-5 w-5 text-mali-blue-accent" />
+                              </div>
                             ) : (
                               <div className="h-full w-full flex items-center justify-center">
                                 <Package className="h-5 w-5 text-mali-blue-accent" />
                               </div>
                             )}
                           </div>
-                          <span className="text-white text-sm line-clamp-1">{order.items[0]?.product?.name || 'สินค้า'}</span>
+                          <span className="text-white text-sm line-clamp-1">{order.items[0]?.productName || 'สินค้า'}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-mali-text-secondary">{formatDate(order.createdAt)}</td>

@@ -1,5 +1,34 @@
 import { orderClient } from '@/lib/client/gateway';
-import { Order } from '@/lib/context/cart-context';
+
+// Order type definition
+export interface Order {
+  id: string;
+  orderNumber: string;
+  userId: string;
+  totalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED' | 'REFUNDED';
+  items: OrderItem[];
+  user?: {
+    id: string;
+    email: string;
+    username: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrderItem {
+  id: string;
+  productId: string;
+  productName?: string;
+  quantity: number;
+  priceAtPurchase: number;
+  price?: number; // For backward compatibility
+  playerInfo?: Record<string, string>;
+  fulfillStatus: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+}
 
 export interface OrderResponse {
   success: boolean;
@@ -34,8 +63,36 @@ class OrderApiService {
     return response.data;
   }
 
+  async createOrder(data: {
+    items: { productId: string; quantity: number; playerInfo?: Record<string, string> }[];
+  }): Promise<OrderResponse> {
+    const response = await orderClient.post<OrderResponse>('/api/orders', data);
+    return response.data;
+  }
+
   async cancelOrder(orderId: string): Promise<OrderResponse> {
     const response = await orderClient.put<OrderResponse>(`/api/orders/${orderId}/cancel`);
+    return response.data;
+  }
+
+  // Admin methods
+  async getAllOrders(page = 1, limit = 20, status?: string): Promise<OrdersListResponse> {
+    const params = new URLSearchParams();
+    params.append('page', String(page));
+    params.append('limit', String(limit));
+    if (status) params.append('status', status);
+
+    const response = await orderClient.get<OrdersListResponse>(`/api/admin/orders?${params}`);
+    return response.data;
+  }
+
+  async updateOrderStatus(orderId: string, status: string): Promise<OrderResponse> {
+    const response = await orderClient.put<OrderResponse>(`/api/admin/orders/${orderId}/status`, { status });
+    return response.data;
+  }
+
+  async fulfillOrder(orderId: string): Promise<OrderResponse> {
+    const response = await orderClient.post<OrderResponse>(`/api/admin/orders/${orderId}/fulfill`);
     return response.data;
   }
 

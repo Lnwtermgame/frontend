@@ -30,6 +30,7 @@ export * from './auth-api';
 export * from './security-api';
 
 // Product Service (3002)
+export * from './product-api';
 export * from './favorite-api';
 
 // Order Service (3003)

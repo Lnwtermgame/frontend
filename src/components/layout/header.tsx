@@ -209,7 +209,7 @@ export function Header() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <User className="h-5 w-5" />
-                  <span>{user.name.split(' ')[0]}</span>
+                  <span>{user.name?.split(' ')[0] || user.username || user.email}</span>
                   <ChevronDown className="h-3 w-3" />
                 </motion.button>
 
@@ -227,10 +227,10 @@ export function Header() {
                           className="h-10 w-10 rounded-full bg-mali-blue-accent flex items-center justify-center mr-3 shadow-lg"
                           whileHover={{ scale: 1.1 }}
                         >
-                          <span className="text-white font-bold text-lg">{user.name.charAt(0).toUpperCase()}</span>
+                          <span className="text-white font-bold text-lg">{(user.name?.charAt(0) || user.username?.charAt(0) || user.email?.charAt(0) || 'U').toUpperCase()}</span>
                         </motion.div>
                         <div>
-                          <div className="font-medium text-white text-sm">{user.name}</div>
+                          <div className="font-medium text-white text-sm">{user.name || user.username || user.email}</div>
                           <div className="text-mali-text-secondary text-xs truncate">{user.email}</div>
                         </div>
                       </div>

@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Disable static generation for pages that use client-side context
+  output: 'standalone',
   async redirects() {
     return [
       {

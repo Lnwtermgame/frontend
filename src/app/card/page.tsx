@@ -1,33 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Search, Filter, Gift, Star, CreditCard, ShoppingBag, PlayCircle, Video, MessageCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Search, Filter, Gift, Star, CreditCard, ShoppingBag, PlayCircle, Video, MessageCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
+import { productApi, Product } from "@/lib/services/product-api";
 
-// Mock cards data
-const CARDS = Array(16).fill(null).map((_, i) => ({
-  id: `card-${i + 1}`,
-  name: `${getCardName(i)} Card`,
-  category: i % 5 === 0 ? "Popular" : i % 4 === 0 ? "Gaming" : i % 3 === 0 ? "Entertainment" : i % 2 === 0 ? "Shopping" : "Social",
-  price: 10 + Math.floor(Math.random() * 90),
-  discountPercent: i % 3 === 0 ? Math.floor(Math.random() * 30) : 0,
-  image: `https://placehold.co/400x300?text=${getCardName(i)}+Card`
-}));
+// Card interface from API
+interface CardProduct {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  price: number;
+  discountPercent?: number;
+  image: string;
+}
+
+// Transform Product to CardProduct
+function transformProductToCard(product: Product): CardProduct {
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    category: product.category?.name || 'Gift Card',
+    price: product.price,
+    discountPercent: product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0,
+    image: product.imageUrl || `https://placehold.co/400x300?text=${encodeURIComponent(product.name)}`,
+  };
+}
 
 function getRandomColor() {
   const colors = ["1E88E5", "5E35B1", "D81B60", "7CB342", "FB8C00", "6D4C41", "546E7A", "EC407A", "5C6BC0", "26A69A"];
   return colors[Math.floor(Math.random() * colors.length)];
-}
-
-function getCardName(index: number) {
-  const cardNames = [
-    "Steam", "PlayStation", "Xbox", "Nintendo", "Google Play",
-    "iTunes", "Amazon", "Netflix", "Spotify", "Roblox",
-    "PUBG", "Fortnite", "App Store", "Battle.net", "Epic Games",
-    "Razer Gold", "Discord", "Twitch", "Facebook", "TikTok"
-  ];
-  return cardNames[index % cardNames.length];
 }
 
 function getCategoryIcon(category: string) {
@@ -41,22 +46,66 @@ function getCategoryIcon(category: string) {
   }
 }
 
-// Categories for the sidebar
-const CATEGORIES = [
-  { id: "all", name: "All Cards", count: CARDS.length, icon: <CreditCard size={16} /> },
-  { id: "popular", name: "Popular", count: CARDS.filter(g => g.category === "Popular").length, icon: <Star size={16} /> },
-  { id: "gaming", name: "Gaming", count: CARDS.filter(g => g.category === "Gaming").length, icon: <PlayCircle size={16} /> },
-  { id: "entertainment", name: "Entertainment", count: CARDS.filter(g => g.category === "Entertainment").length, icon: <Video size={16} /> },
-  { id: "shopping", name: "Shopping", count: CARDS.filter(g => g.category === "Shopping").length, icon: <ShoppingBag size={16} /> },
-  { id: "social", name: "Social", count: CARDS.filter(g => g.category === "Social").length, icon: <MessageCircle size={16} /> },
-];
 
 export default function CardPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [cards, setCards] = useState<CardProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<{id: string; name: string; count: number; icon: React.ReactNode}[]>([]);
+
+  // Fetch cards from API
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        setLoading(true);
+        // Fetch CARD products (gift cards)
+        const response = await productApi.getProducts({
+          isActive: true,
+          limit: 100,
+          sortBy: 'salesCount',
+          sortOrder: 'desc',
+        });
+
+        if (response.success) {
+          // Filter for CARD products only and transform
+          const cardProducts = response.data
+            .filter(p => p.productType === 'CARD')
+            .map(transformProductToCard);
+          setCards(cardProducts);
+
+          // Build categories from actual data
+          const categoryCounts = cardProducts.reduce((acc, card) => {
+            acc[card.category] = (acc[card.category] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+
+          const cats = [
+            { id: "all", name: "All Cards", count: cardProducts.length, icon: <CreditCard size={16} /> },
+            { id: "popular", name: "Popular", count: cardProducts.filter(c => c.category === "Popular").length, icon: <Star size={16} /> },
+            ...Object.entries(categoryCounts)
+              .filter(([name]) => name !== "Popular")
+              .map(([name, count]) => ({
+                id: name.toLowerCase(),
+                name,
+                count,
+                icon: getCategoryIcon(name),
+              })),
+          ];
+          setCategories(cats);
+        }
+      } catch (error) {
+        console.error('Failed to fetch cards:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCards();
+  }, []);
 
   // Filter cards based on selected category and search query
-  const filteredCards = CARDS.filter(card => {
+  const filteredCards = cards.filter(card => {
     const matchesCategory = selectedCategory === "all" || card.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesSearch = !searchQuery || card.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -79,8 +128,13 @@ export default function CardPage() {
               ประเภทบัตร
             </h2>
           </div>
+          {loading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="w-8 h-8 text-mali-blue animate-spin" />
+            </div>
+          ) : (
           <div className="p-4 space-y-1">
-            {CATEGORIES.map(category => (
+            {categories.map(category => (
               <motion.button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
@@ -110,6 +164,7 @@ export default function CardPage() {
               </motion.button>
             ))}
           </div>
+          )}
 
           <div className="p-4 mt-4 space-y-3 border-t border-mali-blue/20">
             <h3 className="text-white font-medium text-sm mb-2 flex items-center">
@@ -117,8 +172,8 @@ export default function CardPage() {
               Popular Cards
             </h3>
 
-            {CARDS.slice(0, 3).map(card => (
-              <Link href={`/card/${card.id}`} key={`popular-${card.id}`}>
+            {cards.slice(0, 3).map(card => (
+              <Link href={`/card/${card.slug}`} key={`popular-${card.id}`}>
                 <motion.div
                   className="flex items-center gap-3 p-2 rounded-md hover:bg-mali-blue/20 transition-colors"
                   whileHover={{ x: 3 }}
@@ -189,16 +244,21 @@ export default function CardPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            {filteredCards.map((card, index) => (
+            {loading ? (
+              <div className="col-span-full flex items-center justify-center p-8">
+                <Loader2 className="w-8 h-8 text-mali-blue animate-spin" />
+              </div>
+            ) : (
+              filteredCards.map((card, index) => (
               <motion.div
                 key={card.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
               >
-                <Link href={`/card/${card.id}`}>
+                <Link href={`/card/${card.slug}`}>
                   <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover group">
-                    {card.discountPercent > 0 && (
+                    {card.discountPercent && card.discountPercent > 0 && (
                       <div className="absolute top-2 right-2 z-10 bg-mali-pink px-2 py-0.5 text-xs font-medium text-white rounded shadow-purple-glow">
                         -{card.discountPercent}%
                       </div>
@@ -237,7 +297,8 @@ export default function CardPage() {
                   </div>
                 </Link>
               </motion.div>
-            ))}
+            ))
+          )}
           </motion.div>
         </div>
       </div>

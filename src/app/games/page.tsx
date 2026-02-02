@@ -3,12 +3,23 @@
 import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Search, Filter, Gamepad2, Star, Zap, Globe, Flame, TrendingUp, Laptop, Monitor, Smartphone } from "lucide-react";
+import { Search, Filter, Gamepad2, Star, Zap, Globe, Flame, TrendingUp, Laptop, Monitor, Smartphone, Loader2 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
-import { getAllGames } from "@/lib/data/games";
+import { productApi, Product } from "@/lib/services/product-api";
 
-// Get games from shared data
-const GAMES = getAllGames();
+// Game interface from API
+interface GameProduct {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  publisher: string;
+  mainImage: string;
+  rating: number;
+  price: number;
+  discountPercent?: number;
+  platforms: string[];
+}
 
 function getCategoryIcon(category: string) {
   switch (category.toLowerCase()) {
@@ -21,22 +32,21 @@ function getCategoryIcon(category: string) {
   }
 }
 
-// Categories for the sidebar
-const CATEGORIES = [
-  { id: "all", name: "เกมทั้งหมด", count: GAMES.length, icon: <Gamepad2 size={16} /> },
-  { id: "fps", name: "FPS", count: GAMES.filter(g => g.category === "FPS").length, icon: <Gamepad2 size={16} /> },
-  { id: "moba", name: "MOBA", count: GAMES.filter(g => g.category === "MOBA").length, icon: <TrendingUp size={16} /> },
-  { id: "rpg", name: "RPG", count: GAMES.filter(g => g.category === "RPG").length, icon: <Star size={16} /> },
-  { id: "adventure", name: "Adventure", count: GAMES.filter(g => g.category === "Adventure").length, icon: <Globe size={16} /> },
-];
-
-// Platform options
-const PLATFORMS = [
-  { id: "all", name: "ทุกแพลตฟอร์ม", count: GAMES.length, icon: <Monitor size={16} /> },
-  { id: "mobile", name: "มือถือ", count: GAMES.filter(g => g.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS")).length, icon: <Smartphone size={16} /> },
-  { id: "pc", name: "คอมพิวเตอร์", count: GAMES.filter(g => g.platforms.some(p => p === "PC" || p === "Mac")).length, icon: <Laptop size={16} /> },
-  { id: "console", name: "คอนโซล", count: GAMES.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} /> },
-];
+// Transform Product to GameProduct
+function transformProductToGame(product: Product): GameProduct {
+  return {
+    id: product.id,
+    slug: product.slug,
+    title: product.name,
+    category: product.category?.name || 'Game',
+    publisher: product.attributes?.find(a => a.name.toLowerCase().includes('publisher'))?.value || product.category?.name || 'Game',
+    mainImage: product.imageUrl || `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+    rating: product.averageRating || 4.5,
+    price: product.price,
+    discountPercent: product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0,
+    platforms: ['PC', 'Mobile'], // Default platforms - could be extracted from attributes
+  };
+}
 
 function DirectTopupContent() {
   const searchParams = useSearchParams();
@@ -44,6 +54,56 @@ function DirectTopupContent() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPlatform, setSelectedPlatform] = useState("all");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [games, setGames] = useState<GameProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<{id: string; name: string; count: number; icon: React.ReactNode}[]>([]);
+
+  // Fetch games from API
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setLoading(true);
+        // Fetch DIRECT_TOPUP products (games)
+        const response = await productApi.getProducts({
+          isActive: true,
+          limit: 100,
+          sortBy: 'salesCount',
+          sortOrder: 'desc',
+        });
+
+        if (response.success) {
+          // Filter for DIRECT_TOPUP products only and transform
+          const gameProducts = response.data
+            .filter(p => p.productType === 'DIRECT_TOPUP')
+            .map(transformProductToGame);
+          setGames(gameProducts);
+
+          // Build categories from actual data
+          const categoryCounts = gameProducts.reduce((acc, game) => {
+            acc[game.category] = (acc[game.category] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+
+          const cats = [
+            { id: "all", name: "เกมทั้งหมด", count: gameProducts.length, icon: <Gamepad2 size={16} /> },
+            ...Object.entries(categoryCounts).map(([name, count]) => ({
+              id: name.toLowerCase(),
+              name,
+              count,
+              icon: getCategoryIcon(name),
+            })),
+          ];
+          setCategories(cats);
+        }
+      } catch (error) {
+        console.error('Failed to fetch games:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGames();
+  }, []);
 
   // Update searchQuery when URL params change
   useEffect(() => {
@@ -53,8 +113,16 @@ function DirectTopupContent() {
     }
   }, [searchParams]);
 
+  // Platform options
+  const PLATFORMS = [
+    { id: "all", name: "ทุกแพลตฟอร์ม", count: games.length, icon: <Monitor size={16} /> },
+    { id: "mobile", name: "มือถือ", count: games.filter(g => g.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS")).length, icon: <Smartphone size={16} /> },
+    { id: "pc", name: "คอมพิวเตอร์", count: games.filter(g => g.platforms.some(p => p === "PC" || p === "Mac")).length, icon: <Laptop size={16} /> },
+    { id: "console", name: "คอนโซล", count: games.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} /> },
+  ];
+
   // Filter games based on selected category and search query
-  const filteredGames = GAMES.filter(game => {
+  const filteredGames = games.filter(game => {
     // Category filter
     const matchesCategory = selectedCategory === "all" ||
       game.category.toLowerCase() === selectedCategory.toLowerCase() ||
@@ -94,8 +162,13 @@ function DirectTopupContent() {
               หมวดหมู่เกม
             </h2>
           </div>
+          {loading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="w-8 h-8 text-mali-blue animate-spin" />
+            </div>
+          ) : (
           <div className="p-4 space-y-1">
-            {CATEGORIES.map(category => (
+            {categories.map(category => (
               <motion.button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
@@ -125,6 +198,7 @@ function DirectTopupContent() {
               </motion.button>
             ))}
           </div>
+          )}
 
           <div className="p-4 border-t border-mali-blue/20">
             <h3 className="text-white font-medium text-sm mb-3 flex items-center">
@@ -241,7 +315,7 @@ function DirectTopupContent() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
                 >
-                  <Link href={`/games/${game.id}`}>
+                  <Link href={`/games/${game.slug}`}>
                     <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover group">
                       {game.discountPercent && game.discountPercent > 0 ? (
                         <div className="absolute top-2 left-2 z-10 bg-mali-pink px-2 py-0.5 text-xs font-medium text-white rounded shadow-purple-glow">

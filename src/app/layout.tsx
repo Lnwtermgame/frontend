@@ -10,6 +10,7 @@ import { SupportProvider } from "@/lib/context/support-context";
 import { SecurityProvider } from "@/lib/context/security-context";
 import { DeliveryProvider } from "@/lib/context/delivery-context";
 import { PromotionProvider } from "@/lib/context/promotion-context";
+import { CartProvider } from "@/lib/context/cart-context";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { LiveChat } from "@/components/support/LiveChat";
@@ -60,7 +61,9 @@ export default function RootLayout({
                 <SupportProvider>
                   <DeliveryProvider>
                     <PromotionProvider>
+                    <CartProvider>
                       <MainLayout>{children}</MainLayout>
+                    </CartProvider>
                       <LiveChat />
                       <Toaster
                         position="bottom-right"

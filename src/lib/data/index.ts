@@ -1,2 +1,2 @@
 // Export all mock data for our app
-export * from './mock-users'; 
+export * from './games'; 

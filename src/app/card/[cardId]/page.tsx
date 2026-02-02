@@ -1,65 +1,146 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift, Loader2, AlertCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
+import { productApi, Product, ProductVariant } from "@/lib/services/product-api";
 
-function getCardDetails(id: string) {
-  const cardNumber = id.split('-')[1];
-  const colorOptions = ["1E88E5", "5E35B1", "D81B60", "7CB342", "FB8C00", "6D4C41", "546E7A", "EC407A", "5C6BC0", "26A69A"];
-  const color = colorOptions[parseInt(cardNumber) % colorOptions.length];
+// Card details interface matching the UI expectations
+interface CardDetails {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  publisher: string;
+  category: string;
+  denominations: Denomination[];
+  regions: string[];
+  rating: number;
+  reviews: number;
+  deliveryTime: string;
+  isDigital: boolean;
+  instructions: string;
+  tags: string[];
+}
 
-  function getCardName(index: number) {
-    const cardNames = [
-      "Steam", "PlayStation", "Xbox", "Nintendo", "Google Play",
-      "iTunes", "Amazon", "Netflix", "Spotify", "Roblox",
-      "PUBG", "Fortnite", "App Store", "Battle.net", "Epic Games",
-      "Razer Gold", "Discord", "Twitch", "Facebook", "TikTok"
-    ];
-    return cardNames[index % cardNames.length];
+interface Denomination {
+  id: string;
+  value: string;
+  price: number;
+}
+
+// Helper function to transform Product to CardDetails
+function transformProductToCardDetails(product: Product): CardDetails {
+  // Map variants to denominations
+  const denominations: Denomination[] = product.variants?.map((variant: ProductVariant) => ({
+    id: variant.id,
+    value: variant.name,
+    price: variant.price || product.price,
+  })) || [{
+    id: product.id,
+    value: product.name,
+    price: product.price,
+  }];
+
+  // Extract regions from attributes if available
+  const regions: string[] = [];
+  const regionAttr = product.attributes?.find(a =>
+    a.name.toLowerCase().includes('region') ||
+    a.name.toLowerCase().includes('country')
+  );
+  if (regionAttr) {
+    regions.push(...regionAttr.value.split(',').map(r => r.trim()));
+  }
+  if (regions.length === 0) {
+    regions.push("Global", "North America", "Europe", "Asia");
   }
 
-  const cardName = getCardName(parseInt(cardNumber));
-
   return {
-    id,
-    name: `${cardName} Gift Card`,
-    description: `This is a ${cardName} Gift Card that can be used for purchases on the ${cardName} platform. Buy games, apps, music, movies, or other digital content with this prepaid card.`,
-    image: `https://placehold.co/800x450?text=${cardName}+Gift+Card`,
-    publisher: cardName,
-    category: parseInt(cardNumber) % 5 === 0 ? "Popular" : parseInt(cardNumber) % 4 === 0 ? "Gaming" : parseInt(cardNumber) % 3 === 0 ? "Entertainment" : parseInt(cardNumber) % 2 === 0 ? "Shopping" : "Social",
-    denominations: [
-      { id: "denom1", value: "$10", price: 10.99 },
-      { id: "denom2", value: "$25", price: 26.99 },
-      { id: "denom3", value: "$50", price: 52.99 },
-      { id: "denom4", value: "$100", price: 104.99 }
-    ],
-    regions: ["Global", "North America", "Europe", "Asia", "Oceania"],
-    rating: 4.8,
-    reviews: 245,
+    id: product.id,
+    name: product.name,
+    description: product.description || product.shortDescription || `Gift card for ${product.name}`,
+    image: product.imageUrl || `https://placehold.co/800x450?text=${encodeURIComponent(product.name)}`,
+    publisher: product.attributes?.find(a => a.name.toLowerCase().includes('publisher'))?.value ||
+               product.category?.name || "Digital",
+    category: product.category?.name || "Gift Card",
+    denominations,
+    regions,
+    rating: product.averageRating || 4.8,
+    reviews: product.reviewCount || 0,
     deliveryTime: "Instant",
     isDigital: true,
-    instructions: `
-    1. Select a denomination and region
-    2. Complete checkout process
-    3. Receive your code instantly via email
-    4. Redeem code on ${cardName} platform
-    5. Enjoy your purchase!
-    `,
-    tags: ["gift card", cardName.toLowerCase(), "digital", "prepaid"]
+    instructions: `1. Select a denomination and region
+2. Complete checkout process
+3. Receive your code instantly via email
+4. Redeem code on ${product.name} platform
+5. Enjoy your purchase!`,
+    tags: product.tags?.map(t => t.name) || ["gift card", "digital", "prepaid"],
   };
 }
 
 export default function CardDetailPage() {
   const { cardId } = useParams();
-  const card = getCardDetails(cardId as string);
+  const [card, setCard] = useState<CardDetails | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [relatedCards, setRelatedCards] = useState<Product[]>([]);
 
   const [selectedDenomination, setSelectedDenomination] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
   const [email, setEmail] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  // Fetch card details
+  useEffect(() => {
+    if (typeof cardId !== 'string') return;
+
+    const fetchCardDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch product by slug
+        const response = await productApi.getProductBySlug(cardId);
+
+        if (!response.success || !response.data) {
+          throw new Error('Card not found');
+        }
+
+        const productData = response.data;
+        setProduct(productData);
+
+        // Transform to CardDetails
+        const cardData = transformProductToCardDetails(productData);
+        setCard(cardData);
+
+        // Fetch related products (other cards in same category)
+        try {
+          const relatedResponse = await productApi.getProducts({
+            categoryId: productData.categoryId,
+            isActive: true,
+            limit: 5,
+          });
+          if (relatedResponse.success) {
+            // Filter out current product
+            const filtered = relatedResponse.data.filter(p => p.id !== productData.id);
+            setRelatedCards(filtered.slice(0, 5));
+          }
+        } catch {
+          // Ignore related products error
+        }
+      } catch (err) {
+        console.error('Error fetching card:', err);
+        setError(productApi.getErrorMessage(err));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCardDetails();
+  }, [cardId]);
 
   const handleAddToCart = () => {
     if (!selectedDenomination || !selectedRegion || !email) {
@@ -67,9 +148,42 @@ export default function CardDetailPage() {
       return;
     }
 
+    if (!card) return;
+
     const selectedValue = card.denominations.find(d => d.id === selectedDenomination)?.value;
     alert("Added to cart: " + card.name + " - " + selectedValue + " for region: " + selectedRegion + " and email: " + email);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center">
+          <Loader2 className="w-10 h-10 text-mali-blue animate-spin mb-4" />
+          <p className="text-mali-text-secondary">Loading card details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !card) {
+    return (
+      <div className="space-y-6">
+        <Link href="/card" className="inline-flex items-center text-mali-text-secondary hover:text-white transition-colors">
+          <ChevronLeft size={16} className="mr-1" /> กลับไปยังรายการบัตร
+        </Link>
+
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-8 text-center">
+          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white mb-2">Card Not Found</h2>
+          <p className="text-red-300 mb-6">{error || "The card you're looking for doesn't exist or has been removed."}</p>
+          <Link href="/card" className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center">
+            <ChevronLeft size={18} className="mr-2" />
+            Back to Cards
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate current price
   const selectedDenominationPrice = card.denominations.find(d => d.id === selectedDenomination)?.price || 0;
@@ -335,38 +449,41 @@ export default function CardDetailPage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {Array(5).fill(null).map((_, i) => {
-            const randomCard = getCardDetails(`card-${i + 1}`);
-            return (
+          {relatedCards.length > 0 ? (
+            relatedCards.map((relatedProduct, i) => (
               <motion.div
-                key={`related-${i}`}
+                key={relatedProduct.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 + (i * 0.05) }}
               >
-                <Link href={`/card/card-${i + 1}`}>
+                <Link href={`/card/${relatedProduct.slug}`}>
                   <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 group">
                     <div className="relative h-32 w-full overflow-hidden">
                       <img
-                        src={randomCard.image}
-                        alt={randomCard.name}
+                        src={relatedProduct.imageUrl || `https://placehold.co/300x200?text=${encodeURIComponent(relatedProduct.name)}`}
+                        alt={relatedProduct.name}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
                     </div>
 
                     <div className="p-3">
-                      <p className="text-white text-sm font-medium line-clamp-1 mb-1">{randomCard.name}</p>
+                      <p className="text-white text-sm font-medium line-clamp-1 mb-1">{relatedProduct.name}</p>
                       <div className="flex items-center justify-between">
-                        <div className="text-mali-text-secondary text-xs">{randomCard.category}</div>
-                        <div className="text-xs text-white font-medium">เริ่มต้น ฿10</div>
+                        <div className="text-mali-text-secondary text-xs">{relatedProduct.category?.name || 'Gift Card'}</div>
+                        <div className="text-xs text-white font-medium">฿{relatedProduct.price.toFixed(0)}</div>
                       </div>
                     </div>
                   </div>
                 </Link>
               </motion.div>
-            );
-          })}
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8 text-mali-text-secondary">
+              No related cards found
+            </div>
+          )}
         </div>
       </div>
     </div>

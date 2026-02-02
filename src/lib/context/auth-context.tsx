@@ -62,15 +62,40 @@ function getTokenRemainingTime(token: string): number {
   return remaining > 0 ? remaining : 0;
 }
 
+// Storage version - bump this when auth structure changes to force clear stale data
+const AUTH_STORAGE_VERSION = '2';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser, isInitialized] = useLocalStorage<User | null>('mali-gamepass-user', null);
   const [token, setToken] = useLocalStorage<string | null>('auth_token', null);
   const [refreshToken, setRefreshToken] = useLocalStorage<string | null>('auth_refresh_token', null);
+  const [storageVersion, setStorageVersion] = useLocalStorage<string | null>('auth_storage_version', null);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isAuthenticated = !!user && !!token;
   const isAdmin = user?.role === 'ADMIN';
+
+  // Check and clear stale storage data
+  useEffect(() => {
+    if (isInitialized && storageVersion !== AUTH_STORAGE_VERSION) {
+      console.log('[Auth] Clearing stale auth data due to version mismatch');
+      setUser(null);
+      setToken(null);
+      setRefreshToken(null);
+      setStorageVersion(AUTH_STORAGE_VERSION);
+    }
+  }, [isInitialized, storageVersion, setUser, setToken, setRefreshToken, setStorageVersion]);
+
+  // Debug logging for admin access issues
+  useEffect(() => {
+    if (isInitialized && user) {
+      console.log('[Auth Debug] User:', user);
+      console.log('[Auth Debug] Role:', user?.role);
+      console.log('[Auth Debug] Is Admin:', isAdmin);
+      console.log('[Auth Debug] Role type:', typeof user?.role);
+    }
+  }, [user, isAdmin, isInitialized]);
 
   // Clear all auth data
   const clearAuth = useCallback(() => {

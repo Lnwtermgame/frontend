@@ -13,14 +13,17 @@ export default function AdminInventory() {
   const [activeTab, setActiveTab] = useState<Tab>("alerts");
 
   return (
-    <AdminLayout title={"Inventory" as any}>
+    <AdminLayout title={"สินค้าคงคลัง" as any}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
           <div>
-            <h2 className="text-2xl font-bold text-white">Inventory Management</h2>
+            <h2 className="text-2xl font-bold text-white">
+              จัดการสินค้าคงคลัง
+            </h2>
             <p className="text-gray-400 mt-1">
-              Manage stock alerts, view history, and track inventory changes
+              จัดการการแจ้งเตือนสต็อก ดูประวัติ
+              และติดตามการเปลี่ยนแปลงสินค้าคงคลัง
             </p>
           </div>
         </div>
@@ -36,7 +39,7 @@ export default function AdminInventory() {
             }`}
           >
             <AlertTriangle className="h-4 w-4" />
-            Stock Alerts
+            การแจ้งเตือนสต็อก
           </button>
           <button
             onClick={() => setActiveTab("history")}
@@ -47,7 +50,7 @@ export default function AdminInventory() {
             }`}
           >
             <History className="h-4 w-4" />
-            Stock History
+            ประวัติสต็อก
           </button>
         </div>
 

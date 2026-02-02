@@ -3,7 +3,19 @@
 import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Plus, Search, Filter, Edit, Trash2, MoreHorizontal, Package, Loader2, RefreshCw, CreditCard, Zap, ExternalLink } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Package,
+  Loader2,
+  RefreshCw,
+  CreditCard,
+  Zap,
+  ExternalLink,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import Link from "next/link";
@@ -35,7 +47,8 @@ export default function AdminProducts() {
             page: pagination.page,
             limit: pagination.limit,
             search: searchTerm || undefined,
-            categoryId: selectedCategory !== "all" ? selectedCategory : undefined,
+            categoryId:
+              selectedCategory !== "all" ? selectedCategory : undefined,
           }),
           productApi.getCategories(),
         ]);
@@ -48,7 +61,7 @@ export default function AdminProducts() {
           totalPages: productsRes.meta.totalPages,
         }));
       } catch (err) {
-        setError("Failed to load products");
+        setError("ไม่สามารถโหลดสินค้าได้");
         console.error(err);
       } finally {
         setLoading(false);
@@ -71,20 +84,20 @@ export default function AdminProducts() {
 
   const getProductTypeLabel = (productType: string) => {
     if (productType === "CARD") {
-      return "Card";
+      return "บัตร";
     }
-    return "Top-Up";
+    return "เติมเงิน";
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+    if (!confirm("คุณแน่ใจหรือไม่ที่จะลบสินค้านี้?")) return;
 
     try {
       // Note: Need to add deleteProduct to productApi
       // await productApi.deleteProduct(productId);
       setProducts(products.filter((p) => p.id !== productId));
     } catch (err) {
-      console.error("Failed to delete product:", err);
+      console.error("ไม่สามารถลบสินค้า:", err);
     }
   };
 
@@ -101,17 +114,17 @@ export default function AdminProducts() {
 
   const getStatusText = (product: Product) => {
     if (product.stockQuantity === 0) {
-      return "Out of Stock";
+      return "สินค้าหมด";
     } else if (product.stockQuantity <= 10) {
-      return "Low Stock";
+      return "สินค้าใกล้หมด";
     } else if (!product.isActive) {
-      return "Inactive";
+      return "ไม่ใช้งาน";
     }
-    return "Active";
+    return "ใช้งาน";
   };
 
   return (
-    <AdminLayout title={"Products" as any}>
+    <AdminLayout title={"สินค้า" as any}>
       <div className="space-y-6">
         {/* Actions Bar */}
         <div className="flex flex-col lg:flex-row gap-4 justify-between">
@@ -123,7 +136,7 @@ export default function AdminProducts() {
               </div>
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="ค้นหาสินค้า..."
                 className="bg-mali-card border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -138,7 +151,7 @@ export default function AdminProducts() {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                <option value="all">All Categories</option>
+                <option value="all">ทุกหมวดหมู่</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
@@ -146,7 +159,18 @@ export default function AdminProducts() {
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-mali-blue/70">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-mali-blue/70"
+                >
                   <path d="M6 9l6 6 6-6" />
                 </svg>
               </div>
@@ -160,11 +184,11 @@ export default function AdminProducts() {
               className="bg-mali-card border border-mali-blue/30 text-white flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-mali-blue/10 transition-colors"
             >
               <RefreshCw className="h-5 w-5" />
-              <span>Sync SEAGM</span>
+              <span>ซิงค์ SEAGM</span>
             </button>
             <button className="bg-mali-blue text-white flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-mali-blue/90 transition-colors">
               <Plus className="h-5 w-5" />
-              <span>Add Product</span>
+              <span>เพิ่มสินค้า</span>
             </button>
           </div>
         </div>
@@ -186,7 +210,7 @@ export default function AdminProducts() {
           <div className="p-5 border-b border-mali-blue/20">
             <h3 className="text-lg font-semibold text-white flex items-center">
               <Package className="mr-2 h-5 w-5 text-mali-blue" />
-              Product Management
+              จัดการสินค้า
             </h3>
           </div>
           <div className="overflow-x-auto">
@@ -198,19 +222,22 @@ export default function AdminProducts() {
               <table className="w-full">
                 <thead>
                   <tr className="text-mali-blue/70 text-sm">
-                    <th className="px-5 py-3 text-left">Product</th>
-                    <th className="px-5 py-3 text-left">Type</th>
-                    <th className="px-5 py-3 text-left">Category</th>
-                    <th className="px-5 py-3 text-left">Price</th>
-                    <th className="px-5 py-3 text-left">Stock</th>
-                    <th className="px-5 py-3 text-left">Status</th>
-                    <th className="px-5 py-3 text-left">Actions</th>
+                    <th className="px-5 py-3 text-left">สินค้า</th>
+                    <th className="px-5 py-3 text-left">ประเภท</th>
+                    <th className="px-5 py-3 text-left">หมวดหมู่</th>
+                    <th className="px-5 py-3 text-left">ราคา</th>
+                    <th className="px-5 py-3 text-left">สต็อก</th>
+                    <th className="px-5 py-3 text-left">สถานะ</th>
+                    <th className="px-5 py-3 text-left">การดำเนินการ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-mali-blue/10">
                   {products.length > 0 ? (
                     products.map((product) => (
-                      <tr key={product.id} className="text-sm hover:bg-mali-blue/5 transition-colors">
+                      <tr
+                        key={product.id}
+                        className="text-sm hover:bg-mali-blue/5 transition-colors"
+                      >
                         <td className="px-5 py-4 font-medium text-white">
                           <div className="flex items-center gap-3">
                             {product.imageUrl && (
@@ -222,7 +249,9 @@ export default function AdminProducts() {
                             )}
                             <div>
                               <div>{product.name}</div>
-                              <div className="text-xs text-gray-500">{product.slug}</div>
+                              <div className="text-xs text-gray-500">
+                                {product.slug}
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -240,7 +269,9 @@ export default function AdminProducts() {
                         <td className="px-5 py-4">{product.price} ฿</td>
                         <td className="px-5 py-4">{product.stockQuantity}</td>
                         <td className="px-5 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs ${getStatusStyles(product)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs ${getStatusStyles(product)}`}
+                          >
                             {getStatusText(product)}
                           </span>
                         </td>
@@ -257,19 +288,17 @@ export default function AdminProducts() {
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
-                            <Link href={`/admin/products/${product.id}`}>
-                              <button className="p-1 rounded-md hover:bg-mali-blue/20 text-mali-blue hover:text-white transition-colors">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </button>
-                            </Link>
                           </div>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td className="px-5 py-8 text-center text-gray-400" colSpan={6}>
-                        No products found matching your search criteria
+                      <td
+                        className="px-5 py-8 text-center text-gray-400"
+                        colSpan={6}
+                      >
+                        ไม่พบสินค้าที่ตรงกับเงื่อนไขการค้นหา
                       </td>
                     </tr>
                   )}
@@ -281,25 +310,29 @@ export default function AdminProducts() {
           {!loading && pagination.totalPages > 1 && (
             <div className="p-4 border-t border-mali-blue/20 flex justify-between items-center">
               <div className="text-sm text-gray-400">
-                Showing {products.length} of {pagination.total} products
+                แสดง {products.length} จาก {pagination.total} สินค้า
               </div>
               <div className="flex space-x-1">
                 <button
-                  onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
+                  onClick={() =>
+                    setPagination((p) => ({ ...p, page: p.page - 1 }))
+                  }
                   disabled={pagination.page === 1}
                   className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors disabled:opacity-50"
                 >
-                  Previous
+                  ก่อนหน้า
                 </button>
                 <span className="px-3 py-1 text-sm bg-mali-blue/20 text-white rounded">
                   {pagination.page}
                 </span>
                 <button
-                  onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
+                  onClick={() =>
+                    setPagination((p) => ({ ...p, page: p.page + 1 }))
+                  }
                   disabled={pagination.page >= pagination.totalPages}
                   className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors disabled:opacity-50"
                 >
-                  Next
+                  ถัดไป
                 </button>
               </div>
             </div>

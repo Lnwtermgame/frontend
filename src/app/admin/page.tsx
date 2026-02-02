@@ -123,8 +123,8 @@ export default function AdminDashboard() {
           .slice(0, 5)
           .map((order: any) => ({
             id: order.id,
-            user: order.user?.email || order.user?.username || "Unknown",
-            product: order.items?.[0]?.productName || "Multiple items",
+            user: order.user?.email || order.user?.username || "ไม่ทราบ",
+            product: order.items?.[0]?.productName || "หลายรายการ",
             amount: order.totalAmount || 0,
             status: order.status,
             date: new Date(order.createdAt).toLocaleDateString("th-TH"),
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
 
         setRecentOrders(mappedOrders);
       } catch (err) {
-        setError("Failed to load dashboard data");
+        setError("ไม่สามารถโหลดข้อมูลแดชบอร์ดได้");
         console.error(err);
       } finally {
         setLoading(false);
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
   const getStatusText = (status: string) => {
     switch (status) {
       case "completed":
-        return "เสร็จสมบูรณ์";
+        return "สำเร็จ";
       case "pending":
         return "รอดำเนินการ";
       case "processing":

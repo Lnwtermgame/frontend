@@ -3,7 +3,18 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Plus, Search, Users, Edit, ChartBar, Trash2, BadgePercent, Link as LinkIcon, ShieldCheck, AlertTriangle } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Users,
+  Edit,
+  ChartBar,
+  Trash2,
+  BadgePercent,
+  Link as LinkIcon,
+  ShieldCheck,
+  AlertTriangle,
+} from "lucide-react";
 import Link from "next/link";
 
 // Mock reseller data
@@ -15,10 +26,10 @@ const mockResellers = [
     owner: "John Smith",
     registeredDate: "2022-08-15",
     salesCount: 1245,
-    totalSales: 15780.50,
+    totalSales: 15780.5,
     commission: "12%",
     status: "verified",
-    apiAccess: true
+    apiAccess: true,
   },
   {
     id: "res-2",
@@ -30,7 +41,7 @@ const mockResellers = [
     totalSales: 10235.75,
     commission: "10%",
     status: "verified",
-    apiAccess: true
+    apiAccess: true,
   },
   {
     id: "res-3",
@@ -42,7 +53,7 @@ const mockResellers = [
     totalSales: 6540.25,
     commission: "8%",
     status: "verified",
-    apiAccess: true
+    apiAccess: true,
   },
   {
     id: "res-4",
@@ -51,10 +62,10 @@ const mockResellers = [
     owner: "Sarah Williams",
     registeredDate: "2023-01-05",
     salesCount: 312,
-    totalSales: 4950.00,
+    totalSales: 4950.0,
     commission: "8%",
     status: "pending",
-    apiAccess: false
+    apiAccess: false,
   },
   {
     id: "res-5",
@@ -63,10 +74,10 @@ const mockResellers = [
     owner: "Robert Taylor",
     registeredDate: "2023-02-18",
     salesCount: 198,
-    totalSales: 3250.80,
+    totalSales: 3250.8,
     commission: "7%",
     status: "verified",
-    apiAccess: true
+    apiAccess: true,
   },
   {
     id: "res-6",
@@ -75,58 +86,72 @@ const mockResellers = [
     owner: "Lisa Anderson",
     registeredDate: "2023-04-07",
     salesCount: 87,
-    totalSales: 1450.30,
+    totalSales: 1450.3,
     commission: "6%",
     status: "suspended",
-    apiAccess: false
+    apiAccess: false,
   },
 ];
 
 export default function AdminResellers() {
-  
   const [resellers, setResellers] = useState(mockResellers);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  
-  const filteredResellers = resellers.filter(reseller => {
-    const matchesSearch = reseller.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          reseller.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          reseller.owner.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = selectedStatus === "all" || reseller.status === selectedStatus;
+
+  const filteredResellers = resellers.filter((reseller) => {
+    const matchesSearch =
+      reseller.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reseller.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reseller.owner.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      selectedStatus === "all" || reseller.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
 
   const getStatusStyles = (status: string) => {
-    switch(status) {
-      case 'verified':
-        return 'text-green-400 bg-green-900/30';
-      case 'pending':
-        return 'text-amber-400 bg-amber-900/30';
-      case 'suspended':
-        return 'text-red-400 bg-red-900/30';
+    switch (status) {
+      case "verified":
+        return "text-green-400 bg-green-900/30";
+      case "pending":
+        return "text-amber-400 bg-amber-900/30";
+      case "suspended":
+        return "text-red-400 bg-red-900/30";
       default:
-        return 'text-mali-blue bg-mali-blue/20';
+        return "text-mali-blue bg-mali-blue/20";
     }
   };
 
   const getStatusIcon = (status: string) => {
-    switch(status) {
-      case 'verified':
+    switch (status) {
+      case "verified":
         return <ShieldCheck className="h-3 w-3 mr-1" />;
-      case 'pending':
+      case "pending":
         return <AlertTriangle className="h-3 w-3 mr-1" />;
-      case 'suspended':
+      case "suspended":
         return <AlertTriangle className="h-3 w-3 mr-1" />;
       default:
         return null;
     }
   };
-  
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "verified":
+        return "ยืนยันแล้ว";
+      case "pending":
+        return "รอดำเนินการ";
+      case "suspended":
+        return "ระงับ";
+      default:
+        return status;
+    }
+  };
+
   return (
-    <AdminLayout title={"Resellers" as any}>
+    <AdminLayout title={"ตัวแทนจำหน่าย" as any}>
       <div className="space-y-6">
         {/* Stats Cards */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -134,7 +159,7 @@ export default function AdminResellers() {
         >
           <div className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 border border-blue-600/30 rounded-xl p-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-white text-lg font-medium">Total Resellers</h3>
+              <h3 className="text-white text-lg font-medium">ตัวแทนทั้งหมด</h3>
               <div className="p-2 rounded-full bg-blue-900/40 text-blue-400">
                 <Users className="h-5 w-5" />
               </div>
@@ -142,57 +167,58 @@ export default function AdminResellers() {
             <div className="mt-4 text-3xl font-bold text-white">
               {resellers.length}
             </div>
-            <div className="mt-1 text-gray-400 text-sm">
-              Registered resellers
-            </div>
+            <div className="mt-1 text-gray-400 text-sm">ตัวแทนที่ลงทะเบียน</div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-600/30 rounded-xl p-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-white text-lg font-medium">Total Sales</h3>
+              <h3 className="text-white text-lg font-medium">ยอดขายรวม</h3>
               <div className="p-2 rounded-full bg-green-900/40 text-green-400">
                 <ChartBar className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4 text-3xl font-bold text-white">
-              ${resellers.reduce((sum, reseller) => sum + reseller.totalSales, 0).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })}
+              ฿
+              {resellers
+                .reduce((sum, reseller) => sum + reseller.totalSales, 0)
+                .toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
             </div>
             <div className="mt-1 text-gray-400 text-sm">
-              All-time reseller revenue
+              รายได้ตลอดกาลจากตัวแทน
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 border border-purple-600/30 rounded-xl p-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-white text-lg font-medium">Orders</h3>
+              <h3 className="text-white text-lg font-medium">คำสั่งซื้อ</h3>
               <div className="p-2 rounded-full bg-purple-900/40 text-purple-400">
                 <BadgePercent className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4 text-3xl font-bold text-white">
-              {resellers.reduce((sum, reseller) => sum + reseller.salesCount, 0).toLocaleString()}
+              {resellers
+                .reduce((sum, reseller) => sum + reseller.salesCount, 0)
+                .toLocaleString()}
             </div>
             <div className="mt-1 text-gray-400 text-sm">
-              Total orders through resellers
+              คำสั่งซื้อทั้งหมดผ่านตัวแทน
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-indigo-600/20 to-indigo-800/20 border border-indigo-600/30 rounded-xl p-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-white text-lg font-medium">API Users</h3>
+              <h3 className="text-white text-lg font-medium">ผู้ใช้ API</h3>
               <div className="p-2 rounded-full bg-indigo-900/40 text-indigo-400">
                 <LinkIcon className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4 text-3xl font-bold text-white">
-              {resellers.filter(reseller => reseller.apiAccess).length}
+              {resellers.filter((reseller) => reseller.apiAccess).length}
             </div>
-            <div className="mt-1 text-gray-400 text-sm">
-              Resellers using our API
-            </div>
+            <div className="mt-1 text-gray-400 text-sm">ตัวแทนที่ใช้ API</div>
           </div>
         </motion.div>
 
@@ -206,7 +232,7 @@ export default function AdminResellers() {
               </div>
               <input
                 type="text"
-                placeholder="Search resellers..."
+                placeholder="ค้นหาตัวแทน..."
                 className="bg-mali-card border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -221,28 +247,39 @@ export default function AdminResellers() {
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
-                <option value="all">All Statuses</option>
-                <option value="verified">Verified</option>
-                <option value="pending">Pending</option>
-                <option value="suspended">Suspended</option>
+                <option value="all">ทุกสถานะ</option>
+                <option value="verified">ยืนยันแล้ว</option>
+                <option value="pending">รอดำเนินการ</option>
+                <option value="suspended">ระงับ</option>
               </select>
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-mali-blue/70">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-mali-blue/70"
+                >
                   <path d="M6 9l6 6 6-6" />
                 </svg>
               </div>
             </div>
           </div>
-          
+
           {/* Add Reseller Button */}
           <button className="bg-mali-blue text-white w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-mali-blue/90 transition-colors">
             <Plus className="h-5 w-5" />
-            <span>Add Reseller</span>
+            <span>เพิ่มตัวแทน</span>
           </button>
         </div>
-        
+
         {/* Resellers Table */}
-        <motion.div 
+        <motion.div
           className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -251,56 +288,77 @@ export default function AdminResellers() {
           <div className="p-5 border-b border-mali-blue/20">
             <h3 className="text-lg font-semibold text-white flex items-center">
               <Users className="mr-2 h-5 w-5 text-mali-blue" />
-              Reseller Management
+              จัดการตัวแทนจำหน่าย
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-mali-blue/70 text-sm">
-                  <th className="px-5 py-3 text-left">Reseller</th>
-                  <th className="px-5 py-3 text-left">Contact</th>
-                  <th className="px-5 py-3 text-left">Orders</th>
-                  <th className="px-5 py-3 text-left">Sales Volume</th>
-                  <th className="px-5 py-3 text-left">Commission</th>
+                  <th className="px-5 py-3 text-left">ตัวแทน</th>
+                  <th className="px-5 py-3 text-left">ติดต่อ</th>
+                  <th className="px-5 py-3 text-left">คำสั่งซื้อ</th>
+                  <th className="px-5 py-3 text-left">ยอดขาย</th>
+                  <th className="px-5 py-3 text-left">คอมมิชชั่น</th>
                   <th className="px-5 py-3 text-left">API</th>
-                  <th className="px-5 py-3 text-left">Status</th>
-                  <th className="px-5 py-3 text-left">Actions</th>
+                  <th className="px-5 py-3 text-left">สถานะ</th>
+                  <th className="px-5 py-3 text-left">การดำเนินการ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-mali-blue/10">
                 {filteredResellers.length > 0 ? (
                   filteredResellers.map((reseller) => (
-                    <tr key={reseller.id} className="text-sm hover:bg-mali-blue/5 transition-colors">
+                    <tr
+                      key={reseller.id}
+                      className="text-sm hover:bg-mali-blue/5 transition-colors"
+                    >
                       <td className="px-5 py-4">
-                        <div className="font-medium text-white">{reseller.name}</div>
-                        <div className="text-xs text-gray-400">Since {new Date(reseller.registeredDate).toLocaleDateString()}</div>
+                        <div className="font-medium text-white">
+                          {reseller.name}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          ตั้งแต่{" "}
+                          {new Date(reseller.registeredDate).toLocaleDateString(
+                            "th-TH",
+                          )}
+                        </div>
                       </td>
                       <td className="px-5 py-4">
                         <div>{reseller.email}</div>
-                        <div className="text-xs text-gray-400">{reseller.owner}</div>
+                        <div className="text-xs text-gray-400">
+                          {reseller.owner}
+                        </div>
                       </td>
-                      <td className="px-5 py-4">{reseller.salesCount.toLocaleString()}</td>
-                      <td className="px-5 py-4 font-medium">${reseller.totalSales.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                      })}</td>
-                      <td className="px-5 py-4 text-mali-blue">{reseller.commission}</td>
+                      <td className="px-5 py-4">
+                        {reseller.salesCount.toLocaleString()}
+                      </td>
+                      <td className="px-5 py-4 font-medium">
+                        ฿
+                        {reseller.totalSales.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td className="px-5 py-4 text-mali-blue">
+                        {reseller.commission}
+                      </td>
                       <td className="px-5 py-4">
                         {reseller.apiAccess ? (
                           <span className="px-2 py-1 rounded-full text-xs text-green-400 bg-green-900/30">
-                            Enabled
+                            เปิดใช้งาน
                           </span>
                         ) : (
                           <span className="px-2 py-1 rounded-full text-xs text-gray-400 bg-gray-900/30">
-                            Disabled
+                            ปิดใช้งาน
                           </span>
                         )}
                       </td>
                       <td className="px-5 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs flex items-center ${getStatusStyles(reseller.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs flex items-center ${getStatusStyles(reseller.status)}`}
+                        >
                           {getStatusIcon(reseller.status)}
-                          {reseller.status.charAt(0).toUpperCase() + reseller.status.slice(1)}
+                          {getStatusText(reseller.status)}
                         </span>
                       </td>
                       <td className="px-5 py-4">
@@ -322,8 +380,11 @@ export default function AdminResellers() {
                   ))
                 ) : (
                   <tr>
-                    <td className="px-5 py-8 text-center text-gray-400" colSpan={8}>
-                      No resellers found matching your search criteria
+                    <td
+                      className="px-5 py-8 text-center text-gray-400"
+                      colSpan={8}
+                    >
+                      ไม่พบตัวแทนที่ตรงกับเงื่อนไขการค้นหา
                     </td>
                   </tr>
                 )}
@@ -332,17 +393,17 @@ export default function AdminResellers() {
           </div>
           <div className="p-4 border-t border-mali-blue/20 flex justify-between items-center">
             <div className="text-sm text-gray-400">
-              Showing {filteredResellers.length} of {resellers.length} resellers
+              แสดง {filteredResellers.length} จาก {resellers.length} ตัวแทน
             </div>
             <div className="flex space-x-1">
               <button className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors">
-                Previous
+                ก่อนหน้า
               </button>
               <button className="px-3 py-1 text-sm bg-mali-blue/20 text-white rounded">
                 1
               </button>
               <button className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors">
-                Next
+                ถัดไป
               </button>
             </div>
           </div>
@@ -350,4 +411,4 @@ export default function AdminResellers() {
       </div>
     </AdminLayout>
   );
-} 
+}

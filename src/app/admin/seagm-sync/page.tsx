@@ -78,7 +78,7 @@ export default function SeagmSyncPage() {
       }
     } catch (error) {
       console.error("Sync all failed:", error);
-      alert("Failed to sync all products");
+      alert("ไม่สามารถซิงค์สินค้าทั้งหมดได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, all: false }));
       loadCacheStats();
@@ -95,7 +95,7 @@ export default function SeagmSyncPage() {
       }
     } catch (error) {
       console.error("Sync cards failed:", error);
-      alert("Failed to sync card products");
+      alert("ไม่สามารถซิงค์สินค้าบัตรได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, cards: false }));
       loadCacheStats();
@@ -112,7 +112,7 @@ export default function SeagmSyncPage() {
       }
     } catch (error) {
       console.error("Sync direct top-up failed:", error);
-      alert("Failed to sync direct top-up products");
+      alert("ไม่สามารถซิงค์สินค้าเติมเงินได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, directTopUp: false }));
       loadCacheStats();
@@ -120,8 +120,8 @@ export default function SeagmSyncPage() {
   };
 
   const formatTime = (date: Date | null) => {
-    if (!date) return "Never";
-    return date.toLocaleTimeString();
+    if (!date) return "ไม่เคย";
+    return date.toLocaleTimeString("th-TH");
   };
 
   const SyncCard = ({
@@ -174,40 +174,44 @@ export default function SeagmSyncPage() {
         {isLoading ? (
           <>
             <RefreshCw className="w-4 h-4 animate-spin" />
-            Syncing...
+            กำลังซิงค์...
           </>
         ) : (
           <>
             <RefreshCw className="w-4 h-4" />
-            Sync Now
+            ซิงค์ตอนนี้
           </>
         )}
       </button>
 
       {result && (
         <div className="mt-4 pt-4 border-t border-mali-blue/10 space-y-2">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Products (Games)</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+            สินค้า (เกม)
+          </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Created</span>
+            <span className="text-gray-400">สร้างใหม่</span>
             <span className="text-green-400 font-medium">
               +{result.productsCreated}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Updated</span>
+            <span className="text-gray-400">อัปเดต</span>
             <span className="text-blue-400 font-medium">
               {result.productsUpdated}
             </span>
           </div>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mt-3 mb-2">Product Types (Options)</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mt-3 mb-2">
+            ประเภทสินค้า (ตัวเลือก)
+          </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Created</span>
+            <span className="text-gray-400">สร้างใหม่</span>
             <span className="text-green-400 font-medium">
               +{result.productTypesCreated}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Updated</span>
+            <span className="text-gray-400">อัปเดต</span>
             <span className="text-blue-400 font-medium">
               {result.productTypesUpdated}
             </span>
@@ -216,7 +220,7 @@ export default function SeagmSyncPage() {
             <div className="mt-2 p-2 bg-red-900/30 rounded-lg">
               <div className="flex items-center gap-2 text-red-400 text-sm">
                 <AlertCircle className="w-4 h-4" />
-                <span>{result.errors.length} errors</span>
+                <span>{result.errors.length} ข้อผิดพลาด</span>
               </div>
             </div>
           )}
@@ -226,23 +230,23 @@ export default function SeagmSyncPage() {
   );
 
   return (
-    <AdminLayout title="SEAGM Sync" >
+    <AdminLayout title="ซิงค์ SEAGM">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">SEAGM Sync</h1>
+            <h1 className="text-2xl font-bold text-white">ซิงค์ SEAGM</h1>
             <p className="text-gray-400 mt-1">
-              Synchronize products from SEAGM API to your local database
+              ซิงค์สินค้าจาก SEAGM API ไปยังฐานข้อมูลภายใน
             </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="bg-mali-card border border-mali-blue/20 rounded-lg px-4 py-2 flex items-center gap-3">
               <Database className="w-5 h-5 text-mali-blue" />
               <div>
-                <p className="text-xs text-gray-400">Cache Size</p>
+                <p className="text-xs text-gray-400">ขนาดแคช</p>
                 <p className="text-white font-medium">
-                  {cacheStats?.size ?? 0} items
+                  {cacheStats?.size ?? 0} รายการ
                 </p>
               </div>
             </div>
@@ -252,8 +256,8 @@ export default function SeagmSyncPage() {
         {/* Sync Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <SyncCard
-            title="Sync All"
-            description="Synchronize all products: card types and direct top-up"
+            title="ซิงค์ทั้งหมด"
+            description="ซิงค์สินค้าทั้งหมด: บัตรและเติมเงิน"
             icon={Layers}
             onClick={handleSyncAll}
             isLoading={isLoading.all}
@@ -262,8 +266,8 @@ export default function SeagmSyncPage() {
             color="bg-gradient-to-br from-purple-500 to-pink-500"
           />
           <SyncCard
-            title="Sync Cards"
-            description="Synchronize gift card categories and types only"
+            title="ซิงค์บัตร"
+            description="ซิงค์เฉพาะหมวดหมู่และประเภทบัตร"
             icon={CreditCard}
             onClick={handleSyncCards}
             isLoading={isLoading.cards}
@@ -272,8 +276,8 @@ export default function SeagmSyncPage() {
             color="bg-gradient-to-br from-blue-500 to-cyan-500"
           />
           <SyncCard
-            title="Sync Direct Top-Up"
-            description="Synchronize direct top-up categories and types"
+            title="ซิงค์เติมเงิน"
+            description="ซิงค์หมวดหมู่และประเภทเติมเงิน"
             icon={Zap}
             onClick={handleSyncDirectTopUp}
             isLoading={isLoading.directTopUp}
@@ -291,10 +295,11 @@ export default function SeagmSyncPage() {
           transition={{ duration: 0.4, delay: 0.2 }}
         >
           <h2 className="text-lg font-semibold text-white mb-4">
-            How SEAGM Sync Works (Redesigned)
+            ระบบซิงค์ SEAGM ทำงานอย่างไร
           </h2>
           <p className="text-gray-400 mb-4">
-            The new sync system uses a two-level structure to better organize SEAGM data:
+            ระบบซิงค์ใหม่ใช้โครงสร้างสองระดับเพื่อจัดระเบียบข้อมูล SEAGM
+            ได้ดีขึ้น:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
@@ -303,10 +308,11 @@ export default function SeagmSyncPage() {
                   <Box className="w-4 h-4 text-blue-400" />
                 </div>
                 <div>
-                  <h4 className="text-white font-medium">Products (Games)</h4>
+                  <h4 className="text-white font-medium">สินค้า (เกม)</h4>
                   <p className="text-sm text-gray-400">
-                    Each game is stored as a product with basic info: name, code, mode (card/directtopup), region.
-                    Example: &quot;PUBG Mobile UC (MY)&quot; with code &quot;pubg-mobile-uc-top-up&quot;
+                    แต่ละเกมเก็บเป็นสินค้าพร้อมข้อมูลพื้นฐาน: ชื่อ รหัส โหมด
+                    (บัตร/เติมเงิน) ภูมิภาค ตัวอย่าง: "PUBG Mobile UC (MY)"
+                    ด้วยรหัส "pubg-mobile-uc-top-up"
                   </p>
                 </div>
               </div>
@@ -315,10 +321,12 @@ export default function SeagmSyncPage() {
                   <Layers className="w-4 h-4 text-orange-400" />
                 </div>
                 <div>
-                  <h4 className="text-white font-medium">Product Types (Options)</h4>
+                  <h4 className="text-white font-medium">
+                    ประเภทสินค้า (ตัวเลือก)
+                  </h4>
                   <p className="text-sm text-gray-400">
-                    Each game has multiple types representing different denominations/prices.
-                    Example: PUBG Mobile has 60 UC (35฿), 325 UC (165฿), 660 UC (325฿), etc.
+                    แต่ละเกมมีหลายประเภทแทนตัวเลือกราคาที่แตกต่างกัน ตัวอย่าง:
+                    PUBG Mobile มี 60 UC (35฿) 325 UC (165฿) 660 UC (325฿) ฯลฯ
                   </p>
                 </div>
               </div>
@@ -329,10 +337,11 @@ export default function SeagmSyncPage() {
                   <CreditCard className="w-4 h-4 text-green-400" />
                 </div>
                 <div>
-                  <h4 className="text-white font-medium">Card Mode</h4>
+                  <h4 className="text-white font-medium">โหมดบัตร</h4>
                   <p className="text-sm text-gray-400">
-                    Gift cards with PIN codes. Each type has its own stock and pricing.
-                    Customers receive PIN codes after purchase.
+                    บัตรของขวัญพร้อมรหัส PIN
+                    แต่ละประเภทมีสต็อกและราคาเป็นของตัวเอง ลูกค้าได้รับรหัส PIN
+                    หลังการซื้อ
                   </p>
                 </div>
               </div>
@@ -341,10 +350,10 @@ export default function SeagmSyncPage() {
                   <Zap className="w-4 h-4 text-purple-400" />
                 </div>
                 <div>
-                  <h4 className="text-white font-medium">Direct Top-Up Mode</h4>
+                  <h4 className="text-white font-medium">โหมดเติมเงิน</h4>
                   <p className="text-sm text-gray-400">
-                    Direct account top-ups requiring player ID. Available at /games/[gameCode] with
-                    all denomination options displayed for selection.
+                    เติมเงินเข้าบัญชีโดยตรงต้องการรหัสผู้เล่น ใช้ได้ที่
+                    /games/[gameCode] พร้อม ตัวเลือกราคาทั้งหมดให้เลือก
                   </p>
                 </div>
               </div>
@@ -360,17 +369,17 @@ export default function SeagmSyncPage() {
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <h2 className="text-lg font-semibold text-white mb-4">
-            Error Code 10406 Handling
+            การจัดการรหัสข้อผิดพลาด 10406
           </h2>
           <p className="text-gray-400 mb-4">
-            When SEAGM returns error code 10406 (Missing Required Parameter),
-            the system will:
+            เมื่อ SEAGM ส่งคืนรหัสข้อผิดพลาด 10406 (พารามิเตอร์ที่จำเป็นขาดหาย)
+            ระบบจะ:
           </p>
           <ol className="space-y-2 text-sm text-gray-400 list-decimal list-inside">
-            <li>Clear the cached fields for that product</li>
-            <li>Re-fetch fresh field requirements from SEAGM API</li>
-            <li>Retry the order once with updated fields</li>
-            <li>If still failing, report the missing fields to admin</li>
+            <li>ล้างข้อมูลฟิลด์ที่แคชไว้สำหรับสินค้านั้น</li>
+            <li>ดึงข้อกำหนดฟิลด์ใหม่จาก SEAGM API</li>
+            <li>ลองส่งคำสั่งซื้ออีกครั้งด้วยฟิลด์ที่อัปเดต</li>
+            <li>หากยังไม่สำเร็จ รายงานฟิลด์ที่ขาดหายไปให้ผู้ดูแลระบบ</li>
           </ol>
         </motion.div>
       </div>

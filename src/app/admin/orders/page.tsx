@@ -3,7 +3,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Search, Package, Loader2, Eye, Truck, CheckCircle, XCircle, Clock } from "lucide-react";
+import {
+  Search,
+  Package,
+  Loader2,
+  Eye,
+  Truck,
+  CheckCircle,
+  XCircle,
+  Clock,
+} from "lucide-react";
 import { orderApi, Order } from "@/lib/services/order-api";
 import Link from "next/link";
 
@@ -21,6 +30,14 @@ const statusIcons: Record<string, React.ReactNode> = {
   completed: <CheckCircle className="h-3 w-3 mr-1" />,
   cancelled: <XCircle className="h-3 w-3 mr-1" />,
   refunded: <XCircle className="h-3 w-3 mr-1" />,
+};
+
+const statusText: Record<string, string> = {
+  pending: "รอดำเนินการ",
+  processing: "กำลังดำเนินการ",
+  completed: "สำเร็จ",
+  cancelled: "ยกเลิก",
+  refunded: "คืนเงิน",
 };
 
 export default function AdminOrders() {
@@ -48,7 +65,7 @@ export default function AdminOrders() {
       const response = await orderApi.getAllOrders(
         pagination.page,
         pagination.limit,
-        selectedStatus !== "all" ? selectedStatus : undefined
+        selectedStatus !== "all" ? selectedStatus : undefined,
       );
 
       setOrders(response.data);
@@ -58,7 +75,7 @@ export default function AdminOrders() {
         totalPages: response.meta?.totalPages || 1,
       }));
     } catch (err) {
-      setError("Failed to load orders");
+      setError("ไม่สามารถโหลดคำสั่งซื้อได้");
       console.error(err);
     } finally {
       setLoading(false);
@@ -70,7 +87,7 @@ export default function AdminOrders() {
       await orderApi.updateOrderStatus(orderId, newStatus);
       fetchOrders();
     } catch (err) {
-      console.error("Failed to update order status:", err);
+      console.error("ไม่สามารถอัปเดตสถานะคำสั่งซื้อ:", err);
     }
   };
 
@@ -79,12 +96,12 @@ export default function AdminOrders() {
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.items.some((item) =>
-        item.productName?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+        item.productName?.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
   );
 
   return (
-    <AdminLayout title="Orders">
+    <AdminLayout title="คำสั่งซื้อ">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-4 justify-between">
@@ -95,7 +112,7 @@ export default function AdminOrders() {
               </div>
               <input
                 type="text"
-                placeholder="Search orders..."
+                placeholder="ค้นหาคำสั่งซื้อ..."
                 className="bg-mali-card border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -106,11 +123,11 @@ export default function AdminOrders() {
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
-              <option value="all">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="all">ทุกสถานะ</option>
+              <option value="pending">รอดำเนินการ</option>
+              <option value="processing">กำลังดำเนินการ</option>
+              <option value="completed">สำเร็จ</option>
+              <option value="cancelled">ยกเลิก</option>
             </select>
           </div>
         </div>
@@ -132,7 +149,7 @@ export default function AdminOrders() {
           <div className="p-5 border-b border-mali-blue/20">
             <h3 className="text-lg font-semibold text-white flex items-center">
               <Package className="mr-2 h-5 w-5 text-mali-blue" />
-              Order Management
+              จัดการคำสั่งซื้อ
             </h3>
           </div>
           <div className="overflow-x-auto">
@@ -144,13 +161,13 @@ export default function AdminOrders() {
               <table className="w-full">
                 <thead>
                   <tr className="text-mali-blue/70 text-sm">
-                    <th className="px-5 py-3 text-left">Order ID</th>
-                    <th className="px-5 py-3 text-left">Customer</th>
-                    <th className="px-5 py-3 text-left">Items</th>
-                    <th className="px-5 py-3 text-left">Total</th>
-                    <th className="px-5 py-3 text-left">Status</th>
-                    <th className="px-5 py-3 text-left">Date</th>
-                    <th className="px-5 py-3 text-left">Actions</th>
+                    <th className="px-5 py-3 text-left">รหัสคำสั่งซื้อ</th>
+                    <th className="px-5 py-3 text-left">ลูกค้า</th>
+                    <th className="px-5 py-3 text-left">รายการ</th>
+                    <th className="px-5 py-3 text-left">รวม</th>
+                    <th className="px-5 py-3 text-left">สถานะ</th>
+                    <th className="px-5 py-3 text-left">วันที่</th>
+                    <th className="px-5 py-3 text-left">การดำเนินการ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-mali-blue/10">
@@ -164,12 +181,16 @@ export default function AdminOrders() {
                           #{order.id.slice(0, 8)}
                         </td>
                         <td className="px-5 py-4">
-                          <div className="text-white">{order.user?.username || "-"}</div>
-                          <div className="text-xs text-gray-500">{order.user?.email}</div>
+                          <div className="text-white">
+                            {order.user?.username || "-"}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {order.user?.email}
+                          </div>
                         </td>
                         <td className="px-5 py-4">
                           <div className="text-gray-300">
-                            {order.items.length} item(s)
+                            {order.items.length} รายการ
                           </div>
                           <div className="text-xs text-gray-500">
                             {order.items[0]?.productName}
@@ -189,14 +210,16 @@ export default function AdminOrders() {
                               statusStyles[order.status] || statusStyles.pending
                             }`}
                           >
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="pending">รอดำเนินการ</option>
+                            <option value="processing">กำลังดำเนินการ</option>
+                            <option value="completed">สำเร็จ</option>
+                            <option value="cancelled">ยกเลิก</option>
                           </select>
                         </td>
                         <td className="px-5 py-4 text-gray-400">
-                          {new Date(order.createdAt).toLocaleDateString()}
+                          {new Date(order.createdAt).toLocaleDateString(
+                            "th-TH",
+                          )}
                         </td>
                         <td className="px-5 py-4">
                           <Link href={`/admin/orders/${order.id}`}>
@@ -213,7 +236,7 @@ export default function AdminOrders() {
                         className="px-5 py-8 text-center text-gray-400"
                         colSpan={7}
                       >
-                        No orders found
+                        ไม่พบคำสั่งซื้อ
                       </td>
                     </tr>
                   )}
@@ -226,7 +249,7 @@ export default function AdminOrders() {
           {!loading && pagination.totalPages > 1 && (
             <div className="p-4 border-t border-mali-blue/20 flex justify-between items-center">
               <div className="text-sm text-gray-400">
-                Showing {filteredOrders.length} of {pagination.total} orders
+                แสดง {filteredOrders.length} จาก {pagination.total} คำสั่งซื้อ
               </div>
               <div className="flex space-x-1">
                 <button
@@ -236,7 +259,7 @@ export default function AdminOrders() {
                   disabled={pagination.page === 1}
                   className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors disabled:opacity-50"
                 >
-                  Previous
+                  ก่อนหน้า
                 </button>
                 <span className="px-3 py-1 text-sm bg-mali-blue/20 text-white rounded">
                   {pagination.page}
@@ -248,7 +271,7 @@ export default function AdminOrders() {
                   disabled={pagination.page >= pagination.totalPages}
                   className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors disabled:opacity-50"
                 >
-                  Next
+                  ถัดไป
                 </button>
               </div>
             </div>

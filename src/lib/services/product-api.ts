@@ -69,6 +69,12 @@ export interface ReviewSummary {
   ratingBreakdown: Record<number, number>;
 }
 
+export interface GameDetails {
+  developer?: string;
+  publisher?: string;
+  platforms?: string[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -100,6 +106,9 @@ export interface Product {
   metaTitle?: string;
   metaDescription?: string;
   metaKeywords?: string;
+  gameDetails?: GameDetails;
+  // SEAGM types (denominations) - included in getProductBySlug response
+  seagmTypes?: ProductType[];
   variants?: ProductVariant[];
   attributes?: ProductAttribute[];
   tags?: Tag[];
@@ -846,6 +855,28 @@ class ProductApiService {
     gameCode: string,
   ): Promise<{ success: boolean; data: ProductType[] }> {
     const response = await productClient.get(`/games/${gameCode}/types`);
+    return response.data;
+  }
+
+  /**
+   * Get SEAGM product by ID (database ID, not seagm_id)
+   * Example: getGameById('clj234...') -> SeagmProduct
+   */
+  async getGameById(
+    seagmProductId: string,
+  ): Promise<{ success: boolean; data: SeagmProduct }> {
+    const response = await productClient.get(`/games/id/${seagmProductId}`);
+    return response.data;
+  }
+
+  /**
+   * Get product types by SEAGM product ID (database ID, not seagm_id)
+   * Example: getGameTypesById('clj234...') -> [60 UC, 325 UC, ...]
+   */
+  async getGameTypesById(
+    seagmProductId: string,
+  ): Promise<{ success: boolean; data: ProductType[] }> {
+    const response = await productClient.get(`/games/id/${seagmProductId}/types`);
     return response.data;
   }
 

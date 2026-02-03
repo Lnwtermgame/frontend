@@ -28,6 +28,7 @@ import {
   GameRelatedProducts,
   RelatedProduct,
 } from "@/components/GameRelatedProducts";
+import ProductDescription from "@/components/products/ProductDescription";
 import {
   productApi,
   Product,
@@ -56,6 +57,15 @@ interface GameDetails {
   relatedGames: string[];
   features?: string[];
   mode?: "directtopup" | "card";
+  // Product table fields
+  shortDescription?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  isFeatured?: boolean;
+  isBestseller?: boolean;
+  salesCount?: number;
+  viewCount?: number;
 }
 
 interface TopUpOption {
@@ -69,52 +79,69 @@ interface TopUpOption {
   fields?: SeagmField[];
 }
 
-// Helper function to transform SeagmProduct to GameDetails
-function transformSeagmProductToGameDetails(
-  seagmProduct: SeagmProduct,
+// Helper function to transform Product to GameDetails
+function transformProductToGameDetails(
+  product: Product,
   productTypes: ProductType[],
 ): GameDetails {
-  // Map product types to topUpOptions
+  // Map product types to topUpOptions (if available)
   const topUpOptions: TopUpOption[] = productTypes.map(
     (type: ProductType, index: number) => ({
       id: type.id,
       title: type.name,
       price: type.unitPrice,
       originalPrice: type.originPrice || type.unitPrice,
-      isPopular: index === 0, // First option is popular by default
+      isPopular: index === 0,
       parValue: type.parValue,
       parValueCurrency: type.parValueCurrency,
       fields: type.fields,
     }),
   );
 
+  // Use game_details from Product table if available
+  const gameDetails = product.gameDetails;
+
   return {
-    id: seagmProduct.id,
-    title: seagmProduct.name,
-    description: `Top up ${seagmProduct.name} instantly. Fast delivery and secure payment.`,
-    longDescription: `${seagmProduct.name} offers a convenient way to purchase in-game currency and items. Select your desired amount and receive your credits instantly after payment.`,
+    id: product.id,
+    title: product.name,
+    description: product.shortDescription || product.description || `Top up ${product.name} instantly.`,
+    longDescription: product.description || `${product.name} offers a convenient way to purchase in-game currency and items.`,
     mainImage:
-      seagmProduct.imageUrl ||
-      `https://placehold.co/400x400?text=${encodeURIComponent(seagmProduct.name)}`,
-    category:
-      seagmProduct.mode === "directtopup" ? "Direct Top Up" : "Gift Card",
-    developer: "SEAGM",
-    publisher: "SEAGM",
-    platforms: ["PC", "Mobile"], // Default platforms
+      product.imageUrl ||
+      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+    category: product.category?.name || (product.productType === "DIRECT_TOPUP" ? "Direct Top Up" : "Gift Card"),
+    developer: gameDetails?.developer || product.category?.name || "Unknown",
+    publisher: gameDetails?.publisher || "Unknown",
+    platforms: gameDetails?.platforms?.length ? gameDetails.platforms : ["iOS", "Android"],
     rating: 4.5,
-    ratingCount: 0,
-    screenshots: [],
-    topUpOptions,
-    relatedGames: [], // Will be populated separately
+    ratingCount: product.reviewCount || 0,
+    screenshots: product.images?.map(img => img.url) || [],
+    topUpOptions: topUpOptions.length > 0 ? topUpOptions : [{
+      id: product.id,
+      title: product.name,
+      price: product.price,
+      originalPrice: product.comparePrice || product.price,
+      isPopular: true,
+    }],
+    relatedGames: [],
     features: ["Instant Delivery", "Secure Payment", "24/7 Support"],
-    mode: seagmProduct.mode,
+    mode: product.productType === "DIRECT_TOPUP" ? "directtopup" : "card",
+    // Product table fields
+    shortDescription: product.shortDescription,
+    metaTitle: product.metaTitle,
+    metaDescription: product.metaDescription,
+    metaKeywords: product.metaKeywords,
+    isFeatured: product.isFeatured,
+    isBestseller: product.isBestseller,
+    salesCount: product.salesCount,
+    viewCount: product.viewCount,
   };
 }
 
 export default function GameDetailsPage() {
   const { gameId } = useParams();
   const [game, setGame] = useState<GameDetails | null>(null);
-  const [seagmProduct, setSeagmProduct] = useState<SeagmProduct | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [productTypes, setProductTypes] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,7 +156,16 @@ export default function GameDetailsPage() {
     setFieldValues((prev) => ({ ...prev, [fieldName]: value }));
   };
 
-  // Load game details
+  // Helper function to detect if a string is a CUID or UUID (database ID)
+  const isValidDatabaseId = (id: string): boolean => {
+    // CUID: starts with 'c' followed by alphanumeric, typically 25 chars
+    const cuidPattern = /^c[a-z0-9]{24,}$/i;
+    // UUID: 8-4-4-4-12 hex format
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return cuidPattern.test(id) || uuidPattern.test(id);
+  };
+
+  // Load game details from Product table
   useEffect(() => {
     if (typeof gameId !== "string") return;
 
@@ -138,27 +174,35 @@ export default function GameDetailsPage() {
         setLoading(true);
         setError(null);
 
-        // Fetch SEAGM product by code (e.g., pubg-mobile-uc-top-up)
-        const [productResponse, typesResponse] = await Promise.all([
-          productApi.getGame(gameId),
-          productApi.getGameTypes(gameId),
-        ]);
+        // Fetch product by ID or slug based on format detection
+        let productResponse;
+        if (isValidDatabaseId(gameId)) {
+          // gameId looks like a CUID/UUID - fetch by ID
+          productResponse = await productApi.getProductById(gameId);
+        } else {
+          // gameId looks like a slug - fetch by slug
+          productResponse = await productApi.getProductBySlug(gameId);
+        }
 
         if (!productResponse.success || !productResponse.data) {
           throw new Error("Game not found");
         }
 
-        const seagmData = productResponse.data;
-        const typesData = typesResponse.success ? typesResponse.data : [];
+        const productData = productResponse.data;
+        setProduct(productData);
 
-        setSeagmProduct(seagmData);
+        // Extract SEAGM types from product response (now included in single API call)
+        let typesData: ProductType[] = [];
+        console.log("Product data:", productData);
+        console.log("SEAGM types from product:", productData.seagmTypes);
+        if (productData.seagmTypes && productData.seagmTypes.length > 0) {
+          typesData = productData.seagmTypes;
+        }
+
         setProductTypes(typesData);
 
         // Transform to GameDetails
-        const gameData = transformSeagmProductToGameDetails(
-          seagmData,
-          typesData,
-        );
+        const gameData = transformProductToGameDetails(productData, typesData);
 
         setGame(gameData);
 
@@ -499,9 +543,7 @@ export default function GameDetailsPage() {
                     <h3 className="text-white font-medium mb-2">
                       About {game.title}
                     </h3>
-                    <p className="text-mali-text-secondary">
-                      {game.longDescription || game.description}
-                    </p>
+                    <ProductDescription description={game.longDescription || game.description} />
                   </div>
 
                   {game.features && (

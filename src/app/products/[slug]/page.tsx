@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { productApi, Product } from "@/lib/services/product-api";
 import DynamicProductFields from "@/components/products/DynamicProductFields";
+import ProductDescription from "@/components/products/ProductDescription";
 import { SeagmField } from "@/lib/services/product-api";
 import { useCart } from "@/lib/context/cart-context";
 
@@ -245,9 +246,7 @@ export default function ProductDetailPage() {
 
             {/* Description */}
             {product.description && (
-              <p className="text-gray-300 leading-relaxed">
-                {product.description}
-              </p>
+              <ProductDescription description={product.description} />
             )}
 
             {/* Price */}

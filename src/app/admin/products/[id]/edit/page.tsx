@@ -27,8 +27,11 @@ import {
   EyeOff,
 } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { productApi, Product, Category } from "@/lib/services/product-api";
+import { GeneratedContent } from "@/lib/services/ai-api";
 import DynamicProductFields from "@/components/products/DynamicProductFields";
+import AIGenerateButton from "@/components/admin/AIGenerateButton";
 
 export default function EditProductPage() {
   const { id } = useParams();
@@ -38,6 +41,7 @@ export default function EditProductPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [refreshingFields, setRefreshingFields] = useState(false);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -55,6 +59,11 @@ export default function EditProductPage() {
     isActive: true,
     isFeatured: false,
     isBestseller: false,
+    gameDetails: {
+      developer: "",
+      publisher: "",
+      platforms: [] as string[],
+    },
   });
   const [imageError, setImageError] = useState(false);
 
@@ -87,6 +96,11 @@ export default function EditProductPage() {
             isActive: productRes.data.isActive,
             isFeatured: productRes.data.isFeatured || false,
             isBestseller: productRes.data.isBestseller || false,
+            gameDetails: {
+              developer: productRes.data.gameDetails?.developer || "",
+              publisher: productRes.data.gameDetails?.publisher || "",
+              platforms: productRes.data.gameDetails?.platforms || [],
+            },
           });
           setImageError(false);
         }
@@ -115,13 +129,35 @@ export default function EditProductPage() {
 
     setSaving(true);
     try {
+      console.log("[EditProduct] Submitting update for product:", id);
+      console.log("[EditProduct] Form data:", formData);
+
       const response = await productApi.updateProduct(id, formData);
+      console.log("[EditProduct] Update response:", response);
+
       if (response.success) {
-        router.push("/admin/products");
+        // Update local product state with new data
+        setProduct(response.data);
+        // Show success toast
+        toast.success("บันทึกการเปลี่ยนแปลงสำเร็จ!", {
+          duration: 3000,
+          position: "top-center",
+        });
+        // Show success banner temporarily
+        setShowSuccessBanner(true);
+        setTimeout(() => setShowSuccessBanner(false), 5000);
+        // Stay on the same page - no redirect
+      } else {
+        alert(
+          "Failed to update product: " + (response as any).error?.message ||
+            "Unknown error",
+        );
       }
     } catch (error) {
-      console.error("Failed to update product:", error);
-      alert("Failed to update product");
+      console.error("[EditProduct] Failed to update product:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update product";
+      alert("Error: " + errorMessage);
     } finally {
       setSaving(false);
     }
@@ -142,6 +178,36 @@ export default function EditProductPage() {
     } finally {
       setRefreshingFields(false);
     }
+  };
+
+  // Handle AI generated content
+  const handleAIGenerated = (content: GeneratedContent) => {
+    console.log("[AI Generated] Received content:", content);
+    console.log("[AI Generated] Description:", content.description);
+    console.log("[AI Generated] Short Description:", content.shortDescription);
+
+    setFormData((prev) => {
+      const newFormData = {
+        ...prev,
+        description: content.description || "",
+        shortDescription: content.shortDescription || "",
+        metaTitle: content.metaTitle || "",
+        metaDescription: content.metaDescription || "",
+        metaKeywords: content.metaKeywords || "",
+        gameDetails: {
+          developer: content.gameDetails?.developer || "",
+          publisher: content.gameDetails?.publisher || "",
+          platforms: content.gameDetails?.platforms || [],
+        },
+      };
+      console.log("[AI Generated] New formData:", newFormData);
+      return newFormData;
+    });
+
+    toast.success("AI สร้างเนื้อหาสำเร็จ!", {
+      duration: 3000,
+      position: "top-center",
+    });
   };
 
   if (loading) {
@@ -186,6 +252,47 @@ export default function EditProductPage() {
   return (
     <AdminLayout title={`Edit: ${formData.name || "Product"}`}>
       <div className="pb-10 space-y-8 max-w-7xl mx-auto">
+        {/* Success Banner */}
+        {showSuccessBanner && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 flex items-center gap-3"
+          >
+            <div className="p-2 bg-green-500/20 rounded-lg">
+              <CheckCircle2 className="w-5 h-5 text-green-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-green-400 font-medium">
+                บันทึกการเปลี่ยนแปลงสำเร็จ!
+              </p>
+              <p className="text-sm text-green-400/70">
+                ข้อมูลสินค้าถูกอัปเดตเรียบร้อยแล้ว
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSuccessBanner(false)}
+              className="p-1.5 hover:bg-green-500/20 rounded-lg transition-colors"
+            >
+              <span className="sr-only">ปิด</span>
+              <svg
+                className="w-4 h-4 text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -251,12 +358,23 @@ export default function EditProductPage() {
                 <FileText className="w-24 h-24 text-mali-blue transform rotate-12 translate-x-8 -translate-y-8" />
               </div>
 
-              <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-6">
-                <div className="p-2 bg-mali-blue/10 rounded-lg text-mali-blue">
-                  <FileText className="w-5 h-5" />
-                </div>
-                ข้อมูลทั่วไป
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <div className="p-2 bg-mali-blue/10 rounded-lg text-mali-blue">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  ข้อมูลทั่วไป
+                </h2>
+                <AIGenerateButton
+                  productName={formData.name || product.name}
+                  productType={product.productType}
+                  categoryName={
+                    categories.find((c) => c.id === formData.categoryId)?.name
+                  }
+                  onGenerated={handleAIGenerated}
+                  disabled={!formData.name}
+                />
+              </div>
 
               <div className="space-y-5 relative z-10">
                 <div>
@@ -301,10 +419,10 @@ export default function EditProductPage() {
                     <textarea
                       value={formData.shortDescription}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                        setFormData((prev) => ({
+                          ...prev,
                           shortDescription: e.target.value,
-                        })
+                        }))
                       }
                       rows={2}
                       maxLength={255}
@@ -322,16 +440,22 @@ export default function EditProductPage() {
                       คำอธิบายแบบเต็ม
                     </label>
                     <textarea
+                      key={`desc-${formData.description?.length || 0}`}
                       value={formData.description}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                        setFormData((prev) => ({
+                          ...prev,
                           description: e.target.value,
-                        })
+                        }))
                       }
                       rows={6}
                       className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-mali-blue/50 outline-none transition-all"
                     />
+                    {process.env.NODE_ENV === "development" && (
+                      <div className="text-xs text-gray-600 mt-1">
+                        Debug: length={formData.description?.length || 0}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -764,6 +888,100 @@ export default function EditProductPage() {
                     className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
                     placeholder="เติมเกม, ราคาถูก, โปรโมชั่น"
                   />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Game Details Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.25 }}
+              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-5 space-y-4"
+            >
+              <h3 className="font-semibold text-white text-base flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                ข้อมูลเกม
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">
+                    ผู้พัฒนา (Developer)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.gameDetails.developer}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        gameDetails: {
+                          ...formData.gameDetails,
+                          developer: e.target.value,
+                        },
+                      })
+                    }
+                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
+                    placeholder="เช่น Riot Games, miHoYo"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">
+                    ผู้จัดจำหน่าย (Publisher)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.gameDetails.publisher}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        gameDetails: {
+                          ...formData.gameDetails,
+                          publisher: e.target.value,
+                        },
+                      })
+                    }
+                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
+                    placeholder="เช่น Tencent, Blizzard"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-2">
+                    แพลตฟอร์ม (Platforms)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["iOS", "Android", "PC", "Console"].map((platform) => (
+                      <label
+                        key={platform}
+                        className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-all ${
+                          formData.gameDetails.platforms.includes(platform)
+                            ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                            : "bg-mali-dark/30 border-mali-blue/10 text-gray-400 hover:bg-mali-dark/50"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.gameDetails.platforms.includes(platform)}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setFormData({
+                              ...formData,
+                              gameDetails: {
+                                ...formData.gameDetails,
+                                platforms: isChecked
+                                  ? [...formData.gameDetails.platforms, platform]
+                                  : formData.gameDetails.platforms.filter((p) => p !== platform),
+                              },
+                            });
+                          }}
+                          className="w-4 h-4 rounded border-gray-500 text-purple-500 focus:ring-purple-500/50"
+                        />
+                        <span className="text-sm">{platform}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>

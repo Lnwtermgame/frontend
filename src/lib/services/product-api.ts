@@ -769,6 +769,49 @@ class ProductApiService {
     return response.data;
   }
 
+  // ============ Favorites ============
+
+  async getFavorites(): Promise<{ success: boolean; data: Product[] }> {
+    const response = await productClient.get("/api/favorites");
+    return response.data;
+  }
+
+  async addFavorite(productId: string): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await productClient.post("/api/favorites", { productId });
+    return response.data;
+  }
+
+  async removeFavorite(favoriteId: string): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await productClient.delete(`/api/favorites/${favoriteId}`);
+    return response.data;
+  }
+
+  async findFavoriteId(productId: string): Promise<string | null> {
+    try {
+      const response = await productClient.get("/api/favorites");
+      if (response.data.success) {
+        const favorite = response.data.data.find((f: any) => f.product?.id === productId);
+        return favorite?.id || null;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  async checkIsFavorite(productId: string): Promise<boolean> {
+    try {
+      const response = await productClient.get("/api/favorites");
+      if (response.data.success) {
+        // Favorites API returns { id, product: { id, name, ... } } structure
+        return response.data.data.some((f: any) => f.product?.id === productId);
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
   // ============ Admin: Product CRUD ============
 
   async updateProduct(

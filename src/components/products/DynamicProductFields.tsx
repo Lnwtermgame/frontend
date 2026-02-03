@@ -147,20 +147,22 @@ export default function DynamicProductFields({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label className="block text-sm font-medium text-white">
+        <label htmlFor={field.name} className="block text-sm font-medium text-white">
           {field.label}
           {field.required !== false && (
-            <span className="text-red-400 ml-1">*</span>
+            <span className="text-red-400 ml-1" aria-hidden="true">*</span>
           )}
         </label>
         {field.multiline ? (
           <textarea
+            id={field.name}
             value={values[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
             onBlur={() => handleBlur(field.name)}
             placeholder={field.placeholder}
             disabled={disabled}
             rows={3}
+            autoComplete="off"
             className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:outline-none transition-all resize-none ${
               hasError
                 ? "border-red-500 focus:ring-red-500/20"
@@ -175,12 +177,14 @@ export default function DynamicProductFields({
               </span>
             )}
             <input
+              id={field.name}
               type="text"
               value={values[field.name] || ""}
               onChange={(e) => handleChange(field.name, e.target.value)}
               onBlur={() => handleBlur(field.name)}
               placeholder={field.placeholder}
               disabled={disabled}
+              autoComplete="off"
               className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:outline-none transition-all ${
                 field.prefix ? "pl-10" : ""
               } ${
@@ -212,17 +216,19 @@ export default function DynamicProductFields({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label className="block text-sm font-medium text-white">
+        <label htmlFor={field.name} className="block text-sm font-medium text-white">
           {field.label}
           {field.required !== false && (
-            <span className="text-red-400 ml-1">*</span>
+            <span className="text-red-400 ml-1" aria-hidden="true">*</span>
           )}
         </label>
         <select
+          id={field.name}
           value={values[field.name] || ""}
           onChange={(e) => handleChange(field.name, e.target.value)}
           onBlur={() => handleBlur(field.name)}
           disabled={disabled}
+          autoComplete="off"
           className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
             hasError
               ? "border-red-500 focus:ring-red-500/20"

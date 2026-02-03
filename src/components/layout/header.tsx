@@ -104,31 +104,30 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between px-4 py-1 border-b border-mali-blue/10 text-xs text-mali-text-secondary">
         <div className="flex items-center space-x-6">
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/" className="text-xs font-normal">News</Link>
+            <Link href="/news" className="text-xs font-normal hover:text-white transition-colors">News</Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/" className="text-xs font-normal">Contact Support</Link>
+            <Link href="/support" className="text-xs font-normal hover:text-white transition-colors">Contact Support</Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/" className="text-xs font-normal">All Games</Link>
+            <Link href="/games" className="text-xs font-normal hover:text-white transition-colors">All Games</Link>
           </motion.div>
         </div>
         <div className="flex items-center space-x-4">
-          <motion.div
-            className="flex items-center space-x-1 cursor-pointer"
-            whileHover={{ opacity: 1 }}
-            initial={{ opacity: 0.8 }}
+          <button
+            type="button"
+            className="flex items-center space-x-1 hover:opacity-100 opacity-80 transition-opacity"
           >
             <span className="text-xs">EN</span>
-            <ChevronDown className="h-3 w-3" />
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center text-xs"
+            <ChevronDown className="h-3 w-3" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="flex items-center text-xs hover:scale-105 transition-transform"
           >
-            <Languages className="h-3 w-3 mr-1" />
+            <Languages className="h-3 w-3 mr-1" aria-hidden="true" />
             <span className="text-white">ไทย</span>
-          </motion.div>
+          </button>
         </div>
       </div>
 
@@ -179,25 +178,31 @@ export function Header() {
           >
             <input
               type="text"
-              placeholder="Search Games"
+              placeholder="Search Games…"
+              aria-label="Search games"
+              autoComplete="off"
               className="w-full rounded-sm bg-mali-blue/20 border border-mali-blue/30 px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
             />
-            <Search className="absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mali-text-secondary" />
+            <Search className="absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mali-text-secondary" aria-hidden="true" />
           </motion.div>
 
           <div className="flex items-center space-x-4">
             <motion.button
+              type="button"
+              aria-label="Notifications"
               whileHover={{ scale: 1.05 }}
               className="text-mali-text-secondary hover:text-white transition-colors"
             >
-              <Bell size={20} />
+              <Bell size={20} aria-hidden="true" />
             </motion.button>
 
             <motion.button
+              type="button"
+              aria-label="Change language"
               whileHover={{ scale: 1.05 }}
               className="text-mali-text-secondary hover:text-white transition-colors"
             >
-              <Globe size={20} />
+              <Globe size={20} aria-hidden="true" />
             </motion.button>
 
             {user ? (
@@ -236,55 +241,51 @@ export function Header() {
                       </div>
 
                       <div className="py-2">
-                        <motion.button
-                          variants={menuItemVariants}
-                          whileHover="hover"
-                          className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
-                          onClick={() => {
-                            setShowUserMenu(false);
-                            router.push('/dashboard/account');
-                          }}
-                        >
-                          <User className="h-4 w-4 mr-3" />
-                          <span>My Account</span>
-                        </motion.button>
+                        <Link href="/dashboard/account" className="block" onClick={() => setShowUserMenu(false)}>
+                          <motion.div
+                            variants={menuItemVariants}
+                            whileHover="hover"
+                            className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white cursor-pointer"
+                          >
+                            <User className="h-4 w-4 mr-3" aria-hidden="true" />
+                            <span>My Account</span>
+                          </motion.div>
+                        </Link>
+
+                        <Link href="/dashboard/credits" className="block" onClick={() => setShowUserMenu(false)}>
+                          <motion.div
+                            variants={menuItemVariants}
+                            whileHover="hover"
+                            className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white cursor-pointer"
+                          >
+                            <Coins className="h-4 w-4 mr-3" aria-hidden="true" />
+                            <span>Credits</span>
+                          </motion.div>
+                        </Link>
+
+                        <Link href="/dashboard/orders" className="block" onClick={() => setShowUserMenu(false)}>
+                          <motion.div
+                            variants={menuItemVariants}
+                            whileHover="hover"
+                            className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white cursor-pointer"
+                          >
+                            <ShoppingCart className="h-4 w-4 mr-3" aria-hidden="true" />
+                            <span>Order History</span>
+                          </motion.div>
+                        </Link>
 
                         <motion.button
-                          variants={menuItemVariants}
-                          whileHover="hover"
-                          className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
-                          onClick={() => {
-                            setShowUserMenu(false);
-                            router.push('/dashboard/credits');
-                          }}
-                        >
-                          <Coins className="h-4 w-4 mr-3" />
-                          <span>Credits</span>
-                        </motion.button>
-
-                        <motion.button
-                          variants={menuItemVariants}
-                          whileHover="hover"
-                          className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
-                          onClick={() => {
-                            setShowUserMenu(false);
-                            router.push('/dashboard/orders');
-                          }}
-                        >
-                          <ShoppingCart className="h-4 w-4 mr-3" />
-                          <span>Order History</span>
-                        </motion.button>
-
-                        <motion.button
+                          type="button"
                           variants={menuItemVariants}
                           whileHover="hover"
                           className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white"
                           onClick={handleLogout}
                         >
-                          <LogOut className="h-4 w-4 mr-3" />
+                          <LogOut className="h-4 w-4 mr-3" aria-hidden="true" />
                           <span>Logout</span>
                         </motion.button>
                       </div>
+                    </div>
                     </motion.div>
                   )}
                 </AnimatePresence>

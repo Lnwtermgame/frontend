@@ -87,7 +87,9 @@ export function LiveChat() {
       {/* Chat Button */}
       <div className="fixed bottom-4 right-4 z-50">
         <button
+          type="button"
           onClick={toggleChat}
+          aria-label={isChatOpen ? "Close chat" : "Open chat"}
           className="bg-mali-blue-accent hover:bg-mali-blue-accent/90 text-white p-3 rounded-full shadow-lg flex items-center justify-center relative transition-all duration-200 group"
         >
           <AnimatePresence>
@@ -141,10 +143,12 @@ export function LiveChat() {
                   <p className="text-xs text-white/80">We typically reply in a few minutes</p>
                 </div>
                 <button
+                  type="button"
                   onClick={toggleChat}
+                  aria-label="Close chat"
                   className="text-white/80 hover:text-white p-1 rounded-full transition-colors"
                 >
-                  <X size={20} />
+                  <X size={20} aria-hidden="true" />
                 </button>
               </div>
               
@@ -240,28 +244,31 @@ export function LiveChat() {
                     <div className="absolute right-2 bottom-2 flex space-x-1">
                       <button
                         type="button"
+                        aria-label="Add emoji"
                         className="text-mali-text-secondary hover:text-mali-blue-accent p-1 rounded-full"
                       >
-                        <Smile size={16} />
+                        <Smile size={16} aria-hidden="true" />
                       </button>
                       <button
                         type="button"
+                        aria-label="Attach file"
                         className="text-mali-text-secondary hover:text-mali-blue-accent p-1 rounded-full"
                       >
-                        <Paperclip size={16} />
+                        <Paperclip size={16} aria-hidden="true" />
                       </button>
                     </div>
                   </div>
                   <button
                     type="submit"
                     disabled={!message.trim()}
+                    aria-label="Send message"
                     className={`p-2 rounded-lg ${
                       message.trim()
                         ? 'bg-mali-blue-accent hover:bg-mali-blue-accent/90 text-white'
                         : 'bg-mali-blue/20 text-mali-text-secondary cursor-not-allowed'
                     }`}
                   >
-                    <Send size={18} />
+                    <Send size={18} aria-hidden="true" />
                   </button>
                 </div>
               </form>

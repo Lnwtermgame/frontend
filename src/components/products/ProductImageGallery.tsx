@@ -86,10 +86,12 @@ export function ProductImageGallery({
         {/* Zoom indicator */}
         {!isZoomed && (
           <button
+            type="button"
             onClick={() => setIsZoomed(true)}
+            aria-label="Zoom image"
             className="absolute top-4 right-4 p-2 bg-white/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <ZoomIn className="w-5 h-5" />
+            <ZoomIn className="w-5 h-5" aria-hidden="true" />
           </button>
         )}
 
@@ -97,16 +99,20 @@ export function ProductImageGallery({
         {allImages.length > 1 && (
           <>
             <button
+              type="button"
               onClick={handlePrevious}
+              aria-label="Previous image"
               className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
             </button>
             <button
+              type="button"
               onClick={handleNext}
+              aria-label="Next image"
               className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5" aria-hidden="true" />
             </button>
           </>
         )}

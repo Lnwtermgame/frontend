@@ -247,10 +247,12 @@ export default function CheckoutPage() {
                         </span>
                       </div>
                       <button
+                        type="button"
                         onClick={() => removeItem(item.productId)}
+                        aria-label="Remove item"
                         className="text-red-400 hover:text-red-300 p-2"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -275,24 +277,28 @@ export default function CheckoutPage() {
                     <span className="text-gray-400">Quantity:</span>
                     <div className="flex items-center border border-mali-blue/20 rounded-lg">
                       <button
+                        type="button"
                         onClick={() =>
                           updateQuantity(item.productId, item.quantity - 1)
                         }
                         disabled={item.quantity <= 1}
+                        aria-label="Decrease quantity"
                         className="px-3 py-1 text-white hover:bg-mali-blue/10 disabled:opacity-50 transition-colors"
                       >
-                        <Minus className="w-4 h-4" />
+                        <Minus className="w-4 h-4" aria-hidden="true" />
                       </button>
                       <span className="px-4 text-white font-medium">
                         {item.quantity}
                       </span>
                       <button
+                        type="button"
                         onClick={() =>
                           updateQuantity(item.productId, item.quantity + 1)
                         }
+                        aria-label="Increase quantity"
                         className="px-3 py-1 text-white hover:bg-mali-blue/10 transition-colors"
                       >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </div>
                   </div>

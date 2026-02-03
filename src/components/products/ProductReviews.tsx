@@ -140,6 +140,7 @@ export function ProductReviews({
                 <button
                   key={star}
                   type="button"
+                  aria-label={`Rate ${star} stars`}
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
@@ -152,6 +153,7 @@ export function ProductReviews({
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'text-gray-300'
                     )}
+                    aria-hidden="true"
                   />
                 </button>
               ))}
@@ -178,9 +180,10 @@ export function ProductReviews({
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Share your experience with this product..."
+              placeholder="Share your experience with this product…"
               rows={4}
               required
+              aria-label="Your review"
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
           </div>
@@ -243,17 +246,21 @@ export function ProductReviews({
                   Helpful?
                 </span>
                 <button
+                  type="button"
                   onClick={() => onMarkHelpful(review.id, true)}
+                  aria-label="Mark review as helpful"
                   className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600"
                 >
-                  <ThumbsUp className="w-4 h-4" />
+                  <ThumbsUp className="w-4 h-4" aria-hidden="true" />
                   Yes ({review.helpfulCount})
                 </button>
                 <button
+                  type="button"
                   onClick={() => onMarkHelpful(review.id, false)}
+                  aria-label="Mark review as not helpful"
                   className="flex items-center gap-1 text-sm text-gray-600 hover:text-red-600"
                 >
-                  <ThumbsDown className="w-4 h-4" />
+                  <ThumbsDown className="w-4 h-4" aria-hidden="true" />
                   No
                 </button>
               </div>

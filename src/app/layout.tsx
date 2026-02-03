@@ -35,8 +35,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" className="dark">
+    <html lang="th" className="dark" style={{ colorScheme: 'dark' }}>
       <head>
+        <meta name="theme-color" content="#0a0e1a" />
 
 
         {/* react-grab for development */}

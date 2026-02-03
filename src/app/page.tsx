@@ -77,9 +77,9 @@ const heroSlides = [
 
 // Game categories
 const categories = [
-  { id: "all", name: "ทั้งหมด", icon: <Gamepad2 size={16} /> },
-  { id: "online", name: "เกมออนไลน์", icon: <Gamepad2 size={16} /> },
-  { id: "cards", name: "บัตรเติมเงิน", icon: <Gamepad2 size={16} /> }
+  { id: "all", name: "ทั้งหมด", icon: <Gamepad2 size={16} aria-hidden="true" /> },
+  { id: "online", name: "เกมออนไลน์", icon: <Gamepad2 size={16} aria-hidden="true" /> },
+  { id: "cards", name: "บัตรเติมเงิน", icon: <Gamepad2 size={16} aria-hidden="true" /> }
 ];
 
 // News data
@@ -181,7 +181,10 @@ export default function HomePage() {
               <img
                 src={slide.image}
                 alt={slide.title}
+                width={1200}
+                height={400}
                 className="absolute inset-0 w-full h-full object-cover"
+                priority={index === 0 ? "true" : undefined}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-mali-dark/80 to-transparent" />
 
@@ -206,6 +209,8 @@ export default function HomePage() {
           {heroSlides.map((_, index) => (
             <button
               key={index}
+              type="button"
+              aria-label={`Go to slide ${index + 1}`}
               className={`w-2 h-2 rounded-full ${index === currentSlide ? "bg-white shadow-blue-glow" : "bg-white/30"
                 }`}
               onClick={() => setCurrentSlide(index)}
@@ -283,12 +288,13 @@ export default function HomePage() {
           ))}
 
           <motion.button
+            type="button"
             className="px-4 py-2 rounded-md bg-mali-blue/20 text-mali-text-secondary hover:text-white text-sm flex items-center space-x-2"
             whileHover={{ y: -2 }}
             whileTap={{ y: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Filter size={16} />
+            <Filter size={16} aria-hidden="true" />
             <span>Filter</span>
           </motion.button>
         </div>
@@ -296,10 +302,12 @@ export default function HomePage() {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search games..."
+            placeholder="Search games…"
+            aria-label="Search games"
+            autoComplete="off"
             className="w-full md:w-64 bg-mali-blue/20 border border-mali-blue/30 rounded-md py-2 pl-9 pr-4 text-white text-sm focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-mali-text-secondary" size={16} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-mali-text-secondary" size={16} aria-hidden="true" />
         </div>
       </section>
 
@@ -325,6 +333,9 @@ export default function HomePage() {
                     <img
                       src={game.image}
                       alt={game.title}
+                      width={400}
+                      height={300}
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
                     <div className="absolute top-2 right-2 bg-mali-blue/80 text-white text-xs font-medium px-2 py-0.5 rounded">
@@ -402,6 +413,9 @@ export default function HomePage() {
                   <img
                     src={item.image}
                     alt={item.title}
+                    width={400}
+                    height={250}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
                   <div className="absolute top-2 left-2 bg-mali-purple/80 text-white text-xs font-medium px-2 py-0.5 rounded">
@@ -412,7 +426,7 @@ export default function HomePage() {
                 <div className="p-4">
                   <h3 className="font-medium text-white mb-2">{item.title}</h3>
                   <div className="flex items-center text-mali-text-secondary text-xs">
-                    <Clock size={12} className="mr-1" />
+                    <Clock size={12} className="mr-1" aria-hidden="true" />
                     <span>{item.date}</span>
                   </div>
                 </div>

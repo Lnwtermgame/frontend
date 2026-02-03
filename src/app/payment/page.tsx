@@ -115,6 +115,9 @@ export default function PaymentPage() {
                       {savedPaymentMethods.map(method => (
                         <button
                           key={method.id}
+                          type="button"
+                          onClick={() => handlePaymentMethodSelect(method)}
+                          aria-pressed={selectedPaymentMethod?.id === method.id}
                           className={`flex items-center p-3 rounded-lg border ${
                             selectedPaymentMethod?.id === method.id
                               ? 'border-mali-blue-accent bg-mali-blue/20'
@@ -155,7 +158,9 @@ export default function PaymentPage() {
                         {groupedPaymentMethods.qr.map(method => (
                           <button
                             key={method.id}
+                            type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
+                            aria-pressed={selectedPaymentMethod?.id === method.id}
                             className={`flex items-center p-3 rounded-lg border ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-mali-blue-accent bg-mali-blue/20'
@@ -192,7 +197,9 @@ export default function PaymentPage() {
                         {groupedPaymentMethods.card.map(method => (
                           <button
                             key={method.id}
+                            type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
+                            aria-pressed={selectedPaymentMethod?.id === method.id}
                             className={`flex items-center p-3 rounded-lg border ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-mali-blue-accent bg-mali-blue/20'
@@ -229,7 +236,9 @@ export default function PaymentPage() {
                         {groupedPaymentMethods.wallet.map(method => (
                           <button
                             key={method.id}
+                            type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
+                            aria-pressed={selectedPaymentMethod?.id === method.id}
                             className={`flex items-center p-3 rounded-lg border ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-mali-blue-accent bg-mali-blue/20'
@@ -266,7 +275,9 @@ export default function PaymentPage() {
                         {groupedPaymentMethods.bank.map(method => (
                           <button
                             key={method.id}
+                            type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
+                            aria-pressed={selectedPaymentMethod?.id === method.id}
                             className={`flex items-center p-3 rounded-lg border ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-mali-blue-accent bg-mali-blue/20'
@@ -303,7 +314,9 @@ export default function PaymentPage() {
                         {groupedPaymentMethods.crypto.map(method => (
                           <button
                             key={method.id}
+                            type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
+                            aria-pressed={selectedPaymentMethod?.id === method.id}
                             className={`flex items-center p-3 rounded-lg border ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-mali-blue-accent bg-mali-blue/20'
@@ -362,6 +375,8 @@ export default function PaymentPage() {
                     <input
                       id="amount"
                       type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       className="w-full p-3 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"

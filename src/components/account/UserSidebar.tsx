@@ -40,7 +40,6 @@ const NavItem = memo(function NavItem({
             ? "bg-mali-blue/20 text-white font-medium shadow-sm border border-mali-blue/30"
             : "text-mali-text-secondary hover:bg-mali-blue/10 hover:text-white"
         )}
-        prefetch={false}
       >
         <span className={cn(
           "flex items-center justify-center relative z-10",

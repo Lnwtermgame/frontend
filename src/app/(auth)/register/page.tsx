@@ -142,6 +142,9 @@ export default function RegisterPage() {
                   <input
                     id="username"
                     className="flex h-12 w-full rounded-xl border border-mali-blue bg-mali-dark/50 pl-12 pr-4 text-sm text-white placeholder:text-mali-text-muted focus:outline-none focus:ring-2 focus:ring-mali-blue-accent/50 focus:border-mali-blue-accent transition-all"
+                    type="text"
+                    autoComplete="username"
+                    spellCheck="false"
                     placeholder="yourname"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -165,6 +168,8 @@ export default function RegisterPage() {
                     id="email"
                     className="flex h-12 w-full rounded-xl border border-mali-blue bg-mali-dark/50 pl-12 pr-4 text-sm text-white placeholder:text-mali-text-muted focus:outline-none focus:ring-2 focus:ring-mali-blue-accent/50 focus:border-mali-blue-accent transition-all"
                     type="email"
+                    autoComplete="email"
+                    spellCheck="false"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -186,6 +191,7 @@ export default function RegisterPage() {
                     id="password"
                     className="flex h-12 w-full rounded-xl border border-mali-blue bg-mali-dark/50 pl-12 pr-4 text-sm text-white placeholder:text-mali-text-muted focus:outline-none focus:ring-2 focus:ring-mali-blue-accent/50 focus:border-mali-blue-accent transition-all"
                     type="password"
+                    autoComplete="new-password"
                     placeholder="อย่างน้อย 8 ตัวอักษร"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

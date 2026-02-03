@@ -146,12 +146,46 @@ export default function GameDetailsPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("topup");
   const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
 
   // Handle field value changes
   const handleFieldChange = (fieldName: string, value: string) => {
     setFieldValues((prev) => ({ ...prev, [fieldName]: value }));
+  };
+
+  // Handle favorite toggle
+  const handleToggleFavorite = async () => {
+    if (!product) return;
+
+    try {
+      if (isFavorite && favoriteId) {
+        await productApi.removeFavorite(favoriteId);
+        setIsFavorite(false);
+        setFavoriteId(null);
+      } else {
+        try {
+          const result = await productApi.addFavorite(product.id);
+          setIsFavorite(true);
+          // Store the new favorite ID from response
+          if (result.data?.id) {
+            setFavoriteId(result.data.id);
+          }
+        } catch (addErr: any) {
+          // If already exists, just update UI state and find the ID
+          if (addErr?.response?.data?.error?.code === "ALREADY_EXISTS") {
+            setIsFavorite(true);
+            const favId = await productApi.findFavoriteId(product.id);
+            setFavoriteId(favId);
+          } else {
+            throw addErr;
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error toggling favorite:", err);
+    }
   };
 
   // Helper function to detect if a string is a CUID or UUID (database ID)
@@ -210,6 +244,18 @@ export default function GameDetailsPage() {
           setSelectedOption(
             popularOption ? popularOption.id : gameData.topUpOptions[0].id,
           );
+        }
+
+        // Check if product is in favorites (only for logged in users)
+        try {
+          const isFav = await productApi.checkIsFavorite(productData.id);
+          setIsFavorite(isFav);
+          if (isFav) {
+            const favId = await productApi.findFavoriteId(productData.id);
+            setFavoriteId(favId);
+          }
+        } catch {
+          // Ignore auth errors for guests
         }
       } catch (err) {
         console.error("Error fetching game:", err);
@@ -384,16 +430,27 @@ export default function GameDetailsPage() {
 
               <div className="flex mt-4 md:mt-0 space-x-3">
                 <button
-                  onClick={() => setIsFavorite(!isFavorite)}
-                  className={`p-3 rounded-full border ${isFavorite ? "bg-red-500/20 border-red-500/40 text-red-400" : "bg-mali-blue/10 border-mali-blue/20 text-mali-text-secondary hover:text-white"}`}
+                  type="button"
+                  onClick={handleToggleFavorite}
+                  aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                  className={`p-3 rounded-full border transition-all duration-200 ${
+                    isFavorite
+                      ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
+                      : "bg-mali-blue/10 border-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20"
+                  }`}
                 >
                   <Heart
                     size={20}
-                    className={isFavorite ? "fill-red-400" : ""}
+                    className={isFavorite ? "fill-white text-white" : ""}
+                    aria-hidden="true"
                   />
                 </button>
-                <button className="p-3 rounded-full bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white">
-                  <Share2 size={20} />
+                <button
+                  type="button"
+                  aria-label="Share"
+                  className="p-3 rounded-full bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white"
+                >
+                  <Share2 size={20} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -713,7 +770,7 @@ export default function GameDetailsPage() {
                               </select>
                             ) : (
                               <input
-                                type={field.multiline ? "textarea" : "text"}
+                                type="text"
                                 value={fieldValues[field.name] || ""}
                                 onChange={(e) =>
                                   handleFieldChange(field.name, e.target.value)
@@ -787,13 +844,19 @@ export default function GameDetailsPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <button className="w-full bg-mali-blue hover:bg-mali-blue/90 text-white py-3 rounded-lg font-medium flex items-center justify-center">
-                        <ShoppingCart size={18} className="mr-2" />
+                      <button
+                        type="button"
+                        className="w-full bg-mali-blue hover:bg-mali-blue/90 text-white py-3 rounded-lg font-medium flex items-center justify-center"
+                      >
+                        <ShoppingCart size={18} className="mr-2" aria-hidden="true" />
                         Buy Now
                       </button>
 
-                      <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-lg font-medium flex items-center justify-center">
-                        <CreditCard size={18} className="mr-2" />
+                      <button
+                        type="button"
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-lg font-medium flex items-center justify-center"
+                      >
+                        <CreditCard size={18} className="mr-2" aria-hidden="true" />
                         Top Up with Card
                       </button>
                     </div>

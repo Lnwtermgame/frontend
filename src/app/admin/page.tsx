@@ -250,10 +250,8 @@ export default function AdminDashboard() {
               <Activity className="mr-2 h-5 w-5 text-mali-blue" />
               ธุรกรรมล่าสุด
             </h3>
-            <Link href="/admin/orders">
-              <button className="text-sm text-mali-blue hover:text-white transition-colors">
-                ดูทั้งหมด →
-              </button>
+            <Link href="/admin/orders" className="text-sm text-mali-blue hover:text-white transition-colors">
+              ดูทั้งหมด →
             </Link>
           </div>
           <div className="overflow-x-auto">

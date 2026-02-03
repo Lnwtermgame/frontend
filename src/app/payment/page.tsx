@@ -49,12 +49,12 @@ export default function PaymentPage() {
     e.preventDefault();
     
     if (!selectedPaymentMethod) {
-      setError('Please select a payment method');
+      setError('กรุณาเลือกช่องทางชำระเงิน');
       return;
     }
     
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      setError('Please enter a valid amount');
+      setError('กรุณาระบุจำนวนเงินที่ถูกต้อง');
       return;
     }
     
@@ -67,7 +67,7 @@ export default function PaymentPage() {
       setTransactionId(result.transactionId || '');
     } else {
       setPaymentStatus('error');
-      setError(result.error || 'Payment failed');
+      setError(result.error || 'การชำระเงินล้มเหลว');
     }
   };
 
@@ -87,8 +87,8 @@ export default function PaymentPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">Payment</h1>
-          <p className="text-mali-text-secondary">Select your preferred payment method</p>
+          <h1 className="text-2xl font-bold text-white mb-2">ชำระเงิน</h1>
+          <p className="text-mali-text-secondary">เลือกช่องทางชำระเงินที่คุณต้องการ</p>
         </div>
         
         {/* Payment Form */}

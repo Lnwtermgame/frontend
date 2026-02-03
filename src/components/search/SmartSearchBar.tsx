@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "@/lib/framer-exports";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
-import { getAllGames } from "@/lib/data/games";
+import { productApi, Product } from "@/lib/services/product-api";
 
 // Types
 export interface SearchResult {
@@ -16,7 +16,6 @@ export interface SearchResult {
   subtitle?: string;
   image?: string;
   url: string;
-  price?: number;
 }
 
 export interface SmartSearchProps {
@@ -26,27 +25,35 @@ export interface SmartSearchProps {
   maxResults?: number;
 }
 
-// API function to be implemented by backend
-// API function to be implemented by backend (simulating with local data for now)
+// Search products using the real API
 const searchAPI = async (query: string): Promise<SearchResult[]> => {
-  const games = getAllGames();
-  const lowerQuery = query.toLowerCase();
+  if (!query.trim()) return [];
 
-  const matchedGames = games.filter(game =>
-    game.title.toLowerCase().includes(lowerQuery) ||
-    game.category.toLowerCase().includes(lowerQuery) ||
-    game.id.includes(lowerQuery)
-  );
+  try {
+    const response = await productApi.getProducts({
+      search: query,
+      isActive: true,
+      limit: 8,
+    });
 
-  return matchedGames.map(game => ({
-    id: game.id,
-    type: 'game',
-    title: game.title,
-    subtitle: `${game.category} • ${game.publisher}`,
-    image: game.mainImage,
-    url: `/games/${game.id}`,
-    price: game.price
-  }));
+    if (!response.success) {
+      return [];
+    }
+
+    return response.data.map((product: Product) => ({
+      id: product.id,
+      type: 'game' as const,
+      title: product.name,
+      subtitle: product.category?.name
+        ? `${product.category.name} • ${product.gameDetails?.publisher || 'Game Store'}`
+        : product.gameDetails?.publisher || 'Game Store',
+      image: product.imageUrl,
+      url: `/games/${product.slug || product.id}`,
+    }));
+  } catch (error) {
+    console.error('Search API error:', error);
+    return [];
+  }
 };
 
 // Recent searches storage
@@ -79,7 +86,7 @@ const getRecentSearches = (): string[] => {
 };
 
 export function SmartSearchBar({
-  placeholder = "Search games, cards, and more...",
+  placeholder = "ค้นหาเกม บัตรเติมเงิน และอื่นๆ…",
   className = "",
   onSearch,
   maxResults = 5
@@ -195,17 +202,17 @@ export function SmartSearchBar({
     }
   };
 
-  // Result icon based on type
+  // Result icon based type (decorative)
   const getIconForResult = (type: string) => {
     switch (type) {
       case 'game':
-        return <Gamepad2 size={16} className="text-mali-blue-light" />;
+        return <Gamepad2 size={16} className="text-mali-blue-light" aria-hidden="true" />;
       case 'coupon':
-        return <Tag size={16} className="text-mali-purple" />;
+        return <Tag size={16} className="text-mali-purple" aria-hidden="true" />;
       case 'history':
-        return <Clock size={16} className="text-mali-text-secondary" />;
+        return <Clock size={16} className="text-mali-text-secondary" aria-hidden="true" />;
       default:
-        return <Search size={16} className="text-mali-blue-light" />;
+        return <Search size={16} className="text-mali-blue-light" aria-hidden="true" />;
     }
   };
 
@@ -213,7 +220,7 @@ export function SmartSearchBar({
     <div className={`relative ${className}`} ref={searchRef}>
       <form onSubmit={handleSubmit}>
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
             {isLoading ? (
               <Loader2 size={18} className="text-mali-blue/70 animate-spin" />
             ) : (
@@ -224,6 +231,8 @@ export function SmartSearchBar({
             ref={inputRef}
             type="text"
             placeholder={placeholder}
+            autoComplete="off"
+            aria-label="ค้นหาเกม"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -249,7 +258,7 @@ export function SmartSearchBar({
               type="button"
               onClick={clearSearch}
               className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              aria-label="Clear search"
+              aria-label="ล้างการค้นหา"
             >
               <X size={18} className="text-mali-text-secondary hover:text-white" />
             </button>
@@ -278,14 +287,14 @@ export function SmartSearchBar({
               {/* No results state */}
               {!isLoading && query.trim() && results.length === 0 && (
                 <div className="p-4 text-center">
-                  <p className="text-mali-text-secondary text-sm">No results found for "{query}"</p>
+                  <p className="text-mali-text-secondary text-sm">ไม่พบผลลัพธ์สำหรับ "{query}"</p>
                 </div>
               )}
 
               {/* Search Results */}
               {!isLoading && results.length > 0 && (
                 <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs text-mali-text-secondary">Search Results</div>
+                  <div className="px-3 py-1.5 text-xs text-mali-text-secondary">ผลการค้นหา</div>
                   {results.map((result, index) => (
                     <Link
                       key={result.id}
@@ -305,7 +314,7 @@ export function SmartSearchBar({
                             <img src={result.image} alt={result.title} className="h-full w-full object-cover" />
                           </div>
                         ) : (
-                          <div className="h-8 w-8 rounded-full bg-mali-blue/20 flex items-center justify-center mr-3 flex-shrink-0">
+                          <div className="h-8 w-8 rounded-full bg-mali-blue/20 flex items-center justify-center mr-3 flex-shrink-0" aria-hidden="true">
                             {getIconForResult(result.type)}
                           </div>
                         )}
@@ -315,11 +324,6 @@ export function SmartSearchBar({
                             <div className="text-xs text-mali-text-secondary truncate">{result.subtitle}</div>
                           )}
                         </div>
-                        {result.price !== undefined && (
-                          <div className="text-sm text-mali-green font-medium ml-2">
-                            ${result.price.toFixed(2)}
-                          </div>
-                        )}
                       </div>
                     </Link>
                   ))}
@@ -329,7 +333,7 @@ export function SmartSearchBar({
               {/* Recent Searches */}
               {!query.trim() && recentSearches.length > 0 && (
                 <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs text-mali-text-secondary">Recent Searches</div>
+                  <div className="px-3 py-1.5 text-xs text-mali-text-secondary">ค้นหาล่าสุด</div>
                   {recentSearches.map((search, index) => (
                     <div
                       key={`recent-${index}`}
@@ -340,10 +344,11 @@ export function SmartSearchBar({
                       }}
                     >
                       <div className="flex items-center">
-                        <Clock size={16} className="text-mali-text-secondary mr-2" />
+                        <Clock size={16} className="text-mali-text-secondary mr-2" aria-hidden="true" />
                         <span className="text-sm text-white">{search}</span>
                       </div>
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           const newRecentSearches = recentSearches.filter((_, i) => i !== index);
@@ -353,9 +358,9 @@ export function SmartSearchBar({
                           }
                         }}
                         className="text-mali-text-secondary hover:text-white"
-                        aria-label="Remove from recent searches"
+                        aria-label="ลบออกจากประวัติการค้นหา"
                       >
-                        <X size={14} />
+                        <X size={14} aria-hidden="true" />
                       </button>
                     </div>
                   ))}
@@ -367,15 +372,16 @@ export function SmartSearchBar({
             {query.trim() && results.length > 0 && (
               <div className="px-3 py-2 border-t border-mali-blue/20">
                 <button
+                  type="button"
                   onClick={() => {
                     saveRecentSearch(query);
                     setRecentSearches(getRecentSearches());
-                    router.push(`/search?q=${encodeURIComponent(query)}`);
+                    router.push(`/games?search=${encodeURIComponent(query)}`);
                     setIsDropdownOpen(false);
                   }}
                   className="text-sm text-mali-blue-accent hover:text-mali-blue-light w-full text-center"
                 >
-                  View all results for "{query}"
+                  ดูผลลัพธ์ทั้งหมดสำหรับ "{query}"
                 </button>
               </div>
             )}

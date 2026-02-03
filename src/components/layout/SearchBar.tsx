@@ -10,7 +10,7 @@ interface SearchBarProps {
 
 export default function SearchBar({
   variant = "header",
-  placeholder = "Search games..."
+    placeholder = "ค้นหาเกม..."
 }: SearchBarProps) {
   const router = useRouter();
 

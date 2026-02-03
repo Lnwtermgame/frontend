@@ -104,13 +104,13 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between px-4 py-1 border-b border-mali-blue/10 text-xs text-mali-text-secondary">
         <div className="flex items-center space-x-6">
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/news" className="text-xs font-normal hover:text-white transition-colors">News</Link>
+            <Link href="/news" className="text-xs font-normal hover:text-white transition-colors">ข่าวสาร</Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/support" className="text-xs font-normal hover:text-white transition-colors">Contact Support</Link>
+            <Link href="/support" className="text-xs font-normal hover:text-white transition-colors">ติดต่อเรา</Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/games" className="text-xs font-normal hover:text-white transition-colors">All Games</Link>
+            <Link href="/games" className="text-xs font-normal hover:text-white transition-colors">เกมทั้งหมด</Link>
           </motion.div>
         </div>
         <div className="flex items-center space-x-4">
@@ -150,7 +150,7 @@ export function Header() {
               whileHover={{ y: -2 }}
             >
               <Link href="/card" className="px-2 py-1 text-sm text-white uppercase inline-flex items-center hover:text-gray-300">
-                CARD <ChevronDown className="ml-1 h-3 w-3" />
+                บัตรเติม <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
             <motion.div
@@ -158,14 +158,14 @@ export function Header() {
               whileHover={{ y: -2 }}
             >
               <Link href="/direct-topup" className="px-2 py-1 text-sm text-white uppercase inline-flex items-center hover:text-gray-300">
-                DIRECT TOP-UP <ChevronDown className="ml-1 h-3 w-3" />
+                เติมเกม <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
             <motion.div
               whileHover={{ y: -2 }}
             >
               <Link href="/mobile-recharge" className="px-2 py-1 text-sm text-white uppercase hover:text-gray-300">
-                MOBILE RECHARGE
+                เติมเงินมือถือ
               </Link>
             </motion.div>
           </nav>
@@ -178,8 +178,8 @@ export function Header() {
           >
             <input
               type="text"
-              placeholder="Search Games…"
-              aria-label="Search games"
+              placeholder="ค้นหาเกม…"
+              aria-label="ค้นหาเกม"
               autoComplete="off"
               className="w-full rounded-sm bg-mali-blue/20 border border-mali-blue/30 px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent"
             />
@@ -189,7 +189,7 @@ export function Header() {
           <div className="flex items-center space-x-4">
             <motion.button
               type="button"
-              aria-label="Notifications"
+              aria-label="การแจ้งเตือน"
               whileHover={{ scale: 1.05 }}
               className="text-mali-text-secondary hover:text-white transition-colors"
             >
@@ -198,7 +198,7 @@ export function Header() {
 
             <motion.button
               type="button"
-              aria-label="Change language"
+              aria-label="เปลี่ยนภาษา"
               whileHover={{ scale: 1.05 }}
               className="text-mali-text-secondary hover:text-white transition-colors"
             >
@@ -248,7 +248,7 @@ export function Header() {
                             className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white cursor-pointer"
                           >
                             <User className="h-4 w-4 mr-3" aria-hidden="true" />
-                            <span>My Account</span>
+                            <span>บัญชีของฉัน</span>
                           </motion.div>
                         </Link>
 
@@ -259,7 +259,7 @@ export function Header() {
                             className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white cursor-pointer"
                           >
                             <Coins className="h-4 w-4 mr-3" aria-hidden="true" />
-                            <span>Credits</span>
+                            <span>เครดิต</span>
                           </motion.div>
                         </Link>
 
@@ -270,7 +270,7 @@ export function Header() {
                             className="w-full flex items-center px-4 py-2 text-xs text-mali-text-secondary hover:text-white cursor-pointer"
                           >
                             <ShoppingCart className="h-4 w-4 mr-3" aria-hidden="true" />
-                            <span>Order History</span>
+                            <span>ประวัติการสั่งซื้อ</span>
                           </motion.div>
                         </Link>
 
@@ -282,7 +282,7 @@ export function Header() {
                           onClick={handleLogout}
                         >
                           <LogOut className="h-4 w-4 mr-3" aria-hidden="true" />
-                          <span>Logout</span>
+                          <span>ออกจากระบบ</span>
                         </motion.button>
                       </div>
                     </div>

@@ -40,7 +40,7 @@ export function Footer() {
 
           {/* Column 2: Quick Links (2 cols) */}
           <div className="md:col-span-2">
-            <h3 className="text-white font-medium mb-3 text-sm">Quick Links</h3>
+            <h3 className="text-white font-medium mb-3 text-sm">ลิงก์ด่วน</h3>
             <ul className="space-y-1.5 text-xs">
               {['เกมทั้งหมด', 'เติมเกมโดยตรง', 'บัตรเกม', 'โปรโมชั่น', 'ติดต่อเรา'].map((item, i) => (
                 <li key={i}>
@@ -54,7 +54,7 @@ export function Footer() {
 
           {/* Column 3: Contact Us (3 cols) */}
           <div className="md:col-span-3">
-            <h3 className="text-white font-medium mb-3 text-sm">Contact Us</h3>
+            <h3 className="text-white font-medium mb-3 text-sm">ติดต่อเรา</h3>
             <ul className="space-y-2 text-xs">
               <li className="flex items-center text-mali-text-secondary">
                 <Mail size={14} className="mr-2 text-mali-blue-light flex-shrink-0" />
@@ -62,14 +62,14 @@ export function Footer() {
               </li>
               <li className="flex items-center text-mali-text-secondary">
                 <Phone size={14} className="mr-2 text-mali-blue-light flex-shrink-0" />
-                <span>Live Chat Support 24/7</span>
+                <span>แชทสดตลอด 24 ชั่วโมง</span>
               </li>
             </ul>
           </div>
 
           {/* Column 4: Payment Methods (3 cols) */}
           <div className="md:col-span-3">
-            <h3 className="text-white font-medium mb-3 text-sm">Payment Methods</h3>
+            <h3 className="text-white font-medium mb-3 text-sm">ช่องทางชำระเงิน</h3>
             <div className="grid grid-cols-3 gap-1.5">
               {['Visa', 'Mastercard', 'JCB', 'PromptPay', 'TrueMoney', 'ShopeePay'].map((method) => (
                 <span key={method} className="px-2 py-1 bg-mali-blue/10 text-mali-text-secondary rounded text-[10px] flex items-center justify-center border border-mali-blue/5">
@@ -101,11 +101,11 @@ export function Footer() {
         {/* Copyright */}
         <div className="py-4 flex flex-col md:flex-row justify-between items-center text-[10px] text-mali-text-secondary border-t border-mali-blue/10">
           <div>
-            &copy; {year} MaliGamePass. All rights reserved.
+            &copy; {year} MaliGamePass สงวนลิขสิทธิ์
           </div>
           <div className="flex space-x-4 mt-2 md:mt-0">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">นโยบายความเป็นส่วนตัว</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">เงื่อนไขการใช้บริการ</Link>
           </div>
         </div>
       </div>

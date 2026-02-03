@@ -346,7 +346,7 @@ function DirectTopupContent() {
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-mali-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <div className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform shadow-button-glow">
-                            เติมเงินเลย
+                            เติมเกมเลย
                           </div>
                         </div>
                       </div>
@@ -375,7 +375,7 @@ function DirectTopupContent() {
 
 export default function DirectTopupPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-mali-dark flex items-center justify-center text-white">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-mali-dark flex items-center justify-center text-white">กำลังโหลด...</div>}>
       <DirectTopupContent />
     </Suspense>
   );

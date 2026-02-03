@@ -101,7 +101,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!allFieldsValid) {
-      alert("Please fill in all required fields for direct top-up items");
+      alert("กรุณากรอกข้อมูลที่จำเป็นทั้งหมดสำหรับรายการเติมเงินโดยตรง");
       return;
     }
 
@@ -123,7 +123,7 @@ export default function CheckoutPage() {
         clearCart();
         router.push(`/orders/${response.data.id}/success`);
       } else {
-        alert("Failed to create order");
+        alert("สร้างคำสั่งซื้อไม่สำเร็จ");
       }
     } catch (error: any) {
       console.error("Order creation failed:", error);
@@ -131,10 +131,10 @@ export default function CheckoutPage() {
       // Check if it's a 10406 error
       if (error.response?.data?.error?.infoCode === 10406) {
         alert(
-          "Some product fields have changed. Please refresh the page and try again."
+          "ข้อมูลสินค้าบางอย่างมีการเปลี่ยนแปลง กรุณารีเฟรชหน้าและลองใหม่อีกครั้ง"
         );
       } else {
-        alert(error.message || "Failed to place order");
+        alert(error.message || "สั่งซื้อไม่สำเร็จ");
       }
     } finally {
       setIsSubmitting(false);
@@ -146,7 +146,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center">
           <Loader2 className="w-12 h-12 text-mali-blue animate-spin" />
-          <p className="mt-4 text-gray-400">Loading checkout...</p>
+          <p className="mt-4 text-gray-400">กำลังโหลดหน้าชำระเงิน...</p>
         </div>
       </div>
     );
@@ -158,17 +158,17 @@ export default function CheckoutPage() {
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center max-w-md">
           <ShoppingCart className="mx-auto text-gray-500 w-12 h-12 mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">
-            Your Cart is Empty
+            ตะกร้าของคุณว่างเปล่า
           </h2>
           <p className="text-gray-400 mb-6">
-            Add some products to your cart to proceed with checkout.
+            เพิ่มสินค้าลงในตะกร้าเพื่อดำเนินการชำระเงิน
           </p>
           <Link
             href="/products"
             className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
-            Browse Products
+            เลือกดูสินค้า
           </Link>
         </div>
       </div>
@@ -181,9 +181,9 @@ export default function CheckoutPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">Checkout</h1>
+            <h1 className="text-2xl font-bold text-white">ชำระเงิน</h1>
             <p className="text-gray-400">
-              Review your items and complete your purchase
+              ตรวจสอบสินค้าและดำเนินการชำระเงิน
             </p>
           </div>
           <Link
@@ -191,7 +191,7 @@ export default function CheckoutPage() {
             className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
           >
             <ChevronLeft className="w-5 h-5" />
-            Continue Shopping
+            เลือกซื้อสินค้าต่อ
           </Link>
         </div>
 
@@ -236,12 +236,12 @@ export default function CheckoutPage() {
                           {item.productType === "DIRECT_TOPUP" ? (
                             <>
                               <Zap className="w-4 h-4" />
-                              Direct Top-Up
+                              เติมเงินโดยตรง
                             </>
                           ) : (
                             <>
                               <CreditCard className="w-4 h-4" />
-                              Gift Card
+                              บัตรของขวัญ
                             </>
                           )}
                         </span>

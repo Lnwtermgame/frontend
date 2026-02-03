@@ -16,13 +16,13 @@ import {
   Clock,
   Calendar,
   Smartphone,
-  CreditCard,
   Info,
   DollarSign,
   Gift,
   AlertCircle,
   Check,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   GameRelatedProducts,
   RelatedProduct,
@@ -149,6 +149,19 @@ export default function GameDetailsPage() {
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [copied, setCopied] = useState(false);
+
+  // Handle share/copy link
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      toast.success('คัดลอกลิงก์เรียบร้อยแล้ว');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error('ไม่สามารถคัดลอกลิงก์ได้');
+    }
+  };
 
   // Handle field value changes
   const handleFieldChange = (fieldName: string, value: string) => {
@@ -274,7 +287,7 @@ export default function GameDetailsPage() {
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-mali-text-secondary">
-            Loading game details...
+            กำลังโหลดข้อมูลเกม...
           </p>
         </div>
       </div>
@@ -286,17 +299,17 @@ export default function GameDetailsPage() {
       <div className="page-container">
         <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center">
           <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Game Not Found</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">ไม่พบเกม</h2>
           <p className="text-mali-text-secondary mb-6">
             {error ||
-              "The game you're looking for doesn't exist or has been removed."}
+              "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
           </p>
           <Link
             href="/games"
             className="bg-mali-blue-accent hover:bg-mali-blue-accent/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
           >
             <ChevronLeft size={18} className="mr-2" />
-            Back to Games
+            กลับไปหน้าเกมทั้งหมด
           </Link>
         </div>
       </div>
@@ -363,7 +376,7 @@ export default function GameDetailsPage() {
           className="text-mali-text-secondary hover:text-white transition-colors inline-flex items-center"
         >
           <ChevronLeft size={18} className="mr-1" />
-          Back to Games
+          กลับไปหน้าเกม
         </Link>
       </div>
 
@@ -421,7 +434,7 @@ export default function GameDetailsPage() {
                   )}
                 </div>
                 <div className="mt-3">
-                  <span className="text-gray-400 mr-2">By</span>
+                  <span className="text-gray-400 mr-2">โดย</span>
                   <span className="text-white">
                     {game.developer || game.publisher}
                   </span>
@@ -432,7 +445,7 @@ export default function GameDetailsPage() {
                 <button
                   type="button"
                   onClick={handleToggleFavorite}
-                  aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                  aria-label={isFavorite ? "ลบออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
                   className={`p-3 rounded-full border transition-all duration-200 ${
                     isFavorite
                       ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
@@ -447,10 +460,19 @@ export default function GameDetailsPage() {
                 </button>
                 <button
                   type="button"
-                  aria-label="Share"
-                  className="p-3 rounded-full bg-mali-blue/10 border border-mali-blue/20 text-mali-text-secondary hover:text-white"
+                  onClick={handleCopyLink}
+                  aria-label={copied ? "คัดลอกแล้ว" : "คัดลอกลิงก์"}
+                  className={`p-3 rounded-full border transition-all duration-200 ${
+                    copied
+                      ? "bg-mali-green border-mali-green text-white shadow-lg shadow-mali-green/30"
+                      : "bg-mali-blue/10 border-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20"
+                  }`}
                 >
-                  <Share2 size={20} aria-hidden="true" />
+                  {copied ? (
+                    <Check size={20} aria-hidden="true" />
+                  ) : (
+                    <Share2 size={20} aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </div>
@@ -470,14 +492,14 @@ export default function GameDetailsPage() {
                 className={`py-4 px-6 text-sm font-medium flex items-center ${activeTab === "topup" ? "text-mali-blue-accent border-b-2 border-mali-blue-accent" : "text-mali-text-secondary hover:text-white"}`}
               >
                 <DollarSign size={18} className="mr-2" />
-                Top Up Options
+                ตัวเลือกเติมเงิน
               </button>
               <button
                 onClick={() => setActiveTab("info")}
                 className={`py-4 px-6 text-sm font-medium flex items-center ${activeTab === "info" ? "text-mali-blue-accent border-b-2 border-mali-blue-accent" : "text-mali-text-secondary hover:text-white"}`}
               >
                 <Info size={18} className="mr-2" />
-                Game Info
+                ข้อมูลเกม
               </button>
             </div>
 
@@ -486,7 +508,7 @@ export default function GameDetailsPage() {
               {activeTab === "topup" && (
                 <div className="space-y-6">
                   <p className="text-mali-text-secondary">
-                    Select an amount to top up:
+                    เลือกจำนวนที่ต้องการเติม:
                   </p>
 
                   {game.topUpOptions.length === 0 ? (
@@ -496,10 +518,10 @@ export default function GameDetailsPage() {
                         size={32}
                       />
                       <p className="text-mali-text-secondary">
-                        No top-up options available
+                        ไม่มีตัวเลือกการเติมเงิน
                       </p>
                       <p className="text-sm text-mali-text-secondary mt-1">
-                        Please try again later
+                        กรุณาลองใหม่อีกครั้งภายหลัง
                       </p>
                     </div>
                   ) : (
@@ -517,7 +539,7 @@ export default function GameDetailsPage() {
                           {option.isPopular && (
                             <div className="absolute -top-3 left-0 right-0 flex justify-center">
                               <span className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm uppercase tracking-wider">
-                                POPULAR
+                                ยอดนิยม
                               </span>
                             </div>
                           )}
@@ -569,11 +591,11 @@ export default function GameDetailsPage() {
                         />
                         <div>
                           <h4 className="text-white font-medium mb-1">
-                            First Purchase Bonus!
+                            โบนัสการซื้อครั้งแรก!
                           </h4>
                           <p className="text-mali-text-secondary text-sm">
-                            Get an extra 10% bonus on your first purchase. The
-                            bonus will be automatically added to your account.
+                            รับโบนัสพิเศษ 10% สำหรับการซื้อครั้งแรก
+                            โบนัสจะถูกเพิ่มเข้าบัญชีของคุณอัตโนมัติ
                           </p>
                         </div>
                       </div>
@@ -587,31 +609,10 @@ export default function GameDetailsPage() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-white font-medium mb-2">
-                      About {game.title}
+                      เกี่ยวกับ {game.title}
                     </h3>
                     <ProductDescription description={game.longDescription || game.description} />
                   </div>
-
-                  {game.features && (
-                    <div>
-                      <h3 className="text-white font-medium mb-3">
-                        Key Features
-                      </h3>
-                      <ul className="space-y-2">
-                        {game.features.map((feature: string, index: number) => (
-                          <li key={index} className="flex items-start">
-                            <Check
-                              size={18}
-                              className="text-green-400 mr-2 mt-0.5 flex-shrink-0"
-                            />
-                            <span className="text-mali-text-secondary">
-                              {feature}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-4">
@@ -620,10 +621,10 @@ export default function GameDetailsPage() {
                           className="mr-2 text-mali-blue-accent"
                           size={18}
                         />
-                        Developer
+                        ผู้พัฒนา
                       </h4>
                       <p className="text-mali-text-secondary">
-                        {game.developer || "N/A"}
+                        {game.developer || "ไม่ระบุ"}
                       </p>
                     </div>
 
@@ -633,10 +634,10 @@ export default function GameDetailsPage() {
                           className="mr-2 text-mali-blue-accent"
                           size={18}
                         />
-                        Publisher
+                        ผู้จัดจำหน่าย
                       </h4>
                       <p className="text-mali-text-secondary">
-                        {game.publisher || "N/A"}
+                        {game.publisher || "ไม่ระบุ"}
                       </p>
                     </div>
 
@@ -647,7 +648,7 @@ export default function GameDetailsPage() {
                             className="mr-2 text-mali-blue-accent"
                             size={18}
                           />
-                          Release Date
+                          วันวางจำหน่าย
                         </h4>
                         <p className="text-mali-text-secondary">
                           {new Date(game.releaseDate).toLocaleDateString(
@@ -664,7 +665,7 @@ export default function GameDetailsPage() {
                           className="mr-2 text-mali-blue-accent"
                           size={18}
                         />
-                        Platforms
+                        แพลตฟอร์ม
                       </h4>
                       <p className="text-mali-text-secondary">
                         {game.platforms.join(", ")}
@@ -678,7 +679,7 @@ export default function GameDetailsPage() {
 
           {/* Related Games */}
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-4">Related Games</h2>
+            <h2 className="text-xl font-bold text-white mb-4">เกมที่เกี่ยวข้อง</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {game.relatedGames.length > 0 ? (
                 game.relatedGames.map((relatedSlug: string) => (
@@ -703,7 +704,7 @@ export default function GameDetailsPage() {
                               4.5
                             </span>
                             <span className="ml-2 text-xs bg-mali-blue/30 text-mali-blue-accent px-1.5 py-0.5 rounded">
-                              Game
+                              เกม
                             </span>
                           </div>
                         </div>
@@ -713,7 +714,7 @@ export default function GameDetailsPage() {
                 ))
               ) : (
                 <div className="col-span-full text-center py-8 text-mali-text-secondary">
-                  No related games found
+                  ไม่พบเกมที่เกี่ยวข้อง
                 </div>
               )}
             </div>
@@ -724,7 +725,7 @@ export default function GameDetailsPage() {
         <div>
           <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-6 sticky top-4">
             <h3 className="text-xl font-bold text-white mb-4">
-              Top Up Details
+              รายละเอียดการเติมเงิน
             </h3>
 
             {selectedOption &&
@@ -756,7 +757,7 @@ export default function GameDetailsPage() {
                                 className="w-full bg-mali-blue/5 border border-mali-blue/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-mali-blue-accent transition-colors"
                               >
                                 <option value="" className="bg-mali-card">
-                                  Select {field.label}
+                                  เลือก{field.label}
                                 </option>
                                 {field.options?.map((opt) => (
                                   <option
@@ -777,14 +778,14 @@ export default function GameDetailsPage() {
                                 }
                                 placeholder={
                                   field.placeholder ||
-                                  `Enter your ${field.label}`
+                                  `กรอก${field.label}ของคุณ`
                                 }
                                 className="w-full bg-mali-blue/5 border border-mali-blue/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-mali-blue-accent transition-colors"
                               />
                             )}
                             {field.prefix && (
                               <span className="text-xs text-mali-text-secondary mt-1 block">
-                                Prefix: {field.prefix}
+                                คำนำหน้า: {field.prefix}
                               </span>
                             )}
                           </div>
@@ -794,7 +795,7 @@ export default function GameDetailsPage() {
 
                     <div className="flex justify-between items-center">
                       <span className="text-mali-text-secondary">
-                        Selected Amount:
+                        จำนวนที่เลือก:
                       </span>
                       <div className="text-right">
                         <span className="text-white font-bold block">
@@ -810,7 +811,7 @@ export default function GameDetailsPage() {
 
                     <div className="py-4 border-y border-mali-blue/20">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-mali-text-secondary">Price:</span>
+                        <span className="text-mali-text-secondary">ราคา:</span>
                         {option.originalPrice > option.price ? (
                           <div>
                             <span className="line-through text-mali-text-secondary text-sm mr-2">
@@ -830,7 +831,7 @@ export default function GameDetailsPage() {
                       {option.originalPrice > option.price && (
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-mali-text-secondary">
-                            You Save:
+                            ประหยัด:
                           </span>
                           <span className="text-green-400 font-bold">
                             ฿
@@ -849,15 +850,7 @@ export default function GameDetailsPage() {
                         className="w-full bg-mali-blue hover:bg-mali-blue/90 text-white py-3 rounded-lg font-medium flex items-center justify-center"
                       >
                         <ShoppingCart size={18} className="mr-2" aria-hidden="true" />
-                        Buy Now
-                      </button>
-
-                      <button
-                        type="button"
-                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-lg font-medium flex items-center justify-center"
-                      >
-                        <CreditCard size={18} className="mr-2" aria-hidden="true" />
-                        Top Up with Card
+                        ซื้อเลย
                       </button>
                     </div>
 
@@ -868,7 +861,7 @@ export default function GameDetailsPage() {
                           className="text-mali-text-secondary mr-2 mt-0.5 flex-shrink-0"
                         />
                         <span className="text-mali-text-secondary">
-                          Auto-delivery within 5 minutes after payment
+                          จัดส่งอัตโนมัติภายใน 5 นาทีหลังชำระเงิน
                         </span>
                       </div>
                     </div>
@@ -882,18 +875,18 @@ export default function GameDetailsPage() {
       {/* Cross-selling section */}
       <section className="mb-10 mt-16">
         <GameRelatedProducts
-          title="Enhance Your Experience"
-          subtitle="Recommended add-ons for this game"
+          title="ไอเทมแนะนำ"
+          subtitle="ไอเทมเสริมที่เหมาะกับเกมนี้"
           products={relatedProducts}
           type="cross-sell"
           viewAllUrl={`/games/${gameId}/items`}
-          viewAllText="View all items"
+          viewAllText="ดูไอเทมทั้งหมด"
         />
       </section>
 
       {/* Related Games section - modify the existing code */}
       <section className="mb-10">
-        <h2 className="text-xl font-bold text-white mb-4">Similar Games</h2>
+        <h2 className="text-xl font-bold text-white mb-4">เกมที่คล้ายกัน</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {game.relatedGames.length > 0 ? (
             game.relatedGames.map((relatedSlug: string) => (
@@ -916,7 +909,7 @@ export default function GameDetailsPage() {
                         </span>
                       </div>
                       <span className="text-xs text-mali-text-secondary">
-                        Game
+                        เกม
                       </span>
                     </div>
                   </div>
@@ -925,7 +918,7 @@ export default function GameDetailsPage() {
             ))
           ) : (
             <div className="col-span-full text-center py-8 text-mali-text-secondary">
-              No similar games found
+              ไม่พบเกมที่คล้ายกัน
             </div>
           )}
         </div>

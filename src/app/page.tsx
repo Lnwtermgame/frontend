@@ -161,7 +161,7 @@ export default function HomePage() {
         >
           MaliGamePass
         </motion.h1>
-        <p className="text-mali-text-secondary relative">Your one-stop shop for game top-ups and credits</p>
+        <p className="text-mali-text-secondary relative">เติมเกมง่าย ๆ จบที่เดียว บริการเติมเกมครบวงจร</p>
       </div>
 
       {/* Hero Section with Promotions */}
@@ -192,13 +192,15 @@ export default function HomePage() {
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-lg">
                   {slide.title}
                 </h2>
-                <motion.button
-                  className="bg-button-gradient text-white px-6 py-2 rounded-md font-medium shadow-button-glow"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  เติมเงินเลย
-                </motion.button>
+                <Link href="/games">
+                  <motion.button
+                    className="bg-button-gradient text-white px-6 py-2 rounded-md font-medium shadow-button-glow"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    เติมเกมเลย
+                  </motion.button>
+                </Link>
               </div>
             </motion.div>
           ))}
@@ -224,10 +226,10 @@ export default function HomePage() {
         {/* AI Game Assistant */}
         <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-mali-blue to-black rounded-xl p-6 relative overflow-hidden border border-mali-blue/50 group">
           <div className="relative z-10">
-            <div className="text-white text-xs mb-1 bg-mali-blue-accent px-2 py-0.5 rounded font-bold inline-block">ใหม่ปี! 2025</div>
-            <h3 className="font-bold text-white text-xl mb-2">AI Game Assistant</h3>
+            <div className="text-white text-xs mb-1 bg-mali-blue-accent px-2 py-0.5 rounded font-bold inline-block">ใหม่ล่าสุด! 2025</div>
+            <h3 className="font-bold text-white text-xl mb-2">ผู้ช่วยเกมอัจฉริยะ AI</h3>
             <p className="text-white/80 text-sm mb-4 max-w-md">
-              เช่วยให้ผู้เล่นสามารถจัดการเกมได้ง่ายขึ้น และช่วยเหลือผู้เล่นทุกเกม
+              ช่วยให้คุณจัดการเกมได้ง่ายขึ้น พร้อมให้คำแนะนำทุกเกมที่คุณต้องการ
             </p>
             <motion.button
               className="bg-white text-black px-4 py-1.5 rounded-md text-sm font-bold hover:bg-gray-200 transition-colors"
@@ -295,15 +297,15 @@ export default function HomePage() {
             transition={{ duration: 0.2 }}
           >
             <Filter size={16} aria-hidden="true" />
-            <span>Filter</span>
+            <span>ตัวกรอง</span>
           </motion.button>
         </div>
 
         <div className="relative">
           <input
             type="text"
-            placeholder="Search games…"
-            aria-label="Search games"
+            placeholder="ค้นหาเกม…"
+            aria-label="ค้นหาเกม"
             autoComplete="off"
             className="w-full md:w-64 bg-mali-blue/20 border border-mali-blue/30 rounded-md py-2 pl-9 pr-4 text-white text-sm focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent"
           />
@@ -314,9 +316,9 @@ export default function HomePage() {
       {/* Featured Games */}
       <section className="mb-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-white">Featured Games</h2>
+          <h2 className="text-xl font-bold text-white">เกมแนะนำ</h2>
           <Link href="/games" className="text-mali-blue-accent text-sm hover:text-mali-blue-light transition-colors">
-            View all games
+            ดูเกมทั้งหมด
           </Link>
         </div>
 
@@ -394,9 +396,9 @@ export default function HomePage() {
       {/* News Section */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-white">Latest News</h2>
+          <h2 className="text-xl font-bold text-white">ข่าวสารล่าสุด</h2>
           <Link href="/news" className="text-mali-blue-accent text-sm hover:text-mali-blue-light transition-colors">
-            View all news
+            ดูข่าวทั้งหมด
           </Link>
         </div>
 

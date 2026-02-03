@@ -15,7 +15,6 @@ import {
   Award,
   Clock,
   Calendar,
-  Monitor,
   Smartphone,
   CreditCard,
   Info,
@@ -146,7 +145,6 @@ export default function GameDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("topup");
-  const [selectedScreenshotIndex, setSelectedScreenshotIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
@@ -424,13 +422,6 @@ export default function GameDetailsPage() {
                 <Info size={18} className="mr-2" />
                 Game Info
               </button>
-              <button
-                onClick={() => setActiveTab("screenshots")}
-                className={`py-4 px-6 text-sm font-medium flex items-center ${activeTab === "screenshots" ? "text-mali-blue-accent border-b-2 border-mali-blue-accent" : "text-mali-text-secondary hover:text-white"}`}
-              >
-                <Monitor size={18} className="mr-2" />
-                Screenshots
-              </button>
             </div>
 
             <div className="p-6 md:p-8">
@@ -622,41 +613,6 @@ export default function GameDetailsPage() {
                         {game.platforms.join(", ")}
                       </p>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Screenshots */}
-              {activeTab === "screenshots" && game.screenshots && (
-                <div>
-                  <div className="mb-4">
-                    <div className="relative aspect-video rounded-lg overflow-hidden">
-                      <Image
-                        src={game.screenshots[selectedScreenshotIndex]}
-                        alt={`${game.title} screenshot ${selectedScreenshotIndex + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-2">
-                    {game.screenshots.map(
-                      (screenshot: string, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() => setSelectedScreenshotIndex(index)}
-                          className={`relative aspect-video rounded-md overflow-hidden cursor-pointer border-2 ${selectedScreenshotIndex === index ? "border-mali-blue-accent" : "border-transparent hover:border-mali-blue/50"}`}
-                        >
-                          <Image
-                            src={screenshot}
-                            alt={`${game.title} thumbnail ${index + 1}`}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ),
-                    )}
                   </div>
                 </div>
               )}

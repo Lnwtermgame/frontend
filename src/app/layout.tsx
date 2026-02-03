@@ -67,6 +67,9 @@ export default function RootLayout({
                       <LiveChat />
                       <Toaster
                         position="bottom-right"
+                        containerStyle={{
+                          zIndex: 50,
+                        }}
                         toastOptions={{
                           duration: 4000,
                           style: {

@@ -37,15 +37,20 @@ function transformProductToGame(product: Product): GameProduct {
   // Use game details for publisher if available
   const publisher = product.gameDetails?.publisher || product.gameDetails?.developer;
 
+  // Get starting price from seagmTypes (lowest unitPrice) or fallback to product price
+  const startingPrice = product.seagmTypes && product.seagmTypes.length > 0
+    ? Math.min(...product.seagmTypes.map(t => Number(t.unitPrice)))
+    : Number(product.price);
+
   return {
     id: product.id,
     slug: product.slug,
     title: product.name,
     category: 'Direct Top-Up',
-    publisher: publisher || 'Game Publisher',
+    publisher: publisher || 'Unknown Publisher',
     mainImage: product.imageUrl || `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
     rating: product.averageRating || 4.5,
-    price: product.price,
+    price: startingPrice,
     discountPercent: product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0,
     platforms: product.gameDetails?.platforms || ['PC', 'Mobile'],
   };

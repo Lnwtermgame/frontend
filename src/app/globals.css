@@ -292,6 +292,16 @@
       display: none;
     }
 
+    /* Fix react-hot-toast blocking react-grab */
+    /* The toaster container should not capture pointer events when empty */
+    [data-rht-toaster] {
+      pointer-events: none !important;
+    }
+    /* But actual toasts should still be clickable */
+    [data-rht-toaster] > * {
+      pointer-events: auto !important;
+    }
+
     /* Prevent overflow in flex/grid containers */
     .min-w-0 {
       min-width: 0;

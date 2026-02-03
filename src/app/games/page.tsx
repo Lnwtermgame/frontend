@@ -34,17 +34,20 @@ function getCategoryIcon(category: string) {
 
 // Transform Product to GameProduct
 function transformProductToGame(product: Product): GameProduct {
+  // Use game details for publisher if available
+  const publisher = product.gameDetails?.publisher || product.gameDetails?.developer;
+
   return {
     id: product.id,
     slug: product.slug,
     title: product.name,
-    category: product.category?.name || 'Game',
-    publisher: product.attributes?.find(a => a.name.toLowerCase().includes('publisher'))?.value || product.category?.name || 'Game',
+    category: 'Direct Top-Up',
+    publisher: publisher || 'Game Publisher',
     mainImage: product.imageUrl || `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
     rating: product.averageRating || 4.5,
     price: product.price,
     discountPercent: product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0,
-    platforms: ['PC', 'Mobile'], // Default platforms - could be extracted from attributes
+    platforms: product.gameDetails?.platforms || ['PC', 'Mobile'],
   };
 }
 

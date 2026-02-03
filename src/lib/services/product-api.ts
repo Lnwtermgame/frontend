@@ -94,7 +94,7 @@ export interface Product {
   images?: ProductImage[];
   productType: "CARD" | "DIRECT_TOPUP";
   seagmProductId?: string;
-  seagmId?: number; // SEAGM API numeric product ID (e.g., 756)
+  seagmId?: number; // External API product ID for order fulfillment
   requiredFields?: SeagmField[];
   isActive: boolean;
   isFeatured?: boolean;
@@ -107,7 +107,7 @@ export interface Product {
   metaDescription?: string;
   metaKeywords?: string;
   gameDetails?: GameDetails;
-  // SEAGM types (denominations) - included in getProductBySlug response
+  // Product types/denominations - included in getProductBySlug response
   seagmTypes?: ProductType[];
   variants?: ProductVariant[];
   attributes?: ProductAttribute[];
@@ -300,7 +300,7 @@ export interface SyncResult {
   errors: string[];
 }
 
-// ============ SEAGM Product Types (Redesigned) ============
+// ============ External Supplier Product Types ============
 
 export interface SeagmProduct {
   id: string;
@@ -320,7 +320,7 @@ export interface SeagmProduct {
 export interface ProductType {
   id: string;
   seagmProductId: string;
-  seagmProductNumericId?: number; // SEAGM API product/category id (e.g., 756)
+  seagmProductNumericId?: number; // External supplier product ID
   seagmTypeId: number;
   name: string;
   parValue: number;
@@ -798,7 +798,7 @@ class ProductApiService {
     return response.data;
   }
 
-  // ============ Admin: SEAGM Sync ============
+  // ============ Admin: Product Sync ============
 
   async syncAll(): Promise<{ success: boolean; data: SyncResult }> {
     const response = await productClient.post("/api/admin/sync/all");
@@ -815,10 +815,10 @@ class ProductApiService {
     return response.data;
   }
 
-  // ============ SEAGM Games (Redesigned Structure) ============
+  // ============ Games API ============
 
   /**
-   * Get all SEAGM games/products
+   * Get all games/products
    * Returns products with mode: 'directtopup' | 'card' and region info
    */
   async getGames(params?: {
@@ -859,7 +859,7 @@ class ProductApiService {
   }
 
   /**
-   * Get SEAGM product by ID (database ID, not seagm_id)
+   * Get supplier product by internal database ID
    * Example: getGameById('clj234...') -> SeagmProduct
    */
   async getGameById(
@@ -870,7 +870,7 @@ class ProductApiService {
   }
 
   /**
-   * Get product types by SEAGM product ID (database ID, not seagm_id)
+   * Get product types by internal supplier product ID
    * Example: getGameTypesById('clj234...') -> [60 UC, 325 UC, ...]
    */
   async getGameTypesById(

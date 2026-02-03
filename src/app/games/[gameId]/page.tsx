@@ -191,10 +191,8 @@ export default function GameDetailsPage() {
         const productData = productResponse.data;
         setProduct(productData);
 
-        // Extract SEAGM types from product response (now included in single API call)
+        // Extract product types from response (now included in single API call)
         let typesData: ProductType[] = [];
-        console.log("Product data:", productData);
-        console.log("SEAGM types from product:", productData.seagmTypes);
         if (productData.seagmTypes && productData.seagmTypes.length > 0) {
           typesData = productData.seagmTypes;
         }
@@ -725,7 +723,7 @@ export default function GameDetailsPage() {
 
                 return (
                   <div className="space-y-6">
-                    {/* Dynamic Fields from SEAGM API */}
+                    {/* Dynamic Fields for Direct Top-Up */}
                     {option.fields && option.fields.length > 0 && (
                       <div className="space-y-4">
                         {option.fields.map((field) => (

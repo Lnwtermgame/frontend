@@ -87,7 +87,6 @@ export default function ProductsPage() {
           <h1 className="text-4xl font-bold text-white mb-4">All Products</h1>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Browse our collection of gift cards and direct top-up products
-            powered by SEAGM
           </p>
         </div>
 

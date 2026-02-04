@@ -4,17 +4,15 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import {
-  Users,
   Package,
   Tag,
-  BarChart3,
   Settings,
   User,
   LogOut,
   ChevronRight,
   Home,
   DollarSign,
-  FileText
+  MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -39,19 +37,9 @@ const adminNavItems = [
     icon: <Tag className="w-5 h-5" />
   },
   {
-    title: "ตัวแทนขาย",
-    href: "/admin/resellers",
-    icon: <Users className="w-5 h-5" />
-  },
-  {
-    title: "วิเคราะห์",
-    href: "/admin/analytics",
-    icon: <BarChart3 className="w-5 h-5" />
-  },
-  {
-    title: "รายงาน",
-    href: "/admin/reports",
-    icon: <FileText className="w-5 h-5" />
+    title: "ตั๋วสนับสนุน",
+    href: "/admin/tickets",
+    icon: <MessageSquare className="w-5 h-5" />
   },
   {
     title: "ตั้งค่า",

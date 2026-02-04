@@ -23,6 +23,9 @@
  *
  * Notification Service (3006): unchanged
  *   - notification-api.ts -> /api/notifications/*
+ *
+ * Support Service (3007): FAQ and Tickets
+ *   - support-api.ts   -> /api/support/*
  */
 
 // Auth Service (3001)
@@ -44,12 +47,16 @@ export * from './credit-api';
 // Notification Service (3006)
 export * from './notification-api';
 
+// Support Service (3007)
+export * from './support-api';
+
 // Re-export clients for direct use
 export {
   authClient,
   productClient,
   orderClient,
   paymentClient,
+  supportClient,
   cartClient,   // Alias for orderClient (backward compat)
   creditClient, // Alias for paymentClient (backward compat)
 } from '@/lib/client/gateway';

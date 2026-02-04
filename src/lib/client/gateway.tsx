@@ -155,6 +155,9 @@ export const orderClient = createServiceClient('order');
 // Payment Service (3004): payment + credit
 export const paymentClient = createServiceClient('payment');
 
+// Support Service (3007): FAQ and Tickets
+export const supportClient = createServiceClient('support');
+
 // Legacy exports (kept for backward compatibility, map to same clients)
 // Cart API now uses orderClient - cart merged into order service
 export const cartClient = orderClient;

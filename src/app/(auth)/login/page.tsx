@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -12,16 +12,34 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionExpired = searchParams.get("session_expired") === "true";
-  const { login, isLoading } = useAuth();
+  const redirect = searchParams.get("redirect");
+  const { login, isLoading, isAuthenticated } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      // If there's a redirect URL, use it; otherwise go to dashboard
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push("/dashboard/account");
+      }
+    }
+  }, [isAuthenticated, redirect, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const success = await login(email, password);
     if (success) {
-      router.push("/dashboard/account");
+      // Redirect to the original destination or dashboard
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push("/dashboard/account");
+      }
     }
   };
 

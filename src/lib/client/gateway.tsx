@@ -71,11 +71,32 @@ const createServiceClient = (service: string): AxiosInstance => {
     (error: AxiosError) => Promise.reject(error)
   );
 
-  // Response interceptor for error handling and token refresh
+  // Response interceptor for error handling, token refresh, and rate limit retry
   client.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean; _retryCount?: number };
+
+      // Handle 429 (Rate Limit) with exponential backoff retry
+      if (error.response?.status === 429) {
+        const retryCount = originalRequest._retryCount || 0;
+        const maxRetries = 3;
+
+        if (retryCount < maxRetries) {
+          originalRequest._retryCount = retryCount + 1;
+          // Exponential backoff: 500ms, 1000ms, 2000ms
+          const delay = Math.pow(2, retryCount) * 500;
+
+          console.warn(`[Rate Limit] Retrying request in ${delay}ms (attempt ${retryCount + 1}/${maxRetries})`);
+
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return client(originalRequest);
+        }
+
+        // Max retries reached, show user-friendly error
+        console.error('[Rate Limit] Max retries exceeded');
+        return Promise.reject(error);
+      }
 
       // If not 401 or already retried, reject immediately
       if (error.response?.status !== 401 || originalRequest._retry) {

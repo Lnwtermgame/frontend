@@ -7,6 +7,7 @@
  * Auth Service (3001): auth + security
  *   - auth-api.ts      -> /api/auth/*
  *   - security-api.ts  -> /api/auth/security/* (was /api/security/*)
+ *   - admin-user-api.ts -> /api/admin/users/*
  *
  * Product Service (3002): product + favorite
  *   - favorite-api.ts  -> /api/favorites/* (uses productClient)
@@ -16,6 +17,7 @@
  *   - order-api.ts     -> /api/orders/*
  *   - invoice-api.ts   -> /api/invoices/*
  *   - coupon-api.ts    -> /api/coupons/* (uses orderClient, was separate)
+ *   - analytics-api.ts -> /api/admin/dashboard/*, /api/admin/analytics/*
  *
  * Payment Service (3004): payment + credit
  *   - payment-api.ts   -> /api/payments/*
@@ -31,6 +33,7 @@
 // Auth Service (3001)
 export * from './auth-api';
 export * from './security-api';
+export * from './admin-user-api';
 
 // Product Service (3002)
 export * from './product-api';
@@ -40,6 +43,7 @@ export * from './favorite-api';
 export * from './order-api';
 export * from './invoice-api';
 export * from './coupon-api';
+export * from './analytics-api';
 
 // Payment Service (3004)
 export * from './credit-api';

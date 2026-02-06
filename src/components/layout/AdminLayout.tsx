@@ -12,7 +12,10 @@ import {
   ChevronRight,
   Home,
   DollarSign,
-  MessageSquare
+  MessageSquare,
+  TrendingUp,
+  Users,
+  ShoppingCart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -32,9 +35,24 @@ const adminNavItems = [
     icon: <Package className="w-5 h-5" />
   },
   {
+    title: "คำสั่งซื้อ",
+    href: "/admin/orders",
+    icon: <ShoppingCart className="w-5 h-5" />
+  },
+  {
     title: "โปรโมชั่น",
     href: "/admin/promotions",
     icon: <Tag className="w-5 h-5" />
+  },
+  {
+    title: "Analytics",
+    href: "/admin/analytics",
+    icon: <TrendingUp className="w-5 h-5" />
+  },
+  {
+    title: "จัดการผู้ใช้",
+    href: "/admin/users",
+    icon: <Users className="w-5 h-5" />
   },
   {
     title: "ตั๋วสนับสนุน",

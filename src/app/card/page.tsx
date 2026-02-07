@@ -19,12 +19,17 @@ interface CardProduct {
 
 // Transform Product to CardProduct
 function transformProductToCard(product: Product): CardProduct {
+  // Get starting price from seagmTypes (lowest unitPrice) or fallback to product price
+  const startingPrice = product.seagmTypes && product.seagmTypes.length > 0
+    ? Math.min(...product.seagmTypes.map(t => Number(t.unitPrice)))
+    : Number(product.price);
+
   return {
     id: product.id,
     slug: product.slug,
     name: product.name,
     category: product.category?.name || 'Gift Card',
-    price: product.price,
+    price: startingPrice,
     discountPercent: product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0,
     image: product.imageUrl || `https://placehold.co/400x300?text=${encodeURIComponent(product.name)}`,
   };
@@ -52,7 +57,7 @@ export default function CardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [cards, setCards] = useState<CardProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<{id: string; name: string; count: number; icon: React.ReactNode}[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string; count: number; icon: React.ReactNode }[]>([]);
 
   // Fetch cards from API
   useEffect(() => {
@@ -133,37 +138,37 @@ export default function CardPage() {
               <Loader2 className="w-8 h-8 text-mali-blue animate-spin" />
             </div>
           ) : (
-          <div className="p-4 space-y-1">
-            {categories.map(category => (
-              <motion.button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedCategory === category.id
-                  ? "bg-mali-blue/30 text-white"
-                  : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
-                  }`}
-                whileHover={{ x: 3 }}
-              >
-                {selectedCategory === category.id && (
-                  <motion.div
-                    layoutId="active-category-indicator"
-                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-                <div className="flex items-center gap-3">
-                  <span className={`${selectedCategory === category.id ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"}`}>
-                    {category.icon}
-                  </span>
-                  <span className="text-sm font-medium">{category.name}</span>
-                </div>
-                <span className="text-xs bg-mali-blue/30 px-2 py-0.5 rounded-full">{category.count}</span>
-              </motion.button>
-            ))}
-          </div>
+            <div className="p-4 space-y-1">
+              {categories.map(category => (
+                <motion.button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedCategory === category.id
+                    ? "bg-mali-blue/30 text-white"
+                    : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
+                    }`}
+                  whileHover={{ x: 3 }}
+                >
+                  {selectedCategory === category.id && (
+                    <motion.div
+                      layoutId="active-category-indicator"
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                  )}
+                  <div className="flex items-center gap-3">
+                    <span className={`${selectedCategory === category.id ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"}`}>
+                      {category.icon}
+                    </span>
+                    <span className="text-sm font-medium">{category.name}</span>
+                  </div>
+                  <span className="text-xs bg-mali-blue/30 px-2 py-0.5 rounded-full">{category.count}</span>
+                </motion.button>
+              ))}
+            </div>
           )}
 
           <div className="p-4 mt-4 space-y-3 border-t border-mali-blue/20">
@@ -250,55 +255,55 @@ export default function CardPage() {
               </div>
             ) : (
               filteredCards.map((card, index) => (
-              <motion.div
-                key={card.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
-              >
-                <Link href={`/card/${card.slug}`}>
-                  <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover group">
-                    {card.discountPercent && card.discountPercent > 0 && (
-                      <div className="absolute top-2 right-2 z-10 bg-mali-pink px-2 py-0.5 text-xs font-medium text-white rounded shadow-purple-glow">
-                        -{card.discountPercent}%
-                      </div>
-                    )}
-
-                    <div className="relative aspect-square w-full overflow-hidden">
-                      <img
-                        src={card.image !== undefined ? card.image : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`}
-                        alt={card.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
-
-                      <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-[10px] px-2 py-0.5 rounded-sm backdrop-blur-sm">
-                        {card.category}
-                      </div>
-                    </div>
-
-                    <div className="p-2">
-                      <p className="text-white text-xs font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-light transition-colors">{card.name}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          {getCategoryIcon(card.category)}
-                          <span className="text-mali-text-secondary text-[10px] ml-1">Digital</span>
+                <motion.div
+                  key={card.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
+                >
+                  <Link href={`/card/${card.slug}`}>
+                    <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover group">
+                      {(card.discountPercent || 0) > 0 && (
+                        <div className="absolute top-2 left-2 z-10 bg-mali-pink px-2 py-0.5 text-xs font-medium text-white rounded shadow-purple-glow">
+                          -{card.discountPercent}%
                         </div>
-                        <div className="text-[10px] text-white font-medium">฿{card.price}</div>
-                      </div>
-                    </div>
+                      )}
 
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-mali-blue/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <div className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform shadow-button-glow">
-                        View Card
+                      <div className="relative aspect-square w-full overflow-hidden">
+                        <img
+                          src={card.image !== undefined ? card.image : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`}
+                          alt={card.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
+
+                        <div className="absolute bottom-2 left-2 bg-mali-blue/30 text-mali-blue-light text-[10px] px-2 py-0.5 rounded-sm backdrop-blur-sm">
+                          {card.category}
+                        </div>
+                      </div>
+
+                      <div className="p-2">
+                        <p className="text-white text-xs font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-accent transition-colors">{card.name}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            {getCategoryIcon(card.category)}
+                            <span className="text-mali-text-secondary text-[10px] ml-1">Digital</span>
+                          </div>
+                          <div className="text-[10px] text-white font-medium">฿{card.price}</div>
+                        </div>
+                      </div>
+
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-mali-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform shadow-button-glow">
+                          View Card
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))
-          )}
+                  </Link>
+                </motion.div>
+              ))
+            )}
           </motion.div>
         </div>
       </div>

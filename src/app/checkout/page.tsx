@@ -143,10 +143,10 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
         <div className="flex flex-col items-center">
-          <Loader2 className="w-12 h-12 text-mali-blue animate-spin" />
-          <p className="mt-4 text-gray-400">กำลังโหลดหน้าชำระเงิน...</p>
+          <Loader2 className="w-12 h-12 text-brutal-pink animate-spin" />
+          <p className="mt-4 text-gray-600">กำลังโหลดหน้าชำระเงิน...</p>
         </div>
       </div>
     );
@@ -154,18 +154,18 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center max-w-md">
-          <ShoppingCart className="mx-auto text-gray-500 w-12 h-12 mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">
+      <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
+        <div className="bg-white border-[3px] border-black rounded-xl p-8 text-center max-w-md" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <ShoppingCart className="mx-auto text-gray-600 w-12 h-12 mb-4" />
+          <h2 className="text-2xl font-bold text-black mb-2">
             ตะกร้าของคุณว่างเปล่า
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-600 mb-6">
             เพิ่มสินค้าลงในตะกร้าเพื่อดำเนินการชำระเงิน
           </p>
           <Link
             href="/products"
-            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
+            className="bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium inline-flex items-center hover:bg-gray-800 transition-colors" style={{ boxShadow: '3px 3px 0 0 #000000' }}
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             เลือกดูสินค้า
@@ -176,19 +176,22 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-mali-bg">
+    <div className="min-h-screen bg-brutal-gray">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">ชำระเงิน</h1>
-            <p className="text-gray-400">
+            <h1 className="text-2xl font-bold text-black flex items-center">
+              <span className="w-1.5 h-6 bg-brutal-pink mr-3"></span>
+              ชำระเงิน
+            </h1>
+            <p className="text-gray-600 ml-5">
               ตรวจสอบสินค้าและดำเนินการชำระเงิน
             </p>
           </div>
           <Link
             href="/products"
-            className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+            className="text-gray-600 hover:text-black transition-colors flex items-center gap-2"
           >
             <ChevronLeft className="w-5 h-5" />
             เลือกซื้อสินค้าต่อ
@@ -203,11 +206,11 @@ export default function CheckoutPage() {
                 key={item.productId}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-mali-card border border-mali-blue/20 rounded-xl p-6"
+                className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 {/* Item Header */}
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="w-20 h-20 bg-mali-blue/10 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-20 h-20 bg-gray-100 border-2 border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -216,21 +219,21 @@ export default function CheckoutPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Package className="w-8 h-8 text-mali-blue/30" />
+                        <Package className="w-8 h-8 text-gray-400" />
                       </div>
                     )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-black">
                           {item.name}
                         </h3>
                         <span
                           className={`inline-flex items-center gap-1 text-sm mt-1 ${
                             item.productType === "DIRECT_TOPUP"
-                              ? "text-orange-400"
-                              : "text-blue-400"
+                              ? "text-brutal-pink"
+                              : "text-brutal-blue"
                           }`}
                         >
                           {item.productType === "DIRECT_TOPUP" ? (
@@ -250,7 +253,7 @@ export default function CheckoutPage() {
                         type="button"
                         onClick={() => removeItem(item.productId)}
                         aria-label="Remove item"
-                        className="text-red-400 hover:text-red-300 p-2"
+                        className="text-red-500 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-5 h-5" aria-hidden="true" />
                       </button>
@@ -272,10 +275,10 @@ export default function CheckoutPage() {
                 )}
 
                 {/* Quantity & Price */}
-                <div className="flex items-center justify-between pt-4 border-t border-mali-blue/10">
+                <div className="flex items-center justify-between pt-4 border-t-2 border-gray-200">
                   <div className="flex items-center gap-4">
-                    <span className="text-gray-400">Quantity:</span>
-                    <div className="flex items-center border border-mali-blue/20 rounded-lg">
+                    <span className="text-gray-600">Quantity:</span>
+                    <div className="flex items-center border-[2px] border-gray-300 rounded-lg bg-white">
                       <button
                         type="button"
                         onClick={() =>
@@ -283,11 +286,11 @@ export default function CheckoutPage() {
                         }
                         disabled={item.quantity <= 1}
                         aria-label="Decrease quantity"
-                        className="px-3 py-1 text-white hover:bg-mali-blue/10 disabled:opacity-50 transition-colors"
+                        className="px-3 py-1 text-black hover:bg-gray-100 disabled:opacity-50 transition-colors"
                       >
                         <Minus className="w-4 h-4" aria-hidden="true" />
                       </button>
-                      <span className="px-4 text-white font-medium">
+                      <span className="px-4 text-black font-medium">
                         {item.quantity}
                       </span>
                       <button
@@ -296,18 +299,18 @@ export default function CheckoutPage() {
                           updateQuantity(item.productId, item.quantity + 1)
                         }
                         aria-label="Increase quantity"
-                        className="px-3 py-1 text-white hover:bg-mali-blue/10 transition-colors"
+                        className="px-3 py-1 text-black hover:bg-gray-100 transition-colors"
                       >
                         <Plus className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-2xl font-bold text-black">
                       ฿{(item.price * item.quantity).toFixed(2)}
                     </span>
                     {item.quantity > 1 && (
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-gray-600 text-sm">
                         ฿{item.price.toFixed(2)} each
                       </p>
                     )}
@@ -319,8 +322,9 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-white mb-6">
+            <div className="bg-white border-[3px] border-black rounded-xl p-6 sticky top-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <h2 className="text-xl font-bold text-black mb-6 flex items-center">
+                <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
                 Order Summary
               </h2>
 
@@ -330,22 +334,22 @@ export default function CheckoutPage() {
                     key={item.productId}
                     className="flex justify-between text-sm"
                   >
-                    <span className="text-gray-400">
+                    <span className="text-gray-600">
                       {item.name} x {item.quantity}
                     </span>
-                    <span className="text-white">
+                    <span className="text-black">
                       ฿{(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t border-mali-blue/20 pt-4 mb-6">
+              <div className="border-t-2 border-gray-200 pt-4 mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-white">
+                  <span className="text-lg font-semibold text-black">
                     Total
                   </span>
-                  <span className="text-2xl font-bold text-mali-blue">
+                  <span className="text-2xl font-bold text-brutal-pink">
                     ฿{getTotalPrice().toFixed(2)}
                   </span>
                 </div>
@@ -353,8 +357,8 @@ export default function CheckoutPage() {
 
               {/* Validation Status */}
               {!allFieldsValid && (
-                <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                  <div className="flex items-center gap-2 text-red-400">
+                <div className="mb-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-red-600">
                     <AlertCircle className="w-5 h-5" />
                     <span className="text-sm">
                       Please fill in all required fields
@@ -364,8 +368,8 @@ export default function CheckoutPage() {
               )}
 
               {allFieldsValid && (
-                <div className="mb-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                  <div className="flex items-center gap-2 text-green-400">
+                <div className="mb-4 p-4 bg-green-50 border-[2px] border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-600">
                     <CheckCircle className="w-5 h-5" />
                     <span className="text-sm">All fields completed</span>
                   </div>
@@ -375,7 +379,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePlaceOrder}
                 disabled={!allFieldsValid || isSubmitting}
-                className="w-full bg-mali-blue text-white py-4 rounded-xl font-medium hover:bg-mali-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-black text-white border-[3px] border-black py-4 rounded-xl font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2" style={{ boxShadow: '3px 3px 0 0 #000000' }}
               >
                 {isSubmitting ? (
                   <>

@@ -33,9 +33,9 @@ function CategoryNode({ category, depth, maxDepth, activeSlug }: CategoryNodePro
     <div className="select-none">
       <div
         className={cn(
-          'flex items-center gap-1 py-2 px-2 rounded-lg cursor-pointer transition-colors',
-          isActive ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-100',
-          depth > 0 && 'ml-4 border-l border-gray-200 pl-4'
+          'flex items-center gap-1 py-2 px-2 rounded-lg cursor-pointer transition-colors thai-font',
+          isActive ? 'bg-brutal-yellow border-[2px] border-black font-bold text-black' : 'hover:bg-brutal-gray',
+          depth > 0 && 'ml-4 border-l-2 border-gray-300 pl-4'
         )}
         style={{ paddingLeft: depth > 0 ? `${depth * 12 + 8}px` : '8px' }}
       >
@@ -45,7 +45,7 @@ function CategoryNode({ category, depth, maxDepth, activeSlug }: CategoryNodePro
               e.preventDefault();
               setIsExpanded(!isExpanded);
             }}
-            className="p-1 hover:bg-gray-200 rounded"
+            className="p-1 hover:bg-brutal-gray rounded-lg border border-transparent hover:border-gray-300 transition-all"
           >
             {isExpanded ? (
               <ChevronDown className="w-4 h-4" />
@@ -61,15 +61,22 @@ function CategoryNode({ category, depth, maxDepth, activeSlug }: CategoryNodePro
           href={`/products?category=${category.slug}`}
           className="flex items-center gap-2 flex-1"
         >
-          {isExpanded ? (
-            <FolderOpen className="w-4 h-4 text-yellow-500" />
-          ) : (
-            <Folder className="w-4 h-4 text-gray-400" />
+          <div className={cn(
+            "w-6 h-6 rounded-lg flex items-center justify-center border-[2px] border-black",
+            isExpanded ? "bg-brutal-yellow" : "bg-gray-100"
           )}
-          <span className={cn('font-medium', isActive && 'text-blue-700')}>
+            style={isExpanded ? { boxShadow: '1px 1px 0 0 #000000' } : {}}
+          >
+            {isExpanded ? (
+              <FolderOpen className="w-3.5 h-3.5 text-black" />
+            ) : (
+              <Folder className="w-3.5 h-3.5 text-gray-500" />
+            )}
+          </div>
+          <span className={cn('font-bold', isActive && 'text-black')}>
             {category.name}
           </span>          {category.productCount !== undefined && (
-            <span className="text-xs text-gray-500 ml-auto">
+            <span className="text-xs bg-brutal-gray px-2 py-0.5 rounded-lg font-bold text-gray-600 border border-gray-300 ml-auto">
               {category.productCount}
             </span>
           )}
@@ -101,15 +108,18 @@ export function CategoryTree({
 }: CategoryTreeProps) {
   if (!categories || categories.length === 0) {
     return (
-      <div className={cn('p-4 text-gray-500 text-center', className)}>
-        No categories available
+      <div className={cn('p-4 text-gray-500 text-center thai-font', className)}>
+        ไม่มีหมวดหมู่
       </div>
     );
   }
 
   return (
     <div className={cn('space-y-1', className)}>
-      <h3 className="font-semibold text-gray-900 mb-3 px-2">Categories</h3>
+      <div className="flex items-center gap-2 mb-3 px-2">
+        <span className="w-1.5 h-4 bg-brutal-pink rounded-sm"></span>
+        <h3 className="font-bold text-black thai-font">หมวดหมู่</h3>
+      </div>
       {categories.map((category) => (
         <CategoryNode
           key={category.id}

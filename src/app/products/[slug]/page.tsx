@@ -118,10 +118,10 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
         <div className="flex flex-col items-center">
-          <Loader2 className="w-12 h-12 text-mali-blue animate-spin" />
-          <p className="mt-4 text-gray-400">Loading product...</p>
+          <Loader2 className="w-12 h-12 text-black animate-spin" />
+          <p className="mt-4 text-gray-600">Loading product...</p>
         </div>
       </div>
     );
@@ -129,18 +129,19 @@ export default function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center max-w-md">
-          <AlertCircle className="mx-auto text-red-500 w-12 h-12 mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">
+      <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
+        <div className="bg-white border-[3px] border-black p-8 text-center max-w-md" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <AlertCircle className="mx-auto text-brutal-pink w-12 h-12 mb-4" />
+          <h2 className="text-2xl font-bold text-black mb-2">
             Product Not Found
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-600 mb-6">
             {error || "The product you're looking for doesn't exist."}
           </p>
           <Link
             href="/products"
-            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
+            className="bg-black text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: '2px 2px 0 0 #000000' }}
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             Back to Products
@@ -153,19 +154,19 @@ export default function ProductDetailPage() {
   const isDirectTopUp = product.productType === "DIRECT_TOPUP";
 
   return (
-    <div className="min-h-screen bg-mali-bg">
+    <div className="min-h-screen bg-brutal-gray">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center text-sm text-gray-400 mb-6">
-          <Link href="/" className="hover:text-white transition-colors">
+        <nav className="flex items-center text-sm text-gray-600 mb-6">
+          <Link href="/" className="hover:text-black transition-colors font-medium">
             Home
           </Link>
           <ChevronRight className="w-4 h-4 mx-2" />
-          <Link href="/products" className="hover:text-white transition-colors">
+          <Link href="/products" className="hover:text-black transition-colors font-medium">
             Products
           </Link>
           <ChevronRight className="w-4 h-4 mx-2" />
-          <span className="text-white truncate">{product.name}</span>
+          <span className="text-black font-bold truncate">{product.name}</span>
         </nav>
 
         {/* Product Hero */}
@@ -175,7 +176,8 @@ export default function ProductDetailPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <div className="relative aspect-square">
               {product.imageUrl ? (
@@ -186,17 +188,17 @@ export default function ProductDetailPage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-mali-blue/5">
-                  <Package className="w-24 h-24 text-mali-blue/30" />
+                <div className="w-full h-full flex items-center justify-center bg-brutal-gray">
+                  <Package className="w-24 h-24 text-gray-400" />
                 </div>
               )}
               {/* Product Type Badge */}
               <div className="absolute top-4 left-4">
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  className={`px-3 py-1 text-sm font-bold border-[2px] border-black ${
                     isDirectTopUp
-                      ? "bg-orange-500/20 text-orange-400 border border-orange-500/30"
-                      : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                      ? "bg-brutal-yellow text-black"
+                      : "bg-brutal-blue text-black"
                   }`}
                 >
                   {isDirectTopUp ? (
@@ -224,21 +226,22 @@ export default function ProductDetailPage() {
           >
             {/* Title & Rating */}
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">
+              <h1 className="text-3xl font-bold text-black mb-2 flex items-center">
+                <span className="w-1.5 h-8 bg-brutal-pink mr-3"></span>
                 {product.name}
               </h1>
               <div className="flex items-center gap-4">
-                <div className="flex items-center text-yellow-400">
-                  <Star className="w-5 h-5 fill-yellow-400" />
-                  <span className="ml-1 text-white">
+                <div className="flex items-center text-black">
+                  <Star className="w-5 h-5 fill-brutal-yellow text-black" />
+                  <span className="ml-1 font-bold">
                     {product.averageRating?.toFixed(1) || "0.0"}
                   </span>
-                  <span className="ml-1 text-gray-400">
+                  <span className="ml-1 text-gray-600">
                     ({product.reviewCount || 0} reviews)
                   </span>
                 </div>
                 <span className="text-gray-400">|</span>
-                <span className="text-gray-400">
+                <span className="text-gray-600">
                   {product.category?.name || "Uncategorized"}
                 </span>
               </div>
@@ -250,9 +253,9 @@ export default function ProductDetailPage() {
             )}
 
             {/* Price */}
-            <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-6">
+            <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-white">
+                <span className="text-3xl font-bold text-black">
                   ฿{product.price.toFixed(2)}
                 </span>
                 {product.comparePrice && (
@@ -260,7 +263,7 @@ export default function ProductDetailPage() {
                     <span className="text-lg text-gray-500 line-through">
                       ฿{product.comparePrice.toFixed(2)}
                     </span>
-                    <span className="text-green-400 text-sm font-medium">
+                    <span className="text-brutal-green text-sm font-bold">
                       Save ฿
                       {(product.comparePrice - product.price).toFixed(2)}
                     </span>
@@ -272,15 +275,15 @@ export default function ProductDetailPage() {
               <div className="mt-4 flex items-center gap-2">
                 {product.stockQuantity > 0 ? (
                   <>
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-green-400">
+                    <Check className="w-5 h-5 text-brutal-green" />
+                    <span className="text-brutal-green font-medium">
                       In Stock ({product.stockQuantity} available)
                     </span>
                   </>
                 ) : (
                   <>
-                    <AlertCircle className="w-5 h-5 text-red-400" />
-                    <span className="text-red-400">Out of Stock</span>
+                    <AlertCircle className="w-5 h-5 text-brutal-pink" />
+                    <span className="text-brutal-pink font-medium">Out of Stock</span>
                   </>
                 )}
               </div>
@@ -297,20 +300,20 @@ export default function ProductDetailPage() {
             )}
 
             {/* Quantity Selector */}
-            <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-6">
-              <label className="block text-sm font-medium text-white mb-3">
+            <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <label className="block text-sm font-bold text-black mb-3">
                 Quantity
               </label>
               <div className="flex items-center gap-4">
-                <div className="flex items-center border border-mali-blue/20 rounded-lg">
+                <div className="flex items-center border-[3px] border-black">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
-                    className="px-4 py-2 text-white hover:bg-mali-blue/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 text-black hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-bold"
                   >
                     -
                   </button>
-                  <span className="px-4 py-2 text-white font-medium min-w-[3rem] text-center">
+                  <span className="px-4 py-2 text-black font-bold min-w-[3rem] text-center border-x-[3px] border-black">
                     {quantity}
                   </span>
                   <button
@@ -320,12 +323,12 @@ export default function ProductDetailPage() {
                       )
                     }
                     disabled={quantity >= product.stockQuantity}
-                    className="px-4 py-2 text-white hover:bg-mali-blue/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 text-black hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-bold"
                   >
                     +
                   </button>
                 </div>
-                <span className="text-gray-400">
+                <span className="text-gray-600 font-medium">
                   Total: ฿{(product.price * quantity).toFixed(2)}
                 </span>
               </div>
@@ -333,33 +336,39 @@ export default function ProductDetailPage() {
 
             {/* Action Buttons */}
             <div className="flex gap-4">
-              <button
+              <motion.button
                 onClick={handleAddToCart}
                 disabled={product.stockQuantity === 0}
-                className="flex-1 bg-mali-card border border-mali-blue text-white py-4 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-mali-blue/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 bg-white border-[3px] border-black text-black py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
               >
                 <ShoppingCart className="w-5 h-5" />
                 Add to Cart
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={handleBuyNow}
                 disabled={product.stockQuantity === 0}
-                className="flex-1 bg-mali-blue text-white py-4 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-mali-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 bg-black text-white py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-[3px] border-black"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
               >
                 <Zap className="w-5 h-5" />
                 Buy Now
-              </button>
+              </motion.button>
             </div>
 
             {/* Delivery Info */}
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+            <div className="bg-brutal-blue/20 border-[3px] border-black p-4">
               <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-blue-400 mt-0.5" />
+                <Clock className="w-5 h-5 text-black mt-0.5" />
                 <div>
-                  <h4 className="text-blue-200 font-medium">
+                  <h4 className="text-black font-bold">
                     Fast Auto-Delivery
                   </h4>
-                  <p className="text-blue-300 text-sm mt-1">
+                  <p className="text-gray-700 text-sm mt-1">
                     {isDirectTopUp
                       ? "Direct top-up to your account within 5-15 minutes after payment confirmation."
                       : "Gift card codes delivered instantly to your email after payment confirmation."}
@@ -370,21 +379,29 @@ export default function ProductDetailPage() {
 
             {/* Share & Favorite */}
             <div className="flex items-center gap-4">
-              <button
+              <motion.button
                 onClick={() => setIsFavorite(!isFavorite)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 border-[3px] transition-colors font-medium ${
                   isFavorite
-                    ? "bg-red-500/20 border-red-500/40 text-red-400"
-                    : "bg-mali-card border-mali-blue/20 text-gray-400 hover:text-white"
+                    ? "bg-brutal-pink text-black border-black"
+                    : "bg-white border-black text-gray-700 hover:bg-gray-100"
                 }`}
+                style={{ boxShadow: isFavorite ? '2px 2px 0 0 #000000' : 'none' }}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
               >
-                <Heart className={`w-5 h-5 ${isFavorite ? "fill-red-400" : ""}`} />
+                <Heart className={`w-5 h-5 ${isFavorite ? "fill-black" : ""}`} />
                 {isFavorite ? "Saved" : "Save"}
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-mali-blue/20 text-gray-400 hover:text-white bg-mali-card transition-colors">
+              </motion.button>
+              <motion.button
+                className="flex items-center gap-2 px-4 py-2 border-[3px] border-black text-gray-700 hover:text-black bg-white transition-colors font-medium"
+                style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
                 <Share2 className="w-5 h-5" />
                 Share
-              </button>
+              </motion.button>
             </div>
           </motion.div>
         </div>

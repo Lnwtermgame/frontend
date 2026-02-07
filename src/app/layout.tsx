@@ -34,10 +34,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" className="dark" style={{ colorScheme: 'dark' }}>
+    <html lang="th" style={{ colorScheme: 'light' }}>
       <head>
-        <meta name="theme-color" content="#0a0e1a" />
-
+        <meta name="theme-color" content="#F9FAFB" />
 
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (
@@ -50,7 +49,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "min-h-screen bg-mali-dark font-sans antialiased",
+          "min-h-screen bg-brutal-gray font-sans antialiased",
         )}
       >
         <ReactGrabInit />
@@ -72,20 +71,23 @@ export default function RootLayout({
                         toastOptions={{
                           duration: 4000,
                           style: {
-                            background: '#1a201c',
-                            color: '#fff',
-                            border: '1px solid #2a312d',
+                            background: '#FFFFFF',
+                            color: '#1f2937',
+                            border: '3px solid #000000',
+                            boxShadow: '4px 4px 0 0 #000000',
+                            borderRadius: '8px',
+                            padding: '12px 16px',
                           },
                           success: {
                             iconTheme: {
-                              primary: '#3B82F6',
-                              secondary: '#fff',
+                              primary: '#95E1D3',
+                              secondary: '#000000',
                             },
                           },
                           error: {
                             iconTheme: {
-                              primary: '#ef4444',
-                              secondary: '#fff',
+                              primary: '#FF6B9D',
+                              secondary: '#FFFFFF',
                             },
                           },
                         }}

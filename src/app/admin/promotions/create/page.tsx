@@ -73,27 +73,31 @@ export default function AdminPromotionCreate() {
 
   return (
     <AdminLayout title={"สร้างโปรโมชั่น" as any}>
-      <div className="space-y-6">
-        {/* Back Button */}
-        <div>
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center mb-6">
           <Link href="/admin/promotions">
-            <button className="flex items-center text-mali-blue hover:text-white transition-colors">
-              <ChevronLeft className="h-5 w-5 mr-1" />
-              <span>กลับไปที่โปรโมชั่น</span>
+            <button className="mr-4 p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-gray-200 transition-colors">
+              <ChevronLeft className="h-5 w-5" />
             </button>
           </Link>
+          <div className="flex items-center">
+            <span className="w-1.5 h-6 bg-brutal-purple mr-2"></span>
+            <h1 className="text-2xl font-bold text-black">สร้างโปรโมชั่น</h1>
+          </div>
         </div>
 
         {/* Form Container */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-5 border-b border-mali-blue/20">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <Tag className="mr-2 h-5 w-5 text-mali-blue" />
+          <div className="p-5 border-b-[2px] border-black bg-gray-50">
+            <h3 className="text-lg font-semibold text-black flex items-center">
+              <Tag className="mr-2 h-5 w-5 text-brutal-purple" />
               โปรโมชั่นใหม่
             </h3>
           </div>
@@ -106,16 +110,16 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="title"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
-                    ชื่อโปรโมชั่น <span className="text-red-400">*</span>
+                    ชื่อโปรโมชั่น <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     id="title"
                     name="title"
                     required
-                    className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
                     placeholder="เช่น ลด 30% ฤดูร้อน"
                     value={formData.title}
                     onChange={handleChange}
@@ -126,19 +130,19 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="type"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
-                    ประเภทโปรโมชั่น <span className="text-red-400">*</span>
+                    ประเภทโปรโมชั่น <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Sparkles className="h-5 w-5 text-mali-blue/70" />
+                      <Sparkles className="h-5 w-5 text-gray-500" />
                     </div>
                     <select
                       id="type"
                       name="type"
                       required
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full appearance-none focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full appearance-none focus:border-black focus:outline-none"
                       value={formData.type}
                       onChange={handleChange}
                     >
@@ -157,7 +161,7 @@ export default function AdminPromotionCreate() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-mali-blue/70"
+                        className="text-gray-500"
                       >
                         <path d="M6 9l6 6 6-6" />
                       </svg>
@@ -169,21 +173,21 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="code"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
-                    รหัสโปรโมชั่น <span className="text-red-400">*</span>
+                    รหัสโปรโมชั่น <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     id="code"
                     name="code"
                     required
-                    className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none font-mono"
+                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none font-mono"
                     placeholder="เช่น SUMMER30"
                     value={formData.code}
                     onChange={handleChange}
                   />
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-gray-500">
                     รหัสตัวพิมพ์ใหญ่-เล็กมีผลและควรไม่ซ้ำกัน
                   </p>
                 </div>
@@ -192,20 +196,20 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="discount"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
-                    จำนวนส่วนลด <span className="text-red-400">*</span>
+                    จำนวนส่วนลด <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Percent className="h-5 w-5 text-mali-blue/70" />
+                      <Percent className="h-5 w-5 text-gray-500" />
                     </div>
                     <input
                       type="text"
                       id="discount"
                       name="discount"
                       required
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เช่น 30"
                       value={formData.discount}
                       onChange={handleChange}
@@ -217,25 +221,25 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="minPurchase"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
                     ยอดซื้อขั้นต่ำ (ไม่บังคับ)
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CreditCard className="h-5 w-5 text-mali-blue/70" />
+                      <CreditCard className="h-5 w-5 text-gray-500" />
                     </div>
                     <input
                       type="text"
                       id="minPurchase"
                       name="minPurchase"
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เช่น 20"
                       value={formData.minPurchase}
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-gray-500">
                     ยอดซื้อขั้นต่ำที่ต้องการเพื่อใช้โปรโมชั่นนี้
                   </p>
                 </div>
@@ -248,20 +252,20 @@ export default function AdminPromotionCreate() {
                   <div>
                     <label
                       htmlFor="startDate"
-                      className="block text-sm font-medium text-gray-300 mb-1"
+                      className="block text-sm font-medium text-black mb-2"
                     >
-                      วันที่เริ่ม <span className="text-red-400">*</span>
+                      วันที่เริ่ม <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-5 w-5 text-mali-blue/70" />
+                        <Calendar className="h-5 w-5 text-gray-500" />
                       </div>
                       <input
                         type="date"
                         id="startDate"
                         name="startDate"
                         required
-                        className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                        className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                         value={formData.startDate}
                         onChange={handleChange}
                       />
@@ -270,20 +274,20 @@ export default function AdminPromotionCreate() {
                   <div>
                     <label
                       htmlFor="endDate"
-                      className="block text-sm font-medium text-gray-300 mb-1"
+                      className="block text-sm font-medium text-black mb-2"
                     >
-                      วันที่สิ้นสุด <span className="text-red-400">*</span>
+                      วันที่สิ้นสุด <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-5 w-5 text-mali-blue/70" />
+                        <Calendar className="h-5 w-5 text-gray-500" />
                       </div>
                       <input
                         type="date"
                         id="endDate"
                         name="endDate"
                         required
-                        className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                        className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                         value={formData.endDate}
                         onChange={handleChange}
                       />
@@ -295,25 +299,25 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="usageLimit"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
                     จำกัดการใช้ (ไม่บังคับ)
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Clock className="h-5 w-5 text-mali-blue/70" />
+                      <Clock className="h-5 w-5 text-gray-500" />
                     </div>
                     <input
                       type="number"
                       id="usageLimit"
                       name="usageLimit"
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
                       value={formData.usageLimit}
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-gray-500">
                     จำนวนครั้งสูงสุดที่สามารถใช้โปรโมชั่นนี้ได้
                   </p>
                 </div>
@@ -322,25 +326,25 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="maxDiscount"
-                    className="block text-sm font-medium text-gray-300 mb-1"
+                    className="block text-sm font-medium text-black mb-2"
                   >
                     ส่วนลดสูงสุด (ไม่บังคับ)
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CreditCard className="h-5 w-5 text-mali-blue/70" />
+                      <CreditCard className="h-5 w-5 text-gray-500" />
                     </div>
                     <input
                       type="text"
                       id="maxDiscount"
                       name="maxDiscount"
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เช่น 50"
                       value={formData.maxDiscount}
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-gray-500">
                     จำนวนส่วนลดสูงสุดเป็นหน่วยเงิน
                   </p>
                 </div>
@@ -353,11 +357,11 @@ export default function AdminPromotionCreate() {
                     name="isActive"
                     checked={formData.isActive}
                     onChange={(e) => handleChange(e as any)}
-                    className="bg-mali-card/50 border border-mali-blue/20 rounded text-mali-blue focus:ring-mali-blue focus:ring-2"
+                    className="w-5 h-5 border-[2px] border-black rounded text-brutal-purple focus:ring-black"
                   />
                   <label
                     htmlFor="isActive"
-                    className="text-sm font-medium text-gray-300"
+                    className="text-sm font-medium text-black"
                   >
                     เปิดใช้งานโปรโมชั่นทันที
                   </label>
@@ -371,11 +375,11 @@ export default function AdminPromotionCreate() {
                     name="applyToAll"
                     checked={formData.applyToAll}
                     onChange={(e) => handleChange(e as any)}
-                    className="bg-mali-card/50 border border-mali-blue/20 rounded text-mali-blue focus:ring-mali-blue focus:ring-2"
+                    className="w-5 h-5 border-[2px] border-black rounded text-brutal-purple focus:ring-black"
                   />
                   <label
                     htmlFor="applyToAll"
-                    className="text-sm font-medium text-gray-300"
+                    className="text-sm font-medium text-black"
                   >
                     ใช้กับสินค้าและเกมทั้งหมด
                   </label>
@@ -387,7 +391,7 @@ export default function AdminPromotionCreate() {
             <div className="mt-6">
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-300 mb-1"
+                className="block text-sm font-medium text-black mb-2"
               >
                 รายละเอียด (ไม่บังคับ)
               </label>
@@ -395,7 +399,7 @@ export default function AdminPromotionCreate() {
                 id="description"
                 name="description"
                 rows={4}
-                className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2.5 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
                 placeholder="อธิบายรายละเอียดโปรโมชั่น..."
                 value={formData.description}
                 onChange={handleChange}
@@ -407,7 +411,8 @@ export default function AdminPromotionCreate() {
               <Link href="/admin/promotions">
                 <button
                   type="button"
-                  className="px-5 py-2.5 rounded-lg border border-mali-blue/20 text-mali-blue hover:bg-mali-blue/10 transition-colors w-full sm:w-auto flex items-center justify-center"
+                  className="px-5 py-2.5 rounded-lg border-[3px] border-black bg-white text-black hover:bg-gray-100 transition-colors w-full sm:w-auto flex items-center justify-center font-medium"
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <X className="h-5 w-5 mr-2" />
                   ยกเลิก
@@ -416,7 +421,8 @@ export default function AdminPromotionCreate() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-5 py-2.5 rounded-lg bg-mali-blue text-white hover:bg-mali-blue/90 transition-colors w-full sm:w-auto flex items-center justify-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
+                className={`px-5 py-2.5 rounded-lg bg-black text-white border-[3px] border-black hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 <Save className="h-5 w-5 mr-2" />
                 {isSubmitting ? "กำลังสร้าง..." : "สร้างโปรโมชั่น"}

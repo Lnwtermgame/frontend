@@ -36,14 +36,14 @@ export function SeasonalEventsGrid({
         {title && (
           <div className="flex justify-between items-end mb-4">
             <div>
-              <h2 className="text-2xl font-bold text-white">{title}</h2>
-              {description && <p className="text-mali-text-secondary mt-1">{description}</p>}
+              <h2 className="text-2xl font-black text-black thai-font">{title}</h2>
+              {description && <p className="text-gray-600 mt-1 thai-font">{description}</p>}
             </div>
           </div>
         )}
-        <div className="glass-card p-8 text-center">
-          <p className="text-mali-text-secondary">No special events available at this time.</p>
-          <p className="text-mali-text-secondary mt-1">Check back later for new promotions!</p>
+        <div className="bg-white rounded-xl border-[3px] border-black p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <p className="text-gray-500 thai-font">ไม่มีโปรโมชั่นพิเศษในขณะนี้</p>
+          <p className="text-gray-500 mt-1 thai-font">กลับมาตรวจสอบใหม่ภายหลัง!</p>
         </div>
       </div>
     );
@@ -52,19 +52,26 @@ export function SeasonalEventsGrid({
   return (
     <div className={`space-y-6 ${className}`}>
       {title && (
-        <motion.div 
+        <motion.div
           className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-4 gap-4"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div>
-            <h2 className="text-2xl font-bold text-white">{title}</h2>
-            {description && <p className="text-mali-text-secondary mt-1">{description}</p>}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-brutal-pink border-[2px] border-black flex items-center justify-center"
+              style={{ boxShadow: '2px 2px 0 0 #000000' }}
+            >
+              <span className="text-white font-black">%</span>
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-black thai-font">{title}</h2>
+              {description && <p className="text-gray-600 mt-1 thai-font">{description}</p>}
+            </div>
           </div>
-          
+
           {viewAllUrl && events.length > (maxItems || 0) && (
-            <Link href={viewAllUrl} className="text-mali-blue-light hover:text-white transition-colors flex items-center group">
+            <Link href={viewAllUrl} className="text-black hover:text-brutal-pink transition-colors flex items-center group font-bold thai-font">
               <span>{viewAllText}</span>
               <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
             </Link>

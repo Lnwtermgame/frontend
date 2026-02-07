@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { favoriteApi, Favorite } from "@/lib/services/favorite-api";
 import { Heart, ShoppingCart, Trash2, Search, ExternalLink, Package } from "lucide-react";
+import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -89,8 +90,8 @@ export default function FavoritePage() {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-10 h-10 border-2 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-3 text-mali-text-secondary text-sm thai-font">กำลังโหลด...</p>
+          <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-3 text-gray-600 text-sm thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -100,10 +101,11 @@ export default function FavoritePage() {
     <div>
       {/* Page Header */}
       <div className="relative mb-4">
-        <h2 className="text-base font-bold text-white mb-0.5 relative">
+        <h2 className="text-xl font-bold text-gray-900 mb-1 relative flex items-center">
+          <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
           รายการโปรดของฉัน
         </h2>
-        <p className="text-mali-text-secondary text-xs relative thai-font">
+        <p className="text-gray-600 text-sm relative thai-font">
           จัดการรายการที่คุณบันทึกไว้เพื่อการเข้าถึงที่รวดเร็ว
         </p>
       </div>
@@ -115,35 +117,37 @@ export default function FavoritePage() {
             placeholder="ค้นหารายการโปรด..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-full bg-mali-blue/10 px-3 py-1.5 text-xs text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent pl-9 transition-all thai-font"
+            className="w-full bg-white px-3 py-2 text-sm text-black border-[2px] border-gray-300 focus:outline-none focus:border-black pl-9 transition-all thai-font"
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-mali-text-secondary" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         </div>
 
-        <div className="ml-auto text-xs text-mali-text-secondary thai-font">
+        <div className="ml-auto text-sm text-gray-600 font-medium thai-font">
           พบ {filteredFavorites.length} รายการ
         </div>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
-          <div className="w-6 h-6 border-2 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-6 h-6 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : filteredFavorites.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {filteredFavorites.map((item) => (
-            <div
+            <motion.div
               key={item.id}
-              className="bg-mali-card border border-mali-blue/20 rounded-lg overflow-hidden group hover:border-mali-blue/40 transition-all hover:shadow-lg relative"
+              whileHover={{ y: -4 }}
+              className="bg-white border-[3px] border-black overflow-hidden group relative"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
-              <div className="relative aspect-[4/3] bg-mali-blue/5 border-b border-mali-blue/10">
+              <div className="relative aspect-[4/3] bg-gray-50 border-b-[3px] border-black">
                 <div className="absolute top-2 right-2 z-10">
                   <button
                     onClick={(e) => removeFavorite(item.id, e)}
-                    className="w-6 h-6 rounded-full bg-black/40 hover:bg-mali-red/20 text-white/70 hover:text-mali-red flex items-center justify-center backdrop-blur-sm transition-all"
+                    className="w-7 h-7 border-[2px] border-black bg-white hover:bg-brutal-pink text-black hover:text-white flex items-center justify-center transition-all"
                     title="ลบออกจากรายการโปรด"
                   >
-                    <Trash2 size={12} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
 
@@ -155,59 +159,66 @@ export default function FavoritePage() {
                       className="w-full h-full object-contain drop-shadow-md transition-transform group-hover:scale-105 duration-300"
                     />
                   ) : (
-                    <Package size={32} className="text-mali-blue-light/50" />
+                    <Package size={32} className="text-gray-300" />
                   )}
                 </div>
               </div>
 
-              <div className="p-2.5">
-                <h3 className="text-white text-xs font-medium mb-0.5 line-clamp-1 group-hover:text-mali-blue-light transition-colors">
+              <div className="p-3">
+                <h3 className="text-black text-sm font-bold mb-0.5 line-clamp-1 group-hover:text-brutal-blue transition-colors">
                   {item.product.name}
                 </h3>
-                <p className="text-mali-text-secondary text-xs mb-2">
+                <p className="text-gray-600 text-sm mb-3">
                   {item.product.price > 0 ? formatCurrency(item.product.price) : 'เลือกดูราคา'}
                 </p>
 
-                <div className="flex gap-1.5">
+                <div className="flex gap-2">
                   <Link
                     href={`/games/${item.product.slug}`}
-                    className="flex-1 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent hover:text-white border border-mali-blue/20 rounded py-1.5 flex items-center justify-center text-xs font-medium transition-all thai-font"
+                    className="flex-1 bg-white hover:bg-gray-50 text-black border-[3px] border-black py-1.5 flex items-center justify-center text-xs font-bold transition-all thai-font"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     <ExternalLink size={12} className="mr-1" />
                     ดูเพิ่ม
                   </Link>
-                  <button
+                  <motion.button
                     onClick={() => toast.success('เพิ่มลงตะกร้าแล้ว')}
-                    className="flex-1 bg-mali-blue hover:bg-mali-blue/90 text-white rounded py-1.5 flex items-center justify-center text-xs font-medium transition-all shadow-button-glow thai-font"
+                    whileHover={{ y: -2 }}
+                    className="flex-1 bg-brutal-blue hover:bg-brutal-blue/90 text-white border-[3px] border-black py-1.5 flex items-center justify-center text-xs font-bold transition-all thai-font"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     <ShoppingCart size={12} className="mr-1" />
                     ซื้อ
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (
-        <div
-          className="bg-mali-card border border-mali-blue/20 rounded-lg p-8 text-center"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white border-[3px] border-black p-8 text-center"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
-          <div className="w-14 h-14 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart size={28} className="text-mali-text-secondary opacity-50" />
+          <div className="w-14 h-14 bg-gray-100 border-[3px] border-black flex items-center justify-center mx-auto mb-4">
+            <Heart size={28} className="text-gray-400" />
           </div>
-          <h2 className="text-base font-bold text-white mb-2 thai-font">ไม่พบรายการโปรด</h2>
-          <p className="text-mali-text-secondary text-sm max-w-md mx-auto mb-6 thai-font">
+          <h2 className="text-lg font-bold text-black mb-2 thai-font">ไม่พบรายการโปรด</h2>
+          <p className="text-gray-600 text-sm max-w-md mx-auto mb-6 thai-font">
             {searchTerm
               ? `เราไม่พบรายการโปรดที่ตรงกับ "${searchTerm}"`
               : "คุณยังไม่ได้เพิ่มรายการใดๆ ลงในรายการโปรด เลือกดูสินค้าและคลิกไอคอนหัวใจเพื่อบันทึกไว้ที่นี่"}
           </p>
           <Link
             href="/"
-            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-button-glow inline-flex items-center transition-all hover:scale-105 active:scale-95 thai-font"
+            className="bg-black hover:bg-gray-800 text-white px-6 py-2.5 border-[3px] border-black text-sm font-bold inline-flex items-center transition-all hover:-translate-y-0.5 thai-font"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             เริ่มช้อปปิ้ง
           </Link>
-        </div>
+        </motion.div>
       )}
     </div>
   );

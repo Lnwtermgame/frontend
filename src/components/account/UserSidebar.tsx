@@ -37,17 +37,18 @@ const NavItem = memo(function NavItem({
         className={cn(
           "flex items-center gap-3 px-4 py-3 rounded-lg relative overflow-hidden transition-all thai-font group",
           isActive
-            ? "bg-mali-blue/20 text-white font-medium shadow-sm border border-mali-blue/30"
-            : "text-mali-text-secondary hover:bg-mali-blue/10 hover:text-white"
+            ? "bg-brutal-yellow text-black font-bold border-[2px] border-black"
+            : "text-gray-600 hover:bg-gray-100 hover:text-black"
         )}
+        style={isActive ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
       >
         <span className={cn(
           "flex items-center justify-center relative z-10",
-          isActive ? "text-white" : "text-mali-text-secondary group-hover:text-white"
+          isActive ? "text-black" : "text-gray-500 group-hover:text-black"
         )}>
           {icon}
         </span>
-        <span className="text-sm font-medium relative z-10 thai-font">
+        <span className="text-sm font-bold relative z-10 thai-font">
           {label}
         </span>
 
@@ -105,8 +106,11 @@ const UserSidebar = memo(function UserSidebar() {
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="p-6 border-b border-mali-blue/20">
-        <h3 className="text-mali-text-secondary font-medium text-sm thai-font">เมนู</h3>
+      <div className="p-6 border-b-[2px] border-gray-200 bg-gray-50">
+        <h3 className="text-gray-600 font-bold text-sm thai-font flex items-center">
+          <span className="w-1.5 h-4 bg-brutal-pink mr-2 rounded-sm"></span>
+          เมนู
+        </h3>
       </div>
       <div className="p-4 space-y-1">
         {navItems.map((item) => {

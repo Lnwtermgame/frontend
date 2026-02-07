@@ -144,13 +144,13 @@ export default function InvoiceDetailPage() {
   if (loading) {
     return (
       <div className="page-container text-center">
-        <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-8">
+        <div className="bg-white border-[3px] border-black p-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
           <div className="animate-pulse flex space-x-4 justify-center">
-            <div className="rounded-full bg-mali-blue/20 h-12 w-12"></div>
+            <div className="rounded-full bg-gray-200 h-12 w-12"></div>
             <div className="flex-1 space-y-4 max-w-md">
-              <div className="h-4 bg-mali-blue/20 rounded w-3/4"></div>
-              <div className="h-4 bg-mali-blue/20 rounded"></div>
-              <div className="h-4 bg-mali-blue/20 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
             </div>
           </div>
         </div>
@@ -163,19 +163,21 @@ export default function InvoiceDetailPage() {
     return (
       <div className="page-container">
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 p-8 text-center"
+          className="bg-white border-[3px] border-black p-8 text-center"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="w-16 h-16 rounded-full bg-mali-blue/10 flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="h-8 w-8 text-red-400" />
+          <div className="w-16 h-16 bg-red-100 border-[2px] border-black flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="h-8 w-8 text-red-600" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-2 thai-font">ข้อผิดพลาด</h2>
-          <p className="text-mali-text-secondary mb-6 thai-font">{error}</p>
+          <h2 className="text-xl font-bold text-black mb-2 thai-font">ข้อผิดพลาด</h2>
+          <p className="text-gray-600 mb-6 thai-font">{error}</p>
           <button
             onClick={() => router.push('/dashboard/invoice')}
-            className="inline-flex items-center bg-mali-blue hover:bg-mali-blue/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all thai-font"
+            className="inline-flex items-center bg-black text-white px-5 py-2.5 border-[2px] border-black font-bold hover:bg-gray-800 transition-all thai-font"
+            style={{ boxShadow: '3px 3px 0 0 #000000' }}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             กลับไปหน้าใบแจ้งหนี้
@@ -199,7 +201,7 @@ export default function InvoiceDetailPage() {
           <div>
             <Link
               href="/dashboard/invoice"
-              className="text-mali-blue-light hover:text-mali-blue-accent inline-flex items-center text-sm mb-3 thai-font"
+              className="text-black hover:text-gray-700 inline-flex items-center text-sm mb-3 thai-font font-medium"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               กลับไปหน้าใบแจ้งหนี้
@@ -208,7 +210,7 @@ export default function InvoiceDetailPage() {
 
           <div className="flex gap-2">
             <motion.button
-              className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors inline-flex items-center text-mali-blue-light"
+              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={copyInvoiceId}
@@ -217,7 +219,7 @@ export default function InvoiceDetailPage() {
             </motion.button>
 
             <motion.button
-              className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors inline-flex items-center text-mali-blue-light"
+              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -225,7 +227,7 @@ export default function InvoiceDetailPage() {
             </motion.button>
 
             <motion.button
-              className="p-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors inline-flex items-center text-mali-blue-light"
+              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -233,7 +235,8 @@ export default function InvoiceDetailPage() {
             </motion.button>
 
             <motion.button
-              className="px-5 py-2 rounded-lg bg-mali-blue hover:bg-mali-blue/90 text-white font-medium inline-flex items-center shadow-lg shadow-blue-500/20 thai-font"
+              className="px-5 py-2 border-[3px] border-black bg-black text-white font-bold inline-flex items-center hover:bg-gray-800 thai-font"
+              style={{ boxShadow: '3px 3px 0 0 #000000' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -243,18 +246,19 @@ export default function InvoiceDetailPage() {
         </div>
 
         <div>
-          <h1 className="text-3xl font-bold text-white relative thai-font">
+          <h1 className="text-3xl font-bold text-black relative flex items-center thai-font">
+            <span className="w-1.5 h-8 bg-brutal-green mr-3"></span>
             ใบแจ้งหนี้ #{invoice.id}
           </h1>
           <div className="flex items-center gap-2 mt-1">
-            <p className="text-mali-text-secondary">
+            <p className="text-gray-600">
               {new Date(invoice.date).toLocaleDateString()}
             </p>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${invoice.status === "Paid"
-              ? "bg-green-500/20 text-green-400"
+            <span className={`px-3 py-1 border-[2px] border-black text-xs font-bold ${invoice.status === "Paid"
+              ? "bg-brutal-green text-black"
               : invoice.status === "Refunded"
-                ? "bg-amber-500/20 text-amber-400"
-                : "bg-blue-500/20 text-blue-400"
+                ? "bg-brutal-yellow text-black"
+                : "bg-brutal-blue text-black"
               }`}>
               {invoice.status}
             </span>
@@ -266,31 +270,33 @@ export default function InvoiceDetailPage() {
       <div className="space-y-6">
         {/* Invoice Summary Card */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
+          whileHover={{ y: -2 }}
         >
           <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Customer Info */}
             <div>
-              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3 thai-font">ลูกค้า</h3>
-              <p className="text-white font-medium">{invoice.customerName}</p>
-              <p className="text-mali-text-secondary text-sm">{invoice.customerEmail}</p>
-              <p className="text-mali-text-secondary text-sm mt-1">{invoice.billingAddress.phone}</p>
+              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">ลูกค้า</h3>
+              <p className="text-black font-bold">{invoice.customerName}</p>
+              <p className="text-gray-600 text-sm">{invoice.customerEmail}</p>
+              <p className="text-gray-600 text-sm mt-1">{invoice.billingAddress.phone}</p>
             </div>
 
             {/* Payment Info */}
             <div>
-              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3 thai-font">รายละเอียดการชำระเงิน</h3>
+              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">รายละเอียดการชำระเงิน</h3>
               <div className="flex items-start gap-3">
-                <div className="rounded-full p-2 bg-mali-blue/20 text-mali-blue-light mt-0.5">
-                  <CreditCard className="h-4 w-4" />
+                <div className="p-2 bg-brutal-blue border-[2px] border-black mt-0.5">
+                  <CreditCard className="h-4 w-4 text-black" />
                 </div>
                 <div>
-                  <p className="text-white font-medium">{invoice.paymentMethod}</p>
-                  <p className="text-mali-text-secondary text-sm">ID: {invoice.paymentId}</p>
-                  <p className="text-mali-text-secondary text-sm mt-1">
+                  <p className="text-black font-bold">{invoice.paymentMethod}</p>
+                  <p className="text-gray-600 text-sm">ID: {invoice.paymentId}</p>
+                  <p className="text-gray-600 text-sm mt-1">
                     {invoice.orderDate} at {invoice.orderTime}
                   </p>
                 </div>
@@ -299,25 +305,25 @@ export default function InvoiceDetailPage() {
 
             {/* Order Info */}
             <div>
-              <h3 className="text-sm font-medium text-mali-text-secondary uppercase mb-3 thai-font">ข้อมูลคำสั่งซื้อ</h3>
+              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">ข้อมูลคำสั่งซื้อ</h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-mali-text-secondary text-sm thai-font">อ้างอิงคำสั่งซื้อ:</span>
+                  <span className="text-gray-600 text-sm thai-font">อ้างอิงคำสั่งซื้อ:</span>
                   <Link
                     href={`/dashboard/orders/${invoice.orderReference}`}
-                    className="text-mali-blue-light hover:text-mali-blue-accent hover:underline transition-colors flex items-center text-sm"
+                    className="text-black hover:underline font-medium flex items-center text-sm"
                   >
                     {invoice.orderReference}
                     <ExternalLink className="ml-1.5 h-3 w-3" />
                   </Link>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mali-text-secondary text-sm thai-font">การจัดส่ง:</span>
-                  <span className="text-white text-sm">{invoice.deliveryMethod}</span>
+                  <span className="text-gray-600 text-sm thai-font">การจัดส่ง:</span>
+                  <span className="text-black text-sm">{invoice.deliveryMethod}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mali-text-secondary text-sm thai-font">สถานะ:</span>
-                  <span className="text-green-400 text-sm flex items-center thai-font">
+                  <span className="text-gray-600 text-sm thai-font">สถานะ:</span>
+                  <span className="text-brutal-green font-bold text-sm flex items-center thai-font">
                     <CheckCircle className="h-3.5 w-3.5 mr-1.5" /> เสร็จสมบูรณ์
                   </span>
                 </div>
@@ -328,47 +334,52 @@ export default function InvoiceDetailPage() {
 
         {/* Invoice Items */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
+          whileHover={{ y: -2 }}
         >
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 thai-font">รายการในใบแจ้งหนี้</h3>
+            <h3 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
+              <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+              รายการในใบแจ้งหนี้
+            </h3>
 
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-mali-blue/20">
-                    <th className="text-left text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">รายการ</th>
-                    <th className="text-center text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">มูลค่า</th>
-                    <th className="text-center text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">จำนวน</th>
-                    <th className="text-right text-xs uppercase text-mali-text-secondary font-medium pb-4 thai-font">จำนวนเงิน</th>
+                  <tr className="border-b-[2px] border-black">
+                    <th className="text-left text-xs uppercase text-gray-600 font-bold pb-4 thai-font">รายการ</th>
+                    <th className="text-center text-xs uppercase text-gray-600 font-bold pb-4 thai-font">มูลค่า</th>
+                    <th className="text-center text-xs uppercase text-gray-600 font-bold pb-4 thai-font">จำนวน</th>
+                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">จำนวนเงิน</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoice.items.map((item: any) => (
-                    <tr key={item.id} className="border-b border-mali-blue/10">
+                    <tr key={item.id} className="border-b border-gray-200">
                       <td className="py-4">
                         <div className="flex items-center">
                           {item.image ? (
-                            <div className="h-12 w-16 bg-mali-blue/10 rounded-lg flex items-center justify-center mr-4 overflow-hidden">
+                            <div className="h-12 w-16 bg-gray-100 border-[2px] border-black flex items-center justify-center mr-4 overflow-hidden">
                               <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                             </div>
                           ) : (
-                            <div className="h-12 w-12 bg-mali-blue/10 rounded-lg flex items-center justify-center mr-4">
-                              <FileText className="h-5 w-5 text-mali-blue-light" />
+                            <div className="h-12 w-12 bg-gray-100 border-[2px] border-black flex items-center justify-center mr-4">
+                              <FileText className="h-5 w-5 text-gray-600" />
                             </div>
                           )}
                           <div>
-                            <div className="text-white font-medium">{item.name}</div>
-                            <div className="text-mali-text-secondary text-sm">{item.id}</div>
+                            <div className="text-black font-bold">{item.name}</div>
+                            <div className="text-gray-600 text-sm">{item.id}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 text-center text-mali-blue-light">{item.value}</td>
-                      <td className="py-4 text-center text-mali-text-secondary">{item.quantity}</td>
-                      <td className="py-4 text-right text-white font-medium">${item.price.toFixed(2)}</td>
+                      <td className="py-4 text-center text-gray-600">{item.value}</td>
+                      <td className="py-4 text-center text-gray-600">{item.quantity}</td>
+                      <td className="py-4 text-right text-black font-bold">${item.price.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -376,18 +387,18 @@ export default function InvoiceDetailPage() {
             </div>
 
             {/* Invoice Summary */}
-            <div className="mt-6 border-t border-mali-blue/20 pt-4">
+            <div className="mt-6 border-t-[2px] border-black pt-4">
               <div className="flex flex-col items-end">
                 <div className="w-full max-w-xs space-y-2">
-                  <div className="flex justify-between text-mali-text-secondary">
+                  <div className="flex justify-between text-gray-600">
                     <span className="thai-font">ยอดรวมย่อย:</span>
                     <span>${(invoice.amount - 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-mali-text-secondary">
+                  <div className="flex justify-between text-gray-600">
                     <span className="thai-font">ภาษี:</span>
                     <span>$0.00</span>
                   </div>
-                  <div className="flex justify-between text-white font-bold border-t border-mali-blue/20 pt-2 mt-2">
+                  <div className="flex justify-between text-black font-bold border-t-[2px] border-black pt-2 mt-2">
                     <span className="thai-font">ยอดรวมทั้งหมด:</span>
                     <span>${invoice.amount.toFixed(2)}</span>
                   </div>
@@ -399,17 +410,22 @@ export default function InvoiceDetailPage() {
 
         {/* Notes & Info */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.4 }}
+          whileHover={{ y: -2 }}
         >
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 thai-font">หมายเหตุ</h3>
-            <p className="text-mali-text-secondary">{invoice.notes}</p>
+            <h3 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
+              <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
+              หมายเหตุ
+            </h3>
+            <p className="text-gray-600">{invoice.notes}</p>
 
-            <div className="mt-6 border-t border-mali-blue/20 pt-6">
-              <div className="flex items-center gap-2 text-mali-text-secondary">
+            <div className="mt-6 border-t-[2px] border-black pt-6">
+              <div className="flex items-center gap-2 text-gray-600">
                 <Clock className="h-4 w-4" />
                 <span className="text-sm thai-font">
                   ใบแจ้งหนี้สร้างเมื่อ {new Date(invoice.date).toLocaleDateString()} เวลา {invoice.orderTime}
@@ -430,16 +446,16 @@ export default function InvoiceDetailPage() {
         <div className="text-center sm:text-left mb-4 sm:mb-0">
           <Link
             href="/dashboard/invoice"
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 transition-colors text-mali-blue-light thai-font"
+            className="inline-flex items-center px-4 py-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors text-black thai-font"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             กลับไปหน้าใบแจ้งหนี้
           </Link>
         </div>
-        <p className="text-mali-text-secondary text-sm thai-font">
+        <p className="text-gray-600 text-sm thai-font">
           หากคุณมีคำถามใดๆ โปรดติดต่อทีมสนับสนุนของเรา
         </p>
       </motion.div>
     </div>
   );
-} 
+}

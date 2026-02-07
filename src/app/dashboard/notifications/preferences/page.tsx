@@ -79,24 +79,28 @@ export default function NotificationPreferencesPage() {
       title: 'การแจ้งเตือนทางอีเมล',
       description: 'รับการแจ้งเตือนสำคัญทางอีเมล',
       icon: <Mail className="h-5 w-5" />,
+      accent: 'bg-brutal-blue',
     },
     {
       key: 'pushNotifications' as const,
       title: 'การแจ้งเตือนแบบ Push',
       description: 'รับการแจ้งเตือนบนเบราว์เซอร์ของคุณ',
       icon: <Bell className="h-5 w-5" />,
+      accent: 'bg-brutal-pink',
     },
     {
       key: 'orderUpdates' as const,
       title: 'อัปเดตคำสั่งซื้อ',
       description: 'รับการแจ้งเตือนเมื่อสถานะคำสั่งซื้อเปลี่ยนแปลง',
       icon: <Globe className="h-5 w-5" />,
+      accent: 'bg-brutal-green',
     },
     {
       key: 'promotions' as const,
       title: 'โปรโมชั่นและข้อเสนอ',
       description: 'รับข้อมูลโปรโมชั่นและส่วนลดพิเศษ',
       icon: <Check className="h-5 w-5" />,
+      accent: 'bg-brutal-yellow',
     },
   ];
 
@@ -105,8 +109,8 @@ export default function NotificationPreferencesPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
+          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -116,34 +120,36 @@ export default function NotificationPreferencesPage() {
     <div>
       {/* Page header with back navigation */}
       <div className="flex items-center mb-6">
-        <Link href="/dashboard/notifications" className="mr-4 text-mali-text-secondary hover:text-white transition-colors">
+        <Link href="/dashboard/notifications" className="mr-4 text-gray-600 hover:text-black transition-colors border-[2px] border-gray-300 hover:border-black p-1">
           <ChevronLeft className="h-6 w-6" />
         </Link>
         <div>
           <motion.h2
-            className="text-xl font-bold text-white thai-font"
+            className="text-xl font-bold text-gray-900 thai-font flex items-center"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
           >
+            <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
             ตั้งค่าการแจ้งเตือน
           </motion.h2>
-          <p className="text-mali-text-secondary text-sm">จัดการการตั้งค่าการแจ้งเตือนของคุณ</p>
+          <p className="text-gray-600 text-sm">จัดการการตั้งค่าการแจ้งเตือนของคุณ</p>
         </div>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
         <motion.div
-          className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="p-6 border-b border-mali-blue/20 bg-mali-blue/5">
-            <h3 className="text-lg font-bold text-white flex items-center thai-font">
-              <Bell size={18} className="text-mali-blue-accent mr-2" />
+          <div className="p-6 border-b-[3px] border-black bg-gray-50">
+            <h3 className="text-lg font-bold text-black flex items-center thai-font">
+              <Bell size={18} className="text-brutal-blue mr-2" />
               การตั้งค่าการแจ้งเตือน
             </h3>
           </div>
@@ -151,17 +157,19 @@ export default function NotificationPreferencesPage() {
           <div className="p-6">
             <div className="space-y-4">
               {preferenceItems.map((item) => (
-                <div
+                <motion.div
                   key={item.key}
-                  className="flex items-center justify-between p-4 bg-mali-blue/5 border border-mali-blue/10 rounded-xl hover:bg-mali-blue/10 transition-colors"
+                  whileHover={{ y: -2 }}
+                  className="flex items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors"
+                  style={{ boxShadow: '3px 3px 0 0 #000000' }}
                 >
                   <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-lg bg-mali-blue/20 flex items-center justify-center mr-4 text-mali-blue-accent">
+                    <div className={`h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white ${item.accent}`}>
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-white font-medium thai-font">{item.title}</h4>
-                      <p className="text-mali-text-secondary text-sm">{item.description}</p>
+                      <h4 className="text-black font-bold thai-font">{item.title}</h4>
+                      <p className="text-gray-600 text-sm">{item.description}</p>
                     </div>
                   </div>
                   <label className="inline-flex items-center cursor-pointer">
@@ -171,17 +179,19 @@ export default function NotificationPreferencesPage() {
                       onChange={() => togglePreference(item.key)}
                       className="sr-only peer"
                     />
-                    <div className="relative w-11 h-6 bg-mali-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mali-blue-accent"></div>
+                    <div className="relative w-11 h-6 bg-gray-300 border-[2px] border-black peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-black after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-[2px] after:border-black after:h-5 after:w-5 after:transition-all peer-checked:bg-brutal-green"></div>
                   </label>
-                </div>
+                </motion.div>
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-mali-blue/10 flex justify-end">
-              <button
+            <div className="mt-6 pt-6 border-t-[2px] border-gray-200 flex justify-end">
+              <motion.button
                 onClick={savePreferences}
                 disabled={isSaving}
-                className="flex items-center bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-2.5 rounded-lg font-medium shadow-button-glow transition-all disabled:opacity-50 disabled:cursor-not-allowed thai-font"
+                whileHover={{ y: -2 }}
+                className="flex items-center bg-black hover:bg-gray-800 text-white px-6 py-2.5 border-[3px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed thai-font"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 {isSaving ? (
                   <>
@@ -194,7 +204,7 @@ export default function NotificationPreferencesPage() {
                     บันทึกการตั้งค่า
                   </>
                 )}
-              </button>
+              </motion.button>
             </div>
           </div>
         </motion.div>

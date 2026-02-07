@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { Settings, Save, ChevronLeft, Tag } from "lucide-react";
+import { Settings, Save, ChevronLeft, Tag, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AdminPromotionSettings() {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   // Form state for coupon settings
   const [settings, setSettings] = useState({
@@ -70,12 +73,10 @@ export default function AdminPromotionSettings() {
 
       // For UI demonstration purposes only
       await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Show success message (would be handled by a notification system)
-      alert("อัปเดตการตั้งค่าเรียบร้อย!");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
     } catch (error) {
       console.error("Error saving settings:", error);
-      alert("ไม่สามารถอัปเดตการตั้งค่า กรุณาลองอีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -110,10 +111,10 @@ export default function AdminPromotionSettings() {
             onChange={onChange}
           />
           <div
-            className={`w-11 h-6 rounded-full transition-colors ${checked ? "bg-mali-blue" : "bg-mali-blue/20"}`}
+            className={`w-11 h-6 rounded-full transition-colors ${checked ? "bg-brutal-purple" : "bg-gray-200"}`}
           >
             <div
-              className={`h-5 w-5 rounded-full bg-white absolute left-0.5 top-0.5 transition-transform ${checked ? "translate-x-5 shadow-button-glow" : ""}`}
+              className={`h-5 w-5 rounded-full bg-white absolute left-0.5 top-0.5 transition-transform ${checked ? "translate-x-5" : ""}`}
             ></div>
           </div>
         </label>
@@ -121,12 +122,12 @@ export default function AdminPromotionSettings() {
       <div>
         <label
           htmlFor={name}
-          className="text-white text-sm font-medium block cursor-pointer"
+          className="text-black text-sm font-medium block cursor-pointer"
         >
           {label}
         </label>
         {description && (
-          <p className="text-mali-text-secondary text-xs mt-0.5">
+          <p className="text-gray-500 text-xs mt-0.5">
             {description}
           </p>
         )}
@@ -136,27 +137,43 @@ export default function AdminPromotionSettings() {
 
   return (
     <AdminLayout title={"ตั้งค่าโปรโมชั่น" as any}>
-      <div className="space-y-6">
-        {/* Back Button */}
-        <div>
-          <Link href="/admin/promotions">
-            <button className="flex items-center text-mali-blue hover:text-white transition-colors">
-              <ChevronLeft className="h-5 w-5 mr-1" />
-              <span>กลับไปที่โปรโมชั่น</span>
-            </button>
-          </Link>
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center mb-6">
+          <button
+            onClick={() => router.push("/admin/promotions")}
+            className="mr-4 p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-gray-200 transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <div className="flex items-center">
+            <span className="w-1.5 h-6 bg-brutal-purple mr-2"></span>
+            <h1 className="text-2xl font-bold text-black">ตั้งค่าโปรโมชั่น</h1>
+          </div>
         </div>
+
+        {saved && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-green-100 border-[3px] border-green-500 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center"
+          >
+            <CheckCircle className="h-5 w-5 mr-2" />
+            บันทึกการตั้งค่าเรียบร้อยแล้ว
+          </motion.div>
+        )}
 
         {/* Settings Container */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-5 border-b border-mali-blue/20">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <Settings className="mr-2 h-5 w-5 text-mali-blue" />
+          <div className="p-5 border-b-[2px] border-black bg-gray-50">
+            <h3 className="text-lg font-semibold text-black flex items-center">
+              <Settings className="mr-2 h-5 w-5 text-brutal-purple" />
               ตั้งค่าคูปองและโปรโมชั่น
             </h3>
           </div>
@@ -165,11 +182,11 @@ export default function AdminPromotionSettings() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
               {/* Coupon Display Settings */}
               <div className="lg:col-span-2">
-                <h4 className="text-white font-medium mb-4 flex items-center">
-                  <Tag className="h-4 w-4 mr-2 text-mali-blue-light" />
+                <h4 className="text-black font-medium mb-4 flex items-center">
+                  <Tag className="h-4 w-4 mr-2 text-brutal-purple" />
                   การตั้งค่าการแสดงคูปอง
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-mali-blue/5 p-4 rounded-lg border border-mali-blue/10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg border-[2px] border-gray-200">
                   <ToggleSwitch
                     name="showCouponsOnHomepage"
                     label="แสดงคูปองบนหน้าแรก"
@@ -189,7 +206,7 @@ export default function AdminPromotionSettings() {
                   <div>
                     <label
                       htmlFor="expiringSoonDays"
-                      className="block text-white text-sm font-medium mb-1"
+                      className="block text-black text-sm font-medium mb-1"
                     >
                       เกณฑ์ "ใกล้หมดอายุ" (วัน)
                     </label>
@@ -201,9 +218,9 @@ export default function AdminPromotionSettings() {
                       max="30"
                       value={settings.expiringSoonDays}
                       onChange={handleChange}
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                     />
-                    <p className="text-mali-text-secondary text-xs mt-1">
+                    <p className="text-gray-500 text-xs mt-1">
                       คูปองที่เหลือวันน้อยกว่านี้จะถูกทำเครื่องหมายว่า
                       "ใกล้หมดอายุ"
                     </p>
@@ -213,10 +230,10 @@ export default function AdminPromotionSettings() {
 
               {/* Coupon Usage Settings */}
               <div>
-                <h4 className="text-white font-medium mb-4">
+                <h4 className="text-black font-medium mb-4">
                   การตั้งค่าการใช้คูปอง
                 </h4>
-                <div className="space-y-4 bg-mali-blue/5 p-4 rounded-lg border border-mali-blue/10">
+                <div className="space-y-4 bg-gray-50 p-4 rounded-lg border-[2px] border-gray-200">
                   <ToggleSwitch
                     name="allowMultipleCoupons"
                     label="อนุญาตหลายคูปอง"
@@ -229,7 +246,7 @@ export default function AdminPromotionSettings() {
                     <div>
                       <label
                         htmlFor="maxCouponsPerOrder"
-                        className="block text-white text-sm font-medium mb-1"
+                        className="block text-black text-sm font-medium mb-1"
                       >
                         คูปองสูงสุดต่อรายการ
                       </label>
@@ -241,7 +258,7 @@ export default function AdminPromotionSettings() {
                         max="10"
                         value={settings.maxCouponsPerOrder}
                         onChange={handleChange}
-                        className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                        className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                       />
                     </div>
                   )}
@@ -257,7 +274,7 @@ export default function AdminPromotionSettings() {
                   <div>
                     <label
                       htmlFor="minOrderValueForCoupons"
-                      className="block text-white text-sm font-medium mb-1"
+                      className="block text-black text-sm font-medium mb-1"
                     >
                       ยอดสั่งซื้อขั้นต่ำ (฿)
                     </label>
@@ -268,9 +285,9 @@ export default function AdminPromotionSettings() {
                       min="0"
                       value={settings.minOrderValueForCoupons}
                       onChange={handleChange}
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                     />
-                    <p className="text-mali-text-secondary text-xs mt-1">
+                    <p className="text-gray-500 text-xs mt-1">
                       ยอดสั่งซื้อขั้นต่ำเริ่มต้นที่ต้องการเพื่อใช้คูปอง
                     </p>
                   </div>
@@ -279,10 +296,10 @@ export default function AdminPromotionSettings() {
 
               {/* Security Settings */}
               <div>
-                <h4 className="text-white font-medium mb-4">
+                <h4 className="text-black font-medium mb-4">
                   การตั้งค่าความปลอดภัย
                 </h4>
-                <div className="space-y-4 bg-mali-blue/5 p-4 rounded-lg border border-mali-blue/10">
+                <div className="space-y-4 bg-gray-50 p-4 rounded-lg border-[2px] border-gray-200">
                   <ToggleSwitch
                     name="restrictToLoggedInUsers"
                     label="จำกัดเฉพาะผู้ใช้ที่ลงชื่อเข้าใช้"
@@ -294,7 +311,7 @@ export default function AdminPromotionSettings() {
                   <div>
                     <label
                       htmlFor="maxFailedAttempts"
-                      className="block text-white text-sm font-medium mb-1"
+                      className="block text-black text-sm font-medium mb-1"
                     >
                       ความพยายามผิดพลาดสูงสุด
                     </label>
@@ -306,9 +323,9 @@ export default function AdminPromotionSettings() {
                       max="20"
                       value={settings.maxFailedAttempts}
                       onChange={handleChange}
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                     />
-                    <p className="text-mali-text-secondary text-xs mt-1">
+                    <p className="text-gray-500 text-xs mt-1">
                       จำนวนครั้งที่ใช้คูปองผิดพลาดก่อนถูกบล็อกชั่วคราว
                     </p>
                   </div>
@@ -316,7 +333,7 @@ export default function AdminPromotionSettings() {
                   <div>
                     <label
                       htmlFor="blockDurationMinutes"
-                      className="block text-white text-sm font-medium mb-1"
+                      className="block text-black text-sm font-medium mb-1"
                     >
                       ระยะเวลาบล็อก (นาที)
                     </label>
@@ -328,9 +345,9 @@ export default function AdminPromotionSettings() {
                       max="1440"
                       value={settings.blockDurationMinutes}
                       onChange={handleChange}
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                     />
-                    <p className="text-mali-text-secondary text-xs mt-1">
+                    <p className="text-gray-500 text-xs mt-1">
                       ระยะเวลาบล็อกการใช้คูปองหลังจากความพยายามผิดพลาดมากเกินไป
                     </p>
                   </div>
@@ -339,14 +356,14 @@ export default function AdminPromotionSettings() {
 
               {/* Coupon Generation Settings */}
               <div className="lg:col-span-2">
-                <h4 className="text-white font-medium mb-4">
+                <h4 className="text-black font-medium mb-4">
                   การตั้งค่าการสร้างคูปอง
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-mali-blue/5 p-4 rounded-lg border border-mali-blue/10">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-4 rounded-lg border-[2px] border-gray-200">
                   <div>
                     <label
                       htmlFor="defaultCouponLength"
-                      className="block text-white text-sm font-medium mb-1"
+                      className="block text-black text-sm font-medium mb-1"
                     >
                       ความยาวรหัสคูปองเริ่มต้น
                     </label>
@@ -358,7 +375,7 @@ export default function AdminPromotionSettings() {
                       max="16"
                       value={settings.defaultCouponLength}
                       onChange={handleChange}
-                      className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                     />
                   </div>
 
@@ -382,10 +399,10 @@ export default function AdminPromotionSettings() {
 
               {/* Notification Settings */}
               <div className="lg:col-span-2">
-                <h4 className="text-white font-medium mb-4">
+                <h4 className="text-black font-medium mb-4">
                   การตั้งค่าการแจ้งเตือน
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-mali-blue/5 p-4 rounded-lg border border-mali-blue/10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg border-[2px] border-gray-200">
                   <ToggleSwitch
                     name="notifyBeforeCouponExpiry"
                     label="แจ้งเตือนก่อนคูปองหมดอายุ"
@@ -398,7 +415,7 @@ export default function AdminPromotionSettings() {
                     <div>
                       <label
                         htmlFor="expiryNotificationDays"
-                        className="block text-white text-sm font-medium mb-1"
+                        className="block text-black text-sm font-medium mb-1"
                       >
                         วันแจ้งเตือนก่อนหมดอายุ
                       </label>
@@ -410,9 +427,9 @@ export default function AdminPromotionSettings() {
                         max="30"
                         value={settings.expiryNotificationDays}
                         onChange={handleChange}
-                        className="bg-mali-card/50 border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                        className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full focus:border-black focus:outline-none"
                       />
-                      <p className="text-mali-text-secondary text-xs mt-1">
+                      <p className="text-gray-500 text-xs mt-1">
                         จำนวนวันก่อนหมดอายุที่จะส่งการแจ้งเตือน
                       </p>
                     </div>
@@ -422,15 +439,22 @@ export default function AdminPromotionSettings() {
             </div>
 
             {/* Form Actions */}
-            <div className="mt-8 flex justify-end">
+            <div className="mt-8 flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => router.push("/admin/promotions")}
+                className="px-6 py-2 bg-white border-[3px] border-black text-black rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              >
+                ยกเลิก
+              </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`bg-mali-blue text-white px-6 py-2.5 rounded-lg flex items-center justify-center hover:bg-mali-blue/90 transition-colors shadow-button-glow ${
-                  isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                className={`px-6 py-2 bg-black text-white border-[3px] border-black rounded-lg hover:bg-gray-800 transition-colors font-medium flex items-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
-                <Save className="h-5 w-5 mr-2" />
+                <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกการตั้งค่า"}
               </button>
             </div>

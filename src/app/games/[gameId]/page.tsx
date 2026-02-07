@@ -326,10 +326,10 @@ export default function GameDetailsPage() {
 
   if (loading) {
     return (
-      <div className="page-container flex items-center justify-center h-96">
+      <div className="page-container flex items-center justify-center h-96 bg-brutal-gray">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary">
+          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">
             กำลังโหลดข้อมูลเกม...
           </p>
         </div>
@@ -339,17 +339,18 @@ export default function GameDetailsPage() {
 
   if (error || !game) {
     return (
-      <div className="page-container">
-        <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center">
-          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">ไม่พบเกม</h2>
-          <p className="text-mali-text-secondary mb-6">
+      <div className="page-container bg-brutal-gray">
+        <div className="bg-white border-[3px] border-black p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <AlertCircle size={48} className="mx-auto text-brutal-pink mb-4" />
+          <h2 className="text-2xl font-bold text-black mb-2">ไม่พบเกม</h2>
+          <p className="text-gray-600 mb-6">
             {error ||
               "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
           </p>
           <Link
             href="/games"
-            className="bg-mali-blue-accent hover:bg-mali-blue-accent/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
+            className="bg-black hover:bg-gray-800 text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black transition-colors"
+            style={{ boxShadow: '2px 2px 0 0 #000000' }}
           >
             <ChevronLeft size={18} className="mr-2" />
             กลับไปหน้าเกมทั้งหมด
@@ -360,12 +361,12 @@ export default function GameDetailsPage() {
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container bg-brutal-gray">
       {/* Back link */}
       <div className="mb-6">
         <Link
           href="/games"
-          className="text-mali-text-secondary hover:text-white transition-colors inline-flex items-center"
+          className="text-gray-600 hover:text-black transition-colors inline-flex items-center font-medium"
         >
           <ChevronLeft size={18} className="mr-1" />
           กลับไปหน้าเกม
@@ -373,7 +374,7 @@ export default function GameDetailsPage() {
       </div>
 
       {/* Game Hero */}
-      <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden mb-8">
+      <div className="bg-white border-[3px] border-black overflow-hidden mb-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
         <div className="relative h-80 md:h-96">
           {/* Main banner image */}
           <Image
@@ -392,7 +393,7 @@ export default function GameDetailsPage() {
           {/* Game info overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-end gap-6">
-              <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-lg overflow-hidden border-4 border-mali-blue/30">
+              <div className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border-[3px] border-black" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
                 <Image
                   src={
                     game.mainImage ||
@@ -408,64 +409,70 @@ export default function GameDetailsPage() {
                   {game.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-3 text-sm">
-                  <span className="bg-mali-blue/30 text-mali-blue-accent px-3 py-1 rounded-full">
+                  <span className="bg-brutal-yellow text-black px-3 py-1 font-bold border-[2px] border-black">
                     {game.category}
                   </span>
-                  <div className="flex items-center text-yellow-400">
-                    <Star size={16} className="fill-yellow-400" />
-                    <span className="ml-1">{game.rating}</span>
-                    <span className="ml-1 text-mali-text-secondary">
+                  <div className="flex items-center text-brutal-yellow">
+                    <Star size={16} className="fill-brutal-yellow" />
+                    <span className="ml-1 font-bold">{game.rating}</span>
+                    <span className="ml-1 text-gray-300">
                       ({game.ratingCount?.toLocaleString() || 0})
                     </span>
                   </div>
                   {game.releaseDate && (
-                    <span className="text-mali-text-secondary flex items-center">
+                    <span className="text-gray-300 flex items-center">
                       <Calendar size={14} className="mr-1" />
                       {new Date(game.releaseDate).getFullYear()}
                     </span>
                   )}
                 </div>
                 <div className="mt-3">
-                  <span className="text-gray-400 mr-2">โดย</span>
-                  <span className="text-white">
+                  <span className="text-gray-300 mr-2">โดย</span>
+                  <span className="text-white font-medium">
                     {game.developer || game.publisher}
                   </span>
                 </div>
               </div>
 
               <div className="flex mt-4 md:mt-0 space-x-3">
-                <button
+                <motion.button
                   type="button"
                   onClick={handleToggleFavorite}
                   aria-label={isFavorite ? "ลบออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
-                  className={`p-3 rounded-full border transition-all duration-200 ${
+                  className={`p-3 border-[3px] border-black transition-all duration-200 ${
                     isFavorite
-                      ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
-                      : "bg-mali-blue/10 border-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20"
+                      ? "bg-brutal-pink text-black"
+                      : "bg-white text-black hover:bg-gray-100"
                   }`}
+                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ y: 0 }}
                 >
                   <Heart
                     size={20}
-                    className={isFavorite ? "fill-white text-white" : ""}
+                    className={isFavorite ? "fill-black" : ""}
                     aria-hidden="true"
                   />
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="button"
                   onClick={handleCopyLink}
                   aria-label={copied ? "คัดลอกแล้ว" : "คัดลอกลิงก์"}
-                  className={`p-3 rounded-full border transition-all duration-200 ${
+                  className={`p-3 border-[3px] border-black transition-all duration-200 ${
                     copied
-                      ? "bg-mali-green border-mali-green text-white shadow-lg shadow-mali-green/30"
-                      : "bg-mali-blue/10 border-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20"
+                      ? "bg-brutal-green text-black"
+                      : "bg-white text-black hover:bg-gray-100"
                   }`}
+                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ y: 0 }}
                 >
                   {copied ? (
                     <Check size={20} aria-hidden="true" />
                   ) : (
                     <Share2 size={20} aria-hidden="true" />
                   )}
-                </button>
+                </motion.button>
               </div>
             </div>
           </div>
@@ -477,18 +484,18 @@ export default function GameDetailsPage() {
         {/* Left column - Game info */}
         <div className="lg:col-span-2 space-y-8">
           {/* Tab navigation */}
-          <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden shadow-sm">
-            <div className="flex border-b border-mali-blue/20 overflow-x-auto hide-scrollbar">
+          <div className="bg-white border-[3px] border-black overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="flex border-b-[3px] border-black overflow-x-auto hide-scrollbar">
               <button
                 onClick={() => setActiveTab("topup")}
-                className={`py-4 px-6 text-sm font-medium flex items-center ${activeTab === "topup" ? "text-mali-blue-accent border-b-2 border-mali-blue-accent" : "text-mali-text-secondary hover:text-white"}`}
+                className={`py-4 px-6 text-sm font-bold flex items-center ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <DollarSign size={18} className="mr-2" />
                 ตัวเลือกเติมเงิน
               </button>
               <button
                 onClick={() => setActiveTab("info")}
-                className={`py-4 px-6 text-sm font-medium flex items-center ${activeTab === "info" ? "text-mali-blue-accent border-b-2 border-mali-blue-accent" : "text-mali-text-secondary hover:text-white"}`}
+                className={`py-4 px-6 text-sm font-bold flex items-center ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <Info size={18} className="mr-2" />
                 ข้อมูลเกม
@@ -499,49 +506,51 @@ export default function GameDetailsPage() {
               {/* Top Up Options */}
               {activeTab === "topup" && (
                 <div className="space-y-6">
-                  <p className="text-mali-text-secondary">
+                  <p className="text-gray-600">
                     เลือกจำนวนที่ต้องการเติม:
                   </p>
 
                   {game.topUpOptions.length === 0 ? (
-                    <div className="text-center py-8 bg-mali-blue/5 border border-mali-blue/20 rounded-xl">
+                    <div className="text-center py-8 bg-brutal-gray border-[3px] border-black">
                       <AlertCircle
-                        className="mx-auto text-mali-text-secondary mb-2"
+                        className="mx-auto text-gray-500 mb-2"
                         size={32}
                       />
-                      <p className="text-mali-text-secondary">
+                      <p className="text-gray-600">
                         ไม่มีตัวเลือกการเติมเงิน
                       </p>
-                      <p className="text-sm text-mali-text-secondary mt-1">
+                      <p className="text-sm text-gray-500 mt-1">
                         กรุณาลองใหม่อีกครั้งภายหลัง
                       </p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
                       {game.topUpOptions.map((option: any) => (
-                        <div
+                        <motion.div
                           key={option.id}
                           onClick={() => setSelectedOption(option.id)}
-                          className={`relative border p-4 rounded-xl cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg ${
+                          className={`relative border-[3px] p-4 cursor-pointer transition-all ${
                             selectedOption === option.id
-                              ? "bg-mali-blue/20 border-mali-blue-accent shadow-md"
-                              : "bg-mali-blue/5 border-mali-blue/20 hover:border-mali-blue/50"
+                              ? "bg-brutal-yellow border-black"
+                              : "bg-white border-black hover:bg-gray-100"
                           }`}
+                          style={{ boxShadow: selectedOption === option.id ? '4px 4px 0 0 #000000' : 'none' }}
+                          whileHover={{ y: -2 }}
                         >
                           {option.isPopular && (
                             <div className="absolute -top-3 left-0 right-0 flex justify-center">
-                              <span className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm uppercase tracking-wider">
+                              <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black uppercase tracking-wider">
                                 ยอดนิยม
                               </span>
                             </div>
                           )}
 
-                          <h4 className="text-white font-bold text-center mb-1">
+                          <h4 className="text-black font-bold text-center mb-1">
                             {option.title}
                           </h4>
 
                           {option.parValue && option.parValueCurrency && (
-                            <p className="text-center text-mali-text-secondary text-sm mb-2">
+                            <p className="text-center text-gray-600 text-sm mb-2">
                               {option.parValue} {option.parValueCurrency}
                             </p>
                           )}
@@ -549,43 +558,43 @@ export default function GameDetailsPage() {
                           <div className="text-center">
                             {option.originalPrice > option.price ? (
                               <>
-                                <span className="line-through text-mali-text-secondary text-sm mr-1">
+                                <span className="line-through text-gray-500 text-sm mr-1">
                                   ฿
                                   {Number(option.originalPrice || 0).toFixed(2)}
                                 </span>
-                                <span className="text-green-400 font-bold">
+                                <span className="text-black font-bold">
                                   ฿{Number(option.price || 0).toFixed(2)}
                                 </span>
                               </>
                             ) : (
-                              <span className="text-white font-bold">
+                              <span className="text-black font-bold">
                                 ฿{Number(option.price || 0).toFixed(2)}
                               </span>
                             )}
                           </div>
 
                           {selectedOption === option.id && (
-                            <div className="absolute bottom-2 right-2 text-mali-blue-accent">
+                            <div className="absolute bottom-2 right-2 text-black">
                               <Check size={16} />
                             </div>
                           )}
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   )}
 
                   {game.topUpOptions.length > 0 && (
-                    <div className="mt-6 bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-4">
+                    <div className="mt-6 bg-brutal-blue/20 border-[3px] border-black p-4">
                       <div className="flex items-start">
                         <Gift
-                          className="text-mali-blue-accent mr-3 mt-1 flex-shrink-0"
+                          className="text-black mr-3 mt-1 flex-shrink-0"
                           size={20}
                         />
                         <div>
-                          <h4 className="text-white font-medium mb-1">
+                          <h4 className="text-black font-bold mb-1">
                             โบนัสการซื้อครั้งแรก!
                           </h4>
-                          <p className="text-mali-text-secondary text-sm">
+                          <p className="text-gray-700 text-sm">
                             รับโบนัสพิเศษ 10% สำหรับการซื้อครั้งแรก
                             โบนัสจะถูกเพิ่มเข้าบัญชีของคุณอัตโนมัติ
                           </p>
@@ -600,49 +609,50 @@ export default function GameDetailsPage() {
               {activeTab === "info" && (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-white font-medium mb-2">
+                    <h3 className="text-black font-bold mb-2 flex items-center">
+                      <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
                       เกี่ยวกับ {game.title}
                     </h3>
                     <ProductDescription description={game.longDescription || game.description} />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-4">
-                      <h4 className="text-white font-medium mb-2 flex items-center">
+                    <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                      <h4 className="text-black font-bold mb-2 flex items-center">
                         <Package
-                          className="mr-2 text-mali-blue-accent"
+                          className="mr-2 text-black"
                           size={18}
                         />
                         ผู้พัฒนา
                       </h4>
-                      <p className="text-mali-text-secondary">
+                      <p className="text-gray-700">
                         {game.developer || "ไม่ระบุ"}
                       </p>
                     </div>
 
-                    <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-4">
-                      <h4 className="text-white font-medium mb-2 flex items-center">
+                    <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                      <h4 className="text-black font-bold mb-2 flex items-center">
                         <Award
-                          className="mr-2 text-mali-blue-accent"
+                          className="mr-2 text-black"
                           size={18}
                         />
                         ผู้จัดจำหน่าย
                       </h4>
-                      <p className="text-mali-text-secondary">
+                      <p className="text-gray-700">
                         {game.publisher || "ไม่ระบุ"}
                       </p>
                     </div>
 
                     {game.releaseDate && (
-                      <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-4">
-                        <h4 className="text-white font-medium mb-2 flex items-center">
+                      <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                        <h4 className="text-black font-bold mb-2 flex items-center">
                           <Calendar
-                            className="mr-2 text-mali-blue-accent"
+                            className="mr-2 text-black"
                             size={18}
                           />
                           วันวางจำหน่าย
                         </h4>
-                        <p className="text-mali-text-secondary">
+                        <p className="text-gray-700">
                           {new Date(game.releaseDate).toLocaleDateString(
                             "en-US",
                             { year: "numeric", month: "long", day: "numeric" },
@@ -651,15 +661,15 @@ export default function GameDetailsPage() {
                       </div>
                     )}
 
-                    <div className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-4">
-                      <h4 className="text-white font-medium mb-2 flex items-center">
+                    <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                      <h4 className="text-black font-bold mb-2 flex items-center">
                         <Smartphone
-                          className="mr-2 text-mali-blue-accent"
+                          className="mr-2 text-black"
                           size={18}
                         />
                         แพลตฟอร์ม
                       </h4>
-                      <p className="text-mali-text-secondary">
+                      <p className="text-gray-700">
                         {game.platforms.join(", ")}
                       </p>
                     </div>
@@ -671,19 +681,20 @@ export default function GameDetailsPage() {
 
           {/* Related Games - Same Developer/Publisher */}
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-4">เกมที่เกี่ยวข้อง</h2>
+            <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+              <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+              เกมที่เกี่ยวข้อง
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {relatedGamesByDev.length > 0 ? (
                 relatedGamesByDev.map((relatedGame) => (
                   <Link href={`/games/${relatedGame.slug}`} key={relatedGame.id}>
                     <motion.div
-                      className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden group cursor-pointer"
-                      whileHover={{
-                        y: -5,
-                        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-                      }}
+                      className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
+                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                      whileHover={{ y: -4 }}
                     >
-                      <div className="relative aspect-square bg-mali-blue/10 overflow-hidden">
+                      <div className="relative aspect-square bg-brutal-gray overflow-hidden">
                         <img
                           src={relatedGame.imageUrl || `https://placehold.co/300x300?text=${encodeURIComponent(relatedGame.name)}`}
                           alt={relatedGame.name}
@@ -695,11 +706,11 @@ export default function GameDetailsPage() {
                             {relatedGame.name}
                           </h3>
                           <div className="flex items-center mt-1">
-                            <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                            <span className="ml-1 text-xs text-yellow-400">
+                            <Star size={12} className="text-brutal-yellow fill-brutal-yellow" />
+                            <span className="ml-1 text-xs text-brutal-yellow font-bold">
                               {relatedGame.averageRating?.toFixed(1) || "4.5"}
                             </span>
-                            <span className="ml-2 text-xs bg-mali-blue/30 text-mali-blue-accent px-1.5 py-0.5 rounded">
+                            <span className="ml-2 text-xs bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-bold">
                               {relatedGame.gameDetails?.developer || "เกม"}
                             </span>
                           </div>
@@ -709,7 +720,7 @@ export default function GameDetailsPage() {
                   </Link>
                 ))
               ) : (
-                <div className="col-span-full text-center py-8 text-mali-text-secondary">
+                <div className="col-span-full text-center py-8 text-gray-600">
                   ไม่พบเกมที่เกี่ยวข้อง
                 </div>
               )}
@@ -719,8 +730,9 @@ export default function GameDetailsPage() {
 
         {/* Right column - Purchase section */}
         <div>
-          <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-6 sticky top-4">
-            <h3 className="text-xl font-bold text-white mb-4">
+          <div className="bg-white border-[3px] border-black p-6 sticky top-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <h3 className="text-xl font-bold text-black mb-4 flex items-center">
+              <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
               รายละเอียดการเติมเงิน
             </h3>
 
@@ -738,10 +750,10 @@ export default function GameDetailsPage() {
                       <div className="space-y-4">
                         {option.fields.map((field) => (
                           <div key={field.name} className="mb-4">
-                            <label className="block text-sm font-medium text-mali-text-secondary mb-2">
+                            <label className="block text-sm font-bold text-black mb-2">
                               {field.label}
                               {field.required && (
-                                <span className="text-red-500 ml-1">*</span>
+                                <span className="text-brutal-pink ml-1">*</span>
                               )}
                             </label>
                             {field.type === "select" ? (
@@ -750,16 +762,16 @@ export default function GameDetailsPage() {
                                 onChange={(e) =>
                                   handleFieldChange(field.name, e.target.value)
                                 }
-                                className="w-full bg-mali-blue/5 border border-mali-blue/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-mali-blue-accent transition-colors"
+                                className="w-full bg-white border-[3px] border-black px-4 py-3 text-black focus:outline-none focus:ring-0"
                               >
-                                <option value="" className="bg-mali-card">
+                                <option value="" className="bg-white">
                                   เลือก{field.label}
                                 </option>
                                 {field.options?.map((opt) => (
                                   <option
                                     key={opt.value}
                                     value={opt.value}
-                                    className="bg-mali-card"
+                                    className="bg-white"
                                   >
                                     {opt.label}
                                   </option>
@@ -776,11 +788,11 @@ export default function GameDetailsPage() {
                                   field.placeholder ||
                                   `กรอก${field.label}ของคุณ`
                                 }
-                                className="w-full bg-mali-blue/5 border border-mali-blue/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-mali-blue-accent transition-colors"
+                                className="w-full bg-white border-[3px] border-black px-4 py-3 text-black focus:outline-none focus:ring-0"
                               />
                             )}
                             {field.prefix && (
-                              <span className="text-xs text-mali-text-secondary mt-1 block">
+                              <span className="text-xs text-gray-600 mt-1 block">
                                 คำนำหน้า: {field.prefix}
                               </span>
                             )}
@@ -790,35 +802,35 @@ export default function GameDetailsPage() {
                     )}
 
                     <div className="flex justify-between items-center">
-                      <span className="text-mali-text-secondary">
+                      <span className="text-gray-600">
                         จำนวนที่เลือก:
                       </span>
                       <div className="text-right">
-                        <span className="text-white font-bold block">
+                        <span className="text-black font-bold block">
                           {option.title}
                         </span>
                         {option.parValue && option.parValueCurrency && (
-                          <span className="text-mali-text-secondary text-sm">
+                          <span className="text-gray-600 text-sm">
                             {option.parValue} {option.parValueCurrency}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <div className="py-4 border-y border-mali-blue/20">
+                    <div className="py-4 border-y-[3px] border-black">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-mali-text-secondary">ราคา:</span>
+                        <span className="text-gray-600">ราคา:</span>
                         {option.originalPrice > option.price ? (
                           <div>
-                            <span className="line-through text-mali-text-secondary text-sm mr-2">
+                            <span className="line-through text-gray-500 text-sm mr-2">
                               ฿{Number(option.originalPrice || 0).toFixed(2)}
                             </span>
-                            <span className="text-white font-bold">
+                            <span className="text-black font-bold">
                               ฿{Number(option.price || 0).toFixed(2)}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-white font-bold">
+                          <span className="text-black font-bold">
                             ฿{Number(option.price || 0).toFixed(2)}
                           </span>
                         )}
@@ -826,10 +838,10 @@ export default function GameDetailsPage() {
 
                       {option.originalPrice > option.price && (
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-mali-text-secondary">
+                          <span className="text-gray-600">
                             ประหยัด:
                           </span>
-                          <span className="text-green-400 font-bold">
+                          <span className="text-brutal-green font-bold">
                             ฿
                             {(
                               Number(option.originalPrice || 0) -
@@ -841,22 +853,25 @@ export default function GameDetailsPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <button
+                      <motion.button
                         type="button"
-                        className="w-full bg-mali-blue hover:bg-mali-blue/90 text-white py-3 rounded-lg font-medium flex items-center justify-center"
+                        className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors"
+                        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 0 }}
                       >
                         <ShoppingCart size={18} className="mr-2" aria-hidden="true" />
                         ซื้อเลย
-                      </button>
+                      </motion.button>
                     </div>
 
-                    <div className="bg-mali-blue/10 rounded-lg p-3 text-sm">
+                    <div className="bg-brutal-gray border-[3px] border-black p-3 text-sm">
                       <div className="flex">
                         <Clock
                           size={16}
-                          className="text-mali-text-secondary mr-2 mt-0.5 flex-shrink-0"
+                          className="text-gray-600 mr-2 mt-0.5 flex-shrink-0"
                         />
-                        <span className="text-mali-text-secondary">
+                        <span className="text-gray-600">
                           จัดส่งอัตโนมัติภายใน 5 นาทีหลังชำระเงิน
                         </span>
                       </div>
@@ -870,19 +885,20 @@ export default function GameDetailsPage() {
 
       {/* Related Games section - show actual similar games */}
       <section className="mb-10">
-        <h2 className="text-xl font-bold text-white mb-4">เกมที่คล้ายกัน</h2>
+        <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+          <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
+          เกมที่คล้ายกัน
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {similarGames.length > 0 ? (
             similarGames.map((similarGame) => (
               <Link href={`/games/${similarGame.slug}`} key={similarGame.id}>
                 <motion.div
-                  className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden group cursor-pointer"
-                  whileHover={{
-                    y: -5,
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-                  }}
+                  className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  whileHover={{ y: -4 }}
                 >
-                  <div className="aspect-square relative bg-mali-blue/10 overflow-hidden">
+                  <div className="aspect-square relative bg-brutal-gray overflow-hidden">
                     <img
                       src={similarGame.imageUrl || `https://placehold.co/300x300?text=${encodeURIComponent(similarGame.name)}`}
                       alt={similarGame.name}
@@ -890,23 +906,23 @@ export default function GameDetailsPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute bottom-2 left-2 right-2">
-                      <span className="text-xs bg-mali-blue/50 text-white px-2 py-0.5 rounded">
+                      <span className="text-xs bg-brutal-blue text-black px-2 py-0.5 border border-black font-bold">
                         {similarGame.category?.name || "เกม"}
                       </span>
                     </div>
                   </div>
                   <div className="p-3">
-                    <h3 className="font-medium text-white text-sm mb-1 truncate">
+                    <h3 className="font-bold text-black text-sm mb-1 truncate">
                       {similarGame.name}
                     </h3>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
-                        <span className="text-mali-text-secondary text-xs ml-1">
+                        <Star className="h-3 w-3 text-brutal-yellow fill-brutal-yellow" />
+                        <span className="text-gray-600 text-xs ml-1">
                           {similarGame.averageRating?.toFixed(1) || "4.5"}
                         </span>
                       </div>
-                      <span className="text-xs text-mali-green font-medium">
+                      <span className="text-xs text-black font-bold">
                         ฿{similarGame.price.toFixed(0)}
                       </span>
                     </div>
@@ -915,7 +931,7 @@ export default function GameDetailsPage() {
               </Link>
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-mali-text-secondary">
+            <div className="col-span-full text-center py-8 text-gray-600">
               ไม่พบเกมที่คล้ายกัน
             </div>
           )}

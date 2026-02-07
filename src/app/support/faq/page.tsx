@@ -129,16 +129,17 @@ export default function FaqPage() {
   const getCategoryIcon = (categoryId: string) => {
     const category = getCategoryById(categoryId);
     if (!category?.icon) {
-      return <span className="bg-mali-blue/20 p-1.5 rounded text-mali-blue-accent">?</span>;
+      return <span className="bg-brutal-gray p-1.5 border-[2px] border-black text-black">?</span>;
     }
     return <span className="text-2xl">{category.icon}</span>;
   };
 
   return (
-    <div className="page-container">
+    <div className="page-container bg-brutal-gray">
       {/* Hero Section */}
       <motion.div
-        className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-8 mb-8"
+        className="bg-white border-[3px] border-black rounded-xl p-8 mb-8"
+        style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -150,12 +151,14 @@ export default function FaqPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex items-center justify-center mb-4">
-              <HelpCircle className="h-8 w-8 text-mali-blue-accent mr-3" />
-              <h1 className="text-3xl md:text-4xl font-bold text-white">
+              <div className="bg-brutal-yellow p-3 border-[3px] border-black mr-3">
+                <HelpCircle className="h-8 w-8 text-black" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-black">
                 Frequently Asked Questions
               </h1>
             </div>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-600 mb-6">
               Find answers to common questions about our services, orders, and account management.
             </p>
 
@@ -167,15 +170,15 @@ export default function FaqPage() {
                   placeholder="Search for answers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-3 px-5 pl-12 bg-mali-blue/20 border border-mali-blue/30 rounded-xl text-white focus:outline-none focus:border-mali-blue-accent focus:ring-1 focus:ring-mali-blue-accent"
+                  className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black rounded-xl text-black focus:outline-none focus:border-black transition-colors"
                 />
                 <Search
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-mali-text-secondary"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                   size={18}
                 />
                 {isSearching && (
                   <Loader2
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-mali-blue-accent animate-spin"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black animate-spin"
                     size={18}
                   />
                 )}
@@ -190,13 +193,14 @@ export default function FaqPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6 flex items-center"
+          className="bg-brutal-pink border-[3px] border-black rounded-lg p-4 mb-6 flex items-center"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
-          <AlertCircle className="text-red-400 mr-3" size={20} />
-          <span className="text-red-200">{error}</span>
+          <AlertCircle className="text-black mr-3" size={20} />
+          <span className="text-black">{error}</span>
           <button
             onClick={loadArticles}
-            className="ml-auto text-red-400 hover:text-red-300 flex items-center"
+            className="ml-auto text-black hover:text-gray-700 flex items-center font-medium"
           >
             <Clock size={16} className="mr-1" />
             Retry
@@ -208,7 +212,7 @@ export default function FaqPage() {
       <div className="mb-6">
         <Link
           href="/support"
-          className="text-mali-text-secondary hover:text-white transition-colors inline-flex items-center"
+          className="text-black hover:text-gray-700 transition-colors inline-flex items-center font-medium"
         >
           <ArrowLeft size={18} className="mr-1" />
           Back to Support Center
@@ -218,9 +222,9 @@ export default function FaqPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar - Categories */}
         <div className="lg:col-span-1">
-          <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
-            <div className="p-4 bg-mali-blue/10 border-b border-mali-blue/20">
-              <h3 className="text-white font-medium flex items-center">
+          <div className="bg-white border-[3px] border-black rounded-xl overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="p-4 bg-brutal-gray border-b-[3px] border-black">
+              <h3 className="text-black font-medium flex items-center">
                 <Filter size={16} className="mr-2" />
                 Categories
               </h3>
@@ -233,15 +237,15 @@ export default function FaqPage() {
                 }}
                 className={`w-full text-left px-4 py-2 rounded-md flex items-center ${
                   selectedCategory === null
-                    ? "bg-mali-blue/20 text-white font-medium"
-                    : "text-mali-text-secondary hover:bg-mali-blue/10 hover:text-white"
+                    ? "bg-brutal-yellow border-[2px] border-black text-black font-medium"
+                    : "text-gray-700 hover:bg-brutal-gray hover:text-black"
                 }`}
               >
-                <span className="bg-gray-500/20 p-1.5 rounded text-gray-400 mr-3">
+                <span className="bg-brutal-gray border-[2px] border-black p-1.5 rounded text-black mr-3">
                   All
                 </span>
                 All Categories
-                <span className="ml-auto text-xs text-mali-text-secondary">
+                <span className="ml-auto text-xs text-gray-600">
                   {totalArticles}
                 </span>
               </button>
@@ -255,13 +259,13 @@ export default function FaqPage() {
                   }}
                   className={`w-full text-left px-4 py-2 rounded-md flex items-center ${
                     selectedCategory === category.id
-                      ? "bg-mali-blue/20 text-white font-medium"
-                      : "text-mali-text-secondary hover:bg-mali-blue/10 hover:text-white"
+                      ? "bg-brutal-yellow border-[2px] border-black text-black font-medium"
+                      : "text-gray-700 hover:bg-brutal-gray hover:text-black"
                   }`}
                 >
                   <span className="mr-3 text-lg">{category.icon || "📄"}</span>
                   <span className="flex-1">{category.name}</span>
-                  <span className="text-xs text-mali-text-secondary">
+                  <span className="text-xs text-gray-600">
                     {category.articleCount}
                   </span>
                 </button>
@@ -270,17 +274,20 @@ export default function FaqPage() {
           </div>
 
           {/* Need more help */}
-          <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-5 mt-6">
+          <div className="bg-white border-[3px] border-black rounded-xl p-5 mt-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="flex items-center mb-4">
-              <MessageSquare size={20} className="text-mali-blue-accent mr-2" />
-              <h3 className="text-white font-medium">Need More Help?</h3>
+              <div className="bg-brutal-green p-2 border-[2px] border-black mr-2">
+                <MessageSquare size={20} className="text-black" />
+              </div>
+              <h3 className="text-black font-medium">Need More Help?</h3>
             </div>
-            <p className="text-mali-text-secondary text-sm mb-4">
+            <p className="text-gray-600 text-sm mb-4">
               Can&apos;t find what you&apos;re looking for? Our support team is ready to help.
             </p>
             <Link
               href="/support/tickets"
-              className="bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent w-full py-2 rounded-lg font-medium flex items-center justify-center"
+              className="bg-black text-white border-[3px] border-black w-full py-2 rounded-lg font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               Contact Support
             </Link>
@@ -292,10 +299,13 @@ export default function FaqPage() {
           {/* Category Title */}
           {selectedCategory && (
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white">
-                {getCategoryById(selectedCategory)?.name || "FAQs"}
-              </h2>
-              <p className="text-mali-text-secondary mt-1">
+              <div className="flex items-center mb-2">
+                <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+                <h2 className="text-2xl font-bold text-black">
+                  {getCategoryById(selectedCategory)?.name || "FAQs"}
+                </h2>
+              </div>
+              <p className="text-gray-600 mt-1">
                 {getCategoryById(selectedCategory)?.description}
               </p>
             </div>
@@ -303,12 +313,12 @@ export default function FaqPage() {
 
           {/* Loading State */}
           {isLoading ? (
-            <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-12 text-center">
+            <div className="bg-white border-[3px] border-black rounded-xl p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <Loader2
-                className="animate-spin mx-auto text-mali-blue-accent mb-4"
+                className="animate-spin mx-auto text-black mb-4"
                 size={48}
               />
-              <p className="text-mali-text-secondary">Loading FAQs...</p>
+              <p className="text-gray-600">Loading FAQs...</p>
             </div>
           ) : articles.length > 0 ? (
             <div className="space-y-4">
@@ -317,11 +327,12 @@ export default function FaqPage() {
                   key={article.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`border border-mali-blue/20 rounded-xl overflow-hidden ${
+                  className={`border-[3px] border-black rounded-xl overflow-hidden ${
                     expandedArticle === article.id
-                      ? "bg-mali-blue/5"
-                      : "bg-mali-card"
+                      ? "bg-brutal-gray"
+                      : "bg-white"
                   }`}
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <button
                     onClick={() =>
@@ -329,11 +340,11 @@ export default function FaqPage() {
                         expandedArticle === article.id ? null : article.id
                       )
                     }
-                    className="w-full text-left p-5 font-medium text-white focus:outline-none flex justify-between items-center"
+                    className="w-full text-left p-5 font-medium text-black focus:outline-none flex justify-between items-center"
                   >
                     <div className="flex items-center gap-3">
                       {article.isPinned && (
-                        <span className="text-amber-400" title="Pinned">
+                        <span className="text-black" title="Pinned">
                           📌
                         </span>
                       )}
@@ -342,12 +353,12 @@ export default function FaqPage() {
                     {expandedArticle === article.id ? (
                       <ChevronUp
                         size={20}
-                        className="text-mali-text-secondary flex-shrink-0"
+                        className="text-gray-600 flex-shrink-0"
                       />
                     ) : (
                       <ChevronDown
                         size={20}
-                        className="text-mali-text-secondary flex-shrink-0"
+                        className="text-gray-600 flex-shrink-0"
                       />
                     )}
                   </button>
@@ -359,32 +370,32 @@ export default function FaqPage() {
                       transition={{ duration: 0.3 }}
                       className="px-5 pb-5"
                     >
-                      <div className="border-t border-mali-blue/20 pt-4 text-mali-text-secondary">
+                      <div className="border-t-[2px] border-black pt-4 text-gray-700">
                         <p className="whitespace-pre-line">
                           {article.excerpt || "Click to read the full article..."}
                         </p>
 
                         <Link
                           href={`/support/faq/${article.slug}`}
-                          className="inline-flex items-center text-mali-blue-accent hover:underline mt-3"
+                          className="inline-flex items-center text-black hover:underline mt-3 font-medium"
                         >
                           Read full article
                           <ArrowLeft size={16} className="ml-1 rotate-180" />
                         </Link>
 
                         <div className="flex flex-wrap gap-2 mt-4">
-                          <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-mali-blue/10 text-mali-text-secondary">
+                          <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brutal-gray border-[2px] border-black text-black">
                             <Eye size={12} />
                             {article.viewCount} views
                           </div>
-                          <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-mali-blue/10 text-mali-text-secondary">
+                          <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brutal-gray border-[2px] border-black text-black">
                             <Tag size={12} />
                             {article.categoryName}
                           </div>
                         </div>
 
-                        <div className="flex justify-between items-center mt-4 pt-3 border-t border-mali-blue/10">
-                          <span className="text-xs text-mali-text-secondary flex items-center">
+                        <div className="flex justify-between items-center mt-4 pt-3 border-t-[2px] border-black">
+                          <span className="text-xs text-gray-600 flex items-center">
                             <Clock size={12} className="mr-1" />
                             {new Date(article.createdAt).toLocaleDateString()}
                           </span>
@@ -392,10 +403,10 @@ export default function FaqPage() {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleVote(article.id, true)}
-                              className={`text-xs flex items-center px-2 py-1 rounded-full transition-colors ${
+                              className={`text-xs flex items-center px-2 py-1 rounded-full border-[2px] transition-colors ${
                                 userVotes[article.id] === true
-                                  ? "bg-green-500/20 text-green-400"
-                                  : "text-mali-text-secondary hover:text-green-400"
+                                  ? "bg-brutal-green border-black text-black"
+                                  : "bg-white border-black text-gray-700 hover:bg-brutal-green"
                               }`}
                             >
                               <ThumbsUp size={12} className="mr-1" />
@@ -403,10 +414,10 @@ export default function FaqPage() {
                             </button>
                             <button
                               onClick={() => handleVote(article.id, false)}
-                              className={`text-xs flex items-center px-2 py-1 rounded-full transition-colors ${
+                              className={`text-xs flex items-center px-2 py-1 rounded-full border-[2px] transition-colors ${
                                 userVotes[article.id] === false
-                                  ? "bg-red-500/20 text-red-400"
-                                  : "text-mali-text-secondary hover:text-red-400"
+                                  ? "bg-brutal-pink border-black text-black"
+                                  : "bg-white border-black text-gray-700 hover:bg-brutal-pink"
                               }`}
                             >
                               <ThumbsDown size={12} className="mr-1" />
@@ -421,15 +432,15 @@ export default function FaqPage() {
               ))}
             </div>
           ) : (
-            <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-8 text-center">
+            <div className="bg-white border-[3px] border-black rounded-xl p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <HelpCircle
                 size={48}
-                className="mx-auto text-mali-text-secondary/50 mb-4"
+                className="mx-auto text-gray-400 mb-4"
               />
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-black mb-2">
                 No Matching Questions
               </h3>
-              <p className="text-mali-text-secondary mb-6">
+              <p className="text-gray-600 mb-6">
                 We couldn&apos;t find any FAQs matching your search. Try adjusting your
                 search terms or browse by category.
               </p>
@@ -438,7 +449,8 @@ export default function FaqPage() {
                   setSearchQuery("");
                   setSelectedCategory(null);
                 }}
-                className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-2 rounded-lg font-medium"
+                className="bg-black text-white border-[3px] border-black px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 View All FAQs
               </button>
@@ -447,20 +459,21 @@ export default function FaqPage() {
 
           {/* Contact Support CTA */}
           {(articles.length > 0 || !isLoading) && (
-            <div className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-mali-blue/30 rounded-xl p-6 mt-8">
+            <div className="bg-brutal-blue border-[3px] border-black rounded-xl p-6 mt-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">
+                  <h3 className="text-lg font-bold text-black mb-2">
                     Still need help?
                   </h3>
-                  <p className="text-mali-text-secondary">
+                  <p className="text-gray-800">
                     If you couldn&apos;t find the answer you were looking for, our
                     support team is here to help.
                   </p>
                 </div>
                 <Link
                   href="/support/tickets"
-                  className="mt-4 md:mt-0 bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium whitespace-nowrap"
+                  className="mt-4 md:mt-0 bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium whitespace-nowrap hover:bg-gray-800 transition-colors"
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   Contact Support
                 </Link>

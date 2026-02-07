@@ -17,11 +17,11 @@ import { orderApi, Order } from "@/lib/services/order-api";
 import Link from "next/link";
 
 const statusStyles: Record<string, string> = {
-  pending: "text-yellow-400 bg-yellow-900/30",
-  processing: "text-blue-400 bg-blue-900/30",
-  completed: "text-green-400 bg-green-900/30",
-  cancelled: "text-red-400 bg-red-900/30",
-  refunded: "text-gray-400 bg-gray-900/30",
+  pending: "text-yellow-700 bg-yellow-100 border-yellow-300",
+  processing: "text-blue-700 bg-blue-100 border-blue-300",
+  completed: "text-green-700 bg-green-100 border-green-300",
+  cancelled: "text-red-700 bg-red-100 border-red-300",
+  refunded: "text-gray-700 bg-gray-100 border-gray-300",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -105,21 +105,25 @@ export default function AdminOrders() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-4 justify-between">
+          <div className="flex items-center">
+            <span className="w-1.5 h-6 bg-brutal-pink mr-2"></span>
+            <h1 className="text-2xl font-bold text-black">จัดการคำสั่งซื้อ</h1>
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
             <div className="relative w-full sm:max-w-xs">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-mali-blue/70" />
+                <Search className="h-5 w-5 text-gray-500" />
               </div>
               <input
                 type="text"
                 placeholder="ค้นหาคำสั่งซื้อ..."
-                className="bg-mali-card border border-mali-blue/20 text-white rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-mali-blue focus:outline-none"
+                className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <select
-              className="bg-mali-card border border-mali-blue/20 text-white rounded-lg px-4 py-2 w-full sm:w-auto"
+              className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full sm:w-auto focus:border-black focus:outline-none"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
@@ -134,33 +138,34 @@ export default function AdminOrders() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg">
+          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
 
         {/* Orders Table */}
         <motion.div
-          className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-5 border-b border-mali-blue/20">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <Package className="mr-2 h-5 w-5 text-mali-blue" />
-              จัดการคำสั่งซื้อ
+          <div className="p-5 border-b-[2px] border-black bg-gray-50">
+            <h3 className="text-lg font-semibold text-black flex items-center">
+              <Package className="mr-2 h-5 w-5 text-brutal-pink" />
+              รายการคำสั่งซื้อ
             </h3>
           </div>
           <div className="overflow-x-auto">
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 text-mali-blue animate-spin" />
+                <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
               </div>
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="text-mali-blue/70 text-sm">
+                  <tr className="text-gray-600 text-sm border-b border-gray-200">
                     <th className="px-5 py-3 text-left">รหัสคำสั่งซื้อ</th>
                     <th className="px-5 py-3 text-left">ลูกค้า</th>
                     <th className="px-5 py-3 text-left">รายการ</th>
@@ -170,18 +175,18 @@ export default function AdminOrders() {
                     <th className="px-5 py-3 text-left">การดำเนินการ</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-mali-blue/10">
+                <tbody className="divide-y divide-gray-200">
                   {filteredOrders.length > 0 ? (
                     filteredOrders.map((order) => (
                       <tr
                         key={order.id}
-                        className="text-sm hover:bg-mali-blue/5 transition-colors"
+                        className="text-sm hover:bg-gray-50 transition-colors"
                       >
-                        <td className="px-5 py-4 font-medium text-white">
+                        <td className="px-5 py-4 font-medium text-black">
                           #{order.id.slice(0, 8)}
                         </td>
                         <td className="px-5 py-4">
-                          <div className="text-white">
+                          <div className="text-black font-medium">
                             {order.user?.username || "-"}
                           </div>
                           <div className="text-xs text-gray-500">
@@ -189,7 +194,7 @@ export default function AdminOrders() {
                           </div>
                         </td>
                         <td className="px-5 py-4">
-                          <div className="text-gray-300">
+                          <div className="text-gray-700">
                             {order.items.length} รายการ
                           </div>
                           <div className="text-xs text-gray-500">
@@ -197,7 +202,7 @@ export default function AdminOrders() {
                             {order.items.length > 1 && "..."}
                           </div>
                         </td>
-                        <td className="px-5 py-4 font-medium">
+                        <td className="px-5 py-4 font-medium text-black">
                           {order.totalAmount.toFixed(2)} ฿
                         </td>
                         <td className="px-5 py-4">
@@ -206,7 +211,7 @@ export default function AdminOrders() {
                             onChange={(e) =>
                               handleUpdateStatus(order.id, e.target.value)
                             }
-                            className={`px-2 py-1 rounded-full text-xs border-0 cursor-pointer ${
+                            className={`px-2 py-1 rounded text-xs border-[2px] cursor-pointer font-medium focus:outline-none ${
                               statusStyles[order.status] || statusStyles.pending
                             }`}
                           >
@@ -216,14 +221,14 @@ export default function AdminOrders() {
                             <option value="cancelled">ยกเลิก</option>
                           </select>
                         </td>
-                        <td className="px-5 py-4 text-gray-400">
+                        <td className="px-5 py-4 text-gray-500">
                           {new Date(order.createdAt).toLocaleDateString(
                             "th-TH",
                           )}
                         </td>
                         <td className="px-5 py-4">
                           <Link href={`/admin/orders/${order.id}`}>
-                            <button className="p-1 rounded-md hover:bg-mali-blue/20 text-mali-blue hover:text-white transition-colors">
+                            <button className="p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-pink hover:text-white hover:border-black transition-colors">
                               <Eye className="h-4 w-4" />
                             </button>
                           </Link>
@@ -233,7 +238,7 @@ export default function AdminOrders() {
                   ) : (
                     <tr>
                       <td
-                        className="px-5 py-8 text-center text-gray-400"
+                        className="px-5 py-8 text-center text-gray-500"
                         colSpan={7}
                       >
                         ไม่พบคำสั่งซื้อ
@@ -247,8 +252,8 @@ export default function AdminOrders() {
 
           {/* Pagination */}
           {!loading && pagination.totalPages > 1 && (
-            <div className="p-4 border-t border-mali-blue/20 flex justify-between items-center">
-              <div className="text-sm text-gray-400">
+            <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+              <div className="text-sm text-gray-500">
                 แสดง {filteredOrders.length} จาก {pagination.total} คำสั่งซื้อ
               </div>
               <div className="flex space-x-1">
@@ -257,11 +262,11 @@ export default function AdminOrders() {
                     setPagination((p) => ({ ...p, page: p.page - 1 }))
                   }
                   disabled={pagination.page === 1}
-                  className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors disabled:opacity-50"
+                  className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 rounded transition-colors disabled:opacity-50 font-medium"
                 >
                   ก่อนหน้า
                 </button>
-                <span className="px-3 py-1 text-sm bg-mali-blue/20 text-white rounded">
+                <span className="px-3 py-1 text-sm bg-brutal-pink text-white border-[2px] border-black rounded font-medium">
                   {pagination.page}
                 </span>
                 <button
@@ -269,7 +274,7 @@ export default function AdminOrders() {
                     setPagination((p) => ({ ...p, page: p.page + 1 }))
                   }
                   disabled={pagination.page >= pagination.totalPages}
-                  className="px-3 py-1 text-sm text-mali-blue hover:text-white hover:bg-mali-blue/20 rounded transition-colors disabled:opacity-50"
+                  className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 rounded transition-colors disabled:opacity-50 font-medium"
                 >
                   ถัดไป
                 </button>

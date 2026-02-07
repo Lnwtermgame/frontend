@@ -24,12 +24,16 @@ export function ProductAttributes({
 
   return (
     <div className={cn('space-y-3', className)}>
-      <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-        <Info className="w-4 h-4" />
-        Product Details
+      <h3 className="font-bold text-black flex items-center gap-2 thai-font">
+        <div className="w-6 h-6 rounded-lg bg-brutal-blue border-[2px] border-black flex items-center justify-center"
+          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+        >
+          <Info className="w-3 h-3 text-black" />
+        </div>
+        รายละเอียดสินค้า
       </h3>
 
-      <div className="bg-gray-50 rounded-lg overflow-hidden">
+      <div className="bg-brutal-gray border-[2px] border-black rounded-xl overflow-hidden" style={{ boxShadow: '3px 3px 0 0 #000000' }}>
         <table className="w-full text-sm">
           <tbody>
             {sortedAttributes.map((attr, index) => (
@@ -37,10 +41,10 @@ export function ProductAttributes({
                 key={attr.id}
                 className={index !== sortedAttributes.length - 1 ? 'border-b border-gray-200' : ''}
               >
-                <td className="px-4 py-3 font-medium text-gray-600 w-1/3">
+                <td className="px-4 py-3 font-bold text-gray-600 w-1/3 thai-font">
                   {attr.name}
                 </td>
-                <td className="px-4 py-3 text-gray-900">
+                <td className="px-4 py-3 text-black font-medium">
                   {attr.value}
                 </td>
               </tr>

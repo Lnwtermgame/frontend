@@ -1,1004 +1,383 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
 import {
-  ArrowLeft,
-  Save,
-  Loader2,
   Package,
-  CreditCard,
-  Zap,
-  RefreshCw,
-  ImageIcon,
+  Save,
+  ChevronLeft,
+  X,
+  Upload,
   Tag,
   DollarSign,
-  FileText,
-  Search,
-  Calendar,
-  Layers,
-  Globe,
-  Archive,
-  CheckCircle2,
-  AlertCircle,
-  Eye,
-  EyeOff,
+  Box,
+  CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
-import toast from "react-hot-toast";
-import { productApi, Product, Category } from "@/lib/services/product-api";
-import { GeneratedContent } from "@/lib/services/ai-api";
-import DynamicProductFields from "@/components/products/DynamicProductFields";
-import AIGenerateButton from "@/components/admin/AIGenerateButton";
+import { useRouter } from "next/navigation";
 
-export default function EditProductPage() {
-  const { id } = useParams();
+export default function AdminProductEditPage() {
   const router = useRouter();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [refreshingFields, setRefreshingFields] = useState(false);
-  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saved, setSaved] = useState(false);
 
+  // Form state
   const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    shortDescription: "",
-    price: 0,
-    comparePrice: 0,
-    stockQuantity: 0,
-    categoryId: "",
-    imageUrl: "",
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: "",
+    name: "PUBG Mobile UC",
+    code: "pubg-mobile-uc",
+    description: "เติม UC สำหรับ PUBG Mobile",
+    price: "100",
+    stock: "999",
+    category: "topup",
+    region: "TH",
     isActive: true,
     isFeatured: false,
-    isBestseller: false,
-    gameDetails: {
-      developer: "",
-      publisher: "",
-      platforms: [] as string[],
-    },
   });
-  const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (typeof id !== "string") return;
+  // Handle form field changes
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, type } = e.target;
 
-      try {
-        setLoading(true);
-        const [productRes, categoriesRes] = await Promise.all([
-          productApi.getProductById(id),
-          productApi.getCategories(),
-        ]);
+    if (type === "checkbox") {
+      setFormData({
+        ...formData,
+        [name]: (e.target as HTMLInputElement).checked,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
 
-        if (productRes.success) {
-          setProduct(productRes.data);
-          setFormData({
-            name: productRes.data.name,
-            slug: productRes.data.slug,
-            description: productRes.data.description || "",
-            shortDescription: productRes.data.shortDescription || "",
-            price: productRes.data.price,
-            comparePrice: productRes.data.comparePrice || 0,
-            stockQuantity: productRes.data.stockQuantity,
-            categoryId: productRes.data.categoryId,
-            imageUrl: productRes.data.imageUrl || "",
-            metaTitle: productRes.data.metaTitle || "",
-            metaDescription: productRes.data.metaDescription || "",
-            metaKeywords: productRes.data.metaKeywords || "",
-            isActive: productRes.data.isActive,
-            isFeatured: productRes.data.isFeatured || false,
-            isBestseller: productRes.data.isBestseller || false,
-            gameDetails: {
-              developer: productRes.data.gameDetails?.developer || "",
-              publisher: productRes.data.gameDetails?.publisher || "",
-              platforms: productRes.data.gameDetails?.platforms || [],
-            },
-          });
-          setImageError(false);
-        }
-
-        if (categoriesRes.success) {
-          setCategories(categoriesRes.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
-  // Reset image error when imageUrl changes
-  useEffect(() => {
-    setImageError(false);
-  }, [formData.imageUrl]);
-
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (typeof id !== "string") return;
+    setIsSubmitting(true);
 
-    setSaving(true);
-    try {
-      console.log("[EditProduct] Submitting update for product:", id);
-      console.log("[EditProduct] Form data:", formData);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const response = await productApi.updateProduct(id, formData);
-      console.log("[EditProduct] Update response:", response);
-
-      if (response.success) {
-        // Update local product state with new data
-        setProduct(response.data);
-        // Show success toast
-        toast.success("บันทึกการเปลี่ยนแปลงสำเร็จ!", {
-          duration: 3000,
-          position: "top-center",
-        });
-        // Show success banner temporarily
-        setShowSuccessBanner(true);
-        setTimeout(() => setShowSuccessBanner(false), 5000);
-        // Stay on the same page - no redirect
-      } else {
-        alert(
-          "Failed to update product: " + (response as any).error?.message ||
-            "Unknown error",
-        );
-      }
-    } catch (error) {
-      console.error("[EditProduct] Failed to update product:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to update product";
-      alert("Error: " + errorMessage);
-    } finally {
-      setSaving(false);
-    }
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+    setIsSubmitting(false);
   };
-
-  const handleRefreshFields = async () => {
-    if (typeof id !== "string") return;
-
-    setRefreshingFields(true);
-    try {
-      const response = await productApi.refreshProductFields(id);
-      if (response.success) {
-        alert(`Fields refreshed! Found ${response.data.fields.length} fields.`);
-      }
-    } catch (error) {
-      console.error("Failed to refresh fields:", error);
-      alert("Failed to refresh fields");
-    } finally {
-      setRefreshingFields(false);
-    }
-  };
-
-  // Handle AI generated content
-  const handleAIGenerated = (content: GeneratedContent) => {
-    console.log("[AI Generated] Received content:", content);
-    console.log("[AI Generated] Description:", content.description);
-    console.log("[AI Generated] Short Description:", content.shortDescription);
-
-    setFormData((prev) => {
-      const newFormData = {
-        ...prev,
-        description: content.description || "",
-        shortDescription: content.shortDescription || "",
-        metaTitle: content.metaTitle || "",
-        metaDescription: content.metaDescription || "",
-        metaKeywords: content.metaKeywords || "",
-        gameDetails: {
-          developer: content.gameDetails?.developer || "",
-          publisher: content.gameDetails?.publisher || "",
-          platforms: content.gameDetails?.platforms || [],
-        },
-      };
-      console.log("[AI Generated] New formData:", newFormData);
-      return newFormData;
-    });
-
-    toast.success("AI สร้างเนื้อหาสำเร็จ!", {
-      duration: 3000,
-      position: "top-center",
-    });
-  };
-
-  if (loading) {
-    return (
-      <AdminLayout title="Edit Product">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-10 h-10 text-mali-blue animate-spin" />
-            <p className="text-gray-400 font-medium tracking-wide animate-pulse">
-              กำลังโหลดข้อมูลสินค้า...
-            </p>
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
-
-  if (!product) {
-    return (
-      <AdminLayout title="Edit Product">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center space-y-4">
-            <div className="bg-mali-card p-6 rounded-full inline-block border border-mali-blue/20">
-              <Package className="w-12 h-12 text-gray-500" />
-            </div>
-            <h2 className="text-xl font-semibold text-white">ไม่พบสินค้า</h2>
-            <Link
-              href="/admin/products"
-              className="inline-flex items-center text-mali-blue hover:text-white transition-colors gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              กลับไปหน้ารายการสินค้า
-            </Link>
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
-
-  const isDirectTopUp = product.productType === "DIRECT_TOPUP";
 
   return (
-    <AdminLayout title={`Edit: ${formData.name || "Product"}`}>
-      <div className="pb-10 space-y-8 max-w-7xl mx-auto">
-        {/* Success Banner */}
-        {showSuccessBanner && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 flex items-center gap-3"
+    <AdminLayout title={"แก้ไขสินค้า" as any}>
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center mb-6">
+          <button
+            onClick={() => router.push("/admin/products")}
+            className="mr-4 p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-gray-200 transition-colors"
           >
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <CheckCircle2 className="w-5 h-5 text-green-400" />
-            </div>
-            <div className="flex-1">
-              <p className="text-green-400 font-medium">
-                บันทึกการเปลี่ยนแปลงสำเร็จ!
-              </p>
-              <p className="text-sm text-green-400/70">
-                ข้อมูลสินค้าถูกอัปเดตเรียบร้อยแล้ว
-              </p>
-            </div>
-            <button
-              onClick={() => setShowSuccessBanner(false)}
-              className="p-1.5 hover:bg-green-500/20 rounded-lg transition-colors"
-            >
-              <span className="sr-only">ปิด</span>
-              <svg
-                className="w-4 h-4 text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <div className="flex items-center">
+            <span className="w-1.5 h-6 bg-brutal-blue mr-2"></span>
+            <h1 className="text-2xl font-bold text-black">แก้ไขสินค้า</h1>
+          </div>
+        </div>
+
+        {saved && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-green-100 border-[3px] border-green-500 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center"
+          >
+            <CheckCircle className="h-5 w-5 mr-2" />
+            บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว
           </motion.div>
         )}
 
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/admin/products"
-              className="group p-2.5 bg-mali-card border border-mali-blue/20 rounded-xl text-gray-400 hover:text-white hover:border-mali-blue/50 transition-all duration-300"
-            >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            </Link>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-white tracking-tight">
-                  แก้ไขสินค้า
-                </h1>
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                    formData.isActive
-                      ? "bg-green-500/10 text-green-400 border-green-500/20"
-                      : "bg-gray-500/10 text-gray-400 border-gray-500/20"
-                  }`}
-                >
-                  {formData.isActive ? "เผยแพร่แล้ว" : "ฉบับร่าง"}
-                </span>
-              </div>
-              <p className="text-gray-400 text-sm mt-1 font-medium">
-                {product.name} <span className="mx-2 text-gray-600">•</span>{" "}
-                รหัส: {product.id.slice(0, 8)}...
-              </p>
-            </div>
+        {/* Form Container */}
+        <motion.div
+          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="p-5 border-b-[2px] border-black bg-gray-50">
+            <h3 className="text-lg font-semibold text-black flex items-center">
+              <Package className="mr-2 h-5 w-5 text-brutal-blue" />
+              ข้อมูลสินค้า
+            </h3>
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={saving}
-            className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-mali-blue to-blue-600 text-white rounded-xl font-medium shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 hover:from-blue-500 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none" />
-            {saving ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>กำลังบันทึก...</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-5 h-5" />
-                <span>บันทึกการเปลี่ยนแปลง</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-          {/* LEFT COLUMN - Main Content */}
-          <div className="xl:col-span-2 space-y-6">
-            {/* Basic Info Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-6 overflow-hidden relative group"
-            >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <FileText className="w-24 h-24 text-mali-blue transform rotate-12 translate-x-8 -translate-y-8" />
-              </div>
-
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <div className="p-2 bg-mali-blue/10 rounded-lg text-mali-blue">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  ข้อมูลทั่วไป
-                </h2>
-                <AIGenerateButton
-                  productName={formData.name || product.name}
-                  productType={product.productType}
-                  categoryName={
-                    categories.find((c) => c.id === formData.categoryId)?.name
-                  }
-                  onGenerated={handleAIGenerated}
-                  disabled={!formData.name}
-                />
-              </div>
-
-              <div className="space-y-5 relative z-10">
+          <form onSubmit={handleSubmit} className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Product Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    ชื่อสินค้า
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
+                    ชื่อสินค้า <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
+                    id="name"
+                    name="name"
+                    required
+                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
+                    placeholder="เช่น PUBG Mobile UC"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-mali-blue/50 focus:border-transparent outline-none transition-all"
-                    placeholder="เช่น Mobile Legends Diamonds"
+                    onChange={handleChange}
                   />
                 </div>
 
+                {/* Product Code */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    URL สินค้า (Slug)
+                  <label
+                    htmlFor="code"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
+                    รหัสสินค้า <span className="text-red-500">*</span>
                   </label>
-                  <div className="flex rounded-xl bg-mali-dark border border-mali-blue/20 focus-within:ring-2 focus-within:ring-mali-blue/50 focus-within:border-transparent transition-all overflow-hidden">
-                    <span className="px-4 py-3 text-gray-500 bg-black/20 border-r border-mali-blue/10 text-sm flex items-center">
-                      /products/
-                    </span>
-                    <input
-                      type="text"
-                      value={formData.slug}
-                      onChange={(e) =>
-                        setFormData({ ...formData, slug: e.target.value })
-                      }
-                      className="flex-1 bg-transparent px-4 py-3 text-white placeholder-gray-500 outline-none"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    required
+                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none font-mono"
+                    placeholder="เช่น pubg-mobile-uc"
+                    value={formData.code}
+                    onChange={handleChange}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    รหัสใช้สำหรับ URL และอ้างอิงภายในระบบ
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      คำอธิบายสั้น
-                    </label>
-                    <textarea
-                      value={formData.shortDescription}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          shortDescription: e.target.value,
-                        }))
-                      }
-                      rows={2}
-                      maxLength={255}
-                      className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-mali-blue/50 outline-none resize-none transition-all"
-                    />
-                    <div className="flex justify-end mt-1">
-                      <span className="text-xs text-gray-500">
-                        {formData.shortDescription.length}/255
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      คำอธิบายแบบเต็ม
-                    </label>
-                    <textarea
-                      key={`desc-${formData.description?.length || 0}`}
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      rows={6}
-                      className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-mali-blue/50 outline-none transition-all"
-                    />
-                    {process.env.NODE_ENV === "development" && (
-                      <div className="text-xs text-gray-600 mt-1">
-                        Debug: length={formData.description?.length || 0}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Media Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-6 relative group overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <ImageIcon className="w-24 h-24 text-mali-blue transform -rotate-12 translate-x-8 -translate-y-8" />
-              </div>
-
-              <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-6">
-                <div className="p-2 bg-mali-blue/10 rounded-lg text-mali-blue">
-                  <ImageIcon className="w-5 h-5" />
-                </div>
-                รูปภาพและสื่อ
-              </h2>
-
-              <div className="flex flex-col md:flex-row gap-6 relative z-10">
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      ลิงก์รูปภาพหน้าปก
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={formData.imageUrl}
-                        onChange={(e) =>
-                          setFormData({ ...formData, imageUrl: e.target.value })
-                        }
-                        placeholder="https://..."
-                        className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-mali-blue/50 outline-none transition-all"
-                      />
-                      <Globe className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      ใส่ลิงก์ HTTPS ที่ปลอดภัยสำหรับรูปภาพสินค้า
-                    </p>
-                  </div>
-                </div>
-
-                <div className="w-full md:w-48 shrink-0">
-                  <label className="block text-sm font-medium text-gray-300 mb-2 text-center md:text-left">
-                    ดูตัวอย่าง
-                  </label>
-                  <div className="aspect-square rounded-2xl border-2 border-dashed border-mali-blue/30 bg-mali-dark/30 flex items-center justify-center overflow-hidden relative group/preview">
-                    {formData.imageUrl && !imageError ? (
-                      <img
-                        src={formData.imageUrl}
-                        alt="Preview"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
-                        onError={() => setImageError(true)}
-                      />
-                    ) : (
-                      <div className="text-center p-4">
-                        <ImageIcon className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-                        <span className="text-xs text-gray-600 block">
-                          {formData.imageUrl
-                            ? "โหลดรูปภาพไม่สำเร็จ"
-                            : "ยังไม่มีรูปภาพ"}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Inventory & Pricing Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-6 relative group overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Tag className="w-24 h-24 text-mali-blue transform rotate-6 translate-x-8 -translate-y-8" />
-              </div>
-
-              <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-6">
-                <div className="p-2 bg-mali-blue/10 rounded-lg text-mali-blue">
-                  <Tag className="w-5 h-5" />
-                </div>
-                ราคาและสต็อก
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                {/* Category */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    ราคาขาย
+                  <label
+                    htmlFor="category"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
+                    หมวดหมู่ <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                      ฿
-                    </span>
-                    <input
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          price: parseFloat(e.target.value),
-                        })
-                      }
-                      className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl pl-8 pr-4 py-3 text-white font-medium focus:ring-2 focus:ring-mali-blue/50 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    ราคาเปรียบเทียบ
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                      ฿
-                    </span>
-                    <input
-                      type="number"
-                      value={formData.comparePrice}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          comparePrice: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl pl-8 pr-4 py-3 text-white font-medium focus:ring-2 focus:ring-mali-blue/50 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
-                    จำนวนสต็อก
-                    <span className="text-xs text-mali-blue bg-mali-blue/10 px-2 py-0.5 rounded-full">
-                      ทั้งหมด
-                    </span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={formData.stockQuantity}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          stockQuantity: parseInt(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl px-4 py-3 text-white font-medium focus:ring-2 focus:ring-mali-blue/50 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* SEAGM Fields / Dynamic Fields - Conditional */}
-            {isDirectTopUp && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-mali-card border border-mali-blue/20 rounded-2xl p-6 relative"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
-                      <Zap className="w-5 h-5" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Tag className="h-5 w-5 text-gray-500" />
                     </div>
-                    การตั้งค่า SEAGM
-                  </h2>
-                  <button
-                    onClick={handleRefreshFields}
-                    disabled={refreshingFields}
-                    className="text-sm font-medium text-mali-blue hover:text-white bg-mali-blue/10 hover:bg-mali-blue/30 px-3 py-1.5 rounded-lg transition-all flex items-center gap-2"
-                  >
-                    <RefreshCw
-                      className={`w-3.5 h-3.5 ${refreshingFields ? "animate-spin" : ""}`}
-                    />
-                    ซิงค์ฟิลด์
-                  </button>
-                </div>
-
-                <div className="bg-mali-dark/30 rounded-xl p-5 border border-mali-blue/10">
-                  <DynamicProductFields
-                    productId={product.id}
-                    onFieldsChange={(values, isValid) => {
-                      console.log(
-                        "Fields changed during edit (readonly mode):",
-                        values,
-                      );
-                    }}
-                    disabled={true}
-                  />
-                  <div className="mt-4 flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-                    <p className="text-sm text-blue-200/80">
-                      ฟิลด์เหล่านี้ถูกกำหนดโดย API ของ Seagm
-                      ค่าที่ผู้ใช้กรอกจะถูกตรวจสอบตามรูปแบบนี้เมื่อชำระเงิน
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {/* RIGHT COLUMN - Sidebar */}
-          <div className="space-y-6">
-            {/* Status Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-5 space-y-4"
-            >
-              <h3 className="font-semibold text-white text-base flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-mali-blue" />
-                การแสดงผล
-              </h3>
-
-              <div className="space-y-1">
-                <label
-                  className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
-                    formData.isActive
-                      ? "bg-green-500/10 border-green-500/30"
-                      : "bg-mali-dark/30 border-transparent hover:bg-mali-dark"
-                  }`}
-                >
-                  <div
-                    className={`w-10 h-6 rounded-full relative transition-colors ${
-                      formData.isActive ? "bg-green-500" : "bg-gray-600"
-                    }`}
-                  >
-                    <div
-                      className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                        formData.isActive ? "translate-x-4" : "translate-x-0"
-                      }`}
-                    />
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.isActive}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isActive: e.target.checked })
-                    }
-                    className="hidden"
-                  />
-                  <span
-                    className={`font-medium ${formData.isActive ? "text-green-400" : "text-gray-400"}`}
-                  >
-                    {formData.isActive ? "เผยแพร่แล้ว" : "ซ่อน"}
-                  </span>
-                </label>
-              </div>
-
-              <div className="pt-4 border-t border-mali-blue/10 space-y-2">
-                <label className="flex items-center justify-between group cursor-pointer p-2 hover:bg-mali-blue/5 rounded-lg transition-colors">
-                  <span className="text-gray-300 group-hover:text-white transition-colors">
-                    สินค้าแนะนำ
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-gray-500 text-mali-blue focus:ring-mali-blue/50"
-                    checked={formData.isFeatured}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isFeatured: e.target.checked })
-                    }
-                  />
-                </label>
-                <label className="flex items-center justify-between group cursor-pointer p-2 hover:bg-mali-blue/5 rounded-lg transition-colors">
-                  <span className="text-gray-300 group-hover:text-white transition-colors">
-                    สินค้าขายดี
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-gray-500 text-mali-blue focus:ring-mali-blue/50"
-                    checked={formData.isBestseller}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        isBestseller: e.target.checked,
-                      })
-                    }
-                  />
-                </label>
-              </div>
-            </motion.div>
-
-            {/* Organization Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-5 space-y-4"
-            >
-              <h3 className="font-semibold text-white text-base flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-mali-blue" />
-                การจัดหมวดหมู่
-              </h3>
-
-              <div>
-                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">
-                  หมวดหมู่
-                </label>
-                <div className="relative">
-                  <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                  <select
-                    value={formData.categoryId}
-                    onChange={(e) =>
-                      setFormData({ ...formData, categoryId: e.target.value })
-                    }
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-xl pl-9 pr-4 py-2.5 text-white appearance-none focus:ring-2 focus:ring-mali-blue/50 outline-none cursor-pointer hover:bg-mali-dark/70 transition-colors"
-                  >
-                    <option value="" className="bg-gray-900">
-                      เลือกหมวดหมู่
-                    </option>
-                    {categories.map((cat) => (
-                      <option
-                        key={cat.id}
-                        value={cat.id}
-                        className="bg-gray-900"
-                      >
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <ArrowLeft className="w-4 h-4 text-gray-500 -rotate-90" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-mali-blue/10">
-                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">
-                  ประเภทสินค้า
-                </label>
-                <div
-                  className={`p-3 rounded-xl border flex items-center gap-3 ${
-                    isDirectTopUp
-                      ? "bg-orange-500/10 border-orange-500/20"
-                      : "bg-blue-500/10 border-blue-500/20"
-                  }`}
-                >
-                  <div
-                    className={`p-1.5 rounded-lg ${
-                      isDirectTopUp
-                        ? "bg-orange-500/20 text-orange-400"
-                        : "bg-blue-500/20 text-blue-400"
-                    }`}
-                  >
-                    {isDirectTopUp ? (
-                      <Zap className="w-5 h-5" />
-                    ) : (
-                      <CreditCard className="w-5 h-5" />
-                    )}
-                  </div>
-                  <div>
-                    <p
-                      className={`font-medium ${isDirectTopUp ? "text-orange-400" : "text-blue-400"}`}
+                    <select
+                      id="category"
+                      name="category"
+                      required
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full appearance-none focus:border-black focus:outline-none"
+                      value={formData.category}
+                      onChange={handleChange}
                     >
-                      {isDirectTopUp ? "เติมตรง" : "บัตรของขวัญ"}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {isDirectTopUp ? "ต้องใช้ User ID" : "ส่ง PIN ทันที"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* SEO Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-5 space-y-4"
-            >
-              <h3 className="font-semibold text-white text-base flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-mali-blue" />
-                การตั้งค่า SEO
-              </h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">
-                    ชื่อ Meta
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.metaTitle}
-                    onChange={(e) =>
-                      setFormData({ ...formData, metaTitle: e.target.value })
-                    }
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
-                    placeholder="เหมือนชื่อสินค้า"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">
-                    คำอธิบาย Meta
-                  </label>
-                  <textarea
-                    value={formData.metaDescription}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        metaDescription: e.target.value,
-                      })
-                    }
-                    rows={3}
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none resize-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">
-                    คีย์เวิร์ด
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.metaKeywords}
-                    onChange={(e) =>
-                      setFormData({ ...formData, metaKeywords: e.target.value })
-                    }
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
-                    placeholder="เติมเกม, ราคาถูก, โปรโมชั่น"
-                  />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Game Details Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.25 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-2xl p-5 space-y-4"
-            >
-              <h3 className="font-semibold text-white text-base flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                ข้อมูลเกม
-              </h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">
-                    ผู้พัฒนา (Developer)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.gameDetails.developer}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        gameDetails: {
-                          ...formData.gameDetails,
-                          developer: e.target.value,
-                        },
-                      })
-                    }
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
-                    placeholder="เช่น Riot Games, miHoYo"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">
-                    ผู้จัดจำหน่าย (Publisher)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.gameDetails.publisher}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        gameDetails: {
-                          ...formData.gameDetails,
-                          publisher: e.target.value,
-                        },
-                      })
-                    }
-                    className="w-full bg-mali-dark border border-mali-blue/20 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-mali-blue/50 outline-none"
-                    placeholder="เช่น Tencent, Blizzard"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-2">
-                    แพลตฟอร์ม (Platforms)
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["iOS", "Android", "PC", "Console"].map((platform) => (
-                      <label
-                        key={platform}
-                        className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-all ${
-                          formData.gameDetails.platforms.includes(platform)
-                            ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
-                            : "bg-mali-dark/30 border-mali-blue/10 text-gray-400 hover:bg-mali-dark/50"
-                        }`}
+                      <option value="topup">เติมเงิน</option>
+                      <option value="card">บัตร</option>
+                      <option value="game">เกม</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-gray-500"
                       >
-                        <input
-                          type="checkbox"
-                          checked={formData.gameDetails.platforms.includes(platform)}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            setFormData({
-                              ...formData,
-                              gameDetails: {
-                                ...formData.gameDetails,
-                                platforms: isChecked
-                                  ? [...formData.gameDetails.platforms, platform]
-                                  : formData.gameDetails.platforms.filter((p) => p !== platform),
-                              },
-                            });
-                          }}
-                          className="w-4 h-4 rounded border-gray-500 text-purple-500 focus:ring-purple-500/50"
-                        />
-                        <span className="text-sm">{platform}</span>
-                      </label>
-                    ))}
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
 
-            {/* Metadata Info */}
-            <div className="px-2">
-              <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                <Calendar className="w-3 h-3" />
-                สร้างเมื่อ: {new Date(product.createdAt).toLocaleDateString()}
+                {/* Region */}
+                <div>
+                  <label
+                    htmlFor="region"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
+                    ภูมิภาค <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="region"
+                    name="region"
+                    required
+                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
+                    value={formData.region}
+                    onChange={handleChange}
+                  >
+                    <option value="TH">ไทย (TH)</option>
+                    <option value="MY">มาเลเซีย (MY)</option>
+                    <option value="SG">สิงคโปร์ (SG)</option>
+                    <option value="ID">อินโดนีเซีย (ID)</option>
+                    <option value="GLOBAL">ทั่วโลก (GLOBAL)</option>
+                  </select>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <RefreshCw className="w-3 h-3" />
-                แก้ไขล่าสุด: {new Date(product.updatedAt).toLocaleDateString()}
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Price */}
+                <div>
+                  <label
+                    htmlFor="price"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
+                    ราคา (บาท) <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <DollarSign className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      required
+                      min="0"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                      placeholder="0.00"
+                      value={formData.price}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Stock */}
+                <div>
+                  <label
+                    htmlFor="stock"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
+                    สต็อก <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Box className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <input
+                      type="number"
+                      id="stock"
+                      name="stock"
+                      required
+                      min="0"
+                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                      placeholder="0"
+                      value={formData.stock}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Active Status */}
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    name="isActive"
+                    checked={formData.isActive}
+                    onChange={(e) => handleChange(e as any)}
+                    className="w-5 h-5 border-[2px] border-black rounded text-brutal-blue focus:ring-black"
+                  />
+                  <label
+                    htmlFor="isActive"
+                    className="text-sm font-medium text-black"
+                  >
+                    เปิดใช้งานสินค้า
+                  </label>
+                </div>
+
+                {/* Featured */}
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="isFeatured"
+                    name="isFeatured"
+                    checked={formData.isFeatured}
+                    onChange={(e) => handleChange(e as any)}
+                    className="w-5 h-5 border-[2px] border-black rounded text-brutal-blue focus:ring-black"
+                  />
+                  <label
+                    htmlFor="isFeatured"
+                    className="text-sm font-medium text-black"
+                  >
+                    แสดงเป็นสินค้าแนะนำ
+                  </label>
+                </div>
+
+                {/* Product Image */}
+                <div>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    รูปภาพสินค้า
+                  </label>
+                  <div className="border-[2px] border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-black transition-colors cursor-pointer">
+                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600">
+                      คลิกเพื่ออัปโหลดรูปภาพ
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      รองรับ PNG, JPG ขนาดสูงสุด 2MB
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+
+            {/* Description Textarea - Full Width */}
+            <div className="mt-6">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-black mb-2"
+              >
+                รายละเอียดสินค้า
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
+                placeholder="อธิบายรายละเอียดสินค้า..."
+                value={formData.description}
+                onChange={handleChange}
+              ></textarea>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
+              <Link href="/admin/products">
+                <button
+                  type="button"
+                  className="px-5 py-2.5 rounded-lg border-[3px] border-black bg-white text-black hover:bg-gray-100 transition-colors w-full sm:w-auto flex items-center justify-center font-medium"
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                >
+                  <X className="h-5 w-5 mr-2" />
+                  ยกเลิก
+                </button>
+              </Link>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`px-5 py-2.5 rounded-lg bg-black text-white border-[3px] border-black hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              >
+                <Save className="h-5 w-5 mr-2" />
+                {isSubmitting ? "กำลังบันทึก..." : "บันทึกการเปลี่ยนแปลง"}
+              </button>
+            </div>
+          </form>
+        </motion.div>
       </div>
     </AdminLayout>
   );

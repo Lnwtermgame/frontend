@@ -159,8 +159,8 @@ export default function CardDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center">
-          <Loader2 className="w-10 h-10 text-mali-blue animate-spin mb-4" />
-          <p className="text-mali-text-secondary">Loading card details...</p>
+          <Loader2 className="w-10 h-10 text-black animate-spin mb-4" />
+          <p className="text-gray-600">Loading card details...</p>
         </div>
       </div>
     );
@@ -169,15 +169,17 @@ export default function CardDetailPage() {
   if (error || !card) {
     return (
       <div className="space-y-6">
-        <Link href="/card" className="inline-flex items-center text-mali-text-secondary hover:text-white transition-colors">
+        <Link href="/card" className="inline-flex items-center text-gray-600 hover:text-black transition-colors">
           <ChevronLeft size={16} className="mr-1" /> กลับไปยังรายการบัตร
         </Link>
 
-        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-8 text-center">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Card Not Found</h2>
-          <p className="text-red-300 mb-6">{error || "The card you're looking for doesn't exist or has been removed."}</p>
-          <Link href="/card" className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center">
+        <div className="bg-white border-[3px] border-black p-8 text-center"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <AlertCircle className="w-12 h-12 text-brutal-pink mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-black mb-2">Card Not Found</h2>
+          <p className="text-gray-600 mb-6">{error || "The card you're looking for doesn't exist or has been removed."}</p>
+          <Link href="/card" className="bg-black text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: '2px 2px 0 0 #000000' }}>
             <ChevronLeft size={18} className="mr-2" />
             Back to Cards
           </Link>
@@ -193,7 +195,7 @@ export default function CardDetailPage() {
   return (
     <div className="space-y-6">
       {/* Back button */}
-      <Link href="/card" className="inline-flex items-center text-mali-text-secondary hover:text-white transition-colors">
+      <Link href="/card" className="inline-flex items-center text-gray-600 hover:text-black transition-colors">
         <ChevronLeft size={16} className="mr-1" /> กลับไปยังรายการบัตร
       </Link>
 
@@ -206,50 +208,51 @@ export default function CardDetailPage() {
           transition={{ duration: 0.5 }}
         >
           {/* Card main info */}
-          <div className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden">
+          <div className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="relative aspect-video w-full overflow-hidden">
               <img
                 src={card.image}
                 alt={card.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-50" />
             </div>
             <div className="p-6">
               <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                 <div>
-                  <h1 className="text-white text-2xl font-bold mb-2">{card.name}</h1>
+                  <h1 className="text-black text-2xl font-bold mb-2">{card.name}</h1>
                   <div className="flex items-center flex-wrap gap-3 text-sm">
-                    <div className="flex items-center text-mali-text-secondary">
-                      <Gift size={16} className="mr-1 text-mali-blue-accent" />
+                    <div className="flex items-center text-gray-600">
+                      <Gift size={16} className="mr-1 text-brutal-blue" />
                       <span>{card.publisher}</span>
                     </div>
-                    <div className="flex items-center text-mali-text-secondary">
-                      <Tag size={16} className="mr-1 text-mali-blue-accent" />
+                    <div className="flex items-center text-gray-600">
+                      <Tag size={16} className="mr-1 text-brutal-blue" />
                       <span>{card.category}</span>
                     </div>
-                    <div className="flex items-center text-mali-text-secondary">
-                      <Star size={16} className="mr-1 text-mali-pink" />
+                    <div className="flex items-center text-gray-600">
+                      <Star size={16} className="mr-1 text-brutal-pink" />
                       <span>{card.rating} ({card.reviews} รีวิว)</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="bg-mali-blue-accent/20 text-mali-blue-accent px-3 py-1 rounded-full text-xs font-medium">
+                  <span className="bg-brutal-blue text-black px-3 py-1 text-xs font-bold border-[2px] border-black">
                     {card.isDigital ? 'Digital' : 'Physical'}
                   </span>
-                  <span className="bg-mali-green/20 text-mali-green px-3 py-1 rounded-full text-xs font-medium flex items-center">
+                  <span className="bg-brutal-green text-black px-3 py-1 text-xs font-bold border-[2px] border-black flex items-center">
                     <Clock size={12} className="mr-1" /> {card.deliveryTime}
                   </span>
                 </div>
               </div>
 
-              <p className="text-mali-text-secondary text-sm mb-4">{card.description}</p>
+              <p className="text-gray-600 text-sm mb-4">{card.description}</p>
 
               <div className="flex flex-wrap gap-2">
                 {card.tags.map(tag => (
-                  <span key={tag} className="bg-mali-blue/20 text-mali-text-secondary px-2 py-0.5 rounded text-xs">
+                  <span key={tag} className="bg-brutal-gray text-black px-2 py-0.5 text-xs border-[2px] border-black">
                     {tag}
                   </span>
                 ))}
@@ -258,52 +261,61 @@ export default function CardDetailPage() {
           </div>
 
           {/* How to use */}
-          <div className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden">
-            <div className="p-4 border-b border-mali-blue/20 bg-mali-sidebar">
-              <h2 className="text-white font-bold text-lg">วิธีการใช้งาน</h2>
+          <div className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
+              <h2 className="text-black font-bold text-lg flex items-center">
+                <span className="w-1.5 h-5 bg-black mr-2"></span>
+                วิธีการใช้งาน
+              </h2>
             </div>
             <div className="p-6">
               <div className="space-y-4 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                  <div className="bg-mali-blue/10 rounded-lg p-4 flex flex-col items-center text-center">
-                    <div className="w-8 h-8 bg-mali-blue-accent/20 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-mali-blue-accent font-bold">1</span>
+                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
+                      <span className="text-black font-bold">1</span>
                     </div>
-                    <p className="text-white">เลือกเดโนมิเนชั่นและภูมิภาค</p>
+                    <p className="text-black font-medium">เลือกเดโนมิเนชั่นและภูมิภาค</p>
                   </div>
 
-                  <div className="bg-mali-blue/10 rounded-lg p-4 flex flex-col items-center text-center">
-                    <div className="w-8 h-8 bg-mali-blue-accent/20 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-mali-blue-accent font-bold">2</span>
+                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
+                      <span className="text-black font-bold">2</span>
                     </div>
-                    <p className="text-white">ดำเนินการชำระเงิน</p>
+                    <p className="text-black font-medium">ดำเนินการชำระเงิน</p>
                   </div>
 
-                  <div className="bg-mali-blue/10 rounded-lg p-4 flex flex-col items-center text-center">
-                    <div className="w-8 h-8 bg-mali-blue-accent/20 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-mali-blue-accent font-bold">3</span>
+                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
+                      <span className="text-black font-bold">3</span>
                     </div>
-                    <p className="text-white">รับโค้ดทางอีเมลทันที</p>
+                    <p className="text-black font-medium">รับโค้ดทางอีเมลทันที</p>
                   </div>
 
-                  <div className="bg-mali-blue/10 rounded-lg p-4 flex flex-col items-center text-center">
-                    <div className="w-8 h-8 bg-mali-blue-accent/20 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-mali-blue-accent font-bold">4</span>
+                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
+                      <span className="text-black font-bold">4</span>
                     </div>
-                    <p className="text-white">แลกโค้ดบน {card.publisher}</p>
+                    <p className="text-black font-medium">แลกโค้ดบน {card.publisher}</p>
                   </div>
 
-                  <div className="bg-mali-blue/10 rounded-lg p-4 flex flex-col items-center text-center">
-                    <div className="w-8 h-8 bg-mali-blue-accent/20 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-mali-blue-accent font-bold">5</span>
+                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
+                      <span className="text-black font-bold">5</span>
                     </div>
-                    <p className="text-white">เพลิดเพลินกับบริการ</p>
+                    <p className="text-black font-medium">เพลิดเพลินกับบริการ</p>
                   </div>
                 </div>
 
-                <div className="bg-mali-blue-accent/10 border border-mali-blue-accent/20 rounded-lg p-4 flex items-start">
-                  <Info size={18} className="text-mali-blue-accent shrink-0 mt-0.5 mr-3" />
-                  <p className="text-mali-text-secondary text-sm">
+                <div className="bg-brutal-blue/20 border-[3px] border-black p-4 flex items-start">
+                  <Info size={18} className="text-black shrink-0 mt-0.5 mr-3" />
+                  <p className="text-gray-700 text-sm">
                     โค้ดที่ซื้อจาก MaliGamePass ใช้ได้เฉพาะในระบบของเอเจนซี่ที่ให้บริการแต่ละเกมเท่านั้น อาจมีข้อจำกัดบางประการสำหรับภูมิภาคที่เลือก โปรดตรวจสอบข้อกำหนดและเงื่อนไขก่อนซื้อ
                   </p>
                 </div>
@@ -318,27 +330,32 @@ export default function CardDetailPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="bg-mali-card rounded-xl border border-mali-blue/20 sticky top-24">
-            <div className="p-4 border-b border-mali-blue/20 bg-mali-sidebar">
-              <h2 className="text-white font-bold text-lg">รายละเอียดการซื้อ</h2>
+          <div className="bg-white border-[3px] border-black sticky top-24"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="p-4 border-b-[3px] border-black bg-brutal-pink">
+              <h2 className="text-black font-bold text-lg flex items-center">
+                <span className="w-1.5 h-5 bg-black mr-2"></span>
+                รายละเอียดการซื้อ
+              </h2>
             </div>
             <div className="p-6 space-y-6">
               {/* Denomination selection */}
               <div>
-                <label className="block text-white text-sm font-medium mb-2">เลือกมูลค่าบัตร</label>
+                <label className="block text-black text-sm font-bold mb-2">เลือกมูลค่าบัตร</label>
                 <div className="grid grid-cols-2 gap-3">
                   {card.denominations.map((denom) => (
                     <motion.button
                       key={denom.id}
                       onClick={() => setSelectedDenomination(denom.id)}
-                      className={`p-3 rounded-md text-center border transition-all ${selectedDenomination === denom.id
-                          ? "bg-button-gradient border-transparent text-white"
-                          : "bg-mali-blue/10 border-mali-blue/20 text-mali-text-secondary hover:border-mali-blue-accent/50 hover:text-white"
+                      className={`p-3 text-center border-[3px] transition-all ${selectedDenomination === denom.id
+                          ? "bg-brutal-yellow border-black text-black"
+                          : "bg-white border-black text-gray-700 hover:bg-gray-50"
                         }`}
+                      style={{ boxShadow: selectedDenomination === denom.id ? '2px 2px 0 0 #000000' : 'none' }}
                       whileHover={{ y: -2 }}
                       whileTap={{ y: 0 }}
                     >
-                      <div className="text-sm font-medium">{denom.value}</div>
+                      <div className="text-sm font-bold">{denom.value}</div>
                       <div className="text-xs mt-1 opacity-80">฿{denom.price.toFixed(2)}</div>
                     </motion.button>
                   ))}
@@ -347,42 +364,42 @@ export default function CardDetailPage() {
 
               {/* Region selection */}
               <div>
-                <label className="block text-white text-sm font-medium mb-2">เลือกภูมิภาค</label>
+                <label className="block text-black text-sm font-bold mb-2">เลือกภูมิภาค</label>
                 <div className="relative">
                   <select
                     value={selectedRegion}
                     onChange={(e) => setSelectedRegion(e.target.value)}
-                    className="w-full p-3 rounded-md bg-mali-blue/10 border border-mali-blue/20 text-white appearance-none focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent"
+                    className="w-full p-3 bg-white border-[3px] border-black text-black appearance-none focus:outline-none focus:ring-0"
                   >
                     <option value="">เลือกภูมิภาค</option>
                     {card.regions.map((region) => (
                       <option key={region} value={region}>{region}</option>
                     ))}
                   </select>
-                  <Globe className="absolute right-3 top-1/2 transform -translate-y-1/2 text-mali-text-secondary pointer-events-none h-4 w-4" />
+                  <Globe className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none h-4 w-4" />
                 </div>
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-white text-sm font-medium mb-2">อีเมลสำหรับรับโค้ด</label>
+                <label className="block text-black text-sm font-bold mb-2">อีเมลสำหรับรับโค้ด</label>
                 <input
                   type="email"
                   placeholder="example@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-3 rounded-md bg-mali-blue/10 border border-mali-blue/20 text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent"
+                  className="w-full p-3 bg-white border-[3px] border-black text-black focus:outline-none focus:ring-0"
                 />
-                <p className="mt-1 text-mali-text-secondary text-xs">โค้ดเกมจะถูกส่งไปที่อีเมลนี้ทันทีหลังชำระเงิน</p>
+                <p className="mt-1 text-gray-600 text-xs">โค้ดเกมจะถูกส่งไปที่อีเมลนี้ทันทีหลังชำระเงิน</p>
               </div>
 
               {/* Quantity */}
               <div>
-                <label className="block text-white text-sm font-medium mb-2">จำนวน</label>
+                <label className="block text-black text-sm font-bold mb-2">จำนวน</label>
                 <div className="flex items-center">
                   <button
                     onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                    className="w-10 h-10 bg-mali-blue/10 border border-mali-blue/20 rounded-md flex items-center justify-center text-white"
+                    className="w-10 h-10 bg-white border-[3px] border-black flex items-center justify-center text-black font-bold hover:bg-gray-100"
                   >
                     -
                   </button>
@@ -391,11 +408,11 @@ export default function CardDetailPage() {
                     min="1"
                     value={quantity}
                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 h-10 bg-mali-blue/10 border-y border-mali-blue/20 text-center text-white focus:outline-none"
+                    className="w-16 h-10 bg-white border-y-[3px] border-black text-center text-black font-bold focus:outline-none"
                   />
                   <button
                     onClick={() => setQuantity(prev => prev + 1)}
-                    className="w-10 h-10 bg-mali-blue/10 border border-mali-blue/20 rounded-md flex items-center justify-center text-white"
+                    className="w-10 h-10 bg-white border-[3px] border-black flex items-center justify-center text-black font-bold hover:bg-gray-100"
                   >
                     +
                   </button>
@@ -403,25 +420,26 @@ export default function CardDetailPage() {
               </div>
 
               {/* Price summary */}
-              <div className="pt-4 border-t border-mali-blue/20">
+              <div className="pt-4 border-t-[3px] border-black">
                 <div className="flex justify-between mb-2">
-                  <span className="text-mali-text-secondary">ราคา:</span>
-                  <span className="text-white">฿{selectedDenominationPrice.toFixed(2)}</span>
+                  <span className="text-gray-600">ราคา:</span>
+                  <span className="text-black font-medium">฿{selectedDenominationPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-mali-text-secondary">จำนวน:</span>
-                  <span className="text-white">x{quantity}</span>
+                  <span className="text-gray-600">จำนวน:</span>
+                  <span className="text-black font-medium">x{quantity}</span>
                 </div>
-                <div className="flex justify-between font-medium">
-                  <span className="text-white">ราคารวม:</span>
-                  <span className="text-white text-lg">฿{totalPrice.toFixed(2)}</span>
+                <div className="flex justify-between font-bold">
+                  <span className="text-black">ราคารวม:</span>
+                  <span className="text-black text-lg">฿{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
 
               {/* Add to cart button */}
               <motion.button
                 onClick={handleAddToCart}
-                className="w-full bg-button-gradient text-white py-3 rounded-md font-medium flex items-center justify-center"
+                className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={!selectedDenomination || !selectedRegion || !email}
@@ -431,7 +449,7 @@ export default function CardDetailPage() {
               </motion.button>
 
               {/* Secure purchase info */}
-              <div className="flex items-center justify-center text-mali-text-secondary text-xs mt-2">
+              <div className="flex items-center justify-center text-gray-600 text-xs mt-2">
                 <Shield className="mr-1 h-3 w-3" />
                 <span>การชำระเงินที่ปลอดภัย 100%</span>
               </div>
@@ -443,8 +461,11 @@ export default function CardDetailPage() {
       {/* Related cards */}
       <div className="mt-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-white">บัตรอื่นๆ ที่คล้ายกัน</h2>
-          <Link href="/card" className="text-sm text-mali-text-secondary hover:text-white">
+          <h2 className="text-xl font-bold text-black flex items-center">
+            <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
+            บัตรอื่นๆ ที่คล้ายกัน
+          </h2>
+          <Link href="/card" className="text-sm text-gray-600 hover:text-black font-medium">
             ดูทั้งหมด
           </Link>
         </div>
@@ -459,29 +480,33 @@ export default function CardDetailPage() {
                 transition={{ duration: 0.3, delay: 0.1 + (i * 0.05) }}
               >
                 <Link href={`/card/${relatedProduct.slug}`}>
-                  <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 group">
+                  <motion.div
+                    className="relative overflow-hidden bg-white border-[3px] border-black group cursor-pointer"
+                    style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                    whileHover={{ y: -4 }}
+                  >
                     <div className="relative h-32 w-full overflow-hidden">
                       <img
                         src={relatedProduct.imageUrl || `https://placehold.co/300x200?text=${encodeURIComponent(relatedProduct.name)}`}
                         alt={relatedProduct.name}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
                     </div>
 
                     <div className="p-3">
-                      <p className="text-white text-sm font-medium line-clamp-1 mb-1">{relatedProduct.name}</p>
+                      <p className="text-black text-sm font-bold line-clamp-1 mb-1">{relatedProduct.name}</p>
                       <div className="flex items-center justify-between">
-                        <div className="text-mali-text-secondary text-xs">{relatedProduct.category?.name || 'Gift Card'}</div>
-                        <div className="text-xs text-white font-medium">฿{relatedProduct.price.toFixed(0)}</div>
+                        <div className="text-gray-600 text-xs">{relatedProduct.category?.name || 'Gift Card'}</div>
+                        <div className="text-xs text-black font-bold">฿{relatedProduct.price.toFixed(0)}</div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </Link>
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-mali-text-secondary">
+            <div className="col-span-full text-center py-8 text-gray-600">
               No related cards found
             </div>
           )}
@@ -489,4 +514,4 @@ export default function CardDetailPage() {
       </div>
     </div>
   );
-} 
+}

@@ -4,29 +4,46 @@
 
 @layer base {
   :root {
-    --font-sans: "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-sans: "Noto Sans Thai", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-thai: "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
 
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    /* Neo-Brutalism Lite - Light Theme Base */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 15%;
 
-    --primary: 221 84% 55%;
+    --primary: 340 100% 71%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 225 85% 25%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 47 100% 62%;
+    --secondary-foreground: 240 10% 15%;
 
-    --accent: 288 96% 58%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 174 62% 55%;
+    --accent-foreground: 240 10% 15%;
 
-    --muted: 225 22% 51%;
-    --muted-foreground: 215.4 16.3% 56.9%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --border: 226 56% 24%;
-    --input: 226 56% 24%;
-    --ring: 216 34% 17%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 340 100% 71%;
 
     --radius: 0.5rem;
+
+    /* Neo-Brutalism Specific */
+    --brutal-pink: #FF6B9D;
+    --brutal-yellow: #FFD93D;
+    --brutal-blue: #4ECDC4;
+    --brutal-green: #95E1D3;
+    --brutal-black: #000000;
+    --brutal-white: #FFFFFF;
+    --brutal-gray: #F9FAFB;
+    --brutal-dark: #1a1a2e;
+
+    /* Trust/Payment section colors (clean, professional) */
+    --trust-bg: #FFFFFF;
+    --trust-text: #1f2937;
+    --trust-muted: #6b7280;
+    --trust-border: #e5e7eb;
   }
 
   /* Global font smoothing for better rendering across all browsers */
@@ -47,268 +64,384 @@
     font-family: var(--font-thai) !important;
   }
 
-    * {
-
-      @apply border-border;
-
-    }
-
-    /* Thai font settings moved from layout.tsx inline style */
-    @font-face {
-      font-family: 'Noto Sans Thai';
-      font-style: normal;
-      font-weight: 400;
-      font-display: block;
-      src: url('/fonts/noto-sans-thai-regular.ttf') format('truetype');
-    }
-
-    body {
-      background-color: #0b1021; /* Dark background */
-      color: #ffffff;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-
-      @apply bg-mali-dark text-mali-text-primary antialiased;
-
-      font-feature-settings: "rlig" 1, "calt" 1;
-
-      min-height: 100vh;
-    }
-
+  * {
+    @apply border-border;
   }
 
-  
-
-  @layer components {
-
-    .nav-item {
-
-      @apply flex items-center space-x-2 p-2.5 rounded-md transition-colors text-mali-text-secondary hover:text-white relative overflow-hidden hover:bg-white/5;
-
-    }
-
-    
-
-    .nav-item.active {
-
-      @apply bg-white/10 text-white font-medium;
-
-    }
-
-    
-
-    .nav-item.active::before {
-
-      content: "";
-
-      @apply absolute left-0 top-2 bottom-2 w-1 bg-mali-blue-accent rounded-r;
-
-    }
-
-    
-
-    .btn-primary {
-
-      @apply bg-button-gradient hover:opacity-90 text-white font-bold py-2 px-4 rounded-md transition-all shadow-sm active:scale-95;
-
-    }
-
-    
-
-    .btn-secondary {
-
-      @apply bg-mali-blue hover:bg-mali-blue-light text-white font-medium py-2 px-4 rounded-md transition-all border border-mali-blue-light/20;
-
-    }
-
-    
-
-    .btn-outline {
-
-      @apply border border-mali-blue-light text-white hover:bg-white/5 font-medium py-2 px-4 rounded-md transition-all;
-
-    }
-
-    
-
-    .btn-accent {
-
-      @apply bg-accent-gradient hover:opacity-90 text-mali-dark font-bold py-2 px-4 rounded-md transition-all shadow-sm;
-
-    }
-
-    
-
-    .btn-cart {
-
-      @apply bg-button-gradient hover:opacity-90 text-white font-bold py-2 px-4 w-full rounded-md transition-all shadow-sm;
-
-    }
-
-    
-
-    .card {
-
-      @apply bg-mali-card rounded-xl p-4 border border-mali-blue transition-all;
-
-    }
-
-    
-
-    .card-hover {
-
-      @apply transition-all duration-200 hover:-translate-y-1 hover:border-mali-blue-light hover:shadow-card-hover;
-
-    }
-
-    
-
-    .game-card {
-
-      @apply rounded-xl overflow-hidden relative bg-mali-card border border-mali-blue transition-all hover:border-mali-blue-light;
-
-    }
-
-    
-
-    .page-container {
-
-      @apply container mx-auto px-4 py-8 max-w-screen-xl;
-
-    }
-
-    
-
-    /* Legacy class mappings for backward compatibility but new aesthetic */
-
-    .glass {
-
-      @apply bg-mali-navy border border-mali-blue;
-
-      backdrop-filter: none;
-
-    }
-
-    
-
-    .glass-card {
-
-      @apply rounded-xl bg-mali-card border border-mali-blue shadow-sm;
-
-      backdrop-filter: none;
-
-    }
-
-  
-
-    /* Redefine glow classes to be "accent borders" or "flat highlights" instead */
-
-    .blue-glow {
-
-      box-shadow: none;
-
-      @apply border-mali-blue-accent;
-
-    }
-
-    
-
-    .purple-glow {
-
-      box-shadow: none;
-
-      @apply border-mali-purple;
-
-    }
-
-    
-
-    .pink-glow {
-
-      box-shadow: none;
-
-      @apply border-mali-pink;
-
-    }
-
-    
-
-    /* Remove animations */
-
-    .animate-glow {
-
-      animation: none;
-
-    }
-
-  
-
-    /* Custom scrollbar for the dark theme */
-
-    ::-webkit-scrollbar {
-
-      width: 8px;
-
-      height: 8px;
-
-    }
-
-  
-
-    ::-webkit-scrollbar-track {
-
-      background: #0a0b0f;
-
-    }
-
-  
-
-    ::-webkit-scrollbar-thumb {
-
-      background: #2a2d45;
-
-      border-radius: 4px;
-
-    }
-
-  
-
-    ::-webkit-scrollbar-thumb:hover {
-
-      background: #ff6b00; /* Orange accent on hover */
-
-    }
-
+  /* Thai font settings moved from layout.tsx inline style */
+  @font-face {
+    font-family: 'Noto Sans Thai';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('/fonts/noto-sans-thai-regular.ttf') format('truetype');
   }
 
-  @layer utilities {
-    /* Hide scrollbar utility */
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Fix react-hot-toast blocking react-grab */
-    /* The toaster container should not capture pointer events when empty */
-    [data-rht-toaster] {
-      pointer-events: none !important;
-    }
-    /* But actual toasts should still be clickable */
-    [data-rht-toaster] > * {
-      pointer-events: auto !important;
-    }
-
-    /* Prevent overflow in flex/grid containers */
-    .min-w-0 {
-      min-width: 0;
-    }
-
-    /* Container query helpers for responsive grids */
-    .grid-auto-fit {
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    }
+  body {
+    background-color: #F9FAFB;
+    color: #1f2937;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    min-height: 100vh;
   }
+}
+
+@layer components {
+  /* ========================================
+     NEO-BRUTALISM LITE - CTA COMPONENTS
+     Use these for hero, browsing, cards, badges
+     ======================================== */
+
+  /* Brutalist Button - Primary CTA */
+  .btn-brutal {
+    @apply relative font-bold text-base px-6 py-3 rounded-md border-[3px] border-black bg-brutal-yellow text-black;
+    @apply transition-all duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .btn-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-brutal:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
+
+  /* Brutalist Button - Pink variant */
+  .btn-brutal-pink {
+    @apply relative font-bold text-base px-6 py-3 rounded-md border-[3px] border-black bg-brutal-pink text-white;
+    @apply transition-all duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .btn-brutal-pink:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-brutal-pink:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
+
+  /* Brutalist Button - Blue variant */
+  .btn-brutal-blue {
+    @apply relative font-bold text-base px-6 py-3 rounded-md border-[3px] border-black bg-brutal-blue text-black;
+    @apply transition-all duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .btn-brutal-blue:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-brutal-blue:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
+
+  /* Brutalist Button - Green variant */
+  .btn-brutal-green {
+    @apply relative font-bold text-base px-6 py-3 rounded-md border-[3px] border-black bg-brutal-green text-black;
+    @apply transition-all duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .btn-brutal-green:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-brutal-green:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
+
+  /* Brutalist Button - White/Dark variant */
+  .btn-brutal-dark {
+    @apply relative font-bold text-base px-6 py-3 rounded-md border-[3px] border-black bg-brutal-dark text-white;
+    @apply transition-all duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .btn-brutal-dark:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-brutal-dark:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
+
+  /* Brutalist Card - For game cards, promo cards */
+  .card-brutal {
+    @apply relative bg-white rounded-lg border-[3px] border-black overflow-hidden;
+    box-shadow: 4px 4px 0 0 #000000;
+    @apply transition-all duration-150 ease-out;
+  }
+
+  .card-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  /* Brutalist Badge - HOT, SALE, NEW */
+  .badge-brutal {
+    @apply inline-flex items-center px-3 py-1 rounded-md border-[2px] border-black font-bold text-xs uppercase tracking-wide;
+  }
+
+  .badge-brutal-pink {
+    @apply badge-brutal bg-brutal-pink text-white;
+  }
+
+  .badge-brutal-yellow {
+    @apply badge-brutal bg-brutal-yellow text-black;
+  }
+
+  .badge-brutal-blue {
+    @apply badge-brutal bg-brutal-blue text-black;
+  }
+
+  .badge-brutal-green {
+    @apply badge-brutal bg-brutal-green text-black;
+  }
+
+  /* Brutalist Category Button */
+  .category-brutal {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-md border-[3px] border-black bg-white font-semibold text-sm;
+    @apply transition-all duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .category-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .category-brutal.active {
+    @apply bg-brutal-yellow;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .category-brutal:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
+
+  /* ========================================
+     CLEAN COMPONENTS - For Trust/Payment
+     Keep these professional, no brutalist borders
+     ======================================== */
+
+  /* Clean Button - For payment/checkout */
+  .btn-clean {
+    @apply font-semibold px-6 py-3 rounded-lg bg-gray-900 text-white;
+    @apply transition-all duration-200 ease-out;
+    @apply hover:bg-gray-800 hover:shadow-lg;
+    @apply active:scale-95;
+  }
+
+  .btn-clean-primary {
+    @apply btn-clean bg-brutal-pink hover:bg-[#ff5a8f];
+  }
+
+  .btn-clean-secondary {
+    @apply btn-clean bg-white text-gray-900 border border-gray-300 hover:bg-gray-50;
+  }
+
+  /* Clean Card - For order summary, payment forms */
+  .card-clean {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+    @apply transition-shadow duration-200;
+    @apply hover:shadow-md;
+  }
+
+  /* Clean Input - For forms, search */
+  .input-clean {
+    @apply w-full rounded-lg bg-white border border-gray-300 px-4 py-2.5 text-gray-900;
+    @apply focus:outline-none focus:ring-2 focus:ring-brutal-pink/50 focus:border-brutal-pink;
+    @apply placeholder:text-gray-400;
+    @apply transition-all duration-200;
+  }
+
+  /* Clean Input Dark - For dark backgrounds */
+  .input-clean-dark {
+    @apply w-full rounded-lg bg-gray-800/50 border border-gray-700 px-4 py-2.5 text-white;
+    @apply focus:outline-none focus:ring-2 focus:ring-brutal-blue/50 focus:border-brutal-blue;
+    @apply placeholder:text-gray-500;
+  }
+
+  /* ========================================
+     NAVIGATION COMPONENTS
+     ======================================== */
+
+  .nav-item {
+    @apply flex items-center space-x-2 p-2.5 rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100;
+  }
+
+  .nav-item.active {
+    @apply bg-brutal-yellow text-black font-bold border-[2px] border-black;
+    box-shadow: 3px 3px 0 0 #000000;
+  }
+
+  /* ========================================
+     LEGACY CLASSES (Dark Theme)
+     Kept for backward compatibility during transition
+     ======================================== */
+
+  .btn-primary {
+    @apply bg-brutal-pink hover:bg-[#ff5a8f] text-white font-bold py-2 px-4 rounded-lg border-[3px] border-black;
+    box-shadow: 4px 4px 0 0 #000000;
+    @apply transition-all duration-150;
+  }
+
+  .btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-900 font-medium py-2 px-4 rounded-lg border-[3px] border-black;
+    box-shadow: 4px 4px 0 0 #000000;
+    @apply transition-all duration-150;
+  }
+
+  .btn-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .btn-outline {
+    @apply border-[3px] border-black text-black hover:bg-gray-100 font-medium py-2 px-4 rounded-lg;
+    @apply transition-all duration-150;
+  }
+
+  .btn-accent {
+    @apply bg-brutal-yellow text-black font-bold py-2 px-4 rounded-lg border-[3px] border-black;
+    box-shadow: 4px 4px 0 0 #000000;
+    @apply transition-all duration-150;
+  }
+
+  .btn-cart {
+    @apply bg-brutal-blue hover:bg-[#3dbdb5] text-black font-bold py-2 px-4 w-full rounded-lg border-[3px] border-black;
+    box-shadow: 4px 4px 0 0 #000000;
+    @apply transition-all duration-150;
+  }
+
+  .card {
+    @apply bg-white rounded-xl p-4 border-[3px] border-black;
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .card-hover {
+    @apply transition-all duration-150;
+  }
+
+  .card-hover:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .game-card {
+    @apply rounded-lg overflow-hidden relative bg-white border-[3px] border-black;
+    box-shadow: 4px 4px 0 0 #000000;
+    @apply transition-all duration-150;
+  }
+
+  .game-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000000;
+  }
+
+  .page-container {
+    @apply container mx-auto px-4 py-8 max-w-screen-xl;
+  }
+
+  /* Legacy glass classes - simplified for light theme */
+  .glass {
+    @apply bg-white border border-gray-200 shadow-sm;
+    backdrop-filter: none;
+  }
+
+  .glass-card {
+    @apply rounded-xl bg-white border border-gray-200 shadow-sm;
+    backdrop-filter: none;
+  }
+
+  /* Custom scrollbar for light theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar utility */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Fix react-hot-toast blocking react-grab */
+  [data-rht-toaster] {
+    pointer-events: none !important;
+  }
+  [data-rht-toaster] > * {
+    pointer-events: auto !important;
+  }
+
+  /* Prevent overflow in flex/grid containers */
+  .min-w-0 {
+    min-width: 0;
+  }
+
+  /* Container query helpers for responsive grids */
+  .grid-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  /* Brutalist text styles */
+  .text-brutal-shadow {
+    text-shadow: 3px 3px 0 #000000;
+  }
+
+  .text-brutal-shadow-sm {
+    text-shadow: 2px 2px 0 #000000;
+  }
+
+  /* Focus outline for accessibility */
+  .focus-brutal:focus {
+    @apply outline-none ring-2 ring-brutal-pink ring-offset-2 ring-offset-white;
+  }
+
+  /* Hover lift effect */
+  .hover-lift {
+    @apply transition-transform duration-150;
+  }
+  .hover-lift:hover {
+    transform: translate(-2px, -2px);
+  }
+}

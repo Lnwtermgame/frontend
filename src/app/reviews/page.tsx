@@ -363,28 +363,29 @@ function ReviewsContent() {
     return (
       <div className="flex items-center">
         {[...Array(fullStars)].map((_, i) => (
-          <Star key={`full-${i}`} className="w-4 h-4 text-amber-400 fill-amber-400" />
+          <Star key={`full-${i}`} className="w-4 h-4 text-brutal-yellow fill-brutal-yellow" />
         ))}
         {hasHalfStar && (
           <div className="relative">
-            <Star className="w-4 h-4 text-amber-400" />
+            <Star className="w-4 h-4 text-brutal-yellow" />
             <div className="absolute top-0 left-0 w-1/2 overflow-hidden">
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <Star className="w-4 h-4 text-brutal-yellow fill-brutal-yellow" />
             </div>
           </div>
         )}
         {[...Array(emptyStars)].map((_, i) => (
-          <Star key={`empty-${i}`} className="w-4 h-4 text-gray-400" />
+          <Star key={`empty-${i}`} className="w-4 h-4 text-gray-300" />
         ))}
       </div>
     );
   };
 
   return (
-    <div className="page-container">
+    <div className="page-container bg-brutal-gray min-h-screen">
       {/* Hero Section */}
       <motion.div
-        className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-6 md:p-8 mb-8"
+        className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8 mb-8"
+        style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -396,10 +397,11 @@ function ReviewsContent() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex items-center mb-4">
-              <Star className="h-7 w-7 text-amber-400 mr-3" />
-              <h1 className="text-2xl md:text-3xl font-bold text-white">Game Reviews</h1>
+              <span className="w-1.5 h-7 bg-brutal-pink mr-3"></span>
+              <Star className="h-7 w-7 text-brutal-yellow mr-3" />
+              <h1 className="text-2xl md:text-3xl font-bold text-black">Game Reviews</h1>
             </div>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-600 mb-6">
               Browse user reviews and ratings for popular games, or share your own experience
             </p>
           </motion.div>
@@ -407,11 +409,11 @@ function ReviewsContent() {
           {/* Search Bar */}
           <div className="relative mb-2">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <Search className="w-5 h-5 text-mali-text-secondary" />
+              <Search className="w-5 h-5 text-gray-500" />
             </div>
             <input
               type="text"
-              className="block w-full p-3 pl-10 bg-mali-card border border-mali-blue/30 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:ring-2 focus:ring-mali-blue/50"
+              className="block w-full p-3 pl-10 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
               placeholder="Search for games, reviews, or reviewers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -427,7 +429,7 @@ function ReviewsContent() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-4">
+        <div className="bg-white border-[3px] border-black rounded-xl p-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
           <div className="flex flex-wrap gap-4 items-center justify-between">
             <div className="flex flex-wrap gap-4">
               {/* Game Filter */}
@@ -435,16 +437,16 @@ function ReviewsContent() {
                 <select
                   value={selectedGame}
                   onChange={(e) => setSelectedGame(e.target.value)}
-                  className="appearance-none bg-mali-blue/10 border border-mali-blue/20 text-white rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-1 focus:ring-mali-blue"
+                  className="appearance-none bg-gray-100 border-[2px] border-gray-300 text-black rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black cursor-pointer"
                 >
                   {popularGames.map((game) => (
-                    <option key={game.value} value={game.value} className="bg-mali-card">
+                    <option key={game.value} value={game.value}>
                       {game.name}
                     </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDown size={16} className="text-mali-text-secondary" />
+                  <ChevronDown size={16} className="text-gray-500" />
                 </div>
               </div>
 
@@ -453,16 +455,16 @@ function ReviewsContent() {
                 <select
                   value={selectedPlatform}
                   onChange={(e) => setSelectedPlatform(e.target.value)}
-                  className="appearance-none bg-mali-blue/10 border border-mali-blue/20 text-white rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-1 focus:ring-mali-blue"
+                  className="appearance-none bg-gray-100 border-[2px] border-gray-300 text-black rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black cursor-pointer"
                 >
                   {platforms.map((platform) => (
-                    <option key={platform.value} value={platform.value} className="bg-mali-card">
+                    <option key={platform.value} value={platform.value}>
                       {platform.name}
                     </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDown size={16} className="text-mali-text-secondary" />
+                  <ChevronDown size={16} className="text-gray-500" />
                 </div>
               </div>
 
@@ -471,16 +473,16 @@ function ReviewsContent() {
                 <select
                   value={selectedRating}
                   onChange={(e) => setSelectedRating(e.target.value)}
-                  className="appearance-none bg-mali-blue/10 border border-mali-blue/20 text-white rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-1 focus:ring-mali-blue"
+                  className="appearance-none bg-gray-100 border-[2px] border-gray-300 text-black rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black cursor-pointer"
                 >
                   {ratings.map((rating) => (
-                    <option key={rating.value} value={rating.value} className="bg-mali-card">
+                    <option key={rating.value} value={rating.value}>
                       {rating.name}
                     </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDown size={16} className="text-mali-text-secondary" />
+                  <ChevronDown size={16} className="text-gray-500" />
                 </div>
               </div>
 
@@ -493,10 +495,10 @@ function ReviewsContent() {
                     onChange={(e) => setVerifiedOnly(e.target.checked)}
                     className="sr-only"
                   />
-                  <div className={`w-4 h-4 mr-2 border rounded ${verifiedOnly ? 'bg-mali-blue border-mali-blue' : 'border-mali-blue/30'}`}>
+                  <div className={`w-5 h-5 mr-2 border-[2px] border-black rounded flex items-center justify-center transition-colors ${verifiedOnly ? 'bg-brutal-pink' : 'bg-white'}`}>
                     {verifiedOnly && <BadgeCheck size={14} className="text-white" />}
                   </div>
-                  <span className="text-white text-sm">Verified Purchases Only</span>
+                  <span className="text-black text-sm font-medium">Verified Purchases Only</span>
                 </label>
               </div>
             </div>
@@ -506,16 +508,16 @@ function ReviewsContent() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none bg-mali-blue/10 border border-mali-blue/20 text-white rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-1 focus:ring-mali-blue"
+                className="appearance-none bg-gray-100 border-[2px] border-gray-300 text-black rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black cursor-pointer"
               >
                 {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value} className="bg-mali-card">
+                  <option key={option.value} value={option.value}>
                     {option.name}
                   </option>
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <ChevronDown size={16} className="text-mali-text-secondary" />
+                <ChevronDown size={16} className="text-gray-500" />
               </div>
             </div>
           </div>
@@ -524,7 +526,8 @@ function ReviewsContent() {
 
       {/* Results Count */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-medium text-white">
+        <h2 className="text-lg font-medium text-black flex items-center">
+          <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
           {filteredReviews.length} {filteredReviews.length === 1 ? 'Review' : 'Reviews'} Found
         </h2>
 
@@ -538,7 +541,7 @@ function ReviewsContent() {
               setVerifiedOnly(false);
               setSearchQuery("");
             }}
-            className="text-mali-blue-accent hover:underline text-sm flex items-center"
+            className="text-black hover:underline text-sm flex items-center font-medium"
           >
             <Filter size={14} className="mr-1" />
             Clear Filters
@@ -549,7 +552,7 @@ function ReviewsContent() {
       {/* Write Review Button */}
       <div className="mb-8">
         <Link href={user ? "/reviews/write" : "/login?redirect=/reviews/write"} className="inline-block">
-          <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white py-3 px-6 rounded-lg font-medium flex items-center">
+          <button className="bg-black text-white border-[3px] border-black py-3 px-6 rounded-lg font-medium flex items-center hover:bg-gray-800 transition-colors" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <MessageSquare size={18} className="mr-2" />
             Write a Review
           </button>
@@ -570,11 +573,12 @@ function ReviewsContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 * Math.min(index, 5) }}
-              className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
+              className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
-              <div className="border-b border-mali-blue/20 bg-mali-blue/10 px-6 py-4 flex flex-wrap justify-between items-center">
+              <div className="border-b-[2px] border-black bg-gray-50 px-6 py-4 flex flex-wrap justify-between items-center">
                 <Link href={`/games/${review.gameId}`} className="flex items-center group">
-                  <div className="w-12 h-12 bg-mali-card border border-mali-blue/20 rounded-lg overflow-hidden mr-3">
+                  <div className="w-12 h-12 bg-white border-[2px] border-black rounded-lg overflow-hidden mr-3">
                     <img
                       src={review.gameImage}
                       alt={review.gameName}
@@ -582,13 +586,13 @@ function ReviewsContent() {
                     />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white group-hover:text-mali-blue-accent transition-colors">
+                    <h3 className="font-bold text-black group-hover:text-brutal-pink transition-colors">
                       {review.gameName}
                     </h3>
-                    <div className="flex items-center text-xs text-mali-text-secondary">
-                      <span className={`px-2 py-0.5 rounded-full mr-2 ${review.platform === "mobile" ? "bg-blue-900/30 text-blue-400" :
-                          review.platform === "pc" ? "bg-purple-900/30 text-purple-400" :
-                            "bg-green-900/30 text-green-400"
+                    <div className="flex items-center text-xs text-gray-600">
+                      <span className={`px-2 py-0.5 rounded border-[2px] mr-2 font-medium ${review.platform === "mobile" ? "bg-brutal-blue text-white border-black" :
+                          review.platform === "pc" ? "bg-brutal-purple text-white border-black" :
+                            "bg-brutal-green text-white border-black"
                         }`}>
                         {review.platform.charAt(0).toUpperCase() + review.platform.slice(1)}
                       </span>
@@ -600,14 +604,14 @@ function ReviewsContent() {
 
                 <div className="flex items-center mt-2 sm:mt-0">
                   {renderStars(review.rating)}
-                  <span className="ml-2 text-lg font-bold text-white">{review.rating.toFixed(1)}</span>
+                  <span className="ml-2 text-lg font-bold text-black">{review.rating.toFixed(1)}</span>
                 </div>
               </div>
 
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-mali-blue/20">
+                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 border-[2px] border-black">
                       <img
                         src={review.userAvatar}
                         alt={review.username}
@@ -615,9 +619,9 @@ function ReviewsContent() {
                       />
                     </div>
                     <div>
-                      <p className="font-medium text-white">{review.username}</p>
+                      <p className="font-medium text-black">{review.username}</p>
                       {review.isVerifiedPurchase && (
-                        <div className="flex items-center text-xs text-green-400">
+                        <div className="flex items-center text-xs text-brutal-green font-medium">
                           <BadgeCheck size={12} className="mr-1" />
                           <span>Verified Purchase</span>
                         </div>
@@ -625,14 +629,14 @@ function ReviewsContent() {
                     </div>
                   </div>
 
-                  <button className="text-mali-text-secondary hover:text-white p-1">
+                  <button className="text-gray-500 hover:text-black p-1">
                     <MoreHorizontal size={18} />
                   </button>
                 </div>
 
-                <h4 className="text-xl font-bold text-white mb-3">{review.title}</h4>
+                <h4 className="text-xl font-bold text-black mb-3">{review.title}</h4>
 
-                <p className="text-mali-text-secondary mb-4">
+                <p className="text-gray-600 mb-4">
                   {review.content}
                 </p>
 
@@ -642,7 +646,7 @@ function ReviewsContent() {
                     {review.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className="bg-mali-blue/10 text-mali-text-secondary text-xs px-3 py-1.5 rounded-full"
+                        className="bg-brutal-yellow text-black text-xs px-3 py-1.5 rounded border-[2px] border-black font-medium"
                       >
                         {tag}
                       </span>
@@ -651,23 +655,23 @@ function ReviewsContent() {
                 )}
 
                 {/* Review Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-mali-blue/20">
+                <div className="flex items-center justify-between pt-4 border-t-[2px] border-gray-200">
                   <div className="flex items-center gap-4">
                     <button
-                      className={`flex items-center gap-1 ${likedReviews.includes(review.id)
-                          ? "text-mali-blue-accent"
-                          : "text-mali-text-secondary hover:text-mali-blue-accent"
+                      className={`flex items-center gap-1 font-medium ${likedReviews.includes(review.id)
+                          ? "text-brutal-pink"
+                          : "text-gray-600 hover:text-brutal-pink"
                         }`}
                       onClick={() => handleLikeReview(review.id, true)}
                     >
-                      <ThumbsUp size={16} className={likedReviews.includes(review.id) ? "fill-mali-blue-accent" : ""} />
+                      <ThumbsUp size={16} className={likedReviews.includes(review.id) ? "fill-brutal-pink" : ""} />
                       <span>{getAdjustedLikes(review)}</span>
                     </button>
 
                     <button
-                      className={`flex items-center gap-1 ${dislikedReviews.includes(review.id)
+                      className={`flex items-center gap-1 font-medium ${dislikedReviews.includes(review.id)
                           ? "text-red-500"
-                          : "text-mali-text-secondary hover:text-red-500"
+                          : "text-gray-600 hover:text-red-500"
                         }`}
                       onClick={() => handleLikeReview(review.id, false)}
                     >
@@ -676,7 +680,7 @@ function ReviewsContent() {
                     </button>
                   </div>
 
-                  <button className="text-mali-blue-accent hover:text-mali-blue-accent/80 text-sm flex items-center">
+                  <button className="text-black hover:text-brutal-pink text-sm flex items-center font-medium">
                     View full review
                     <ArrowRight size={14} className="ml-1" />
                   </button>
@@ -688,17 +692,17 @@ function ReviewsContent() {
           {/* Load More Button */}
           {filteredReviews.length >= 5 && (
             <div className="mt-8 text-center">
-              <button className="bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-accent px-6 py-3 rounded-lg font-medium">
+              <button className="bg-white border-[3px] border-black text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
                 Load More Reviews
               </button>
             </div>
           )}
         </motion.div>
       ) : (
-        <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-12 text-center">
-          <MessageSquare size={48} className="mx-auto text-mali-text-secondary mb-4" />
-          <h3 className="text-xl font-bold text-white mb-2">No Reviews Found</h3>
-          <p className="text-mali-text-secondary mb-6">
+        <div className="bg-white border-[3px] border-black rounded-xl p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <MessageSquare size={48} className="mx-auto text-gray-400 mb-4" />
+          <h3 className="text-xl font-bold text-black mb-2">No Reviews Found</h3>
+          <p className="text-gray-600 mb-6">
             We couldn't find any reviews matching your filters.
           </p>
           <button
@@ -709,7 +713,8 @@ function ReviewsContent() {
               setVerifiedOnly(false);
               setSearchQuery("");
             }}
-            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium"
+            className="bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             Clear All Filters
           </button>
@@ -722,15 +727,11 @@ function ReviewsContent() {
 export default function ReviewsPage() {
   return (
     <Suspense fallback={
-      <div className="page-container min-h-screen flex items-center justify-center">
-        <div className="relative w-20 h-20 animate-pulse-glow">
-          <div className="absolute inset-0 bg-glow-gradient animate-glow"></div>
-          <div className="absolute inset-0 border-2 border-mali-blue-light rounded-full animate-spin"></div>
-          <div className="absolute inset-2 border-2 border-mali-purple rounded-full animate-spin-slow"></div>
-        </div>
+      <div className="page-container min-h-screen flex items-center justify-center bg-brutal-gray">
+        <div className="w-16 h-16 border-[4px] border-black border-t-brutal-pink rounded-full animate-spin"></div>
       </div>
     }>
       <ReviewsContent />
     </Suspense>
   );
-} 
+}

@@ -31,7 +31,7 @@ export function ProductDescription({
   const paragraphs = description.split("\n\n");
 
   return (
-    <div className={`prose prose-invert max-w-none ${className}`}>
+    <div className={`prose max-w-none ${className}`}>
       {paragraphs.map((paragraph, index) => {
         // Check if paragraph starts with a header pattern (**text**)
         const headerMatch = paragraph.match(/^\*\*(.+?)\*\*[:\s]/);
@@ -40,10 +40,11 @@ export function ProductDescription({
           const restOfParagraph = paragraph.slice(headerMatch[0].length);
           return (
             <div key={index} className="mb-4">
-              <h4 className="text-lg font-semibold text-white mb-2">
+              <h4 className="text-lg font-bold text-black mb-2 thai-font flex items-center gap-2">
+                <span className="w-1.5 h-5 bg-brutal-pink rounded-sm"></span>
                 {parseContent(headerText)}
               </h4>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed">
                 {parseContent(restOfParagraph.trim())}
               </p>
             </div>
@@ -60,9 +61,9 @@ export function ProductDescription({
                 return (
                   <li
                     key={itemIndex}
-                    className="flex items-start gap-2 text-gray-300"
+                    className="flex items-start gap-2 text-gray-700"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-brutal-green shrink-0 mt-0.5" />
                     <span>{parseContent(itemContent)}</span>
                   </li>
                 );
@@ -73,7 +74,7 @@ export function ProductDescription({
 
         // Regular paragraph
         return (
-          <p key={index} className="text-gray-300 leading-relaxed mb-4">
+          <p key={index} className="text-gray-700 leading-relaxed mb-4">
             {parseContent(paragraph)}
           </p>
         );

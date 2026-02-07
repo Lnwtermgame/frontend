@@ -70,52 +70,56 @@ export default function ProductsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
         <div className="flex flex-col items-center">
-          <Loader2 className="w-12 h-12 text-mali-blue animate-spin" />
-          <p className="mt-4 text-gray-400">Loading products...</p>
+          <Loader2 className="w-12 h-12 text-black animate-spin" />
+          <p className="mt-4 text-gray-600">Loading products...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-mali-bg">
+    <div className="min-h-screen bg-brutal-gray">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">All Products</h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-black mb-4 flex items-center justify-center">
+            <span className="w-1.5 h-8 bg-brutal-pink mr-3"></span>
+            All Products
+            <span className="w-1.5 h-8 bg-brutal-pink ml-3"></span>
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Browse our collection of gift cards and direct top-up products
           </p>
         </div>
 
         {/* Filters */}
-        <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-4 mb-8">
+        <div className="bg-white border-[3px] border-black p-4 mb-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-mali-bg border border-mali-blue/20 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-mali-blue/50 focus:border-mali-blue outline-none"
+                className="w-full bg-white border-[3px] border-black pl-10 pr-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-0"
               />
             </div>
 
             {/* Category Filter */}
             <div className="relative min-w-[200px]">
-              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <select
                 value={selectedCategory || ""}
                 onChange={(e) =>
                   setSelectedCategory(e.target.value || null)
                 }
-                className="w-full bg-mali-bg border border-mali-blue/20 rounded-lg pl-10 pr-10 py-3 text-white appearance-none cursor-pointer focus:ring-2 focus:ring-mali-blue/50 focus:border-mali-blue outline-none"
+                className="w-full bg-white border-[3px] border-black pl-10 pr-10 py-3 text-black appearance-none cursor-pointer focus:outline-none focus:ring-0"
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "right 12px center",
                   backgroundSize: "16px",
@@ -136,11 +140,12 @@ export default function ProductsPage() {
                 <button
                   key={type}
                   onClick={() => setSelectedType(type)}
-                  className={`px-4 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                  className={`px-4 py-3 font-bold transition-colors flex items-center gap-2 border-[3px] ${
                     selectedType === type
-                      ? "bg-mali-blue text-white"
-                      : "bg-mali-bg border border-mali-blue/20 text-gray-400 hover:text-white"
+                      ? "bg-black text-white border-black"
+                      : "bg-white border-black text-gray-700 hover:bg-gray-100"
                   }`}
+                  style={selectedType === type ? { boxShadow: '2px 2px 0 0 #000000' } : {}}
                 >
                   {type === "all" && "All"}
                   {type === "CARD" && (
@@ -162,7 +167,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Results Count */}
-        <p className="text-gray-400 mb-6">
+        <p className="text-gray-600 mb-6 font-medium">
           Showing {filteredProducts.length} of {products.length} products
         </p>
 
@@ -174,10 +179,12 @@ export default function ProductsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden group hover:border-mali-blue/50 transition-colors"
+                className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
+                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                whileHover={{ y: -4 }}
               >
                 {/* Image */}
-                <div className="relative aspect-square bg-mali-blue/5">
+                <div className="relative aspect-square bg-brutal-gray">
                   {product.imageUrl ? (
                     <Image
                       src={product.imageUrl}
@@ -187,17 +194,17 @@ export default function ProductsPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Package className="w-16 h-16 text-mali-blue/30" />
+                      <Package className="w-16 h-16 text-gray-400" />
                     </div>
                   )}
 
                   {/* Product Type Badge */}
                   <div className="absolute top-3 left-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      className={`px-2 py-1 text-xs font-bold border-[2px] border-black ${
                         product.productType === "DIRECT_TOPUP"
-                          ? "bg-orange-500/20 text-orange-400 border border-orange-500/30"
-                          : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                          ? "bg-brutal-yellow text-black"
+                          : "bg-brutal-blue text-black"
                       }`}
                     >
                       {product.productType === "DIRECT_TOPUP" ? (
@@ -217,7 +224,7 @@ export default function ProductsPage() {
                   {/* Featured Badge */}
                   {product.isFeatured && (
                     <div className="absolute top-3 right-3">
-                      <span className="bg-purple-500/20 text-purple-400 border border-purple-500/30 px-2 py-1 rounded-full text-xs font-medium">
+                      <span className="bg-brutal-pink text-black border-[2px] border-black px-2 py-1 text-xs font-bold">
                         Featured
                       </span>
                     </div>
@@ -226,16 +233,16 @@ export default function ProductsPage() {
 
                 {/* Info */}
                 <div className="p-4">
-                  <h3 className="text-white font-semibold mb-1 truncate">
+                  <h3 className="text-black font-bold mb-1 truncate">
                     {product.name}
                   </h3>
-                  <p className="text-gray-400 text-sm mb-3">
+                  <p className="text-gray-600 text-sm mb-3">
                     {product.category?.name || "Uncategorized"}
                   </p>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xl font-bold text-white">
+                      <span className="text-xl font-bold text-black">
                         ฿{product.price.toFixed(2)}
                       </span>
                       {product.comparePrice && (
@@ -245,7 +252,7 @@ export default function ProductsPage() {
                       )}
                     </div>
 
-                    <button className="p-2 bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue rounded-lg transition-colors">
+                    <button className="p-2 bg-black text-white border-[2px] border-black hover:bg-gray-800 transition-colors">
                       <ShoppingCart className="w-5 h-5" />
                     </button>
                   </div>
@@ -253,21 +260,21 @@ export default function ProductsPage() {
                   {/* Stock Status */}
                   <div className="mt-3 flex items-center gap-2">
                     <div
-                      className={`w-2 h-2 rounded-full ${
+                      className={`w-2 h-2 rounded-full border border-black ${
                         product.stockQuantity > 10
-                          ? "bg-green-400"
+                          ? "bg-brutal-green"
                           : product.stockQuantity > 0
-                          ? "bg-yellow-400"
-                          : "bg-red-400"
+                          ? "bg-brutal-yellow"
+                          : "bg-brutal-pink"
                       }`}
                     />
                     <span
-                      className={`text-xs ${
+                      className={`text-xs font-medium ${
                         product.stockQuantity > 10
-                          ? "text-green-400"
+                          ? "text-gray-700"
                           : product.stockQuantity > 0
-                          ? "text-yellow-400"
-                          : "text-red-400"
+                          ? "text-gray-700"
+                          : "text-brutal-pink"
                       }`}
                     >
                       {product.stockQuantity > 10
@@ -287,10 +294,10 @@ export default function ProductsPage() {
         {filteredProducts.length === 0 && (
           <div className="text-center py-16">
             <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="text-xl font-bold text-black mb-2">
               No products found
             </h3>
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               Try adjusting your search or filters
             </p>
           </div>

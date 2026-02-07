@@ -112,8 +112,8 @@ export default function OrdersPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
+          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -124,37 +124,37 @@ export default function OrdersPage() {
     switch (status) {
       case "COMPLETED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font">
             <CheckCircle className="w-3 h-3 mr-1" /> สำเร็จ
           </span>
         );
       case "PENDING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900/20 text-yellow-400 border border-yellow-400/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font">
             <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
           </span>
         );
       case "PROCESSING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/20 text-blue-400 border border-blue-400/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black thai-font">
             <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
       case "CANCELLED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font">
             <XCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       case "REFUNDED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-900/20 text-gray-400 border border-gray-400/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 thai-font">
             <AlertCircle className="w-3 h-3 mr-1" /> คืนเงินแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-blue/20 text-mali-blue-accent border border-mali-blue/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font">
             {status}
           </span>
         );
@@ -173,28 +173,29 @@ export default function OrdersPage() {
         {filteredOrders.map((order) => (
           <motion.div
             key={order.id}
-            className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg overflow-hidden"
-            whileHover={{ y: -3, boxShadow: "0 10px 30px -15px rgba(2, 12, 27, 0.7)" }}
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            whileHover={{ y: -3 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
             <div className="flex items-start p-4">
-              <div className="h-16 w-16 rounded-lg overflow-hidden bg-mali-blue/20 mr-4 flex-shrink-0">
+              <div className="h-16 w-16 border-[2px] border-black mr-4 flex-shrink-0 bg-gray-100">
                 {order.items[0]?.productId ? (
                   <div className="h-full w-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-mali-blue-accent" />
+                    <Package className="h-8 w-8 text-black" />
                   </div>
                 ) : (
                   <div className="h-full w-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-mali-blue-accent" />
+                    <Package className="h-8 w-8 text-black" />
                   </div>
                 )}
               </div>
 
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-white font-medium text-sm line-clamp-1">
+                  <h3 className="text-black font-bold text-sm line-clamp-1">
                     {order.items[0]?.productName || 'สินค้า'}
                   </h3>
                   <div>{renderStatusBadge(order.status)}</div>
@@ -202,23 +203,23 @@ export default function OrdersPage() {
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <p className="text-mali-text-secondary thai-font">รหัสคำสั่งซื้อ</p>
-                    <p className="text-mali-blue-accent font-medium">{order.orderNumber}</p>
+                    <p className="text-gray-600 thai-font">รหัสคำสั่งซื้อ</p>
+                    <p className="text-black font-medium">{order.orderNumber}</p>
                   </div>
                   <div>
-                    <p className="text-mali-text-secondary thai-font">จำนวนเงิน</p>
-                    <p className="text-white">{formatCurrency(order.finalAmount)}</p>
+                    <p className="text-gray-600 thai-font">จำนวนเงิน</p>
+                    <p className="text-black font-bold">{formatCurrency(order.finalAmount)}</p>
                   </div>
                   <div>
-                    <p className="text-mali-text-secondary thai-font">วันที่</p>
-                    <p className="text-mali-text-secondary">{formatDate(order.createdAt)}</p>
+                    <p className="text-gray-600 thai-font">วันที่</p>
+                    <p className="text-gray-600">{formatDate(order.createdAt)}</p>
                   </div>
                 </div>
 
                 <div className="flex justify-end mt-3 gap-2">
                   {canCancel(order.status) && (
                     <motion.button
-                      className="text-mali-red flex items-center text-xs px-2 py-1 rounded hover:bg-mali-red/10"
+                      className="text-red-600 flex items-center text-xs px-2 py-1 border-[2px] border-red-600 hover:bg-red-50"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleCancelOrder(order.id)}
@@ -229,7 +230,7 @@ export default function OrdersPage() {
                   )}
                   <Link href={`/dashboard/orders/${order.id}`}>
                     <motion.button
-                      className="text-mali-blue-accent flex items-center text-xs px-2 py-1 rounded hover:bg-mali-blue/10"
+                      className="text-black flex items-center text-xs px-2 py-1 border-[2px] border-black bg-brutal-blue hover:bg-brutal-blue/80"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -251,13 +252,14 @@ export default function OrdersPage() {
       {/* Page Header */}
       <div className="relative mb-6">
         <motion.h2
-          className="text-xl font-bold text-white mb-1 relative thai-font"
+          className="text-xl font-bold text-black mb-1 relative flex items-center thai-font"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
+          <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
           คำสั่งซื้อของฉัน
         </motion.h2>
-        <p className="text-mali-text-secondary text-sm relative thai-font">
+        <p className="text-gray-600 text-sm relative thai-font">
           ติดตามและจัดการการสั่งซื้อของคุณ
         </p>
       </div>
@@ -275,16 +277,16 @@ export default function OrdersPage() {
             placeholder="ค้นหาคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-full text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all text-sm thai-font"
+            className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-all text-sm thai-font"
           />
-          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-mali-text-secondary h-4 w-4" />
+          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
         </div>
 
         <div className="flex items-center gap-3">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white text-sm focus:outline-none focus:border-mali-blue-accent thai-font"
+            className="px-3 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black thai-font"
           >
             <option value="">ทั้งหมด</option>
             <option value="PENDING">รอดำเนินการ</option>
@@ -294,17 +296,18 @@ export default function OrdersPage() {
           </select>
 
           <motion.div
-            className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg p-1"
+            className="bg-white border-[2px] border-black p-1"
+            style={{ boxShadow: '2px 2px 0 0 #000000' }}
             whileHover={{ scale: 1.03 }}
           >
             <button
-              className={`px-3 py-1 rounded-md text-sm transition-colors thai-font ${viewMode === 'table' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+              className={`px-3 py-1 text-sm font-medium transition-colors thai-font ${viewMode === 'table' ? 'bg-black text-white' : 'text-gray-600 hover:text-black'}`}
               onClick={() => setViewMode('table')}
             >
               ตาราง
             </button>
             <button
-              className={`px-3 py-1 rounded-md text-sm transition-colors thai-font ${viewMode === 'card' ? 'bg-mali-blue text-white shadow-sm' : 'text-mali-text-secondary hover:text-white'}`}
+              className={`px-3 py-1 text-sm font-medium transition-colors thai-font ${viewMode === 'card' ? 'bg-black text-white' : 'text-gray-600 hover:text-black'}`}
               onClick={() => setViewMode('card')}
             >
               การ์ด
@@ -315,63 +318,64 @@ export default function OrdersPage() {
 
       {/* Orders list */}
       <motion.div
-        className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover"
+        className="bg-white border-[3px] border-black overflow-hidden"
+        style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
       >
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : viewMode === 'table' ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-mali-blue/10 border-b border-mali-blue/20">
+              <thead className="bg-gray-100 border-b-[3px] border-black">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">รหัสคำสั่งซื้อ</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">สินค้า</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">วันที่</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">จำนวนเงิน</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary thai-font">สถานะ</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary"></th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">รหัสคำสั่งซื้อ</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">สินค้า</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">วันที่</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">จำนวนเงิน</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">สถานะ</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-mali-blue/10">
+              <tbody className="divide-y divide-gray-200">
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
                     <motion.tr
                       key={order.id}
-                      className="hover:bg-mali-blue/5 transition-colors"
+                      className="hover:bg-gray-50 transition-colors"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <td className="px-6 py-4 text-sm font-medium text-mali-blue-accent">{order.orderNumber}</td>
+                      <td className="px-6 py-4 text-sm font-bold text-black">{order.orderNumber}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 rounded overflow-hidden mr-3 bg-mali-blue/10 border border-mali-blue/20">
+                          <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100">
                             {order.items[0]?.productId ? (
                               <div className="h-full w-full flex items-center justify-center">
-                                <Package className="h-5 w-5 text-mali-blue-accent" />
+                                <Package className="h-5 w-5 text-black" />
                               </div>
                             ) : (
                               <div className="h-full w-full flex items-center justify-center">
-                                <Package className="h-5 w-5 text-mali-blue-accent" />
+                                <Package className="h-5 w-5 text-black" />
                               </div>
                             )}
                           </div>
-                          <span className="text-white text-sm line-clamp-1">{order.items[0]?.productName || 'สินค้า'}</span>
+                          <span className="text-black text-sm line-clamp-1">{order.items[0]?.productName || 'สินค้า'}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-mali-text-secondary">{formatDate(order.createdAt)}</td>
-                      <td className="px-6 py-4 text-sm text-white">{formatCurrency(order.finalAmount)}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{formatDate(order.createdAt)}</td>
+                      <td className="px-6 py-4 text-sm text-black font-bold">{formatCurrency(order.finalAmount)}</td>
                       <td className="px-6 py-4">{renderStatusBadge(order.status)}</td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           {canCancel(order.status) && (
                             <motion.button
-                              className="px-3 py-1.5 rounded-lg bg-mali-red/20 hover:bg-mali-red/30 text-mali-red text-xs flex items-center"
+                              className="px-3 py-1.5 border-[2px] border-red-600 text-red-600 text-xs flex items-center hover:bg-red-50"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handleCancelOrder(order.id)}
@@ -382,7 +386,7 @@ export default function OrdersPage() {
                           )}
                           <Link href={`/dashboard/orders/${order.id}`}>
                             <motion.button
-                              className="px-3 py-1.5 rounded-lg bg-mali-blue/20 hover:bg-mali-blue/30 text-mali-blue-light text-xs flex items-center"
+                              className="px-3 py-1.5 border-[2px] border-black bg-brutal-blue text-black text-xs flex items-center hover:bg-brutal-blue/80"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                             >
@@ -397,9 +401,9 @@ export default function OrdersPage() {
                 ) : (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
-                      <div className="text-mali-text-secondary">
+                      <div className="text-gray-600">
                         <ShoppingBag className="h-12 w-12 mx-auto opacity-50 mb-4" />
-                        <p className="text-white text-lg font-medium mb-1 thai-font">ไม่พบคำสั่งซื้อ</p>
+                        <p className="text-black text-lg font-bold mb-1 thai-font">ไม่พบคำสั่งซื้อ</p>
                         <p className="text-sm max-w-md mx-auto thai-font">
                           {searchTerm ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"` : "คุณยังไม่มีคำสั่งซื้อใดๆ"}
                         </p>

@@ -23,12 +23,12 @@ interface GameProduct {
 
 function getCategoryIcon(category: string) {
   switch (category.toLowerCase()) {
-    case 'popular': return <Flame size={16} />;
-    case 'fps': return <Gamepad2 size={16} />;
-    case 'moba': return <TrendingUp size={16} />;
-    case 'rpg': return <Star size={16} />;
-    case 'adventure': return <Globe size={16} />;
-    default: return <Gamepad2 size={16} />;
+    case 'popular': return <Flame size={16} className="text-brutal-pink" />;
+    case 'fps': return <Gamepad2 size={16} className="text-brutal-blue" />;
+    case 'moba': return <TrendingUp size={16} className="text-brutal-green" />;
+    case 'rpg': return <Star size={16} className="text-brutal-yellow" />;
+    case 'adventure': return <Globe size={16} className="text-brutal-blue" />;
+    default: return <Gamepad2 size={16} className="text-gray-500" />;
   }
 }
 
@@ -93,7 +93,7 @@ function DirectTopupContent() {
           }, {} as Record<string, number>);
 
           const cats = [
-            { id: "all", name: "เกมทั้งหมด", count: gameProducts.length, icon: <Gamepad2 size={16} /> },
+            { id: "all", name: "เกมทั้งหมด", count: gameProducts.length, icon: <Gamepad2 size={16} className="text-brutal-pink" /> },
             ...Object.entries(categoryCounts).map(([name, count]) => ({
               id: name.toLowerCase(),
               name,
@@ -123,10 +123,10 @@ function DirectTopupContent() {
 
   // Platform options
   const PLATFORMS = [
-    { id: "all", name: "ทุกแพลตฟอร์ม", count: games.length, icon: <Monitor size={16} /> },
-    { id: "mobile", name: "มือถือ", count: games.filter(g => g.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS")).length, icon: <Smartphone size={16} /> },
-    { id: "pc", name: "คอมพิวเตอร์", count: games.filter(g => g.platforms.some(p => p === "PC" || p === "Mac")).length, icon: <Laptop size={16} /> },
-    { id: "console", name: "คอนโซล", count: games.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} /> },
+    { id: "all", name: "ทุกแพลตฟอร์ม", count: games.length, icon: <Monitor size={16} className="text-brutal-blue" /> },
+    { id: "mobile", name: "มือถือ", count: games.filter(g => g.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS")).length, icon: <Smartphone size={16} className="text-brutal-green" /> },
+    { id: "pc", name: "คอมพิวเตอร์", count: games.filter(g => g.platforms.some(p => p === "PC" || p === "Mac")).length, icon: <Laptop size={16} className="text-brutal-yellow" /> },
+    { id: "console", name: "คอนโซล", count: games.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} className="text-brutal-pink" /> },
   ];
 
   // Filter games based on selected category and search query
@@ -159,108 +159,115 @@ function DirectTopupContent() {
       <div className="flex flex-col lg:flex-row gap-6 min-w-0">
         {/* Sidebar */}
         <motion.div
-          className="w-full lg:w-64 lg:min-w-[256px] shrink-0 bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden shadow-card-hover lg:sticky lg:top-24 lg:h-fit"
+          className="w-full lg:w-64 lg:min-w-[256px] shrink-0"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="p-4 border-b border-mali-blue/20 bg-mali-sidebar">
-            <h2 className="text-white font-bold text-lg flex items-center">
-              <Gamepad2 size={18} className="text-mali-blue-light mr-2" />
-              หมวดหมู่เกม
-            </h2>
-          </div>
-          {loading ? (
-            <div className="flex items-center justify-center p-8">
-              <Loader2 className="w-8 h-8 text-mali-blue animate-spin" />
+          {/* Categories Card */}
+          <div className="bg-white rounded-xl border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          >
+            <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
+              <h2 className="text-black font-black text-lg flex items-center">
+                <Gamepad2 size={20} className="mr-2" />
+                หมวดหมู่เกม
+              </h2>
             </div>
-          ) : (
-          <div className="p-4 space-y-1">
-            {categories.map(category => (
-              <motion.button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedCategory === category.id
-                  ? "bg-mali-blue/30 text-white"
-                  : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
-                  }`}
-                whileHover={{ x: 3 }}
-              >
-                {selectedCategory === category.id && (
-                  <motion.div
-                    layoutId="active-game-category-indicator"
-                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-                <div className="flex items-center gap-3">
-                  <span className={`${selectedCategory === category.id ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"}`}>
-                    {category.icon}
-                  </span>
-                  <span className="text-sm font-medium">{category.name}</span>
-                </div>
-                <span className="text-xs bg-mali-blue/30 px-2 py-0.5 rounded-full">{category.count}</span>
-              </motion.button>
-            ))}
+            {loading ? (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
+              </div>
+            ) : (
+              <div className="p-3 space-y-1">
+                {categories.map(category => (
+                  <motion.button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`w-full flex justify-between items-center text-left p-3 rounded-lg group transition-all relative overflow-hidden border-[2px] ${
+                      selectedCategory === category.id
+                        ? "bg-brutal-yellow border-black text-black"
+                        : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                    }`}
+                    style={selectedCategory === category.id ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+                    whileHover={{ x: 3 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={selectedCategory === category.id ? "text-black" : "text-gray-500"}>
+                        {category.icon}
+                      </span>
+                      <span className="text-sm font-bold">{category.name}</span>
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                      selectedCategory === category.id ? "bg-white text-black" : "bg-gray-100 text-gray-600"
+                    }`}>
+                      {category.count}
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </div>
-          )}
 
-          <div className="p-4 border-t border-mali-blue/20">
-            <h3 className="text-white font-medium text-sm mb-3 flex items-center">
-              <Monitor size={16} className="text-mali-blue-light mr-2" />
-              แพลตฟอร์ม
-            </h3>
-            <div className="space-y-1">
+          {/* Platforms Card */}
+          <div className="bg-white rounded-xl border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          >
+            <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
+              <h3 className="text-black font-black text-base flex items-center">
+                <Monitor size={18} className="mr-2" />
+                แพลตฟอร์ม
+              </h3>
+            </div>
+            <div className="p-3 space-y-1">
               {PLATFORMS.map(platform => (
                 <motion.button
                   key={platform.id}
                   onClick={() => setSelectedPlatform(platform.id)}
-                  className={`w-full flex justify-between items-center text-left p-2.5 rounded-md group transition-all relative overflow-hidden ${selectedPlatform === platform.id
-                    ? "bg-mali-blue/30 text-white"
-                    : "text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white"
-                    }`}
+                  className={`w-full flex justify-between items-center text-left p-3 rounded-lg group transition-all relative overflow-hidden border-[2px] ${
+                    selectedPlatform === platform.id
+                      ? "bg-brutal-blue border-black text-black"
+                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                  }`}
+                  style={selectedPlatform === platform.id ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
                   whileHover={{ x: 3 }}
                 >
-                  {selectedPlatform === platform.id && (
-                    <motion.div
-                      layoutId="active-game-platform-indicator"
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
                   <div className="flex items-center gap-3">
-                    <span className={`${selectedPlatform === platform.id ? "text-mali-blue-accent" : "text-mali-text-secondary group-hover:text-white"}`}>
+                    <span className={selectedPlatform === platform.id ? "text-black" : "text-gray-500"}>
                       {platform.icon}
                     </span>
-                    <span className="text-sm font-medium">{platform.name}</span>
+                    <span className="text-sm font-bold">{platform.name}</span>
                   </div>
-                  <span className="text-xs bg-mali-blue/30 px-2 py-0.5 rounded-full">{platform.count}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                    selectedPlatform === platform.id ? "bg-white text-black" : "bg-gray-100 text-gray-600"
+                  }`}>
+                    {platform.count}
+                  </span>
                 </motion.button>
               ))}
             </div>
           </div>
 
-          <div className="p-4 border-t border-mali-blue/20">
-            <div className="bg-accent-gradient rounded-lg p-4 text-white shadow-purple-glow relative overflow-hidden">
-              <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-300/20 rounded-full blur-xl"></div>
-              <div className="absolute right-5 bottom-5 w-16 h-16 bg-pink-300/30 rounded-full blur-lg"></div>
-              <div className="relative z-10">
-                <h3 className="font-medium mb-2">โบนัสเติมเงินครั้งแรก</h3>
-                <p className="text-sm text-white/80 mb-3">รับโบนัส 20% สำหรับการเติมเงินครั้งแรกในทุกเกม</p>
-                <motion.button
-                  className="w-full bg-white text-mali-purple px-3 py-1.5 rounded text-sm font-medium"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  รับโบนัสเลย
-                </motion.button>
+          {/* Promo Card */}
+          <div className="bg-brutal-green border-[3px] border-black rounded-xl p-4 relative overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          >
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap size={18} className="text-black" />
+                <span className="font-black text-black text-sm">โบนัสเติมเงินครั้งแรก</span>
               </div>
+              <p className="text-black/80 text-xs mb-3">
+                รับโบนัส 20% สำหรับการเติมเงินครั้งแรกในทุกเกม
+              </p>
+              <motion.button
+                className="w-full bg-black text-white px-3 py-2 rounded-lg text-xs font-bold border-[2px] border-black"
+                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                รับโบนัสเลย
+              </motion.button>
             </div>
           </div>
         </motion.div>
@@ -268,34 +275,35 @@ function DirectTopupContent() {
         <div className="flex-1 min-w-0 space-y-6">
           {/* Header with search and filters */}
           <motion.div
-            className="bg-mali-card rounded-xl border border-mali-blue/20 p-4 shadow-card-hover"
+            className="bg-white rounded-xl border-[3px] border-black p-5"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h1 className="text-white text-xl font-bold flex items-center">
-                  <Zap size={20} className="text-mali-blue-light mr-2" />
+                <h1 className="text-gray-900 text-2xl font-black flex items-center">
+                  <Zap size={24} className="text-brutal-yellow mr-2" fill="currentColor" />
                   เติมเกมโดยตรง
                 </h1>
-                <p className="text-mali-text-secondary text-sm mt-1">เติมเงินเกมโปรดของคุณโดยตรง รวดเร็ว ปลอดภัย</p>
+                <p className="text-gray-500 text-sm mt-1">เติมเงินเกมโปรดของคุณโดยตรง รวดเร็ว ปลอดภัย</p>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <div className="relative">
                   <input
                     type="text"
                     placeholder="ค้นหาเกม..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full md:w-64 rounded-md bg-mali-blue/20 border border-mali-blue/30 pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-mali-blue-accent focus:border-mali-blue-accent transition-all"
+                    className="w-full md:w-64 rounded-lg bg-gray-50 border-[2px] border-gray-300 pl-10 pr-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
                   />
-                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mali-text-secondary" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 </div>
 
-                <button className="bg-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/30 text-xs px-3 py-2 rounded-md flex items-center gap-1.5 transition-colors">
-                  <Filter size={14} /> ตัวกรอง
+                <button className="bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 rounded-lg flex items-center gap-1.5 transition-all font-bold">
+                  <Filter size={16} /> ตัวกรอง
                 </button>
               </div>
             </div>
@@ -303,15 +311,16 @@ function DirectTopupContent() {
 
           {/* Games grid */}
           <motion.div
-            className="space-y-3"
+            className="space-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-white text-lg font-bold flex items-center">
-                <Gamepad2 size={18} className="text-mali-blue-light mr-2" />
+              <h2 className="text-gray-900 text-lg font-black flex items-center">
+                <Gamepad2 size={20} className="text-brutal-pink mr-2" />
                 เกมทั้งหมด
+                <span className="ml-2 text-sm font-normal text-gray-500">({filteredGames.length})</span>
               </h2>
             </div>
 
@@ -324,10 +333,14 @@ function DirectTopupContent() {
                   transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
                 >
                   <Link href={`/games/${game.slug}`}>
-                    <div className="relative overflow-hidden rounded-lg bg-mali-card border border-mali-blue/20 transition-all hover:-translate-y-1 hover:border-mali-blue/40 hover:shadow-card-hover group">
+                    <div className="relative overflow-hidden rounded-xl bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
+                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                    >
                       {game.discountPercent && game.discountPercent > 0 ? (
-                        <div className="absolute top-2 left-2 z-10 bg-mali-pink px-2 py-0.5 text-xs font-medium text-white rounded shadow-purple-glow">
-                          โบนัส {game.discountPercent}%
+                        <div className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white rounded-md border-[2px] border-black"
+                          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                        >
+                          -{game.discountPercent}%
                         </div>
                       ) : null}
 
@@ -337,28 +350,32 @@ function DirectTopupContent() {
                           alt={game.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-mali-dark to-transparent opacity-70" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
 
-                        <div className="absolute top-2 right-2 flex items-center bg-mali-blue/70 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded">
-                          <Star size={8} className="mr-0.5 text-yellow-400" /> {game.rating}
+                        <div className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 rounded-md font-bold"
+                          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                        >
+                          <Star size={10} className="mr-0.5 text-brutal-yellow" fill="currentColor" /> {game.rating}
                         </div>
 
                         {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-mali-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div className="bg-white text-mali-dark px-4 py-2 rounded-md text-sm font-medium translate-y-4 group-hover:translate-y-0 transition-transform shadow-button-glow">
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="bg-brutal-yellow text-black px-4 py-2 rounded-lg text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
+                            style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                          >
                             เติมเกมเลย
                           </div>
                         </div>
                       </div>
 
-                      <div className="p-2">
-                        <p className="text-white text-xs font-medium line-clamp-1 mb-1 group-hover:text-mali-blue-accent transition-colors">{game.title}</p>
+                      <div className="p-2.5">
+                        <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-pink transition-colors">{game.title}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
                             {getCategoryIcon(game.category)}
-                            <span className="text-mali-text-secondary text-[10px] ml-1">{game.publisher}</span>
+                            <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">{game.publisher}</span>
                           </div>
-                          <div className="text-[10px] text-white font-medium">฿{game.price}</div>
+                          <div className="text-xs text-black font-black">฿{game.price}</div>
                         </div>
                       </div>
                     </div>
@@ -366,6 +383,14 @@ function DirectTopupContent() {
                 </motion.div>
               ))}
             </div>
+
+            {filteredGames.length === 0 && !loading && (
+              <div className="text-center py-12">
+                <Gamepad2 size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500 font-bold">ไม่พบเกมที่ค้นหา</p>
+                <p className="text-gray-400 text-sm mt-1">ลองค้นหาด้วยคำอื่น หรือเลือกหมวดหมู่อื่น</p>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
@@ -375,7 +400,14 @@ function DirectTopupContent() {
 
 export default function DirectTopupPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-mali-dark flex items-center justify-center text-white">กำลังโหลด...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
+          <span className="text-gray-900 font-bold">กำลังโหลด...</span>
+        </div>
+      </div>
+    }>
       <DirectTopupContent />
     </Suspense>
   );

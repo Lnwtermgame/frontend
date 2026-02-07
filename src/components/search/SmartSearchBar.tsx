@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
 import { productApi, Product } from "@/lib/services/product-api";
+import { cn } from "@/lib/utils";
 
 // Types
 export interface SearchResult {
@@ -206,25 +207,25 @@ export function SmartSearchBar({
   const getIconForResult = (type: string) => {
     switch (type) {
       case 'game':
-        return <Gamepad2 size={16} className="text-mali-blue-light" aria-hidden="true" />;
+        return <Gamepad2 size={16} className="text-brutal-pink" aria-hidden="true" />;
       case 'coupon':
-        return <Tag size={16} className="text-mali-purple" aria-hidden="true" />;
+        return <Tag size={16} className="text-brutal-yellow" aria-hidden="true" />;
       case 'history':
-        return <Clock size={16} className="text-mali-text-secondary" aria-hidden="true" />;
+        return <Clock size={16} className="text-gray-400" aria-hidden="true" />;
       default:
-        return <Search size={16} className="text-mali-blue-light" aria-hidden="true" />;
+        return <Search size={16} className="text-gray-400" aria-hidden="true" />;
     }
   };
 
   return (
-    <div className={`relative ${className}`} ref={searchRef}>
+    <div className={cn("relative", className)} ref={searchRef}>
       <form onSubmit={handleSubmit}>
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none" aria-hidden="true">
             {isLoading ? (
-              <Loader2 size={18} className="text-mali-blue/70 animate-spin" />
+              <Loader2 size={18} className="text-gray-400 animate-spin" />
             ) : (
-              <Search size={18} className="text-mali-blue/70" />
+              <Search size={18} className="text-gray-400" />
             )}
           </div>
           <input
@@ -250,17 +251,17 @@ export function SmartSearchBar({
               }
             }}
             onKeyDown={handleKeyDown}
-            className="bg-mali-navy/80 w-full border border-mali-blue/20 rounded-lg pl-10 pr-10 py-2.5 text-white placeholder-mali-text-secondary focus:outline-none focus:ring-2 focus:ring-mali-blue-accent focus:border-mali-blue-accent"
+            className="bg-white w-full border-[2px] border-gray-300 rounded-xl pl-11 pr-10 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
             aria-expanded={isDropdownOpen}
           />
           {query && (
             <button
               type="button"
               onClick={clearSearch}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              className="absolute inset-y-0 right-0 pr-4 flex items-center"
               aria-label="ล้างการค้นหา"
             >
-              <X size={18} className="text-mali-text-secondary hover:text-white" />
+              <X size={18} className="text-gray-400 hover:text-black transition-colors" />
             </button>
           )}
         </div>
@@ -274,27 +275,28 @@ export function SmartSearchBar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute mt-2 w-full bg-mali-card border border-mali-blue/20 rounded-lg shadow-lg shadow-black/30 z-50 overflow-hidden"
+            className="absolute mt-2 w-full bg-white border-[3px] border-black rounded-xl z-50 overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <div className="p-1 max-h-80 overflow-y-auto">
               {/* Loading state */}
               {isLoading && query.trim() && (
                 <div className="p-4 flex items-center justify-center">
-                  <Loader2 size={24} className="text-mali-blue animate-spin" />
+                  <Loader2 size={24} className="text-brutal-pink animate-spin" />
                 </div>
               )}
 
               {/* No results state */}
               {!isLoading && query.trim() && results.length === 0 && (
                 <div className="p-4 text-center">
-                  <p className="text-mali-text-secondary text-sm">ไม่พบผลลัพธ์สำหรับ "{query}"</p>
+                  <p className="text-gray-500 text-sm thai-font">ไม่พบผลลัพธ์สำหรับ "{query}"</p>
                 </div>
               )}
 
               {/* Search Results */}
               {!isLoading && results.length > 0 && (
                 <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs text-mali-text-secondary">ผลการค้นหา</div>
+                  <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">ผลการค้นหา</div>
                   {results.map((result, index) => (
                     <Link
                       key={result.id}
@@ -306,22 +308,24 @@ export function SmartSearchBar({
                       }}
                     >
                       <div
-                        className={`px-3 py-2 flex items-center hover:bg-mali-blue/20 ${index === selectedResultIndex ? 'bg-mali-blue/20' : ''
-                          } rounded-md mx-1 cursor-pointer transition-colors`}
+                        className={cn(
+                          "px-3 py-2 flex items-center hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors",
+                          index === selectedResultIndex && "bg-brutal-yellow/30"
+                        )}
                       >
                         {result.image ? (
-                          <div className="h-8 w-8 rounded overflow-hidden mr-3 bg-mali-navy flex-shrink-0">
+                          <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-gray-100 flex-shrink-0 border-[2px] border-black">
                             <img src={result.image} alt={result.title} className="h-full w-full object-cover" />
                           </div>
                         ) : (
-                          <div className="h-8 w-8 rounded-full bg-mali-blue/20 flex items-center justify-center mr-3 flex-shrink-0" aria-hidden="true">
+                          <div className="h-10 w-10 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0" aria-hidden="true">
                             {getIconForResult(result.type)}
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm text-white font-medium truncate">{result.title}</div>
+                          <div className="text-sm text-black font-bold truncate thai-font">{result.title}</div>
                           {result.subtitle && (
-                            <div className="text-xs text-mali-text-secondary truncate">{result.subtitle}</div>
+                            <div className="text-xs text-gray-500 truncate">{result.subtitle}</div>
                           )}
                         </div>
                       </div>
@@ -333,19 +337,21 @@ export function SmartSearchBar({
               {/* Recent Searches */}
               {!query.trim() && recentSearches.length > 0 && (
                 <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs text-mali-text-secondary">ค้นหาล่าสุด</div>
+                  <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">ค้นหาล่าสุด</div>
                   {recentSearches.map((search, index) => (
                     <div
                       key={`recent-${index}`}
-                      className="px-3 py-2 hover:bg-mali-blue/20 rounded-md mx-1 cursor-pointer transition-colors flex items-center justify-between"
+                      className="px-3 py-2 hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors flex items-center justify-between"
                       onClick={() => {
                         setQuery(search);
                         performSearch(search);
                       }}
                     >
                       <div className="flex items-center">
-                        <Clock size={16} className="text-mali-text-secondary mr-2" aria-hidden="true" />
-                        <span className="text-sm text-white">{search}</span>
+                        <div className="w-8 h-8 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-2">
+                          <Clock size={14} className="text-gray-500" aria-hidden="true" />
+                        </div>
+                        <span className="text-sm text-black font-medium">{search}</span>
                       </div>
                       <button
                         type="button"
@@ -357,7 +363,7 @@ export function SmartSearchBar({
                             window.localStorage.setItem('recentSearches', JSON.stringify(newRecentSearches));
                           }
                         }}
-                        className="text-mali-text-secondary hover:text-white"
+                        className="text-gray-400 hover:text-brutal-pink transition-colors"
                         aria-label="ลบออกจากประวัติการค้นหา"
                       >
                         <X size={14} aria-hidden="true" />
@@ -370,7 +376,7 @@ export function SmartSearchBar({
 
             {/* Show all results action */}
             {query.trim() && results.length > 0 && (
-              <div className="px-3 py-2 border-t border-mali-blue/20">
+              <div className="px-3 py-2 border-t-[2px] border-gray-200">
                 <button
                   type="button"
                   onClick={() => {
@@ -379,7 +385,7 @@ export function SmartSearchBar({
                     router.push(`/games?search=${encodeURIComponent(query)}`);
                     setIsDropdownOpen(false);
                   }}
-                  className="text-sm text-mali-blue-accent hover:text-mali-blue-light w-full text-center"
+                  className="text-sm text-black hover:text-brutal-pink font-bold w-full text-center thai-font transition-colors"
                 >
                   ดูผลลัพธ์ทั้งหมดสำหรับ "{query}"
                 </button>

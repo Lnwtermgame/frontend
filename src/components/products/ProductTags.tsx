@@ -17,16 +17,20 @@ export function ProductTags({ tags, className, variant = 'default' }: ProductTag
   }
 
   const variantStyles = {
-    default: 'bg-gray-100 hover:bg-gray-200 text-gray-700',
-    outline: 'border border-gray-300 hover:border-gray-400 text-gray-600',
-    filled: 'bg-blue-600 hover:bg-blue-700 text-white',
+    default: 'bg-brutal-gray hover:bg-brutal-yellow text-black border-[2px] border-black',
+    outline: 'border-[2px] border-black hover:bg-brutal-yellow text-black bg-white',
+    filled: 'bg-black text-white border-[2px] border-black hover:bg-gray-800',
   };
 
   return (
     <div className={cn('space-y-2', className)}>
-      <h3 className="text-sm font-medium text-gray-700 flex items-center gap-2">
-        <TagIcon className="w-4 h-4" />
-        Tags
+      <h3 className="text-sm font-bold text-black flex items-center gap-2 thai-font">
+        <div className="w-6 h-6 rounded-lg bg-brutal-pink border-[2px] border-black flex items-center justify-center"
+          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+        >
+          <TagIcon className="w-3 h-3 text-white" />
+        </div>
+        แท็ก
       </h3>
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
@@ -34,9 +38,10 @@ export function ProductTags({ tags, className, variant = 'default' }: ProductTag
             key={tag.id}
             href={`/products?tag=${tag.slug}`}
             className={cn(
-              'px-3 py-1 rounded-full text-sm transition-colors',
+              'px-3 py-1.5 rounded-lg text-sm font-bold transition-all thai-font',
               variantStyles[variant]
             )}
+            style={variant === 'default' ? { boxShadow: '2px 2px 0 0 #000000' } : variant === 'filled' ? { boxShadow: '2px 2px 0 0 #000000' } : {}}
           >
             {tag.name}
           </Link>

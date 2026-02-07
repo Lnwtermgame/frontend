@@ -35,17 +35,18 @@ export default function AccountPage() {
   ];
 
   return (
-    <div>
+    <div className="bg-brutal-gray min-h-full">
       {/* Page Header */}
       <div className="relative mb-6">
         <motion.h2
-          className="text-xl font-bold text-white mb-1 relative"
+          className="text-xl font-bold text-black mb-1 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
+          <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
           บัญชีของฉัน
         </motion.h2>
-        <p className="text-mali-text-secondary text-sm relative thai-font">จัดการการตั้งค่าและความชอบของบัญชีของคุณ</p>
+        <p className="text-gray-600 text-sm relative thai-font">จัดการการตั้งค่าและความชอบของบัญชีของคุณ</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -53,10 +54,12 @@ export default function AccountPage() {
           <div className="grid gap-6">
             {/* User profile - Enhanced with gradient border */}
             <motion.div
-              className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden relative"
+              className="bg-white border-[3px] border-black overflow-hidden relative"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
+              whileHover={{ y: -2 }}
             >
               {/* Decorative gradient top border */}
 
@@ -65,19 +68,19 @@ export default function AccountPage() {
                 <div className="flex justify-between items-start">
                   <div className="flex items-center">
                     <div className="relative">
-                      <div className="h-16 w-16 rounded-full bg-mali-blue/20 border border-mali-blue/30 flex items-center justify-center text-white text-xl font-bold overflow-hidden">
+                      <div className="h-16 w-16 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-xl font-bold overflow-hidden">
                         {user?.username?.charAt(0).toUpperCase() || 'U'}
                       </div>
-                      <span className="absolute bottom-0 right-0 bg-mali-accent text-xs text-white font-medium px-1.5 py-0.5 rounded-full border-2 border-mali-card thai-font">
+                      <span className="absolute bottom-0 right-0 bg-brutal-pink text-xs text-black font-bold px-2 py-0.5 border-[2px] border-black thai-font">
                         VIP
                       </span>
                     </div>
                     <div className="ml-4">
-                      <h2 className="text-xl font-semibold text-white">{user?.username || 'User'}</h2>
+                      <h2 className="text-xl font-bold text-black">{user?.username || 'User'}</h2>
                       <div className="flex items-center mt-1">
-                        <span className="text-mali-text-secondary text-sm thai-font">อีเมล:</span>
-                        <span className="text-mali-text-secondary text-sm ml-2">{user?.email || 'user@example.com'}</span>
-                        <span className="bg-mali-blue-accent/20 text-mali-blue-accent text-xs font-medium px-2 py-0.5 rounded-full ml-2 thai-font">
+                        <span className="text-gray-600 text-sm thai-font">อีเมล:</span>
+                        <span className="text-gray-900 text-sm ml-2">{user?.email || 'user@example.com'}</span>
+                        <span className="bg-brutal-green text-black text-xs font-bold px-2 py-0.5 border-[2px] border-black ml-2 thai-font">
                           ยืนยันแล้ว
                         </span>
                       </div>
@@ -90,49 +93,54 @@ export default function AccountPage() {
 
             {/* Order statistics - Enhanced with icons and better styling */}
             <motion.div
-              className="bg-mali-card rounded-xl border border-mali-blue/20"
+              className="bg-white border-[3px] border-black"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
+              whileHover={{ y: -2 }}
             >
               <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-white thai-font">คำสั่งซื้อของฉัน</h2>
+                  <h2 className="text-lg font-bold text-black flex items-center thai-font">
+                    <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+                    คำสั่งซื้อของฉัน
+                  </h2>
                   <Link
                     href="/dashboard/orders"
-                    className="text-mali-blue-accent text-sm flex items-center hover:text-mali-blue-light transition-colors thai-font"
+                    className="text-black text-sm flex items-center hover:underline font-medium thai-font"
                   >
                     คำสั่งซื้อทั้งหมด <ChevronRight size={16} />
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                  <div className="p-4 rounded-lg bg-mali-blue/5 border border-mali-blue/20 hover:border-mali-blue/40 transition-colors">
-                    <div className="bg-mali-blue/10 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-mali-blue-light" />
+                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
+                      <History size={18} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-white">{orderStats.waitSend}</div>
-                    <div className="text-mali-text-secondary text-sm thai-font">รอส่ง</div>
+                    <div className="text-2xl font-bold text-black">{orderStats.waitSend}</div>
+                    <div className="text-gray-600 text-sm thai-font">รอส่ง</div>
                   </div>
-                  <div className="p-4 rounded-lg bg-mali-blue/5 border border-mali-blue/20 hover:border-mali-blue/40 transition-colors">
-                    <div className="bg-mali-blue/10 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-mali-blue-light" />
+                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
+                      <History size={18} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-white">{orderStats.sending}</div>
-                    <div className="text-mali-text-secondary text-sm thai-font">กำลังส่ง</div>
+                    <div className="text-2xl font-bold text-black">{orderStats.sending}</div>
+                    <div className="text-gray-600 text-sm thai-font">กำลังส่ง</div>
                   </div>
-                  <div className="p-4 rounded-lg bg-mali-blue/5 border border-mali-blue/20 hover:border-mali-blue/40 transition-colors">
-                    <div className="bg-mali-blue/10 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-mali-blue-light" />
+                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-brutal-green w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
+                      <History size={18} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-white">{orderStats.completed}</div>
-                    <div className="text-mali-text-secondary text-sm thai-font">เสร็จสมบูรณ์</div>
+                    <div className="text-2xl font-bold text-black">{orderStats.completed}</div>
+                    <div className="text-gray-600 text-sm thai-font">เสร็จสมบูรณ์</div>
                   </div>
-                  <div className="p-4 rounded-lg bg-mali-blue/5 border border-mali-blue/20 hover:border-mali-blue/40 transition-colors">
-                    <div className="bg-mali-blue/10 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-mali-blue-light" />
+                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-gray-200 w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
+                      <History size={18} className="text-gray-600" />
                     </div>
-                    <div className="text-2xl font-bold text-white">{orderStats.refunded}</div>
-                    <div className="text-mali-text-secondary text-sm thai-font">คืนเงิน</div>
+                    <div className="text-2xl font-bold text-black">{orderStats.refunded}</div>
+                    <div className="text-gray-600 text-sm thai-font">คืนเงิน</div>
                   </div>
                 </div>
               </div>
@@ -140,31 +148,36 @@ export default function AccountPage() {
 
             {/* Recently Purchased - Enhanced with animation and styling */}
             <motion.div
-              className="bg-mali-card rounded-xl border border-mali-blue/20"
+              className="bg-white border-[3px] border-black"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
+              whileHover={{ y: -2 }}
             >
               <div className="p-6">
-                <h2 className="text-lg font-semibold text-white mb-4 thai-font">ซื้อล่าสุด</h2>
+                <h2 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
+                  <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
+                  ซื้อล่าสุด
+                </h2>
                 {recentlyPurchased.length > 0 ? (
                   <div className="space-y-3">
                     {recentlyPurchased.map(item => (
                       <motion.div
                         key={item.id}
-                        className="flex items-center p-4 rounded-lg bg-mali-blue/5 border border-mali-blue/20 hover:border-mali-blue/40 transition-colors"
-                        whileHover={{ scale: 1.01, boxShadow: "0 0 15px rgba(78, 137, 232, 0.2)" }}
+                        className="flex items-center p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/10 transition-colors"
+                        whileHover={{ x: 2 }}
                       >
-                        <div className="w-14 h-14 rounded-lg overflow-hidden mr-4 border border-mali-blue/30">
+                        <div className="w-14 h-14 border-[2px] border-black overflow-hidden mr-4 bg-white">
                           <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-white">{item.name}</h3>
-                          <p className="text-sm text-mali-blue-light mt-1">{item.amount}</p>
+                          <h3 className="font-bold text-black">{item.name}</h3>
+                          <p className="text-sm text-gray-600 mt-1">{item.amount}</p>
                         </div>
                         <div className="flex gap-2 ml-auto">
                           <motion.button
-                            className="bg-mali-blue/20 hover:bg-mali-blue/30 w-8 h-8 rounded-full flex items-center justify-center text-mali-blue-accent hover:text-mali-blue-light transition-colors"
+                            className="bg-brutal-yellow border-[2px] border-black w-8 h-8 flex items-center justify-center text-black hover:bg-brutal-pink transition-colors"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                           >
@@ -172,7 +185,7 @@ export default function AccountPage() {
                           </motion.button>
                           <Link
                             href={`/dashboard/orders/${item.id}`}
-                            className="bg-mali-blue/20 hover:bg-mali-blue/30 w-8 h-8 rounded-full flex items-center justify-center text-mali-blue-accent hover:text-mali-blue-light transition-colors"
+                            className="bg-black border-[2px] border-black w-8 h-8 flex items-center justify-center text-white hover:bg-gray-800 transition-colors"
                           >
                             <ChevronRight size={16} />
                           </Link>
@@ -181,9 +194,9 @@ export default function AccountPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-mali-blue/10 text-mali-text-secondary text-center py-8 rounded-lg border border-mali-blue/20">
-                    <div className="w-16 h-16 mx-auto mb-3 bg-mali-blue/20 rounded-full flex items-center justify-center">
-                      <History size={24} className="text-mali-blue-light" />
+                  <div className="bg-gray-100 text-gray-600 text-center py-8 border-[2px] border-black">
+                    <div className="w-16 h-16 mx-auto mb-3 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
+                      <History size={24} className="text-black" />
                     </div>
                     <p className="thai-font">ไม่พบรายการซื้อล่าสุด</p>
                   </div>
@@ -199,24 +212,29 @@ export default function AccountPage() {
 
             {/* Account Links - New section */}
             <motion.div
-              className="bg-mali-card rounded-xl border border-mali-blue/20"
+              className="bg-white border-[3px] border-black"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.4 }}
+              whileHover={{ y: -2 }}
             >
               <div className="p-6">
-                <h2 className="text-lg font-semibold text-white mb-4 thai-font">ตั้งค่าบัญชี</h2>
-                <div className="divide-y divide-mali-blue/20">
+                <h2 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
+                  <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
+                  ตั้งค่าบัญชี
+                </h2>
+                <div className="divide-y divide-gray-200">
                   {accountLinks.map((link, index) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="flex items-center py-3 text-mali-text-secondary hover:text-white transition-colors thai-font"
+                      className="flex items-center py-3 text-gray-600 hover:text-black transition-colors thai-font"
                     >
-                      <div className="w-8 h-8 rounded-full bg-mali-blue/20 flex items-center justify-center text-mali-blue-accent mr-3">
+                      <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center text-black mr-3">
                         {link.icon}
                       </div>
-                      <span>{link.label}</span>
+                      <span className="font-medium">{link.label}</span>
                       <ChevronRight size={16} className="ml-auto" />
                     </Link>
                   ))}
@@ -226,43 +244,48 @@ export default function AccountPage() {
 
             {/* VIP Status - New section */}
             <motion.div
-              className="bg-mali-card rounded-xl border border-mali-blue/20 overflow-hidden"
+              className="bg-white border-[3px] border-black overflow-hidden"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.5 }}
+              whileHover={{ y: -2 }}
             >
 
               <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-white thai-font">สถานะ VIP</h2>
+                  <h2 className="text-lg font-bold text-black flex items-center thai-font">
+                    <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
+                    สถานะ VIP
+                  </h2>
                   <Link
                     href="/star"
-                    className="text-mali-blue-accent text-sm flex items-center hover:text-mali-blue-light transition-colors thai-font"
+                    className="text-black text-sm flex items-center hover:underline font-medium thai-font"
                   >
                     รายละเอียด <ChevronRight size={16} />
                   </Link>
                 </div>
-                <div className="bg-mali-blue/5 p-4 rounded-lg border border-mali-blue/20 mb-2">
+                <div className="bg-brutal-yellow/20 p-4 border-[2px] border-black mb-2">
                   <div className="flex items-center">
                     <div className="flex mr-3">
-                      <Star size={18} className="text-mali-accent" fill="currentColor" />
-                      <Star size={18} className="text-mali-accent -ml-1" fill="currentColor" />
-                      <Star size={18} className="text-mali-accent -ml-1" fill="currentColor" />
+                      <Star size={18} className="text-black" fill="currentColor" />
+                      <Star size={18} className="text-black -ml-1" fill="currentColor" />
+                      <Star size={18} className="text-black -ml-1" fill="currentColor" />
                     </div>
-                    <span className="font-semibold text-white thai-font">สมาชิกโกลด์</span>
+                    <span className="font-bold text-black thai-font">สมาชิกโกลด์</span>
                   </div>
                   <div className="mt-3">
-                    <div className="h-2 w-full bg-mali-blue/20 rounded-full overflow-hidden">
-                      <div className="h-full bg-mali-blue-accent w-[65%]"></div>
+                    <div className="h-3 w-full bg-white border-[2px] border-black overflow-hidden">
+                      <div className="h-full bg-brutal-pink w-[65%] border-r-[2px] border-black"></div>
                     </div>
                     <div className="flex justify-between mt-1 text-xs">
-                      <span className="text-mali-text-secondary">5,200 คะแนน</span>
-                      <span className="text-mali-text-secondary thai-font">อีก 8,000 คะแนนเพื่อแพลทินัม</span>
+                      <span className="text-gray-600">5,200 คะแนน</span>
+                      <span className="text-gray-600 thai-font">อีก 8,000 คะแนนเพื่อแพลทินัม</span>
                     </div>
                   </div>
                 </div>
-                <div className="text-sm text-mali-text-secondary thai-font">
-                  คุณมี <span className="text-mali-accent">3</span> รางวัลพิเศษที่สามารถใช้ได้
+                <div className="text-sm text-gray-600 thai-font">
+                  คุณมี <span className="text-brutal-pink font-bold">3</span> รางวัลพิเศษที่สามารถใช้ได้
                 </div>
               </div>
             </motion.div>

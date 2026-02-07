@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Product, productApi } from '@/lib/services/product-api';
 import { cn } from '@/lib/utils';
 import { Star, Clock } from 'lucide-react';
+import { motion } from '@/lib/framer-exports';
 
 interface NewArrivalsProps {
   limit?: number;
@@ -39,7 +40,8 @@ export function NewArrivals({ limit = 8, className }: NewArrivalsProps) {
         {Array.from({ length: limit }).map((_, i) => (
           <div
             key={i}
-            className="bg-gray-100 rounded-lg aspect-[3/4] animate-pulse"
+            className="bg-white border-[3px] border-black rounded-xl aspect-[3/4] animate-pulse"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
           />
         ))}
       </div>
@@ -53,52 +55,64 @@ export function NewArrivals({ limit = 8, className }: NewArrivalsProps) {
   return (
     <div className={className}>
       <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-5 h-5 text-green-500" />
-        <h2 className="text-xl font-bold text-gray-900">New Arrivals</h2>
+        <div className="w-8 h-8 rounded-lg bg-brutal-green border-[2px] border-black flex items-center justify-center"
+          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+        >
+          <Clock className="w-4 h-4 text-black" />
+        </div>
+        <h2 className="text-xl font-black text-black thai-font">สินค้าใหม่</h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {products.map((product) => (
-          <Link
+          <motion.div
             key={product.id}
-            href={`/games/${product.slug}`}
-            className="group bg-white rounded-lg border overflow-hidden hover:shadow-lg transition-shadow"
+            whileHover={{ y: -4, boxShadow: '6px 6px 0 0 #000000' }}
+            transition={{ duration: 0.2 }}
           >
-            <div className="relative aspect-square bg-gray-100">
-              {product.imageUrl ? (
-                <Image
-                  src={product.imageUrl}
-                  alt={product.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
-                  No Image
-                </div>
-              )}
-              <span className="absolute top-2 left-2 px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
-                New
-              </span>
-            </div>
-            <div className="p-3">
-              <h3 className="font-medium text-gray-900 line-clamp-1">
-                {product.name}
-              </h3>
-              <div className="flex items-center gap-1 mt-1">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm text-gray-600">
-                  {product.averageRating?.toFixed(1) || '0.0'}
-                </span>
-                <span className="text-sm text-gray-400">
-                  ({product.reviewCount || 0})
+            <Link
+              href={`/games/${product.slug}`}
+              className="group block bg-white rounded-xl border-[3px] border-black overflow-hidden"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            >
+              <div className="relative aspect-square bg-gray-100">
+                {product.imageUrl ? (
+                  <Image
+                    src={product.imageUrl}
+                    alt={product.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    No Image
+                  </div>
+                )}
+                <span className="absolute top-2 left-2 px-2 py-1 bg-brutal-green text-black text-xs font-bold border-[2px] border-black rounded-lg"
+                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                >
+                  ใหม่
                 </span>
               </div>
-              <p className="mt-2 font-bold text-blue-600">
-                {product.price} ฿
-              </p>
-            </div>
-          </Link>
+              <div className="p-3">
+                <h3 className="font-bold text-black line-clamp-1 thai-font">
+                  {product.name}
+                </h3>
+                <div className="flex items-center gap-1 mt-1">
+                  <Star className="w-4 h-4 fill-brutal-yellow text-black" />
+                  <span className="text-sm text-gray-600 font-medium">
+                    {product.averageRating?.toFixed(1) || '0.0'}
+                  </span>
+                  <span className="text-sm text-gray-400">
+                    ({product.reviewCount || 0})
+                  </span>
+                </div>
+                <p className="mt-2 font-black text-brutal-pink text-lg">
+                  {product.price} ฿
+                </p>
+              </div>
+            </Link>
+          </motion.div>
         ))}
       </div>
     </div>

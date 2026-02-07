@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ProductVariant } from '@/lib/services/product-api';
 import { cn } from '@/lib/utils';
+import { motion } from '@/lib/framer-exports';
 
 interface ProductVariantSelectorProps {
   variants: ProductVariant[];
@@ -41,13 +42,13 @@ export function ProductVariantSelector({
 
   return (
     <div className={cn('space-y-4', className)}>
-      <h3 className="font-semibold text-gray-900">Select Option</h3>
+      <h3 className="font-bold text-black thai-font">เลือกตัวเลือก</h3>
 
       {/* If variants have options, group them */}
       {Object.keys(groupedOptions).length > 0 ? (
         Object.entries(groupedOptions).map(([name, values]) => (
           <div key={name} className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">{name}</label>
+            <label className="text-sm font-bold text-gray-700 thai-font">{name}</label>
             <div className="flex flex-wrap gap-2">
               {Array.from(values.entries()).map(([value]) => {
                 // Find variant with this option
@@ -61,20 +62,23 @@ export function ProductVariantSelector({
                 const isOutOfStock = variantWithOption.stockQuantity <= 0;
 
                 return (
-                  <button
+                  <motion.button
                     key={value}
                     onClick={() =>
                       !isOutOfStock && handleSelect(variantWithOption)
                     }
                     disabled={isOutOfStock}
+                    whileHover={!isOutOfStock ? { y: -2, boxShadow: '3px 3px 0 0 #000000' } : {}}
+                    whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
                     className={cn(
-                      'px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all',
+                      'px-4 py-2 rounded-lg border-[3px] text-sm font-bold transition-all thai-font',
                       isSelected
-                        ? 'border-blue-600 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-gray-300',
+                        ? 'border-black bg-brutal-yellow text-black'
+                        : 'border-gray-200 bg-white hover:border-gray-400',
                       isOutOfStock &&
                         'opacity-50 cursor-not-allowed line-through'
                     )}
+                    style={isSelected ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
                   >
                     {value}
                     {variantWithOption.price && (
@@ -82,7 +86,7 @@ export function ProductVariantSelector({
                         (+{variantWithOption.price})
                       </span>
                     )}
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
@@ -96,25 +100,28 @@ export function ProductVariantSelector({
             const isOutOfStock = variant.stockQuantity <= 0;
 
             return (
-              <button
+              <motion.button
                 key={variant.id}
                 onClick={() => !isOutOfStock && handleSelect(variant)}
                 disabled={isOutOfStock}
+                whileHover={!isOutOfStock ? { y: -2, boxShadow: '3px 3px 0 0 #000000' } : {}}
+                whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
                 className={cn(
-                  'px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all min-w-[100px]',
+                  'px-4 py-3 rounded-lg border-[3px] text-sm font-bold transition-all min-w-[100px] thai-font',
                   isSelected
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300',
+                    ? 'border-black bg-brutal-yellow text-black'
+                    : 'border-gray-200 bg-white hover:border-gray-400',
                   isOutOfStock && 'opacity-50 cursor-not-allowed'
                 )}
+                style={isSelected ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
               >
                 <div>{variant.name}</div>
                 {variant.price && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-600">
                     {variant.price} ฿
                   </div>
                 )}
-              </button>
+              </motion.button>
             );
           })}
         </div>
@@ -122,19 +129,19 @@ export function ProductVariantSelector({
 
       {/* Selected variant info */}
       {selected && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+        <div className="mt-4 p-4 bg-brutal-gray border-[2px] border-black rounded-lg" style={{ boxShadow: '3px 3px 0 0 #000000' }}>
           {(() => {
             const variant = variants.find((v) => v.id === selected);
             if (!variant) return null;
             return (
               <div className="text-sm">
-                <span className="font-medium">Selected:</span>{' '}
-                {variant.name}
+                <span className="font-bold text-black thai-font">ที่เลือก:</span>{' '}
+                <span className="text-black font-medium">{variant.name}</span>
                 {variant.sku && (
-                  <span className="text-gray-500 ml-2">(SKU: {variant.sku})</span>
+                  <span className="text-gray-500 ml-2 font-medium">(SKU: {variant.sku})</span>
                 )}
-                <div className="mt-1 text-gray-600">
-                  Stock: {variant.stockQuantity} available
+                <div className="mt-1 text-gray-600 font-medium">
+                  สต็อก: {variant.stockQuantity} ชิ้น
                 </div>
               </div>
             );

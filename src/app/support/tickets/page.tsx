@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { supportApi, Ticket, TicketDetail, CreateTicketData, TicketReplyData, TicketCategory, TicketStatus } from "@/lib/services";
+import { supportApi, Ticket, TicketDetail, CreateTicketData, TicketCategory, TicketStatus } from "@/lib/services";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -34,12 +34,12 @@ const categoryLabels: Record<TicketCategory, string> = {
 };
 
 const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
-  OPEN: { label: "Open", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  IN_PROGRESS: { label: "In Progress", color: "bg-amber-500/20 text-amber-400 border-amber-500/30" },
-  WAITING_USER: { label: "Waiting for You", color: "bg-purple-500/20 text-purple-400 border-purple-500/30" },
-  WAITING_ADMIN: { label: "Waiting for Support", color: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30" },
-  RESOLVED: { label: "Resolved", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  CLOSED: { label: "Closed", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" },
+  OPEN: { label: "Open", color: "bg-brutal-blue border-black text-black" },
+  IN_PROGRESS: { label: "In Progress", color: "bg-brutal-yellow border-black text-black" },
+  WAITING_USER: { label: "Waiting for You", color: "bg-brutal-pink border-black text-black" },
+  WAITING_ADMIN: { label: "Waiting for Support", color: "bg-brutal-blue border-black text-black" },
+  RESOLVED: { label: "Resolved", color: "bg-brutal-green border-black text-black" },
+  CLOSED: { label: "Closed", color: "bg-gray-300 border-black text-black" },
 };
 
 export default function TicketsPage() {
@@ -169,10 +169,11 @@ export default function TicketsPage() {
   const filteredTickets = tickets;
 
   return (
-    <div className="page-container">
+    <div className="page-container bg-brutal-gray">
       {/* Header */}
       <motion.div
-        className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border border-mali-blue/30 rounded-xl p-6 md:p-8 mb-8"
+        className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8 mb-8"
+        style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -182,21 +183,24 @@ export default function TicketsPage() {
             <div className="flex items-center mb-2">
               <Link
                 href="/support"
-                className="text-mali-text-secondary hover:text-white mr-4 flex items-center"
+                className="text-gray-600 hover:text-black mr-4 flex items-center font-medium"
               >
                 <ArrowLeft size={18} className="mr-1" />
                 Back
               </Link>
-              <MessageSquare className="h-6 w-6 text-mali-blue-accent mr-3" />
-              <h1 className="text-2xl md:text-3xl font-bold text-white">My Support Tickets</h1>
+              <div className="bg-brutal-blue p-2 border-[3px] border-black mr-3">
+                <MessageSquare className="h-6 w-6 text-black" />
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold text-black">My Support Tickets</h1>
             </div>
-            <p className="text-mali-text-secondary">
+            <p className="text-gray-600">
               View and manage your support requests
             </p>
           </div>
           <button
             onClick={() => setShowNewTicketModal(true)}
-            className="bg-mali-blue hover:bg-mali-blue/90 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center"
+            className="bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <Plus size={18} className="mr-2" />
             New Ticket
@@ -209,13 +213,14 @@ export default function TicketsPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6 flex items-center"
+          className="bg-brutal-pink border-[3px] border-black rounded-lg p-4 mb-6 flex items-center"
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
-          <AlertCircle className="text-red-400 mr-3" size={20} />
-          <span className="text-red-200">{error}</span>
+          <AlertCircle className="text-black mr-3" size={20} />
+          <span className="text-black">{error}</span>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-red-400 hover:text-red-300"
+            className="ml-auto text-black hover:text-gray-700"
           >
             <X size={18} />
           </button>
@@ -225,18 +230,18 @@ export default function TicketsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Ticket List */}
         <div className="lg:col-span-1">
-          <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden">
+          <div className="bg-white border-[3px] border-black rounded-xl overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             {/* Filter Tabs */}
-            <div className="p-4 border-b border-mali-blue/20">
+            <div className="p-4 border-b-[3px] border-black">
               <div className="flex flex-wrap gap-2">
                 {["ALL", "OPEN", "IN_PROGRESS", "WAITING_USER", "RESOLVED", "CLOSED"].map((status) => (
                   <button
                     key={status}
                     onClick={() => setStatusFilter(status as TicketStatus | "ALL")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border-[2px] transition-colors ${
                       statusFilter === status
-                        ? "bg-mali-blue text-white"
-                        : "bg-mali-blue/10 text-mali-text-secondary hover:bg-mali-blue/20"
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-gray-700 border-black hover:bg-brutal-gray"
                     }`}
                   >
                     {status === "ALL" ? "All" : statusLabels[status as TicketStatus].label}
@@ -249,16 +254,16 @@ export default function TicketsPage() {
             <div className="max-h-[600px] overflow-y-auto">
               {isLoading ? (
                 <div className="p-8 text-center">
-                  <Loader2 className="animate-spin mx-auto text-mali-blue-accent mb-3" size={32} />
-                  <p className="text-mali-text-secondary">Loading tickets...</p>
+                  <Loader2 className="animate-spin mx-auto text-black mb-3" size={32} />
+                  <p className="text-gray-600">Loading tickets...</p>
                 </div>
               ) : filteredTickets.length === 0 ? (
                 <div className="p-8 text-center">
-                  <FileText className="mx-auto text-mali-text-secondary/50 mb-3" size={48} />
-                  <p className="text-mali-text-secondary mb-2">No tickets found</p>
+                  <FileText className="mx-auto text-gray-400 mb-3" size={48} />
+                  <p className="text-gray-600 mb-2">No tickets found</p>
                   <button
                     onClick={() => setShowNewTicketModal(true)}
-                    className="text-mali-blue-accent hover:underline"
+                    className="text-black hover:underline font-medium"
                   >
                     Create your first ticket
                   </button>
@@ -268,22 +273,22 @@ export default function TicketsPage() {
                   <button
                     key={ticket.id}
                     onClick={() => loadTicketDetail(ticket.id)}
-                    className={`w-full text-left p-4 border-b border-mali-blue/10 hover:bg-mali-blue/5 transition-colors ${
-                      selectedTicket?.id === ticket.id ? "bg-mali-blue/10 border-l-4 border-l-mali-blue-accent" : ""
+                    className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-brutal-gray transition-colors ${
+                      selectedTicket?.id === ticket.id ? "bg-brutal-yellow border-l-4 border-l-black" : ""
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <span className="text-xs text-mali-text-secondary">{ticket.ticketNumber}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border ${statusLabels[ticket.status].color}`}>
+                      <span className="text-xs text-gray-600">{ticket.ticketNumber}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full border-[2px] ${statusLabels[ticket.status].color}`}>
                         {statusLabels[ticket.status].label}
                       </span>
                     </div>
-                    <h4 className="text-white font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h4>
+                    <h4 className="text-black font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h4>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-mali-text-secondary">
+                      <span className="text-xs text-gray-600">
                         {categoryLabels[ticket.category]}
                       </span>
-                      <span className="text-xs text-mali-text-secondary">
+                      <span className="text-xs text-gray-600">
                         {new Date(ticket.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -300,29 +305,30 @@ export default function TicketsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden h-full flex flex-col"
+              className="bg-white border-[3px] border-black rounded-xl overflow-hidden h-full flex flex-col"
+              style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               {isDetailLoading ? (
                 <div className="flex-1 flex items-center justify-center p-8">
-                  <Loader2 className="animate-spin text-mali-blue-accent" size={32} />
+                  <Loader2 className="animate-spin text-black" size={32} />
                 </div>
               ) : (
                 <>
                   {/* Ticket Header */}
-                  <div className="p-6 border-b border-mali-blue/20">
+                  <div className="p-6 border-b-[3px] border-black">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <span className="text-sm text-mali-text-secondary">{selectedTicket.ticketNumber}</span>
-                        <h2 className="text-xl font-bold text-white mt-1">{selectedTicket.subject}</h2>
+                        <span className="text-sm text-gray-600">{selectedTicket.ticketNumber}</span>
+                        <h2 className="text-xl font-bold text-black mt-1">{selectedTicket.subject}</h2>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${statusLabels[selectedTicket.status].color}`}>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium border-[2px] ${statusLabels[selectedTicket.status].color}`}>
                           {statusLabels[selectedTicket.status].label}
                         </span>
                         {!["CLOSED", "RESOLVED"].includes(selectedTicket.status) && (
                           <button
                             onClick={handleCloseTicket}
-                            className="p-2 text-mali-text-secondary hover:text-white hover:bg-mali-blue/20 rounded-lg transition-colors"
+                            className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray rounded-lg transition-colors"
                             title="Close Ticket"
                           >
                             <X size={18} />
@@ -330,7 +336,7 @@ export default function TicketsPage() {
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-mali-text-secondary">
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                       <div className="flex items-center">
                         <Tag size={14} className="mr-1.5" />
                         {categoryLabels[selectedTicket.category]}
@@ -342,7 +348,7 @@ export default function TicketsPage() {
                       {selectedTicket.orderId && (
                         <Link
                           href={`/dashboard/orders/${selectedTicket.orderId}`}
-                          className="text-mali-blue-accent hover:underline flex items-center"
+                          className="text-black hover:underline flex items-center font-medium"
                         >
                           <FileText size={14} className="mr-1.5" />
                           Order: {selectedTicket.orderId}
@@ -355,17 +361,17 @@ export default function TicketsPage() {
                   <div className="flex-1 p-6 overflow-y-auto max-h-[500px] space-y-4">
                     {/* Initial Message */}
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-mali-blue/20 flex items-center justify-center flex-shrink-0">
-                        <User size={16} className="text-mali-blue-accent" />
+                      <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center flex-shrink-0">
+                        <User size={16} className="text-black" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-white font-medium text-sm">You</span>
-                          <span className="text-xs text-mali-text-secondary">
+                          <span className="text-black font-medium text-sm">You</span>
+                          <span className="text-xs text-gray-600">
                             {new Date(selectedTicket.createdAt).toLocaleString()}
                           </span>
                         </div>
-                        <div className="bg-mali-blue/10 rounded-lg p-3 text-mali-text-secondary">
+                        <div className="bg-brutal-gray border-[2px] border-black rounded-lg p-3 text-gray-700">
                           {selectedTicket.description}
                         </div>
                       </div>
@@ -375,42 +381,42 @@ export default function TicketsPage() {
                     {selectedTicket.messages.map((message) => (
                       <div key={message.id} className="flex gap-4">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          className={`w-8 h-8 border-[2px] border-black flex items-center justify-center flex-shrink-0 ${
                             message.sender === "admin"
-                              ? "bg-green-500/20"
+                              ? "bg-brutal-green"
                               : message.sender === "system"
-                              ? "bg-gray-500/20"
-                              : "bg-mali-blue/20"
+                              ? "bg-gray-300"
+                              : "bg-brutal-blue"
                           }`}
                         >
                           {message.sender === "admin" ? (
-                            <span className="text-green-400 text-xs font-bold">S</span>
+                            <span className="text-black text-xs font-bold">S</span>
                           ) : message.sender === "system" ? (
-                            <span className="text-gray-400 text-xs">@</span>
+                            <span className="text-black text-xs">@</span>
                           ) : (
-                            <User size={16} className="text-mali-blue-accent" />
+                            <User size={16} className="text-black" />
                           )}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-white font-medium text-sm">
+                            <span className="text-black font-medium text-sm">
                               {message.sender === "admin"
                                 ? message.senderName || "Support Team"
                                 : message.sender === "system"
                                 ? "System"
                                 : "You"}
                             </span>
-                            <span className="text-xs text-mali-text-secondary">
+                            <span className="text-xs text-gray-600">
                               {new Date(message.createdAt).toLocaleString()}
                             </span>
                           </div>
                           <div
-                            className={`rounded-lg p-3 ${
+                            className={`rounded-lg p-3 border-[2px] border-black ${
                               message.sender === "admin"
-                                ? "bg-green-500/10 text-green-100"
+                                ? "bg-brutal-green text-black"
                                 : message.sender === "system"
-                                ? "bg-gray-500/10 text-gray-300"
-                                : "bg-mali-blue/10 text-mali-text-secondary"
+                                ? "bg-gray-200 text-black"
+                                : "bg-brutal-gray text-gray-700"
                             }`}
                           >
                             {message.content}
@@ -422,19 +428,20 @@ export default function TicketsPage() {
 
                   {/* Reply Form */}
                   {!["CLOSED", "RESOLVED"].includes(selectedTicket.status) && (
-                    <div className="p-4 border-t border-mali-blue/20">
+                    <div className="p-4 border-t-[3px] border-black">
                       <form onSubmit={handleSendReply} className="flex gap-3">
                         <input
                           type="text"
                           value={replyMessage}
                           onChange={(e) => setReplyMessage(e.target.value)}
                           placeholder="Type your reply..."
-                          className="flex-1 py-2 px-4 bg-mali-blue/10 border border-mali-blue/30 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:border-mali-blue-accent"
+                          className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                         />
                         <button
                           type="submit"
                           disabled={isSendingReply || !replyMessage.trim()}
-                          className="bg-mali-blue hover:bg-mali-blue/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium flex items-center"
+                          className="bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-lg font-medium flex items-center hover:bg-gray-800 transition-colors"
+                          style={{ boxShadow: '4px 4px 0 0 #000000' }}
                         >
                           {isSendingReply ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -452,10 +459,10 @@ export default function TicketsPage() {
               )}
             </motion.div>
           ) : (
-            <div className="bg-mali-card border border-mali-blue/20 rounded-xl p-12 text-center h-full flex flex-col items-center justify-center">
-              <MessageSquare className="text-mali-text-secondary/30 mb-4" size={64} />
-              <h3 className="text-xl font-bold text-white mb-2">Select a Ticket</h3>
-              <p className="text-mali-text-secondary max-w-sm">
+            <div className="bg-white border-[3px] border-black rounded-xl p-12 text-center h-full flex flex-col items-center justify-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <MessageSquare className="text-gray-300 mb-4" size={64} />
+              <h3 className="text-xl font-bold text-black mb-2">Select a Ticket</h3>
+              <p className="text-gray-600 max-w-sm">
                 Choose a ticket from the list to view details and continue the conversation
               </p>
             </div>
@@ -476,14 +483,18 @@ export default function TicketsPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-mali-card border border-mali-blue/30 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              className="bg-white border-[3px] border-black rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              style={{ boxShadow: '8px 8px 0 0 #000000' }}
             >
-              <div className="p-6 border-b border-mali-blue/20">
+              <div className="p-6 border-b-[3px] border-black">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-white">Create New Ticket</h2>
+                  <div className="flex items-center">
+                    <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+                    <h2 className="text-xl font-bold text-black">Create New Ticket</h2>
+                  </div>
                   <button
                     onClick={() => setShowNewTicketModal(false)}
-                    className="text-mali-text-secondary hover:text-white"
+                    className="text-gray-600 hover:text-black"
                   >
                     <X size={24} />
                   </button>
@@ -492,14 +503,14 @@ export default function TicketsPage() {
 
               <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-mali-text-secondary mb-2">Category</label>
+                  <label className="block text-gray-700 mb-2 font-medium">Category</label>
                   <select
                     value={newTicket.category}
                     onChange={(e) => setNewTicket({ ...newTicket, category: e.target.value as TicketCategory })}
-                    className="w-full py-2.5 px-4 bg-mali-blue/10 border border-mali-blue/30 rounded-lg text-white focus:outline-none focus:border-mali-blue-accent"
+                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black transition-colors"
                   >
                     {Object.entries(categoryLabels).map(([value, label]) => (
-                      <option key={value} value={value} className="bg-mali-card">
+                      <option key={value} value={value}>
                         {label}
                       </option>
                     ))}
@@ -507,37 +518,37 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-mali-text-secondary mb-2">Subject</label>
+                  <label className="block text-gray-700 mb-2 font-medium">Subject</label>
                   <input
                     type="text"
                     value={newTicket.subject}
                     onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
                     placeholder="Brief summary of your issue"
                     required
-                    className="w-full py-2.5 px-4 bg-mali-blue/10 border border-mali-blue/30 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:border-mali-blue-accent"
+                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-mali-text-secondary mb-2">Description</label>
+                  <label className="block text-gray-700 mb-2 font-medium">Description</label>
                   <textarea
                     value={newTicket.description}
                     onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })}
                     placeholder="Please describe your issue in detail..."
                     required
                     rows={5}
-                    className="w-full py-2.5 px-4 bg-mali-blue/10 border border-mali-blue/30 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:border-mali-blue-accent resize-none"
+                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-mali-text-secondary mb-2">Order ID (Optional)</label>
+                  <label className="block text-gray-700 mb-2 font-medium">Order ID (Optional)</label>
                   <input
                     type="text"
                     value={newTicket.orderId || ""}
                     onChange={(e) => setNewTicket({ ...newTicket, orderId: e.target.value || undefined })}
                     placeholder="If this is about a specific order"
-                    className="w-full py-2.5 px-4 bg-mali-blue/10 border border-mali-blue/30 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:border-mali-blue-accent"
+                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
 
@@ -545,14 +556,15 @@ export default function TicketsPage() {
                   <button
                     type="button"
                     onClick={() => setShowNewTicketModal(false)}
-                    className="flex-1 py-2.5 px-4 border border-mali-blue/30 text-mali-text-secondary rounded-lg hover:bg-mali-blue/10 transition-colors"
+                    className="flex-1 py-2.5 px-4 border-[3px] border-black text-black rounded-lg hover:bg-brutal-gray transition-colors font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting || !newTicket.subject.trim() || !newTicket.description.trim()}
-                    className="flex-1 py-2.5 px-4 bg-mali-blue hover:bg-mali-blue/90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium"
+                    className="flex-1 py-2.5 px-4 bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                    style={{ boxShadow: '4px 4px 0 0 #000000' }}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">

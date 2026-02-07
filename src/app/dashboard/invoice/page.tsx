@@ -103,8 +103,8 @@ export default function InvoicePage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
+          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -116,26 +116,26 @@ export default function InvoicePage() {
       case "completed":
       case "paid":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font">
             <CheckCircle className="w-3 h-3 mr-1" /> ชำระแล้ว
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-yellow-900/30 text-yellow-400 border border-yellow-400/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font">
             <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
           </span>
         );
       case "cancelled":
       case "refunded":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font">
             <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-mali-blue/20 text-mali-text-secondary border border-mali-blue/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font">
             {status}
           </span>
         );
@@ -147,13 +147,14 @@ export default function InvoicePage() {
       {/* Page Header */}
       <div className="relative mb-6">
         <motion.h2
-          className="text-xl font-bold text-white mb-1 relative thai-font"
+          className="text-xl font-bold text-black mb-1 relative flex items-center thai-font"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
+          <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
           ใบแจ้งหนี้ของฉัน
         </motion.h2>
-        <p className="text-mali-text-secondary text-sm relative thai-font">
+        <p className="text-gray-600 text-sm relative thai-font">
           ดูและดาวน์โหลดใบแจ้งหนี้การทำธุรกรรมของคุณ
         </p>
       </div>
@@ -165,71 +166,72 @@ export default function InvoicePage() {
             placeholder="ค้นหาใบแจ้งหนี้หรือรหัสคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-full bg-mali-blue/10 px-4 py-2 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent pl-10 transition-all thai-font"
+            className="w-full rounded-lg bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-black focus:outline-none focus:border-black pl-10 transition-all thai-font"
           />
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
 
         <div className="relative w-full sm:w-auto ml-auto">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="appearance-none w-full rounded-full bg-mali-blue/10 px-4 py-2 pr-10 text-sm text-white border border-mali-blue/20 focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-all cursor-pointer thai-font"
+            className="appearance-none w-full rounded-lg bg-white border-[2px] border-gray-300 px-4 py-2 pr-10 text-sm text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
           >
             <option value="all">ใบแจ้งหนี้ทั้งหมด</option>
             <option value="completed">ชำระแล้ว</option>
             <option value="pending">รอดำเนินการ</option>
             <option value="cancelled">ยกเลิกแล้ว</option>
           </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary pointer-events-none" />
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
         </div>
       </div>
 
       <motion.div
-        className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
+        className="bg-white border-[3px] border-black overflow-hidden"
+        style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-8 h-8 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-mali-blue/10 border-b border-mali-blue/20">
+              <thead className="bg-gray-100 border-b-[3px] border-black">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">รหัสใบแจ้งหนี้</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">วันที่</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">รหัสคำสั่งซื้อ</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">จำนวนเงิน</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap thai-font">สถานะ</th>
-                  <th className="px-6 py-4 text-sm font-medium text-mali-text-secondary whitespace-nowrap text-right thai-font">การกระทำ</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">รหัสใบแจ้งหนี้</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">วันที่</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">รหัสคำสั่งซื้อ</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">จำนวนเงิน</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">สถานะ</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap text-right thai-font">การกระทำ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-mali-blue/10">
+              <tbody className="divide-y divide-gray-200">
                 {filteredInvoices.length > 0 ? (
                   filteredInvoices.map((invoice, index) => (
                     <motion.tr
                       key={invoice.id}
-                      className="hover:bg-mali-blue/5 transition-colors group"
+                      className="hover:bg-gray-50 transition-colors group"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
                     >
-                      <td className="px-6 py-4 text-sm font-medium text-white group-hover:text-mali-blue-accent transition-colors">
+                      <td className="px-6 py-4 text-sm font-bold text-black group-hover:text-brutal-blue transition-colors">
                         <div className="flex items-center gap-2">
-                          <FileText size={16} className="text-mali-blue-light" />
+                          <FileText size={16} className="text-gray-600" />
                           {invoice.invoiceNumber}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-mali-text-secondary">
+                      <td className="px-6 py-4 text-sm text-gray-600">
                         {formatDate(invoice.issuedAt)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-white font-mono text-xs bg-mali-blue/5 py-1 px-2 rounded w-fit">
+                      <td className="px-6 py-4 text-sm text-black font-mono text-xs bg-gray-100 py-1 px-2 border-[2px] border-black w-fit">
                         {invoice.orderNumber}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-white">
+                      <td className="px-6 py-4 text-sm font-bold text-black">
                         {formatCurrency(invoice.totalAmount)}
                       </td>
                       <td className="px-6 py-4">
@@ -239,14 +241,14 @@ export default function InvoicePage() {
                         <div className="flex items-center justify-end gap-2">
                           <Link href={`/dashboard/invoice/${invoice.id}`}>
                             <button
-                              className="p-2 rounded-lg bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-accent transition-all hover:scale-105"
+                              className="p-2 border-[2px] border-black bg-brutal-blue hover:bg-brutal-blue/80 text-black transition-all"
                               title="ดูใบแจ้งหนี้"
                             >
                               <Eye size={16} />
                             </button>
                           </Link>
                           <button
-                            className="p-2 rounded-lg bg-mali-blue/10 hover:bg-mali-blue/20 text-mali-blue-light transition-all hover:scale-105"
+                            className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 text-black transition-all"
                             title="ดาวน์โหลด PDF"
                           >
                             <Download size={16} />
@@ -258,11 +260,11 @@ export default function InvoicePage() {
                 ) : (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
-                      <div className="w-16 h-16 bg-mali-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FileText size={32} className="text-mali-text-secondary opacity-50" />
+                      <div className="w-16 h-16 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-4">
+                        <FileText size={32} className="text-gray-400" />
                       </div>
-                      <p className="text-white text-lg font-medium mb-1 thai-font">ไม่พบใบแจ้งหนี้</p>
-                      <p className="text-sm text-mali-text-secondary max-w-md mx-auto thai-font">
+                      <p className="text-black text-lg font-bold mb-1 thai-font">ไม่พบใบแจ้งหนี้</p>
+                      <p className="text-sm text-gray-600 max-w-md mx-auto thai-font">
                         {searchTerm ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"` : "คุณยังไม่มีใบแจ้งหนี้ใดๆ"}
                       </p>
                     </td>

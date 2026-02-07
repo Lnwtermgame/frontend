@@ -49,17 +49,17 @@ const NavItem = memo(function NavItem({
     <Link
       href={href}
       className={cn(
-        "group flex items-center gap-3 px-3 py-2.5 rounded-md transition-all relative overflow-hidden",
+        "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all relative overflow-hidden",
         isActive
-          ? "bg-mali-blue/30 text-white font-medium"
-          : "hover:bg-mali-blue/20 text-mali-text-secondary hover:text-white"
+          ? "bg-brutal-yellow text-black font-bold border-[3px] border-black"
+          : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
       )}
       prefetch={false}
     >
       {isActive && (
         <motion.div
           layoutId="active-nav-indicator"
-          className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-mali-blue-light to-mali-purple"
+          className="absolute left-0 top-0 bottom-0 w-1 bg-black"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -68,17 +68,16 @@ const NavItem = memo(function NavItem({
       )}
       <span className={cn(
         "flex items-center justify-center text-inherit relative z-10",
-        isActive ? "text-white" : "text-mali-text-secondary group-hover:text-white"
+        isActive ? "text-black" : "text-gray-500 group-hover:text-gray-900"
       )}>
         {icon}
       </span>
       <span className="text-sm font-medium relative z-10">{label}</span>
 
       {isActive && (
-        <motion.div
-          className="absolute inset-0 bg-white/5 opacity-0"
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ boxShadow: '3px 3px 0 0 #000000' }}
         />
       )}
     </Link>
@@ -102,21 +101,25 @@ const MobileNavItem = memo(function MobileNavItem({
     <Link
       href={href}
       className={cn(
-        "flex items-center justify-center flex-col gap-1 py-2 w-full",
+        "flex items-center justify-center flex-col gap-1 py-2 w-full transition-all",
         isActive
-          ? "text-white"
-          : "text-mali-text-secondary"
+          ? "text-brutal-pink"
+          : "text-gray-500"
       )}
       onClick={onClick}
       prefetch={false}
     >
       <div className={cn(
-        "flex items-center justify-center w-10 h-10 rounded-full",
-        isActive ? "bg-mali-blue-accent/20" : "transparent"
-      )}>
+        "flex items-center justify-center w-10 h-10 rounded-lg transition-all",
+        isActive
+          ? "bg-brutal-yellow border-[3px] border-black"
+          : "transparent"
+      )}
+        style={isActive ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+      >
         <span className={cn(
           "flex items-center justify-center",
-          isActive ? "text-mali-blue-accent" : "text-mali-text-secondary"
+          isActive ? "text-black" : "text-gray-500"
         )}>
           {icon}
         </span>
@@ -172,10 +175,8 @@ export function MainLayout({ children }: MainLayoutProps) {
   const mainNavItems = useMemo(() => [
     { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
     { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
-
     { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
     { href: "/dashboard/favorite", label: "รายการโปรด", icon: <Heart size={20} /> },
-
     { href: "/support", label: "ช่วยเหลือ", icon: <MessageCircle size={20} /> },
   ], []);
 
@@ -189,36 +190,32 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   const accountMenuItems = useMemo(() => [
     { href: "/dashboard/account", label: "บัญชีของฉัน", icon: <User size={18} /> },
-
     { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <Gamepad2 size={18} /> },
     { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
-
     { href: "/dashboard/invoice", label: "ใบแจ้งหนี้", icon: <FileText size={18} /> },
-
     { href: "/dashboard/credits", label: "เครดิต", icon: <Coins size={18} /> },
     { href: "/dashboard/coupons", label: "คูปอง", icon: <Ticket size={18} /> },
     { href: "/dashboard/favorite", label: "รายการโปรด", icon: <Heart size={18} /> },
-
-
     { href: "/dashboard/notifications", label: "การแจ้งเตือน", icon: <Bell size={18} /> },
   ], []);
 
   return (
-    <div className="flex min-h-screen bg-mali-dark thai-font">
+    <div className="flex min-h-screen bg-brutal-gray thai-font">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-64 bg-mali-sidebar z-30 hidden lg:flex flex-col border-r border-mali-blue/20">
+      <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white z-30 hidden lg:flex flex-col border-r-[3px] border-black">
         {/* Logo */}
-        <div className="p-6">
+        <div className="p-6 border-b-[3px] border-black">
           <Link href="/">
-            <div className="font-bold text-xl flex items-center">
-              <span className="text-mali-blue-light">Mali</span>
-              <span className="text-white">GamePass</span>
+            <div className="font-bold text-2xl flex items-center">
+              <span className="text-brutal-pink">Mali</span>
+              <span className="text-black">Game</span>
+              <span className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[2px] border-black rounded">Pass</span>
             </div>
           </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 pt-2 px-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 pt-4 px-3 space-y-1 overflow-y-auto">
           {mainNavItems.map((item) => {
             const isActive = pathname === item.href ||
               (item.href !== '/' && pathname.startsWith(item.href));
@@ -235,11 +232,35 @@ export function MainLayout({ children }: MainLayoutProps) {
           })}
         </nav>
 
-
+        {/* Promo Card in Sidebar */}
+        <div className="p-4">
+          <div className="bg-brutal-blue border-[3px] border-black rounded-lg p-4 relative overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          >
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap size={16} className="text-black" />
+                <span className="font-bold text-black text-sm">สมาชิกใหม่!</span>
+              </div>
+              <p className="text-black/80 text-xs mb-3">
+                รับส่วนลด 10% สำหรับการซื้อครั้งแรก
+              </p>
+              <motion.button
+                className="w-full bg-black text-white px-3 py-2 rounded-md text-xs font-bold"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                รับเลย
+              </motion.button>
+            </div>
+          </div>
+        </div>
       </aside>
 
       {/* Mobile navbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-mali-sidebar border-t border-mali-blue/20 lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[3px] border-black lg:hidden"
+        style={{ boxShadow: '0 -4px 0 0 rgba(0,0,0,0.1)' }}
+      >
         <div className="flex justify-around items-center">
           {mobileNavItems.map((item) => {
             const isActive = pathname === item.href ||
@@ -261,20 +282,23 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
         {/* Header */}
-        <header className="sticky top-0 z-20 bg-mali-sidebar border-b border-mali-blue/20">
+        <header className="sticky top-0 z-20 bg-white border-b-[3px] border-black"
+          style={{ boxShadow: '0 4px 0 0 rgba(0,0,0,0.05)' }}
+        >
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
             {/* Mobile Logo and Menu */}
             <div className="flex items-center space-x-4 lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-mali-text-secondary focus:outline-none"
+                className="text-gray-700 focus:outline-none"
               >
                 <Menu size={24} />
               </button>
               <Link href="/">
-                <div className="font-bold text-lg flex items-center">
-                  <span className="text-mali-blue-light">Mali</span>
-                  <span className="text-white">GamePass</span>
+                <div className="font-bold text-xl flex items-center">
+                  <span className="text-brutal-pink">Mali</span>
+                  <span className="text-black">Game</span>
+                  <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black rounded text-sm">Pass</span>
                 </div>
               </Link>
             </div>
@@ -288,16 +312,18 @@ export function MainLayout({ children }: MainLayoutProps) {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {/* Notification Dropdown */}
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-mali-text-secondary hover:text-white hover:bg-white/5 transition-all relative"
+                  className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all relative border-[2px] border-transparent hover:border-black"
+                  style={{ boxShadow: 'none' }}
                 >
                   <Bell size={20} />
                   {unreadCount > 0 && (
-                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-mali-red rounded-full ring-2 ring-mali-sidebar flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-brutal-pink text-white text-[10px] font-bold rounded-full border-[2px] border-black flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
                 </button>
@@ -309,14 +335,15 @@ export function MainLayout({ children }: MainLayoutProps) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-80 rounded-xl shadow-lg bg-mali-card border border-mali-blue/30 overflow-hidden z-50 origin-top-right"
+                      className="absolute right-0 mt-2 w-80 rounded-xl bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
                     >
-                      <div className="p-3 border-b border-mali-blue/20 flex justify-between items-center bg-mali-blue/5">
-                        <h3 className="text-white font-medium text-sm">การแจ้งเตือน</h3>
+                      <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
+                        <h3 className="text-gray-900 font-bold text-sm">การแจ้งเตือน</h3>
                         {unreadCount > 0 && (
                           <button
                             onClick={markAllAsRead}
-                            className="text-xs text-mali-blue-accent hover:text-mali-blue-light transition-colors"
+                            className="text-xs text-brutal-pink hover:text-brutal-pink/80 font-semibold transition-colors"
                           >
                             อ่านทั้งหมด
                           </button>
@@ -329,47 +356,47 @@ export function MainLayout({ children }: MainLayoutProps) {
                             <div
                               key={notification.id}
                               className={cn(
-                                "p-3 border-b border-mali-blue/10 hover:bg-mali-blue/10 transition-colors flex gap-3 cursor-pointer",
-                                !notification.read && "bg-mali-blue/5"
+                                "p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer",
+                                !notification.read && "bg-brutal-yellow/10"
                               )}
                               onClick={() => markAsRead(notification.id)}
                             >
                               <div className={cn(
-                                "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1",
-                                notification.type === 'success' ? "bg-green-500/20 text-green-400" :
-                                  notification.type === 'error' ? "bg-red-500/20 text-red-400" :
-                                    notification.type === 'warning' ? "bg-yellow-500/20 text-yellow-400" :
-                                      "bg-blue-500/20 text-blue-400"
+                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
+                                notification.type === 'success' ? "bg-brutal-green text-black" :
+                                  notification.type === 'error' ? "bg-brutal-pink text-white" :
+                                    notification.type === 'warning' ? "bg-brutal-yellow text-black" :
+                                      "bg-brutal-blue text-black"
                               )}>
                                 {notification.type === 'success' ? <Zap size={14} /> :
                                   notification.type === 'error' ? <LogOut size={14} /> :
                                     <Bell size={14} />}
                               </div>
                               <div className="flex-1">
-                                <p className={cn("text-sm mb-1", !notification.read ? "text-white font-medium" : "text-mali-text-secondary")}>
+                                <p className={cn("text-sm mb-1", !notification.read ? "text-gray-900 font-semibold" : "text-gray-600")}>
                                   {notification.title}
                                 </p>
-                                <p className="text-xs text-mali-text-secondary line-clamp-2">
+                                <p className="text-xs text-gray-500 line-clamp-2">
                                   {notification.message}
                                 </p>
-                                <p className="text-[10px] text-mali-text-secondary/60 mt-1">
+                                <p className="text-[10px] text-gray-400 mt-1">
                                   {new Date(notification.createdAt).toLocaleTimeString()}
                                 </p>
                               </div>
                               {!notification.read && (
-                                <div className="w-2 h-2 rounded-full bg-mali-blue-accent mt-2 shrink-0" />
+                                <div className="w-2 h-2 rounded-full bg-brutal-pink mt-2 shrink-0" />
                               )}
                             </div>
                           ))
                         ) : (
-                          <div className="p-8 text-center text-mali-text-secondary flex flex-col items-center">
-                            <Bell size={24} className="mb-2 opacity-20" />
+                          <div className="p-8 text-center text-gray-500 flex flex-col items-center">
+                            <Bell size={24} className="mb-2 opacity-30" />
                             <p className="text-sm">ไม่มีการแจ้งเตือนใหม่</p>
                           </div>
                         )}
                       </div>
 
-                      <Link href="/notifications" className="block p-2 text-center text-xs text-mali-blue-accent hover:bg-mali-blue/10 border-t border-mali-blue/20 transition-colors">
+                      <Link href="/notifications" className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors">
                         ดูทั้งหมด
                       </Link>
                     </motion.div>
@@ -378,15 +405,15 @@ export function MainLayout({ children }: MainLayoutProps) {
               </div>
 
               {/* Divider */}
-              <div className="h-8 w-[1px] bg-mali-blue/20 mx-1"></div>
+              <div className="h-8 w-[2px] bg-gray-200 mx-1"></div>
 
               {isAuthenticated ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={toggleUserMenu}
-                    className="flex items-center md:space-x-3 text-white pl-1 pr-2 py-1 rounded-full hover:bg-white/5 transition-all"
+                    className="flex items-center md:space-x-3 text-gray-900 pl-1 pr-2 py-1 rounded-lg hover:bg-gray-100 transition-all border-[2px] border-transparent hover:border-black"
                   >
-                    <div className="w-9 h-9 rounded-full bg-mali-blue flex items-center justify-center overflow-hidden border-2 border-mali-blue-light/30 shadow-sm">
+                    <div className="w-9 h-9 rounded-lg bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black">
                       <img
                         src={user?.avatar || "https://placehold.co/200x200?text=User"}
                         alt={`${user?.username} avatar`}
@@ -394,10 +421,10 @@ export function MainLayout({ children }: MainLayoutProps) {
                       />
                     </div>
                     <div className="hidden md:flex flex-col items-start">
-                      <span className="text-sm font-medium w-[100px] truncate text-left leading-tight">{user?.username}</span>
-                      <span className="text-[10px] text-mali-text-secondary">Member</span>
+                      <span className="text-sm font-bold w-[100px] truncate text-left leading-tight">{user?.username}</span>
+                      <span className="text-[10px] text-gray-500">Member</span>
                     </div>
-                    <ChevronDown size={14} className="text-mali-text-secondary ml-1" />
+                    <ChevronDown size={14} className="text-gray-500 ml-1" />
                   </button>
 
                   <AnimatePresence>
@@ -407,46 +434,51 @@ export function MainLayout({ children }: MainLayoutProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-64 rounded-xl shadow-xl bg-mali-card border border-mali-blue/30 overflow-hidden z-50 origin-top-right"
+                        className="absolute right-0 mt-2 w-64 rounded-xl bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                        style={{ boxShadow: '4px 4px 0 0 #000000' }}
                       >
-                        <div className="p-4 border-b border-mali-blue/20 bg-gradient-to-br from-mali-blue/10 to-transparent">
+                        <div className="p-4 border-b-[2px] border-black bg-gray-50">
                           <div className="flex items-center space-x-3 mb-3">
-                            <div className="w-12 h-12 rounded-full border-2 border-mali-blue-light/50 overflow-hidden">
+                            <div className="w-12 h-12 rounded-lg border-[3px] border-black overflow-hidden bg-brutal-yellow">
                               <img src={user?.avatar || "https://placehold.co/200x200?text=User"} alt="" className="w-full h-full object-cover" />
                             </div>
                             <div>
-                              <p className="text-white font-medium">{user?.username}</p>
-                              <p className="text-mali-text-secondary text-xs">{user?.email}</p>
+                              <p className="text-gray-900 font-bold">{user?.username}</p>
+                              <p className="text-gray-500 text-xs">{user?.email}</p>
                             </div>
                           </div>
 
                           {user?.isPremium && (
-                            <div className="mb-3 bg-gradient-to-r from-yellow-600/20 to-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs px-2 py-1 rounded flex items-center">
-                              <Star size={12} className="mr-1 fill-yellow-400" /> สมาชิกพรีเมียม
+                            <div className="mb-3 bg-brutal-yellow border-[2px] border-black text-black text-xs px-2 py-1 rounded flex items-center font-bold"
+                              style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                            >
+                              <Star size={12} className="mr-1 fill-black" /> สมาชิกพรีเมียม
                             </div>
                           )}
 
-                          <div className="flex justify-between items-center bg-mali-dark/50 p-2 rounded-lg border border-mali-blue/20">
-                            <span className="text-mali-text-secondary text-xs">คะแนนสะสม</span>
-                            <span className="text-mali-blue-accent font-bold font-mono">{user?.credits?.toLocaleString()}</span>
+                          <div className="flex justify-between items-center bg-white p-2 rounded-lg border-[2px] border-black"
+                            style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                          >
+                            <span className="text-gray-600 text-xs">คะแนนสะสม</span>
+                            <span className="text-black font-bold font-mono">{user?.credits?.toLocaleString()}</span>
                           </div>
                         </div>
 
                         <div className="p-2">
                           {accountMenuItems.slice(0, 4).map((item) => (
                             <Link key={item.href} href={item.href}>
-                              <div className="px-3 py-2.5 rounded-lg text-sm text-mali-text-secondary hover:bg-mali-blue/20 hover:text-white flex items-center space-x-3 transition-colors">
+                              <div className="px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3 transition-colors font-medium">
                                 <span className="opacity-70">{item.icon}</span>
                                 <span>{item.label}</span>
                               </div>
                             </Link>
                           ))}
 
-                          <div className="my-1 border-t border-mali-blue/10"></div>
+                          <div className="my-1 border-t border-gray-100"></div>
 
                           <button
                             onClick={handleLogout}
-                            className="w-full px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center space-x-3 transition-colors"
+                            className="w-full px-3 py-2.5 rounded-lg text-sm text-brutal-pink hover:bg-brutal-pink/10 flex items-center space-x-3 transition-colors font-medium"
                           >
                             <LogOut size={18} className="opacity-70" />
                             <span>ออกจากระบบ</span>
@@ -459,7 +491,8 @@ export function MainLayout({ children }: MainLayoutProps) {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center space-x-1 text-white bg-button-gradient px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 transition-all shadow-button-glow"
+                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-4 py-2 rounded-lg text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <User size={16} />
                   <span>เข้าสู่ระบบ</span>

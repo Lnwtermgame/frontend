@@ -23,10 +23,6 @@ import {
   Check,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import {
-  GameRelatedProducts,
-  RelatedProduct,
-} from "@/components/GameRelatedProducts";
 import ProductDescription from "@/components/products/ProductDescription";
 import {
   productApi,
@@ -150,6 +146,8 @@ export default function GameDetailsPage() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
+  const [similarGames, setSimilarGames] = useState<Product[]>([]);
+  const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
 
   // Handle share/copy link
   const handleCopyLink = async () => {
@@ -259,6 +257,51 @@ export default function GameDetailsPage() {
           );
         }
 
+        // Fetch similar games (other DIRECT_TOPUP products)
+        try {
+          const similarResponse = await productApi.getProducts({
+            productType: "DIRECT_TOPUP",
+            isActive: true,
+            limit: 6,
+          });
+          if (similarResponse.success) {
+            // Filter out current product and limit to 5
+            const filtered = similarResponse.data.filter(p => p.id !== productData.id);
+            setSimilarGames(filtered.slice(0, 5));
+          }
+        } catch {
+          // Ignore errors for similar games
+        }
+
+        // Fetch related games by same developer/publisher
+        try {
+          const currentGameDetails = productData.gameDetails;
+          const currentDev = currentGameDetails?.developer;
+          const currentPub = currentGameDetails?.publisher;
+
+          if (currentDev || currentPub) {
+            const allGamesResponse = await productApi.getProducts({
+              productType: "DIRECT_TOPUP",
+              isActive: true,
+              limit: 50,
+            });
+
+            if (allGamesResponse.success) {
+              // Filter games with same developer or publisher
+              const related = allGamesResponse.data.filter(p => {
+                if (p.id === productData.id) return false;
+                const pDetails = p.gameDetails;
+                const sameDev = currentDev && pDetails?.developer === currentDev;
+                const samePub = currentPub && pDetails?.publisher === currentPub;
+                return sameDev || samePub;
+              });
+              setRelatedGamesByDev(related.slice(0, 4));
+            }
+          }
+        } catch {
+          // Ignore errors for related games
+        }
+
         // Check if product is in favorites (only for logged in users)
         try {
           const isFav = await productApi.checkIsFavorite(productData.id);
@@ -315,57 +358,6 @@ export default function GameDetailsPage() {
       </div>
     );
   }
-
-  // Mock related products for cross-selling
-  const relatedProducts: RelatedProduct[] = [
-    {
-      id: "special-bundle-1",
-      title: `${game?.title} Special Bundle`,
-      image: "https://placehold.co/400x300/1a1c42/ffffff?text=Special+Bundle",
-      price: 19.99,
-      originalPrice: 24.99,
-      type: "bundle",
-      discount: "20% OFF",
-      tag: "POPULAR",
-      tagColor: "blue",
-    },
-    {
-      id: "starter-pack",
-      title: "Starter Pack",
-      image: "https://placehold.co/400x300/1a1c42/ffffff?text=Starter+Pack",
-      price: 4.99,
-      type: "addon",
-      tag: "NEW",
-      tagColor: "green",
-    },
-    {
-      id: "monthly-subscription",
-      title: "Monthly Premium",
-      image: "https://placehold.co/400x300/1a1c42/ffffff?text=Monthly+Sub",
-      price: 9.99,
-      type: "subscription",
-      tag: "BEST VALUE",
-      tagColor: "purple",
-    },
-    {
-      id: "bonus-credits",
-      title: "5000 Bonus Credits",
-      image: "https://placehold.co/400x300/1a1c42/ffffff?text=Bonus+Credits",
-      price: 14.99,
-      originalPrice: 19.99,
-      type: "addon",
-      discount: "25% OFF",
-    },
-    {
-      id: "exclusive-skin",
-      title: "Exclusive Character Skin",
-      image: "https://placehold.co/400x300/1a1c42/ffffff?text=Exclusive+Skin",
-      price: 12.99,
-      type: "addon",
-      tag: "LIMITED",
-      tagColor: "pink",
-    },
-  ];
 
   return (
     <div className="page-container">
@@ -677,34 +669,38 @@ export default function GameDetailsPage() {
             </div>
           </div>
 
-          {/* Related Games */}
+          {/* Related Games - Same Developer/Publisher */}
           <div className="mb-8">
             <h2 className="text-xl font-bold text-white mb-4">เกมที่เกี่ยวข้อง</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {game.relatedGames.length > 0 ? (
-                game.relatedGames.map((relatedSlug: string) => (
-                  <Link href={`/games/${relatedSlug}`} key={relatedSlug}>
+              {relatedGamesByDev.length > 0 ? (
+                relatedGamesByDev.map((relatedGame) => (
+                  <Link href={`/games/${relatedGame.slug}`} key={relatedGame.id}>
                     <motion.div
-                      className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden group"
+                      className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden group cursor-pointer"
                       whileHover={{
                         y: -5,
-                        boxShadow:
-                          "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
                       }}
                     >
-                      <div className="relative aspect-square bg-mali-blue/10">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                      <div className="relative aspect-square bg-mali-blue/10 overflow-hidden">
+                        <img
+                          src={relatedGame.imageUrl || `https://placehold.co/300x300?text=${encodeURIComponent(relatedGame.name)}`}
+                          alt={relatedGame.name}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                         <div className="absolute bottom-2 left-2 right-2">
                           <h3 className="text-sm font-bold text-white line-clamp-1">
-                            {relatedSlug}
+                            {relatedGame.name}
                           </h3>
                           <div className="flex items-center mt-1">
-                            <Star size={12} className="text-yellow-400" />
+                            <Star size={12} className="text-yellow-400 fill-yellow-400" />
                             <span className="ml-1 text-xs text-yellow-400">
-                              4.5
+                              {relatedGame.averageRating?.toFixed(1) || "4.5"}
                             </span>
                             <span className="ml-2 text-xs bg-mali-blue/30 text-mali-blue-accent px-1.5 py-0.5 rounded">
-                              เกม
+                              {relatedGame.gameDetails?.developer || "เกม"}
                             </span>
                           </div>
                         </div>
@@ -872,48 +868,50 @@ export default function GameDetailsPage() {
         </div>
       </div>
 
-      {/* Cross-selling section */}
-      <section className="mb-10 mt-16">
-        <GameRelatedProducts
-          title="ไอเทมแนะนำ"
-          subtitle="ไอเทมเสริมที่เหมาะกับเกมนี้"
-          products={relatedProducts}
-          type="cross-sell"
-          viewAllUrl={`/games/${gameId}/items`}
-          viewAllText="ดูไอเทมทั้งหมด"
-        />
-      </section>
-
-      {/* Related Games section - modify the existing code */}
+      {/* Related Games section - show actual similar games */}
       <section className="mb-10">
         <h2 className="text-xl font-bold text-white mb-4">เกมที่คล้ายกัน</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {game.relatedGames.length > 0 ? (
-            game.relatedGames.map((relatedSlug: string) => (
-              <Link href={`/games/${relatedSlug}`} key={relatedSlug}>
-                <div className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden hover:border-mali-blue/50 transition-colors">
-                  <div className="aspect-square relative bg-mali-blue/10">
-                    <div className="absolute inset-0 flex items-center justify-center text-mali-text-secondary text-xs">
-                      {relatedSlug}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {similarGames.length > 0 ? (
+            similarGames.map((similarGame) => (
+              <Link href={`/games/${similarGame.slug}`} key={similarGame.id}>
+                <motion.div
+                  className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden group cursor-pointer"
+                  whileHover={{
+                    y: -5,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  <div className="aspect-square relative bg-mali-blue/10 overflow-hidden">
+                    <img
+                      src={similarGame.imageUrl || `https://placehold.co/300x300?text=${encodeURIComponent(similarGame.name)}`}
+                      alt={similarGame.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <span className="text-xs bg-mali-blue/50 text-white px-2 py-0.5 rounded">
+                        {similarGame.category?.name || "เกม"}
+                      </span>
                     </div>
                   </div>
                   <div className="p-3">
                     <h3 className="font-medium text-white text-sm mb-1 truncate">
-                      {relatedSlug}
+                      {similarGame.name}
                     </h3>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
                         <span className="text-mali-text-secondary text-xs ml-1">
-                          4.5
+                          {similarGame.averageRating?.toFixed(1) || "4.5"}
                         </span>
                       </div>
-                      <span className="text-xs text-mali-text-secondary">
-                        เกม
+                      <span className="text-xs text-mali-green font-medium">
+                        ฿{similarGame.price.toFixed(0)}
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </Link>
             ))
           ) : (

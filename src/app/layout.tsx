@@ -13,7 +13,6 @@ import { PromotionProvider } from "@/lib/context/promotion-context";
 import { CartProvider } from "@/lib/context/cart-context";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { LiveChat } from "@/components/support/LiveChat";
 
 // Import Noto Sans Thai for Thai language support
 import '@fontsource/noto-sans-thai/300.css';
@@ -65,7 +64,6 @@ export default function RootLayout({
                     <CartProvider>
                       <MainLayout>{children}</MainLayout>
                     </CartProvider>
-                      <LiveChat />
                       <Toaster
                         position="bottom-right"
                         containerStyle={{

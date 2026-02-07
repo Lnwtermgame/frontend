@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift, Loader2, AlertCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
-import { productApi, Product, ProductVariant } from "@/lib/services/product-api";
+import { productApi, Product } from "@/lib/services/product-api";
 
 // Card details interface matching the UI expectations
 interface CardDetails {
@@ -33,11 +33,11 @@ interface Denomination {
 
 // Helper function to transform Product to CardDetails
 function transformProductToCardDetails(product: Product): CardDetails {
-  // Map variants to denominations
-  const denominations: Denomination[] = product.variants?.map((variant: ProductVariant) => ({
-    id: variant.id,
-    value: variant.name,
-    price: variant.price || product.price,
+  // Map seagmTypes to denominations (API returns seagmTypes, not variants)
+  const denominations: Denomination[] = product.seagmTypes?.map((type) => ({
+    id: type.id,
+    value: type.name,
+    price: type.unitPrice,
   })) || [{
     id: product.id,
     value: product.name,
@@ -116,16 +116,17 @@ export default function CardDetailPage() {
         const cardData = transformProductToCardDetails(productData);
         setCard(cardData);
 
-        // Fetch related products (other cards in same category)
+        // Fetch related CARD products only (not DIRECT_TOPUP games)
         try {
           const relatedResponse = await productApi.getProducts({
             categoryId: productData.categoryId,
+            productType: "CARD",
             isActive: true,
-            limit: 5,
+            limit: 6,
           });
           if (relatedResponse.success) {
-            // Filter out current product
-            const filtered = relatedResponse.data.filter(p => p.id !== productData.id);
+            // Filter out current product and limit to 5
+            const filtered = relatedResponse.data.filter(p => p.id !== productData.id && p.productType === "CARD");
             setRelatedCards(filtered.slice(0, 5));
           }
         } catch {

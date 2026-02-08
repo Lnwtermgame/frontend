@@ -185,7 +185,7 @@ export default function HomePage() {
       </div>
 
       {/* Hero Section with Promotions */}
-      <section className="relative w-full rounded-xl overflow-hidden mb-8 border-[3px] border-black"
+      <section className="relative w-full overflow-hidden mb-8 border-[3px] border-black"
         style={{ boxShadow: '6px 6px 0 0 #000000' }}
       >
         <div className="relative aspect-[21/9] w-full overflow-hidden">
@@ -217,7 +217,7 @@ export default function HomePage() {
                 <p className="text-white/90 mb-4 text-sm md:text-base">{slide.subtitle}</p>
                 <Link href="/games">
                   <motion.button
-                    className={`px-6 py-3 rounded-lg font-bold border-[3px] border-black text-black transition-all ${
+                    className={`px-6 py-3 font-bold border-[3px] border-black text-black transition-all ${
                       slide.color === 'pink' ? 'bg-brutal-pink text-white' : 'bg-brutal-yellow text-black'
                     }`}
                     whileHover={{ scale: 1.05, x: -2, y: -2 }}
@@ -254,11 +254,11 @@ export default function HomePage() {
       {/* Featured Promotion Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {/* AI Game Assistant */}
-        <div className="col-span-1 md:col-span-2 bg-brutal-blue border-[3px] border-black rounded-xl p-6 relative overflow-hidden group"
+        <div className="col-span-1 md:col-span-2 bg-brutal-blue border-[3px] border-black p-6 relative overflow-hidden group"
           style={{ boxShadow: '6px 6px 0 0 #000000' }}
         >
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-1 text-black text-xs mb-2 bg-brutal-yellow px-3 py-1 rounded-md font-bold border-[2px] border-black"
+            <div className="inline-flex items-center gap-1 text-black text-xs mb-2 bg-brutal-yellow px-3 py-1 font-bold border-[2px] border-black"
               style={{ boxShadow: '2px 2px 0 0 #000000' }}
             >
               <Sparkles size={12} />
@@ -269,7 +269,7 @@ export default function HomePage() {
               ช่วยให้คุณจัดการเกมได้ง่ายขึ้น พร้อมให้คำแนะนำทุกเกมที่คุณต้องการ
             </p>
             <motion.button
-              className="bg-black text-white px-5 py-2.5 rounded-lg text-sm font-bold border-[3px] border-black hover:bg-gray-800 transition-colors"
+              className="bg-black text-white px-5 py-2.5 text-sm font-bold border-[3px] border-black hover:bg-gray-800 transition-colors"
               style={{ boxShadow: '3px 3px 0 0 #000000' }}
               whileHover={{ scale: 1.02, x: -2, y: -2 }}
               whileTap={{ scale: 0.98 }}
@@ -284,11 +284,11 @@ export default function HomePage() {
         </div>
 
         {/* Game Promotion */}
-        <div className="bg-brutal-pink border-[3px] border-black rounded-xl p-6 relative overflow-hidden"
+        <div className="bg-brutal-pink border-[3px] border-black p-6 relative overflow-hidden"
           style={{ boxShadow: '6px 6px 0 0 #000000' }}
         >
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 rounded-md font-bold border-[2px] border-black mb-2"
+            <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 font-bold border-[2px] border-black mb-2"
               style={{ boxShadow: '2px 2px 0 0 #000000' }}
             >
               <Zap size={12} />
@@ -299,7 +299,7 @@ export default function HomePage() {
               เฉพาะวันที่ 1-15 มกราคม 2567 เท่านั้น
             </p>
             <motion.button
-              className="w-full bg-white text-black py-2.5 rounded-lg text-sm font-bold border-[3px] border-black"
+              className="w-full bg-white text-black py-2.5 text-sm font-bold border-[3px] border-black"
               style={{ boxShadow: '3px 3px 0 0 #000000' }}
               whileHover={{ scale: 1.02, x: -2, y: -2 }}
               whileTap={{ scale: 0.98 }}
@@ -316,7 +316,7 @@ export default function HomePage() {
           {categories.map((category) => (
             <motion.button
               key={category.id}
-              className={`px-4 py-2.5 rounded-lg text-sm flex items-center space-x-2 border-[3px] font-bold transition-all ${
+              className={`px-4 py-2.5 text-sm flex items-center space-x-2 border-[3px] font-bold transition-all ${
                 activeCategory === category.id
                   ? "bg-brutal-yellow border-black text-black"
                   : "bg-white border-gray-300 text-gray-700 hover:border-black"
@@ -334,7 +334,7 @@ export default function HomePage() {
 
           <motion.button
             type="button"
-            className="px-4 py-2.5 rounded-lg bg-white text-gray-700 border-[3px] border-gray-300 text-sm flex items-center space-x-2 font-bold hover:border-black transition-all"
+            className="px-4 py-2.5 bg-white text-gray-700 border-[3px] border-gray-300 text-sm flex items-center space-x-2 font-bold hover:border-black transition-all"
             whileHover={{ y: -2 }}
             whileTap={{ y: 0 }}
             transition={{ duration: 0.2 }}
@@ -350,7 +350,7 @@ export default function HomePage() {
             placeholder="ค้นหาเกม…"
             aria-label="ค้นหาเกม"
             autoComplete="off"
-            className="w-full md:w-64 bg-white border-[2px] border-gray-300 rounded-lg py-2.5 pl-10 pr-4 text-gray-900 text-sm focus:outline-none focus:border-black focus:ring-0 transition-all"
+            className="w-full md:w-64 bg-white border-[2px] border-gray-300 py-2.5 pl-10 pr-4 text-gray-900 text-sm focus:outline-none focus:border-black focus:ring-0 transition-all"
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} aria-hidden="true" />
         </div>
@@ -360,7 +360,7 @@ export default function HomePage() {
       <section className="mb-10">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-black text-black flex items-center">
-            <span className="w-2 h-6 bg-brutal-pink mr-3 rounded-sm"></span>
+            <span className="w-2 h-6 bg-brutal-pink mr-3"></span>
             เกมแนะนำ
           </h2>
           <Link href="/games" className="text-brutal-pink text-sm font-bold hover:underline transition-colors">
@@ -376,7 +376,7 @@ export default function HomePage() {
               transition={{ duration: 0.2 }}
             >
               <Link href={`/games/${game.id}`}>
-                <div className="bg-white rounded-xl overflow-hidden border-[3px] border-black transition-all hover:-translate-y-1"
+                <div className="bg-white overflow-hidden border-[3px] border-black transition-all hover:-translate-y-1"
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <div className="aspect-[4/3] relative overflow-hidden">
@@ -388,14 +388,14 @@ export default function HomePage() {
                       loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
-                    <div className="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded-md border-[2px] border-black"
+                    <div className="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 border-[2px] border-black"
                       style={{ boxShadow: '2px 2px 0 0 #000000' }}
                     >
                       {game.region}
                     </div>
 
                     {game.originalPrice && (
-                      <div className="absolute top-2 left-2 bg-brutal-pink text-white text-xs font-bold px-2 py-1 rounded-md border-[2px] border-black"
+                      <div className="absolute top-2 left-2 bg-brutal-pink text-white text-xs font-bold px-2 py-1 border-[2px] border-black"
                         style={{ boxShadow: '2px 2px 0 0 #000000' }}
                       >
                         -{Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)}%
@@ -420,7 +420,7 @@ export default function HomePage() {
                           <span className="text-black font-black">฿{game.price.toFixed(2)}</span>
                         )}
                       </div>
-                      <div className={`px-2 py-1 rounded-md text-xs font-bold border-[2px] border-black ${getTypeBadgeColor(game.type)}`}
+                      <div className={`px-2 py-1 text-xs font-bold border-[2px] border-black ${getTypeBadgeColor(game.type)}`}
                         style={{ boxShadow: '2px 2px 0 0 #000000' }}
                       >
                         {game.type}
@@ -438,7 +438,7 @@ export default function HomePage() {
       <section className="mb-12">
         <div className="flex items-center mb-6">
           <h2 className="text-xl font-black text-black flex items-center">
-            <span className="w-2 h-6 bg-brutal-yellow mr-3 rounded-sm"></span>
+            <span className="w-2 h-6 bg-brutal-yellow mr-3"></span>
             โปรโมชั่นพิเศษ
           </h2>
         </div>
@@ -457,7 +457,7 @@ export default function HomePage() {
       <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-black text-black flex items-center">
-            <span className="w-2 h-6 bg-brutal-blue mr-3 rounded-sm"></span>
+            <span className="w-2 h-6 bg-brutal-blue mr-3"></span>
             ข่าวสารล่าสุด
           </h2>
           <Link href="/news" className="text-brutal-blue text-sm font-bold hover:underline transition-colors">
@@ -469,7 +469,7 @@ export default function HomePage() {
           {newsItems.map((item, index) => (
             <motion.div
               key={item.id}
-              className="bg-white rounded-xl overflow-hidden border-[3px] border-black transition-all hover:-translate-y-1"
+              className="bg-white overflow-hidden border-[3px] border-black transition-all hover:-translate-y-1"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
@@ -484,7 +484,7 @@ export default function HomePage() {
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
-                  <div className="absolute top-2 left-2 bg-brutal-green text-black text-xs font-bold px-2 py-1 rounded-md border-[2px] border-black"
+                  <div className="absolute top-2 left-2 bg-brutal-green text-black text-xs font-bold px-2 py-1 border-[2px] border-black"
                     style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     {item.category}

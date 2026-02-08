@@ -73,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isCheckingSessionRef = useRef(false);
   const isAuthenticated = !!user && !!token;
   const isAdmin = user?.role === 'ADMIN';
 
@@ -128,26 +129,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const performTokenRefresh = useCallback(async () => {
     const currentRefreshToken = refreshToken;
     if (!currentRefreshToken) {
-      clearAuth();
+      console.log('[Auth] No refresh token available');
       return;
     }
+
+    // Prevent concurrent refresh attempts
+    if (isCheckingSessionRef.current) {
+      console.log('[Auth] Token refresh already in progress');
+      return;
+    }
+
+    isCheckingSessionRef.current = true;
+    console.log('[Auth] Performing token refresh...');
 
     try {
       const response = await authApi.refreshToken(currentRefreshToken);
 
       if (response.success) {
+        console.log('[Auth] Token refresh successful');
         setToken(response.data.accessToken);
         setRefreshToken(response.data.refreshToken);
         scheduleTokenRefresh(response.data.expiresIn);
       } else {
-        // Refresh failed, clear auth
-        clearAuth();
+        console.log('[Auth] Token refresh failed:', response.message);
+        // Don't clear auth immediately - let the user continue until token actually expires
         toast.error('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
+        clearAuth();
       }
-    } catch {
-      // Refresh failed, clear auth
-      clearAuth();
-      toast.error('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
+    } catch (err) {
+      console.log('[Auth] Token refresh error:', err);
+      // Only clear auth on 401 errors from refresh endpoint
+      if ((err as any)?.response?.status === 401) {
+        toast.error('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
+        clearAuth();
+      }
+      // On other errors (network, etc.), don't clear - the user might still have valid session
+    } finally {
+      isCheckingSessionRef.current = false;
     }
   }, [refreshToken, setToken, setRefreshToken, clearAuth, scheduleTokenRefresh]);
 
@@ -159,39 +177,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check for existing session on initial load
   useEffect(() => {
     const checkSession = async () => {
-      if (token && !user) {
-        try {
-          const response = await authApi.getProfile();
-          if (response.success) {
-            setUser(response.data);
-            // Schedule token refresh if we have a refresh token
-            if (refreshToken) {
-              const remainingTime = getTokenRemainingTime(token);
-              if (remainingTime > 0) {
-                scheduleTokenRefresh(remainingTime);
-              } else {
-                // Token already expired, try to refresh immediately
-                performTokenRefresh();
-              }
+      // Prevent concurrent session checks
+      if (isCheckingSessionRef.current) {
+        console.log('[Auth] Session check already in progress, skipping');
+        return;
+      }
+
+      // Only check if we have a token but no user data
+      if (!token || user) {
+        // If we have both user and token, just schedule refresh
+        if (token && refreshToken && user) {
+          const remainingTime = getTokenRemainingTime(token);
+          if (remainingTime > 60) { // Only schedule if token has more than 1 minute left
+            scheduleTokenRefresh(remainingTime);
+          }
+        }
+        return;
+      }
+
+      isCheckingSessionRef.current = true;
+      console.log('[Auth] Checking existing session...');
+
+      try {
+        const response = await authApi.getProfile();
+        if (response.success) {
+          console.log('[Auth] Session valid, restoring user');
+          setUser(response.data);
+          // Schedule token refresh if we have a refresh token
+          if (refreshToken) {
+            const remainingTime = getTokenRemainingTime(token);
+            if (remainingTime > 60) { // Only schedule if token has more than 1 minute left
+              scheduleTokenRefresh(remainingTime);
+            } else if (remainingTime > 0) {
+              // Token expiring soon, refresh now
+              console.log('[Auth] Token expiring soon, refreshing...');
+              await performTokenRefresh();
             }
           }
-        } catch {
-          // Token invalid, clear storage
+        }
+      } catch (err) {
+        console.log('[Auth] Session check failed:', err);
+        // Only clear auth if we get a 401 (unauthorized)
+        // Don't clear on network errors or other issues
+        if ((err as any)?.response?.status === 401) {
           clearAuth();
         }
-      } else if (token && refreshToken) {
-        // We have both tokens, schedule refresh based on actual token expiration
-        const remainingTime = getTokenRemainingTime(token);
-        if (remainingTime > 0) {
-          scheduleTokenRefresh(remainingTime);
-        } else {
-          // Token already expired, try to refresh immediately
-          performTokenRefresh();
-        }
+      } finally {
+        isCheckingSessionRef.current = false;
       }
     };
 
-    if (isHydrated) {
+    if (isHydrated && isInitialized) {
       checkSession();
     }
 
@@ -201,16 +237,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearTimeout(refreshTimeoutRef.current);
       }
     };
-  }, [isHydrated, token, user, refreshToken, setUser, clearAuth, scheduleTokenRefresh, performTokenRefresh]);
+  }, [isHydrated, isInitialized]); // Only run on hydration and initialization
 
   // Login with API
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
 
+    // Clear any existing refresh timeout before login
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+
+    // Reset checking flag
+    isCheckingSessionRef.current = false;
+
     try {
       const response = await authApi.login({ email, password });
 
       if (response.success) {
+        console.log('[Auth] Login successful, setting up session');
         setUser(response.data.user);
         setToken(response.data.tokens.accessToken);
         setRefreshToken(response.data.tokens.refreshToken);
@@ -234,10 +280,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (username: string, email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
 
+    // Clear any existing refresh timeout before register
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+
+    // Reset checking flag
+    isCheckingSessionRef.current = false;
+
     try {
       const response = await authApi.register({ username, email, password });
 
       if (response.success) {
+        console.log('[Auth] Register successful, setting up session');
         setUser(response.data.user);
         setToken(response.data.tokens.accessToken);
         setRefreshToken(response.data.tokens.refreshToken);
@@ -319,10 +375,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const oauthLogin = async (code: string, provider: 'google' | 'discord'): Promise<boolean> => {
     setIsLoading(true);
 
+    // Clear any existing refresh timeout before OAuth login
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+
+    // Reset checking flag
+    isCheckingSessionRef.current = false;
+
     try {
       const response = await authApi.oauthLogin({ code, provider });
 
       if (response.success) {
+        console.log('[Auth] OAuth login successful, setting up session');
         setUser(response.data.user);
         setToken(response.data.tokens.accessToken);
         setRefreshToken(response.data.tokens.refreshToken);

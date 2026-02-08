@@ -83,14 +83,14 @@ export default function AdminAnalyticsPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-white border-[3px] border-black rounded-xl p-6"
+      className="bg-white border-[3px] border-black p-6"
       style={{ boxShadow: '4px 4px 0 0 #000000' }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-lg ${color}`}>
+        <div className={`p-3 ${color}`}>
           <Icon className="h-6 w-6 text-white" />
         </div>
         <div
@@ -124,7 +124,7 @@ export default function AdminAnalyticsPage() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 focus:border-black focus:outline-none"
+              className="bg-white border-[2px] border-gray-300 text-black px-4 py-2 focus:border-black focus:outline-none"
             >
               <option value="24h">24 ชั่วโมง</option>
               <option value="7d">7 วัน</option>
@@ -134,7 +134,7 @@ export default function AdminAnalyticsPage() {
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="bg-black text-white border-[3px] border-black px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70"
+              className="bg-black text-white border-[3px] border-black px-4 py-2 hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               <Download className="h-4 w-4 mr-2" />
@@ -179,7 +179,7 @@ export default function AdminAnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sales Chart */}
           <motion.div
-            className="lg:col-span-2 bg-white border-[3px] border-black rounded-xl p-6"
+            className="lg:col-span-2 bg-white border-[3px] border-black p-6"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -198,7 +198,7 @@ export default function AdminAnalyticsPage() {
                 return (
                   <div key={index} className="flex-1 flex flex-col items-center">
                     <div
-                      className="w-full bg-brutal-pink rounded-t-lg transition-all duration-500"
+                      className="w-full bg-brutal-pink transition-all duration-500"
                       style={{ height: `${height}%` }}
                     ></div>
                     <span className="text-xs text-gray-500 mt-2">
@@ -214,7 +214,7 @@ export default function AdminAnalyticsPage() {
 
           {/* Top Products */}
           <motion.div
-            className="bg-white border-[3px] border-black rounded-xl p-6"
+            className="bg-white border-[3px] border-black p-6"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -228,7 +228,7 @@ export default function AdminAnalyticsPage() {
               {mockTopProducts.map((product, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-[2px] border-gray-200"
+                  className="flex items-center justify-between p-3 bg-gray-50 border-[2px] border-gray-200"
                 >
                   <div className="flex items-center gap-3">
                     <span
@@ -264,7 +264,7 @@ export default function AdminAnalyticsPage() {
 
         {/* Recent Activity Table */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

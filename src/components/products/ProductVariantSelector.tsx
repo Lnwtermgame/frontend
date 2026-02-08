@@ -71,7 +71,7 @@ export function ProductVariantSelector({
                     whileHover={!isOutOfStock ? { y: -2, boxShadow: '3px 3px 0 0 #000000' } : {}}
                     whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
                     className={cn(
-                      'px-4 py-2 rounded-lg border-[3px] text-sm font-bold transition-all thai-font',
+                      'px-4 py-2 border-[3px] text-sm font-bold transition-all thai-font',
                       isSelected
                         ? 'border-black bg-brutal-yellow text-black'
                         : 'border-gray-200 bg-white hover:border-gray-400',
@@ -107,7 +107,7 @@ export function ProductVariantSelector({
                 whileHover={!isOutOfStock ? { y: -2, boxShadow: '3px 3px 0 0 #000000' } : {}}
                 whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
                 className={cn(
-                  'px-4 py-3 rounded-lg border-[3px] text-sm font-bold transition-all min-w-[100px] thai-font',
+                  'px-4 py-3 border-[3px] text-sm font-bold transition-all min-w-[100px] thai-font',
                   isSelected
                     ? 'border-black bg-brutal-yellow text-black'
                     : 'border-gray-200 bg-white hover:border-gray-400',
@@ -129,7 +129,7 @@ export function ProductVariantSelector({
 
       {/* Selected variant info */}
       {selected && (
-        <div className="mt-4 p-4 bg-brutal-gray border-[2px] border-black rounded-lg" style={{ boxShadow: '3px 3px 0 0 #000000' }}>
+        <div className="mt-4 p-4 bg-brutal-gray border-[2px] border-black" style={{ boxShadow: '3px 3px 0 0 #000000' }}>
           {(() => {
             const variant = variants.find((v) => v.id === selected);
             if (!variant) return null;

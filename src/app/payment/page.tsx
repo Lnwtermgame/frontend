@@ -103,7 +103,7 @@ export default function PaymentPage() {
         >
           {/* Payment Methods Selection */}
           <div className="md:col-span-2 space-y-6">
-            <div className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <h2 className="text-lg font-medium text-black mb-4 flex items-center gap-2">
                 <Wallet className="text-brutal-green" />
                 Payment Methods
@@ -121,7 +121,7 @@ export default function PaymentPage() {
                           type="button"
                           onClick={() => handlePaymentMethodSelect(method)}
                           aria-pressed={selectedPaymentMethod?.id === method.id}
-                          className={`flex items-center p-3 rounded-lg border-[2px] ${
+                          className={`flex items-center p-3 border-[2px] ${
                             selectedPaymentMethod?.id === method.id
                               ? 'border-black bg-brutal-yellow'
                               : 'border-gray-300 hover:border-gray-400 bg-white'
@@ -165,7 +165,7 @@ export default function PaymentPage() {
                             type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
                             aria-pressed={selectedPaymentMethod?.id === method.id}
-                            className={`flex items-center p-3 rounded-lg border-[2px] ${
+                            className={`flex items-center p-3 border-[2px] ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-black bg-brutal-yellow'
                                 : 'border-gray-300 hover:border-gray-400 bg-white'
@@ -205,7 +205,7 @@ export default function PaymentPage() {
                             type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
                             aria-pressed={selectedPaymentMethod?.id === method.id}
-                            className={`flex items-center p-3 rounded-lg border-[2px] ${
+                            className={`flex items-center p-3 border-[2px] ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-black bg-brutal-yellow'
                                 : 'border-gray-300 hover:border-gray-400 bg-white'
@@ -245,7 +245,7 @@ export default function PaymentPage() {
                             type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
                             aria-pressed={selectedPaymentMethod?.id === method.id}
-                            className={`flex items-center p-3 rounded-lg border-[2px] ${
+                            className={`flex items-center p-3 border-[2px] ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-black bg-brutal-yellow'
                                 : 'border-gray-300 hover:border-gray-400 bg-white'
@@ -285,7 +285,7 @@ export default function PaymentPage() {
                             type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
                             aria-pressed={selectedPaymentMethod?.id === method.id}
-                            className={`flex items-center p-3 rounded-lg border-[2px] ${
+                            className={`flex items-center p-3 border-[2px] ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-black bg-brutal-yellow'
                                 : 'border-gray-300 hover:border-gray-400 bg-white'
@@ -325,7 +325,7 @@ export default function PaymentPage() {
                             type="button"
                             onClick={() => handlePaymentMethodSelect(method)}
                             aria-pressed={selectedPaymentMethod?.id === method.id}
-                            className={`flex items-center p-3 rounded-lg border-[2px] ${
+                            className={`flex items-center p-3 border-[2px] ${
                               selectedPaymentMethod?.id === method.id
                                 ? 'border-black bg-brutal-yellow'
                                 : 'border-gray-300 hover:border-gray-400 bg-white'
@@ -355,7 +355,7 @@ export default function PaymentPage() {
             </div>
 
             {/* Security Badge */}
-            <div className="p-4 border-[3px] border-black bg-brutal-green rounded-xl flex items-center gap-3" style={{ boxShadow: '3px 3px 0 0 #000000' }}>
+            <div className="p-4 border-[3px] border-black bg-brutal-green flex items-center gap-3" style={{ boxShadow: '3px 3px 0 0 #000000' }}>
               <Shield size={20} className="text-black" />
               <div>
                 <div className="text-sm font-bold text-black">Secure Payment</div>
@@ -368,7 +368,7 @@ export default function PaymentPage() {
           
           {/* Payment Summary */}
           <div className="md:col-span-1">
-            <div className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <h2 className="text-lg font-medium text-black mb-4 flex items-center gap-2">
                 <CircleDollarSign className="text-brutal-green" />
                 Summary
@@ -388,7 +388,7 @@ export default function PaymentPage() {
                       autoComplete="off"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="w-full p-3 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black"
+                      className="w-full p-3 bg-white border-[2px] border-gray-300 text-black focus:outline-none focus:border-black"
                       placeholder="0.00"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -403,7 +403,7 @@ export default function PaymentPage() {
                     <div className="text-sm text-gray-600 mb-2">
                       Payment Method
                     </div>
-                    <div className="flex items-center p-3 rounded-lg border-[2px] border-gray-300 bg-gray-50">
+                    <div className="flex items-center p-3 border-[2px] border-gray-300 bg-gray-50">
                       <Image
                         src={selectedPaymentMethod.icon}
                         alt={selectedPaymentMethod.name}
@@ -451,7 +451,7 @@ export default function PaymentPage() {
                 
                 {/* Error Message */}
                 {error && (
-                  <div className="p-3 bg-red-50 border-[2px] border-red-200 rounded-lg text-sm text-red-600 flex items-center gap-2">
+                  <div className="p-3 bg-red-50 border-[2px] border-red-200 text-sm text-red-600 flex items-center gap-2">
                     <AlertCircle size={16} />
                     {error}
                   </div>
@@ -461,7 +461,7 @@ export default function PaymentPage() {
                 <button
                   type="submit"
                   disabled={!selectedPaymentMethod || !amount || isProcessing || paymentStatus === 'success'}
-                  className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 border-[3px] border-black
+                  className={`w-full py-3 px-4 font-medium flex items-center justify-center gap-2 border-[3px] border-black
                     ${paymentStatus === 'success'
                       ? 'bg-brutal-green text-black cursor-default'
                       : selectedPaymentMethod && amount
@@ -493,7 +493,7 @@ export default function PaymentPage() {
                 
                 {/* Success Message */}
                 {paymentStatus === 'success' && (
-                  <div className="p-3 bg-green-50 border-[2px] border-green-200 rounded-lg text-sm">
+                  <div className="p-3 bg-green-50 border-[2px] border-green-200 text-sm">
                     <p className="text-green-600 flex items-center gap-2 mb-1">
                       <CheckCircle size={16} />
                       Payment successful!

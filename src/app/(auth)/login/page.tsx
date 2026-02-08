@@ -54,7 +54,7 @@ function LoginContent() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-xl bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
+            <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
@@ -74,12 +74,12 @@ function LoginContent() {
           {/* Feature Highlights */}
           <div className="grid grid-cols-1 gap-4 pt-4">
             <motion.div
-              className="flex items-center space-x-4 p-4 rounded-xl bg-white border-[3px] border-black"
+              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
               whileHover={{ scale: 1.02, x: -2, y: -2, boxShadow: '6px 6px 0 0 #000000' }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 rounded-lg bg-brutal-yellow border-[2px] border-black flex items-center justify-center">
+              <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-black" />
               </div>
               <div>
@@ -89,12 +89,12 @@ function LoginContent() {
             </motion.div>
 
             <motion.div
-              className="flex items-center space-x-4 p-4 rounded-xl bg-white border-[3px] border-black"
+              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
               whileHover={{ scale: 1.02, x: -2, y: -2, boxShadow: '6px 6px 0 0 #000000' }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 rounded-lg bg-brutal-green border-[2px] border-black flex items-center justify-center">
+              <div className="w-10 h-10 bg-brutal-green border-[2px] border-black flex items-center justify-center">
                 <Shield className="w-5 h-5 text-black" />
               </div>
               <div>
@@ -111,12 +111,12 @@ function LoginContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="bg-white rounded-2xl border-[3px] border-black p-8"
+          <div className="bg-white border-[3px] border-black p-8"
             style={{ boxShadow: '6px 6px 0 0 #000000' }}
           >
             {/* Mobile Logo */}
             <div className="lg:hidden flex items-center justify-center space-x-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
+              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
                 style={{ boxShadow: '3px 3px 0 0 #000000' }}
               >
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
@@ -135,7 +135,7 @@ function LoginContent() {
 
             {sessionExpired && (
               <motion.div
-                className="mb-6 p-4 rounded-xl bg-brutal-yellow/20 border-[2px] border-brutal-yellow flex items-start gap-3"
+                className="mb-6 p-4 bg-brutal-yellow/20 border-[2px] border-brutal-yellow flex items-start gap-3"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -157,7 +157,7 @@ function LoginContent() {
                   </div>
                   <input
                     id="email"
-                    className="flex h-12 w-full rounded-xl border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+                    className="flex h-12 w-full border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
                     type="email"
                     autoComplete="email"
                     spellCheck="false"
@@ -185,7 +185,7 @@ function LoginContent() {
                   </div>
                   <input
                     id="password"
-                    className="flex h-12 w-full rounded-xl border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+                    className="flex h-12 w-full border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
                     type="password"
                     autoComplete="current-password"
                     placeholder="••••••••"
@@ -201,7 +201,7 @@ function LoginContent() {
                 <input
                   type="checkbox"
                   id="remember"
-                  className="h-4 w-4 rounded border-gray-300 bg-white text-brutal-pink focus:ring-brutal-pink"
+                  className="h-4 w-4 border-gray-300 bg-white text-brutal-pink focus:ring-brutal-pink"
                 />
                 <label htmlFor="remember" className="text-sm text-gray-600 font-medium thai-font">
                   จดจำฉันไว้
@@ -209,7 +209,7 @@ function LoginContent() {
               </div>
 
               <motion.button
-                className="w-full rounded-xl bg-black px-4 py-3.5 text-sm font-bold text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center thai-font"
+                className="w-full bg-black px-4 py-3.5 text-sm font-bold text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center thai-font"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 type="submit"
                 disabled={isLoading}
@@ -248,7 +248,7 @@ function LoginContent() {
                 <motion.button
                   type="button"
                   onClick={() => toast.error('Google OAuth ยังไม่ได้ตั้งค่า')}
-                  className="flex items-center justify-center px-4 py-3 rounded-xl border-[2px] border-gray-300 bg-white text-gray-700 hover:border-black transition-colors font-bold disabled:opacity-50"
+                  className="flex items-center justify-center px-4 py-3 border-[2px] border-gray-300 bg-white text-gray-700 hover:border-black transition-colors font-bold disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   disabled={isLoading}
@@ -278,7 +278,7 @@ function LoginContent() {
                 <motion.button
                   type="button"
                   onClick={() => toast.error('Discord OAuth ยังไม่ได้ตั้งค่า')}
-                  className="flex items-center justify-center px-4 py-3 rounded-xl border-[2px] border-gray-300 bg-white text-gray-700 hover:border-black transition-colors font-bold disabled:opacity-50"
+                  className="flex items-center justify-center px-4 py-3 border-[2px] border-gray-300 bg-white text-gray-700 hover:border-black transition-colors font-bold disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   disabled={isLoading}
@@ -311,15 +311,15 @@ export default function LoginPage() {
     <Suspense fallback={
       <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl border-[3px] border-black p-8 animate-pulse"
+          <div className="bg-white border-[3px] border-black p-8 animate-pulse"
             style={{ boxShadow: '6px 6px 0 0 #000000' }}
           >
-            <div className="h-8 bg-gray-200 rounded-xl mb-6"></div>
-            <div className="h-4 bg-gray-200 rounded-lg mb-8"></div>
+            <div className="h-8 bg-gray-200 mb-6"></div>
+            <div className="h-4 bg-gray-200 mb-8"></div>
             <div className="space-y-5">
-              <div className="h-12 bg-gray-200 rounded-xl"></div>
-              <div className="h-12 bg-gray-200 rounded-xl"></div>
-              <div className="h-12 bg-black rounded-xl"></div>
+              <div className="h-12 bg-gray-200"></div>
+              <div className="h-12 bg-gray-200"></div>
+              <div className="h-12 bg-black"></div>
             </div>
           </div>
         </div>

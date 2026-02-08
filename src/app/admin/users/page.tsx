@@ -115,7 +115,7 @@ export default function AdminUsersPage() {
             <h1 className="text-2xl font-bold text-black">จัดการผู้ใช้</h1>
           </div>
           <div className="flex items-center gap-3">
-            <button className="bg-black text-white border-[3px] border-black px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center font-medium"
+            <button className="bg-black text-white border-[3px] border-black px-4 py-2 hover:bg-gray-800 transition-colors flex items-center font-medium"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <Users className="h-4 w-4 mr-2" />
               เพิ่มผู้ใช้
@@ -125,7 +125,7 @@ export default function AdminUsersPage() {
 
         {/* Filters */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl p-4"
+          className="bg-white border-[3px] border-black p-4"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -139,14 +139,14 @@ export default function AdminUsersPage() {
                 placeholder="ค้นหาผู้ใช้..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:border-black focus:outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 text-black focus:border-black focus:outline-none"
               />
             </div>
             <div className="flex gap-3">
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:border-black focus:outline-none"
+                className="px-4 py-2 bg-white border-[2px] border-gray-300 text-black focus:border-black focus:outline-none"
               >
                 <option value="all">ทุกบทบาท</option>
                 <option value="user">ผู้ใช้</option>
@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:border-black focus:outline-none"
+                className="px-4 py-2 bg-white border-[2px] border-gray-300 text-black focus:border-black focus:outline-none"
               >
                 <option value="all">ทุกสถานะ</option>
                 <option value="active">ใช้งาน</option>
@@ -167,7 +167,7 @@ export default function AdminUsersPage() {
 
         {/* Users Table */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -185,7 +185,7 @@ export default function AdminUsersPage() {
                         filteredUsers.length > 0
                       }
                       onChange={toggleAllSelection}
-                      className="w-4 h-4 border-[2px] border-black rounded text-brutal-purple focus:ring-black"
+                      className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
                     />
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-black">
@@ -219,7 +219,7 @@ export default function AdminUsersPage() {
                         type="checkbox"
                         checked={selectedUsers.includes(user.id)}
                         onChange={() => toggleUserSelection(user.id)}
-                        className="w-4 h-4 border-[2px] border-black rounded text-brutal-purple focus:ring-black"
+                        className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
                       />
                     </td>
                     <td className="py-3 px-4">
@@ -268,10 +268,10 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-center gap-2">
-                        <button className="p-2 text-gray-600 hover:text-brutal-blue hover:bg-blue-50 rounded-lg transition-colors border-[2px] border-transparent hover:border-brutal-blue">
+                        <button className="p-2 text-gray-600 hover:text-brutal-blue hover:bg-blue-50 transition-colors border-[2px] border-transparent hover:border-brutal-blue">
                           <Edit className="h-4 w-4" />
                         </button>
-                        <button className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border-[2px] border-transparent hover:border-red-500">
+                        <button className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors border-[2px] border-transparent hover:border-red-500">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -291,7 +291,7 @@ export default function AdminUsersPage() {
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border-[2px] border-gray-300 hover:border-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 border-[2px] border-gray-300 hover:border-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -300,7 +300,7 @@ export default function AdminUsersPage() {
               </span>
               <button
                 onClick={() => setCurrentPage((p) => p + 1)}
-                className="p-2 rounded-lg border-[2px] border-gray-300 hover:border-black transition-colors"
+                className="p-2 border-[2px] border-gray-300 hover:border-black transition-colors"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -311,7 +311,7 @@ export default function AdminUsersPage() {
         {/* Bulk Actions */}
         {selectedUsers.length > 0 && (
           <motion.div
-            className="bg-brutal-yellow border-[3px] border-black rounded-xl p-4 flex items-center justify-between"
+            className="bg-brutal-yellow border-[3px] border-black p-4 flex items-center justify-between"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -320,15 +320,15 @@ export default function AdminUsersPage() {
               เลือก {selectedUsers.length} รายการ
             </span>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2 bg-white border-[2px] border-black rounded-lg text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium">
+              <button className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium">
                 <UserCheck className="h-4 w-4 mr-2" />
                 เปิดใช้งาน
               </button>
-              <button className="px-4 py-2 bg-white border-[2px] border-black rounded-lg text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium">
+              <button className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium">
                 <UserX className="h-4 w-4 mr-2" />
                 ปิดใช้งาน
               </button>
-              <button className="px-4 py-2 bg-red-500 border-[2px] border-black rounded-lg text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium">
+              <button className="px-4 py-2 bg-red-500 border-[2px] border-black text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium">
                 <Trash2 className="h-4 w-4 mr-2" />
                 ลบ
               </button>

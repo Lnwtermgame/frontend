@@ -59,7 +59,7 @@ export default function RegisterPage() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-xl bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
+            <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
@@ -79,12 +79,12 @@ export default function RegisterPage() {
           {/* Benefits */}
           <div className="grid grid-cols-1 gap-4 pt-4">
             <motion.div
-              className="flex items-center space-x-4 p-4 rounded-xl bg-white border-[3px] border-black"
+              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
               whileHover={{ scale: 1.02, x: -2, y: -2, boxShadow: '6px 6px 0 0 #000000' }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 rounded-lg bg-brutal-pink border-[2px] border-black flex items-center justify-center">
+              <div className="w-10 h-10 bg-brutal-pink border-[2px] border-black flex items-center justify-center">
                 <Gift className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -94,12 +94,12 @@ export default function RegisterPage() {
             </motion.div>
 
             <motion.div
-              className="flex items-center space-x-4 p-4 rounded-xl bg-white border-[3px] border-black"
+              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
               whileHover={{ scale: 1.02, x: -2, y: -2, boxShadow: '6px 6px 0 0 #000000' }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 rounded-lg bg-brutal-blue border-[2px] border-black flex items-center justify-center">
+              <div className="w-10 h-10 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
                 <Clock className="w-5 h-5 text-black" />
               </div>
               <div>
@@ -116,12 +116,12 @@ export default function RegisterPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="bg-white rounded-2xl border-[3px] border-black p-8"
+          <div className="bg-white border-[3px] border-black p-8"
             style={{ boxShadow: '6px 6px 0 0 #000000' }}
           >
             {/* Mobile Logo */}
             <div className="lg:hidden flex items-center justify-center space-x-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
+              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center"
                 style={{ boxShadow: '3px 3px 0 0 #000000' }}
               >
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
@@ -149,7 +149,7 @@ export default function RegisterPage() {
                   </div>
                   <input
                     id="username"
-                    className="flex h-12 w-full rounded-xl border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+                    className="flex h-12 w-full border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
                     type="text"
                     autoComplete="username"
                     spellCheck="false"
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                   </div>
                   <input
                     id="email"
-                    className="flex h-12 w-full rounded-xl border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+                    className="flex h-12 w-full border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
                     type="email"
                     autoComplete="email"
                     spellCheck="false"
@@ -197,7 +197,7 @@ export default function RegisterPage() {
                   </div>
                   <input
                     id="password"
-                    className="flex h-12 w-full rounded-xl border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+                    className="flex h-12 w-full border-[2px] border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
                     type="password"
                     autoComplete="new-password"
                     placeholder="อย่างน้อย 8 ตัวอักษร"
@@ -221,7 +221,7 @@ export default function RegisterPage() {
                   </div>
                   <input
                     id="confirmPassword"
-                    className={`flex h-12 w-full rounded-xl border-[2px] pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all ${
+                    className={`flex h-12 w-full border-[2px] pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all ${
                       passwordError
                         ? 'border-brutal-pink bg-brutal-pink/10'
                         : password && confirmPassword && password === confirmPassword
@@ -242,7 +242,7 @@ export default function RegisterPage() {
               </div>
 
               <motion.button
-                className="w-full rounded-xl bg-black px-4 py-3.5 text-sm font-bold text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center thai-font"
+                className="w-full bg-black px-4 py-3.5 text-sm font-bold text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center thai-font"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 type="submit"
                 disabled={isLoading || !!passwordError}

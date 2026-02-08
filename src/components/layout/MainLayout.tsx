@@ -49,7 +49,7 @@ const NavItem = memo(function NavItem({
     <Link
       href={href}
       className={cn(
-        "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all relative overflow-hidden",
+        "group flex items-center gap-3 px-3 py-2.5 transition-all relative overflow-hidden",
         isActive
           ? "bg-brutal-yellow text-black font-bold border-[3px] border-black"
           : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
@@ -110,7 +110,7 @@ const MobileNavItem = memo(function MobileNavItem({
       prefetch={false}
     >
       <div className={cn(
-        "flex items-center justify-center w-10 h-10 rounded-lg transition-all",
+        "flex items-center justify-center w-10 h-10 transition-all",
         isActive
           ? "bg-brutal-yellow border-[3px] border-black"
           : "transparent"
@@ -204,12 +204,12 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Sidebar */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white z-30 hidden lg:flex flex-col border-r-[3px] border-black">
         {/* Logo */}
-        <div className="p-6 border-b-[3px] border-black">
+        <div className="h-16 border-b-[3px] border-black flex items-center px-6">
           <Link href="/">
             <div className="font-bold text-2xl flex items-center">
               <span className="text-brutal-pink">Mali</span>
               <span className="text-black">Game</span>
-              <span className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[2px] border-black rounded">Pass</span>
+              <span className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[2px] border-black">Pass</span>
             </div>
           </Link>
         </div>
@@ -232,29 +232,6 @@ export function MainLayout({ children }: MainLayoutProps) {
           })}
         </nav>
 
-        {/* Promo Card in Sidebar */}
-        <div className="p-4">
-          <div className="bg-brutal-blue border-[3px] border-black rounded-lg p-4 relative overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
-          >
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <Zap size={16} className="text-black" />
-                <span className="font-bold text-black text-sm">สมาชิกใหม่!</span>
-              </div>
-              <p className="text-black/80 text-xs mb-3">
-                รับส่วนลด 10% สำหรับการซื้อครั้งแรก
-              </p>
-              <motion.button
-                className="w-full bg-black text-white px-3 py-2 rounded-md text-xs font-bold"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                รับเลย
-              </motion.button>
-            </div>
-          </div>
-        </div>
       </aside>
 
       {/* Mobile navbar */}
@@ -282,10 +259,10 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
         {/* Header */}
-        <header className="sticky top-0 z-20 bg-white border-b-[3px] border-black"
+        <header className="sticky top-0 z-20 bg-white border-b-[3px] border-black h-16 flex items-center"
           style={{ boxShadow: '0 4px 0 0 rgba(0,0,0,0.05)' }}
         >
-          <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="w-full h-full px-4 flex items-center justify-between">
             {/* Mobile Logo and Menu */}
             <div className="flex items-center space-x-4 lg:hidden">
               <button
@@ -298,7 +275,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <div className="font-bold text-xl flex items-center">
                   <span className="text-brutal-pink">Mali</span>
                   <span className="text-black">Game</span>
-                  <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black rounded text-sm">Pass</span>
+                  <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm">Pass</span>
                 </div>
               </Link>
             </div>
@@ -313,12 +290,12 @@ export function MainLayout({ children }: MainLayoutProps) {
 
             {/* Right Section */}
             <div className="flex items-center gap-3">
-              {/* Notification Dropdown */}
+              {/* Notification Dropdown - Show only when authenticated */}
+              {isAuthenticated && (
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all relative border-[2px] border-transparent hover:border-black"
-                  style={{ boxShadow: 'none' }}
+                  className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all relative border-[2px] border-transparent hover:border-black"
                 >
                   <Bell size={20} />
                   {unreadCount > 0 && (
@@ -335,7 +312,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-80 rounded-xl bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                      className="absolute right-0 mt-2 w-80 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
                       style={{ boxShadow: '4px 4px 0 0 #000000' }}
                     >
                       <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
@@ -362,7 +339,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                               onClick={() => markAsRead(notification.id)}
                             >
                               <div className={cn(
-                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
+                                "w-8 h-8 flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
                                 notification.type === 'success' ? "bg-brutal-green text-black" :
                                   notification.type === 'error' ? "bg-brutal-pink text-white" :
                                     notification.type === 'warning' ? "bg-brutal-yellow text-black" :
@@ -403,17 +380,20 @@ export function MainLayout({ children }: MainLayoutProps) {
                   )}
                 </AnimatePresence>
               </div>
+              )}
 
-              {/* Divider */}
-              <div className="h-8 w-[2px] bg-gray-200 mx-1"></div>
+              {/* Show divider only when authenticated */}
+              {isAuthenticated && (
+                <div className="h-8 w-[2px] bg-gray-200 mx-1"></div>
+              )}
 
               {isAuthenticated ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={toggleUserMenu}
-                    className="flex items-center md:space-x-3 text-gray-900 pl-1 pr-2 py-1 rounded-lg hover:bg-gray-100 transition-all border-[2px] border-transparent hover:border-black"
+                    className="flex items-center md:space-x-3 text-gray-900 pl-1 pr-2 py-1 hover:bg-gray-100 transition-all border-[2px] border-transparent hover:border-black"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black">
+                    <div className="w-9 h-9 bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black">
                       <img
                         src={user?.avatar || "https://placehold.co/200x200?text=User"}
                         alt={`${user?.username} avatar`}
@@ -434,12 +414,12 @@ export function MainLayout({ children }: MainLayoutProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-64 rounded-xl bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                        className="absolute right-0 mt-2 w-64 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
                         style={{ boxShadow: '4px 4px 0 0 #000000' }}
                       >
                         <div className="p-4 border-b-[2px] border-black bg-gray-50">
                           <div className="flex items-center space-x-3 mb-3">
-                            <div className="w-12 h-12 rounded-lg border-[3px] border-black overflow-hidden bg-brutal-yellow">
+                            <div className="w-12 h-12 border-[3px] border-black overflow-hidden bg-brutal-yellow">
                               <img src={user?.avatar || "https://placehold.co/200x200?text=User"} alt="" className="w-full h-full object-cover" />
                             </div>
                             <div>
@@ -449,14 +429,14 @@ export function MainLayout({ children }: MainLayoutProps) {
                           </div>
 
                           {user?.isPremium && (
-                            <div className="mb-3 bg-brutal-yellow border-[2px] border-black text-black text-xs px-2 py-1 rounded flex items-center font-bold"
+                            <div className="mb-3 bg-brutal-yellow border-[2px] border-black text-black text-xs px-2 py-1 flex items-center font-bold"
                               style={{ boxShadow: '2px 2px 0 0 #000000' }}
                             >
                               <Star size={12} className="mr-1 fill-black" /> สมาชิกพรีเมียม
                             </div>
                           )}
 
-                          <div className="flex justify-between items-center bg-white p-2 rounded-lg border-[2px] border-black"
+                          <div className="flex justify-between items-center bg-white p-2 border-[2px] border-black"
                             style={{ boxShadow: '2px 2px 0 0 #000000' }}
                           >
                             <span className="text-gray-600 text-xs">คะแนนสะสม</span>
@@ -467,7 +447,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         <div className="p-2">
                           {accountMenuItems.slice(0, 4).map((item) => (
                             <Link key={item.href} href={item.href}>
-                              <div className="px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3 transition-colors font-medium">
+                              <div className="px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3 transition-colors font-medium">
                                 <span className="opacity-70">{item.icon}</span>
                                 <span>{item.label}</span>
                               </div>
@@ -478,7 +458,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
                           <button
                             onClick={handleLogout}
-                            className="w-full px-3 py-2.5 rounded-lg text-sm text-brutal-pink hover:bg-brutal-pink/10 flex items-center space-x-3 transition-colors font-medium"
+                            className="w-full px-3 py-2.5 text-sm text-brutal-pink hover:bg-brutal-pink/10 flex items-center space-x-3 transition-colors font-medium"
                           >
                             <LogOut size={18} className="opacity-70" />
                             <span>ออกจากระบบ</span>
@@ -491,7 +471,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-4 py-2 rounded-lg text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
+                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-4 py-2 text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <User size={16} />

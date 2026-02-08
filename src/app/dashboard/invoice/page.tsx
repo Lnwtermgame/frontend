@@ -166,7 +166,7 @@ export default function InvoicePage() {
             placeholder="ค้นหาใบแจ้งหนี้หรือรหัสคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-lg bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-black focus:outline-none focus:border-black pl-10 transition-all thai-font"
+            className="w-full bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-black focus:outline-none focus:border-black pl-10 transition-all thai-font"
           />
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
@@ -175,7 +175,7 @@ export default function InvoicePage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="appearance-none w-full rounded-lg bg-white border-[2px] border-gray-300 px-4 py-2 pr-10 text-sm text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
+            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-4 py-2 pr-10 text-sm text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
           >
             <option value="all">ใบแจ้งหนี้ทั้งหมด</option>
             <option value="completed">ชำระแล้ว</option>

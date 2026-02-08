@@ -138,7 +138,7 @@ export default function FaqPage() {
     <div className="page-container bg-brutal-gray">
       {/* Hero Section */}
       <motion.div
-        className="bg-white border-[3px] border-black rounded-xl p-8 mb-8"
+        className="bg-white border-[3px] border-black p-8 mb-8"
         style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ export default function FaqPage() {
                   placeholder="Search for answers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black rounded-xl text-black focus:outline-none focus:border-black transition-colors"
+                  className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black text-black focus:outline-none focus:border-black transition-colors"
                 />
                 <Search
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -193,7 +193,7 @@ export default function FaqPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-brutal-pink border-[3px] border-black rounded-lg p-4 mb-6 flex items-center"
+          className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
           <AlertCircle className="text-black mr-3" size={20} />
@@ -222,7 +222,7 @@ export default function FaqPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar - Categories */}
         <div className="lg:col-span-1">
-          <div className="bg-white border-[3px] border-black rounded-xl overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div className="bg-white border-[3px] border-black overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="p-4 bg-brutal-gray border-b-[3px] border-black">
               <h3 className="text-black font-medium flex items-center">
                 <Filter size={16} className="mr-2" />
@@ -235,13 +235,13 @@ export default function FaqPage() {
                   setSelectedCategory(null);
                   setExpandedArticle(null);
                 }}
-                className={`w-full text-left px-4 py-2 rounded-md flex items-center ${
+                className={`w-full text-left px-4 py-2 flex items-center ${
                   selectedCategory === null
                     ? "bg-brutal-yellow border-[2px] border-black text-black font-medium"
                     : "text-gray-700 hover:bg-brutal-gray hover:text-black"
                 }`}
               >
-                <span className="bg-brutal-gray border-[2px] border-black p-1.5 rounded text-black mr-3">
+                <span className="bg-brutal-gray border-[2px] border-black p-1.5 text-black mr-3">
                   All
                 </span>
                 All Categories
@@ -257,7 +257,7 @@ export default function FaqPage() {
                     setSelectedCategory(category.id);
                     setExpandedArticle(null);
                   }}
-                  className={`w-full text-left px-4 py-2 rounded-md flex items-center ${
+                  className={`w-full text-left px-4 py-2 flex items-center ${
                     selectedCategory === category.id
                       ? "bg-brutal-yellow border-[2px] border-black text-black font-medium"
                       : "text-gray-700 hover:bg-brutal-gray hover:text-black"
@@ -274,7 +274,7 @@ export default function FaqPage() {
           </div>
 
           {/* Need more help */}
-          <div className="bg-white border-[3px] border-black rounded-xl p-5 mt-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div className="bg-white border-[3px] border-black p-5 mt-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="flex items-center mb-4">
               <div className="bg-brutal-green p-2 border-[2px] border-black mr-2">
                 <MessageSquare size={20} className="text-black" />
@@ -286,7 +286,7 @@ export default function FaqPage() {
             </p>
             <Link
               href="/support/tickets"
-              className="bg-black text-white border-[3px] border-black w-full py-2 rounded-lg font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
+              className="bg-black text-white border-[3px] border-black w-full py-2 font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               Contact Support
@@ -313,7 +313,7 @@ export default function FaqPage() {
 
           {/* Loading State */}
           {isLoading ? (
-            <div className="bg-white border-[3px] border-black rounded-xl p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="bg-white border-[3px] border-black p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <Loader2
                 className="animate-spin mx-auto text-black mb-4"
                 size={48}
@@ -327,7 +327,7 @@ export default function FaqPage() {
                   key={article.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`border-[3px] border-black rounded-xl overflow-hidden ${
+                  className={`border-[3px] border-black overflow-hidden ${
                     expandedArticle === article.id
                       ? "bg-brutal-gray"
                       : "bg-white"
@@ -432,7 +432,7 @@ export default function FaqPage() {
               ))}
             </div>
           ) : (
-            <div className="bg-white border-[3px] border-black rounded-xl p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="bg-white border-[3px] border-black p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <HelpCircle
                 size={48}
                 className="mx-auto text-gray-400 mb-4"
@@ -449,7 +449,7 @@ export default function FaqPage() {
                   setSearchQuery("");
                   setSelectedCategory(null);
                 }}
-                className="bg-black text-white border-[3px] border-black px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                className="bg-black text-white border-[3px] border-black px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 View All FAQs
@@ -459,7 +459,7 @@ export default function FaqPage() {
 
           {/* Contact Support CTA */}
           {(articles.length > 0 || !isLoading) && (
-            <div className="bg-brutal-blue border-[3px] border-black rounded-xl p-6 mt-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="bg-brutal-blue border-[3px] border-black p-6 mt-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-black mb-2">
@@ -472,7 +472,7 @@ export default function FaqPage() {
                 </div>
                 <Link
                   href="/support/tickets"
-                  className="mt-4 md:mt-0 bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium whitespace-nowrap hover:bg-gray-800 transition-colors"
+                  className="mt-4 md:mt-0 bg-black text-white border-[3px] border-black px-6 py-3 font-medium whitespace-nowrap hover:bg-gray-800 transition-colors"
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   Contact Support

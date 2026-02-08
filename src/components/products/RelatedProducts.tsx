@@ -47,7 +47,7 @@ export function RelatedProducts({
         {Array.from({ length: limit }).map((_, i) => (
           <div
             key={i}
-            className="bg-white border-[3px] border-black rounded-xl aspect-[3/4] animate-pulse"
+            className="bg-white border-[3px] border-black aspect-[3/4] animate-pulse"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           />
         ))}
@@ -62,7 +62,7 @@ export function RelatedProducts({
   return (
     <div className={className}>
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-brutal-blue border-[2px] border-black flex items-center justify-center"
+        <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center"
           style={{ boxShadow: '2px 2px 0 0 #000000' }}
         >
           <Link2 className="w-4 h-4 text-black" />
@@ -79,7 +79,7 @@ export function RelatedProducts({
           >
             <Link
               href={`/games/${product.slug}`}
-              className="group block bg-white rounded-xl border-[3px] border-black overflow-hidden"
+              className="group block bg-white border-[3px] border-black overflow-hidden"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               <div className="relative aspect-square bg-gray-100">

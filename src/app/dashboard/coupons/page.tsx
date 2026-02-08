@@ -187,7 +187,7 @@ export default function CouponsPage() {
             placeholder="ค้นหาคูปอง..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-lg bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-black focus:outline-none focus:border-black pl-10 transition-all thai-font"
+            className="w-full bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-black focus:outline-none focus:border-black pl-10 transition-all thai-font"
           />
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
@@ -196,7 +196,7 @@ export default function CouponsPage() {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="appearance-none w-full rounded-lg bg-white border-[2px] border-gray-300 px-4 py-2 pr-10 text-sm text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
+            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-4 py-2 pr-10 text-sm text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
           >
             <option value="all">คูปองทั้งหมด</option>
             <option value="active">ใช้งานได้</option>
@@ -347,7 +347,7 @@ export default function CouponsPage() {
                               <div className="mt-4 text-center">
                                 <Link
                                   href="/products"
-                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black rounded-lg inline-flex items-center justify-center text-sm py-2 transition-all font-bold thai-font"
+                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black inline-flex items-center justify-center text-sm py-2 transition-all font-bold thai-font"
                                 >
                                   ใช้ทันที
                                 </Link>
@@ -389,11 +389,11 @@ export default function CouponsPage() {
                       setErrorMessage("");
                     }}
                     onKeyPress={(e) => e.key === 'Enter' && handleClaimCoupon()}
-                    className="flex-1 rounded-lg bg-white border-[2px] border-gray-300 px-3 py-2 text-sm text-black focus:outline-none focus:border-black transition-all"
+                    className="flex-1 bg-white border-[2px] border-gray-300 px-3 py-2 text-sm text-black focus:outline-none focus:border-black transition-all"
                   />
                   <button
                     onClick={handleClaimCoupon}
-                    className="rounded-lg bg-black border-[2px] border-black text-white px-3 py-2 flex items-center hover:bg-gray-800 transition-all"
+                    className="bg-black border-[2px] border-black text-white px-3 py-2 flex items-center hover:bg-gray-800 transition-all"
                     style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     <Plus className="h-4 w-4" />
@@ -401,7 +401,7 @@ export default function CouponsPage() {
                 </div>
                 {errorMessage && (
                   <motion.div
-                    className={`mt-2 text-xs flex items-start p-2 rounded border-[2px] ${
+                    className={`mt-2 text-xs flex items-start p-2 border-[2px] ${
                       errorMessage.includes('กำลัง')
                         ? 'text-yellow-700 bg-yellow-50 border-yellow-500'
                         : 'text-red-600 bg-red-50 border-red-500'

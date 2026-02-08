@@ -86,15 +86,15 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   if (!isInitialized || !isAdmin) {
     return (
       <div className="page-container text-center">
-        <div className="bg-white rounded-xl border-[3px] border-black p-8"
+        <div className="bg-white border-[3px] border-black p-8"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
           <div className="animate-pulse flex space-x-4 justify-center">
             <div className="rounded-full bg-gray-200 h-12 w-12"></div>
             <div className="flex-1 space-y-4 max-w-md">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 w-3/4"></div>
+              <div className="h-4 bg-gray-200"></div>
+              <div className="h-4 bg-gray-200 w-5/6"></div>
             </div>
           </div>
         </div>
@@ -105,11 +105,11 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   return (
     <div className="page-container">
       {/* Mobile header */}
-      <div className="lg:hidden flex items-center justify-between mb-6 bg-white rounded-xl border-[3px] border-black p-4"
+      <div className="lg:hidden flex items-center justify-between mb-6 bg-white border-[3px] border-black p-4"
         style={{ boxShadow: '4px 4px 0 0 #000000' }}
       >
         <h1 className="text-xl font-black text-black thai-font flex items-center">
-          <span className="w-1.5 h-5 bg-brutal-pink mr-2 rounded-sm"></span>
+          <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
           {title || "แผงควบคุมผู้ดูแลระบบ"}
         </h1>
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-600">
@@ -135,7 +135,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-black text-xl text-black thai-font flex items-center">
-                <span className="w-1.5 h-5 bg-brutal-pink mr-2 rounded-sm"></span>
+                <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
                 ผู้ดูแลระบบ
               </h2>
               <button onClick={() => setIsMenuOpen(false)} className="text-gray-600">
@@ -149,7 +149,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 <Link href={item.href} key={item.href}>
                   <div
                     className={cn(
-                      "flex items-center py-3 px-4 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium",
+                      "flex items-center py-3 px-4 text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium",
                       pathname === item.href && "bg-brutal-yellow text-black font-bold border-[2px] border-black"
                     )}
                     style={pathname === item.href ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
@@ -163,7 +163,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <hr className="border-gray-200 my-4" />
               <button
                 onClick={() => logout()}
-                className="flex items-center w-full py-3 px-4 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors thai-font font-medium"
+                className="flex items-center w-full py-3 px-4 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors thai-font font-medium"
               >
                 <LogOut className="w-5 h-5 mr-3" />
                 ออกจากระบบ
@@ -181,12 +181,12 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="bg-white rounded-xl border-[3px] border-black sticky top-24"
+          <div className="bg-white border-[3px] border-black sticky top-24"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <div className="p-6 border-b-[2px] border-gray-200 bg-gray-50">
               <h2 className="font-black text-lg text-black flex items-center thai-font">
-                <div className="w-8 h-8 rounded-lg bg-brutal-pink border-[2px] border-black flex items-center justify-center mr-2"
+                <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center mr-2"
                   style={{ boxShadow: '2px 2px 0 0 #000000' }}
                 >
                   <DollarSign className="w-4 h-4 text-white" />
@@ -199,7 +199,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 <Link href={item.href} key={item.href}>
                   <div
                     className={cn(
-                      "flex items-center py-3 px-4 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium",
+                      "flex items-center py-3 px-4 text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium",
                       pathname === item.href && "bg-brutal-yellow text-black font-bold border-[2px] border-black"
                     )}
                     style={pathname === item.href ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
@@ -213,7 +213,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <hr className="border-gray-200 my-4" />
               <div className="px-4 py-3">
                 <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black rounded-lg flex items-center justify-center mr-3"
+                  <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3"
                     style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     <User className="w-5 h-5 text-black" />
@@ -225,7 +225,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 </div>
                 <button
                   onClick={() => logout()}
-                  className="flex items-center justify-center w-full py-2 px-4 rounded-lg text-brutal-pink hover:bg-brutal-pink/10 transition-colors text-sm font-bold thai-font border-[2px] border-transparent hover:border-brutal-pink"
+                  className="flex items-center justify-center w-full py-2 px-4 text-brutal-pink hover:bg-brutal-pink/10 transition-colors text-sm font-bold thai-font border-[2px] border-transparent hover:border-brutal-pink"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   ออกจากระบบ
@@ -250,7 +250,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <span className="w-1.5 h-6 bg-brutal-pink mr-3 rounded-sm"></span>
+                <span className="w-1.5 h-6 bg-brutal-pink mr-3"></span>
                 {title}
               </motion.h1>
             </div>

@@ -93,7 +93,7 @@ export function SeasonalEventCard({
 
   return (
     <motion.div
-      className={`bg-white rounded-xl border-[3px] border-black overflow-hidden relative group ${className}`}
+      className={`bg-white border-[3px] border-black overflow-hidden relative group ${className}`}
       style={{ boxShadow: '4px 4px 0 0 #000000' }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -116,7 +116,7 @@ export function SeasonalEventCard({
           
           {/* Floating discount badge */}
           {discount && (
-            <div className={`absolute top-4 right-4 ${getBadgeColor()} text-black px-4 py-2 rounded-lg font-black text-lg border-[2px] border-black`}
+            <div className={`absolute top-4 right-4 ${getBadgeColor()} text-black px-4 py-2 font-black text-lg border-[2px] border-black`}
               style={{ boxShadow: '2px 2px 0 0 #000000' }}
             >
               {discount}
@@ -124,7 +124,7 @@ export function SeasonalEventCard({
           )}
 
           {/* Event type badge */}
-          <div className="absolute top-4 left-4 bg-black text-white px-3 py-1.5 rounded-lg flex items-center text-sm font-bold border-[2px] border-black">
+          <div className="absolute top-4 left-4 bg-black text-white px-3 py-1.5 flex items-center text-sm font-bold border-[2px] border-black">
             {getEventTypeIcon()}
             <span className="ml-1.5 capitalize thai-font">{type}</span>
           </div>
@@ -136,7 +136,7 @@ export function SeasonalEventCard({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="flex items-center">
-              <div className="w-8 h-8 rounded-lg bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-2"
+              <div className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-2"
                 style={{ boxShadow: '2px 2px 0 0 #000000' }}
               >
                 <Calendar className="h-4 w-4 text-black" />
@@ -148,7 +148,7 @@ export function SeasonalEventCard({
             </div>
 
             <div className="flex items-center">
-              <div className="w-8 h-8 rounded-lg bg-brutal-pink border-[2px] border-black flex items-center justify-center mr-2"
+              <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center mr-2"
                 style={{ boxShadow: '2px 2px 0 0 #000000' }}
               >
                 <Clock className="h-4 w-4 text-white" />
@@ -169,7 +169,7 @@ export function SeasonalEventCard({
                 {games.map((game, index) => (
                   <span
                     key={index}
-                    className="bg-brutal-gray text-black text-xs px-3 py-1 rounded-lg border-[2px] border-black font-bold"
+                    className="bg-brutal-gray text-black text-xs px-3 py-1 border-[2px] border-black font-bold"
                   >
                     {game}
                   </span>
@@ -181,7 +181,7 @@ export function SeasonalEventCard({
           <div className="mt-auto">
             <Link href={href}>
               <motion.button
-                className="bg-black text-white px-6 py-3 rounded-xl flex items-center justify-center font-bold thai-font border-[3px] border-black w-full sm:w-auto"
+                className="bg-black text-white px-6 py-3 flex items-center justify-center font-bold thai-font border-[3px] border-black w-full sm:w-auto"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 whileHover={{ y: -2, boxShadow: '6px 6px 0 0 #000000' }}
                 whileTap={{ scale: 0.98 }}

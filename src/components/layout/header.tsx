@@ -144,7 +144,7 @@ export function Header() {
               <div className="font-black text-xl flex items-center">
                 <span className="text-brutal-pink">Mali</span>
                 <span className="text-black">Game</span>
-                <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black rounded text-sm"
+                <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm"
                   style={{ boxShadow: '2px 2px 0 0 #000000' }}
                 >Pass</span>
               </div>
@@ -188,7 +188,7 @@ export function Header() {
               placeholder="ค้นหาเกม..."
               aria-label="ค้นหาเกม"
               autoComplete="off"
-              className="w-full rounded-xl bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
+              className="w-full bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
             />
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
           </motion.div>
@@ -199,7 +199,7 @@ export function Header() {
               aria-label="การแจ้งเตือน"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 rounded-xl bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
+              className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
               style={{ boxShadow: '2px 2px 0 0 #000000' }}
             >
               <Bell size={18} aria-hidden="true" />
@@ -210,7 +210,7 @@ export function Header() {
               aria-label="ตะกร้าสินค้า"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 rounded-xl bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-green transition-colors relative"
+              className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-green transition-colors relative"
               style={{ boxShadow: '2px 2px 0 0 #000000' }}
             >
               <ShoppingCart size={18} aria-hidden="true" />
@@ -229,7 +229,7 @@ export function Header() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
+                  <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
                     style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     <User className="h-5 w-5 text-black" />
@@ -241,7 +241,7 @@ export function Header() {
                 <AnimatePresence>
                   {isMounted && showUserMenu && (
                     <motion.div
-                      className="absolute right-0 mt-2 w-64 bg-white border-[3px] border-black rounded-xl z-50 overflow-hidden"
+                      className="absolute right-0 mt-2 w-64 bg-white border-[3px] border-black z-50 overflow-hidden"
                       style={{ boxShadow: '4px 4px 0 0 #000000' }}
                       variants={dropdownVariants}
                       initial="hidden"
@@ -250,7 +250,7 @@ export function Header() {
                     >
                       <div className="p-4 border-b-[2px] border-gray-200 flex items-center bg-gray-50">
                         <motion.div
-                          className="h-10 w-10 rounded-xl bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3"
+                          className="h-10 w-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3"
                           style={{ boxShadow: '2px 2px 0 0 #000000' }}
                           whileHover={{ scale: 1.05 }}
                         >
@@ -317,7 +317,7 @@ export function Header() {
               <motion.button
                 whileHover={{ scale: 1.05, y: -2, boxShadow: '4px 4px 0 0 #000000' }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-black text-white text-sm px-5 py-2.5 rounded-xl border-[3px] border-black font-bold thai-font"
+                className="bg-black text-white text-sm px-5 py-2.5 border-[3px] border-black font-bold thai-font"
                 style={{ boxShadow: '3px 3px 0 0 #000000' }}
                 onClick={() => router.push('/login')}
               >

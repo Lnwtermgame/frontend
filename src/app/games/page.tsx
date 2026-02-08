@@ -165,7 +165,7 @@ function DirectTopupContent() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           {/* Categories Card */}
-          <div className="bg-white rounded-xl border-[3px] border-black overflow-hidden mb-4"
+          <div className="bg-white border-[3px] border-black overflow-hidden mb-4"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
@@ -184,7 +184,7 @@ function DirectTopupContent() {
                   <motion.button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`w-full flex justify-between items-center text-left p-3 rounded-lg group transition-all relative overflow-hidden border-[2px] ${
+                    className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
                       selectedCategory === category.id
                         ? "bg-brutal-yellow border-black text-black"
                         : "bg-white border-transparent text-gray-700 hover:border-gray-300"
@@ -210,7 +210,7 @@ function DirectTopupContent() {
           </div>
 
           {/* Platforms Card */}
-          <div className="bg-white rounded-xl border-[3px] border-black overflow-hidden mb-4"
+          <div className="bg-white border-[3px] border-black overflow-hidden mb-4"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
@@ -224,7 +224,7 @@ function DirectTopupContent() {
                 <motion.button
                   key={platform.id}
                   onClick={() => setSelectedPlatform(platform.id)}
-                  className={`w-full flex justify-between items-center text-left p-3 rounded-lg group transition-all relative overflow-hidden border-[2px] ${
+                  className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
                     selectedPlatform === platform.id
                       ? "bg-brutal-blue border-black text-black"
                       : "bg-white border-transparent text-gray-700 hover:border-gray-300"
@@ -249,7 +249,7 @@ function DirectTopupContent() {
           </div>
 
           {/* Promo Card */}
-          <div className="bg-brutal-green border-[3px] border-black rounded-xl p-4 relative overflow-hidden"
+          <div className="bg-brutal-green border-[3px] border-black p-4 relative overflow-hidden"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <div className="relative z-10">
@@ -261,7 +261,7 @@ function DirectTopupContent() {
                 รับโบนัส 20% สำหรับการเติมเงินครั้งแรกในทุกเกม
               </p>
               <motion.button
-                className="w-full bg-black text-white px-3 py-2 rounded-lg text-xs font-bold border-[2px] border-black"
+                className="w-full bg-black text-white px-3 py-2 text-xs font-bold border-[2px] border-black"
                 style={{ boxShadow: '3px 3px 0 0 #000000' }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -275,7 +275,7 @@ function DirectTopupContent() {
         <div className="flex-1 min-w-0 space-y-6">
           {/* Header with search and filters */}
           <motion.div
-            className="bg-white rounded-xl border-[3px] border-black p-5"
+            className="bg-white border-[3px] border-black p-5"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -297,12 +297,12 @@ function DirectTopupContent() {
                     placeholder="ค้นหาเกม..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full md:w-64 rounded-lg bg-gray-50 border-[2px] border-gray-300 pl-10 pr-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
+                    className="w-full md:w-64 bg-gray-50 border-[2px] border-gray-300 pl-10 pr-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
                   />
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 </div>
 
-                <button className="bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 rounded-lg flex items-center gap-1.5 transition-all font-bold">
+                <button className="bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 flex items-center gap-1.5 transition-all font-bold">
                   <Filter size={16} /> ตัวกรอง
                 </button>
               </div>
@@ -333,11 +333,11 @@ function DirectTopupContent() {
                   transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
                 >
                   <Link href={`/games/${game.slug}`}>
-                    <div className="relative overflow-hidden rounded-xl bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
+                    <div className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
                       style={{ boxShadow: '4px 4px 0 0 #000000' }}
                     >
                       {game.discountPercent && game.discountPercent > 0 ? (
-                        <div className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white rounded-md border-[2px] border-black"
+                        <div className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
                           style={{ boxShadow: '2px 2px 0 0 #000000' }}
                         >
                           -{game.discountPercent}%
@@ -352,7 +352,7 @@ function DirectTopupContent() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
 
-                        <div className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 rounded-md font-bold"
+                        <div className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold"
                           style={{ boxShadow: '2px 2px 0 0 #000000' }}
                         >
                           <Star size={10} className="mr-0.5 text-brutal-yellow" fill="currentColor" /> {game.rating}
@@ -360,7 +360,7 @@ function DirectTopupContent() {
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div className="bg-brutal-yellow text-black px-4 py-2 rounded-lg text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
+                          <div className="bg-brutal-yellow text-black px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
                             style={{ boxShadow: '3px 3px 0 0 #000000' }}
                           >
                             เติมเกมเลย

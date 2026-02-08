@@ -277,7 +277,7 @@ export default function OrdersPage() {
             placeholder="ค้นหาคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black transition-all text-sm thai-font"
+            className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-all text-sm thai-font"
           />
           <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
         </div>
@@ -286,7 +286,7 @@ export default function OrdersPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black thai-font"
+            className="px-3 py-2 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black thai-font"
           >
             <option value="">ทั้งหมด</option>
             <option value="PENDING">รอดำเนินการ</option>

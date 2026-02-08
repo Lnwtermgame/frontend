@@ -41,7 +41,7 @@ export function ProductDescription({
           return (
             <div key={index} className="mb-4">
               <h4 className="text-lg font-bold text-black mb-2 thai-font flex items-center gap-2">
-                <span className="w-1.5 h-5 bg-brutal-pink rounded-sm"></span>
+                <span className="w-1.5 h-5 bg-brutal-pink"></span>
                 {parseContent(headerText)}
               </h4>
               <p className="text-gray-600 leading-relaxed">

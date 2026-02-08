@@ -117,7 +117,7 @@ export default function AdminPromotions() {
               <input
                 type="text"
                 placeholder="ค้นหาโปรโมชั่นหรือรหัส..."
-                className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-white border-[2px] border-gray-300 text-black pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -127,7 +127,7 @@ export default function AdminPromotions() {
                 <Info className="h-5 w-5 text-gray-500" />
               </div>
               <select
-                className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2 w-full appearance-none focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-white border-[2px] border-gray-300 text-black pl-10 pr-4 py-2 w-full appearance-none focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
@@ -158,13 +158,13 @@ export default function AdminPromotions() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/admin/promotions/settings">
-              <button className="bg-white border-[3px] border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <button className="bg-white border-[3px] border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
                 <Settings className="h-5 w-5" />
                 <span>ตั้งค่า</span>
               </button>
             </Link>
             <Link href="/admin/promotions/create">
-              <button className="bg-black text-white border-[3px] border-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <button className="bg-black text-white border-[3px] border-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
                 <Plus className="h-5 w-5" />
                 <span>สร้างโปรโมชั่น</span>
               </button>
@@ -174,7 +174,7 @@ export default function AdminPromotions() {
 
         {/* Promotions Table */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -212,13 +212,13 @@ export default function AdminPromotions() {
                         {promotion.title}
                       </td>
                       <td className="px-5 py-4">
-                        <span className="font-mono bg-gray-100 border-[2px] border-gray-300 px-2 py-1 rounded text-black">
+                        <span className="font-mono bg-gray-100 border-[2px] border-gray-300 px-2 py-1 text-black">
                           {promotion.code}
                         </span>
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`border-[2px] px-2 py-1 rounded text-xs font-medium ${getPromotionTypeStyles(promotion.type)}`}
+                          className={`border-[2px] px-2 py-1 text-xs font-medium ${getPromotionTypeStyles(promotion.type)}`}
                         >
                           {getPromotionTypeText(promotion.type)}
                         </span>
@@ -243,20 +243,20 @@ export default function AdminPromotions() {
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`px-2 py-1 rounded text-xs border-[2px] font-medium ${getStatusStyles(promotion.status)}`}
+                          className={`px-2 py-1 text-xs border-[2px] font-medium ${getStatusStyles(promotion.status)}`}
                         >
                           {getStatusText(promotion.status)}
                         </span>
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex space-x-2">
-                          <button className="p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors">
+                          <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors">
                             <Edit className="h-4 w-4" />
                           </button>
-                          <button className="p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-purple hover:text-white hover:border-black transition-colors">
+                          <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-purple hover:text-white hover:border-black transition-colors">
                             <ExternalLink className="h-4 w-4" />
                           </button>
-                          <button className="p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-red-500 hover:text-white hover:border-black transition-colors">
+                          <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-red-500 hover:text-white hover:border-black transition-colors">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
@@ -281,13 +281,13 @@ export default function AdminPromotions() {
               แสดง {filteredPromotions.length} จาก {promotions.length} โปรโมชั่น
             </div>
             <div className="flex space-x-1">
-              <button className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 rounded transition-colors font-medium">
+              <button className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors font-medium">
                 ก่อนหน้า
               </button>
-              <button className="px-3 py-1 text-sm bg-brutal-purple text-white border-[2px] border-black rounded font-medium">
+              <button className="px-3 py-1 text-sm bg-brutal-purple text-white border-[2px] border-black font-medium">
                 1
               </button>
-              <button className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 rounded transition-colors font-medium">
+              <button className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors font-medium">
                 ถัดไป
               </button>
             </div>
@@ -301,10 +301,10 @@ export default function AdminPromotions() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="flex items-center justify-between">
               <h3 className="text-black text-lg font-medium">ใช้งานอยู่</h3>
-              <div className="p-2 rounded-lg bg-green-100 border-[2px] border-green-500 text-green-700">
+              <div className="p-2 bg-green-100 border-[2px] border-green-500 text-green-700">
                 <Clock className="h-5 w-5" />
               </div>
             </div>
@@ -319,10 +319,10 @@ export default function AdminPromotions() {
             </div>
           </div>
 
-          <div className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="flex items-center justify-between">
               <h3 className="text-black text-lg font-medium">กำหนดเวลา</h3>
-              <div className="p-2 rounded-lg bg-amber-100 border-[2px] border-amber-500 text-amber-700">
+              <div className="p-2 bg-amber-100 border-[2px] border-amber-500 text-amber-700">
                 <Calendar className="h-5 w-5" />
               </div>
             </div>
@@ -337,10 +337,10 @@ export default function AdminPromotions() {
             </div>
           </div>
 
-          <div className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <div className="flex items-center justify-between">
               <h3 className="text-black text-lg font-medium">ใช้ทั้งหมด</h3>
-              <div className="p-2 rounded-lg bg-blue-100 border-[2px] border-blue-500 text-blue-700">
+              <div className="p-2 bg-blue-100 border-[2px] border-blue-500 text-blue-700">
                 <Tag className="h-5 w-5" />
               </div>
             </div>

@@ -117,13 +117,13 @@ export default function AdminOrders() {
               <input
                 type="text"
                 placeholder="ค้นหาคำสั่งซื้อ..."
-                className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-white border-[2px] border-gray-300 text-black pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <select
-              className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2 w-full sm:w-auto focus:border-black focus:outline-none"
+              className="bg-white border-[2px] border-gray-300 text-black px-4 py-2 w-full sm:w-auto focus:border-black focus:outline-none"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
@@ -138,14 +138,14 @@ export default function AdminOrders() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3">
             {error}
           </div>
         )}
 
         {/* Orders Table */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          className="bg-white border-[3px] border-black overflow-hidden"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -211,7 +211,7 @@ export default function AdminOrders() {
                             onChange={(e) =>
                               handleUpdateStatus(order.id, e.target.value)
                             }
-                            className={`px-2 py-1 rounded text-xs border-[2px] cursor-pointer font-medium focus:outline-none ${
+                            className={`px-2 py-1 text-xs border-[2px] cursor-pointer font-medium focus:outline-none ${
                               statusStyles[order.status] || statusStyles.pending
                             }`}
                           >
@@ -228,7 +228,7 @@ export default function AdminOrders() {
                         </td>
                         <td className="px-5 py-4">
                           <Link href={`/admin/orders/${order.id}`}>
-                            <button className="p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-pink hover:text-white hover:border-black transition-colors">
+                            <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-pink hover:text-white hover:border-black transition-colors">
                               <Eye className="h-4 w-4" />
                             </button>
                           </Link>
@@ -262,11 +262,11 @@ export default function AdminOrders() {
                     setPagination((p) => ({ ...p, page: p.page - 1 }))
                   }
                   disabled={pagination.page === 1}
-                  className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 rounded transition-colors disabled:opacity-50 font-medium"
+                  className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors disabled:opacity-50 font-medium"
                 >
                   ก่อนหน้า
                 </button>
-                <span className="px-3 py-1 text-sm bg-brutal-pink text-white border-[2px] border-black rounded font-medium">
+                <span className="px-3 py-1 text-sm bg-brutal-pink text-white border-[2px] border-black font-medium">
                   {pagination.page}
                 </span>
                 <button
@@ -274,7 +274,7 @@ export default function AdminOrders() {
                     setPagination((p) => ({ ...p, page: p.page + 1 }))
                   }
                   disabled={pagination.page >= pagination.totalPages}
-                  className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 rounded transition-colors disabled:opacity-50 font-medium"
+                  className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors disabled:opacity-50 font-medium"
                 >
                   ถัดไป
                 </button>

@@ -155,7 +155,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
-        <div className="bg-white border-[3px] border-black rounded-xl p-8 text-center max-w-md" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div className="bg-white border-[3px] border-black p-8 text-center max-w-md" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
           <ShoppingCart className="mx-auto text-gray-600 w-12 h-12 mb-4" />
           <h2 className="text-2xl font-bold text-black mb-2">
             ตะกร้าของคุณว่างเปล่า
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
           </p>
           <Link
             href="/products"
-            className="bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium inline-flex items-center hover:bg-gray-800 transition-colors" style={{ boxShadow: '3px 3px 0 0 #000000' }}
+            className="bg-black text-white border-[3px] border-black px-6 py-3 font-medium inline-flex items-center hover:bg-gray-800 transition-colors" style={{ boxShadow: '3px 3px 0 0 #000000' }}
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             เลือกดูสินค้า
@@ -206,11 +206,11 @@ export default function CheckoutPage() {
                 key={item.productId}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white border-[3px] border-black rounded-xl p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 {/* Item Header */}
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="w-20 h-20 bg-gray-100 border-2 border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-20 h-20 bg-gray-100 border-2 border-gray-200 overflow-hidden flex-shrink-0">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -253,7 +253,7 @@ export default function CheckoutPage() {
                         type="button"
                         onClick={() => removeItem(item.productId)}
                         aria-label="Remove item"
-                        className="text-red-500 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                        className="text-red-500 hover:text-red-600 p-2 hover:bg-red-50 transition-colors"
                       >
                         <Trash2 className="w-5 h-5" aria-hidden="true" />
                       </button>
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between pt-4 border-t-2 border-gray-200">
                   <div className="flex items-center gap-4">
                     <span className="text-gray-600">Quantity:</span>
-                    <div className="flex items-center border-[2px] border-gray-300 rounded-lg bg-white">
+                    <div className="flex items-center border-[2px] border-gray-300 bg-white">
                       <button
                         type="button"
                         onClick={() =>
@@ -322,7 +322,7 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white border-[3px] border-black rounded-xl p-6 sticky top-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div className="bg-white border-[3px] border-black p-6 sticky top-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <h2 className="text-xl font-bold text-black mb-6 flex items-center">
                 <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
                 Order Summary
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
 
               {/* Validation Status */}
               {!allFieldsValid && (
-                <div className="mb-4 p-4 bg-red-50 border-[2px] border-red-200 rounded-lg">
+                <div className="mb-4 p-4 bg-red-50 border-[2px] border-red-200">
                   <div className="flex items-center gap-2 text-red-600">
                     <AlertCircle className="w-5 h-5" />
                     <span className="text-sm">
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
               )}
 
               {allFieldsValid && (
-                <div className="mb-4 p-4 bg-green-50 border-[2px] border-green-200 rounded-lg">
+                <div className="mb-4 p-4 bg-green-50 border-[2px] border-green-200">
                   <div className="flex items-center gap-2 text-green-600">
                     <CheckCircle className="w-5 h-5" />
                     <span className="text-sm">All fields completed</span>
@@ -379,7 +379,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePlaceOrder}
                 disabled={!allFieldsValid || isSubmitting}
-                className="w-full bg-black text-white border-[3px] border-black py-4 rounded-xl font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2" style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                className="w-full bg-black text-white border-[3px] border-black py-4 font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2" style={{ boxShadow: '3px 3px 0 0 #000000' }}
               >
                 {isSubmitting ? (
                   <>

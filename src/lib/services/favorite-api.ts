@@ -5,9 +5,10 @@ export interface FavoriteProduct {
   name: string;
   slug: string;
   description?: string;
-  price: number;
   imageUrl?: string;
   categoryId: string;
+  // Prices are in seagmTypes (from product_types table)
+  seagmTypes?: { unitPrice: number; originPrice?: number }[];
 }
 
 export interface Favorite {

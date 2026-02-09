@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, productApi } from '@/lib/services/product-api';
-import { cn } from '@/lib/utils';
+import { cn, getMinPrice, formatPrice } from '@/lib/utils';
 import { Star, Clock } from 'lucide-react';
 import { motion } from '@/lib/framer-exports';
 
@@ -108,7 +108,7 @@ export function NewArrivals({ limit = 8, className }: NewArrivalsProps) {
                   </span>
                 </div>
                 <p className="mt-2 font-black text-brutal-pink text-lg">
-                  {product.price} ฿
+                  {formatPrice(getMinPrice(product.seagmTypes))}
                 </p>
               </div>
             </Link>

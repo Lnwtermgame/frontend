@@ -111,13 +111,7 @@ function transformProductToGameDetails(
     rating: 4.5,
     ratingCount: product.reviewCount || 0,
     screenshots: product.images?.map(img => img.url) || [],
-    topUpOptions: topUpOptions.length > 0 ? topUpOptions : [{
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      originalPrice: product.comparePrice || product.price,
-      isPopular: true,
-    }],
+    topUpOptions: topUpOptions.length > 0 ? topUpOptions : [],
     relatedGames: [],
     features: ["Instant Delivery", "Secure Payment", "24/7 Support"],
     mode: product.productType === "DIRECT_TOPUP" ? "directtopup" : "card",
@@ -923,7 +917,9 @@ export default function GameDetailsPage() {
                         </span>
                       </div>
                       <span className="text-xs text-black font-bold">
-                        ฿{similarGame.price.toFixed(0)}
+                        ฿{similarGame.seagmTypes && similarGame.seagmTypes.length > 0
+                          ? Math.min(...similarGame.seagmTypes.map(t => t.unitPrice)).toFixed(0)
+                          : "0"}
                       </span>
                     </div>
                   </div>

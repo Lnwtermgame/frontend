@@ -29,11 +29,11 @@ export function SocialMediaIntegration({
   onDisconnect,
   className = ""
 }: SocialMediaIntegrationProps) {
-  
+
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
+
   // Default platforms if none provided
   const defaultPlatforms: SocialPlatform[] = [
     {
@@ -72,14 +72,14 @@ export function SocialMediaIntegration({
       color: '#9146FF'
     }
   ];
-  
+
   const displayPlatforms = platforms.length > 0 ? platforms : defaultPlatforms;
-  
+
   const handleConnect = async (platformId: string) => {
     setIsConnecting(platformId);
     setSuccessMessage(null);
     setErrorMessage(null);
-    
+
     try {
       await onConnect(platformId);
       setSuccessMessage(`Successfully connected to ${displayPlatforms.find(p => p.id === platformId)?.name}`);
@@ -91,12 +91,12 @@ export function SocialMediaIntegration({
       setIsConnecting(null);
     }
   };
-  
+
   const handleDisconnect = async (platformId: string) => {
     setIsConnecting(platformId);
     setSuccessMessage(null);
     setErrorMessage(null);
-    
+
     try {
       await onDisconnect(platformId);
       setSuccessMessage(`Successfully disconnected from ${displayPlatforms.find(p => p.id === platformId)?.name}`);
@@ -108,76 +108,79 @@ export function SocialMediaIntegration({
       setIsConnecting(null);
     }
   };
-  
+
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Title Section */}
       <div className="flex items-center space-x-3">
-        <div className="h-10 w-10 rounded-full bg-mali-blue/30 flex items-center justify-center">
-          <Globe className="h-5 w-5 text-mali-blue-light" />
+        <div className="h-10 w-10 bg-brutal-blue/20 border-2 border-black flex items-center justify-center">
+          <Globe className="h-5 w-5 text-brutal-blue" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white">Social Accounts</h2>
-          <p className="text-mali-text-secondary text-sm">Connect your social media accounts to share progress and get rewards</p>
+          <h2 className="text-xl font-bold text-black">Social Accounts</h2>
+          <p className="text-gray-600 text-sm">Connect your social media accounts to share progress and get rewards</p>
         </div>
       </div>
-      
+
       {/* Notification Messages */}
       {(successMessage || errorMessage) && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          className={`p-4 rounded-lg ${successMessage ? 'bg-green-900/30 border border-green-500/30' : 'bg-red-900/30 border border-red-500/30'}`}
+          className={`p-4 border-2 border-black ${successMessage ? 'bg-green-100' : 'bg-red-100'}`}
+          style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
           <div className="flex items-center">
             {successMessage ? (
-              <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
+              <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
             ) : (
-              <XCircle className="h-5 w-5 text-red-400 mr-2" />
+              <XCircle className="h-5 w-5 text-red-600 mr-2" />
             )}
-            <span className={successMessage ? 'text-green-400' : 'text-red-400'}>
+            <span className={successMessage ? 'text-green-700' : 'text-red-700'}>
               {successMessage || errorMessage}
             </span>
           </div>
         </motion.div>
       )}
-      
+
       {/* Platforms List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {displayPlatforms.map((platform) => (
           <motion.div
             key={platform.id}
-            className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
-            whileHover={{ y: -4, boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.3)' }}
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            whileHover={{ y: -4, boxShadow: '6px 6px 0 0 #000000' }}
             transition={{ duration: 0.2 }}
           >
             <div className="p-5">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
-                  <div 
-                    className="h-12 w-12 rounded-full flex items-center justify-center"
+                  <div
+                    className="h-12 w-12 border-2 border-black flex items-center justify-center"
                     style={{ backgroundColor: `${platform.color}20` }}
                   >
                     <span className="text-2xl" style={{ color: platform.color }}>{platform.icon}</span>
                   </div>
                   <div>
-                    <h3 className="text-white font-medium">{platform.name}</h3>
+                    <h3 className="text-black font-medium">{platform.name}</h3>
                     {platform.connected ? (
-                      <span className="text-green-400 text-sm flex items-center">
+                      <span className="text-green-600 text-sm flex items-center">
                         <CheckCircle className="h-3 w-3 mr-1" /> Connected
                       </span>
                     ) : (
-                      <span className="text-mali-text-secondary text-sm">Not connected</span>
+                      <span className="text-gray-600 text-sm">Not connected</span>
                     )}
                   </div>
                 </div>
-                
+
                 {platform.connected ? (
                   <button
                     onClick={() => handleDisconnect(platform.id)}
                     disabled={isConnecting === platform.id}
-                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 rounded-md text-sm transition-colors"
+                    className="px-3 py-1.5 bg-red-100 hover:bg-red-200 border-2 border-black text-red-700 text-sm transition-colors font-medium"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     {isConnecting === platform.id ? 'Processing...' : 'Disconnect'}
                   </button>
@@ -185,33 +188,34 @@ export function SocialMediaIntegration({
                   <button
                     onClick={() => handleConnect(platform.id)}
                     disabled={isConnecting === platform.id}
-                    className="px-3 py-1.5 bg-mali-blue/10 hover:bg-mali-blue/20 border border-mali-blue/20 text-mali-blue-light rounded-md text-sm transition-colors"
+                    className="px-3 py-1.5 bg-brutal-blue/20 hover:bg-brutal-blue/30 border-2 border-black text-brutal-blue text-sm transition-colors font-medium"
+                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
                   >
                     {isConnecting === platform.id ? 'Connecting...' : 'Connect'}
                   </button>
                 )}
               </div>
-              
+
               {platform.connected && platform.username && (
-                <div className="mt-4 bg-mali-blue/10 rounded-md p-3">
+                <div className="mt-4 bg-gray-100 border-2 border-black p-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="text-mali-text-secondary text-xs">Username:</span>
-                      <span className="text-white text-sm ml-2">{platform.username}</span>
+                      <span className="text-gray-600 text-xs">Username:</span>
+                      <span className="text-black text-sm ml-2 font-medium">{platform.username}</span>
                     </div>
                     {platform.followers !== undefined && (
-                      <div className="text-mali-blue-light text-sm">
+                      <div className="text-brutal-blue text-sm font-medium">
                         {platform.followers.toLocaleString()} followers
                       </div>
                     )}
                   </div>
-                  
+
                   {platform.profileUrl && (
-                    <Link 
-                      href={platform.profileUrl} 
-                      target="_blank" 
+                    <Link
+                      href={platform.profileUrl}
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 text-mali-blue-light hover:text-mali-blue-accent text-sm inline-flex items-center"
+                      className="mt-2 text-brutal-blue hover:underline text-sm inline-flex items-center font-medium"
                     >
                       View Profile
                       <Globe className="h-3 w-3 ml-1" />
@@ -223,31 +227,31 @@ export function SocialMediaIntegration({
           </motion.div>
         ))}
       </div>
-      
+
       {/* Benefits Section */}
-      <div className="bg-gradient-to-r from-mali-blue/20 to-mali-purple/20 border border-mali-blue/30 rounded-xl p-5 mt-6">
-        <h3 className="text-white font-medium mb-3">Why Connect Social Accounts?</h3>
+      <div className="bg-brutal-gray border-[3px] border-black p-5 mt-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <h3 className="text-black font-bold mb-3">Why Connect Social Accounts?</h3>
         <ul className="space-y-2 text-sm">
           <li className="flex items-start">
-            <div className="h-5 w-5 rounded-full bg-mali-blue/30 flex items-center justify-center mr-3 mt-0.5">
-              <div className="h-2 w-2 rounded-full bg-mali-blue-light"></div>
+            <div className="h-5 w-5 bg-brutal-blue/20 border-2 border-black flex items-center justify-center mr-3 mt-0.5">
+              <div className="h-2 w-2 bg-brutal-blue"></div>
             </div>
-            <span className="text-mali-text-secondary">Share your gaming achievements with your friends</span>
+            <span className="text-gray-600">Share your gaming achievements with your friends</span>
           </li>
           <li className="flex items-start">
-            <div className="h-5 w-5 rounded-full bg-mali-blue/30 flex items-center justify-center mr-3 mt-0.5">
-              <div className="h-2 w-2 rounded-full bg-mali-blue-light"></div>
+            <div className="h-5 w-5 bg-brutal-blue/20 border-2 border-black flex items-center justify-center mr-3 mt-0.5">
+              <div className="h-2 w-2 bg-brutal-blue"></div>
             </div>
-            <span className="text-mali-text-secondary">Earn bonus points when friends use your referral</span>
+            <span className="text-gray-600">Earn bonus points when friends use your referral</span>
           </li>
           <li className="flex items-start">
-            <div className="h-5 w-5 rounded-full bg-mali-blue/30 flex items-center justify-center mr-3 mt-0.5">
-              <div className="h-2 w-2 rounded-full bg-mali-blue-light"></div>
+            <div className="h-5 w-5 bg-brutal-blue/20 border-2 border-black flex items-center justify-center mr-3 mt-0.5">
+              <div className="h-2 w-2 bg-brutal-blue"></div>
             </div>
-            <span className="text-mali-text-secondary">Participate in exclusive social media promotions</span>
+            <span className="text-gray-600">Participate in exclusive social media promotions</span>
           </li>
         </ul>
       </div>
     </div>
   );
-} 
+}

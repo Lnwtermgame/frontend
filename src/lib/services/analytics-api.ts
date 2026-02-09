@@ -166,9 +166,9 @@ export interface PopularProduct {
   id: string;
   name: string;
   imageUrl: string | null;
-  price: number;
   salesCount: number;
-  stockQuantity: number;
+  // Prices are in seagmTypes
+  seagmTypes?: { unitPrice: number; originPrice?: number }[];
 }
 
 export interface ChartData {

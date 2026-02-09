@@ -81,15 +81,12 @@ export interface Product {
   slug: string;
   description?: string;
   shortDescription?: string;
-  price: number;
-  comparePrice?: number;
   categoryId: string;
   category?: {
     id: string;
     name: string;
     slug: string;
   };
-  stockQuantity: number;
   imageUrl?: string;
   images?: ProductImage[];
   productType: "CARD" | "DIRECT_TOPUP";

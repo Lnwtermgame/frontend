@@ -147,10 +147,10 @@ export default function DynamicProductFields({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label htmlFor={field.name} className="block text-sm font-medium text-white">
+        <label htmlFor={field.name} className="block text-sm font-medium text-gray-900">
           {field.label}
           {field.required !== false && (
-            <span className="text-red-400 ml-1" aria-hidden="true">*</span>
+            <span className="text-red-500 ml-1" aria-hidden="true">*</span>
           )}
         </label>
         {field.multiline ? (
@@ -163,16 +163,16 @@ export default function DynamicProductFields({
             disabled={disabled}
             rows={3}
             autoComplete="off"
-            className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:outline-none transition-all resize-none ${
+            className={`w-full bg-white border-[2px] px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:outline-none transition-all resize-none ${
               hasError
                 ? "border-red-500 focus:ring-red-500/20"
-                : "border-mali-blue/20 focus:ring-mali-blue/50 focus:border-mali-blue"
+                : "border-black focus:ring-brutal-blue/50 focus:border-brutal-blue"
             }`}
           />
         ) : (
           <div className="relative">
             {field.prefix && (
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
                 {field.prefix}
               </span>
             )}
@@ -185,12 +185,12 @@ export default function DynamicProductFields({
               placeholder={field.placeholder}
               disabled={disabled}
               autoComplete="off"
-              className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:ring-2 focus:outline-none transition-all ${
+              className={`w-full bg-white border-[2px] px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:outline-none transition-all ${
                 field.prefix ? "pl-10" : ""
               } ${
                 hasError
                   ? "border-red-500 focus:ring-red-500/20"
-                  : "border-mali-blue/20 focus:ring-mali-blue/50 focus:border-mali-blue"
+                  : "border-black focus:ring-brutal-blue/50 focus:border-brutal-blue"
               }`}
             />
           </div>
@@ -199,7 +199,7 @@ export default function DynamicProductFields({
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-red-400 text-sm flex items-center gap-1"
+            className="text-red-500 text-sm flex items-center gap-1"
           >
             <AlertCircle className="w-4 h-4" />
             {errors[field.name]}
@@ -216,10 +216,10 @@ export default function DynamicProductFields({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label htmlFor={field.name} className="block text-sm font-medium text-white">
+        <label htmlFor={field.name} className="block text-sm font-medium text-gray-900">
           {field.label}
           {field.required !== false && (
-            <span className="text-red-400 ml-1" aria-hidden="true">*</span>
+            <span className="text-red-500 ml-1" aria-hidden="true">*</span>
           )}
         </label>
         <select
@@ -229,13 +229,13 @@ export default function DynamicProductFields({
           onBlur={() => handleBlur(field.name)}
           disabled={disabled}
           autoComplete="off"
-          className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
+          className={`w-full bg-white border-[2px] px-4 py-3 text-gray-900 focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
             hasError
               ? "border-red-500 focus:ring-red-500/20"
-              : "border-mali-blue/20 focus:ring-mali-blue/50 focus:border-mali-blue"
+              : "border-black focus:ring-brutal-blue/50 focus:border-brutal-blue"
           }`}
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 12px center",
             backgroundSize: "16px",
@@ -252,7 +252,7 @@ export default function DynamicProductFields({
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-red-400 text-sm flex items-center gap-1"
+            className="text-red-500 text-sm flex items-center gap-1"
           >
             <AlertCircle className="w-4 h-4" />
             {errors[field.name]}
@@ -282,13 +282,13 @@ export default function DynamicProductFields({
 
                     return (
                       <div key={childField.name} className="space-y-2">
-                        <label className="block text-sm font-medium text-white">
+                        <label className="block text-sm font-medium text-gray-900">
                           {childField.label}
-                          <span className="text-red-400 ml-1">*</span>
+                          <span className="text-red-500 ml-1">*</span>
                         </label>
                         <div className="relative">
                           {childField.prefix && (
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
                               {childField.prefix}
                             </span>
                           )}
@@ -299,15 +299,15 @@ export default function DynamicProductFields({
                             }
                             onBlur={() => handleBlur(childField.name)}
                             disabled={disabled}
-                            className={`w-full bg-mali-card border rounded-lg px-4 py-3 text-white focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
+                            className={`w-full bg-white border-[2px] px-4 py-3 text-gray-900 focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
                               childField.prefix ? "pl-10" : ""
                             } ${
                               childHasError
                                 ? "border-red-500 focus:ring-red-500/20"
-                                : "border-mali-blue/20 focus:ring-mali-blue/50 focus:border-mali-blue"
+                                : "border-black focus:ring-brutal-blue/50 focus:border-brutal-blue"
                             }`}
                             style={{
-                              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
                               backgroundRepeat: "no-repeat",
                               backgroundPosition: "right 12px center",
                               backgroundSize: "16px",
@@ -325,7 +325,7 @@ export default function DynamicProductFields({
                           <motion.p
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="text-red-400 text-sm flex items-center gap-1"
+                            className="text-red-500 text-sm flex items-center gap-1"
                           >
                             <AlertCircle className="w-4 h-4" />
                             {errors[childField.name]}
@@ -356,9 +356,9 @@ export default function DynamicProductFields({
 
   if (state.loading) {
     return (
-      <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-6">
+      <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 text-mali-blue animate-spin" />
+          <Loader2 className="w-8 h-8 text-brutal-blue animate-spin" />
         </div>
       </div>
     );
@@ -366,12 +366,12 @@ export default function DynamicProductFields({
 
   if (state.error) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
-        <div className="flex items-center gap-3 text-red-400">
+      <div className="bg-red-100 border-[3px] border-red-500 p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div className="flex items-center gap-3 text-red-600">
           <AlertCircle className="w-6 h-6" />
           <div>
             <p className="font-medium">Failed to load product fields</p>
-            <p className="text-sm text-red-300">{state.error}</p>
+            <p className="text-sm text-red-500">{state.error}</p>
           </div>
         </div>
       </div>
@@ -381,8 +381,8 @@ export default function DynamicProductFields({
   // No fields required (CARD products or no fields configured)
   if (state.fields.length === 0) {
     return (
-      <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
-        <div className="flex items-center gap-3 text-green-400">
+      <div className="bg-brutal-green/20 border-[3px] border-brutal-green p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div className="flex items-center gap-3 text-green-700">
           <CheckCircle2 className="w-6 h-6" />
           <div>
             <p className="font-medium">
@@ -390,7 +390,7 @@ export default function DynamicProductFields({
                 ? "No additional information required"
                 : "Product ready"}
             </p>
-            <p className="text-sm text-green-300">
+            <p className="text-sm text-green-600">
               {state.productType === "CARD"
                 ? "Gift card PIN will be delivered after payment."
                 : "This product doesn't require any additional fields."}
@@ -402,9 +402,9 @@ export default function DynamicProductFields({
   }
 
   return (
-    <div className="bg-mali-card rounded-xl border border-mali-blue/20 p-6">
+    <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-gray-900">
           Required Information
         </h3>
         {state.fromCache && (
@@ -430,9 +430,9 @@ export default function DynamicProductFields({
 
       {/* Helper text for direct top-up */}
       {state.productType === "DIRECT_TOPUP" && (
-        <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-          <p className="text-sm text-blue-300">
-            <strong className="text-blue-200">Important:</strong> Please double-check
+        <div className="mt-6 p-4 bg-brutal-blue/10 border-[2px] border-brutal-blue">
+          <p className="text-sm text-gray-700">
+            <strong className="text-gray-900">Important:</strong> Please double-check
             your information before proceeding. Incorrect details may result in
             failed delivery.
           </p>

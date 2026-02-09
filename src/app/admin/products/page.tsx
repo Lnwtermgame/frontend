@@ -231,8 +231,6 @@ export default function AdminProducts() {
                     <th className="px-5 py-3 text-left">สินค้า</th>
                     <th className="px-5 py-3 text-left">ประเภท</th>
                     <th className="px-5 py-3 text-left">หมวดหมู่</th>
-                    <th className="px-5 py-3 text-left">ราคา</th>
-                    <th className="px-5 py-3 text-left">สต็อก</th>
                     <th className="px-5 py-3 text-left">สถานะ</th>
                     <th className="px-5 py-3 text-left">การดำเนินการ</th>
                   </tr>
@@ -272,8 +270,6 @@ export default function AdminProducts() {
                         <td className="px-5 py-4 text-gray-700">
                           {product.category?.name || "-"}
                         </td>
-                        <td className="px-5 py-4 text-black font-medium">{product.price} ฿</td>
-                        <td className="px-5 py-4 text-black">{product.stockQuantity}</td>
                         <td className="px-5 py-4">
                           <span
                             className={`px-2 py-1 text-xs border-[2px] font-medium ${getStatusStyles(product)}`}
@@ -302,7 +298,7 @@ export default function AdminProducts() {
                     <tr>
                       <td
                         className="px-5 py-8 text-center text-gray-500"
-                        colSpan={6}
+                        colSpan={4}
                       >
                         ไม่พบสินค้าที่ตรงกับเงื่อนไขการค้นหา
                       </td>

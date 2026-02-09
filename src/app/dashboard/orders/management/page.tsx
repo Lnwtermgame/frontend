@@ -81,8 +81,8 @@ export default function OrderManagementPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-mali-blue border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-mali-text-secondary thai-font">กำลังโหลด...</p>
+          <div className="w-16 h-16 border-4 border-black border-t-transparent animate-spin"></div>
+          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -94,31 +94,31 @@ export default function OrderManagementPage() {
       case "delivered":
       case "completed":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-green/20 text-mali-green border border-mali-green/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-700 border border-black thai-font">
             <CheckCircle className="w-3 h-3 mr-1" /> จัดส่งแล้ว
           </span>
         );
       case "processing":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-blue/20 text-mali-blue-light border border-mali-blue/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 border border-black thai-font">
             <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
       case "shipped":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-purple/20 text-mali-purple border border-mali-purple/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 border border-black thai-font">
             <Truck className="w-3 h-3 mr-1" /> จัดส่งสินค้าแล้ว
           </span>
         );
       case "cancelled":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mali-red/20 text-mali-red border border-mali-red/20 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 text-xs font-medium bg-red-100 text-red-700 border border-black thai-font">
             <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-500/20 text-gray-400 border border-gray-500/20">
+          <span className="inline-flex items-center px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 border border-black">
             {status}
           </span>
         );
@@ -132,17 +132,17 @@ export default function OrderManagementPage() {
         <div className="flex justify-between items-start">
           <div>
             <motion.h2
-              className="text-xl font-bold text-white mb-1 relative thai-font"
+              className="text-xl font-bold text-black mb-1 relative thai-font"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
               การจัดการคำสั่งซื้อ
             </motion.h2>
-            <p className="text-mali-text-secondary text-sm relative thai-font">
+            <p className="text-gray-600 text-sm relative thai-font">
               จัดการและติดตามคำสั่งซื้อทั้งหมด
             </p>
           </div>
-          <button className="bg-mali-blue hover:bg-mali-blue/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center shadow-button-glow thai-font">
+          <button className="bg-brutal-blue hover:bg-blue-600 text-white border-[3px] border-black px-4 py-2 text-sm font-medium transition-colors flex items-center thai-font" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <Download className="h-4 w-4 mr-2" />
             ส่งออกรายงาน
           </button>
@@ -157,16 +157,16 @@ export default function OrderManagementPage() {
             placeholder="ค้นหารหัสคำสั่งซื้อหรือลูกค้า..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white placeholder-mali-text-secondary focus:outline-none focus:ring-1 focus:ring-mali-blue-accent transition-colors thai-font"
+            className="w-full pl-10 pr-4 py-2 bg-white border-[3px] border-black text-black placeholder-gray-500 focus:outline-none focus:ring-0 transition-colors thai-font"
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mali-text-secondary" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-600" />
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-mali-blue/10 border border-mali-blue/20 rounded-lg text-white px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-mali-blue-accent cursor-pointer thai-font"
+            className="bg-white border-[3px] border-black text-black px-4 py-2 text-sm focus:outline-none focus:ring-0 cursor-pointer thai-font"
           >
             <option value="all">สถานะทั้งหมด</option>
             <option value="processing">กำลังดำเนินการ</option>
@@ -175,11 +175,11 @@ export default function OrderManagementPage() {
             <option value="cancelled">ยกเลิกแล้ว</option>
           </select>
 
-          <button className="bg-mali-blue/10 border border-mali-blue/20 p-2 rounded-lg text-mali-text-secondary hover:text-white transition-colors">
+          <button className="bg-white border-[3px] border-black p-2 text-gray-600 hover:bg-gray-50 transition-colors" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <Filter className="h-4 w-4" />
           </button>
 
-          <button className="bg-mali-blue/10 border border-mali-blue/20 p-2 rounded-lg text-mali-text-secondary hover:text-white transition-colors">
+          <button className="bg-white border-[3px] border-black p-2 text-gray-600 hover:bg-gray-50 transition-colors" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <Calendar className="h-4 w-4" />
           </button>
         </div>
@@ -187,13 +187,14 @@ export default function OrderManagementPage() {
 
       {/* Orders Table */}
       <motion.div
-        className="bg-mali-card border border-mali-blue/20 rounded-xl overflow-hidden"
+        className="bg-white border-[3px] border-black overflow-hidden"
+        style={{ boxShadow: '4px 4px 0 0 #000000' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-mali-blue/10 border-b border-mali-blue/20 text-xs uppercase text-mali-text-secondary font-medium">
+            <thead className="bg-gray-50 border-b-[3px] border-black text-xs uppercase text-gray-600 font-medium">
               <tr>
                 <th className="px-6 py-4 thai-font">รหัสคำสั่งซื้อ</th>
                 <th className="px-6 py-4 thai-font">ลูกค้า</th>
@@ -204,24 +205,24 @@ export default function OrderManagementPage() {
                 <th className="px-6 py-4 text-right thai-font">การดำเนินการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-mali-blue/10">
+            <tbody className="divide-y divide-gray-200">
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order, index) => (
                   <motion.tr
                     key={order.id}
-                    className="hover:bg-mali-blue/5 transition-colors"
+                    className="hover:bg-gray-50 transition-colors"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <td className="px-6 py-4 font-medium text-white">{order.id}</td>
-                    <td className="px-6 py-4 text-mali-text-secondary text-sm">{order.customer}</td>
-                    <td className="px-6 py-4 text-mali-text-secondary text-sm">{order.date}</td>
-                    <td className="px-6 py-4 text-mali-text-secondary text-sm">{order.items}</td>
-                    <td className="px-6 py-4 text-white font-medium">{order.total}</td>
+                    <td className="px-6 py-4 font-medium text-black">{order.id}</td>
+                    <td className="px-6 py-4 text-gray-600 text-sm">{order.customer}</td>
+                    <td className="px-6 py-4 text-gray-600 text-sm">{order.date}</td>
+                    <td className="px-6 py-4 text-gray-600 text-sm">{order.items}</td>
+                    <td className="px-6 py-4 text-black font-medium">{order.total}</td>
                     <td className="px-6 py-4">{renderStatusBadge(order.status)}</td>
                     <td className="px-6 py-4 text-right">
-                      <button className="p-1.5 hover:bg-mali-blue/20 rounded-lg text-mali-text-secondary hover:text-white transition-colors">
+                      <button className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors border-[3px] border-transparent hover:border-black">
                         <MoreHorizontal className="h-4 w-4" />
                       </button>
                     </td>
@@ -229,7 +230,7 @@ export default function OrderManagementPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-mali-text-secondary">
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-600">
                     <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
                     <p className="thai-font">ไม่พบคำสั่งซื้อที่ตรงตามเงื่อนไข</p>
                   </td>
@@ -240,15 +241,15 @@ export default function OrderManagementPage() {
         </div>
 
         {/* Pagination */}
-        <div className="p-4 border-t border-mali-blue/20 flex items-center justify-between">
-          <p className="text-xs text-mali-text-secondary thai-font">
-            แสดง <span className="font-medium text-white">1</span> ถึง <span className="font-medium text-white">{filteredOrders.length}</span> จาก <span className="font-medium text-white">{filteredOrders.length}</span> รายการ
+        <div className="p-4 border-t-[3px] border-black flex items-center justify-between">
+          <p className="text-xs text-gray-600 thai-font">
+            แสดง <span className="font-medium text-black">1</span> ถึง <span className="font-medium text-black">{filteredOrders.length}</span> จาก <span className="font-medium text-black">{filteredOrders.length}</span> รายการ
           </p>
           <div className="flex gap-2">
-            <button className="p-1.5 rounded-lg border border-mali-blue/20 text-mali-text-secondary opacity-50 cursor-not-allowed">
+            <button className="p-1.5 border-[3px] border-black text-gray-600 opacity-50 cursor-not-allowed">
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button className="p-1.5 rounded-lg border border-mali-blue/20 text-mali-text-secondary hover:text-white hover:bg-mali-blue/10 transition-colors">
+            <button className="p-1.5 border-[3px] border-black text-gray-600 hover:text-black hover:bg-gray-50 transition-colors" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -256,4 +257,4 @@ export default function OrderManagementPage() {
       </motion.div>
     </div>
   );
-} 
+}

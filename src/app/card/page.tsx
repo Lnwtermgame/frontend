@@ -19,10 +19,18 @@ interface CardProduct {
 
 // Transform Product to CardProduct
 function transformProductToCard(product: Product): CardProduct {
-  // Get starting price from seagmTypes (lowest unitPrice) or fallback to product price
+  // Get starting price from seagmTypes (lowest unitPrice)
   const startingPrice = product.seagmTypes && product.seagmTypes.length > 0
     ? Math.min(...product.seagmTypes.map(t => Number(t.unitPrice)))
-    : Number(product.price);
+    : 0;
+
+  // Calculate discount from originPrice if available
+  const originPrice = product.seagmTypes && product.seagmTypes.length > 0
+    ? Math.max(...product.seagmTypes.map(t => Number(t.originPrice || t.unitPrice)))
+    : 0;
+  const discountPercent = originPrice > startingPrice
+    ? Math.round(((originPrice - startingPrice) / originPrice) * 100)
+    : 0;
 
   return {
     id: product.id,
@@ -30,7 +38,7 @@ function transformProductToCard(product: Product): CardProduct {
     name: product.name,
     category: product.category?.name || 'Gift Card',
     price: startingPrice,
-    discountPercent: product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0,
+    discountPercent: discountPercent,
     image: product.imageUrl || `https://placehold.co/400x300?text=${encodeURIComponent(product.name)}`,
   };
 }

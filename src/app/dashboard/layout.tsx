@@ -39,7 +39,7 @@ export default function AccountLayout({
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="bg-mali-card rounded-2xl border border-mali-blue/20 overflow-hidden sticky top-24 shadow-lg">
+          <div className="bg-white border-[3px] border-black overflow-hidden sticky top-24" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
             <UserSidebar />
           </div>
         </motion.aside>

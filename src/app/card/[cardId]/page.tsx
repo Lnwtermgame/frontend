@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift, Loader2, AlertCircle } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
+import { getMinPrice, formatPrice } from "@/lib/utils";
 
 // Card details interface matching the UI expectations
 interface CardDetails {
@@ -38,11 +39,7 @@ function transformProductToCardDetails(product: Product): CardDetails {
     id: type.id,
     value: type.name,
     price: type.unitPrice,
-  })) || [{
-    id: product.id,
-    value: product.name,
-    price: product.price,
-  }];
+  })) || [];
 
   // Extract regions from attributes if available
   const regions: string[] = [];
@@ -498,7 +495,9 @@ export default function CardDetailPage() {
                       <p className="text-black text-sm font-bold line-clamp-1 mb-1">{relatedProduct.name}</p>
                       <div className="flex items-center justify-between">
                         <div className="text-gray-600 text-xs">{relatedProduct.category?.name || 'Gift Card'}</div>
-                        <div className="text-xs text-black font-bold">฿{relatedProduct.price.toFixed(0)}</div>
+                        <div className="text-xs text-black font-bold">
+                          {formatPrice(getMinPrice(relatedProduct.seagmTypes))}
+                        </div>
                       </div>
                     </div>
                   </motion.div>

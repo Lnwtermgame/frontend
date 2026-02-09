@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { analyticsApi, DashboardStats, RecentOrder, PopularProduct } from "@/lib/services/analytics-api";
+import { getMinPrice, formatPrice } from "@/lib/utils";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
 
@@ -156,7 +157,7 @@ export default function AdminDashboard() {
     <AdminLayout title="แดชบอร์ดผู้ดูแลระบบ">
       <div className="space-y-8">
         {error && (
-          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3 ">
             {error}
           </div>
         )}
@@ -230,7 +231,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Orders */}
           <motion.div
-            className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+            className="bg-white border-[3px] border-black  overflow-hidden"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -305,7 +306,7 @@ export default function AdminDashboard() {
 
           {/* Popular Products */}
           <motion.div
-            className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+            className="bg-white border-[3px] border-black  overflow-hidden"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -327,12 +328,12 @@ export default function AdminDashboard() {
                   {data.popularProducts.map((product, index) => (
                     <div
                       key={product.id}
-                      className="flex items-center space-x-4 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
+                      className="flex items-center space-x-4 p-3  bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
                     >
                       <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-brutal-yellow border-[2px] border-black rounded text-black font-bold">
                         {index + 1}
                       </div>
-                      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white border-[2px] border-black overflow-hidden">
+                      <div className="flex-shrink-0 w-12 h-12  bg-white border-[2px] border-black overflow-hidden">
                         {product.imageUrl ? (
                           <img
                             src={product.imageUrl}
@@ -355,10 +356,10 @@ export default function AdminDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium text-black">
-                          {formatCurrency(product.price)}
+                          {formatPrice(getMinPrice(product.seagmTypes))}
                         </p>
-                        <p className={`text-xs ${product.stockQuantity <= 10 ? 'text-red-600 font-medium' : 'text-green-600 font-medium'}`}>
-                          คงเหลือ: {product.stockQuantity}
+                        <p className="text-xs text-green-600 font-medium">
+                          ขายแล้ว: {product.salesCount.toLocaleString()} ชิ้น
                         </p>
                       </div>
                     </div>
@@ -438,7 +439,7 @@ function StatsCard({
 }: StatsCardProps) {
   return (
     <motion.div
-      className="bg-white border-[3px] border-black rounded-xl p-6 flex flex-col"
+      className="bg-white border-[3px] border-black  p-6 flex flex-col"
       style={{ boxShadow: '4px 4px 0 0 #000000' }}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -449,7 +450,7 @@ function StatsCard({
           {title}
         </span>
         <span
-          className={`p-2 rounded-lg text-white ${colorClasses[color]}`}
+          className={`p-2  text-white ${colorClasses[color]}`}
         >
           {icon}
         </span>
@@ -499,7 +500,7 @@ function QuickStatCard({ title, value, icon, color, link }: QuickStatCardProps) 
   return (
     <Link href={link}>
       <motion.div
-        className={`p-4 rounded-xl border-[3px] ${quickStatColorClasses[color]} flex items-center justify-between hover:opacity-80 transition-opacity`}
+        className={`p-4  border-[3px] ${quickStatColorClasses[color]} flex items-center justify-between hover:opacity-80 transition-opacity`}
         style={{ boxShadow: '4px 4px 0 0 #000000' }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -525,13 +526,13 @@ function QuickLinkCard({ title, description, icon, href }: QuickLinkCardProps) {
   return (
     <Link href={href}>
       <motion.div
-        className="bg-white border-[3px] border-black rounded-xl p-4 hover:border-brutal-pink transition-colors"
+        className="bg-white border-[3px] border-black  p-4 hover:border-brutal-pink transition-colors"
         style={{ boxShadow: '4px 4px 0 0 #000000' }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         <div className="flex items-start space-x-3">
-          <div className="p-2 rounded-lg bg-brutal-yellow border-[2px] border-black text-black">
+          <div className="p-2  bg-brutal-yellow border-[2px] border-black text-black">
             {icon}
           </div>
           <div>

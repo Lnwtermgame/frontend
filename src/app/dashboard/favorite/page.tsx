@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { favoriteApi, Favorite } from "@/lib/services/favorite-api";
+import { getMinPrice, formatPrice } from "@/lib/utils";
 import { Heart, ShoppingCart, Trash2, Search, ExternalLink, Package } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
@@ -169,7 +170,9 @@ export default function FavoritePage() {
                   {item.product.name}
                 </h3>
                 <p className="text-gray-600 text-sm mb-3">
-                  {item.product.price > 0 ? formatCurrency(item.product.price) : 'เลือกดูราคา'}
+                  {item.product.seagmTypes && item.product.seagmTypes.length > 0
+                    ? formatPrice(getMinPrice(item.product.seagmTypes))
+                    : 'เลือกดูราคา'}
                 </p>
 
                 <div className="flex gap-2">

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, productApi } from '@/lib/services/product-api';
-import { cn } from '@/lib/utils';
+import { cn, getMinPrice, formatPrice } from '@/lib/utils';
 import { Star, TrendingUp } from 'lucide-react';
 import { motion } from '@/lib/framer-exports';
 
@@ -120,7 +120,7 @@ export function BestsellerProducts({ limit = 8, className }: BestsellerProductsP
                 </div>
                 <div className="mt-2 flex items-center justify-between">
                   <p className="font-black text-brutal-pink text-lg">
-                    {product.price} ฿
+                    {formatPrice(getMinPrice(product.seagmTypes))}
                   </p>
                   {product.salesCount && (
                     <span className="text-xs text-gray-500 font-medium">

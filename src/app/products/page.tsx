@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { productApi, Product, Category } from "@/lib/services/product-api";
+import { getMinPrice, formatPrice } from "@/lib/utils";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -243,13 +244,8 @@ export default function ProductsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-xl font-bold text-black">
-                        ฿{product.price.toFixed(2)}
+                        {formatPrice(getMinPrice(product.seagmTypes))}
                       </span>
-                      {product.comparePrice && (
-                        <span className="text-sm text-gray-500 line-through ml-2">
-                          ฿{product.comparePrice.toFixed(2)}
-                        </span>
-                      )}
                     </div>
 
                     <button className="p-2 bg-black text-white border-[2px] border-black hover:bg-gray-800 transition-colors">
@@ -257,33 +253,6 @@ export default function ProductsPage() {
                     </button>
                   </div>
 
-                  {/* Stock Status */}
-                  <div className="mt-3 flex items-center gap-2">
-                    <div
-                      className={`w-2 h-2 rounded-full border border-black ${
-                        product.stockQuantity > 10
-                          ? "bg-brutal-green"
-                          : product.stockQuantity > 0
-                          ? "bg-brutal-yellow"
-                          : "bg-brutal-pink"
-                      }`}
-                    />
-                    <span
-                      className={`text-xs font-medium ${
-                        product.stockQuantity > 10
-                          ? "text-gray-700"
-                          : product.stockQuantity > 0
-                          ? "text-gray-700"
-                          : "text-brutal-pink"
-                      }`}
-                    >
-                      {product.stockQuantity > 10
-                        ? "In Stock"
-                        : product.stockQuantity > 0
-                        ? `Only ${product.stockQuantity} left`
-                        : "Out of Stock"}
-                    </span>
-                  </div>
                 </div>
               </motion.div>
             </Link>

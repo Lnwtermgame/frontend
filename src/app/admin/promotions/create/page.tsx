@@ -77,7 +77,7 @@ export default function AdminPromotionCreate() {
         {/* Header */}
         <div className="flex items-center mb-6">
           <Link href="/admin/promotions">
-            <button className="mr-4 p-2 rounded-lg bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-gray-200 transition-colors">
+            <button className="mr-4 p-2  bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-gray-200 transition-colors">
               <ChevronLeft className="h-5 w-5" />
             </button>
           </Link>
@@ -89,7 +89,7 @@ export default function AdminPromotionCreate() {
 
         {/* Form Container */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
+          className="bg-white border-[3px] border-black  overflow-hidden"
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -119,7 +119,7 @@ export default function AdminPromotionCreate() {
                     id="title"
                     name="title"
                     required
-                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
+                    className="bg-white border-[2px] border-gray-300 text-black  px-4 py-2.5 w-full focus:border-black focus:outline-none"
                     placeholder="เช่น ลด 30% ฤดูร้อน"
                     value={formData.title}
                     onChange={handleChange}
@@ -142,7 +142,7 @@ export default function AdminPromotionCreate() {
                       id="type"
                       name="type"
                       required
-                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full appearance-none focus:border-black focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full appearance-none focus:border-black focus:outline-none"
                       value={formData.type}
                       onChange={handleChange}
                     >
@@ -182,7 +182,7 @@ export default function AdminPromotionCreate() {
                     id="code"
                     name="code"
                     required
-                    className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none font-mono"
+                    className="bg-white border-[2px] border-gray-300 text-black  px-4 py-2.5 w-full focus:border-black focus:outline-none font-mono"
                     placeholder="เช่น SUMMER30"
                     value={formData.code}
                     onChange={handleChange}
@@ -209,7 +209,7 @@ export default function AdminPromotionCreate() {
                       id="discount"
                       name="discount"
                       required
-                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เช่น 30"
                       value={formData.discount}
                       onChange={handleChange}
@@ -233,7 +233,7 @@ export default function AdminPromotionCreate() {
                       type="text"
                       id="minPurchase"
                       name="minPurchase"
-                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เช่น 20"
                       value={formData.minPurchase}
                       onChange={handleChange}
@@ -265,7 +265,7 @@ export default function AdminPromotionCreate() {
                         id="startDate"
                         name="startDate"
                         required
-                        className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                        className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                         value={formData.startDate}
                         onChange={handleChange}
                       />
@@ -287,7 +287,7 @@ export default function AdminPromotionCreate() {
                         id="endDate"
                         name="endDate"
                         required
-                        className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                        className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                         value={formData.endDate}
                         onChange={handleChange}
                       />
@@ -311,7 +311,7 @@ export default function AdminPromotionCreate() {
                       type="number"
                       id="usageLimit"
                       name="usageLimit"
-                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
                       value={formData.usageLimit}
                       onChange={handleChange}
@@ -338,7 +338,7 @@ export default function AdminPromotionCreate() {
                       type="text"
                       id="maxDiscount"
                       name="maxDiscount"
-                      className="bg-white border-[2px] border-gray-300 text-black rounded-lg pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
+                      className="bg-white border-[2px] border-gray-300 text-black  pl-10 pr-4 py-2.5 w-full focus:border-black focus:outline-none"
                       placeholder="เช่น 50"
                       value={formData.maxDiscount}
                       onChange={handleChange}
@@ -399,7 +399,7 @@ export default function AdminPromotionCreate() {
                 id="description"
                 name="description"
                 rows={4}
-                className="bg-white border-[2px] border-gray-300 text-black rounded-lg px-4 py-2.5 w-full focus:border-black focus:outline-none"
+                className="bg-white border-[2px] border-gray-300 text-black  px-4 py-2.5 w-full focus:border-black focus:outline-none"
                 placeholder="อธิบายรายละเอียดโปรโมชั่น..."
                 value={formData.description}
                 onChange={handleChange}
@@ -411,7 +411,7 @@ export default function AdminPromotionCreate() {
               <Link href="/admin/promotions">
                 <button
                   type="button"
-                  className="px-5 py-2.5 rounded-lg border-[3px] border-black bg-white text-black hover:bg-gray-100 transition-colors w-full sm:w-auto flex items-center justify-center font-medium"
+                  className="px-5 py-2.5  border-[3px] border-black bg-white text-black hover:bg-gray-100 transition-colors w-full sm:w-auto flex items-center justify-center font-medium"
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <X className="h-5 w-5 mr-2" />
@@ -421,7 +421,7 @@ export default function AdminPromotionCreate() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-5 py-2.5 rounded-lg bg-black text-white border-[3px] border-black hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
+                className={`px-5 py-2.5  bg-black text-white border-[3px] border-black hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 <Save className="h-5 w-5 mr-2" />

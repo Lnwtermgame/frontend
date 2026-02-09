@@ -175,18 +175,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
         // Update local cart with server data
         if (strategy !== 'client-wins' && cart.items) {
-          const serverItems: CartItem[] = cart.items.map((serverItem: any) => ({
-            productId: serverItem.productId,
-            name: serverItem.product.name,
-            image: serverItem.product.imageUrl || '',
-            quantity: serverItem.quantity,
-            price: serverItem.product.price,
-            productType: serverItem.product.productType,
-            deviceId: serverItem.deviceId,
-            deviceInfo: serverItem.deviceInfo,
-            addedAt: serverItem.addedAt,
-            updatedAt: serverItem.updatedAt,
-          }));
+          const serverItems: CartItem[] = cart.items.map((serverItem: any) => {
+            // Get price from seagmTypes (lowest unitPrice)
+            const types = serverItem.product.seagmTypes || [];
+            const price = types.length > 0 ? Math.min(...types.map((t: any) => Number(t.unitPrice))) : 0;
+
+            return {
+              productId: serverItem.productId,
+              name: serverItem.product.name,
+              image: serverItem.product.imageUrl || '',
+              quantity: serverItem.quantity,
+              price: price,
+              productType: serverItem.product.productType,
+              deviceId: serverItem.deviceId,
+              deviceInfo: serverItem.deviceInfo,
+              addedAt: serverItem.addedAt,
+              updatedAt: serverItem.updatedAt,
+            };
+          });
 
           setItems(serverItems);
         }

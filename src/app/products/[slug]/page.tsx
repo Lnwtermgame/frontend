@@ -25,6 +25,7 @@ import DynamicProductFields from "@/components/products/DynamicProductFields";
 import ProductDescription from "@/components/products/ProductDescription";
 import { SeagmField } from "@/lib/services/product-api";
 import { useCart } from "@/lib/context/cart-context";
+import { getMinPrice, formatPrice } from "@/lib/utils";
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -96,12 +97,15 @@ export default function ProductDetailPage() {
       return;
     }
 
+    // Get price from seagmTypes (lowest unitPrice)
+    const price = getMinPrice(product.seagmTypes);
+
     addItem({
       productId: product.id,
       name: product.name,
       image: product.imageUrl || "",
       quantity,
-      price: product.price,
+      price: price,
       // Include field values for direct top-up
       playerInfo: productType === "DIRECT_TOPUP" ? fieldValues : undefined,
     });
@@ -256,36 +260,16 @@ export default function ProductDetailPage() {
             <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-black">
-                  ฿{product.price.toFixed(2)}
+                  {formatPrice(getMinPrice(product.seagmTypes))}
                 </span>
-                {product.comparePrice && (
-                  <>
-                    <span className="text-lg text-gray-500 line-through">
-                      ฿{product.comparePrice.toFixed(2)}
-                    </span>
-                    <span className="text-brutal-green text-sm font-bold">
-                      Save ฿
-                      {(product.comparePrice - product.price).toFixed(2)}
-                    </span>
-                  </>
-                )}
               </div>
 
-              {/* Stock Status */}
+              {/* Stock Status - Now always available via SEAGM */}
               <div className="mt-4 flex items-center gap-2">
-                {product.stockQuantity > 0 ? (
-                  <>
-                    <Check className="w-5 h-5 text-brutal-green" />
-                    <span className="text-brutal-green font-medium">
-                      In Stock ({product.stockQuantity} available)
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <AlertCircle className="w-5 h-5 text-brutal-pink" />
-                    <span className="text-brutal-pink font-medium">Out of Stock</span>
-                  </>
-                )}
+                <Check className="w-5 h-5 text-brutal-green" />
+                <span className="text-brutal-green font-medium">
+                  Available
+                </span>
               </div>
             </div>
 
@@ -295,7 +279,6 @@ export default function ProductDetailPage() {
                 productId={product.id}
                 onFieldsChange={handleFieldsChange}
                 onFieldsLoad={handleFieldsLoad}
-                disabled={product.stockQuantity === 0}
               />
             )}
 
@@ -317,19 +300,14 @@ export default function ProductDetailPage() {
                     {quantity}
                   </span>
                   <button
-                    onClick={() =>
-                      setQuantity(
-                        Math.min(product.stockQuantity, quantity + 1)
-                      )
-                    }
-                    disabled={quantity >= product.stockQuantity}
+                    onClick={() => setQuantity(quantity + 1)}
                     className="px-4 py-2 text-black hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-bold"
                   >
                     +
                   </button>
                 </div>
                 <span className="text-gray-600 font-medium">
-                  Total: ฿{(product.price * quantity).toFixed(2)}
+                  Total: {formatPrice(getMinPrice(product.seagmTypes) * quantity)}
                 </span>
               </div>
             </div>
@@ -338,8 +316,7 @@ export default function ProductDetailPage() {
             <div className="flex gap-4">
               <motion.button
                 onClick={handleAddToCart}
-                disabled={product.stockQuantity === 0}
-                className="flex-1 bg-white border-[3px] border-black text-black py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 bg-white border-[3px] border-black text-black py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
@@ -349,8 +326,7 @@ export default function ProductDetailPage() {
               </motion.button>
               <motion.button
                 onClick={handleBuyNow}
-                disabled={product.stockQuantity === 0}
-                className="flex-1 bg-black text-white py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-[3px] border-black"
+                className="flex-1 bg-black text-white py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors border-[3px] border-black"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}

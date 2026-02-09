@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
 import {
@@ -15,9 +16,19 @@ import {
   CreditCard,
   Zap,
   ExternalLink,
+  DollarSign,
+  TrendingUp,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { productApi, Product, Category } from "@/lib/services/product-api";
+import {
+  productApi,
+  Product,
+  Category,
+  ProductType,
+} from "@/lib/services/product-api";
 import Link from "next/link";
 
 export default function AdminProducts() {
@@ -34,6 +45,29 @@ export default function AdminProducts() {
     total: 0,
     totalPages: 1,
   });
+
+  // Modal states for price editing
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [editingTypes, setEditingTypes] = useState<ProductType[]>([]);
+  const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+  const [sellingPrices, setSellingPrices] = useState<Record<string, string>>(
+    {},
+  );
+  const [selectedPricingOption, setSelectedPricingOption] = useState<
+    string | null
+  >(null);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isPriceModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isPriceModalOpen]);
 
   // Fetch products and categories
   useEffect(() => {
@@ -102,25 +136,149 @@ export default function AdminProducts() {
   };
 
   const getStatusStyles = (product: Product) => {
-    if (product.stockQuantity === 0) {
-      return "text-red-700 bg-red-100 border-red-300";
-    } else if (product.stockQuantity <= 10) {
-      return "text-yellow-700 bg-yellow-100 border-yellow-300";
-    } else if (!product.isActive) {
+    if (!product.isActive) {
       return "text-gray-700 bg-gray-100 border-gray-300";
     }
     return "text-green-700 bg-green-100 border-green-300";
   };
 
   const getStatusText = (product: Product) => {
-    if (product.stockQuantity === 0) {
-      return "สินค้าหมด";
-    } else if (product.stockQuantity <= 10) {
-      return "สินค้าใกล้หมด";
-    } else if (!product.isActive) {
+    if (!product.isActive) {
       return "ไม่ใช้งาน";
     }
     return "ใช้งาน";
+  };
+
+  // Calculate profit percentage
+  const calculateProfitPercent = (
+    originPrice?: number,
+    sellingPrice?: number,
+  ) => {
+    if (!originPrice || !sellingPrice || originPrice === 0) return 0;
+    return ((sellingPrice - originPrice) / originPrice) * 100;
+  };
+
+  // Fast pricing options
+  const pricingOptions = [
+    { key: "mid", label: "ราคากลาง", description: "ระหว่างต้นทุน-SEAGM" },
+    {
+      key: "nearSeagm",
+      label: "ใกล้เคียง SEAGM",
+      description: "ลด 3% จาก SEAGM",
+    },
+    { key: "smallProfit", label: "กำไรบาง", description: "บวก 5% จากต้นทุน" },
+    { key: "seagm", label: "ราคา SEAGM", description: "เท่ากับ SEAGM" },
+  ];
+
+  const applyPricingOption = (optionKey: string) => {
+    setSelectedPricingOption(optionKey);
+    const newPrices: Record<string, string> = {};
+
+    editingTypes.forEach((type) => {
+      const originPrice = type.originPrice
+        ? parseFloat(type.originPrice as any)
+        : 0;
+      const unitPrice = type.unitPrice ? parseFloat(type.unitPrice as any) : 0;
+      const costPrice = unitPrice;
+      const seagmPrice = originPrice || unitPrice;
+
+      let calculatedPrice = seagmPrice;
+
+      switch (optionKey) {
+        case "mid":
+          // ราคากลางระหว่างต้นทุนและ SEAGM
+          calculatedPrice = (costPrice + seagmPrice) / 2;
+          break;
+        case "nearSeagm":
+          // ลด 3% จากราคา SEAGM (ขายถูกกว่า SEAGM เล็กน้อย)
+          calculatedPrice = seagmPrice * 0.97;
+          break;
+        case "smallProfit":
+          // บวก 5% จากต้นทุน (กำไรบาง)
+          calculatedPrice = costPrice * 1.05;
+          break;
+        case "seagm":
+          // ใช้ราคา SEAGM เต็ม
+          calculatedPrice = seagmPrice;
+          break;
+        default:
+          calculatedPrice = seagmPrice;
+      }
+
+      // ตรวจสอบว่าราคาที่คำนวณไม่ต่ำกว่าต้นทุน (ยกเว้นกรณีใกล้เคียง SEAGM ที่อาจต่ำกว่าต้นทุนได้ถ้า SEAGM กำหนดมาต่ำ)
+      if (optionKey !== "nearSeagm" && calculatedPrice < costPrice) {
+        calculatedPrice = costPrice * 1.02; // ถ้าคำนวณได้ต่ำกว่าต้นทุน ให้ใช้ต้นทุน + 2%
+      }
+
+      newPrices[type.id] = calculatedPrice.toFixed(2);
+    });
+
+    setSellingPrices(newPrices);
+  };
+
+  // Open price editing modal
+  const openPriceModal = (product: Product) => {
+    setSelectedProduct(product);
+    // Fetch product types for this product
+    if (product.seagmProductId) {
+      productApi
+        .getGameTypesById(product.seagmProductId)
+        .then((res) => {
+          if (res.success) {
+            setEditingTypes(res.data);
+            // Initialize selling prices state
+            const prices: Record<string, string> = {};
+            res.data.forEach((type) => {
+              // ราคาขายเริ่มต้น = sellingPrice ที่เคยบันทึกไว้ หรือ ราคา SEAGM (originPrice)
+              const defaultPrice =
+                type.sellingPrice || type.originPrice || type.unitPrice;
+              prices[type.id] = defaultPrice.toString();
+            });
+            setSellingPrices(prices);
+            setIsPriceModalOpen(true);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch product types:", err);
+          alert("ไม่สามารถโหลดข้อมูลราคาได้");
+        });
+    } else {
+      alert("สินค้านี้ไม่มีข้อมูลราคาจาก SEAGM");
+    }
+  };
+
+  // Close price modal
+  const closePriceModal = () => {
+    setIsPriceModalOpen(false);
+    setSelectedProduct(null);
+    setEditingTypes([]);
+    setSellingPrices({});
+  };
+
+  // Handle price change
+  const handlePriceChange = (typeId: string, value: string) => {
+    setSellingPrices((prev) => ({
+      ...prev,
+      [typeId]: value,
+    }));
+  };
+
+  // Save selling prices
+  const saveSellingPrices = async () => {
+    if (!selectedProduct) return;
+
+    try {
+      const response = await productApi.updateSellingPrices(sellingPrices);
+      if (response.success) {
+        alert("บันทึกราคาสำเร็จ");
+        closePriceModal();
+      } else {
+        alert("ไม่สามารถบันทึกราคาได้");
+      }
+    } catch (err) {
+      console.error("Failed to save prices:", err);
+      alert("ไม่สามารถบันทึกราคาได้");
+    }
   };
 
   return (
@@ -186,12 +344,15 @@ export default function AdminProducts() {
             <button
               onClick={handleSyncSeagm}
               className="bg-white border-[3px] border-black text-black flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors font-medium"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <RefreshCw className="h-5 w-5" />
               <span>ซิงค์ SEAGM</span>
             </button>
-            <button className="bg-black text-white border-[3px] border-black flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <button
+              className="bg-black text-white border-[3px] border-black flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 transition-colors font-medium"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <Plus className="h-5 w-5" />
               <span>เพิ่มสินค้า</span>
             </button>
@@ -208,7 +369,7 @@ export default function AdminProducts() {
         {/* Products Table */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -231,6 +392,7 @@ export default function AdminProducts() {
                     <th className="px-5 py-3 text-left">สินค้า</th>
                     <th className="px-5 py-3 text-left">ประเภท</th>
                     <th className="px-5 py-3 text-left">หมวดหมู่</th>
+                    <th className="px-5 py-3 text-left">ราคา/กำไร</th>
                     <th className="px-5 py-3 text-left">สถานะ</th>
                     <th className="px-5 py-3 text-left">การดำเนินการ</th>
                   </tr>
@@ -252,7 +414,9 @@ export default function AdminProducts() {
                               />
                             )}
                             <div>
-                              <div className="text-black font-medium">{product.name}</div>
+                              <div className="text-black font-medium">
+                                {product.name}
+                              </div>
                               <div className="text-xs text-gray-500">
                                 {product.slug}
                               </div>
@@ -269,6 +433,15 @@ export default function AdminProducts() {
                         </td>
                         <td className="px-5 py-4 text-gray-700">
                           {product.category?.name || "-"}
+                        </td>
+                        <td className="px-5 py-4">
+                          <button
+                            onClick={() => openPriceModal(product)}
+                            className="flex items-center gap-2 text-sm text-brutal-blue hover:text-black transition-colors"
+                          >
+                            <DollarSign className="h-4 w-4" />
+                            <span>จัดการราคา</span>
+                          </button>
                         </td>
                         <td className="px-5 py-4">
                           <span
@@ -298,7 +471,7 @@ export default function AdminProducts() {
                     <tr>
                       <td
                         className="px-5 py-8 text-center text-gray-500"
-                        colSpan={4}
+                        colSpan={6}
                       >
                         ไม่พบสินค้าที่ตรงกับเงื่อนไขการค้นหา
                       </td>
@@ -340,6 +513,212 @@ export default function AdminProducts() {
             </div>
           )}
         </motion.div>
+
+        {/* Price Editing Modal */}
+        {isPriceModalOpen &&
+          selectedProduct &&
+          typeof window !== "undefined" &&
+          createPortal(
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white border-[3px] border-black w-full max-w-4xl max-h-[80vh] overflow-hidden shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+              >
+                {/* Modal Header */}
+                <div className="p-5 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <DollarSign className="h-5 w-5" />
+                    จัดการราคา: {selectedProduct.name}
+                  </h3>
+                  <button
+                    onClick={closePriceModal}
+                    className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-5 overflow-y-auto max-h-[60vh]">
+                  {editingTypes.length > 0 ? (
+                    <div className="space-y-4">
+                      {/* Fast Pricing Options */}
+                      <div className="bg-gray-50 border-[2px] border-black p-4 mb-4">
+                        <h4 className="text-sm font-bold text-black mb-3 flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-brutal-orange" />
+                          ตั้งราคาแบบด่วน
+                        </h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {pricingOptions.map((option) => (
+                            <button
+                              key={option.key}
+                              onClick={() => applyPricingOption(option.key)}
+                              className={`p-3 border-[2px] text-left transition-all ${
+                                selectedPricingOption === option.key
+                                  ? "bg-brutal-blue text-white border-black"
+                                  : "bg-white text-black border-gray-300 hover:border-black"
+                              }`}
+                            >
+                              <div className="font-medium text-sm">
+                                {option.label}
+                              </div>
+                              <div
+                                className={`text-xs mt-1 ${
+                                  selectedPricingOption === option.key
+                                    ? "text-blue-100"
+                                    : "text-gray-500"
+                                }`}
+                              >
+                                {option.description}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                        {selectedPricingOption && (
+                          <div className="mt-3 text-xs text-gray-600 bg-white p-2 border border-gray-200">
+                            <span className="font-medium">หมายเหตุ:</span>{" "}
+                            ราคาจะถูกคำนวณใหม่ทั้งหมดตามตัวเลือกที่เลือก
+                            คุณสามารถแก้ไขราคาแต่ละรายการได้ภายหลัง
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Header Row */}
+                      <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600 border-b-2 border-gray-200 pb-2">
+                        <div className="col-span-3">ประเภท</div>
+                        <div className="col-span-2 text-right">ต้นทุน</div>
+                        <div className="col-span-2 text-right">ราคา SEAGM</div>
+                        <div className="col-span-2 text-right">ราคาขาย</div>
+                        <div className="col-span-2 text-right">% กำไร</div>
+                        <div className="col-span-1"></div>
+                      </div>
+
+                      {/* Type Rows */}
+                      {editingTypes.map((type) => {
+                        // สลับค่า: originPrice คือราคา SEAGM (ตลาด), unitPrice คือต้นทุน
+                        const originPrice = type.originPrice
+                          ? parseFloat(type.originPrice as any)
+                          : 0;
+                        const unitPrice = type.unitPrice
+                          ? parseFloat(type.unitPrice as any)
+                          : 0;
+                        const costPrice = unitPrice; // ต้นทุนจริง
+                        const seagmPrice = originPrice || unitPrice; // ราคา SEAGM
+                        const sellingPrice =
+                          parseFloat(sellingPrices[type.id] || "0") ||
+                          costPrice;
+                        const profitPercent = calculateProfitPercent(
+                          costPrice,
+                          sellingPrice,
+                        );
+
+                        return (
+                          <div
+                            key={type.id}
+                            className="grid grid-cols-12 gap-4 items-center py-3 border-b border-gray-100"
+                          >
+                            <div className="col-span-3">
+                              <div className="font-medium text-black">
+                                {type.name}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {type.parValue} {type.parValueCurrency}
+                              </div>
+                            </div>
+                            <div className="col-span-2 text-right text-sm">
+                              <span className="text-gray-600">
+                                {costPrice > 0
+                                  ? `฿${costPrice.toFixed(2)}`
+                                  : "-"}
+                              </span>
+                            </div>
+                            <div className="col-span-2 text-right text-sm">
+                              <span className="text-gray-600">
+                                ฿{seagmPrice.toFixed(2)}
+                              </span>
+                            </div>
+                            <div className="col-span-2">
+                              <div className="relative">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
+                                  ฿
+                                </span>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={sellingPrices[type.id] || ""}
+                                  onChange={(e) =>
+                                    handlePriceChange(type.id, e.target.value)
+                                  }
+                                  className="w-full text-right bg-gray-50 border-[2px] border-black pl-6 pr-3 py-2 text-sm focus:ring-2 focus:ring-brutal-blue/50 outline-none"
+                                  placeholder={seagmPrice.toString()}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-span-2 text-right">
+                              <span
+                                className={`text-sm font-medium ${
+                                  profitPercent > 0
+                                    ? "text-green-600"
+                                    : profitPercent < 0
+                                      ? "text-red-600"
+                                      : "text-gray-600"
+                                }`}
+                              >
+                                {profitPercent > 0 ? "+" : ""}
+                                {profitPercent.toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="col-span-1 text-center">
+                              <TrendingUp
+                                className={`h-4 w-4 mx-auto ${
+                                  profitPercent > 0
+                                    ? "text-green-500"
+                                    : profitPercent < 0
+                                      ? "text-red-500"
+                                      : "text-gray-400"
+                                }`}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      ไม่พบข้อมูลประเภทสินค้า
+                    </div>
+                  )}
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                  <button
+                    onClick={closePriceModal}
+                    className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    onClick={saveSellingPrices}
+                    className="px-4 py-2 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+                  >
+                    บันทึกราคา
+                  </button>
+                </div>
+              </motion.div>
+            </div>,
+            document.body,
+          )}
       </div>
     </AdminLayout>
   );

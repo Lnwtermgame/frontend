@@ -1,4 +1,4 @@
-import { orderClient } from '@/lib/client/gateway';
+import { orderClient } from "@/lib/client/gateway";
 
 // Order type definition
 export interface Order {
@@ -8,7 +8,13 @@ export interface Order {
   totalAmount: number;
   discountAmount: number;
   finalAmount: number;
-  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED' | 'REFUNDED';
+  status:
+    | "PENDING"
+    | "PROCESSING"
+    | "COMPLETED"
+    | "FAILED"
+    | "CANCELLED"
+    | "REFUNDED";
   items: OrderItem[];
   user?: {
     id: string;
@@ -27,7 +33,7 @@ export interface OrderItem {
   priceAtPurchase: number;
   price?: number; // For backward compatibility
   playerInfo?: Record<string, string>;
-  fulfillStatus: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  fulfillStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
 }
 
 export interface OrderResponse {
@@ -48,68 +54,100 @@ export interface OrdersListResponse {
 }
 
 class OrderApiService {
-  async getOrders(page = 1, limit = 20, status?: string): Promise<OrdersListResponse> {
+  async getOrders(
+    page = 1,
+    limit = 20,
+    status?: string,
+  ): Promise<OrdersListResponse> {
     const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
-    if (status) params.append('status', status);
+    params.append("page", String(page));
+    params.append("limit", String(limit));
+    if (status) params.append("status", status);
 
-    const response = await orderClient.get<OrdersListResponse>(`/api/orders?${params}`);
+    const response = await orderClient.get<OrdersListResponse>(
+      `/api/orders?${params}`,
+    );
     return response.data;
   }
 
   async getOrderById(orderId: string): Promise<OrderResponse> {
-    const response = await orderClient.get<OrderResponse>(`/api/orders/${orderId}`);
+    const response = await orderClient.get<OrderResponse>(
+      `/api/orders/${orderId}`,
+    );
     return response.data;
   }
 
   async createOrder(data: {
-    items: { productId: string; quantity: number; playerInfo?: Record<string, string> }[];
+    items: {
+      productId: string;
+      quantity: number;
+      playerInfo?: Record<string, string>;
+    }[];
   }): Promise<OrderResponse> {
-    const response = await orderClient.post<OrderResponse>('/api/orders', data);
+    const response = await orderClient.post<OrderResponse>("/api/orders", data);
     return response.data;
   }
 
   async cancelOrder(orderId: string): Promise<OrderResponse> {
-    const response = await orderClient.put<OrderResponse>(`/api/orders/${orderId}/cancel`);
+    const response = await orderClient.put<OrderResponse>(
+      `/api/orders/${orderId}/cancel`,
+    );
     return response.data;
   }
 
   // Admin methods
-  async getAllOrders(page = 1, limit = 20, status?: string): Promise<OrdersListResponse> {
+  async getAllOrders(
+    page = 1,
+    limit = 20,
+    status?: string,
+  ): Promise<OrdersListResponse> {
     const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
-    if (status) params.append('status', status);
+    params.append("page", String(page));
+    params.append("limit", String(limit));
+    if (status) params.append("status", status);
 
-    const response = await orderClient.get<OrdersListResponse>(`/api/admin/orders?${params}`);
+    const response = await orderClient.get<OrdersListResponse>(
+      `/api/admin/orders?${params}`,
+    );
     return response.data;
   }
 
-  async updateOrderStatus(orderId: string, status: string): Promise<OrderResponse> {
-    const response = await orderClient.put<OrderResponse>(`/api/admin/orders/${orderId}/status`, { status });
+  async updateOrderStatus(
+    orderId: string,
+    status: string,
+  ): Promise<OrderResponse> {
+    const response = await orderClient.put<OrderResponse>(
+      `/api/admin/orders/${orderId}/status`,
+      { status: status.toUpperCase() },
+    );
     return response.data;
   }
 
   async fulfillOrder(orderId: string): Promise<OrderResponse> {
-    const response = await orderClient.post<OrderResponse>(`/api/admin/orders/${orderId}/fulfill`);
+    const response = await orderClient.post<OrderResponse>(
+      `/api/admin/orders/${orderId}/fulfill`,
+    );
     return response.data;
   }
 
   async getAdminOrderById(orderId: string): Promise<OrderResponse> {
-    const response = await orderClient.get<OrderResponse>(`/api/admin/orders/${orderId}`);
+    const response = await orderClient.get<OrderResponse>(
+      `/api/admin/orders/${orderId}`,
+    );
     return response.data;
   }
 
   getErrorMessage(error: unknown): string {
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { data?: { error?: { message?: string } } } };
-      return axiosError.response?.data?.error?.message || 'An error occurred';
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as {
+        response?: { data?: { error?: { message?: string } } };
+      };
+      return axiosError.response?.data?.error?.message || "An error occurred";
     }
     if (error instanceof Error) {
       return error.message;
     }
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 }
 

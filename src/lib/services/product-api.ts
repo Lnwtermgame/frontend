@@ -279,6 +279,7 @@ export interface ProductType {
   parValueCurrency: string;
   unitPrice: number;
   originPrice?: number;
+  sellingPrice?: number; // ราคาขายที่เรากำหนดเอง
   discountRate?: number;
   currency: string;
   hasStock: boolean;
@@ -588,12 +589,16 @@ class ProductApiService {
     return response.data;
   }
 
-  async addFavorite(productId: string): Promise<{ success: boolean; data: { message: string } }> {
+  async addFavorite(
+    productId: string,
+  ): Promise<{ success: boolean; data: { message: string } }> {
     const response = await productClient.post("/api/favorites", { productId });
     return response.data;
   }
 
-  async removeFavorite(favoriteId: string): Promise<{ success: boolean; data: { message: string } }> {
+  async removeFavorite(
+    favoriteId: string,
+  ): Promise<{ success: boolean; data: { message: string } }> {
     const response = await productClient.delete(`/api/favorites/${favoriteId}`);
     return response.data;
   }
@@ -602,7 +607,9 @@ class ProductApiService {
     try {
       const response = await productClient.get("/api/favorites");
       if (response.data.success) {
-        const favorite = response.data.data.find((f: any) => f.product?.id === productId);
+        const favorite = response.data.data.find(
+          (f: any) => f.product?.id === productId,
+        );
         return favorite?.id || null;
       }
       return null;
@@ -731,7 +738,9 @@ class ProductApiService {
   async getGameTypesById(
     seagmProductId: string,
   ): Promise<{ success: boolean; data: ProductType[] }> {
-    const response = await productClient.get(`/games/id/${seagmProductId}/types`);
+    const response = await productClient.get(
+      `/games/id/${seagmProductId}/types`,
+    );
     return response.data;
   }
 
@@ -792,6 +801,20 @@ class ProductApiService {
 
   async getCacheStats(): Promise<{ success: boolean; data: { size: number } }> {
     const response = await productClient.get("/api/admin/cache/stats");
+    return response.data;
+  }
+
+  // ============ Admin: Product Types Pricing ============
+
+  async updateSellingPrices(
+    prices: Record<string, string>,
+  ): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await productClient.put(
+      "/api/admin/product-types/prices",
+      {
+        prices,
+      },
+    );
     return response.data;
   }
 

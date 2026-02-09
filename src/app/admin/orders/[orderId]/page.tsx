@@ -18,7 +18,6 @@ import {
   CreditCard,
   Tag,
   RefreshCw,
-  Printer,
   FileText,
   AlertCircle,
 } from "lucide-react";
@@ -237,16 +236,8 @@ export default function OrderViewPage() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => window.print()}
-            className="flex items-center gap-2 px-4 py-2 bg-white border-[3px] border-black font-bold hover:bg-gray-100 transition-all hover:-translate-y-0.5"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
-            <Printer className="h-4 w-4" />
-            พิมพ์
-          </button>
-          <button
             onClick={fetchOrder}
-            className="flex items-center gap-2 px-4 py-2 bg-brutal-yellow border-[3px] border-black font-bold hover:bg-brutal-yellow/90 transition-all hover:-translate-y-0.5"
+            className="flex items-center gap-2 px-4 py-2.5 bg-brutal-yellow border-[3px] border-black font-bold hover:bg-brutal-yellow/90 transition-all hover:-translate-y-0.5"
             style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
             <RefreshCw className="h-4 w-4" />
@@ -255,11 +246,11 @@ export default function OrderViewPage() {
         </div>
       </div>
 
-      {/* Status Banner */}
+      {/* Status Banner - Hidden when printing */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${status.bgColor} border-[3px] border-black p-4 flex items-center justify-between`}
+        className={`${status.bgColor} border-[3px] border-black p-4 flex items-center justify-between print:hidden`}
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <div className="flex items-center gap-3">
@@ -281,7 +272,8 @@ export default function OrderViewPage() {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Order Management Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 print:hidden">
         {/* Left Column - Order Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Items */}

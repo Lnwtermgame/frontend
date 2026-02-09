@@ -84,10 +84,28 @@ export default function AdminOrders() {
 
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     try {
-      await orderApi.updateOrderStatus(orderId, newStatus);
-      fetchOrders();
-    } catch (err) {
+      setLoading(true);
+      const response = await orderApi.updateOrderStatus(orderId, newStatus);
+      if (response.success) {
+        // Update the local orders state immediately
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId
+              ? { ...order, status: newStatus as Order["status"] }
+              : order,
+          ),
+        );
+      } else {
+        setError("ไม่สามารถอัปเดตสถานะคำสั่งซื้อได้");
+      }
+    } catch (err: any) {
       console.error("ไม่สามารถอัปเดตสถานะคำสั่งซื้อ:", err);
+      setError(
+        err?.response?.data?.error?.message ||
+          "ไม่สามารถอัปเดตสถานะคำสั่งซื้อได้",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -146,7 +164,7 @@ export default function AdminOrders() {
         {/* Orders Table */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}

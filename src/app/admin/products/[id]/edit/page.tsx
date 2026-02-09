@@ -13,18 +13,12 @@ import {
   Zap,
   RefreshCw,
   ImageIcon,
-  Tag,
-  DollarSign,
   FileText,
-  Search,
   Calendar,
   Layers,
   Globe,
-  Archive,
   CheckCircle2,
   AlertCircle,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -48,9 +42,6 @@ export default function EditProductPage() {
     slug: "",
     description: "",
     shortDescription: "",
-    price: 0,
-    comparePrice: 0,
-    stockQuantity: 0,
     categoryId: "",
     imageUrl: "",
     metaTitle: "",
@@ -85,9 +76,6 @@ export default function EditProductPage() {
             slug: productRes.data.slug,
             description: productRes.data.description || "",
             shortDescription: productRes.data.shortDescription || "",
-            price: productRes.data.price,
-            comparePrice: productRes.data.comparePrice || 0,
-            stockQuantity: productRes.data.stockQuantity,
             categoryId: productRes.data.categoryId,
             imageUrl: productRes.data.imageUrl || "",
             metaTitle: productRes.data.metaTitle || "",
@@ -529,93 +517,6 @@ export default function EditProductPage() {
               </div>
             </motion.div>
 
-            {/* Inventory & Pricing Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white border-[3px] border-black p-6 relative group overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-            >
-              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <Tag className="w-24 h-24 text-brutal-blue transform rotate-6 translate-x-8 -translate-y-8" />
-              </div>
-
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                <div className="p-2 bg-brutal-blue/10 border-2 border-black text-brutal-blue">
-                  <Tag className="w-5 h-5" />
-                </div>
-                ราคาและสต็อก
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    ราคาขาย
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                      ฿
-                    </span>
-                    <input
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          price: parseFloat(e.target.value),
-                        })
-                      }
-                      className="w-full bg-gray-50 border-[2px] border-black pl-8 pr-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    ราคาเปรียบเทียบ
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                      ฿
-                    </span>
-                    <input
-                      type="number"
-                      value={formData.comparePrice}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          comparePrice: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full bg-gray-50 border-[2px] border-black pl-8 pr-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2 flex items-center gap-2">
-                    จำนวนสต็อก
-                    <span className="text-xs text-brutal-blue bg-brutal-blue/10 px-2 py-0.5 border border-black">
-                      ทั้งหมด
-                    </span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={formData.stockQuantity}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          stockQuantity: parseInt(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full bg-gray-50 border-[2px] border-black px-4 py-3 text-gray-900 font-medium focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
             {/* SEAGM Fields / Dynamic Fields - Conditional */}
             {isDirectTopUp && (
               <motion.div
@@ -776,11 +677,7 @@ export default function EditProductPage() {
                       เลือกหมวดหมู่
                     </option>
                     {categories.map((cat) => (
-                      <option
-                        key={cat.id}
-                        value={cat.id}
-                        className="bg-white"
-                      >
+                      <option key={cat.id} value={cat.id} className="bg-white">
                         {cat.name}
                       </option>
                     ))}
@@ -797,9 +694,7 @@ export default function EditProductPage() {
                 </label>
                 <div
                   className={`p-3 border-[2px] border-black flex items-center gap-3 ${
-                    isDirectTopUp
-                      ? "bg-orange-100"
-                      : "bg-blue-100"
+                    isDirectTopUp ? "bg-orange-100" : "bg-blue-100"
                   }`}
                 >
                   <div
@@ -962,7 +857,9 @@ export default function EditProductPage() {
                       >
                         <input
                           type="checkbox"
-                          checked={formData.gameDetails.platforms.includes(platform)}
+                          checked={formData.gameDetails.platforms.includes(
+                            platform,
+                          )}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             setFormData({
@@ -970,14 +867,21 @@ export default function EditProductPage() {
                               gameDetails: {
                                 ...formData.gameDetails,
                                 platforms: isChecked
-                                  ? [...formData.gameDetails.platforms, platform]
-                                  : formData.gameDetails.platforms.filter((p) => p !== platform),
+                                  ? [
+                                      ...formData.gameDetails.platforms,
+                                      platform,
+                                    ]
+                                  : formData.gameDetails.platforms.filter(
+                                      (p) => p !== platform,
+                                    ),
                               },
                             });
                           }}
                           className="w-4 h-4 border-2 border-black text-purple-600 focus:ring-purple-500/50"
                         />
-                        <span className="text-sm text-gray-900">{platform}</span>
+                        <span className="text-sm text-gray-900">
+                          {platform}
+                        </span>
                       </label>
                     ))}
                   </div>

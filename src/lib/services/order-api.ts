@@ -96,6 +96,11 @@ class OrderApiService {
     return response.data;
   }
 
+  async getAdminOrderById(orderId: string): Promise<OrderResponse> {
+    const response = await orderClient.get<OrderResponse>(`/api/admin/orders/${orderId}`);
+    return response.data;
+  }
+
   getErrorMessage(error: unknown): string {
     if (error && typeof error === 'object' && 'response' in error) {
       const axiosError = error as { response?: { data?: { error?: { message?: string } } } };

@@ -1,5 +1,35 @@
 import { orderClient } from "@/lib/client/gateway";
 
+// Payment info
+export interface Payment {
+  id: string;
+  orderId: string;
+  amount: number;
+  currency: string;
+  paymentMethod: "CREDIT_CARD" | "PROMPTPAY" | "TRUEMONEY" | "BANK_TRANSFER";
+  status: "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
+  transactionId?: string;
+  createdAt: string;
+}
+
+// Product info in order item
+export interface OrderProduct {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  imageUrl?: string;
+  productType: "CARD" | "DIRECT_TOPUP";
+}
+
+// Pin code for card products
+export interface PinCode {
+  code?: string;
+  pin?: string;
+  serial?: string;
+  validDate?: string;
+}
+
 // Order type definition
 export interface Order {
   id: string;
@@ -21,6 +51,7 @@ export interface Order {
     email: string;
     username: string;
   };
+  payment?: Payment;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,11 +60,14 @@ export interface OrderItem {
   id: string;
   productId: string;
   productName?: string;
+  product?: OrderProduct;
   quantity: number;
   priceAtPurchase: number;
   price?: number; // For backward compatibility
-  playerInfo?: Record<string, string>;
+  playerInfo?: Record<string, any>;
   fulfillStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
+  pinCodes?: PinCode[];
+  seagmOrderId?: string;
 }
 
 export interface OrderResponse {
@@ -80,9 +114,12 @@ class OrderApiService {
   async createOrder(data: {
     items: {
       productId: string;
+      productTypeId?: string; // Specific product type (e.g., 60 UC, 325 UC)
       quantity: number;
       playerInfo?: Record<string, string>;
     }[];
+    paymentMethod?: "CREDIT_CARD" | "PROMPTPAY" | "TRUEMONEY" | "BANK_TRANSFER";
+    skipPayment?: boolean;
   }): Promise<OrderResponse> {
     const response = await orderClient.post<OrderResponse>("/api/orders", data);
     return response.data;

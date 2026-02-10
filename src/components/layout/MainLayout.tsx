@@ -334,23 +334,23 @@ export function MainLayout({ children }: MainLayoutProps) {
                                 key={notification.id}
                                 className={cn(
                                   "p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer",
-                                  !notification.read && "bg-brutal-yellow/10"
+                                  !notification.isRead && "bg-brutal-yellow/10"
                                 )}
                                 onClick={() => markAsRead(notification.id)}
                               >
                                 <div className={cn(
                                   "w-8 h-8 flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
-                                  notification.type === 'success' ? "bg-brutal-green text-black" :
-                                    notification.type === 'error' ? "bg-brutal-pink text-white" :
-                                      notification.type === 'warning' ? "bg-brutal-yellow text-black" :
-                                        "bg-brutal-blue text-black"
+                                  notification.type === 'ORDER' ? "bg-brutal-green text-black" :
+                                    notification.type === 'PAYMENT' ? "bg-brutal-blue text-black" :
+                                      notification.type === 'PROMOTION' ? "bg-brutal-yellow text-black" :
+                                        "bg-gray-200 text-black"
                                 )}>
-                                  {notification.type === 'success' ? <Zap size={14} /> :
-                                    notification.type === 'error' ? <LogOut size={14} /> :
+                                  {notification.type === 'ORDER' ? <Zap size={14} /> :
+                                    notification.type === 'PAYMENT' ? <LogOut size={14} /> :
                                       <Bell size={14} />}
                                 </div>
                                 <div className="flex-1">
-                                  <p className={cn("text-sm mb-1", !notification.read ? "text-gray-900 font-semibold" : "text-gray-600")}>
+                                  <p className={cn("text-sm mb-1", !notification.isRead ? "text-gray-900 font-semibold" : "text-gray-600")}>
                                     {notification.title}
                                   </p>
                                   <p className="text-xs text-gray-500 line-clamp-2">
@@ -360,7 +360,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                                     {new Date(notification.createdAt).toLocaleTimeString()}
                                   </p>
                                 </div>
-                                {!notification.read && (
+                                {!notification.isRead && (
                                   <div className="w-2 h-2 rounded-full bg-brutal-pink mt-2 shrink-0" />
                                 )}
                               </div>
@@ -373,7 +373,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                           )}
                         </div>
 
-                        <Link href="/notifications" className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors">
+                        <Link href="/dashboard/notifications" className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors">
                           ดูทั้งหมด
                         </Link>
                       </motion.div>

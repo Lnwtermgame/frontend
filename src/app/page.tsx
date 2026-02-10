@@ -206,7 +206,6 @@ export default function HomePage() {
                 width={1200}
                 height={400}
                 className="absolute inset-0 w-full h-full object-cover"
-                priority={index === 0 ? "true" : undefined}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
 

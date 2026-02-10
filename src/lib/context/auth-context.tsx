@@ -152,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setRefreshToken(response.data.refreshToken);
         scheduleTokenRefresh(response.data.expiresIn);
       } else {
-        console.log('[Auth] Token refresh failed:', response.message);
+        console.log('[Auth] Token refresh failed');
         // Don't clear auth immediately - let the user continue until token actually expires
         toast.error('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
         clearAuth();

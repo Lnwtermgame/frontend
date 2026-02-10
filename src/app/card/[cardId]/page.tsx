@@ -117,9 +117,8 @@ export default function CardDetailPage() {
         try {
           const relatedResponse = await productApi.getProducts({
             categoryId: productData.categoryId,
-            productType: "CARD",
             isActive: true,
-            limit: 6,
+            limit: 20,
           });
           if (relatedResponse.success) {
             // Filter out current product and limit to 5

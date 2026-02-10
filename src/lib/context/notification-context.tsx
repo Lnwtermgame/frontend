@@ -1,11 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useCallback, useRef, ReactNode } from 'react';
-import { notificationApi, notificationWebSocket, type NotificationItem, type NotificationPreferences } from '../services/notification-api';
+import { notificationApi, notificationWebSocket, type Notification, type NotificationPreferences } from '../services/notification-api';
 import { useAuth } from './auth-context';
-
-// Re-export with alias to avoid conflict with DOM Notification
-type Notification = NotificationItem;
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 
@@ -318,7 +315,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       // Subscribe
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey),
+        applicationServerKey: urlBase64ToUint8Array(publicKey) as unknown as ArrayBuffer,
       });
 
       // Send subscription to server

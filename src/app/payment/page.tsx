@@ -45,6 +45,15 @@ export default function PaymentPage() {
     setSelectedPaymentMethod(method);
   };
 
+  // Handle saved payment method selection - need to find the actual PaymentMethod
+  const handleSavedMethodSelect = (savedMethod: typeof savedPaymentMethods[0]) => {
+    // Find the corresponding PaymentMethod from available methods
+    const actualMethod = availablePaymentMethods.find(m => m.id === savedMethod.methodId);
+    if (actualMethod) {
+      setSelectedPaymentMethod(actualMethod);
+    }
+  };
+
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -119,7 +128,7 @@ export default function PaymentPage() {
                         <button
                           key={method.id}
                           type="button"
-                          onClick={() => handlePaymentMethodSelect(method)}
+                          onClick={() => handleSavedMethodSelect(method)}
                           aria-pressed={selectedPaymentMethod?.id === method.id}
                           className={`flex items-center p-3 border-[2px] ${
                             selectedPaymentMethod?.id === method.id
@@ -469,6 +478,7 @@ export default function PaymentPage() {
                         : 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
                     }`}
                   style={paymentStatus !== 'success' && selectedPaymentMethod && amount ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
+                >
                   {paymentStatus === 'processing' ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

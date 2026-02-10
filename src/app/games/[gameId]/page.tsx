@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { orderApi } from "@/lib/services/order-api";
 import {
   ChevronLeft,
   ShoppingCart,
@@ -21,6 +22,10 @@ import {
   Gift,
   AlertCircle,
   Check,
+  AlertTriangle,
+  X,
+  User,
+  ShieldAlert,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
@@ -129,6 +134,7 @@ function transformProductToGameDetails(
 
 export default function GameDetailsPage() {
   const { gameId } = useParams();
+  const router = useRouter();
   const [game, setGame] = useState<GameDetails | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [productTypes, setProductTypes] = useState<ProductType[]>([]);
@@ -142,6 +148,116 @@ export default function GameDetailsPage() {
   const [copied, setCopied] = useState(false);
   const [similarGames, setSimilarGames] = useState<Product[]>([]);
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
+  const [isBuying, setIsBuying] = useState(false);
+
+  // Confirmation modal state
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState<{
+    supported: boolean;
+    playerInfo: Record<string, string>;
+    productName: string;
+    optionName: string;
+    price: number;
+  } | null>(null);
+
+  // Handle buy now - verify first, then show confirmation
+  const handleBuyNow = async () => {
+    if (!product || !selectedOption) {
+      toast.error('กรุณาเลือกตัวเลือกเติมเงิน');
+      return;
+    }
+
+    // Check if all required fields are filled
+    const selectedProductType = productTypes.find(pt => pt.id === selectedOption);
+    const selectedOptionData = game?.topUpOptions.find(opt => opt.id === selectedOption);
+
+    if (selectedProductType?.fields) {
+      const requiredFields = selectedProductType.fields.filter(f => f.required !== false);
+      const missingFields = requiredFields.filter(f => !fieldValues[f.name] || fieldValues[f.name].trim() === '');
+      if (missingFields.length > 0) {
+        toast.error(`กรุณากรอกข้อมูล: ${missingFields.map(f => f.label).join(', ')}`);
+        return;
+      }
+    }
+
+    try {
+      setIsBuying(true);
+      toast.loading('กำลังตรวจสอบข้อมูล...');
+
+      // Verify player info with SEAGM
+      let isVerificationSupported = true;
+      try {
+        const verifyResult = await productApi.verifyPlayer(product.id, fieldValues);
+        isVerificationSupported = verifyResult.supported !== false;
+
+        if (verifyResult.valid && isVerificationSupported) {
+          // Verification passed - proceed directly
+          toast.dismiss();
+          await createOrder();
+          return;
+        }
+      } catch (verifyErr: any) {
+        // If verification API fails, assume not supported
+        isVerificationSupported = false;
+      }
+
+      // Show confirmation modal for unsupported verification or failed verification
+      toast.dismiss();
+      setVerificationStatus({
+        supported: isVerificationSupported,
+        playerInfo: fieldValues,
+        productName: product.name,
+        optionName: selectedOptionData?.title || '',
+        price: selectedOptionData?.price || 0,
+      });
+      setShowConfirmModal(true);
+
+    } catch (err: any) {
+      toast.dismiss();
+      console.error('Buy now error:', err);
+      toast.error(err?.response?.data?.error?.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsBuying(false);
+    }
+  };
+
+  // Create order after confirmation
+  const createOrder = async () => {
+    if (!product || !selectedOption) return;
+
+    try {
+      setIsBuying(true);
+      toast.loading('กำลังสร้างคำสั่งซื้อ...');
+
+      const response = await orderApi.createOrder({
+        items: [{
+          productId: product.id,
+          productTypeId: selectedOption, // The selected product type (e.g., 60 UC, 325 UC)
+          quantity: 1,
+          playerInfo: fieldValues,
+        }],
+        paymentMethod: 'CREDIT_CARD', // Required field for backend
+        skipPayment: true, // Bypass payment for testing
+      });
+
+      toast.dismiss();
+
+      if (response.success) {
+        toast.success('สั่งซื้อสำเร็จ! กำลังดำเนินการ...');
+        setShowConfirmModal(false);
+        // Redirect to order detail page
+        router.push(`/dashboard/orders/${response.data.id}`);
+      } else {
+        toast.error(response.message || 'สั่งซื้อไม่สำเร็จ');
+      }
+    } catch (err: any) {
+      toast.dismiss();
+      console.error('Create order error:', err);
+      toast.error(err?.response?.data?.error?.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsBuying(false);
+    }
+  };
 
   // Handle share/copy link
   const handleCopyLink = async () => {
@@ -171,12 +287,11 @@ export default function GameDetailsPage() {
         setFavoriteId(null);
       } else {
         try {
-          const result = await productApi.addFavorite(product.id);
+          await productApi.addFavorite(product.id);
           setIsFavorite(true);
-          // Store the new favorite ID from response
-          if (result.data?.id) {
-            setFavoriteId(result.data.id);
-          }
+          // Find the favorite ID after adding
+          const favId = await productApi.findFavoriteId(product.id);
+          setFavoriteId(favId);
         } catch (addErr: any) {
           // If already exists, just update UI state and find the ID
           if (addErr?.response?.data?.error?.code === "ALREADY_EXISTS") {
@@ -254,9 +369,8 @@ export default function GameDetailsPage() {
         // Fetch similar games (other DIRECT_TOPUP products)
         try {
           const similarResponse = await productApi.getProducts({
-            productType: "DIRECT_TOPUP",
             isActive: true,
-            limit: 6,
+            limit: 20,
           });
           if (similarResponse.success) {
             // Filter out current product and limit to 5
@@ -275,7 +389,6 @@ export default function GameDetailsPage() {
 
           if (currentDev || currentPub) {
             const allGamesResponse = await productApi.getProducts({
-              productType: "DIRECT_TOPUP",
               isActive: true,
               limit: 50,
             });
@@ -849,13 +962,24 @@ export default function GameDetailsPage() {
                     <div className="space-y-4">
                       <motion.button
                         type="button"
-                        className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors"
+                        onClick={handleBuyNow}
+                        disabled={isBuying}
+                        className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ boxShadow: '4px 4px 0 0 #000000' }}
-                        whileHover={{ y: -2 }}
-                        whileTap={{ y: 0 }}
+                        whileHover={isBuying ? {} : { y: -2 }}
+                        whileTap={isBuying ? {} : { y: 0 }}
                       >
-                        <ShoppingCart size={18} className="mr-2" aria-hidden="true" />
-                        ซื้อเลย
+                        {isBuying ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                            กำลังดำเนินการ...
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingCart size={18} className="mr-2" aria-hidden="true" />
+                            ซื้อเลย
+                          </>
+                        )}
                       </motion.button>
                     </div>
 
@@ -866,7 +990,7 @@ export default function GameDetailsPage() {
                           className="text-gray-600 mr-2 mt-0.5 flex-shrink-0"
                         />
                         <span className="text-gray-600">
-                          จัดส่งอัตโนมัติภายใน 5 นาทีหลังชำระเงิน
+                          จัดส่งอัตโนมัติทันที (ทดสอบระบบ - ข้ามชำระเงิน)
                         </span>
                       </div>
                     </div>
@@ -933,6 +1057,154 @@ export default function GameDetailsPage() {
           )}
         </div>
       </section>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && verificationStatus && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowConfirmModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-white border-[3px] border-black max-w-md w-full max-h-[90vh] overflow-y-auto"
+            style={{ boxShadow: '8px 8px 0 0 #000000' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="bg-brutal-yellow border-b-[3px] border-black p-4 flex items-center justify-between">
+              <div className="flex items-center">
+                <AlertTriangle size={24} className="text-black mr-2" />
+                <h2 className="text-lg font-bold text-black">
+                  {!verificationStatus.supported ? 'ไม่สามารถตรวจสอบบัญชีได้' : 'ยืนยันข้อมูล'}
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="p-1 hover:bg-black/10 rounded"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Warning message for unsupported verification */}
+              {!verificationStatus.supported && (
+                <div className="bg-brutal-pink/20 border-[3px] border-brutal-pink p-4">
+                  <div className="flex items-start">
+                    <ShieldAlert size={20} className="text-brutal-pink mr-2 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-bold text-black mb-1">
+                        เกมนี้ไม่รองรับการตรวจสอบบัญชีอัตโนมัติ
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        ระบบไม่สามารถตรวจสอบว่าข้อมูลบัญชีถูกต้องหรือไม่ กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Order Summary */}
+              <div className="bg-brutal-gray border-[3px] border-black p-4">
+                <h3 className="font-bold text-black mb-3 flex items-center">
+                  <Package size={18} className="mr-2" />
+                  รายละเอียดการสั่งซื้อ
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">สินค้า:</span>
+                    <span className="font-medium text-black">{verificationStatus.productName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">จำนวน:</span>
+                    <span className="font-medium text-black">{verificationStatus.optionName}</span>
+                  </div>
+                  <div className="flex justify-between border-t-[2px] border-black/20 pt-2 mt-2">
+                    <span className="text-gray-600">ราคา:</span>
+                    <span className="font-bold text-black">
+                      ฿{verificationStatus.price.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Player Info Display */}
+              {Object.keys(verificationStatus.playerInfo).length > 0 && (
+                <div className="bg-white border-[3px] border-black p-4">
+                  <h3 className="font-bold text-black mb-3 flex items-center">
+                    <User size={18} className="mr-2" />
+                    ข้อมูลบัญชีที่ระบุ
+                  </h3>
+                  <div className="space-y-2">
+                    {Object.entries(verificationStatus.playerInfo).map(([key, value]) => (
+                      <div key={key} className="flex justify-between text-sm">
+                        <span className="text-gray-600 capitalize">{key}:</span>
+                        <span className="font-mono font-bold text-black bg-brutal-gray px-2 py-0.5">
+                          {value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Refund Warning */}
+              <div className="bg-red-50 border-[3px] border-red-500 p-4">
+                <div className="flex items-start">
+                  <AlertCircle size={20} className="text-red-600 mr-2 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-bold text-red-700 mb-1">
+                      คำเตือน: ไม่สามารถขอคืนเงินได้
+                    </p>
+                    <p className="text-sm text-red-600">
+                      หากข้อมูลบัญชีที่ระบุไม่ถูกต้อง ระบบจะไม่สามารถคืนเงินหรือยกเลิกรายการได้ กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนยืนยัน
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="space-y-3 pt-2">
+                <motion.button
+                  type="button"
+                  onClick={createOrder}
+                  disabled={isBuying}
+                  className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  whileHover={isBuying ? {} : { y: -2 }}
+                  whileTap={isBuying ? {} : { y: 0 }}
+                >
+                  {isBuying ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      กำลังดำเนินการ...
+                    </>
+                  ) : (
+                    <>
+                      <Check size={18} className="mr-2" />
+                      ยืนยันการสั่งซื้อ
+                    </>
+                  )}
+                </motion.button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmModal(false)}
+                  disabled={isBuying}
+                  className="w-full bg-white text-black py-3 font-bold border-[3px] border-black hover:bg-gray-100 transition-colors disabled:opacity-50"
+                >
+                  ยกเลิก
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }

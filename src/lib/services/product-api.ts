@@ -818,6 +818,41 @@ class ProductApiService {
     return response.data;
   }
 
+  // ============ Player Verification ============
+
+  async verifyPlayer(
+    productId: string,
+    playerInfo: Record<string, string>,
+  ): Promise<{
+    valid: boolean;
+    supported: boolean;
+    message: string;
+    accountInfo?: {
+      username?: string;
+      server?: string;
+      region?: string;
+      [key: string]: any;
+    };
+    errorCode?: number;
+  }> {
+    const response = await productClient.post<{
+      success: boolean;
+      data: {
+        valid: boolean;
+        supported: boolean;
+        message: string;
+        accountInfo?: {
+          username?: string;
+          server?: string;
+          region?: string;
+          [key: string]: any;
+        };
+        errorCode?: number;
+      };
+    }>(`/api/products/${productId}/verify-player`, { playerInfo });
+    return response.data.data;
+  }
+
   // ============ Helper Methods ============
 
   getErrorMessage(error: unknown): string {

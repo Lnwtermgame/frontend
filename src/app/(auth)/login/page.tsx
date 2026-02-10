@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -16,6 +16,7 @@ function LoginContent() {
   const { login, isLoading, isAuthenticated } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const isSubmittingRef = useRef(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -29,17 +30,36 @@ function LoginContent() {
     }
   }, [isAuthenticated, redirect, router]);
 
+  // Track submission count for debugging
+  const submitCountRef = useRef(0);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    submitCountRef.current++;
+    console.log(`[Login] Form submit #${submitCountRef.current}`, { isLoading, isSubmitting: isSubmittingRef.current });
 
-    const success = await login(email, password);
-    if (success) {
-      // Redirect to the original destination or dashboard
-      if (redirect) {
-        router.push(redirect);
-      } else {
-        router.push("/dashboard/account");
+    // Prevent double submission
+    if (isSubmittingRef.current || isLoading) {
+      console.log('[Login] Submit blocked - already in progress');
+      return;
+    }
+
+    isSubmittingRef.current = true;
+    console.log('[Login] Calling auth login...');
+
+    try {
+      const success = await login(email, password);
+      console.log('[Login] Auth login result:', success);
+      if (success) {
+        // Redirect to the original destination or dashboard
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          router.push("/dashboard/account");
+        }
       }
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 

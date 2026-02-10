@@ -15,7 +15,8 @@ import {
   MessageSquare,
   TrendingUp,
   Users,
-  ShoppingCart
+  ShoppingCart,
+  Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -58,6 +59,11 @@ const adminNavItems = [
     title: "ตั๋วสนับสนุน",
     href: "/admin/tickets",
     icon: <MessageSquare className="w-5 h-5" />
+  },
+  {
+    title: "การแจ้งเตือน",
+    href: "/admin/notification",
+    icon: <Bell className="w-5 h-5" />
   },
   {
     title: "ตั้งค่า",

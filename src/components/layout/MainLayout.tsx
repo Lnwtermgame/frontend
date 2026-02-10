@@ -292,94 +292,94 @@ export function MainLayout({ children }: MainLayoutProps) {
             <div className="flex items-center gap-3">
               {/* Notification Dropdown - Show only when authenticated */}
               {isAuthenticated && (
-              <div className="relative" ref={notificationRef}>
-                <button
-                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all relative border-[2px] border-transparent hover:border-black"
-                >
-                  <Bell size={20} />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-brutal-pink text-white text-[10px] font-bold rounded-full border-[2px] border-black flex items-center justify-center">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </button>
+                <div className="relative" ref={notificationRef}>
+                  <button
+                    onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all relative border-[2px] border-transparent hover:border-black"
+                  >
+                    <Bell size={20} />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-brutal-pink text-white text-[10px] font-bold rounded-full border-[2px] border-black flex items-center justify-center">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
 
-                <AnimatePresence>
-                  {isNotificationOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-80 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
-                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
-                    >
-                      <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
-                        <h3 className="text-gray-900 font-bold text-sm">การแจ้งเตือน</h3>
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={markAllAsRead}
-                            className="text-xs text-brutal-pink hover:text-brutal-pink/80 font-semibold transition-colors"
-                          >
-                            อ่านทั้งหมด
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="max-h-[300px] overflow-y-auto">
-                        {notifications.length > 0 ? (
-                          notifications.map((notification) => (
-                            <div
-                              key={notification.id}
-                              className={cn(
-                                "p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer",
-                                !notification.read && "bg-brutal-yellow/10"
-                              )}
-                              onClick={() => markAsRead(notification.id)}
+                  <AnimatePresence>
+                    {isNotificationOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-2 w-80 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                      >
+                        <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
+                          <h3 className="text-gray-900 font-bold text-sm">การแจ้งเตือน</h3>
+                          {unreadCount > 0 && (
+                            <button
+                              onClick={markAllAsRead}
+                              className="text-xs text-brutal-pink hover:text-brutal-pink/80 font-semibold transition-colors"
                             >
-                              <div className={cn(
-                                "w-8 h-8 flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
-                                notification.type === 'success' ? "bg-brutal-green text-black" :
-                                  notification.type === 'error' ? "bg-brutal-pink text-white" :
-                                    notification.type === 'warning' ? "bg-brutal-yellow text-black" :
-                                      "bg-brutal-blue text-black"
-                              )}>
-                                {notification.type === 'success' ? <Zap size={14} /> :
-                                  notification.type === 'error' ? <LogOut size={14} /> :
-                                    <Bell size={14} />}
-                              </div>
-                              <div className="flex-1">
-                                <p className={cn("text-sm mb-1", !notification.read ? "text-gray-900 font-semibold" : "text-gray-600")}>
-                                  {notification.title}
-                                </p>
-                                <p className="text-xs text-gray-500 line-clamp-2">
-                                  {notification.message}
-                                </p>
-                                <p className="text-[10px] text-gray-400 mt-1">
-                                  {new Date(notification.createdAt).toLocaleTimeString()}
-                                </p>
-                              </div>
-                              {!notification.read && (
-                                <div className="w-2 h-2 rounded-full bg-brutal-pink mt-2 shrink-0" />
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-8 text-center text-gray-500 flex flex-col items-center">
-                            <Bell size={24} className="mb-2 opacity-30" />
-                            <p className="text-sm">ไม่มีการแจ้งเตือนใหม่</p>
-                          </div>
-                        )}
-                      </div>
+                              อ่านทั้งหมด
+                            </button>
+                          )}
+                        </div>
 
-                      <Link href="/notifications" className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors">
-                        ดูทั้งหมด
-                      </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                        <div className="max-h-[300px] overflow-y-auto">
+                          {notifications.length > 0 ? (
+                            notifications.map((notification) => (
+                              <div
+                                key={notification.id}
+                                className={cn(
+                                  "p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer",
+                                  !notification.read && "bg-brutal-yellow/10"
+                                )}
+                                onClick={() => markAsRead(notification.id)}
+                              >
+                                <div className={cn(
+                                  "w-8 h-8 flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
+                                  notification.type === 'success' ? "bg-brutal-green text-black" :
+                                    notification.type === 'error' ? "bg-brutal-pink text-white" :
+                                      notification.type === 'warning' ? "bg-brutal-yellow text-black" :
+                                        "bg-brutal-blue text-black"
+                                )}>
+                                  {notification.type === 'success' ? <Zap size={14} /> :
+                                    notification.type === 'error' ? <LogOut size={14} /> :
+                                      <Bell size={14} />}
+                                </div>
+                                <div className="flex-1">
+                                  <p className={cn("text-sm mb-1", !notification.read ? "text-gray-900 font-semibold" : "text-gray-600")}>
+                                    {notification.title}
+                                  </p>
+                                  <p className="text-xs text-gray-500 line-clamp-2">
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-[10px] text-gray-400 mt-1">
+                                    {new Date(notification.createdAt).toLocaleTimeString()}
+                                  </p>
+                                </div>
+                                {!notification.read && (
+                                  <div className="w-2 h-2 rounded-full bg-brutal-pink mt-2 shrink-0" />
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="p-8 text-center text-gray-500 flex flex-col items-center">
+                              <Bell size={24} className="mb-2 opacity-30" />
+                              <p className="text-sm">ไม่มีการแจ้งเตือนใหม่</p>
+                            </div>
+                          )}
+                        </div>
+
+                        <Link href="/notifications" className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors">
+                          ดูทั้งหมด
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               )}
 
               {/* Show divider only when authenticated */}

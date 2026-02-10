@@ -7,6 +7,7 @@ import { authApi, User, AuthTokens } from '../services/auth-api';
 
 type AuthContextType = {
   user: User | null;
+  token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
@@ -239,8 +240,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [isHydrated, isInitialized]); // Only run on hydration and initialization
 
+  // Track if login is in progress
+  const isLoggingInRef = useRef(false);
+
   // Login with API
   const login = async (email: string, password: string): Promise<boolean> => {
+    // Prevent duplicate login attempts
+    if (isLoggingInRef.current) {
+      console.log('[Auth] Login already in progress, skipping');
+      return false;
+    }
+
+    isLoggingInRef.current = true;
+    console.log('[Auth] Login started for:', email);
     setIsLoading(true);
 
     // Clear any existing refresh timeout before login
@@ -273,6 +285,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
     } finally {
       setIsLoading(false);
+      isLoggingInRef.current = false;
+      console.log('[Auth] Login completed');
     }
   };
 
@@ -411,6 +425,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
+      token,
       isLoading,
       isAuthenticated,
       isAdmin,

@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useNotifications } from "@/lib/context/notification-context";
 import { notificationApi, Notification } from "@/lib/services/notification-api";
-import { Bell, Check, Clock, Info, AlertTriangle, Gift, Tag, CheckCircle, Trash2, ShoppingBag, CreditCard, Megaphone } from "lucide-react";
+import { Bell, Check, Clock, Info, AlertTriangle, Gift, Tag, CheckCircle, Trash2, ShoppingBag, CreditCard, Megaphone, Wifi, WifiOff } from "lucide-react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -12,6 +13,7 @@ import Link from "next/link";
 export default function NotificationsPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
+  const { isWebSocketConnected } = useNotifications();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -186,16 +188,40 @@ export default function NotificationsPage() {
             </p>
           </div>
 
-          {unreadCount > 0 && (
-            <motion.button
-              onClick={markAllAsRead}
-              whileHover={{ y: -2 }}
-              className="text-xs text-gray-700 hover:text-black transition-colors bg-white border-[3px] border-black px-3 py-1.5 font-medium thai-font"
-              style={{ boxShadow: '3px 3px 0 0 #000000' }}
+          <div className="flex items-center gap-2">
+            {/* WebSocket Connection Status */}
+            <div
+              className={`flex items-center gap-1 px-2 py-1 border-[2px] text-xs font-medium ${
+                isWebSocketConnected
+                  ? 'bg-green-100 border-green-500 text-green-700'
+                  : 'bg-gray-100 border-gray-400 text-gray-500'
+              }`}
+              title={isWebSocketConnected ? 'เชื่อมต่อเรียลไทม์' : 'ไม่ได้เชื่อมต่อเรียลไทม์'}
             >
-              ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
-            </motion.button>
-          )}
+              {isWebSocketConnected ? (
+                <>
+                  <Wifi size={12} />
+                  <span>Live</span>
+                </>
+              ) : (
+                <>
+                  <WifiOff size={12} />
+                  <span>Offline</span>
+                </>
+              )}
+            </div>
+
+            {unreadCount > 0 && (
+              <motion.button
+                onClick={markAllAsRead}
+                whileHover={{ y: -2 }}
+                className="text-xs text-gray-700 hover:text-black transition-colors bg-white border-[3px] border-black px-3 py-1.5 font-medium thai-font"
+                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+              >
+                ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
+              </motion.button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -268,7 +294,7 @@ export default function NotificationsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
+                transition={{ duration: 0.2 }}
                 whileHover={{ y: -2 }}
                 className={`bg-white border-[3px] border-black relative group overflow-hidden ${!notification.isRead
                   ? "border-l-brutal-pink"

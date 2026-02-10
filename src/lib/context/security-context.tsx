@@ -141,12 +141,9 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     return fetchPromise;
   }, [user]);
 
-  // Load security data on mount
-  useEffect(() => {
-    if (user) {
-      refreshSecurityData();
-    }
-  }, [user, refreshSecurityData]);
+  // Security data is loaded lazily - only when refreshSecurityData() is called
+  // (e.g., on the security settings page), NOT on every page load
+
 
   const updateSecuritySettings = (
     settings: Partial<SecuritySettingsExtended>,

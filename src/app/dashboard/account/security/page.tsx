@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from '@/lib/framer-exports';
 import { useSecurity } from '@/lib/context/security-context';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -39,8 +39,14 @@ export default function SecurityPage() {
     resolveActivity,
     isLoadingSettings,
     is2FAVerified,
-    generateBackupCodes
+    generateBackupCodes,
+    refreshSecurityData
   } = useSecurity();
+
+  // Load security data when the security page mounts (lazy loading)
+  useEffect(() => {
+    refreshSecurityData();
+  }, [refreshSecurityData]);
 
   // Component state
   const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);

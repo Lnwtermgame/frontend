@@ -3,15 +3,17 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useNotifications } from "@/lib/context/notification-context";
 import { notificationApi, NotificationPreferences } from "@/lib/services/notification-api";
 import { motion } from "@/lib/framer-exports";
-import { Bell, Mail, Globe, Save, AlertCircle, ChevronLeft, Check } from "lucide-react";
+import { Bell, Mail, Globe, Save, AlertCircle, ChevronLeft, Check, Smartphone, X } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function NotificationPreferencesPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
+  const { isPushSupported, isPushSubscribed, subscribePush, unsubscribePush } = useNotifications();
   const [preferences, setPreferences] = useState<NotificationPreferences>({
     emailNotifications: true,
     pushNotifications: true,
@@ -20,6 +22,7 @@ export default function NotificationPreferencesPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   // Fetch preferences from API
   useEffect(() => {
@@ -61,6 +64,36 @@ export default function NotificationPreferencesPage() {
       toast.error('ไม่สามารถบันทึกการตั้งค่าได้');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  // Handle push notification subscription
+  const handleSubscribePush = async () => {
+    setIsSubscribing(true);
+    try {
+      const success = await subscribePush();
+      if (success) {
+        toast.success('เปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว');
+      } else {
+        toast.error('ไม่สามารถเปิดใช้งานการแจ้งเตือน Push ได้');
+      }
+    } catch (error) {
+      toast.error('เกิดข้อผิดพลาดในการเปิดใช้งานการแจ้งเตือน Push');
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
+  // Handle push notification unsubscription
+  const handleUnsubscribePush = async () => {
+    setIsSubscribing(true);
+    try {
+      await unsubscribePush();
+      toast.success('ปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว');
+    } catch (error) {
+      toast.error('เกิดข้อผิดพลาดในการปิดใช้งานการแจ้งเตือน Push');
+    } finally {
+      setIsSubscribing(false);
     }
   };
 
@@ -155,6 +188,67 @@ export default function NotificationPreferencesPage() {
           </div>
 
           <div className="p-6">
+            {/* Push Notification Status */}
+            {isPushSupported && (
+              <motion.div
+                whileHover={{ y: -2 }}
+                className="flex items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors mb-4"
+                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+              >
+                <div className="flex items-center">
+                  <div className="h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white bg-brutal-pink">
+                    <Smartphone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-black font-bold thai-font">
+                      การแจ้งเตือนแบบ Push
+                      {isPushSubscribed && (
+                        <span className="ml-2 text-xs bg-brutal-green text-white px-2 py-0.5 border border-black">
+                          เปิดใช้งาน
+                        </span>
+                      )}
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      {isPushSubscribed
+                        ? 'คุณกำลังรับการแจ้งเตือนแบบ Push อยู่'
+                        : 'เปิดใช้งานการแจ้งเตือนแบบ Push เพื่อรับการแจ้งเตือนบนอุปกรณ์ของคุณ'}
+                    </p>
+                  </div>
+                </div>
+                {isPushSubscribed ? (
+                  <motion.button
+                    onClick={handleUnsubscribePush}
+                    disabled={isSubscribing}
+                    whileHover={{ y: -2 }}
+                    className="flex items-center bg-brutal-pink hover:bg-red-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm"
+                    style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                  >
+                    {isSubscribing ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    ) : (
+                      <X className="h-4 w-4 mr-2" />
+                    )}
+                    ปิดใช้งาน
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    onClick={handleSubscribePush}
+                    disabled={isSubscribing}
+                    whileHover={{ y: -2 }}
+                    className="flex items-center bg-brutal-green hover:bg-green-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm"
+                    style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                  >
+                    {isSubscribing ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    ) : (
+                      <Bell className="h-4 w-4 mr-2" />
+                    )}
+                    เปิดใช้งาน
+                  </motion.button>
+                )}
+              </motion.div>
+            )}
+
             <div className="space-y-4">
               {preferenceItems.map((item) => (
                 <motion.div

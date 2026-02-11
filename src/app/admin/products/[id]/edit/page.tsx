@@ -136,16 +136,16 @@ export default function EditProductPage() {
         setTimeout(() => setShowSuccessBanner(false), 5000);
         // Stay on the same page - no redirect
       } else {
-        alert(
-          "Failed to update product: " + (response as any).error?.message ||
-            "Unknown error",
+        toast.error(
+          "ไม่สามารถบันทึกได้: " +
+            ((response as any).error?.message || "เกิดข้อผิดพลาด"),
         );
       }
     } catch (error) {
       console.error("[EditProduct] Failed to update product:", error);
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to update product";
-      alert("Error: " + errorMessage);
+        error instanceof Error ? error.message : "ไม่สามารถบันทึกสินค้าได้";
+      toast.error(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -158,11 +158,13 @@ export default function EditProductPage() {
     try {
       const response = await productApi.refreshProductFields(id);
       if (response.success) {
-        alert(`Fields refreshed! Found ${response.data.fields.length} fields.`);
+        toast.success(
+          `ซิงค์ฟิลด์สำเร็จ! พบ ${response.data.fields.length} ฟิลด์`,
+        );
       }
     } catch (error) {
       console.error("Failed to refresh fields:", error);
-      alert("Failed to refresh fields");
+      toast.error("ไม่สามารถซิงค์ฟิลด์ได้");
     } finally {
       setRefreshingFields(false);
     }
@@ -893,11 +895,17 @@ export default function EditProductPage() {
             <div className="px-2">
               <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
                 <Calendar className="w-3 h-3" />
-                สร้างเมื่อ: {new Date(product.createdAt).toLocaleDateString()}
+                สร้างเมื่อ:{" "}
+                {product.createdAt
+                  ? new Date(product.createdAt).toLocaleDateString("th-TH")
+                  : "-"}
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <RefreshCw className="w-3 h-3" />
-                แก้ไขล่าสุด: {new Date(product.updatedAt).toLocaleDateString()}
+                แก้ไขล่าสุด:{" "}
+                {product.updatedAt
+                  ? new Date(product.updatedAt).toLocaleDateString("th-TH")
+                  : "-"}
               </div>
             </div>
           </div>

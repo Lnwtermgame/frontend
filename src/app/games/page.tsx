@@ -3,7 +3,20 @@
 import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Search, Filter, Gamepad2, Star, Zap, Globe, Flame, TrendingUp, Laptop, Monitor, Smartphone, Loader2 } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Gamepad2,
+  Star,
+  Zap,
+  Globe,
+  Flame,
+  TrendingUp,
+  Laptop,
+  Monitor,
+  Smartphone,
+  Loader2,
+} from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
 
@@ -23,44 +36,64 @@ interface GameProduct {
 
 function getCategoryIcon(category: string) {
   switch (category.toLowerCase()) {
-    case 'popular': return <Flame size={16} className="text-brutal-pink" />;
-    case 'fps': return <Gamepad2 size={16} className="text-brutal-blue" />;
-    case 'moba': return <TrendingUp size={16} className="text-brutal-green" />;
-    case 'rpg': return <Star size={16} className="text-brutal-yellow" />;
-    case 'adventure': return <Globe size={16} className="text-brutal-blue" />;
-    default: return <Gamepad2 size={16} className="text-gray-500" />;
+    case "popular":
+      return <Flame size={16} className="text-brutal-pink" />;
+    case "fps":
+      return <Gamepad2 size={16} className="text-brutal-blue" />;
+    case "moba":
+      return <TrendingUp size={16} className="text-brutal-green" />;
+    case "rpg":
+      return <Star size={16} className="text-brutal-yellow" />;
+    case "adventure":
+      return <Globe size={16} className="text-brutal-blue" />;
+    default:
+      return <Gamepad2 size={16} className="text-gray-500" />;
   }
 }
 
 // Transform Product to GameProduct
 function transformProductToGame(product: Product): GameProduct {
   // Use game details for publisher if available
-  const publisher = product.gameDetails?.publisher || product.gameDetails?.developer;
+  const publisher =
+    product.gameDetails?.publisher || product.gameDetails?.developer;
 
-  // Get starting price from seagmTypes (lowest unitPrice)
-  const startingPrice = product.seagmTypes && product.seagmTypes.length > 0
-    ? Math.min(...product.seagmTypes.map(t => Number(t.unitPrice)))
-    : 0;
+  // Get starting price from seagmTypes (lowest displayPrice: sellingPrice -> originPrice -> unitPrice)
+  const startingPrice =
+    product.seagmTypes && product.seagmTypes.length > 0
+      ? Math.min(
+          ...product.seagmTypes.map((t) =>
+            Number(t.sellingPrice ?? t.originPrice ?? t.unitPrice),
+          ),
+        )
+      : 0;
 
   // Calculate discount from originPrice if available
-  const originPrice = product.seagmTypes && product.seagmTypes.length > 0
-    ? Math.max(...product.seagmTypes.map(t => Number(t.originPrice || t.unitPrice)))
-    : 0;
-  const discountPercent = originPrice > startingPrice
-    ? Math.round(((originPrice - startingPrice) / originPrice) * 100)
-    : 0;
+  const originPrice =
+    product.seagmTypes && product.seagmTypes.length > 0
+      ? Math.max(
+          ...product.seagmTypes.map((t) =>
+            Number(t.originPrice || t.unitPrice),
+          ),
+        )
+      : 0;
+  const discountPercent =
+    originPrice > startingPrice
+      ? Math.round(((originPrice - startingPrice) / originPrice) * 100)
+      : 0;
 
   return {
     id: product.id,
     slug: product.slug,
     title: product.name,
-    category: 'Direct Top-Up',
-    publisher: publisher || 'Unknown Publisher',
-    mainImage: product.imageUrl || `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+    category: "Direct Top-Up",
+    publisher: publisher || "Unknown Publisher",
+    mainImage:
+      product.imageUrl ||
+      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
     rating: product.averageRating || 4.5,
     price: startingPrice,
     discountPercent: discountPercent,
-    platforms: product.gameDetails?.platforms || ['PC', 'Mobile'],
+    platforms: product.gameDetails?.platforms || ["PC", "Mobile"],
   };
 }
 
@@ -72,7 +105,9 @@ function DirectTopupContent() {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [games, setGames] = useState<GameProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<{id: string; name: string; count: number; icon: React.ReactNode}[]>([]);
+  const [categories, setCategories] = useState<
+    { id: string; name: string; count: number; icon: React.ReactNode }[]
+  >([]);
 
   // Fetch games from API
   useEffect(() => {
@@ -83,25 +118,33 @@ function DirectTopupContent() {
         const response = await productApi.getProducts({
           isActive: true,
           limit: 100,
-          sortBy: 'salesCount',
-          sortOrder: 'desc',
+          sortBy: "salesCount",
+          sortOrder: "desc",
         });
 
         if (response.success) {
           // Filter for DIRECT_TOPUP products only and transform
           const gameProducts = response.data
-            .filter(p => p.productType === 'DIRECT_TOPUP')
+            .filter((p) => p.productType === "DIRECT_TOPUP")
             .map(transformProductToGame);
           setGames(gameProducts);
 
           // Build categories from actual data
-          const categoryCounts = gameProducts.reduce((acc, game) => {
-            acc[game.category] = (acc[game.category] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>);
+          const categoryCounts = gameProducts.reduce(
+            (acc, game) => {
+              acc[game.category] = (acc[game.category] || 0) + 1;
+              return acc;
+            },
+            {} as Record<string, number>,
+          );
 
           const cats = [
-            { id: "all", name: "เกมทั้งหมด", count: gameProducts.length, icon: <Gamepad2 size={16} className="text-brutal-pink" /> },
+            {
+              id: "all",
+              name: "เกมทั้งหมด",
+              count: gameProducts.length,
+              icon: <Gamepad2 size={16} className="text-brutal-pink" />,
+            },
             ...Object.entries(categoryCounts).map(([name, count]) => ({
               id: name.toLowerCase(),
               name,
@@ -112,7 +155,7 @@ function DirectTopupContent() {
           setCategories(cats);
         }
       } catch (error) {
-        console.error('Failed to fetch games:', error);
+        console.error("Failed to fetch games:", error);
       } finally {
         setLoading(false);
       }
@@ -131,31 +174,69 @@ function DirectTopupContent() {
 
   // Platform options
   const PLATFORMS = [
-    { id: "all", name: "ทุกแพลตฟอร์ม", count: games.length, icon: <Monitor size={16} className="text-brutal-blue" /> },
-    { id: "mobile", name: "มือถือ", count: games.filter(g => g.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS")).length, icon: <Smartphone size={16} className="text-brutal-green" /> },
-    { id: "pc", name: "คอมพิวเตอร์", count: games.filter(g => g.platforms.some(p => p === "PC" || p === "Mac")).length, icon: <Laptop size={16} className="text-brutal-yellow" /> },
-    { id: "console", name: "คอนโซล", count: games.filter(g => g.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox")).length, icon: <Gamepad2 size={16} className="text-brutal-pink" /> },
+    {
+      id: "all",
+      name: "ทุกแพลตฟอร์ม",
+      count: games.length,
+      icon: <Monitor size={16} className="text-brutal-blue" />,
+    },
+    {
+      id: "mobile",
+      name: "มือถือ",
+      count: games.filter((g) =>
+        g.platforms.some(
+          (p) => p === "Mobile" || p === "Android" || p === "iOS",
+        ),
+      ).length,
+      icon: <Smartphone size={16} className="text-brutal-green" />,
+    },
+    {
+      id: "pc",
+      name: "คอมพิวเตอร์",
+      count: games.filter((g) =>
+        g.platforms.some((p) => p === "PC" || p === "Mac"),
+      ).length,
+      icon: <Laptop size={16} className="text-brutal-yellow" />,
+    },
+    {
+      id: "console",
+      name: "คอนโซล",
+      count: games.filter((g) =>
+        g.platforms.some(
+          (p) => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox",
+        ),
+      ).length,
+      icon: <Gamepad2 size={16} className="text-brutal-pink" />,
+    },
   ];
 
   // Filter games based on selected category and search query
-  const filteredGames = games.filter(game => {
+  const filteredGames = games.filter((game) => {
     // Category filter
-    const matchesCategory = selectedCategory === "all" ||
+    const matchesCategory =
+      selectedCategory === "all" ||
       game.category.toLowerCase() === selectedCategory.toLowerCase() ||
-      (selectedCategory === "popular" && (game.category === "Popular" || game.rating >= 4.5));
+      (selectedCategory === "popular" &&
+        (game.category === "Popular" || game.rating >= 4.5));
 
     // Search filter
-    const matchesSearch = !searchQuery || game.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      !searchQuery ||
+      game.title.toLowerCase().includes(searchQuery.toLowerCase());
 
     // Platform filter
     let matchesPlatform = true;
     if (selectedPlatform !== "all") {
       if (selectedPlatform === "mobile") {
-        matchesPlatform = game.platforms.some(p => p === "Mobile" || p === "Android" || p === "iOS");
+        matchesPlatform = game.platforms.some(
+          (p) => p === "Mobile" || p === "Android" || p === "iOS",
+        );
       } else if (selectedPlatform === "pc") {
-        matchesPlatform = game.platforms.some(p => p === "PC" || p === "Mac");
+        matchesPlatform = game.platforms.some((p) => p === "PC" || p === "Mac");
       } else if (selectedPlatform === "console") {
-        matchesPlatform = game.platforms.some(p => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox");
+        matchesPlatform = game.platforms.some(
+          (p) => p === "Console" || p === "PS4" || p === "PS5" || p === "Xbox",
+        );
       }
     }
 
@@ -173,8 +254,9 @@ function DirectTopupContent() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           {/* Categories Card */}
-          <div className="bg-white border-[3px] border-black overflow-hidden mb-4"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
               <h2 className="text-black font-black text-lg flex items-center">
@@ -188,7 +270,7 @@ function DirectTopupContent() {
               </div>
             ) : (
               <div className="p-3 space-y-1">
-                {categories.map(category => (
+                {categories.map((category) => (
                   <motion.button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
@@ -197,18 +279,32 @@ function DirectTopupContent() {
                         ? "bg-brutal-yellow border-black text-black"
                         : "bg-white border-transparent text-gray-700 hover:border-gray-300"
                     }`}
-                    style={selectedCategory === category.id ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+                    style={
+                      selectedCategory === category.id
+                        ? { boxShadow: "3px 3px 0 0 #000000" }
+                        : undefined
+                    }
                     whileHover={{ x: 3 }}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={selectedCategory === category.id ? "text-black" : "text-gray-500"}>
+                      <span
+                        className={
+                          selectedCategory === category.id
+                            ? "text-black"
+                            : "text-gray-500"
+                        }
+                      >
                         {category.icon}
                       </span>
                       <span className="text-sm font-bold">{category.name}</span>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                      selectedCategory === category.id ? "bg-white text-black" : "bg-gray-100 text-gray-600"
-                    }`}>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                        selectedCategory === category.id
+                          ? "bg-white text-black"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
                       {category.count}
                     </span>
                   </motion.button>
@@ -218,8 +314,9 @@ function DirectTopupContent() {
           </div>
 
           {/* Platforms Card */}
-          <div className="bg-white border-[3px] border-black overflow-hidden mb-4"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
               <h3 className="text-black font-black text-base flex items-center">
@@ -228,7 +325,7 @@ function DirectTopupContent() {
               </h3>
             </div>
             <div className="p-3 space-y-1">
-              {PLATFORMS.map(platform => (
+              {PLATFORMS.map((platform) => (
                 <motion.button
                   key={platform.id}
                   onClick={() => setSelectedPlatform(platform.id)}
@@ -237,18 +334,32 @@ function DirectTopupContent() {
                       ? "bg-brutal-blue border-black text-black"
                       : "bg-white border-transparent text-gray-700 hover:border-gray-300"
                   }`}
-                  style={selectedPlatform === platform.id ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+                  style={
+                    selectedPlatform === platform.id
+                      ? { boxShadow: "3px 3px 0 0 #000000" }
+                      : undefined
+                  }
                   whileHover={{ x: 3 }}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={selectedPlatform === platform.id ? "text-black" : "text-gray-500"}>
+                    <span
+                      className={
+                        selectedPlatform === platform.id
+                          ? "text-black"
+                          : "text-gray-500"
+                      }
+                    >
                       {platform.icon}
                     </span>
                     <span className="text-sm font-bold">{platform.name}</span>
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                    selectedPlatform === platform.id ? "bg-white text-black" : "bg-gray-100 text-gray-600"
-                  }`}>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                      selectedPlatform === platform.id
+                        ? "bg-white text-black"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
                     {platform.count}
                   </span>
                 </motion.button>
@@ -257,20 +368,23 @@ function DirectTopupContent() {
           </div>
 
           {/* Promo Card */}
-          <div className="bg-brutal-green border-[3px] border-black p-4 relative overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          <div
+            className="bg-brutal-green border-[3px] border-black p-4 relative overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
                 <Zap size={18} className="text-black" />
-                <span className="font-black text-black text-sm">โบนัสเติมเงินครั้งแรก</span>
+                <span className="font-black text-black text-sm">
+                  โบนัสเติมเงินครั้งแรก
+                </span>
               </div>
               <p className="text-black/80 text-xs mb-3">
                 รับโบนัส 20% สำหรับการเติมเงินครั้งแรกในทุกเกม
               </p>
               <motion.button
                 className="w-full bg-black text-white px-3 py-2 text-xs font-bold border-[2px] border-black"
-                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -284,7 +398,7 @@ function DirectTopupContent() {
           {/* Header with search and filters */}
           <motion.div
             className="bg-white border-[3px] border-black p-5"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -292,10 +406,16 @@ function DirectTopupContent() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h1 className="text-gray-900 text-2xl font-black flex items-center">
-                  <Zap size={24} className="text-brutal-yellow mr-2" fill="currentColor" />
+                  <Zap
+                    size={24}
+                    className="text-brutal-yellow mr-2"
+                    fill="currentColor"
+                  />
                   เติมเกมโดยตรง
                 </h1>
-                <p className="text-gray-500 text-sm mt-1">เติมเงินเกมโปรดของคุณโดยตรง รวดเร็ว ปลอดภัย</p>
+                <p className="text-gray-500 text-sm mt-1">
+                  เติมเงินเกมโปรดของคุณโดยตรง รวดเร็ว ปลอดภัย
+                </p>
               </div>
 
               <div className="flex items-center gap-3">
@@ -328,7 +448,9 @@ function DirectTopupContent() {
               <h2 className="text-gray-900 text-lg font-black flex items-center">
                 <Gamepad2 size={20} className="text-brutal-pink mr-2" />
                 เกมทั้งหมด
-                <span className="ml-2 text-sm font-normal text-gray-500">({filteredGames.length})</span>
+                <span className="ml-2 text-sm font-normal text-gray-500">
+                  ({filteredGames.length})
+                </span>
               </h2>
             </div>
 
@@ -338,15 +460,17 @@ function DirectTopupContent() {
                   key={game.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 + (index * 0.05) }}
+                  transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
                 >
                   <Link href={`/games/${game.slug}`}>
-                    <div className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
-                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                    <div
+                      className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
+                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     >
                       {game.discountPercent && game.discountPercent > 0 ? (
-                        <div className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
-                          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                        <div
+                          className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
+                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
                         >
                           -{game.discountPercent}%
                         </div>
@@ -360,16 +484,23 @@ function DirectTopupContent() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
 
-                        <div className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold"
-                          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                        <div
+                          className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold"
+                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
                         >
-                          <Star size={10} className="mr-0.5 text-brutal-yellow" fill="currentColor" /> {game.rating}
+                          <Star
+                            size={10}
+                            className="mr-0.5 text-brutal-yellow"
+                            fill="currentColor"
+                          />{" "}
+                          {game.rating}
                         </div>
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div className="bg-brutal-yellow text-black px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
-                            style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                          <div
+                            className="bg-brutal-yellow text-black px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
+                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
                           >
                             เติมเกมเลย
                           </div>
@@ -377,13 +508,19 @@ function DirectTopupContent() {
                       </div>
 
                       <div className="p-2.5">
-                        <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-pink transition-colors">{game.title}</p>
+                        <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-pink transition-colors">
+                          {game.title}
+                        </p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
                             {getCategoryIcon(game.category)}
-                            <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">{game.publisher}</span>
+                            <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">
+                              {game.publisher}
+                            </span>
                           </div>
-                          <div className="text-xs text-black font-black">฿{game.price}</div>
+                          <div className="text-xs text-black font-black">
+                            ฿{game.price}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -396,7 +533,9 @@ function DirectTopupContent() {
               <div className="text-center py-12">
                 <Gamepad2 size={48} className="mx-auto text-gray-300 mb-4" />
                 <p className="text-gray-500 font-bold">ไม่พบเกมที่ค้นหา</p>
-                <p className="text-gray-400 text-sm mt-1">ลองค้นหาด้วยคำอื่น หรือเลือกหมวดหมู่อื่น</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  ลองค้นหาด้วยคำอื่น หรือเลือกหมวดหมู่อื่น
+                </p>
               </div>
             )}
           </motion.div>
@@ -408,14 +547,16 @@ function DirectTopupContent() {
 
 export default function DirectTopupPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
-        <div className="flex items-center gap-3">
-          <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
-          <span className="text-gray-900 font-bold">กำลังโหลด...</span>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
+            <span className="text-gray-900 font-bold">กำลังโหลด...</span>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <DirectTopupContent />
     </Suspense>
   );

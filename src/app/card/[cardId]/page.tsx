@@ -3,10 +3,23 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ChevronLeft, ShoppingCart, Shield, Info, Clock, Star, Globe, Tag, Gift, Loader2, AlertCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  ShoppingCart,
+  Shield,
+  Info,
+  Clock,
+  Star,
+  Globe,
+  Tag,
+  Gift,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
 import { getMinPrice, formatPrice } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 // Card details interface matching the UI expectations
 interface CardDetails {
@@ -35,20 +48,22 @@ interface Denomination {
 // Helper function to transform Product to CardDetails
 function transformProductToCardDetails(product: Product): CardDetails {
   // Map seagmTypes to denominations (API returns seagmTypes, not variants)
-  const denominations: Denomination[] = product.seagmTypes?.map((type) => ({
-    id: type.id,
-    value: type.name,
-    price: type.unitPrice,
-  })) || [];
+  const denominations: Denomination[] =
+    product.seagmTypes?.map((type) => ({
+      id: type.id,
+      value: type.name,
+      price: type.sellingPrice ?? (type.originPrice || type.unitPrice),
+    })) || [];
 
   // Extract regions from attributes if available
   const regions: string[] = [];
-  const regionAttr = product.attributes?.find(a =>
-    a.name.toLowerCase().includes('region') ||
-    a.name.toLowerCase().includes('country')
+  const regionAttr = product.attributes?.find(
+    (a) =>
+      a.name.toLowerCase().includes("region") ||
+      a.name.toLowerCase().includes("country"),
   );
   if (regionAttr) {
-    regions.push(...regionAttr.value.split(',').map(r => r.trim()));
+    regions.push(...regionAttr.value.split(",").map((r) => r.trim()));
   }
   if (regions.length === 0) {
     regions.push("Global", "North America", "Europe", "Asia");
@@ -57,10 +72,19 @@ function transformProductToCardDetails(product: Product): CardDetails {
   return {
     id: product.id,
     name: product.name,
-    description: product.description || product.shortDescription || `Gift card for ${product.name}`,
-    image: product.imageUrl || `https://placehold.co/800x450?text=${encodeURIComponent(product.name)}`,
-    publisher: product.attributes?.find(a => a.name.toLowerCase().includes('publisher'))?.value ||
-               product.category?.name || "Digital",
+    description:
+      product.description ||
+      product.shortDescription ||
+      `Gift card for ${product.name}`,
+    image:
+      product.imageUrl ||
+      `https://placehold.co/800x450?text=${encodeURIComponent(product.name)}`,
+    publisher:
+      product.attributes?.find((a) =>
+        a.name.toLowerCase().includes("publisher"),
+      )?.value ||
+      product.category?.name ||
+      "Digital",
     category: product.category?.name || "Gift Card",
     denominations,
     regions,
@@ -73,7 +97,11 @@ function transformProductToCardDetails(product: Product): CardDetails {
 3. Receive your code instantly via email
 4. Redeem code on ${product.name} platform
 5. Enjoy your purchase!`,
-    tags: product.tags?.map(t => t.name) || ["gift card", "digital", "prepaid"],
+    tags: product.tags?.map((t) => t.name) || [
+      "gift card",
+      "digital",
+      "prepaid",
+    ],
   };
 }
 
@@ -92,7 +120,7 @@ export default function CardDetailPage() {
 
   // Fetch card details
   useEffect(() => {
-    if (typeof cardId !== 'string') return;
+    if (typeof cardId !== "string") return;
 
     const fetchCardDetails = async () => {
       try {
@@ -103,7 +131,7 @@ export default function CardDetailPage() {
         const response = await productApi.getProductBySlug(cardId);
 
         if (!response.success || !response.data) {
-          throw new Error('Card not found');
+          throw new Error("Card not found");
         }
 
         const productData = response.data;
@@ -122,14 +150,16 @@ export default function CardDetailPage() {
           });
           if (relatedResponse.success) {
             // Filter out current product and limit to 5
-            const filtered = relatedResponse.data.filter(p => p.id !== productData.id && p.productType === "CARD");
+            const filtered = relatedResponse.data.filter(
+              (p) => p.id !== productData.id && p.productType === "CARD",
+            );
             setRelatedCards(filtered.slice(0, 5));
           }
         } catch {
           // Ignore related products error
         }
       } catch (err) {
-        console.error('Error fetching card:', err);
+        console.error("Error fetching card:", err);
         setError(productApi.getErrorMessage(err));
       } finally {
         setLoading(false);
@@ -141,14 +171,18 @@ export default function CardDetailPage() {
 
   const handleAddToCart = () => {
     if (!selectedDenomination || !selectedRegion || !email) {
-      alert("Please fill all fields");
+      toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
     if (!card) return;
 
-    const selectedValue = card.denominations.find(d => d.id === selectedDenomination)?.value;
-    alert("Added to cart: " + card.name + " - " + selectedValue + " for region: " + selectedRegion + " and email: " + email);
+    const selectedValue = card.denominations.find(
+      (d) => d.id === selectedDenomination,
+    )?.value;
+    toast.success(
+      `เพิ่มลงตะกร้า: ${card.name} - ${selectedValue} (${selectedRegion})`,
+    );
   };
 
   if (loading) {
@@ -165,17 +199,28 @@ export default function CardDetailPage() {
   if (error || !card) {
     return (
       <div className="space-y-6">
-        <Link href="/card" className="inline-flex items-center text-gray-600 hover:text-black transition-colors">
+        <Link
+          href="/card"
+          className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
+        >
           <ChevronLeft size={16} className="mr-1" /> กลับไปยังรายการบัตร
         </Link>
 
-        <div className="bg-white border-[3px] border-black p-8 text-center"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-8 text-center"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <AlertCircle className="w-12 h-12 text-brutal-pink mx-auto mb-4" />
           <h2 className="text-xl font-bold text-black mb-2">Card Not Found</h2>
-          <p className="text-gray-600 mb-6">{error || "The card you're looking for doesn't exist or has been removed."}</p>
-          <Link href="/card" className="bg-black text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black hover:bg-gray-800 transition-colors"
-            style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+          <p className="text-gray-600 mb-6">
+            {error ||
+              "The card you're looking for doesn't exist or has been removed."}
+          </p>
+          <Link
+            href="/card"
+            className="bg-black text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+          >
             <ChevronLeft size={18} className="mr-2" />
             Back to Cards
           </Link>
@@ -185,13 +230,17 @@ export default function CardDetailPage() {
   }
 
   // Calculate current price
-  const selectedDenominationPrice = card.denominations.find(d => d.id === selectedDenomination)?.price || 0;
+  const selectedDenominationPrice =
+    card.denominations.find((d) => d.id === selectedDenomination)?.price || 0;
   const totalPrice = selectedDenominationPrice * quantity;
 
   return (
     <div className="space-y-6">
       {/* Back button */}
-      <Link href="/card" className="inline-flex items-center text-gray-600 hover:text-black transition-colors">
+      <Link
+        href="/card"
+        className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
+      >
         <ChevronLeft size={16} className="mr-1" /> กลับไปยังรายการบัตร
       </Link>
 
@@ -204,8 +253,10 @@ export default function CardDetailPage() {
           transition={{ duration: 0.5 }}
         >
           {/* Card main info */}
-          <div className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="relative aspect-video w-full overflow-hidden">
               <img
                 src={card.image}
@@ -217,7 +268,9 @@ export default function CardDetailPage() {
             <div className="p-6">
               <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                 <div>
-                  <h1 className="text-black text-2xl font-bold mb-2">{card.name}</h1>
+                  <h1 className="text-black text-2xl font-bold mb-2">
+                    {card.name}
+                  </h1>
                   <div className="flex items-center flex-wrap gap-3 text-sm">
                     <div className="flex items-center text-gray-600">
                       <Gift size={16} className="mr-1 text-brutal-blue" />
@@ -229,14 +282,16 @@ export default function CardDetailPage() {
                     </div>
                     <div className="flex items-center text-gray-600">
                       <Star size={16} className="mr-1 text-brutal-pink" />
-                      <span>{card.rating} ({card.reviews} รีวิว)</span>
+                      <span>
+                        {card.rating} ({card.reviews} รีวิว)
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <span className="bg-brutal-blue text-black px-3 py-1 text-xs font-bold border-[2px] border-black">
-                    {card.isDigital ? 'Digital' : 'Physical'}
+                    {card.isDigital ? "Digital" : "Physical"}
                   </span>
                   <span className="bg-brutal-green text-black px-3 py-1 text-xs font-bold border-[2px] border-black flex items-center">
                     <Clock size={12} className="mr-1" /> {card.deliveryTime}
@@ -247,8 +302,11 @@ export default function CardDetailPage() {
               <p className="text-gray-600 text-sm mb-4">{card.description}</p>
 
               <div className="flex flex-wrap gap-2">
-                {card.tags.map(tag => (
-                  <span key={tag} className="bg-brutal-gray text-black px-2 py-0.5 text-xs border-[2px] border-black">
+                {card.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-brutal-gray text-black px-2 py-0.5 text-xs border-[2px] border-black"
+                  >
                     {tag}
                   </span>
                 ))}
@@ -257,8 +315,10 @@ export default function CardDetailPage() {
           </div>
 
           {/* How to use */}
-          <div className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
               <h2 className="text-black font-bold text-lg flex items-center">
                 <span className="w-1.5 h-5 bg-black mr-2"></span>
@@ -268,51 +328,72 @@ export default function CardDetailPage() {
             <div className="p-6">
               <div className="space-y-4 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                  <div
+                    className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  >
                     <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
                       <span className="text-black font-bold">1</span>
                     </div>
-                    <p className="text-black font-medium">เลือกเดโนมิเนชั่นและภูมิภาค</p>
+                    <p className="text-black font-medium">
+                      เลือกเดโนมิเนชั่นและภูมิภาค
+                    </p>
                   </div>
 
-                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                  <div
+                    className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  >
                     <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
                       <span className="text-black font-bold">2</span>
                     </div>
                     <p className="text-black font-medium">ดำเนินการชำระเงิน</p>
                   </div>
 
-                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                  <div
+                    className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  >
                     <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
                       <span className="text-black font-bold">3</span>
                     </div>
-                    <p className="text-black font-medium">รับโค้ดทางอีเมลทันที</p>
+                    <p className="text-black font-medium">
+                      รับโค้ดทางอีเมลทันที
+                    </p>
                   </div>
 
-                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                  <div
+                    className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  >
                     <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
                       <span className="text-black font-bold">4</span>
                     </div>
-                    <p className="text-black font-medium">แลกโค้ดบน {card.publisher}</p>
+                    <p className="text-black font-medium">
+                      แลกโค้ดบน {card.publisher}
+                    </p>
                   </div>
 
-                  <div className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                  <div
+                    className="bg-brutal-gray border-[3px] border-black p-4 flex flex-col items-center text-center"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  >
                     <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black rounded-full flex items-center justify-center mb-2">
                       <span className="text-black font-bold">5</span>
                     </div>
-                    <p className="text-black font-medium">เพลิดเพลินกับบริการ</p>
+                    <p className="text-black font-medium">
+                      เพลิดเพลินกับบริการ
+                    </p>
                   </div>
                 </div>
 
                 <div className="bg-brutal-blue/20 border-[3px] border-black p-4 flex items-start">
                   <Info size={18} className="text-black shrink-0 mt-0.5 mr-3" />
                   <p className="text-gray-700 text-sm">
-                    โค้ดที่ซื้อจาก MaliGamePass ใช้ได้เฉพาะในระบบของเอเจนซี่ที่ให้บริการแต่ละเกมเท่านั้น อาจมีข้อจำกัดบางประการสำหรับภูมิภาคที่เลือก โปรดตรวจสอบข้อกำหนดและเงื่อนไขก่อนซื้อ
+                    โค้ดที่ซื้อจาก MaliGamePass
+                    ใช้ได้เฉพาะในระบบของเอเจนซี่ที่ให้บริการแต่ละเกมเท่านั้น
+                    อาจมีข้อจำกัดบางประการสำหรับภูมิภาคที่เลือก
+                    โปรดตรวจสอบข้อกำหนดและเงื่อนไขก่อนซื้อ
                   </p>
                 </div>
               </div>
@@ -326,8 +407,10 @@ export default function CardDetailPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="bg-white border-[3px] border-black sticky top-24"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black sticky top-24"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="p-4 border-b-[3px] border-black bg-brutal-pink">
               <h2 className="text-black font-bold text-lg flex items-center">
                 <span className="w-1.5 h-5 bg-black mr-2"></span>
@@ -337,22 +420,32 @@ export default function CardDetailPage() {
             <div className="p-6 space-y-6">
               {/* Denomination selection */}
               <div>
-                <label className="block text-black text-sm font-bold mb-2">เลือกมูลค่าบัตร</label>
+                <label className="block text-black text-sm font-bold mb-2">
+                  เลือกมูลค่าบัตร
+                </label>
                 <div className="grid grid-cols-2 gap-3">
                   {card.denominations.map((denom) => (
                     <motion.button
                       key={denom.id}
                       onClick={() => setSelectedDenomination(denom.id)}
-                      className={`p-3 text-center border-[3px] transition-all ${selectedDenomination === denom.id
+                      className={`p-3 text-center border-[3px] transition-all ${
+                        selectedDenomination === denom.id
                           ? "bg-brutal-yellow border-black text-black"
                           : "bg-white border-black text-gray-700 hover:bg-gray-50"
-                        }`}
-                      style={{ boxShadow: selectedDenomination === denom.id ? '2px 2px 0 0 #000000' : 'none' }}
+                      }`}
+                      style={{
+                        boxShadow:
+                          selectedDenomination === denom.id
+                            ? "2px 2px 0 0 #000000"
+                            : "none",
+                      }}
                       whileHover={{ y: -2 }}
                       whileTap={{ y: 0 }}
                     >
                       <div className="text-sm font-bold">{denom.value}</div>
-                      <div className="text-xs mt-1 opacity-80">฿{denom.price.toFixed(2)}</div>
+                      <div className="text-xs mt-1 opacity-80">
+                        ฿{denom.price.toFixed(2)}
+                      </div>
                     </motion.button>
                   ))}
                 </div>
@@ -360,7 +453,9 @@ export default function CardDetailPage() {
 
               {/* Region selection */}
               <div>
-                <label className="block text-black text-sm font-bold mb-2">เลือกภูมิภาค</label>
+                <label className="block text-black text-sm font-bold mb-2">
+                  เลือกภูมิภาค
+                </label>
                 <div className="relative">
                   <select
                     value={selectedRegion}
@@ -369,7 +464,9 @@ export default function CardDetailPage() {
                   >
                     <option value="">เลือกภูมิภาค</option>
                     {card.regions.map((region) => (
-                      <option key={region} value={region}>{region}</option>
+                      <option key={region} value={region}>
+                        {region}
+                      </option>
                     ))}
                   </select>
                   <Globe className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none h-4 w-4" />
@@ -378,7 +475,9 @@ export default function CardDetailPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-black text-sm font-bold mb-2">อีเมลสำหรับรับโค้ด</label>
+                <label className="block text-black text-sm font-bold mb-2">
+                  อีเมลสำหรับรับโค้ด
+                </label>
                 <input
                   type="email"
                   placeholder="example@email.com"
@@ -386,15 +485,19 @@ export default function CardDetailPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full p-3 bg-white border-[3px] border-black text-black focus:outline-none focus:ring-0"
                 />
-                <p className="mt-1 text-gray-600 text-xs">โค้ดเกมจะถูกส่งไปที่อีเมลนี้ทันทีหลังชำระเงิน</p>
+                <p className="mt-1 text-gray-600 text-xs">
+                  โค้ดเกมจะถูกส่งไปที่อีเมลนี้ทันทีหลังชำระเงิน
+                </p>
               </div>
 
               {/* Quantity */}
               <div>
-                <label className="block text-black text-sm font-bold mb-2">จำนวน</label>
+                <label className="block text-black text-sm font-bold mb-2">
+                  จำนวน
+                </label>
                 <div className="flex items-center">
                   <button
-                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                     className="w-10 h-10 bg-white border-[3px] border-black flex items-center justify-center text-black font-bold hover:bg-gray-100"
                   >
                     -
@@ -403,11 +506,13 @@ export default function CardDetailPage() {
                     type="number"
                     min="1"
                     value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    onChange={(e) =>
+                      setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                    }
                     className="w-16 h-10 bg-white border-y-[3px] border-black text-center text-black font-bold focus:outline-none"
                   />
                   <button
-                    onClick={() => setQuantity(prev => prev + 1)}
+                    onClick={() => setQuantity((prev) => prev + 1)}
                     className="w-10 h-10 bg-white border-[3px] border-black flex items-center justify-center text-black font-bold hover:bg-gray-100"
                   >
                     +
@@ -419,7 +524,9 @@ export default function CardDetailPage() {
               <div className="pt-4 border-t-[3px] border-black">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">ราคา:</span>
-                  <span className="text-black font-medium">฿{selectedDenominationPrice.toFixed(2)}</span>
+                  <span className="text-black font-medium">
+                    ฿{selectedDenominationPrice.toFixed(2)}
+                  </span>
                 </div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">จำนวน:</span>
@@ -427,7 +534,9 @@ export default function CardDetailPage() {
                 </div>
                 <div className="flex justify-between font-bold">
                   <span className="text-black">ราคารวม:</span>
-                  <span className="text-black text-lg">฿{totalPrice.toFixed(2)}</span>
+                  <span className="text-black text-lg">
+                    ฿{totalPrice.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
@@ -435,7 +544,7 @@ export default function CardDetailPage() {
               <motion.button
                 onClick={handleAddToCart}
                 className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={!selectedDenomination || !selectedRegion || !email}
@@ -461,7 +570,10 @@ export default function CardDetailPage() {
             <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
             บัตรอื่นๆ ที่คล้ายกัน
           </h2>
-          <Link href="/card" className="text-sm text-gray-600 hover:text-black font-medium">
+          <Link
+            href="/card"
+            className="text-sm text-gray-600 hover:text-black font-medium"
+          >
             ดูทั้งหมด
           </Link>
         </div>
@@ -473,17 +585,20 @@ export default function CardDetailPage() {
                 key={relatedProduct.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 + (i * 0.05) }}
+                transition={{ duration: 0.3, delay: 0.1 + i * 0.05 }}
               >
                 <Link href={`/card/${relatedProduct.slug}`}>
                   <motion.div
                     className="relative overflow-hidden bg-white border-[3px] border-black group cursor-pointer"
-                    style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     whileHover={{ y: -4 }}
                   >
                     <div className="relative h-32 w-full overflow-hidden">
                       <img
-                        src={relatedProduct.imageUrl || `https://placehold.co/300x200?text=${encodeURIComponent(relatedProduct.name)}`}
+                        src={
+                          relatedProduct.imageUrl ||
+                          `https://placehold.co/300x200?text=${encodeURIComponent(relatedProduct.name)}`
+                        }
                         alt={relatedProduct.name}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       />
@@ -491,9 +606,13 @@ export default function CardDetailPage() {
                     </div>
 
                     <div className="p-3">
-                      <p className="text-black text-sm font-bold line-clamp-1 mb-1">{relatedProduct.name}</p>
+                      <p className="text-black text-sm font-bold line-clamp-1 mb-1">
+                        {relatedProduct.name}
+                      </p>
                       <div className="flex items-center justify-between">
-                        <div className="text-gray-600 text-xs">{relatedProduct.category?.name || 'Gift Card'}</div>
+                        <div className="text-gray-600 text-xs">
+                          {relatedProduct.category?.name || "Gift Card"}
+                        </div>
                         <div className="text-xs text-black font-bold">
                           {formatPrice(getMinPrice(relatedProduct.seagmTypes))}
                         </div>

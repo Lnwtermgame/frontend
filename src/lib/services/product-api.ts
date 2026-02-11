@@ -818,6 +818,20 @@ class ProductApiService {
     return response.data;
   }
 
+  async bulkUpdateSellingPrices(
+    strategy: "mid" | "nearSeagm" | "smallProfit" | "seagm" | "custom",
+    customPercent?: number,
+  ): Promise<{
+    success: boolean;
+    data: { message: string; strategy: string; affectedCount: number };
+  }> {
+    const response = await productClient.post(
+      "/api/admin/product-types/prices/bulk",
+      { strategy, customPercent },
+    );
+    return response.data;
+  }
+
   // ============ Player Verification ============
 
   async verifyPlayer(

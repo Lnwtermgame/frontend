@@ -22,6 +22,7 @@ import { productApi } from "@/lib/services/product-api";
 import DynamicProductFields from "@/components/products/DynamicProductFields";
 import { SeagmField } from "@/lib/services/product-api";
 import { orderApi } from "@/lib/services/order-api";
+import toast from "react-hot-toast";
 
 interface ItemWithFields extends CartItem {
   fields: SeagmField[];
@@ -31,7 +32,14 @@ interface ItemWithFields extends CartItem {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, removeItem, updateQuantity, updatePlayerInfo, getTotalPrice, clearCart } = useCart();
+  const {
+    items,
+    removeItem,
+    updateQuantity,
+    updatePlayerInfo,
+    getTotalPrice,
+    clearCart,
+  } = useCart();
 
   const [itemsWithFields, setItemsWithFields] = useState<ItemWithFields[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +62,7 @@ export default function CheckoutPage() {
             response.data.map((d) => [
               d.productId,
               { fields: d.fields, productType: d.productType },
-            ])
+            ]),
           );
 
           const itemsWithFieldsData: ItemWithFields[] = items.map((item) => {
@@ -83,14 +91,14 @@ export default function CheckoutPage() {
   const handleFieldChange = (
     productId: string,
     values: Record<string, string>,
-    isValid: boolean
+    isValid: boolean,
   ) => {
     setItemsWithFields((prev) =>
       prev.map((item) =>
         item.productId === productId
           ? { ...item, fieldValues: values, fieldsValid: isValid }
-          : item
-      )
+          : item,
+      ),
     );
 
     // Update cart context
@@ -101,7 +109,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!allFieldsValid) {
-      alert("กรุณากรอกข้อมูลที่จำเป็นทั้งหมดสำหรับรายการเติมเงินโดยตรง");
+      toast.error("กรุณากรอกข้อมูลที่จำเป็นทั้งหมดสำหรับรายการเติมเงินโดยตรง");
       return;
     }
 
@@ -123,18 +131,35 @@ export default function CheckoutPage() {
         clearCart();
         router.push(`/orders/${response.data.id}/success`);
       } else {
-        alert("สร้างคำสั่งซื้อไม่สำเร็จ");
+        toast.error("สร้างคำสั่งซื้อไม่สำเร็จ");
       }
     } catch (error: any) {
       console.error("Order creation failed:", error);
 
-      // Check if it's a 10406 error
-      if (error.response?.data?.error?.infoCode === 10406) {
-        alert(
-          "ข้อมูลสินค้าบางอย่างมีการเปลี่ยนแปลง กรุณารีเฟรชหน้าและลองใหม่อีกครั้ง"
+      const errorMessage = error.response?.data?.error?.message || "";
+      const errorCode =
+        error.response?.data?.error?.details?.infoCode ||
+        error.response?.data?.error?.infoCode;
+
+      // Check for player verification errors
+      if (
+        errorMessage.includes("Player verification failed") ||
+        errorCode === 20133 ||
+        errorCode === 20093
+      ) {
+        toast.error(
+          "User ID หรือ Zone ID ไม่ถูกต้อง กรุณาตรวจสอบข้อมูลบัญชีเกมของคุณ",
+          { duration: 5000 },
+        );
+      } else if (errorCode === 10406) {
+        toast.error(
+          "ข้อมูลสินค้าบางอย่างมีการเปลี่ยนแปลง กรุณารีเฟรชหน้าและลองใหม่อีกครั้ง",
+          { duration: 5000 },
         );
       } else {
-        alert(error.message || "สั่งซื้อไม่สำเร็จ");
+        toast.error(errorMessage || error.message || "สั่งซื้อไม่สำเร็จ", {
+          duration: 5000,
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -155,7 +180,10 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
-        <div className="bg-white border-[3px] border-black p-8 text-center max-w-md" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-8 text-center max-w-md"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <ShoppingCart className="mx-auto text-gray-600 w-12 h-12 mb-4" />
           <h2 className="text-2xl font-bold text-black mb-2">
             ตะกร้าของคุณว่างเปล่า
@@ -165,7 +193,8 @@ export default function CheckoutPage() {
           </p>
           <Link
             href="/products"
-            className="bg-black text-white border-[3px] border-black px-6 py-3 font-medium inline-flex items-center hover:bg-gray-800 transition-colors" style={{ boxShadow: '3px 3px 0 0 #000000' }}
+            className="bg-black text-white border-[3px] border-black px-6 py-3 font-medium inline-flex items-center hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             เลือกดูสินค้า
@@ -206,7 +235,8 @@ export default function CheckoutPage() {
                 key={item.productId}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                className="bg-white border-[3px] border-black p-6"
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 {/* Item Header */}
                 <div className="flex items-start gap-4 mb-6">
@@ -262,17 +292,18 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Dynamic Fields for Direct Top-Up */}
-                {item.productType === "DIRECT_TOPUP" && item.fields.length > 0 && (
-                  <div className="mb-6">
-                    <DynamicProductFields
-                      productId={item.productId}
-                      onFieldsChange={(values, isValid) =>
-                        handleFieldChange(item.productId, values, isValid)
-                      }
-                      initialValues={item.fieldValues}
-                    />
-                  </div>
-                )}
+                {item.productType === "DIRECT_TOPUP" &&
+                  item.fields.length > 0 && (
+                    <div className="mb-6">
+                      <DynamicProductFields
+                        productId={item.productId}
+                        onFieldsChange={(values, isValid) =>
+                          handleFieldChange(item.productId, values, isValid)
+                        }
+                        initialValues={item.fieldValues}
+                      />
+                    </div>
+                  )}
 
                 {/* Quantity & Price */}
                 <div className="flex items-center justify-between pt-4 border-t-2 border-gray-200">
@@ -322,7 +353,10 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white border-[3px] border-black p-6 sticky top-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-white border-[3px] border-black p-6 sticky top-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <h2 className="text-xl font-bold text-black mb-6 flex items-center">
                 <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
                 Order Summary
@@ -379,7 +413,8 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePlaceOrder}
                 disabled={!allFieldsValid || isSubmitting}
-                className="w-full bg-black text-white border-[3px] border-black py-4 font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2" style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                className="w-full bg-black text-white border-[3px] border-black py-4 font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 {isSubmitting ? (
                   <>

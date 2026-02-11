@@ -21,6 +21,7 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  Settings,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -30,6 +31,7 @@ import {
   ProductType,
 } from "@/lib/services/product-api";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function AdminProducts() {
   const router = useRouter();
@@ -56,6 +58,14 @@ export default function AdminProducts() {
   const [selectedPricingOption, setSelectedPricingOption] = useState<
     string | null
   >(null);
+
+  // Bulk pricing states
+  const [isBulkPriceModalOpen, setIsBulkPriceModalOpen] = useState(false);
+  const [bulkPricingStrategy, setBulkPricingStrategy] = useState<string | null>(
+    null,
+  );
+  const [customPercent, setCustomPercent] = useState<string>("10");
+  const [isBulkUpdating, setIsBulkUpdating] = useState(false);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -240,10 +250,10 @@ export default function AdminProducts() {
         })
         .catch((err) => {
           console.error("Failed to fetch product types:", err);
-          alert("ไม่สามารถโหลดข้อมูลราคาได้");
+          toast.error("ไม่สามารถโหลดข้อมูลราคาได้");
         });
     } else {
-      alert("สินค้านี้ไม่มีข้อมูลราคาจาก SEAGM");
+      toast.error("สินค้านี้ไม่มีข้อมูลราคาจาก SEAGM");
     }
   };
 
@@ -270,26 +280,91 @@ export default function AdminProducts() {
     try {
       const response = await productApi.updateSellingPrices(sellingPrices);
       if (response.success) {
-        alert("บันทึกราคาสำเร็จ");
+        toast.success("บันทึกราคาสำเร็จ");
         closePriceModal();
       } else {
-        alert("ไม่สามารถบันทึกราคาได้");
+        toast.error("ไม่สามารถบันทึกราคาได้");
       }
     } catch (err) {
       console.error("Failed to save prices:", err);
-      alert("ไม่สามารถบันทึกราคาได้");
+      toast.error("ไม่สามารถบันทึกราคาได้");
+    }
+  };
+
+  // Bulk pricing options (for all products)
+  const bulkPricingOptions = [
+    { key: "mid", label: "ราคากลาง", description: "ระหว่างต้นทุน-SEAGM" },
+    {
+      key: "nearSeagm",
+      label: "ใกล้เคียง SEAGM",
+      description: "ลด 3% จาก SEAGM",
+    },
+    { key: "smallProfit", label: "กำไรบาง", description: "บวก 5% จากต้นทุน" },
+    { key: "seagm", label: "ราคา SEAGM", description: "เท่ากับ SEAGM" },
+    {
+      key: "custom",
+      label: "กำหนดเอง",
+      description: "บวก X% จากต้นทุน",
+    },
+  ];
+
+  // Execute bulk pricing update
+  const executeBulkPricing = async () => {
+    if (!bulkPricingStrategy) {
+      toast.error("กรุณาเลือกกลยุทธ์การตั้งราคา");
+      return;
+    }
+
+    if (
+      bulkPricingStrategy === "custom" &&
+      (!customPercent || parseFloat(customPercent) < -50)
+    ) {
+      toast.error("กรุณากรอกเปอร์เซ็นต์ที่ถูกต้อง (มากกว่า -50)");
+      return;
+    }
+
+    const confirmed = confirm(
+      `คุณแน่ใจหรือไม่ที่จะตั้งราคาทุกสินค้าตามกลยุทธ์ "${bulkPricingOptions.find((o) => o.key === bulkPricingStrategy)?.label}"?\n\nการกระทำนี้จะเปลี่ยนแปลงราคาขายของทุกประเภทสินค้าในระบบ`,
+    );
+
+    if (!confirmed) return;
+
+    setIsBulkUpdating(true);
+    try {
+      const response = await productApi.bulkUpdateSellingPrices(
+        bulkPricingStrategy as any,
+        bulkPricingStrategy === "custom"
+          ? parseFloat(customPercent)
+          : undefined,
+      );
+      if (response.success) {
+        toast.success(
+          `อัพเดทราคาสำเร็จ! แก้ไข ${response.data.affectedCount} รายการ`,
+        );
+        setIsBulkPriceModalOpen(false);
+        setBulkPricingStrategy(null);
+      } else {
+        toast.error("ไม่สามารถอัพเดทราคาได้");
+      }
+    } catch (err) {
+      console.error("Failed to bulk update prices:", err);
+      toast.error("ไม่สามารถอัพเดทราคาได้");
+    } finally {
+      setIsBulkUpdating(false);
     }
   };
 
   return (
     <AdminLayout title={"สินค้า" as any}>
       <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center">
+          <span className="w-1.5 h-6 bg-brutal-blue mr-2"></span>
+          <h1 className="text-2xl font-bold text-black">จัดการสินค้า</h1>
+        </div>
+
         {/* Actions Bar */}
-        <div className="flex flex-col lg:flex-row gap-4 justify-between">
-          <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-blue mr-2"></span>
-            <h1 className="text-2xl font-bold text-black">จัดการสินค้า</h1>
-          </div>
+        <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
           {/* Search and Filter */}
           <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
             <div className="relative w-full sm:max-w-xs">
@@ -340,7 +415,15 @@ export default function AdminProducts() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setIsBulkPriceModalOpen(true)}
+              className="bg-yellow-400 border-[3px] border-black text-black flex items-center justify-center gap-2 px-4 py-2 hover:bg-yellow-500 transition-colors font-medium"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
+              <Settings className="h-5 w-5" />
+              <span>ตั้งราคาทั้งหมด</span>
+            </button>
             <button
               onClick={handleSyncSeagm}
               className="bg-white border-[3px] border-black text-black flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors font-medium"
@@ -713,6 +796,149 @@ export default function AdminProducts() {
                     className="px-4 py-2 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
                   >
                     บันทึกราคา
+                  </button>
+                </div>
+              </motion.div>
+            </div>,
+            document.body,
+          )}
+
+        {/* Bulk Pricing Modal */}
+        {isBulkPriceModalOpen &&
+          typeof window !== "undefined" &&
+          createPortal(
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white border-[3px] border-black w-full max-w-2xl overflow-hidden shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+              >
+                {/* Modal Header */}
+                <div className="p-5 border-b-[3px] border-black bg-yellow-400 flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-black flex items-center gap-2">
+                    <Settings className="h-5 w-5" />
+                    ตั้งราคาสินค้าทั้งหมด
+                  </h3>
+                  <button
+                    onClick={() => setIsBulkPriceModalOpen(false)}
+                    className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-5">
+                  <div className="mb-4 p-4 bg-red-50 border-[2px] border-red-300">
+                    <p className="text-sm text-red-700 font-medium">
+                      ⚠️ คำเตือน: การกระทำนี้จะเปลี่ยนแปลงราคาขายของ{" "}
+                      <strong>ทุกประเภทสินค้า</strong> ในระบบตามกลยุทธ์ที่เลือก
+                    </p>
+                  </div>
+
+                  <h4 className="text-sm font-bold text-black mb-3">
+                    เลือกกลยุทธ์การตั้งราคา:
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                    {bulkPricingOptions.map((option) => (
+                      <button
+                        key={option.key}
+                        onClick={() => setBulkPricingStrategy(option.key)}
+                        className={`p-4 border-[2px] text-left transition-all ${
+                          bulkPricingStrategy === option.key
+                            ? "bg-brutal-yellow text-black border-black"
+                            : "bg-white text-black border-gray-300 hover:border-black"
+                        }`}
+                      >
+                        <div className="font-medium">{option.label}</div>
+                        <div className="text-xs mt-1 text-gray-600">
+                          {option.description}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom percent input */}
+                  {bulkPricingStrategy === "custom" && (
+                    <div className="mb-4 p-4 bg-gray-50 border-[2px] border-black">
+                      <label className="block text-sm font-medium text-black mb-2">
+                        บวกกี่ % จากต้นทุน?
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={customPercent}
+                          onChange={(e) => setCustomPercent(e.target.value)}
+                          className="w-32 text-right bg-white border-[2px] border-black px-3 py-2 text-sm focus:ring-2 focus:ring-brutal-blue/50 outline-none"
+                          placeholder="10"
+                        />
+                        <span className="text-gray-600">%</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        ตัวอย่าง: 10 = บวก 10% จากต้นทุน, -5 = ลบ 5% จากต้นทุน
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Preview info */}
+                  {bulkPricingStrategy && (
+                    <div className="p-4 bg-blue-50 border-[2px] border-blue-300">
+                      <h5 className="text-sm font-medium text-blue-800 mb-2">
+                        📊 สูตรการคำนวณ:
+                      </h5>
+                      <ul className="text-xs text-blue-700 space-y-1">
+                        {bulkPricingStrategy === "mid" && (
+                          <li>• ราคาขาย = (ต้นทุน + ราคา SEAGM) ÷ 2</li>
+                        )}
+                        {bulkPricingStrategy === "nearSeagm" && (
+                          <>
+                            <li>• ราคาขาย = ราคา SEAGM × 0.97</li>
+                            <li>• (ขายถูกกว่า SEAGM 3%)</li>
+                          </>
+                        )}
+                        {bulkPricingStrategy === "smallProfit" && (
+                          <li>• ราคาขาย = ต้นทุน × 1.05 (กำไร 5%)</li>
+                        )}
+                        {bulkPricingStrategy === "seagm" && (
+                          <li>• ราคาขาย = ราคา SEAGM</li>
+                        )}
+                        {bulkPricingStrategy === "custom" && (
+                          <li>
+                            • ราคาขาย = ต้นทุน × (1 + {customPercent || 0}/100)
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                  <button
+                    onClick={() => setIsBulkPriceModalOpen(false)}
+                    className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    onClick={executeBulkPricing}
+                    disabled={!bulkPricingStrategy || isBulkUpdating}
+                    className="px-4 py-2 bg-yellow-400 border-[2px] border-black text-black hover:bg-yellow-500 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isBulkUpdating && (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    )}
+                    {isBulkUpdating ? "กำลังอัพเดท..." : "อัพเดทราคาทั้งหมด"}
                   </button>
                 </div>
               </motion.div>

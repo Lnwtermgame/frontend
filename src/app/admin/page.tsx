@@ -14,9 +14,15 @@ import {
   ShoppingCart,
   ArrowUpRight,
   ArrowDownRight,
+  RefreshCw,
 } from "lucide-react";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { analyticsApi, DashboardStats, RecentOrder, PopularProduct } from "@/lib/services/analytics-api";
+import {
+  analyticsApi,
+  DashboardStats,
+  RecentOrder,
+  PopularProduct,
+} from "@/lib/services/analytics-api";
 import { getMinPrice, formatPrice } from "@/lib/utils";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
@@ -113,20 +119,20 @@ export default function AdminDashboard() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('th-TH', {
-      style: 'currency',
-      currency: 'THB',
+    return new Intl.NumberFormat("th-TH", {
+      style: "currency",
+      currency: "THB",
       minimumFractionDigits: 0,
     }).format(amount);
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('th-TH', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(dateString).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -232,7 +238,7 @@ export default function AdminDashboard() {
           {/* Recent Orders */}
           <motion.div
             className="bg-white border-[3px] border-black  overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
@@ -243,7 +249,10 @@ export default function AdminDashboard() {
                 <Activity className="mr-2 h-5 w-5 text-brutal-pink" />
                 คำสั่งซื้อล่าสุด
               </h3>
-              <Link href="/admin/orders" className="text-sm text-black hover:text-brutal-pink transition-colors font-medium">
+              <Link
+                href="/admin/orders"
+                className="text-sm text-black hover:text-brutal-pink transition-colors font-medium"
+              >
                 ดูทั้งหมด →
               </Link>
             </div>
@@ -266,17 +275,26 @@ export default function AdminDashboard() {
                         className="text-sm hover:bg-gray-50 transition-colors"
                       >
                         <td className="px-5 py-4 font-mono">
-                          <Link href={`/admin/orders?id=${order.id}`} className="text-brutal-pink hover:underline font-medium">
+                          <Link
+                            href={`/admin/orders?id=${order.id}`}
+                            className="text-brutal-pink hover:underline font-medium"
+                          >
                             {order.orderNumber}
                           </Link>
                         </td>
                         <td className="px-5 py-4">
                           <div>
-                            <div className="text-black font-medium">{order.user.username}</div>
-                            <div className="text-xs text-gray-500">{order.user.email}</div>
+                            <div className="text-black font-medium">
+                              {order.user.username}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {order.user.email}
+                            </div>
                           </div>
                         </td>
-                        <td className="px-5 py-4 text-black font-medium">{formatCurrency(order.finalAmount)}</td>
+                        <td className="px-5 py-4 text-black font-medium">
+                          {formatCurrency(order.finalAmount)}
+                        </td>
                         <td className="px-5 py-4">
                           <span
                             className={`px-2 py-1 rounded text-xs border-[2px] font-medium ${getStatusStyle(order.status)}`}
@@ -307,7 +325,7 @@ export default function AdminDashboard() {
           {/* Popular Products */}
           <motion.div
             className="bg-white border-[3px] border-black  overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
@@ -318,7 +336,10 @@ export default function AdminDashboard() {
                 <TrendingUp className="mr-2 h-5 w-5 text-brutal-blue" />
                 สินค้าขายดี
               </h3>
-              <Link href="/admin/products" className="text-sm text-black hover:text-brutal-pink transition-colors font-medium">
+              <Link
+                href="/admin/products"
+                className="text-sm text-black hover:text-brutal-pink transition-colors font-medium"
+              >
                 ดูทั้งหมด →
               </Link>
             </div>
@@ -394,10 +415,10 @@ export default function AdminDashboard() {
             href="/admin/orders"
           />
           <QuickLinkCard
-            title="จัดการสินค้า"
-            description="จัดการสินค้าทั้งหมด"
-            icon={<Package className="h-5 w-5" />}
-            href="/admin/products"
+            title="ซิงค์ SEAGM"
+            description="ดึงข้อมูลสินค้าจาก SEAGM"
+            icon={<RefreshCw className="h-5 w-5" />}
+            href="/admin/seagm-sync"
           />
           <QuickLinkCard
             title="ดูรายงาน"
@@ -440,7 +461,7 @@ function StatsCard({
   return (
     <motion.div
       className="bg-white border-[3px] border-black  p-6 flex flex-col"
-      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+      style={{ boxShadow: "4px 4px 0 0 #000000" }}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
@@ -449,18 +470,12 @@ function StatsCard({
         <span className="text-sm font-medium text-gray-600 thai-font">
           {title}
         </span>
-        <span
-          className={`p-2  text-white ${colorClasses[color]}`}
-        >
-          {icon}
-        </span>
+        <span className={`p-2  text-white ${colorClasses[color]}`}>{icon}</span>
       </div>
 
       <div className="mt-3">
         <span className="text-2xl font-bold text-black">{value}</span>
-        {subtitle && (
-          <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
-        )}
+        {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
         <div className="flex items-center mt-2">
           <span
             className={`text-xs flex items-center font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}
@@ -496,20 +511,30 @@ const quickStatColorClasses = {
   blue: "bg-blue-100 border-blue-300 text-blue-700",
 };
 
-function QuickStatCard({ title, value, icon, color, link }: QuickStatCardProps) {
+function QuickStatCard({
+  title,
+  value,
+  icon,
+  color,
+  link,
+}: QuickStatCardProps) {
   return (
     <Link href={link}>
       <motion.div
         className={`p-4  border-[3px] ${quickStatColorClasses[color]} flex items-center justify-between hover:opacity-80 transition-opacity`}
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         <div className="flex items-center space-x-3">
           {icon}
-          <span className="text-sm font-medium thai-font text-black">{title}</span>
+          <span className="text-sm font-medium thai-font text-black">
+            {title}
+          </span>
         </div>
-        <span className="text-xl font-bold text-black">{value.toLocaleString()}</span>
+        <span className="text-xl font-bold text-black">
+          {value.toLocaleString()}
+        </span>
       </motion.div>
     </Link>
   );
@@ -527,7 +552,7 @@ function QuickLinkCard({ title, description, icon, href }: QuickLinkCardProps) {
     <Link href={href}>
       <motion.div
         className="bg-white border-[3px] border-black  p-4 hover:border-brutal-pink transition-colors"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
@@ -536,7 +561,9 @@ function QuickLinkCard({ title, description, icon, href }: QuickLinkCardProps) {
             {icon}
           </div>
           <div>
-            <h4 className="text-sm font-medium text-black thai-font">{title}</h4>
+            <h4 className="text-sm font-medium text-black thai-font">
+              {title}
+            </h4>
             <p className="text-xs text-gray-500 mt-0.5">{description}</p>
           </div>
         </div>

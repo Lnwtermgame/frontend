@@ -26,6 +26,7 @@ import ProductDescription from "@/components/products/ProductDescription";
 import { SeagmField } from "@/lib/services/product-api";
 import { useCart } from "@/lib/context/cart-context";
 import { getMinPrice, formatPrice } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -75,14 +76,17 @@ export default function ProductDetailPage() {
   // Handle field changes
   const handleFieldsChange = (
     values: Record<string, string>,
-    isValid: boolean
+    isValid: boolean,
   ) => {
     setFieldValues(values);
     setFieldsValid(isValid);
   };
 
   // Handle fields loaded
-  const handleFieldsLoad = (loadedFields: SeagmField[], type: string | null) => {
+  const handleFieldsLoad = (
+    loadedFields: SeagmField[],
+    type: string | null,
+  ) => {
     setFields(loadedFields);
     setProductType(type);
   };
@@ -93,7 +97,7 @@ export default function ProductDetailPage() {
 
     // Validate fields for DIRECT_TOPUP
     if (productType === "DIRECT_TOPUP" && fields.length > 0 && !fieldsValid) {
-      alert("Please fill in all required fields");
+      toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
@@ -111,7 +115,7 @@ export default function ProductDetailPage() {
     });
 
     // Show success feedback
-    alert("Added to cart!");
+    toast.success("เพิ่มลงตะกร้าแล้ว!");
   };
 
   // Handle buy now
@@ -134,7 +138,10 @@ export default function ProductDetailPage() {
   if (error || !product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brutal-gray">
-        <div className="bg-white border-[3px] border-black p-8 text-center max-w-md" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-8 text-center max-w-md"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <AlertCircle className="mx-auto text-brutal-pink w-12 h-12 mb-4" />
           <h2 className="text-2xl font-bold text-black mb-2">
             Product Not Found
@@ -145,7 +152,7 @@ export default function ProductDetailPage() {
           <Link
             href="/products"
             className="bg-black text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black hover:bg-gray-800 transition-colors"
-            style={{ boxShadow: '2px 2px 0 0 #000000' }}
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             Back to Products
@@ -162,11 +169,17 @@ export default function ProductDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center text-sm text-gray-600 mb-6">
-          <Link href="/" className="hover:text-black transition-colors font-medium">
+          <Link
+            href="/"
+            className="hover:text-black transition-colors font-medium"
+          >
             Home
           </Link>
           <ChevronRight className="w-4 h-4 mx-2" />
-          <Link href="/products" className="hover:text-black transition-colors font-medium">
+          <Link
+            href="/products"
+            className="hover:text-black transition-colors font-medium"
+          >
             Products
           </Link>
           <ChevronRight className="w-4 h-4 mx-2" />
@@ -181,7 +194,7 @@ export default function ProductDetailPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="relative aspect-square">
               {product.imageUrl ? (
@@ -257,7 +270,10 @@ export default function ProductDetailPage() {
             )}
 
             {/* Price */}
-            <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-white border-[3px] border-black p-6"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-black">
                   {formatPrice(getMinPrice(product.seagmTypes))}
@@ -267,9 +283,7 @@ export default function ProductDetailPage() {
               {/* Stock Status - Now always available via SEAGM */}
               <div className="mt-4 flex items-center gap-2">
                 <Check className="w-5 h-5 text-brutal-green" />
-                <span className="text-brutal-green font-medium">
-                  Available
-                </span>
+                <span className="text-brutal-green font-medium">Available</span>
               </div>
             </div>
 
@@ -283,7 +297,10 @@ export default function ProductDetailPage() {
             )}
 
             {/* Quantity Selector */}
-            <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-white border-[3px] border-black p-6"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <label className="block text-sm font-bold text-black mb-3">
                 Quantity
               </label>
@@ -307,7 +324,8 @@ export default function ProductDetailPage() {
                   </button>
                 </div>
                 <span className="text-gray-600 font-medium">
-                  Total: {formatPrice(getMinPrice(product.seagmTypes) * quantity)}
+                  Total:{" "}
+                  {formatPrice(getMinPrice(product.seagmTypes) * quantity)}
                 </span>
               </div>
             </div>
@@ -317,7 +335,7 @@ export default function ProductDetailPage() {
               <motion.button
                 onClick={handleAddToCart}
                 className="flex-1 bg-white border-[3px] border-black text-black py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
               >
@@ -327,7 +345,7 @@ export default function ProductDetailPage() {
               <motion.button
                 onClick={handleBuyNow}
                 className="flex-1 bg-black text-white py-4 font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors border-[3px] border-black"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
               >
@@ -341,9 +359,7 @@ export default function ProductDetailPage() {
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-black mt-0.5" />
                 <div>
-                  <h4 className="text-black font-bold">
-                    Fast Auto-Delivery
-                  </h4>
+                  <h4 className="text-black font-bold">Fast Auto-Delivery</h4>
                   <p className="text-gray-700 text-sm mt-1">
                     {isDirectTopUp
                       ? "Direct top-up to your account within 5-15 minutes after payment confirmation."
@@ -362,16 +378,20 @@ export default function ProductDetailPage() {
                     ? "bg-brutal-pink text-black border-black"
                     : "bg-white border-black text-gray-700 hover:bg-gray-100"
                 }`}
-                style={{ boxShadow: isFavorite ? '2px 2px 0 0 #000000' : 'none' }}
+                style={{
+                  boxShadow: isFavorite ? "2px 2px 0 0 #000000" : "none",
+                }}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
               >
-                <Heart className={`w-5 h-5 ${isFavorite ? "fill-black" : ""}`} />
+                <Heart
+                  className={`w-5 h-5 ${isFavorite ? "fill-black" : ""}`}
+                />
                 {isFavorite ? "Saved" : "Save"}
               </motion.button>
               <motion.button
                 className="flex items-center gap-2 px-4 py-2 border-[3px] border-black text-gray-700 hover:text-black bg-white transition-colors font-medium"
-                style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
               >

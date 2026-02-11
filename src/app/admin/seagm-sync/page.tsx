@@ -16,6 +16,7 @@ import {
   Box,
 } from "lucide-react";
 import { productApi, SyncResult } from "@/lib/services/product-api";
+import toast from "react-hot-toast";
 
 export default function SeagmSyncPage() {
   const [isLoading, setIsLoading] = useState<{
@@ -73,10 +74,11 @@ export default function SeagmSyncPage() {
       if (response.success) {
         setResults((prev) => ({ ...prev, all: response.data }));
         setLastSync((prev) => ({ ...prev, all: new Date() }));
+        toast.success("ซิงค์สินค้าทั้งหมดสำเร็จ");
       }
     } catch (error) {
       console.error("Sync all failed:", error);
-      alert("ไม่สามารถซิงค์สินค้าทั้งหมดได้");
+      toast.error("ไม่สามารถซิงค์สินค้าทั้งหมดได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, all: false }));
       loadCacheStats();
@@ -90,10 +92,11 @@ export default function SeagmSyncPage() {
       if (response.success) {
         setResults((prev) => ({ ...prev, cards: response.data }));
         setLastSync((prev) => ({ ...prev, cards: new Date() }));
+        toast.success("ซิงค์สินค้าบัตรสำเร็จ");
       }
     } catch (error) {
       console.error("Sync cards failed:", error);
-      alert("ไม่สามารถซิงค์สินค้าบัตรได้");
+      toast.error("ไม่สามารถซิงค์สินค้าบัตรได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, cards: false }));
       loadCacheStats();
@@ -107,10 +110,11 @@ export default function SeagmSyncPage() {
       if (response.success) {
         setResults((prev) => ({ ...prev, directTopUp: response.data }));
         setLastSync((prev) => ({ ...prev, directTopUp: new Date() }));
+        toast.success("ซิงค์สินค้าเติมเงินสำเร็จ");
       }
     } catch (error) {
       console.error("Sync direct top-up failed:", error);
-      alert("ไม่สามารถซิงค์สินค้าเติมเงินได้");
+      toast.error("ไม่สามารถซิงค์สินค้าเติมเงินได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, directTopUp: false }));
       loadCacheStats();
@@ -143,7 +147,7 @@ export default function SeagmSyncPage() {
   }) => (
     <motion.div
       className="bg-white border-[3px] border-black rounded-xl p-6"
-      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+      style={{ boxShadow: "4px 4px 0 0 #000000" }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -169,7 +173,7 @@ export default function SeagmSyncPage() {
             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
             : "bg-black text-white hover:bg-gray-800"
         }`}
-        style={{ boxShadow: isLoading ? 'none' : '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: isLoading ? "none" : "4px 4px 0 0 #000000" }}
       >
         {isLoading ? (
           <>
@@ -244,8 +248,10 @@ export default function SeagmSyncPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="bg-white border-[3px] border-black rounded-xl px-4 py-2 flex items-center gap-3"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-white border-[3px] border-black rounded-xl px-4 py-2 flex items-center gap-3"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <Database className="w-5 h-5 text-brutal-purple" />
               <div>
                 <p className="text-xs text-gray-500">ขนาดแคช</p>
@@ -294,7 +300,7 @@ export default function SeagmSyncPage() {
         {/* Info Section */}
         <motion.div
           className="bg-white border-[3px] border-black rounded-xl p-6"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
@@ -369,7 +375,7 @@ export default function SeagmSyncPage() {
         {/* Error Handling Info */}
         <motion.div
           className="bg-white border-[3px] border-black rounded-xl p-6"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}

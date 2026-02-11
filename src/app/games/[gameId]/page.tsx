@@ -89,7 +89,7 @@ function transformProductToGameDetails(
     (type: ProductType, index: number) => ({
       id: type.id,
       title: type.name,
-      price: type.unitPrice,
+      price: type.sellingPrice ?? (type.originPrice || type.unitPrice),
       originalPrice: type.originPrice || type.unitPrice,
       isPopular: index === 0,
       parValue: type.parValue,
@@ -104,18 +104,27 @@ function transformProductToGameDetails(
   return {
     id: product.id,
     title: product.name,
-    description: product.shortDescription || product.description || `Top up ${product.name} instantly.`,
-    longDescription: product.description || `${product.name} offers a convenient way to purchase in-game currency and items.`,
+    description:
+      product.shortDescription ||
+      product.description ||
+      `Top up ${product.name} instantly.`,
+    longDescription:
+      product.description ||
+      `${product.name} offers a convenient way to purchase in-game currency and items.`,
     mainImage:
       product.imageUrl ||
       `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
-    category: product.category?.name || (product.productType === "DIRECT_TOPUP" ? "Direct Top Up" : "Gift Card"),
+    category:
+      product.category?.name ||
+      (product.productType === "DIRECT_TOPUP" ? "Direct Top Up" : "Gift Card"),
     developer: gameDetails?.developer || product.category?.name || "Unknown",
     publisher: gameDetails?.publisher || "Unknown",
-    platforms: gameDetails?.platforms?.length ? gameDetails.platforms : ["iOS", "Android"],
+    platforms: gameDetails?.platforms?.length
+      ? gameDetails.platforms
+      : ["iOS", "Android"],
     rating: 4.5,
     ratingCount: product.reviewCount || 0,
-    screenshots: product.images?.map(img => img.url) || [],
+    screenshots: product.images?.map((img) => img.url) || [],
     topUpOptions: topUpOptions.length > 0 ? topUpOptions : [],
     relatedGames: [],
     features: ["Instant Delivery", "Secure Payment", "24/7 Support"],
@@ -163,31 +172,44 @@ export default function GameDetailsPage() {
   // Handle buy now - verify first, then show confirmation
   const handleBuyNow = async () => {
     if (!product || !selectedOption) {
-      toast.error('กรุณาเลือกตัวเลือกเติมเงิน');
+      toast.error("กรุณาเลือกตัวเลือกเติมเงิน");
       return;
     }
 
     // Check if all required fields are filled
-    const selectedProductType = productTypes.find(pt => pt.id === selectedOption);
-    const selectedOptionData = game?.topUpOptions.find(opt => opt.id === selectedOption);
+    const selectedProductType = productTypes.find(
+      (pt) => pt.id === selectedOption,
+    );
+    const selectedOptionData = game?.topUpOptions.find(
+      (opt) => opt.id === selectedOption,
+    );
 
     if (selectedProductType?.fields) {
-      const requiredFields = selectedProductType.fields.filter(f => f.required !== false);
-      const missingFields = requiredFields.filter(f => !fieldValues[f.name] || fieldValues[f.name].trim() === '');
+      const requiredFields = selectedProductType.fields.filter(
+        (f) => f.required !== false,
+      );
+      const missingFields = requiredFields.filter(
+        (f) => !fieldValues[f.name] || fieldValues[f.name].trim() === "",
+      );
       if (missingFields.length > 0) {
-        toast.error(`กรุณากรอกข้อมูล: ${missingFields.map(f => f.label).join(', ')}`);
+        toast.error(
+          `กรุณากรอกข้อมูล: ${missingFields.map((f) => f.label).join(", ")}`,
+        );
         return;
       }
     }
 
     try {
       setIsBuying(true);
-      toast.loading('กำลังตรวจสอบข้อมูล...');
+      toast.loading("กำลังตรวจสอบข้อมูล...");
 
       // Verify player info with SEAGM
       let isVerificationSupported = true;
       try {
-        const verifyResult = await productApi.verifyPlayer(product.id, fieldValues);
+        const verifyResult = await productApi.verifyPlayer(
+          product.id,
+          fieldValues,
+        );
         isVerificationSupported = verifyResult.supported !== false;
 
         if (verifyResult.valid && isVerificationSupported) {
@@ -207,15 +229,17 @@ export default function GameDetailsPage() {
         supported: isVerificationSupported,
         playerInfo: fieldValues,
         productName: product.name,
-        optionName: selectedOptionData?.title || '',
+        optionName: selectedOptionData?.title || "",
         price: selectedOptionData?.price || 0,
       });
       setShowConfirmModal(true);
-
     } catch (err: any) {
       toast.dismiss();
-      console.error('Buy now error:', err);
-      toast.error(err?.response?.data?.error?.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+      console.error("Buy now error:", err);
+      toast.error(
+        err?.response?.data?.error?.message ||
+          "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+      );
     } finally {
       setIsBuying(false);
     }
@@ -227,33 +251,61 @@ export default function GameDetailsPage() {
 
     try {
       setIsBuying(true);
-      toast.loading('กำลังสร้างคำสั่งซื้อ...');
+      toast.loading("กำลังสร้างคำสั่งซื้อ...");
 
       const response = await orderApi.createOrder({
-        items: [{
-          productId: product.id,
-          productTypeId: selectedOption, // The selected product type (e.g., 60 UC, 325 UC)
-          quantity: 1,
-          playerInfo: fieldValues,
-        }],
-        paymentMethod: 'CREDIT_CARD', // Required field for backend
+        items: [
+          {
+            productId: product.id,
+            productTypeId: selectedOption, // The selected product type (e.g., 60 UC, 325 UC)
+            quantity: 1,
+            playerInfo: fieldValues,
+          },
+        ],
+        paymentMethod: "CREDIT_CARD", // Required field for backend
         skipPayment: true, // Bypass payment for testing
       });
 
       toast.dismiss();
 
       if (response.success) {
-        toast.success('สั่งซื้อสำเร็จ! กำลังดำเนินการ...');
+        toast.success("สั่งซื้อสำเร็จ! กำลังดำเนินการ...");
         setShowConfirmModal(false);
         // Redirect to order detail page
         router.push(`/dashboard/orders/${response.data.id}`);
       } else {
-        toast.error(response.message || 'สั่งซื้อไม่สำเร็จ');
+        toast.error(response.message || "สั่งซื้อไม่สำเร็จ");
       }
     } catch (err: any) {
       toast.dismiss();
-      console.error('Create order error:', err);
-      toast.error(err?.response?.data?.error?.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+      console.error("Create order error:", err);
+
+      const errorMessage = err?.response?.data?.error?.message || "";
+      const errorCode =
+        err?.response?.data?.error?.details?.infoCode ||
+        err?.response?.data?.error?.infoCode;
+
+      if (
+        errorMessage.includes("Player verification failed") ||
+        errorCode === 20133 ||
+        errorCode === 20093
+      ) {
+        toast.error(
+          "User ID หรือ Zone ID ไม่ถูกต้อง กรุณาตรวจสอบข้อมูลบัญชีเกมของคุณ",
+          { duration: 5000 },
+        );
+      } else if (
+        errorMessage.includes("Missing required parameter") ||
+        errorCode === 10406
+      ) {
+        toast.error("ข้อมูลไม่ครบถ้วน กรุณากรอกข้อมูลให้ครบ", {
+          duration: 5000,
+        });
+      } else {
+        toast.error(errorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", {
+          duration: 5000,
+        });
+      }
     } finally {
       setIsBuying(false);
     }
@@ -264,10 +316,10 @@ export default function GameDetailsPage() {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
-      toast.success('คัดลอกลิงก์เรียบร้อยแล้ว');
+      toast.success("คัดลอกลิงก์เรียบร้อยแล้ว");
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      toast.error('ไม่สามารถคัดลอกลิงก์ได้');
+      toast.error("ไม่สามารถคัดลอกลิงก์ได้");
     }
   };
 
@@ -313,7 +365,8 @@ export default function GameDetailsPage() {
     // CUID: starts with 'c' followed by alphanumeric, typically 25 chars
     const cuidPattern = /^c[a-z0-9]{24,}$/i;
     // UUID: 8-4-4-4-12 hex format
-    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidPattern =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return cuidPattern.test(id) || uuidPattern.test(id);
   };
 
@@ -374,7 +427,9 @@ export default function GameDetailsPage() {
           });
           if (similarResponse.success) {
             // Filter out current product and limit to 5
-            const filtered = similarResponse.data.filter(p => p.id !== productData.id);
+            const filtered = similarResponse.data.filter(
+              (p) => p.id !== productData.id,
+            );
             setSimilarGames(filtered.slice(0, 5));
           }
         } catch {
@@ -395,11 +450,13 @@ export default function GameDetailsPage() {
 
             if (allGamesResponse.success) {
               // Filter games with same developer or publisher
-              const related = allGamesResponse.data.filter(p => {
+              const related = allGamesResponse.data.filter((p) => {
                 if (p.id === productData.id) return false;
                 const pDetails = p.gameDetails;
-                const sameDev = currentDev && pDetails?.developer === currentDev;
-                const samePub = currentPub && pDetails?.publisher === currentPub;
+                const sameDev =
+                  currentDev && pDetails?.developer === currentDev;
+                const samePub =
+                  currentPub && pDetails?.publisher === currentPub;
                 return sameDev || samePub;
               });
               setRelatedGamesByDev(related.slice(0, 4));
@@ -436,9 +493,7 @@ export default function GameDetailsPage() {
       <div className="page-container flex items-center justify-center h-96 bg-brutal-gray">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">
-            กำลังโหลดข้อมูลเกม...
-          </p>
+          <p className="mt-4 text-gray-600">กำลังโหลดข้อมูลเกม...</p>
         </div>
       </div>
     );
@@ -447,17 +502,19 @@ export default function GameDetailsPage() {
   if (error || !game) {
     return (
       <div className="page-container bg-brutal-gray">
-        <div className="bg-white border-[3px] border-black p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-8 text-center"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <AlertCircle size={48} className="mx-auto text-brutal-pink mb-4" />
           <h2 className="text-2xl font-bold text-black mb-2">ไม่พบเกม</h2>
           <p className="text-gray-600 mb-6">
-            {error ||
-              "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
+            {error || "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
           </p>
           <Link
             href="/games"
             className="bg-black hover:bg-gray-800 text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black transition-colors"
-            style={{ boxShadow: '2px 2px 0 0 #000000' }}
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             <ChevronLeft size={18} className="mr-2" />
             กลับไปหน้าเกมทั้งหมด
@@ -481,7 +538,10 @@ export default function GameDetailsPage() {
       </div>
 
       {/* Game Hero */}
-      <div className="bg-white border-[3px] border-black overflow-hidden mb-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+      <div
+        className="bg-white border-[3px] border-black overflow-hidden mb-8"
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      >
         <div className="relative h-80 md:h-96">
           {/* Main banner image */}
           <Image
@@ -500,7 +560,10 @@ export default function GameDetailsPage() {
           {/* Game info overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-end gap-6">
-              <div className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border-[3px] border-black" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+              <div
+                className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border-[3px] border-black"
+                style={{ boxShadow: "2px 2px 0 0 #000000" }}
+              >
                 <Image
                   src={
                     game.mainImage ||
@@ -545,13 +608,15 @@ export default function GameDetailsPage() {
                 <motion.button
                   type="button"
                   onClick={handleToggleFavorite}
-                  aria-label={isFavorite ? "ลบออกจากรายการโปรด" : "เพิ่มในรายการโปรด"}
+                  aria-label={
+                    isFavorite ? "ลบออกจากรายการโปรด" : "เพิ่มในรายการโปรด"
+                  }
                   className={`p-3 border-[3px] border-black transition-all duration-200 ${
                     isFavorite
                       ? "bg-brutal-pink text-black"
                       : "bg-white text-black hover:bg-gray-100"
                   }`}
-                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   whileHover={{ y: -2 }}
                   whileTap={{ y: 0 }}
                 >
@@ -570,7 +635,7 @@ export default function GameDetailsPage() {
                       ? "bg-brutal-green text-black"
                       : "bg-white text-black hover:bg-gray-100"
                   }`}
-                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   whileHover={{ y: -2 }}
                   whileTap={{ y: 0 }}
                 >
@@ -591,7 +656,10 @@ export default function GameDetailsPage() {
         {/* Left column - Game info */}
         <div className="lg:col-span-2 space-y-8">
           {/* Tab navigation */}
-          <div className="bg-white border-[3px] border-black overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex border-b-[3px] border-black overflow-x-auto hide-scrollbar">
               <button
                 onClick={() => setActiveTab("topup")}
@@ -613,9 +681,7 @@ export default function GameDetailsPage() {
               {/* Top Up Options */}
               {activeTab === "topup" && (
                 <div className="space-y-6">
-                  <p className="text-gray-600">
-                    เลือกจำนวนที่ต้องการเติม:
-                  </p>
+                  <p className="text-gray-600">เลือกจำนวนที่ต้องการเติม:</p>
 
                   {game.topUpOptions.length === 0 ? (
                     <div className="text-center py-8 bg-brutal-gray border-[3px] border-black">
@@ -623,9 +689,7 @@ export default function GameDetailsPage() {
                         className="mx-auto text-gray-500 mb-2"
                         size={32}
                       />
-                      <p className="text-gray-600">
-                        ไม่มีตัวเลือกการเติมเงิน
-                      </p>
+                      <p className="text-gray-600">ไม่มีตัวเลือกการเติมเงิน</p>
                       <p className="text-sm text-gray-500 mt-1">
                         กรุณาลองใหม่อีกครั้งภายหลัง
                       </p>
@@ -641,7 +705,12 @@ export default function GameDetailsPage() {
                               ? "bg-brutal-yellow border-black"
                               : "bg-white border-black hover:bg-gray-100"
                           }`}
-                          style={{ boxShadow: selectedOption === option.id ? '4px 4px 0 0 #000000' : 'none' }}
+                          style={{
+                            boxShadow:
+                              selectedOption === option.id
+                                ? "4px 4px 0 0 #000000"
+                                : "none",
+                          }}
                           whileHover={{ y: -2 }}
                         >
                           {option.isPopular && (
@@ -720,16 +789,18 @@ export default function GameDetailsPage() {
                       <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
                       เกี่ยวกับ {game.title}
                     </h3>
-                    <ProductDescription description={game.longDescription || game.description} />
+                    <ProductDescription
+                      description={game.longDescription || game.description}
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div
+                      className="bg-brutal-gray border-[3px] border-black p-4"
+                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    >
                       <h4 className="text-black font-bold mb-2 flex items-center">
-                        <Package
-                          className="mr-2 text-black"
-                          size={18}
-                        />
+                        <Package className="mr-2 text-black" size={18} />
                         ผู้พัฒนา
                       </h4>
                       <p className="text-gray-700">
@@ -737,12 +808,12 @@ export default function GameDetailsPage() {
                       </p>
                     </div>
 
-                    <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div
+                      className="bg-brutal-gray border-[3px] border-black p-4"
+                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    >
                       <h4 className="text-black font-bold mb-2 flex items-center">
-                        <Award
-                          className="mr-2 text-black"
-                          size={18}
-                        />
+                        <Award className="mr-2 text-black" size={18} />
                         ผู้จัดจำหน่าย
                       </h4>
                       <p className="text-gray-700">
@@ -751,12 +822,12 @@ export default function GameDetailsPage() {
                     </div>
 
                     {game.releaseDate && (
-                      <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                      <div
+                        className="bg-brutal-gray border-[3px] border-black p-4"
+                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                      >
                         <h4 className="text-black font-bold mb-2 flex items-center">
-                          <Calendar
-                            className="mr-2 text-black"
-                            size={18}
-                          />
+                          <Calendar className="mr-2 text-black" size={18} />
                           วันวางจำหน่าย
                         </h4>
                         <p className="text-gray-700">
@@ -768,12 +839,12 @@ export default function GameDetailsPage() {
                       </div>
                     )}
 
-                    <div className="bg-brutal-gray border-[3px] border-black p-4" style={{ boxShadow: '2px 2px 0 0 #000000' }}>
+                    <div
+                      className="bg-brutal-gray border-[3px] border-black p-4"
+                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    >
                       <h4 className="text-black font-bold mb-2 flex items-center">
-                        <Smartphone
-                          className="mr-2 text-black"
-                          size={18}
-                        />
+                        <Smartphone className="mr-2 text-black" size={18} />
                         แพลตฟอร์ม
                       </h4>
                       <p className="text-gray-700">
@@ -795,15 +866,21 @@ export default function GameDetailsPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {relatedGamesByDev.length > 0 ? (
                 relatedGamesByDev.map((relatedGame) => (
-                  <Link href={`/games/${relatedGame.slug}`} key={relatedGame.id}>
+                  <Link
+                    href={`/games/${relatedGame.slug}`}
+                    key={relatedGame.id}
+                  >
                     <motion.div
                       className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
-                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       whileHover={{ y: -4 }}
                     >
                       <div className="relative aspect-square bg-brutal-gray overflow-hidden">
                         <img
-                          src={relatedGame.imageUrl || `https://placehold.co/300x300?text=${encodeURIComponent(relatedGame.name)}`}
+                          src={
+                            relatedGame.imageUrl ||
+                            `https://placehold.co/300x300?text=${encodeURIComponent(relatedGame.name)}`
+                          }
                           alt={relatedGame.name}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                         />
@@ -813,7 +890,10 @@ export default function GameDetailsPage() {
                             {relatedGame.name}
                           </h3>
                           <div className="flex items-center mt-1">
-                            <Star size={12} className="text-brutal-yellow fill-brutal-yellow" />
+                            <Star
+                              size={12}
+                              className="text-brutal-yellow fill-brutal-yellow"
+                            />
                             <span className="ml-1 text-xs text-brutal-yellow font-bold">
                               {relatedGame.averageRating?.toFixed(1) || "4.5"}
                             </span>
@@ -837,7 +917,10 @@ export default function GameDetailsPage() {
 
         {/* Right column - Purchase section */}
         <div>
-          <div className="bg-white border-[3px] border-black p-6 sticky top-4" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black p-6 sticky top-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <h3 className="text-xl font-bold text-black mb-4 flex items-center">
               <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
               รายละเอียดการเติมเงิน
@@ -909,9 +992,7 @@ export default function GameDetailsPage() {
                     )}
 
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">
-                        จำนวนที่เลือก:
-                      </span>
+                      <span className="text-gray-600">จำนวนที่เลือก:</span>
                       <div className="text-right">
                         <span className="text-black font-bold block">
                           {option.title}
@@ -945,9 +1026,7 @@ export default function GameDetailsPage() {
 
                       {option.originalPrice > option.price && (
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600">
-                            ประหยัด:
-                          </span>
+                          <span className="text-gray-600">ประหยัด:</span>
                           <span className="text-brutal-green font-bold">
                             ฿
                             {(
@@ -965,7 +1044,7 @@ export default function GameDetailsPage() {
                         onClick={handleBuyNow}
                         disabled={isBuying}
                         className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
                         whileHover={isBuying ? {} : { y: -2 }}
                         whileTap={isBuying ? {} : { y: 0 }}
                       >
@@ -976,7 +1055,11 @@ export default function GameDetailsPage() {
                           </>
                         ) : (
                           <>
-                            <ShoppingCart size={18} className="mr-2" aria-hidden="true" />
+                            <ShoppingCart
+                              size={18}
+                              className="mr-2"
+                              aria-hidden="true"
+                            />
                             ซื้อเลย
                           </>
                         )}
@@ -1013,12 +1096,15 @@ export default function GameDetailsPage() {
               <Link href={`/games/${similarGame.slug}`} key={similarGame.id}>
                 <motion.div
                   className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   whileHover={{ y: -4 }}
                 >
                   <div className="aspect-square relative bg-brutal-gray overflow-hidden">
                     <img
-                      src={similarGame.imageUrl || `https://placehold.co/300x300?text=${encodeURIComponent(similarGame.name)}`}
+                      src={
+                        similarGame.imageUrl ||
+                        `https://placehold.co/300x300?text=${encodeURIComponent(similarGame.name)}`
+                      }
                       alt={similarGame.name}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
@@ -1041,8 +1127,12 @@ export default function GameDetailsPage() {
                         </span>
                       </div>
                       <span className="text-xs text-black font-bold">
-                        ฿{similarGame.seagmTypes && similarGame.seagmTypes.length > 0
-                          ? Math.min(...similarGame.seagmTypes.map(t => t.unitPrice)).toFixed(0)
+                        ฿
+                        {similarGame.seagmTypes &&
+                        similarGame.seagmTypes.length > 0
+                          ? Math.min(
+                              ...similarGame.seagmTypes.map((t) => t.unitPrice),
+                            ).toFixed(0)
                           : "0"}
                       </span>
                     </div>
@@ -1072,7 +1162,7 @@ export default function GameDetailsPage() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             className="bg-white border-[3px] border-black max-w-md w-full max-h-[90vh] overflow-y-auto"
-            style={{ boxShadow: '8px 8px 0 0 #000000' }}
+            style={{ boxShadow: "8px 8px 0 0 #000000" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -1080,7 +1170,9 @@ export default function GameDetailsPage() {
               <div className="flex items-center">
                 <AlertTriangle size={24} className="text-black mr-2" />
                 <h2 className="text-lg font-bold text-black">
-                  {!verificationStatus.supported ? 'ไม่สามารถตรวจสอบบัญชีได้' : 'ยืนยันข้อมูล'}
+                  {!verificationStatus.supported
+                    ? "ไม่สามารถตรวจสอบบัญชีได้"
+                    : "ยืนยันข้อมูล"}
                 </h2>
               </div>
               <button
@@ -1096,13 +1188,17 @@ export default function GameDetailsPage() {
               {!verificationStatus.supported && (
                 <div className="bg-brutal-pink/20 border-[3px] border-brutal-pink p-4">
                   <div className="flex items-start">
-                    <ShieldAlert size={20} className="text-brutal-pink mr-2 mt-0.5 flex-shrink-0" />
+                    <ShieldAlert
+                      size={20}
+                      className="text-brutal-pink mr-2 mt-0.5 flex-shrink-0"
+                    />
                     <div>
                       <p className="font-bold text-black mb-1">
                         เกมนี้ไม่รองรับการตรวจสอบบัญชีอัตโนมัติ
                       </p>
                       <p className="text-sm text-gray-700">
-                        ระบบไม่สามารถตรวจสอบว่าข้อมูลบัญชีถูกต้องหรือไม่ กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
+                        ระบบไม่สามารถตรวจสอบว่าข้อมูลบัญชีถูกต้องหรือไม่
+                        กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
                       </p>
                     </div>
                   </div>
@@ -1118,11 +1214,15 @@ export default function GameDetailsPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">สินค้า:</span>
-                    <span className="font-medium text-black">{verificationStatus.productName}</span>
+                    <span className="font-medium text-black">
+                      {verificationStatus.productName}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">จำนวน:</span>
-                    <span className="font-medium text-black">{verificationStatus.optionName}</span>
+                    <span className="font-medium text-black">
+                      {verificationStatus.optionName}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t-[2px] border-black/20 pt-2 mt-2">
                     <span className="text-gray-600">ราคา:</span>
@@ -1141,14 +1241,18 @@ export default function GameDetailsPage() {
                     ข้อมูลบัญชีที่ระบุ
                   </h3>
                   <div className="space-y-2">
-                    {Object.entries(verificationStatus.playerInfo).map(([key, value]) => (
-                      <div key={key} className="flex justify-between text-sm">
-                        <span className="text-gray-600 capitalize">{key}:</span>
-                        <span className="font-mono font-bold text-black bg-brutal-gray px-2 py-0.5">
-                          {value}
-                        </span>
-                      </div>
-                    ))}
+                    {Object.entries(verificationStatus.playerInfo).map(
+                      ([key, value]) => (
+                        <div key={key} className="flex justify-between text-sm">
+                          <span className="text-gray-600 capitalize">
+                            {key}:
+                          </span>
+                          <span className="font-mono font-bold text-black bg-brutal-gray px-2 py-0.5">
+                            {value}
+                          </span>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
@@ -1156,13 +1260,18 @@ export default function GameDetailsPage() {
               {/* No Refund Warning */}
               <div className="bg-red-50 border-[3px] border-red-500 p-4">
                 <div className="flex items-start">
-                  <AlertCircle size={20} className="text-red-600 mr-2 mt-0.5 flex-shrink-0" />
+                  <AlertCircle
+                    size={20}
+                    className="text-red-600 mr-2 mt-0.5 flex-shrink-0"
+                  />
                   <div>
                     <p className="font-bold text-red-700 mb-1">
                       คำเตือน: ไม่สามารถขอคืนเงินได้
                     </p>
                     <p className="text-sm text-red-600">
-                      หากข้อมูลบัญชีที่ระบุไม่ถูกต้อง ระบบจะไม่สามารถคืนเงินหรือยกเลิกรายการได้ กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนยืนยัน
+                      หากข้อมูลบัญชีที่ระบุไม่ถูกต้อง
+                      ระบบจะไม่สามารถคืนเงินหรือยกเลิกรายการได้
+                      กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนยืนยัน
                     </p>
                   </div>
                 </div>
@@ -1175,7 +1284,7 @@ export default function GameDetailsPage() {
                   onClick={createOrder}
                   disabled={isBuying}
                   className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors disabled:opacity-50"
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   whileHover={isBuying ? {} : { y: -2 }}
                   whileTap={isBuying ? {} : { y: 0 }}
                 >

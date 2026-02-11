@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useCallback, useState, useEffect, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import { useLocalStorage } from "../hooks/use-local-storage";
 import { useAuth } from "../hooks/use-auth";
 import { cartClient } from "../client/gateway";
@@ -21,10 +29,10 @@ export interface CartItem {
 }
 
 // Sync status type
-export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+export type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
 // Sync strategy type
-export type SyncStrategy = 'merge' | 'replace' | 'server-wins' | 'client-wins';
+export type SyncStrategy = "merge" | "replace" | "server-wins" | "client-wins";
 
 // Cart context type
 type CartContextType = {
@@ -32,7 +40,10 @@ type CartContextType = {
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
-  updatePlayerInfo: (productId: string, playerInfo: Record<string, string>) => void;
+  updatePlayerInfo: (
+    productId: string,
+    playerInfo: Record<string, string>,
+  ) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -46,34 +57,36 @@ type CartContextType = {
 };
 
 // Create the context
-export const CartContext = createContext<CartContextType | undefined>(undefined);
+export const CartContext = createContext<CartContextType | undefined>(
+  undefined,
+);
 
 // Generate a unique device ID
 const generateDeviceId = () => {
-  if (typeof window === 'undefined') return 'server';
-  const stored = localStorage.getItem('cart_device_id');
+  if (typeof window === "undefined") return "server";
+  const stored = localStorage.getItem("cart_device_id");
   if (stored) return stored;
   const newId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  localStorage.setItem('cart_device_id', newId);
+  localStorage.setItem("cart_device_id", newId);
   return newId;
 };
 
 // Get device info
 const getDeviceInfo = () => {
-  if (typeof window === 'undefined') return 'Server';
+  if (typeof window === "undefined") return "Server";
   const userAgent = navigator.userAgent;
   const platform = navigator.platform;
 
   // Detect browser
-  let browser = 'Unknown';
-  if (userAgent.includes('Chrome')) browser = 'Chrome';
-  else if (userAgent.includes('Safari')) browser = 'Safari';
-  else if (userAgent.includes('Firefox')) browser = 'Firefox';
-  else if (userAgent.includes('Edge')) browser = 'Edge';
+  let browser = "Unknown";
+  if (userAgent.includes("Chrome")) browser = "Chrome";
+  else if (userAgent.includes("Safari")) browser = "Safari";
+  else if (userAgent.includes("Firefox")) browser = "Firefox";
+  else if (userAgent.includes("Edge")) browser = "Edge";
 
   // Detect device type
   const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
-  const deviceType = isMobile ? 'Mobile' : 'Desktop';
+  const deviceType = isMobile ? "Mobile" : "Desktop";
 
   return `${browser} on ${deviceType}`;
 };
@@ -81,7 +94,7 @@ const getDeviceInfo = () => {
 // Provider component
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useLocalStorage<CartItem[]>("cart", []);
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -96,20 +109,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
     setIsOnline(navigator.onLine);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
   // Auto-sync when user logs in or comes back online
   useEffect(() => {
-    if (isAuthenticated && isOnline && syncStatus === 'idle') {
-      syncCart('merge');
+    if (isAuthenticated && isOnline && syncStatus === "idle") {
+      syncCart("merge");
     }
   }, [isAuthenticated, isOnline]);
 
@@ -125,7 +138,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Set new timeout for auto-sync (debounce 2 seconds)
     syncTimeoutRef.current = setTimeout(() => {
       if (items.length > 0) {
-        syncCart('merge');
+        syncCart("merge");
       }
     }, 2000);
 
@@ -137,164 +150,194 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, isAuthenticated, isOnline]);
 
   // Sync cart with server
-  const syncCart = useCallback(async (strategy: SyncStrategy = 'merge') => {
-    if (!isAuthenticated) {
-      setSyncError('Please login to sync cart');
-      return;
-    }
-
-    if (!isOnline) {
-      setPendingSync(true);
-      setSyncError('You are offline. Cart will sync when connection is restored.');
-      return;
-    }
-
-    setSyncStatus('syncing');
-    setSyncError(null);
-
-    try {
-      const syncData = {
-        items: items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          deviceId: item.deviceId || deviceId.current,
-          deviceInfo: item.deviceInfo || getDeviceInfo(),
-          addedAt: item.addedAt,
-          updatedAt: item.updatedAt,
-        })),
-        deviceId: deviceId.current,
-        deviceInfo: getDeviceInfo(),
-        strategy,
-        lastSyncedAt: lastSyncedAt?.toISOString(),
-      };
-
-      const response = await cartClient.post('/api/cart/sync', syncData);
-
-      if (response.data?.success) {
-        const { cart, syncSummary } = response.data.data;
-
-        // Update local cart with server data
-        if (strategy !== 'client-wins' && cart.items) {
-          const serverItems: CartItem[] = cart.items.map((serverItem: any) => {
-            // Get price from seagmTypes (lowest unitPrice)
-            const types = serverItem.product.seagmTypes || [];
-            const price = types.length > 0 ? Math.min(...types.map((t: any) => Number(t.unitPrice))) : 0;
-
-            return {
-              productId: serverItem.productId,
-              name: serverItem.product.name,
-              image: serverItem.product.imageUrl || '',
-              quantity: serverItem.quantity,
-              price: price,
-              productType: serverItem.product.productType,
-              deviceId: serverItem.deviceId,
-              deviceInfo: serverItem.deviceInfo,
-              addedAt: serverItem.addedAt,
-              updatedAt: serverItem.updatedAt,
-            };
-          });
-
-          setItems(serverItems);
-        }
-
-        setSyncStatus('synced');
-        setLastSyncedAt(new Date());
-        setPendingSync(false);
-
-        console.log('[Cart Sync] Success:', syncSummary);
+  const syncCart = useCallback(
+    async (strategy: SyncStrategy = "merge") => {
+      if (!isAuthenticated) {
+        setSyncError("Please login to sync cart");
+        return;
       }
-    } catch (error: any) {
-      console.error('[Cart Sync] Error:', error);
-      setSyncStatus('error');
-      setSyncError(error.response?.data?.error?.message || 'Failed to sync cart');
-      setPendingSync(true);
-    }
-  }, [isAuthenticated, isOnline, items, lastSyncedAt, setItems]);
+
+      if (!isOnline) {
+        setPendingSync(true);
+        setSyncError(
+          "You are offline. Cart will sync when connection is restored.",
+        );
+        return;
+      }
+
+      setSyncStatus("syncing");
+      setSyncError(null);
+
+      try {
+        const syncData = {
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            deviceId: item.deviceId || deviceId.current,
+            deviceInfo: item.deviceInfo || getDeviceInfo(),
+            addedAt: item.addedAt,
+            updatedAt: item.updatedAt,
+          })),
+          deviceId: deviceId.current,
+          deviceInfo: getDeviceInfo(),
+          strategy,
+          lastSyncedAt: lastSyncedAt?.toISOString(),
+        };
+
+        const response = await cartClient.post("/api/cart/sync", syncData);
+
+        if (response.data?.success) {
+          const { cart, syncSummary } = response.data.data;
+
+          // Update local cart with server data
+          if (strategy !== "client-wins" && cart.items) {
+            const serverItems: CartItem[] = cart.items.map(
+              (serverItem: any) => {
+                // Get price from seagmTypes (sellingPrice -> originPrice -> unitPrice)
+                const types = serverItem.product.seagmTypes || [];
+                const price =
+                  types.length > 0
+                    ? Math.min(
+                        ...types.map((t: any) =>
+                          Number(
+                            t.sellingPrice ?? t.originPrice ?? t.unitPrice,
+                          ),
+                        ),
+                      )
+                    : 0;
+
+                return {
+                  productId: serverItem.productId,
+                  name: serverItem.product.name,
+                  image: serverItem.product.imageUrl || "",
+                  quantity: serverItem.quantity,
+                  price: price,
+                  productType: serverItem.product.productType,
+                  deviceId: serverItem.deviceId,
+                  deviceInfo: serverItem.deviceInfo,
+                  addedAt: serverItem.addedAt,
+                  updatedAt: serverItem.updatedAt,
+                };
+              },
+            );
+
+            setItems(serverItems);
+          }
+
+          setSyncStatus("synced");
+          setLastSyncedAt(new Date());
+          setPendingSync(false);
+
+          console.log("[Cart Sync] Success:", syncSummary);
+        }
+      } catch (error: any) {
+        console.error("[Cart Sync] Error:", error);
+        setSyncStatus("error");
+        setSyncError(
+          error.response?.data?.error?.message || "Failed to sync cart",
+        );
+        setPendingSync(true);
+      }
+    },
+    [isAuthenticated, isOnline, items, lastSyncedAt, setItems],
+  );
 
   // Add item to cart
-  const addItem = useCallback((item: CartItem) => {
-    const now = new Date().toISOString();
-    setItems((prevItems) => {
-      // Check if item already exists in cart
-      const existingItemIndex = prevItems.findIndex(
-        (i) => i.productId === item.productId
-      );
+  const addItem = useCallback(
+    (item: CartItem) => {
+      const now = new Date().toISOString();
+      setItems((prevItems) => {
+        // Check if item already exists in cart
+        const existingItemIndex = prevItems.findIndex(
+          (i) => i.productId === item.productId,
+        );
 
-      if (existingItemIndex > -1) {
-        // Update existing item
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex] = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + item.quantity,
-          deviceId: deviceId.current,
-          deviceInfo: getDeviceInfo(),
-          updatedAt: now,
-          // Update playerInfo if provided
-          ...(item.playerInfo && { playerInfo: item.playerInfo }),
-        };
-        return updatedItems;
-      } else {
-        // Add new item
-        return [...prevItems, {
-          ...item,
-          deviceId: deviceId.current,
-          deviceInfo: getDeviceInfo(),
-          addedAt: now,
-          updatedAt: now,
-        }];
-      }
-    });
-  }, [setItems]);
+        if (existingItemIndex > -1) {
+          // Update existing item
+          const updatedItems = [...prevItems];
+          updatedItems[existingItemIndex] = {
+            ...updatedItems[existingItemIndex],
+            quantity: updatedItems[existingItemIndex].quantity + item.quantity,
+            deviceId: deviceId.current,
+            deviceInfo: getDeviceInfo(),
+            updatedAt: now,
+            // Update playerInfo if provided
+            ...(item.playerInfo && { playerInfo: item.playerInfo }),
+          };
+          return updatedItems;
+        } else {
+          // Add new item
+          return [
+            ...prevItems,
+            {
+              ...item,
+              deviceId: deviceId.current,
+              deviceInfo: getDeviceInfo(),
+              addedAt: now,
+              updatedAt: now,
+            },
+          ];
+        }
+      });
+    },
+    [setItems],
+  );
 
   // Remove item from cart
-  const removeItem = useCallback((productId: string) => {
-    setItems((prevItems) =>
-      prevItems.filter((item) => item.productId !== productId)
-    );
-  }, [setItems]);
+  const removeItem = useCallback(
+    (productId: string) => {
+      setItems((prevItems) =>
+        prevItems.filter((item) => item.productId !== productId),
+      );
+    },
+    [setItems],
+  );
 
   // Update item quantity
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity < 1) return;
-    const now = new Date().toISOString();
+  const updateQuantity = useCallback(
+    (productId: string, quantity: number) => {
+      if (quantity < 1) return;
+      const now = new Date().toISOString();
 
-    setItems((prevItems) =>
-      prevItems.map((item) => {
-        if (item.productId === productId) {
-          return {
-            ...item,
-            quantity,
-            deviceId: deviceId.current,
-            deviceInfo: getDeviceInfo(),
-            updatedAt: now,
-          };
-        }
-        return item;
-      })
-    );
-  }, [setItems]);
+      setItems((prevItems) =>
+        prevItems.map((item) => {
+          if (item.productId === productId) {
+            return {
+              ...item,
+              quantity,
+              deviceId: deviceId.current,
+              deviceInfo: getDeviceInfo(),
+              updatedAt: now,
+            };
+          }
+          return item;
+        }),
+      );
+    },
+    [setItems],
+  );
 
   // Update player info for direct top-up
-  const updatePlayerInfo = useCallback((
-    productId: string,
-    playerInfo: Record<string, string>
-  ) => {
-    const now = new Date().toISOString();
-    setItems((prevItems) =>
-      prevItems.map((item) => {
-        if (item.productId === productId) {
-          return {
-            ...item,
-            playerInfo,
-            deviceId: deviceId.current,
-            deviceInfo: getDeviceInfo(),
-            updatedAt: now,
-          };
-        }
-        return item;
-      })
-    );
-  }, [setItems]);
+  const updatePlayerInfo = useCallback(
+    (productId: string, playerInfo: Record<string, string>) => {
+      const now = new Date().toISOString();
+      setItems((prevItems) =>
+        prevItems.map((item) => {
+          if (item.productId === productId) {
+            return {
+              ...item,
+              playerInfo,
+              deviceId: deviceId.current,
+              deviceInfo: getDeviceInfo(),
+              updatedAt: now,
+            };
+          }
+          return item;
+        }),
+      );
+    },
+    [setItems],
+  );
 
   // Clear cart
   const clearCart = useCallback(() => {
@@ -308,10 +351,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Get total price of items in cart
   const getTotalPrice = useCallback(() => {
-    return items.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return items.reduce((total, item) => total + item.price * item.quantity, 0);
   }, [items]);
 
   return (
@@ -343,7 +383,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
+    throw new Error("useCart must be used within a CartProvider");
   }
   return context;
 }

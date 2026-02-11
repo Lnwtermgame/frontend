@@ -22,12 +22,25 @@ export interface OrderProduct {
   productType: "CARD" | "DIRECT_TOPUP";
 }
 
+// Product type info (e.g., "60 UC", "325 UC")
+export interface OrderProductType {
+  id: string;
+  name: string;
+  parValue: number;
+  currency: string;
+}
+
 // Pin code for card products
 export interface PinCode {
+  id?: number;
   code?: string;
   pin?: string;
   serial?: string;
   validDate?: string;
+  // SEAGM response fields
+  card_number?: string;
+  card_pin?: string;
+  expired?: string;
 }
 
 // Order type definition
@@ -61,6 +74,8 @@ export interface OrderItem {
   productId: string;
   productName?: string;
   product?: OrderProduct;
+  productTypeId?: string;
+  productType?: OrderProductType;
   quantity: number;
   priceAtPurchase: number;
   price?: number; // For backward compatibility

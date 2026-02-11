@@ -52,7 +52,7 @@ const NavItem = memo(function NavItem({
         "group flex items-center gap-3 px-3 py-2.5 transition-all relative overflow-hidden",
         isActive
           ? "bg-brutal-yellow text-black font-bold border-[3px] border-black"
-          : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+          : "hover:bg-gray-100 text-gray-600 hover:text-gray-900",
       )}
       prefetch={false}
     >
@@ -66,10 +66,12 @@ const NavItem = memo(function NavItem({
           transition={{ duration: 0.2 }}
         />
       )}
-      <span className={cn(
-        "flex items-center justify-center text-inherit relative z-10",
-        isActive ? "text-black" : "text-gray-500 group-hover:text-gray-900"
-      )}>
+      <span
+        className={cn(
+          "flex items-center justify-center text-inherit relative z-10",
+          isActive ? "text-black" : "text-gray-500 group-hover:text-gray-900",
+        )}
+      >
         {icon}
       </span>
       <span className="text-sm font-medium relative z-10">{label}</span>
@@ -77,7 +79,7 @@ const NavItem = memo(function NavItem({
       {isActive && (
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ boxShadow: '3px 3px 0 0 #000000' }}
+          style={{ boxShadow: "3px 3px 0 0 #000000" }}
         />
       )}
     </Link>
@@ -102,25 +104,26 @@ const MobileNavItem = memo(function MobileNavItem({
       href={href}
       className={cn(
         "flex items-center justify-center flex-col gap-1 py-2 w-full transition-all",
-        isActive
-          ? "text-brutal-pink"
-          : "text-gray-500"
+        isActive ? "text-brutal-pink" : "text-gray-500",
       )}
       onClick={onClick}
       prefetch={false}
     >
-      <div className={cn(
-        "flex items-center justify-center w-10 h-10 transition-all",
-        isActive
-          ? "bg-brutal-yellow border-[3px] border-black"
-          : "transparent"
-      )}
-        style={isActive ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+      <div
+        className={cn(
+          "flex items-center justify-center w-10 h-10 transition-all",
+          isActive
+            ? "bg-brutal-yellow border-[3px] border-black"
+            : "transparent",
+        )}
+        style={isActive ? { boxShadow: "3px 3px 0 0 #000000" } : undefined}
       >
-        <span className={cn(
-          "flex items-center justify-center",
-          isActive ? "text-black" : "text-gray-500"
-        )}>
+        <span
+          className={cn(
+            "flex items-center justify-center",
+            isActive ? "text-black" : "text-gray-500",
+          )}
+        >
           {icon}
         </span>
       </div>
@@ -147,17 +150,24 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   // Notification state
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } =
+    useNotifications();
   const notificationRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
         setIsNotificationOpen(false);
       }
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
         setIsUserMenuOpen(false);
       }
     }
@@ -172,32 +182,85 @@ export function MainLayout({ children }: MainLayoutProps) {
   }, [isNotificationOpen, isUserMenuOpen]);
 
   // Create memoized nav items with hardcoded Thai text
-  const mainNavItems = useMemo(() => [
-    { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
-    { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
-    { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
-    { href: "/dashboard/favorite", label: "รายการโปรด", icon: <Heart size={20} /> },
-    { href: "/support", label: "ช่วยเหลือ", icon: <MessageCircle size={20} /> },
-  ], []);
+  const mainNavItems = useMemo(
+    () => [
+      { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
+      { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
+      { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
+      {
+        href: "/dashboard/favorite",
+        label: "รายการโปรด",
+        icon: <Heart size={20} />,
+      },
+      {
+        href: "/support",
+        label: "ช่วยเหลือ",
+        icon: <MessageCircle size={20} />,
+      },
+    ],
+    [],
+  );
 
-  const mobileNavItems = useMemo(() => [
-    { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
-    { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
-    { href: "/direct-topup", label: "เติมเงิน", icon: <DollarSign size={20} /> },
-    { href: "/dashboard/orders", label: "คำสั่งซื้อ", icon: <ShoppingCart size={20} /> },
-    { href: "/dashboard/account", label: "บัญชี", icon: <User size={20} /> },
-  ], []);
+  const mobileNavItems = useMemo(
+    () => [
+      { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
+      { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
+      {
+        href: "/direct-topup",
+        label: "เติมเงิน",
+        icon: <DollarSign size={20} />,
+      },
+      {
+        href: "/dashboard/orders",
+        label: "คำสั่งซื้อ",
+        icon: <ShoppingCart size={20} />,
+      },
+      { href: "/dashboard/account", label: "บัญชี", icon: <User size={20} /> },
+    ],
+    [],
+  );
 
-  const accountMenuItems = useMemo(() => [
-    { href: "/dashboard/account", label: "บัญชีของฉัน", icon: <User size={18} /> },
-    { href: "/direct-topup", label: "เติมเงินโดยตรง", icon: <Gamepad2 size={18} /> },
-    { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
-    { href: "/dashboard/invoice", label: "ใบแจ้งหนี้", icon: <FileText size={18} /> },
-    { href: "/dashboard/credits", label: "เครดิต", icon: <Coins size={18} /> },
-    { href: "/dashboard/coupons", label: "คูปอง", icon: <Ticket size={18} /> },
-    { href: "/dashboard/favorite", label: "รายการโปรด", icon: <Heart size={18} /> },
-    { href: "/dashboard/notifications", label: "การแจ้งเตือน", icon: <Bell size={18} /> },
-  ], []);
+  const accountMenuItems = useMemo(
+    () => [
+      {
+        href: "/dashboard/account",
+        label: "บัญชีของฉัน",
+        icon: <User size={18} />,
+      },
+      {
+        href: "/direct-topup",
+        label: "เติมเงินโดยตรง",
+        icon: <Gamepad2 size={18} />,
+      },
+      { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
+      {
+        href: "/dashboard/invoice",
+        label: "ใบแจ้งหนี้",
+        icon: <FileText size={18} />,
+      },
+      {
+        href: "/dashboard/credits",
+        label: "เครดิต",
+        icon: <Coins size={18} />,
+      },
+      {
+        href: "/dashboard/coupons",
+        label: "คูปอง",
+        icon: <Ticket size={18} />,
+      },
+      {
+        href: "/dashboard/favorite",
+        label: "รายการโปรด",
+        icon: <Heart size={18} />,
+      },
+      {
+        href: "/dashboard/notifications",
+        label: "การแจ้งเตือน",
+        icon: <Bell size={18} />,
+      },
+    ],
+    [],
+  );
 
   return (
     <div className="flex min-h-screen bg-brutal-gray thai-font">
@@ -209,7 +272,9 @@ export function MainLayout({ children }: MainLayoutProps) {
             <div className="font-bold text-2xl flex items-center">
               <span className="text-brutal-pink">Mali</span>
               <span className="text-black">Game</span>
-              <span className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[2px] border-black">Pass</span>
+              <span className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[2px] border-black">
+                Pass
+              </span>
             </div>
           </Link>
         </div>
@@ -217,8 +282,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Navigation */}
         <nav className="flex-1 pt-4 px-3 space-y-1 overflow-y-auto">
           {mainNavItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== '/' && pathname.startsWith(item.href));
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href));
 
             return (
               <NavItem
@@ -231,17 +297,18 @@ export function MainLayout({ children }: MainLayoutProps) {
             );
           })}
         </nav>
-
       </aside>
 
       {/* Mobile navbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[3px] border-black lg:hidden"
-        style={{ boxShadow: '0 -4px 0 0 rgba(0,0,0,0.1)' }}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[3px] border-black lg:hidden"
+        style={{ boxShadow: "0 -4px 0 0 rgba(0,0,0,0.1)" }}
       >
         <div className="flex justify-around items-center">
           {mobileNavItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== '/' && pathname.startsWith(item.href));
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href));
 
             return (
               <MobileNavItem
@@ -259,8 +326,9 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
         {/* Header */}
-        <header className="sticky top-0 z-20 bg-white border-b-[3px] border-black h-16 flex items-center"
-          style={{ boxShadow: '0 4px 0 0 rgba(0,0,0,0.05)' }}
+        <header
+          className="sticky top-0 z-20 bg-white border-b-[3px] border-black h-16 flex items-center"
+          style={{ boxShadow: "0 4px 0 0 rgba(0,0,0,0.05)" }}
         >
           <div className="w-full h-full px-4 flex items-center justify-between">
             {/* Mobile Logo and Menu */}
@@ -275,17 +343,16 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <div className="font-bold text-xl flex items-center">
                   <span className="text-brutal-pink">Mali</span>
                   <span className="text-black">Game</span>
-                  <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm">Pass</span>
+                  <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm">
+                    Pass
+                  </span>
                 </div>
               </Link>
             </div>
 
             {/* Search */}
             <div className="hidden md:block flex-1 max-w-md mx-auto">
-              <SearchBar
-                variant="header"
-                placeholder="ค้นหาเกม"
-              />
+              <SearchBar variant="header" placeholder="ค้นหาเกม" />
             </div>
 
             {/* Right Section */}
@@ -300,7 +367,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                     <Bell size={20} />
                     {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 w-5 h-5 bg-brutal-pink text-white text-[10px] font-bold rounded-full border-[2px] border-black flex items-center justify-center">
-                        {unreadCount > 9 ? '9+' : unreadCount}
+                        {unreadCount > 9 ? "9+" : unreadCount}
                       </span>
                     )}
                   </button>
@@ -313,10 +380,12 @@ export function MainLayout({ children }: MainLayoutProps) {
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                         className="absolute right-0 mt-2 w-80 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
-                        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
                         <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
-                          <h3 className="text-gray-900 font-bold text-sm">การแจ้งเตือน</h3>
+                          <h3 className="text-gray-900 font-bold text-sm">
+                            การแจ้งเตือน
+                          </h3>
                           {unreadCount > 0 && (
                             <button
                               onClick={markAllAsRead}
@@ -334,30 +403,50 @@ export function MainLayout({ children }: MainLayoutProps) {
                                 key={notification.id}
                                 className={cn(
                                   "p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer",
-                                  !notification.isRead && "bg-brutal-yellow/10"
+                                  !notification.isRead && "bg-brutal-yellow/10",
                                 )}
                                 onClick={() => markAsRead(notification.id)}
                               >
-                                <div className={cn(
-                                  "w-8 h-8 flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
-                                  notification.type === 'ORDER' ? "bg-brutal-green text-black" :
-                                    notification.type === 'PAYMENT' ? "bg-brutal-blue text-black" :
-                                      notification.type === 'PROMOTION' ? "bg-brutal-yellow text-black" :
-                                        "bg-gray-200 text-black"
-                                )}>
-                                  {notification.type === 'ORDER' ? <Zap size={14} /> :
-                                    notification.type === 'PAYMENT' ? <LogOut size={14} /> :
-                                      <Bell size={14} />}
+                                <div
+                                  className={cn(
+                                    "w-8 h-8 flex items-center justify-center shrink-0 mt-1 border-[2px] border-black",
+                                    notification.type === "ORDER"
+                                      ? "bg-brutal-green text-black"
+                                      : notification.type === "PAYMENT"
+                                        ? "bg-brutal-blue text-black"
+                                        : notification.type === "PROMOTION"
+                                          ? "bg-brutal-yellow text-black"
+                                          : "bg-gray-200 text-black",
+                                  )}
+                                >
+                                  {notification.type === "ORDER" ? (
+                                    <ShoppingCart size={14} />
+                                  ) : notification.type === "PAYMENT" ? (
+                                    <CreditCard size={14} />
+                                  ) : notification.type === "PROMOTION" ? (
+                                    <Ticket size={14} />
+                                  ) : (
+                                    <Bell size={14} />
+                                  )}
                                 </div>
                                 <div className="flex-1">
-                                  <p className={cn("text-sm mb-1", !notification.isRead ? "text-gray-900 font-semibold" : "text-gray-600")}>
+                                  <p
+                                    className={cn(
+                                      "text-sm mb-1",
+                                      !notification.isRead
+                                        ? "text-gray-900 font-semibold"
+                                        : "text-gray-600",
+                                    )}
+                                  >
                                     {notification.title}
                                   </p>
                                   <p className="text-xs text-gray-500 line-clamp-2">
                                     {notification.message}
                                   </p>
                                   <p className="text-[10px] text-gray-400 mt-1">
-                                    {new Date(notification.createdAt).toLocaleTimeString()}
+                                    {new Date(
+                                      notification.createdAt,
+                                    ).toLocaleTimeString()}
                                   </p>
                                 </div>
                                 {!notification.isRead && (
@@ -373,7 +462,10 @@ export function MainLayout({ children }: MainLayoutProps) {
                           )}
                         </div>
 
-                        <Link href="/dashboard/notifications" className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors">
+                        <Link
+                          href="/dashboard/notifications"
+                          className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors"
+                        >
                           ดูทั้งหมด
                         </Link>
                       </motion.div>
@@ -395,13 +487,18 @@ export function MainLayout({ children }: MainLayoutProps) {
                   >
                     <div className="w-9 h-9 bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black">
                       <img
-                        src={user?.avatar || "https://placehold.co/200x200?text=User"}
+                        src={
+                          user?.avatar ||
+                          "https://placehold.co/200x200?text=User"
+                        }
                         alt={`${user?.username} avatar`}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="hidden md:flex flex-col items-start">
-                      <span className="text-sm font-bold w-[100px] truncate text-left leading-tight">{user?.username}</span>
+                      <span className="text-sm font-bold w-[100px] truncate text-left leading-tight">
+                        {user?.username}
+                      </span>
                       <span className="text-[10px] text-gray-500">Member</span>
                     </div>
                     <ChevronDown size={14} className="text-gray-500 ml-1" />
@@ -415,32 +512,50 @@ export function MainLayout({ children }: MainLayoutProps) {
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                         className="absolute right-0 mt-2 w-64 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
-                        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
                         <div className="p-4 border-b-[2px] border-black bg-gray-50">
                           <div className="flex items-center space-x-3 mb-3">
                             <div className="w-12 h-12 border-[3px] border-black overflow-hidden bg-brutal-yellow">
-                              <img src={user?.avatar || "https://placehold.co/200x200?text=User"} alt="" className="w-full h-full object-cover" />
+                              <img
+                                src={
+                                  user?.avatar ||
+                                  "https://placehold.co/200x200?text=User"
+                                }
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                             <div>
-                              <p className="text-gray-900 font-bold">{user?.username}</p>
-                              <p className="text-gray-500 text-xs">{user?.email}</p>
+                              <p className="text-gray-900 font-bold">
+                                {user?.username}
+                              </p>
+                              <p className="text-gray-500 text-xs">
+                                {user?.email}
+                              </p>
                             </div>
                           </div>
 
                           {user?.isPremium && (
-                            <div className="mb-3 bg-brutal-yellow border-[2px] border-black text-black text-xs px-2 py-1 flex items-center font-bold"
-                              style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                            <div
+                              className="mb-3 bg-brutal-yellow border-[2px] border-black text-black text-xs px-2 py-1 flex items-center font-bold"
+                              style={{ boxShadow: "2px 2px 0 0 #000000" }}
                             >
-                              <Star size={12} className="mr-1 fill-black" /> สมาชิกพรีเมียม
+                              <Star size={12} className="mr-1 fill-black" />{" "}
+                              สมาชิกพรีเมียม
                             </div>
                           )}
 
-                          <div className="flex justify-between items-center bg-white p-2 border-[2px] border-black"
-                            style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                          <div
+                            className="flex justify-between items-center bg-white p-2 border-[2px] border-black"
+                            style={{ boxShadow: "2px 2px 0 0 #000000" }}
                           >
-                            <span className="text-gray-600 text-xs">คะแนนสะสม</span>
-                            <span className="text-black font-bold font-mono">{user?.credits?.toLocaleString()}</span>
+                            <span className="text-gray-600 text-xs">
+                              คะแนนสะสม
+                            </span>
+                            <span className="text-black font-bold font-mono">
+                              {user?.credits?.toLocaleString()}
+                            </span>
                           </div>
                         </div>
 
@@ -472,7 +587,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <Link
                   href="/login"
                   className="flex items-center space-x-1 text-black bg-brutal-yellow px-4 py-2 text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <User size={16} />
                   <span>เข้าสู่ระบบ</span>

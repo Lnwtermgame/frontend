@@ -22,6 +22,8 @@ import {
   MapPin,
   Smartphone,
   Loader2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
@@ -34,9 +36,11 @@ export default function OrderDetailsPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
   const [order, setOrder] = useState<Order | null>(null);
-  const [deliveryStatus, setDeliveryStatus] = useState<OrderDeliveryStatus | null>(null);
+  const [deliveryStatus, setDeliveryStatus] =
+    useState<OrderDeliveryStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [revealedCodes, setRevealedCodes] = useState<Set<string>>(new Set());
   const [isCancelling, setIsCancelling] = useState(false);
 
   const orderId = params.orderId as string;
@@ -109,6 +113,19 @@ export default function OrderDetailsPage() {
     setCopiedCode(code);
     toast.success("คัดลอกรหัสแล้ว");
     setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  // Toggle code visibility
+  const toggleCodeVisibility = (codeId: string) => {
+    setRevealedCodes((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(codeId)) {
+        newSet.delete(codeId);
+      } else {
+        newSet.add(codeId);
+      }
+      return newSet;
+    });
   };
 
   // Format price
@@ -250,7 +267,9 @@ export default function OrderDetailsPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
         <h2 className="text-xl font-bold text-black mb-2">ไม่พบคำสั่งซื้อ</h2>
-        <p className="text-gray-600 mb-4">คำสั่งซื้อที่คุณค้นหาอาจถูกลบหรือไม่มีอยู่</p>
+        <p className="text-gray-600 mb-4">
+          คำสั่งซื้อที่คุณค้นหาอาจถูกลบหรือไม่มีอยู่
+        </p>
         <Link
           href="/dashboard/orders"
           className="px-4 py-2 bg-black text-white font-medium border-[3px] border-black hover:bg-gray-800 transition-colors"
@@ -284,7 +303,9 @@ export default function OrderDetailsPage() {
         <div className="flex items-center gap-2 text-sm text-gray-600 ml-9">
           <span>
             รหัสคำสั่งซื้อ:{" "}
-            <span className="text-black font-mono font-bold">{order.orderNumber}</span>
+            <span className="text-black font-mono font-bold">
+              {order.orderNumber}
+            </span>
           </span>
           <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
           <span>{formatDate(order.createdAt)}</span>
@@ -315,7 +336,10 @@ export default function OrderDetailsPage() {
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="h-20 w-20 border-[2px] border-black bg-gray-100 flex-shrink-0">
                       <img
-                        src={item.product?.imageUrl || `https://placehold.co/100x100?text=${encodeURIComponent(item.product?.name || "Product")}`}
+                        src={
+                          item.product?.imageUrl ||
+                          `https://placehold.co/100x100?text=${encodeURIComponent(item.product?.name || "Product")}`
+                        }
                         alt={item.product?.name}
                         className="h-full w-full object-cover"
                       />
@@ -324,80 +348,207 @@ export default function OrderDetailsPage() {
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className="font-bold text-black text-lg">{item.product?.name || "สินค้า"}</h4>
-                          <p className="text-gray-600 text-sm">จำนวน: {item.quantity}</p>
-                          {item.playerInfo && Object.keys(item.playerInfo).length > 0 && (
-                            <div className="mt-2 p-2 bg-brutal-gray border border-black/20 text-sm">
-                              <p className="text-gray-600 text-xs mb-1">ข้อมูลบัญชี:</p>
-                              {Object.entries(item.playerInfo).map(([key, value]) => (
-                                <div key={key} className="flex gap-2">
-                                  <span className="text-gray-600 capitalize">{key}:</span>
-                                  <span className="font-mono font-bold">{String(value)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                          <h4 className="font-bold text-black text-lg">
+                            {item.product?.name
+                              ? item.productType?.name
+                                ? `${item.product.name} - ${item.productType.name}`
+                                : item.product.name
+                              : "สินค้า"}
+                          </h4>
+                          <p className="text-gray-600 text-sm">
+                            จำนวน: {item.quantity}
+                          </p>
+                          {item.playerInfo &&
+                            Object.keys(item.playerInfo).length > 0 && (
+                              <div className="mt-2 p-2 bg-brutal-gray border border-black/20 text-sm">
+                                <p className="text-gray-600 text-xs mb-1">
+                                  ข้อมูลบัญชี:
+                                </p>
+                                {Object.entries(item.playerInfo).map(
+                                  ([key, value]) => (
+                                    <div key={key} className="flex gap-2">
+                                      <span className="text-gray-600 capitalize">
+                                        {key}:
+                                      </span>
+                                      <span className="font-mono font-bold">
+                                        {String(value)}
+                                      </span>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
+                            )}
                         </div>
-                        <p className="font-bold text-black">{formatPrice(item.priceAtPurchase)}</p>
+                        <p className="font-bold text-black">
+                          {formatPrice(item.priceAtPurchase)}
+                        </p>
                       </div>
 
                       {/* Delivery Status */}
                       {deliveryStatus && (
                         <div className="mt-3 flex items-center gap-2">
-                          <span className="text-sm text-gray-600">สถานะจัดส่ง:</span>
+                          <span className="text-sm text-gray-600">
+                            สถานะจัดส่ง:
+                          </span>
                           {getDeliveryStatusBadge(item.fulfillStatus)}
                         </div>
                       )}
 
                       {/* Digital Codes / PIN */}
-                      {item.fulfillStatus === "COMPLETED" && item.pinCodes && item.pinCodes.length > 0 && (
-                        <div className="mt-4 bg-brutal-green/20 border-[2px] border-black rounded-lg p-4">
-                          <p className="text-xs text-black uppercase font-bold mb-2">รหัสดิจิทัล / PIN</p>
-                          <div className="space-y-2">
-                            {item.pinCodes.map((card: any, idx: number) => (
-                              <div key={idx} className="bg-white p-3 border-[2px] border-black">
-                                {card.code && (
-                                  <div className="flex items-center gap-2 group mb-2">
-                                    <code className="flex-1 font-mono text-black text-sm tracking-wider">{card.code}</code>
-                                    <button
-                                      onClick={() => copyToClipboard(card.code)}
-                                      className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors"
-                                      title="คัดลอกรหัส"
-                                    >
-                                      {copiedCode === card.code ? (
-                                        <Check size={16} className="text-brutal-green" />
-                                      ) : (
-                                        <Copy size={16} />
-                                      )}
-                                    </button>
+                      {item.fulfillStatus === "COMPLETED" &&
+                        item.pinCodes &&
+                        item.pinCodes.length > 0 && (
+                          <div className="mt-4 bg-brutal-green/20 border-[2px] border-black rounded-lg p-4">
+                            <p className="text-xs text-black uppercase font-bold mb-2">
+                              รหัสดิจิทัล / PIN
+                            </p>
+                            <div className="space-y-2">
+                              {item.pinCodes.map((card: any, idx: number) => {
+                                const codeValue =
+                                  card.card_number || card.code || "";
+                                const pinValue =
+                                  card.card_pin || card.pin || "";
+                                const codeId = `${item.id}-${idx}`;
+                                const isRevealed = revealedCodes.has(codeId);
+
+                                return (
+                                  <div
+                                    key={idx}
+                                    className="bg-white p-3 border-[2px] border-black"
+                                  >
+                                    {/* card_number from SEAGM */}
+                                    {codeValue && (
+                                      <div className="flex items-center gap-2 group mb-2">
+                                        <span className="text-xs text-gray-600 min-w-[60px]">
+                                          รหัส:
+                                        </span>
+                                        <code
+                                          className={`flex-1 font-mono text-black text-sm tracking-wider break-all select-none ${!isRevealed ? "blur-sm hover:blur-none" : ""}`}
+                                        >
+                                          {codeValue}
+                                        </code>
+                                        <button
+                                          onClick={() =>
+                                            toggleCodeVisibility(codeId)
+                                          }
+                                          className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
+                                          title={
+                                            isRevealed ? "ซ่อนรหัส" : "แสดงรหัส"
+                                          }
+                                        >
+                                          {isRevealed ? (
+                                            <EyeOff size={16} />
+                                          ) : (
+                                            <Eye size={16} />
+                                          )}
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            copyToClipboard(codeValue)
+                                          }
+                                          className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
+                                          title="คัดลอกรหัส"
+                                        >
+                                          {copiedCode === codeValue ? (
+                                            <Check
+                                              size={16}
+                                              className="text-brutal-green"
+                                            />
+                                          ) : (
+                                            <Copy size={16} />
+                                          )}
+                                        </button>
+                                      </div>
+                                    )}
+                                    {/* card_pin from SEAGM */}
+                                    {pinValue && (
+                                      <div className="flex items-center gap-2 group">
+                                        <span className="text-xs text-gray-600 min-w-[60px]">
+                                          PIN:
+                                        </span>
+                                        <code
+                                          className={`flex-1 font-mono text-black text-sm tracking-wider break-all select-none ${!isRevealed ? "blur-sm hover:blur-none" : ""}`}
+                                        >
+                                          {pinValue}
+                                        </code>
+                                        <button
+                                          onClick={() =>
+                                            toggleCodeVisibility(codeId)
+                                          }
+                                          className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
+                                          title={
+                                            isRevealed ? "ซ่อน PIN" : "แสดง PIN"
+                                          }
+                                        >
+                                          {isRevealed ? (
+                                            <EyeOff size={16} />
+                                          ) : (
+                                            <Eye size={16} />
+                                          )}
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            copyToClipboard(pinValue)
+                                          }
+                                          className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
+                                          title="คัดลอก PIN"
+                                        >
+                                          {copiedCode === pinValue ? (
+                                            <Check
+                                              size={16}
+                                              className="text-brutal-green"
+                                            />
+                                          ) : (
+                                            <Copy size={16} />
+                                          )}
+                                        </button>
+                                      </div>
+                                    )}
+                                    {/* serial number if exists */}
+                                    {card.serial && (
+                                      <div className="flex items-center gap-2 group mt-2 pt-2 border-t border-gray-200">
+                                        <span className="text-xs text-gray-600 min-w-[60px]">
+                                          Serial:
+                                        </span>
+                                        <code className="flex-1 font-mono text-black text-sm tracking-wider break-all">
+                                          {card.serial}
+                                        </code>
+                                        <button
+                                          onClick={() =>
+                                            copyToClipboard(card.serial)
+                                          }
+                                          className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
+                                          title="คัดลอก Serial"
+                                        >
+                                          {copiedCode === card.serial ? (
+                                            <Check
+                                              size={16}
+                                              className="text-brutal-green"
+                                            />
+                                          ) : (
+                                            <Copy size={16} />
+                                          )}
+                                        </button>
+                                      </div>
+                                    )}
+                                    {/* expiration date if exists */}
+                                    {card.expired && (
+                                      <div className="mt-2 pt-2 border-t border-gray-200">
+                                        <span className="text-xs text-gray-500">
+                                          หมดอายุ: {card.expired}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                                {card.pin && (
-                                  <div className="flex items-center gap-2 group">
-                                    <span className="text-xs text-gray-600">PIN:</span>
-                                    <code className="flex-1 font-mono text-black text-sm tracking-wider">{card.pin}</code>
-                                    <button
-                                      onClick={() => copyToClipboard(card.pin)}
-                                      className="p-1.5 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors"
-                                      title="คัดลอก PIN"
-                                    >
-                                      {copiedCode === card.pin ? (
-                                        <Check size={16} className="text-brutal-green" />
-                                      ) : (
-                                        <Copy size={16} />
-                                      )}
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
+                                );
+                              })}
+                            </div>
+                            <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                              <AlertCircle size={12} />
+                              กรุณาใช้รหัสนี้ทันที ห้ามเปิดเผยให้ผู้อื่น
+                            </p>
                           </div>
-                          <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
-                            <AlertCircle size={12} />
-                            กรุณาใช้รหัสนี้ทันที ห้ามเปิดเผยให้ผู้อื่น
-                          </p>
-                        </div>
-                      )}
+                        )}
 
                       {/* Failed Status */}
                       {item.fulfillStatus === "FAILED" && (
@@ -433,17 +584,23 @@ export default function OrderDetailsPage() {
             <div className="p-5 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">ยอดรวมย่อย</span>
-                <span className="text-black">{formatPrice(order.totalAmount)}</span>
+                <span className="text-black">
+                  {formatPrice(order.totalAmount)}
+                </span>
               </div>
               {order.discountAmount > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">ส่วนลด</span>
-                  <span className="text-green-600">-{formatPrice(order.discountAmount)}</span>
+                  <span className="text-green-600">
+                    -{formatPrice(order.discountAmount)}
+                  </span>
                 </div>
               )}
               <div className="border-t-[2px] border-black my-2 pt-2 flex justify-between items-center">
                 <span className="font-bold text-black">ยอดรวมทั้งสิ้น</span>
-                <span className="font-bold text-xl text-black">{formatPrice(order.finalAmount)}</span>
+                <span className="font-bold text-xl text-black">
+                  {formatPrice(order.finalAmount)}
+                </span>
               </div>
 
               {order.payment && (
@@ -453,7 +610,9 @@ export default function OrderDetailsPage() {
                   </div>
                   <div>
                     <p className="text-gray-600 text-xs">วิธีการชำระเงิน</p>
-                    <p className="text-black font-medium">{getPaymentMethodDisplay(order.payment.paymentMethod)}</p>
+                    <p className="text-black font-medium">
+                      {getPaymentMethodDisplay(order.payment.paymentMethod)}
+                    </p>
                   </div>
                   <div className="ml-auto">
                     <span
@@ -461,15 +620,15 @@ export default function OrderDetailsPage() {
                         order.payment.status === "COMPLETED"
                           ? "bg-brutal-green text-black"
                           : order.payment.status === "PENDING"
-                          ? "bg-brutal-yellow text-black"
-                          : "bg-gray-300 text-black"
+                            ? "bg-brutal-yellow text-black"
+                            : "bg-gray-300 text-black"
                       }`}
                     >
                       {order.payment.status === "COMPLETED"
                         ? "ชำระแล้ว"
                         : order.payment.status === "PENDING"
-                        ? "รอชำระ"
-                        : order.payment.status}
+                          ? "รอชำระ"
+                          : order.payment.status}
                     </span>
                   </div>
                 </div>
@@ -541,7 +700,9 @@ export default function OrderDetailsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600">ชื่อผู้ใช้</p>
-                  <p className="text-sm text-black font-medium">{order.user?.username || user?.username || "-"}</p>
+                  <p className="text-sm text-black font-medium">
+                    {order.user?.username || user?.username || "-"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -550,7 +711,9 @@ export default function OrderDetailsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600">อีเมล</p>
-                  <p className="text-sm text-black font-medium">{order.user?.email || user?.email || "-"}</p>
+                  <p className="text-sm text-black font-medium">
+                    {order.user?.email || user?.email || "-"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -559,7 +722,9 @@ export default function OrderDetailsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600">วันที่สั่งซื้อ</p>
-                  <p className="text-sm text-black font-medium">{formatDate(order.createdAt)}</p>
+                  <p className="text-sm text-black font-medium">
+                    {formatDate(order.createdAt)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -588,8 +753,12 @@ export default function OrderDetailsPage() {
                   </div>
                   {deliveryStatus.completedAt && (
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">จัดส่งเสร็จ:</span>
-                      <span className="text-sm font-medium">{formatDate(deliveryStatus.completedAt)}</span>
+                      <span className="text-sm text-gray-600">
+                        จัดส่งเสร็จ:
+                      </span>
+                      <span className="text-sm font-medium">
+                        {formatDate(deliveryStatus.completedAt)}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -617,7 +786,7 @@ export default function OrderDetailsPage() {
                 พิมพ์ใบเสร็จ
               </button>
               <Link
-                href="/dashboard/support"
+                href="/support"
                 className="w-full flex items-center gap-3 p-3 border-[2px] border-black hover:bg-gray-100 text-black transition-colors text-sm font-medium"
               >
                 <AlertCircle size={18} />
@@ -628,7 +797,7 @@ export default function OrderDetailsPage() {
 
           <div className="text-center">
             <Link
-              href="/dashboard/support"
+              href="/support"
               className="text-sm text-black underline hover:no-underline"
             >
               ต้องการความช่วยเหลือเกี่ยวกับคำสั่งซื้อนี้?

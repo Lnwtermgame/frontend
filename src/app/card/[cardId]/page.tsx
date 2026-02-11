@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ShoppingCart,
@@ -10,16 +10,21 @@ import {
   Info,
   Clock,
   Star,
-  Globe,
   Tag,
   Gift,
   Loader2,
   AlertCircle,
+  CreditCard,
+  X,
+  Package,
 } from "lucide-react";
-import { motion } from "@/lib/framer-exports";
-import { productApi, Product } from "@/lib/services/product-api";
+import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { productApi, Product, ProductType } from "@/lib/services/product-api";
+import { orderApi } from "@/lib/services/order-api";
+import { useCart } from "@/lib/context/cart-context";
 import { getMinPrice, formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 // Card details interface matching the UI expectations
 interface CardDetails {
@@ -30,7 +35,6 @@ interface CardDetails {
   publisher: string;
   category: string;
   denominations: Denomination[];
-  regions: string[];
   rating: number;
   reviews: number;
   deliveryTime: string;
@@ -55,20 +59,6 @@ function transformProductToCardDetails(product: Product): CardDetails {
       price: type.sellingPrice ?? (type.originPrice || type.unitPrice),
     })) || [];
 
-  // Extract regions from attributes if available
-  const regions: string[] = [];
-  const regionAttr = product.attributes?.find(
-    (a) =>
-      a.name.toLowerCase().includes("region") ||
-      a.name.toLowerCase().includes("country"),
-  );
-  if (regionAttr) {
-    regions.push(...regionAttr.value.split(",").map((r) => r.trim()));
-  }
-  if (regions.length === 0) {
-    regions.push("Global", "North America", "Europe", "Asia");
-  }
-
   return {
     id: product.id,
     name: product.name,
@@ -87,14 +77,13 @@ function transformProductToCardDetails(product: Product): CardDetails {
       "Digital",
     category: product.category?.name || "Gift Card",
     denominations,
-    regions,
     rating: product.averageRating || 4.8,
     reviews: product.reviewCount || 0,
     deliveryTime: "Instant",
     isDigital: true,
-    instructions: `1. Select a denomination and region
+    instructions: `1. Select a denomination
 2. Complete checkout process
-3. Receive your code instantly via email
+3. View your code in purchase history
 4. Redeem code on ${product.name} platform
 5. Enjoy your purchase!`,
     tags: product.tags?.map((t) => t.name) || [
@@ -107,6 +96,8 @@ function transformProductToCardDetails(product: Product): CardDetails {
 
 export default function CardDetailPage() {
   const { cardId } = useParams();
+  const router = useRouter();
+  const { addItem } = useCart();
   const [card, setCard] = useState<CardDetails | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -114,9 +105,11 @@ export default function CardDetailPage() {
   const [relatedCards, setRelatedCards] = useState<Product[]>([]);
 
   const [selectedDenomination, setSelectedDenomination] = useState("");
-  const [selectedRegion, setSelectedRegion] = useState("");
-  const [email, setEmail] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  // Confirmation modal state
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isBuying, setIsBuying] = useState(false);
 
   // Fetch card details
   useEffect(() => {
@@ -170,19 +163,75 @@ export default function CardDetailPage() {
   }, [cardId]);
 
   const handleAddToCart = () => {
-    if (!selectedDenomination || !selectedRegion || !email) {
-      toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+    if (!selectedDenomination) {
+      toast.error("กรุณาเลือกมูลค่าบัตร");
       return;
     }
 
-    if (!card) return;
+    if (!card || !product) return;
 
-    const selectedValue = card.denominations.find(
+    const selectedDenom = card.denominations.find(
       (d) => d.id === selectedDenomination,
-    )?.value;
-    toast.success(
-      `เพิ่มลงตะกร้า: ${card.name} - ${selectedValue} (${selectedRegion})`,
     );
+
+    addItem({
+      productId: product.id,
+      name: `${card.name} - ${selectedDenom?.value}`,
+      image: card.image,
+      quantity,
+      price: selectedDenom?.price || 0,
+      productType: "CARD",
+    });
+
+    toast.success("เพิ่มลงตะกร้าแล้ว!");
+  };
+
+  const handleBuyNow = () => {
+    if (!selectedDenomination) {
+      toast.error("กรุณาเลือกมูลค่าบัตร");
+      return;
+    }
+
+    if (!card || !product) return;
+
+    setShowConfirmModal(true);
+  };
+
+  const createOrder = async () => {
+    if (!product || !selectedDenomination) return;
+
+    try {
+      setIsBuying(true);
+      toast.loading("กำลังสร้างคำสั่งซื้อ...");
+
+      const response = await orderApi.createOrder({
+        items: [
+          {
+            productId: product.id,
+            productTypeId: selectedDenomination,
+            quantity,
+          },
+        ],
+        paymentMethod: "CREDIT_CARD",
+        skipPayment: true,
+      });
+
+      toast.dismiss();
+
+      if (response.success) {
+        toast.success("สั่งซื้อสำเร็จ! โค้ดจะแสดงในประวัติการซื้อ");
+        setShowConfirmModal(false);
+        router.push(`/dashboard/orders/${response.data.id}`);
+      } else {
+        toast.error(response.message || "สั่งซื้อไม่สำเร็จ");
+      }
+    } catch (err: any) {
+      toast.dismiss();
+      console.error("Create order error:", err);
+      toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", { duration: 5000 });
+    } finally {
+      setIsBuying(false);
+    }
   };
 
   if (loading) {
@@ -358,7 +407,7 @@ export default function CardDetailPage() {
                       <span className="text-black font-bold">3</span>
                     </div>
                     <p className="text-black font-medium">
-                      รับโค้ดทางอีเมลทันที
+                      ดูโค้ดในประวัติการซื้อ
                     </p>
                   </div>
 
@@ -391,9 +440,8 @@ export default function CardDetailPage() {
                   <Info size={18} className="text-black shrink-0 mt-0.5 mr-3" />
                   <p className="text-gray-700 text-sm">
                     โค้ดที่ซื้อจาก MaliGamePass
-                    ใช้ได้เฉพาะในระบบของเอเจนซี่ที่ให้บริการแต่ละเกมเท่านั้น
-                    อาจมีข้อจำกัดบางประการสำหรับภูมิภาคที่เลือก
-                    โปรดตรวจสอบข้อกำหนดและเงื่อนไขก่อนซื้อ
+                    จะแสดงในหน้าประวัติการซื้อหลังชำระเงินสำเร็จ
+                    สามารถดูและคัดลอกโค้ดได้ทันที
                   </p>
                 </div>
               </div>
@@ -451,45 +499,6 @@ export default function CardDetailPage() {
                 </div>
               </div>
 
-              {/* Region selection */}
-              <div>
-                <label className="block text-black text-sm font-bold mb-2">
-                  เลือกภูมิภาค
-                </label>
-                <div className="relative">
-                  <select
-                    value={selectedRegion}
-                    onChange={(e) => setSelectedRegion(e.target.value)}
-                    className="w-full p-3 bg-white border-[3px] border-black text-black appearance-none focus:outline-none focus:ring-0"
-                  >
-                    <option value="">เลือกภูมิภาค</option>
-                    {card.regions.map((region) => (
-                      <option key={region} value={region}>
-                        {region}
-                      </option>
-                    ))}
-                  </select>
-                  <Globe className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none h-4 w-4" />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-black text-sm font-bold mb-2">
-                  อีเมลสำหรับรับโค้ด
-                </label>
-                <input
-                  type="email"
-                  placeholder="example@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-3 bg-white border-[3px] border-black text-black focus:outline-none focus:ring-0"
-                />
-                <p className="mt-1 text-gray-600 text-xs">
-                  โค้ดเกมจะถูกส่งไปที่อีเมลนี้ทันทีหลังชำระเงิน
-                </p>
-              </div>
-
               {/* Quantity */}
               <div>
                 <label className="block text-black text-sm font-bold mb-2">
@@ -540,18 +549,32 @@ export default function CardDetailPage() {
                 </div>
               </div>
 
-              {/* Add to cart button */}
-              <motion.button
-                onClick={handleAddToCart}
-                className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={!selectedDenomination || !selectedRegion || !email}
-              >
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                หยิบใส่ตะกร้า
-              </motion.button>
+              {/* Add to cart & Buy buttons */}
+              <div className="space-y-3">
+                <motion.button
+                  onClick={handleAddToCart}
+                  className="w-full bg-white text-black py-3 font-bold flex items-center justify-center border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={!selectedDenomination}
+                >
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  หยิบใส่ตะกร้า
+                </motion.button>
+
+                <motion.button
+                  onClick={handleBuyNow}
+                  className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={!selectedDenomination}
+                >
+                  <CreditCard className="mr-2 h-5 w-5" />
+                  ซื้อเลย
+                </motion.button>
+              </div>
 
               {/* Secure purchase info */}
               <div className="flex items-center justify-center text-gray-600 text-xs mt-2">
@@ -562,6 +585,103 @@ export default function CardDetailPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white border-[3px] border-black w-full max-w-md overflow-hidden shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+            >
+              {/* Modal Header */}
+              <div className="p-5 border-b-[3px] border-black bg-brutal-yellow flex items-center justify-between">
+                <h3 className="text-lg font-bold text-black flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  ยืนยันการสั่งซื้อ
+                </h3>
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-5">
+                <div className="space-y-4">
+                  {/* Product info */}
+                  <div className="flex items-center gap-4 p-4 bg-gray-50 border-[2px] border-black">
+                    <div className="w-16 h-16 border-[2px] border-black bg-white flex items-center justify-center">
+                      <Gift className="h-8 w-8 text-black" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-black">{card?.name}</p>
+                      <p className="text-sm text-gray-600">
+                        {
+                          card?.denominations.find(
+                            (d) => d.id === selectedDenomination,
+                          )?.value
+                        }
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        จำนวน: {quantity} ชิ้น
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Total */}
+                  <div className="flex justify-between items-center p-4 bg-brutal-blue/20 border-[2px] border-black">
+                    <span className="font-bold text-black">ราคารวม:</span>
+                    <span className="text-xl font-bold text-black">
+                      ฿{totalPrice.toFixed(2)}
+                    </span>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex items-start gap-2 p-3 bg-brutal-yellow/30 border-[2px] border-black">
+                    <Info className="h-4 w-4 text-black shrink-0 mt-0.5" />
+                    <p className="text-sm text-gray-700">
+                      หลังจากยืนยัน
+                      โค้ดจะแสดงในประวัติการซื้อของคุณทันทีหลังชำระเงิน
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  onClick={createOrder}
+                  disabled={isBuying}
+                  className="px-4 py-2 bg-black border-[2px] border-black text-white hover:bg-gray-800 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isBuying && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {isBuying ? "กำลังดำเนินการ..." : "ยืนยันการสั่งซื้อ"}
+                </button>
+              </div>
+            </motion.div>
+          </div>,
+          document.body,
+        )}
 
       {/* Related cards */}
       <div className="mt-8">

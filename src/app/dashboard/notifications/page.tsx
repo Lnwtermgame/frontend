@@ -1,11 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useNotifications } from "@/lib/context/notification-context";
 import { notificationApi, Notification } from "@/lib/services/notification-api";
-import { Bell, Check, Clock, Info, AlertTriangle, Gift, Tag, CheckCircle, Trash2, ShoppingBag, CreditCard, Megaphone, Wifi, WifiOff } from "lucide-react";
+import {
+  Bell,
+  Check,
+  Clock,
+  Info,
+  AlertTriangle,
+  Gift,
+  Tag,
+  CheckCircle,
+  Trash2,
+  ShoppingBag,
+  CreditCard,
+  Megaphone,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -18,26 +33,48 @@ export default function NotificationsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [unreadCount, setUnreadCount] = useState(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch notifications from API
   useEffect(() => {
     if (isInitialized && user) {
       fetchNotifications();
     }
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [isInitialized, user]);
 
   const fetchNotifications = async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsLoading(true);
     try {
-      const response = await notificationApi.getNotifications(1, 50);
+      const response = await notificationApi.getNotifications(
+        1,
+        50,
+        false,
+        controller.signal,
+      );
       if (response.success) {
         setNotifications(response.data);
         setUnreadCount(response.unreadCount || 0);
       }
-    } catch (error) {
-      toast.error('ไม่สามารถโหลดการแจ้งเตือนได้');
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+        toast.error("ไม่สามารถโหลดการแจ้งเตือนได้");
+      }
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -53,12 +90,14 @@ export default function NotificationsPage() {
     try {
       const response = await notificationApi.markAllAsRead();
       if (response.success) {
-        toast.success('ทำเครื่องหมายว่าอ่านแล้วทั้งหมด');
-        setNotifications(prev => prev.map(notif => ({ ...notif, isRead: true })));
+        toast.success("ทำเครื่องหมายว่าอ่านแล้วทั้งหมด");
+        setNotifications((prev) =>
+          prev.map((notif) => ({ ...notif, isRead: true })),
+        );
         setUnreadCount(0);
       }
     } catch (error) {
-      toast.error('ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้');
+      toast.error("ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้");
     }
   };
 
@@ -68,13 +107,15 @@ export default function NotificationsPage() {
     try {
       const response = await notificationApi.markAsRead(id);
       if (response.success) {
-        setNotifications(prev =>
-          prev.map(notif => notif.id === id ? { ...notif, isRead: true } : notif)
+        setNotifications((prev) =>
+          prev.map((notif) =>
+            notif.id === id ? { ...notif, isRead: true } : notif,
+          ),
         );
-        setUnreadCount(prev => Math.max(0, prev - 1));
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     } catch (error) {
-      toast.error('ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้');
+      toast.error("ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้");
     }
   };
 
@@ -84,30 +125,31 @@ export default function NotificationsPage() {
     try {
       const response = await notificationApi.deleteNotification(id);
       if (response.success) {
-        toast.success('ลบการแจ้งเตือนแล้ว');
-        const deletedNotif = notifications.find(n => n.id === id);
-        setNotifications(prev => prev.filter(notif => notif.id !== id));
+        toast.success("ลบการแจ้งเตือนแล้ว");
+        const deletedNotif = notifications.find((n) => n.id === id);
+        setNotifications((prev) => prev.filter((notif) => notif.id !== id));
         if (deletedNotif && !deletedNotif.isRead) {
-          setUnreadCount(prev => Math.max(0, prev - 1));
+          setUnreadCount((prev) => Math.max(0, prev - 1));
         }
       }
     } catch (error) {
-      toast.error('ไม่สามารถลบการแจ้งเตือนได้');
+      toast.error("ไม่สามารถลบการแจ้งเตือนได้");
     }
   };
 
   // Filter notifications
-  const filteredNotifications = filter === "all"
-    ? notifications
-    : filter === "unread"
-      ? notifications.filter(n => !n.isRead)
-      : notifications.filter(n => {
-          if (filter === "order") return n.type === "ORDER";
-          if (filter === "payment") return n.type === "PAYMENT";
-          if (filter === "promotion") return n.type === "PROMOTION";
-          if (filter === "system") return n.type === "SYSTEM";
-          return true;
-        });
+  const filteredNotifications =
+    filter === "all"
+      ? notifications
+      : filter === "unread"
+        ? notifications.filter((n) => !n.isRead)
+        : notifications.filter((n) => {
+            if (filter === "order") return n.type === "ORDER";
+            if (filter === "payment") return n.type === "PAYMENT";
+            if (filter === "promotion") return n.type === "PROMOTION";
+            if (filter === "system") return n.type === "SYSTEM";
+            return true;
+          });
 
   // Get notification link based on type and data
   const getNotificationLink = (notification: Notification): string => {
@@ -193,10 +235,14 @@ export default function NotificationsPage() {
             <div
               className={`flex items-center gap-1 px-2 py-1 border-[2px] text-xs font-medium ${
                 isWebSocketConnected
-                  ? 'bg-green-100 border-green-500 text-green-700'
-                  : 'bg-gray-100 border-gray-400 text-gray-500'
+                  ? "bg-green-100 border-green-500 text-green-700"
+                  : "bg-gray-100 border-gray-400 text-gray-500"
               }`}
-              title={isWebSocketConnected ? 'เชื่อมต่อเรียลไทม์' : 'ไม่ได้เชื่อมต่อเรียลไทม์'}
+              title={
+                isWebSocketConnected
+                  ? "เชื่อมต่อเรียลไทม์"
+                  : "ไม่ได้เชื่อมต่อเรียลไทม์"
+              }
             >
               {isWebSocketConnected ? (
                 <>
@@ -216,7 +262,7 @@ export default function NotificationsPage() {
                 onClick={markAllAsRead}
                 whileHover={{ y: -2 }}
                 className="text-xs text-gray-700 hover:text-black transition-colors bg-white border-[3px] border-black px-3 py-1.5 font-medium thai-font"
-                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
               </motion.button>
@@ -229,51 +275,62 @@ export default function NotificationsPage() {
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
         <button
           onClick={() => setFilter("all")}
-          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${filter === "all"
-            ? "bg-black text-white border-black"
-            : "bg-white border-black text-gray-700 hover:bg-gray-50"
-            }`}
-          style={filter === "all" ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
+          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${
+            filter === "all"
+              ? "bg-black text-white border-black"
+              : "bg-white border-black text-gray-700 hover:bg-gray-50"
+          }`}
+          style={filter === "all" ? { boxShadow: "3px 3px 0 0 #000000" } : {}}
         >
           ทั้งหมด
         </button>
         <button
           onClick={() => setFilter("unread")}
-          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${filter === "unread"
-            ? "bg-brutal-pink text-white border-black"
-            : "bg-white border-black text-gray-700 hover:bg-gray-50"
-            }`}
-          style={filter === "unread" ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
+          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${
+            filter === "unread"
+              ? "bg-brutal-pink text-white border-black"
+              : "bg-white border-black text-gray-700 hover:bg-gray-50"
+          }`}
+          style={
+            filter === "unread" ? { boxShadow: "3px 3px 0 0 #000000" } : {}
+          }
         >
           ยังไม่อ่าน
         </button>
         <button
           onClick={() => setFilter("order")}
-          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${filter === "order"
-            ? "bg-brutal-blue text-white border-black"
-            : "bg-white border-black text-gray-700 hover:bg-gray-50"
-            }`}
-          style={filter === "order" ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
+          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${
+            filter === "order"
+              ? "bg-brutal-blue text-white border-black"
+              : "bg-white border-black text-gray-700 hover:bg-gray-50"
+          }`}
+          style={filter === "order" ? { boxShadow: "3px 3px 0 0 #000000" } : {}}
         >
           คำสั่งซื้อ
         </button>
         <button
           onClick={() => setFilter("payment")}
-          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${filter === "payment"
-            ? "bg-brutal-green text-white border-black"
-            : "bg-white border-black text-gray-700 hover:bg-gray-50"
-            }`}
-          style={filter === "payment" ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
+          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${
+            filter === "payment"
+              ? "bg-brutal-green text-white border-black"
+              : "bg-white border-black text-gray-700 hover:bg-gray-50"
+          }`}
+          style={
+            filter === "payment" ? { boxShadow: "3px 3px 0 0 #000000" } : {}
+          }
         >
           การชำระเงิน
         </button>
         <button
           onClick={() => setFilter("promotion")}
-          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${filter === "promotion"
-            ? "bg-brutal-yellow text-black border-black"
-            : "bg-white border-black text-gray-700 hover:bg-gray-50"
-            }`}
-          style={filter === "promotion" ? { boxShadow: '3px 3px 0 0 #000000' } : {}}
+          className={`px-3 py-1.5 border-[3px] text-sm font-bold whitespace-nowrap transition-all thai-font ${
+            filter === "promotion"
+              ? "bg-brutal-yellow text-black border-black"
+              : "bg-white border-black text-gray-700 hover:bg-gray-50"
+          }`}
+          style={
+            filter === "promotion" ? { boxShadow: "3px 3px 0 0 #000000" } : {}
+          }
         >
           โปรโมชั่น
         </button>
@@ -296,11 +353,10 @@ export default function NotificationsPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
                 whileHover={{ y: -2 }}
-                className={`bg-white border-[3px] border-black relative group overflow-hidden ${!notification.isRead
-                  ? "border-l-brutal-pink"
-                  : ""
-                  }`}
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                className={`bg-white border-[3px] border-black relative group overflow-hidden ${
+                  !notification.isRead ? "border-l-brutal-pink" : ""
+                }`}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 {!notification.isRead && (
                   <div className="absolute top-0 right-0 w-3 h-3 bg-brutal-pink border-l-[2px] border-b-[2px] border-black z-10"></div>
@@ -310,22 +366,30 @@ export default function NotificationsPage() {
                   href={getNotificationLink(notification)}
                   className="p-4 flex items-start gap-4 cursor-pointer hover:bg-gray-50 transition-colors block"
                 >
-                  <div className={`p-3 border-[3px] border-black flex-shrink-0 ${getIconBg(notification.type)}`}>
+                  <div
+                    className={`p-3 border-[3px] border-black flex-shrink-0 ${getIconBg(notification.type)}`}
+                  >
                     {renderIcon(notification.type)}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className={`font-bold text-base truncate pr-2 ${!notification.isRead ? "text-black" : "text-gray-700"}`}>
+                      <h3
+                        className={`font-bold text-base truncate pr-2 ${!notification.isRead ? "text-black" : "text-gray-700"}`}
+                      >
                         {notification.title}
                       </h3>
                       <span className="text-xs text-gray-600 flex-shrink-0 flex items-center gap-1">
                         <Clock size={12} />
-                        {new Date(notification.createdAt).toLocaleDateString('th-TH')}
+                        {new Date(notification.createdAt).toLocaleDateString(
+                          "th-TH",
+                        )}
                       </span>
                     </div>
 
-                    <p className={`text-sm mb-2 line-clamp-2 ${!notification.isRead ? "text-gray-800" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm mb-2 line-clamp-2 ${!notification.isRead ? "text-gray-800" : "text-gray-600"}`}
+                    >
                       {notification.message}
                     </p>
 
@@ -345,7 +409,9 @@ export default function NotificationsPage() {
                           </button>
                         )}
                         <button
-                          onClick={(e) => deleteNotification(notification.id, e)}
+                          onClick={(e) =>
+                            deleteNotification(notification.id, e)
+                          }
                           className="p-1.5 border-[2px] border-black bg-brutal-pink text-white hover:bg-brutal-pink/80 transition-colors"
                           title="ลบ"
                         >
@@ -362,12 +428,14 @@ export default function NotificationsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="bg-white border-[3px] border-black p-12 text-center"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <div className="w-16 h-16 bg-gray-100 border-[3px] border-black flex items-center justify-center mx-auto mb-4">
                 <Bell size={32} className="text-gray-400" />
               </div>
-              <h3 className="text-lg font-bold text-black mb-1 thai-font">ไม่มีการแจ้งเตือน</h3>
+              <h3 className="text-lg font-bold text-black mb-1 thai-font">
+                ไม่มีการแจ้งเตือน
+              </h3>
               <p className="text-gray-600 thai-font">
                 {filter !== "all"
                   ? `คุณไม่มีการแจ้งเตือนในหมวดหมู่นี้`

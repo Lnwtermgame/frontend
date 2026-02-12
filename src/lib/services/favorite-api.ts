@@ -7,12 +7,9 @@ export interface FavoriteProduct {
   description?: string;
   imageUrl?: string;
   categoryId: string;
-  // Prices are in seagmTypes (from product_types table)
-  seagmTypes?: {
-    unitPrice: number;
-    originPrice?: number;
-    sellingPrice?: number;
-    discountRate?: number;
+  // Public types with displayPrice only
+  types?: {
+    displayPrice: number;
   }[];
 }
 
@@ -48,13 +45,18 @@ export interface RemoveFavoriteResponse {
 
 // Merged: Favorite service now part of Product service (port 3002)
 class FavoriteApiService {
-  async getFavorites(page = 1, limit = 20): Promise<FavoritesListResponse> {
+  async getFavorites(
+    page = 1,
+    limit = 20,
+    signal?: AbortSignal,
+  ): Promise<FavoritesListResponse> {
     const params = new URLSearchParams();
     params.append("page", String(page));
     params.append("limit", String(limit));
 
     const response = await productClient.get<FavoritesListResponse>(
       `/api/favorites?${params}`,
+      { signal },
     );
     return response.data;
   }

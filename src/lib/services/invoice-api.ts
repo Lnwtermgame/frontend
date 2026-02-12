@@ -1,8 +1,9 @@
-import { orderClient } from '@/lib/client/gateway';
+import { orderClient } from "@/lib/client/gateway";
 
 export interface InvoiceItem {
   id: string;
   productName: string;
+  imageUrl?: string | null;
   quantity: number;
   unitPrice: number;
   total: number;
@@ -41,29 +42,40 @@ export interface InvoicesListResponse {
 }
 
 class InvoiceApiService {
-  async getInvoices(page = 1, limit = 20): Promise<InvoicesListResponse> {
+  async getInvoices(
+    page = 1,
+    limit = 20,
+    signal?: AbortSignal,
+  ): Promise<InvoicesListResponse> {
     const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
+    params.append("page", String(page));
+    params.append("limit", String(limit));
 
-    const response = await orderClient.get<InvoicesListResponse>(`/api/invoices?${params}`);
+    const response = await orderClient.get<InvoicesListResponse>(
+      `/api/invoices?${params}`,
+      { signal },
+    );
     return response.data;
   }
 
   async getInvoiceById(invoiceId: string): Promise<InvoiceResponse> {
-    const response = await orderClient.get<InvoiceResponse>(`/api/invoices/${invoiceId}`);
+    const response = await orderClient.get<InvoiceResponse>(
+      `/api/invoices/${invoiceId}`,
+    );
     return response.data;
   }
 
   getErrorMessage(error: unknown): string {
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { data?: { error?: { message?: string } } } };
-      return axiosError.response?.data?.error?.message || 'An error occurred';
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as {
+        response?: { data?: { error?: { message?: string } } };
+      };
+      return axiosError.response?.data?.error?.message || "An error occurred";
     }
     if (error instanceof Error) {
       return error.message;
     }
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 }
 

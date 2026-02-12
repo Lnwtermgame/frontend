@@ -1,19 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useNotifications } from "@/lib/context/notification-context";
-import { notificationApi, NotificationPreferences } from "@/lib/services/notification-api";
+import {
+  notificationApi,
+  NotificationPreferences,
+} from "@/lib/services/notification-api";
 import { motion } from "@/lib/framer-exports";
-import { Bell, Mail, Globe, Save, AlertCircle, ChevronLeft, Check, Smartphone, X } from "lucide-react";
+import {
+  Bell,
+  Mail,
+  Globe,
+  Save,
+  AlertCircle,
+  ChevronLeft,
+  Check,
+  Smartphone,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function NotificationPreferencesPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
-  const { isPushSupported, isPushSubscribed, subscribePush, unsubscribePush } = useNotifications();
+  const { isPushSupported, isPushSubscribed, subscribePush, unsubscribePush } =
+    useNotifications();
   const [preferences, setPreferences] = useState<NotificationPreferences>({
     emailNotifications: true,
     pushNotifications: true,
@@ -23,25 +37,42 @@ export default function NotificationPreferencesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch preferences from API
   useEffect(() => {
     if (isInitialized && user) {
       fetchPreferences();
     }
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [isInitialized, user]);
 
   const fetchPreferences = async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsLoading(true);
     try {
-      const response = await notificationApi.getPreferences();
+      const response = await notificationApi.getPreferences(controller.signal);
       if (response.success) {
         setPreferences(response.data);
       }
-    } catch (error) {
-      toast.error('ไม่สามารถโหลดการตั้งค่าได้');
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+        toast.error("ไม่สามารถโหลดการตั้งค่าได้");
+      }
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -58,10 +89,10 @@ export default function NotificationPreferencesPage() {
     try {
       const response = await notificationApi.updatePreferences(preferences);
       if (response.success) {
-        toast.success('บันทึกการตั้งค่าเรียบร้อยแล้ว');
+        toast.success("บันทึกการตั้งค่าเรียบร้อยแล้ว");
       }
     } catch (error) {
-      toast.error('ไม่สามารถบันทึกการตั้งค่าได้');
+      toast.error("ไม่สามารถบันทึกการตั้งค่าได้");
     } finally {
       setIsSaving(false);
     }
@@ -73,12 +104,12 @@ export default function NotificationPreferencesPage() {
     try {
       const success = await subscribePush();
       if (success) {
-        toast.success('เปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว');
+        toast.success("เปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว");
       } else {
-        toast.error('ไม่สามารถเปิดใช้งานการแจ้งเตือน Push ได้');
+        toast.error("ไม่สามารถเปิดใช้งานการแจ้งเตือน Push ได้");
       }
     } catch (error) {
-      toast.error('เกิดข้อผิดพลาดในการเปิดใช้งานการแจ้งเตือน Push');
+      toast.error("เกิดข้อผิดพลาดในการเปิดใช้งานการแจ้งเตือน Push");
     } finally {
       setIsSubscribing(false);
     }
@@ -89,9 +120,9 @@ export default function NotificationPreferencesPage() {
     setIsSubscribing(true);
     try {
       await unsubscribePush();
-      toast.success('ปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว');
+      toast.success("ปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว");
     } catch (error) {
-      toast.error('เกิดข้อผิดพลาดในการปิดใช้งานการแจ้งเตือน Push');
+      toast.error("เกิดข้อผิดพลาดในการปิดใช้งานการแจ้งเตือน Push");
     } finally {
       setIsSubscribing(false);
     }
@@ -108,32 +139,32 @@ export default function NotificationPreferencesPage() {
   // Preference items configuration
   const preferenceItems = [
     {
-      key: 'emailNotifications' as const,
-      title: 'การแจ้งเตือนทางอีเมล',
-      description: 'รับการแจ้งเตือนสำคัญทางอีเมล',
+      key: "emailNotifications" as const,
+      title: "การแจ้งเตือนทางอีเมล",
+      description: "รับการแจ้งเตือนสำคัญทางอีเมล",
       icon: <Mail className="h-5 w-5" />,
-      accent: 'bg-brutal-blue',
+      accent: "bg-brutal-blue",
     },
     {
-      key: 'pushNotifications' as const,
-      title: 'การแจ้งเตือนแบบ Push',
-      description: 'รับการแจ้งเตือนบนเบราว์เซอร์ของคุณ',
+      key: "pushNotifications" as const,
+      title: "การแจ้งเตือนแบบ Push",
+      description: "รับการแจ้งเตือนบนเบราว์เซอร์ของคุณ",
       icon: <Bell className="h-5 w-5" />,
-      accent: 'bg-brutal-pink',
+      accent: "bg-brutal-pink",
     },
     {
-      key: 'orderUpdates' as const,
-      title: 'อัปเดตคำสั่งซื้อ',
-      description: 'รับการแจ้งเตือนเมื่อสถานะคำสั่งซื้อเปลี่ยนแปลง',
+      key: "orderUpdates" as const,
+      title: "อัปเดตคำสั่งซื้อ",
+      description: "รับการแจ้งเตือนเมื่อสถานะคำสั่งซื้อเปลี่ยนแปลง",
       icon: <Globe className="h-5 w-5" />,
-      accent: 'bg-brutal-green',
+      accent: "bg-brutal-green",
     },
     {
-      key: 'promotions' as const,
-      title: 'โปรโมชั่นและข้อเสนอ',
-      description: 'รับข้อมูลโปรโมชั่นและส่วนลดพิเศษ',
+      key: "promotions" as const,
+      title: "โปรโมชั่นและข้อเสนอ",
+      description: "รับข้อมูลโปรโมชั่นและส่วนลดพิเศษ",
       icon: <Check className="h-5 w-5" />,
-      accent: 'bg-brutal-yellow',
+      accent: "bg-brutal-yellow",
     },
   ];
 
@@ -153,7 +184,10 @@ export default function NotificationPreferencesPage() {
     <div>
       {/* Page header with back navigation */}
       <div className="flex items-center mb-6">
-        <Link href="/dashboard/notifications" className="mr-4 text-gray-600 hover:text-black transition-colors border-[2px] border-gray-300 hover:border-black p-1">
+        <Link
+          href="/dashboard/notifications"
+          className="mr-4 text-gray-600 hover:text-black transition-colors border-[2px] border-gray-300 hover:border-black p-1"
+        >
           <ChevronLeft className="h-6 w-6" />
         </Link>
         <div>
@@ -165,7 +199,9 @@ export default function NotificationPreferencesPage() {
             <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
             ตั้งค่าการแจ้งเตือน
           </motion.h2>
-          <p className="text-gray-600 text-sm">จัดการการตั้งค่าการแจ้งเตือนของคุณ</p>
+          <p className="text-gray-600 text-sm">
+            จัดการการตั้งค่าการแจ้งเตือนของคุณ
+          </p>
         </div>
       </div>
 
@@ -176,7 +212,7 @@ export default function NotificationPreferencesPage() {
       ) : (
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -193,7 +229,7 @@ export default function NotificationPreferencesPage() {
               <motion.div
                 whileHover={{ y: -2 }}
                 className="flex items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors mb-4"
-                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 <div className="flex items-center">
                   <div className="h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white bg-brutal-pink">
@@ -210,8 +246,8 @@ export default function NotificationPreferencesPage() {
                     </h4>
                     <p className="text-gray-600 text-sm">
                       {isPushSubscribed
-                        ? 'คุณกำลังรับการแจ้งเตือนแบบ Push อยู่'
-                        : 'เปิดใช้งานการแจ้งเตือนแบบ Push เพื่อรับการแจ้งเตือนบนอุปกรณ์ของคุณ'}
+                        ? "คุณกำลังรับการแจ้งเตือนแบบ Push อยู่"
+                        : "เปิดใช้งานการแจ้งเตือนแบบ Push เพื่อรับการแจ้งเตือนบนอุปกรณ์ของคุณ"}
                     </p>
                   </div>
                 </div>
@@ -221,7 +257,7 @@ export default function NotificationPreferencesPage() {
                     disabled={isSubscribing}
                     whileHover={{ y: -2 }}
                     className="flex items-center bg-brutal-pink hover:bg-red-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm"
-                    style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                    style={{ boxShadow: "3px 3px 0 0 #000000" }}
                   >
                     {isSubscribing ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -236,7 +272,7 @@ export default function NotificationPreferencesPage() {
                     disabled={isSubscribing}
                     whileHover={{ y: -2 }}
                     className="flex items-center bg-brutal-green hover:bg-green-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm"
-                    style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                    style={{ boxShadow: "3px 3px 0 0 #000000" }}
                   >
                     {isSubscribing ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -255,15 +291,21 @@ export default function NotificationPreferencesPage() {
                   key={item.key}
                   whileHover={{ y: -2 }}
                   className="flex items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors"
-                  style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
                 >
                   <div className="flex items-center">
-                    <div className={`h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white ${item.accent}`}>
+                    <div
+                      className={`h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white ${item.accent}`}
+                    >
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-black font-bold thai-font">{item.title}</h4>
-                      <p className="text-gray-600 text-sm">{item.description}</p>
+                      <h4 className="text-black font-bold thai-font">
+                        {item.title}
+                      </h4>
+                      <p className="text-gray-600 text-sm">
+                        {item.description}
+                      </p>
                     </div>
                   </div>
                   <label className="inline-flex items-center cursor-pointer">
@@ -285,7 +327,7 @@ export default function NotificationPreferencesPage() {
                 disabled={isSaving}
                 whileHover={{ y: -2 }}
                 className="flex items-center bg-black hover:bg-gray-800 text-white px-6 py-2.5 border-[3px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed thai-font"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 {isSaving ? (
                   <>

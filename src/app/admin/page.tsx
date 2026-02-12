@@ -377,7 +377,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium text-black">
-                          {formatPrice(getMinPrice(product.seagmTypes))}
+                          {formatPrice(getMinPrice(product.types))}
                         </p>
                         <p className="text-xs text-green-600 font-medium">
                           ขายแล้ว: {product.salesCount.toLocaleString()} ชิ้น

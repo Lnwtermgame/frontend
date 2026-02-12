@@ -1,4 +1,4 @@
-import { paymentClient } from '@/lib/client/gateway';
+import { paymentClient } from "@/lib/client/gateway";
 
 export interface CreditBalance {
   balance: number;
@@ -8,7 +8,7 @@ export interface CreditBalance {
 export interface CreditTransaction {
   id: string;
   amount: number;
-  type: 'TOPUP' | 'PURCHASE' | 'REFUND' | 'BONUS';
+  type: "TOPUP" | "PURCHASE" | "REFUND" | "BONUS";
   description?: string;
   createdAt: string;
 }
@@ -38,37 +38,55 @@ export interface CreditTopUpResponse {
 
 // Merged: Credit service now part of Payment service (port 3004)
 class CreditApiService {
-  async getBalance(): Promise<CreditBalanceResponse> {
-    const response = await paymentClient.get<CreditBalanceResponse>('/api/credits/balance');
+  async getBalance(signal?: AbortSignal): Promise<CreditBalanceResponse> {
+    const response = await paymentClient.get<CreditBalanceResponse>(
+      "/api/credits/balance",
+      { signal },
+    );
     return response.data;
   }
 
-  async getTransactions(page = 1, limit = 20): Promise<CreditTransactionsResponse> {
+  async getTransactions(
+    page = 1,
+    limit = 20,
+    signal?: AbortSignal,
+  ): Promise<CreditTransactionsResponse> {
     const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
+    params.append("page", String(page));
+    params.append("limit", String(limit));
 
-    const response = await paymentClient.get<CreditTransactionsResponse>(`/api/credits/transactions?${params}`);
+    const response = await paymentClient.get<CreditTransactionsResponse>(
+      `/api/credits/transactions?${params}`,
+      { signal },
+    );
     return response.data;
   }
 
-  async topUp(amount: number, paymentMethod: string): Promise<CreditTopUpResponse> {
-    const response = await paymentClient.post<CreditTopUpResponse>('/api/credits/topup', {
-      amount,
-      paymentMethod,
-    });
+  async topUp(
+    amount: number,
+    paymentMethod: string,
+  ): Promise<CreditTopUpResponse> {
+    const response = await paymentClient.post<CreditTopUpResponse>(
+      "/api/credits/topup",
+      {
+        amount,
+        paymentMethod,
+      },
+    );
     return response.data;
   }
 
   getErrorMessage(error: unknown): string {
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { data?: { error?: { message?: string } } } };
-      return axiosError.response?.data?.error?.message || 'An error occurred';
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as {
+        response?: { data?: { error?: { message?: string } } };
+      };
+      return axiosError.response?.data?.error?.message || "An error occurred";
     }
     if (error instanceof Error) {
       return error.message;
     }
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 }
 

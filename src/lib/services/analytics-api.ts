@@ -167,11 +167,9 @@ export interface PopularProduct {
   name: string;
   imageUrl: string | null;
   salesCount: number;
-  // Prices are in seagmTypes
-  seagmTypes?: {
-    unitPrice: number;
-    originPrice?: number;
-    sellingPrice?: number;
+  // Public types with displayPrice only
+  types?: {
+    displayPrice: number;
   }[];
 }
 

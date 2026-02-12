@@ -101,8 +101,8 @@ export default function ProductDetailPage() {
       return;
     }
 
-    // Get price from seagmTypes (lowest unitPrice)
-    const price = getMinPrice(product.seagmTypes);
+    // Get price from types (lowest displayPrice)
+    const price = getMinPrice(product.types);
 
     addItem({
       productId: product.id,
@@ -276,7 +276,7 @@ export default function ProductDetailPage() {
             >
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-black">
-                  {formatPrice(getMinPrice(product.seagmTypes))}
+                  {formatPrice(getMinPrice(product.types))}
                 </span>
               </div>
 
@@ -324,8 +324,7 @@ export default function ProductDetailPage() {
                   </button>
                 </div>
                 <span className="text-gray-600 font-medium">
-                  Total:{" "}
-                  {formatPrice(getMinPrice(product.seagmTypes) * quantity)}
+                  Total: {formatPrice(getMinPrice(product.types) * quantity)}
                 </span>
               </div>
             </div>

@@ -13,20 +13,16 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 /**
- * Get the minimum price from product types (seagmTypes)
- * Uses sellingPrice if available, falls back to originPrice, then unitPrice
- * @param types - Array of product types with prices
+ * Get the minimum price from product types
+ * Uses displayPrice from public API response
+ * @param types - Array of product types with displayPrice
  * @returns Minimum price or 0 if no types
  */
 export function getMinPrice(
-  types:
-    | { sellingPrice?: number; originPrice?: number; unitPrice: number }[]
-    | undefined,
+  types: { displayPrice: number }[] | undefined,
 ): number {
   if (!types || types.length === 0) return 0;
-  return Math.min(
-    ...types.map((t) => t.sellingPrice ?? t.originPrice ?? t.unitPrice),
-  );
+  return Math.min(...types.map((t) => t.displayPrice));
 }
 
 /**

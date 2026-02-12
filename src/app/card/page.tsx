@@ -31,29 +31,14 @@ interface CardProduct {
 
 // Transform Product to CardProduct
 function transformProductToCard(product: Product): CardProduct {
-  // Get starting price from seagmTypes (lowest displayPrice: sellingPrice -> originPrice -> unitPrice)
+  // Get starting price from types (lowest displayPrice)
   const startingPrice =
-    product.seagmTypes && product.seagmTypes.length > 0
-      ? Math.min(
-          ...product.seagmTypes.map((t) =>
-            Number(t.sellingPrice ?? t.originPrice ?? t.unitPrice),
-          ),
-        )
+    product.types && product.types.length > 0
+      ? Math.min(...product.types.map((t) => Number(t.displayPrice)))
       : 0;
 
-  // Calculate discount from originPrice if available
-  const originPrice =
-    product.seagmTypes && product.seagmTypes.length > 0
-      ? Math.max(
-          ...product.seagmTypes.map((t) =>
-            Number(t.originPrice || t.unitPrice),
-          ),
-        )
-      : 0;
-  const discountPercent =
-    originPrice > startingPrice
-      ? Math.round(((originPrice - startingPrice) / originPrice) * 100)
-      : 0;
+  // Discount is not available in public API
+  const discountPercent = 0;
 
   return {
     id: product.id,

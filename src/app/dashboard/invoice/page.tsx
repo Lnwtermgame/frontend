@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { invoiceApi } from "@/lib/services/invoice-api";
-import { FileText, Download, Eye, Search, ChevronDown, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import {
+  FileText,
+  Download,
+  Eye,
+  Search,
+  ChevronDown,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
@@ -30,26 +39,43 @@ export default function InvoicePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch invoices from API
   useEffect(() => {
     if (isInitialized && user) {
       fetchInvoices();
     }
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [isInitialized, user]);
 
   const fetchInvoices = async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsLoading(true);
     try {
-      const response = await invoiceApi.getInvoices();
+      const response = await invoiceApi.getInvoices(1, 20, controller.signal);
       if (response.success) {
         setInvoices(response.data);
         setFilteredInvoices(response.data);
       }
-    } catch (error) {
-      toast.error('ไม่สามารถโหลดใบแจ้งหนี้ได้');
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+        toast.error("ไม่สามารถโหลดใบแจ้งหนี้ได้");
+      }
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -66,15 +92,24 @@ export default function InvoicePage() {
 
     // Apply status filter
     if (statusFilter !== "all") {
-      result = result.filter(invoice => invoice.status.toLowerCase() === statusFilter);
+      result = result.filter(
+        (invoice) => invoice.status.toLowerCase() === statusFilter,
+      );
     }
 
     // Apply search filter
     if (searchTerm) {
-      result = result.filter(invoice =>
-        invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.items.some(item => item.productName.toLowerCase().includes(searchTerm.toLowerCase()))
+      result = result.filter(
+        (invoice) =>
+          invoice.invoiceNumber
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          invoice.orderNumber
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          invoice.items.some((item) =>
+            item.productName.toLowerCase().includes(searchTerm.toLowerCase()),
+          ),
       );
     }
 
@@ -83,18 +118,18 @@ export default function InvoicePage() {
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('th-TH', {
-      style: 'currency',
-      currency: 'THB'
+    return new Intl.NumberFormat("th-TH", {
+      style: "currency",
+      currency: "THB",
     }).format(amount);
   };
 
   // Format date
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('th-TH', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -188,7 +223,7 @@ export default function InvoicePage() {
 
       <motion.div
         className="bg-white border-[3px] border-black overflow-hidden"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -201,12 +236,24 @@ export default function InvoicePage() {
             <table className="w-full text-left">
               <thead className="bg-gray-100 border-b-[3px] border-black">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">รหัสใบแจ้งหนี้</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">วันที่</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">รหัสคำสั่งซื้อ</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">จำนวนเงิน</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">สถานะ</th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap text-right thai-font">การกระทำ</th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">
+                    รหัสใบแจ้งหนี้
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">
+                    วันที่
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">
+                    รหัสคำสั่งซื้อ
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">
+                    จำนวนเงิน
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap thai-font">
+                    สถานะ
+                  </th>
+                  <th className="px-6 py-4 text-sm font-bold text-gray-700 whitespace-nowrap text-right thai-font">
+                    การกระทำ
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -263,9 +310,13 @@ export default function InvoicePage() {
                       <div className="w-16 h-16 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-4">
                         <FileText size={32} className="text-gray-400" />
                       </div>
-                      <p className="text-black text-lg font-bold mb-1 thai-font">ไม่พบใบแจ้งหนี้</p>
+                      <p className="text-black text-lg font-bold mb-1 thai-font">
+                        ไม่พบใบแจ้งหนี้
+                      </p>
                       <p className="text-sm text-gray-600 max-w-md mx-auto thai-font">
-                        {searchTerm ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"` : "คุณยังไม่มีใบแจ้งหนี้ใดๆ"}
+                        {searchTerm
+                          ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"`
+                          : "คุณยังไม่มีใบแจ้งหนี้ใดๆ"}
                       </p>
                     </td>
                   </tr>

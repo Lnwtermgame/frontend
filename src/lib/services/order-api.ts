@@ -107,6 +107,7 @@ class OrderApiService {
     page = 1,
     limit = 20,
     status?: string,
+    signal?: AbortSignal,
   ): Promise<OrdersListResponse> {
     const params = new URLSearchParams();
     params.append("page", String(page));
@@ -115,6 +116,7 @@ class OrderApiService {
 
     const response = await orderClient.get<OrdersListResponse>(
       `/api/orders?${params}`,
+      { signal },
     );
     return response.data;
   }

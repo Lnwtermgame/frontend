@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { orderApi, Order } from "@/lib/services/order-api";
@@ -31,26 +31,48 @@ export default function OrdersPage() {
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch orders from API
   useEffect(() => {
     if (isInitialized && user) {
       fetchOrders();
     }
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [isInitialized, user, statusFilter]);
 
   const fetchOrders = async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsLoading(true);
     try {
-      const response = await orderApi.getOrders(1, 50, statusFilter);
+      const response = await orderApi.getOrders(
+        1,
+        50,
+        statusFilter,
+        controller.signal,
+      );
       if (response.success) {
         setOrders(response.data);
         setFilteredOrders(response.data);
       }
-    } catch (error) {
-      toast.error("ไม่สามารถโหลดคำสั่งซื้อได้");
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+        toast.error("ไม่สามารถโหลดคำสั่งซื้อได้");
+      }
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -86,6 +108,12 @@ export default function OrdersPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Helper to get safe image URL
+  const getSafeImageUrl = (url?: string | null) => {
+    if (!url) return null;
+    return url.replace(/`/g, "").trim();
+  };
+
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("th-TH", {
@@ -120,37 +148,37 @@ export default function OrdersPage() {
     switch (status) {
       case "COMPLETED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font whitespace-nowrap">
             <CheckCircle className="w-3 h-3 mr-1" /> สำเร็จ
           </span>
         );
       case "PENDING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font whitespace-nowrap">
             <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
           </span>
         );
       case "PROCESSING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black thai-font whitespace-nowrap">
             <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
       case "CANCELLED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font whitespace-nowrap">
             <XCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       case "REFUNDED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 thai-font whitespace-nowrap">
             <AlertCircle className="w-3 h-3 mr-1" /> คืนเงินแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font whitespace-nowrap">
             {status}
           </span>
         );
@@ -172,11 +200,13 @@ export default function OrdersPage() {
             transition={{ duration: 0.3 }}
           >
             <div className="flex items-start p-4">
-              <div className="h-16 w-16 border-[2px] border-black mr-4 flex-shrink-0 bg-gray-100">
-                {order.items[0]?.productId ? (
-                  <div className="h-full w-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-black" />
-                  </div>
+              <div className="h-16 w-16 border-[2px] border-black mr-4 flex-shrink-0 bg-gray-100 overflow-hidden relative">
+                {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
+                  <img
+                    src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
+                    alt={order.items[0].product?.name || "Product"}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center">
                     <Package className="h-8 w-8 text-black" />
@@ -356,11 +386,13 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100">
-                            {order.items[0]?.productId ? (
-                              <div className="h-full w-full flex items-center justify-center">
-                                <Package className="h-5 w-5 text-black" />
-                              </div>
+                          <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100 overflow-hidden relative">
+                            {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
+                              <img
+                                src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
+                                alt={order.items[0].product?.name || "Product"}
+                                className="h-full w-full object-cover"
+                              />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center">
                                 <Package className="h-5 w-5 text-black" />

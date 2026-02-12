@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,10 +23,19 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<"all" | "CARD" | "DIRECT_TOPUP">("all");
+  const [selectedType, setSelectedType] = useState<
+    "all" | "CARD" | "DIRECT_TOPUP"
+  >("all");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       try {
         setLoading(true);
 
@@ -35,8 +44,9 @@ export default function ProductsPage() {
             isActive: true,
             inStock: true,
             limit: 100,
+            signal: controller.signal,
           }),
-          productApi.getCategories(),
+          productApi.getCategories(controller.signal),
         ]);
 
         if (productsRes.success) {
@@ -45,14 +55,24 @@ export default function ProductsPage() {
         if (categoriesRes.success) {
           setCategories(categoriesRes.data);
         }
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
+      } catch (error: any) {
+        if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+          console.error("Failed to fetch products:", error);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []);
 
   // Filter products
@@ -96,7 +116,10 @@ export default function ProductsPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white border-[3px] border-black p-4 mb-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-4 mb-8"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="relative flex-1">
@@ -115,9 +138,7 @@ export default function ProductsPage() {
               <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <select
                 value={selectedCategory || ""}
-                onChange={(e) =>
-                  setSelectedCategory(e.target.value || null)
-                }
+                onChange={(e) => setSelectedCategory(e.target.value || null)}
                 className="w-full bg-white border-[3px] border-black pl-10 pr-10 py-3 text-black appearance-none cursor-pointer focus:outline-none focus:ring-0"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
@@ -146,7 +167,11 @@ export default function ProductsPage() {
                       ? "bg-black text-white border-black"
                       : "bg-white border-black text-gray-700 hover:bg-gray-100"
                   }`}
-                  style={selectedType === type ? { boxShadow: '2px 2px 0 0 #000000' } : {}}
+                  style={
+                    selectedType === type
+                      ? { boxShadow: "2px 2px 0 0 #000000" }
+                      : {}
+                  }
                 >
                   {type === "all" && "All"}
                   {type === "CARD" && (
@@ -181,7 +206,7 @@ export default function ProductsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
                 className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 whileHover={{ y: -4 }}
               >
                 {/* Image */}
@@ -244,7 +269,7 @@ export default function ProductsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-xl font-bold text-black">
-                        {formatPrice(getMinPrice(product.seagmTypes))}
+                        {formatPrice(getMinPrice(product.types))}
                       </span>
                     </div>
 
@@ -252,7 +277,6 @@ export default function ProductsPage() {
                       <ShoppingCart className="w-5 h-5" />
                     </button>
                   </div>
-
                 </div>
               </motion.div>
             </Link>

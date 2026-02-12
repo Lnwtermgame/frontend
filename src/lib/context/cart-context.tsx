@@ -193,17 +193,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
           if (strategy !== "client-wins" && cart.items) {
             const serverItems: CartItem[] = cart.items.map(
               (serverItem: any) => {
-                // Get price from seagmTypes (sellingPrice -> originPrice -> unitPrice)
-                const types = serverItem.product.seagmTypes || [];
+                // Get price from types (displayPrice)
+                const types = serverItem.product.types || [];
                 const price =
                   types.length > 0
-                    ? Math.min(
-                        ...types.map((t: any) =>
-                          Number(
-                            t.sellingPrice ?? t.originPrice ?? t.unitPrice,
-                          ),
-                        ),
-                      )
+                    ? Math.min(...types.map((t: any) => Number(t.displayPrice)))
                     : 0;
 
                 return {

@@ -95,8 +95,6 @@ interface TopUpOption {
   price: number;
   originalPrice: number;
   isPopular?: boolean;
-  parValue?: number;
-  parValueCurrency?: string;
   fields?: SeagmField[];
 }
 
@@ -110,11 +108,9 @@ function transformProductToGameDetails(
     (type: ProductType, index: number) => ({
       id: type.id,
       title: type.name,
-      price: type.sellingPrice ?? (type.originPrice || type.unitPrice),
-      originalPrice: type.originPrice || type.unitPrice,
+      price: type.displayPrice,
+      originalPrice: type.displayPrice,
       isPopular: index === 0,
-      parValue: type.parValue,
-      parValueCurrency: type.parValueCurrency,
       fields: type.fields,
     }),
   );
@@ -422,11 +418,6 @@ export default function GameDetailsPage() {
         let typesData: ProductType[] = [];
         if (productData.types && productData.types.length > 0) {
           typesData = productData.types;
-        } else if (
-          productData.seagmTypes &&
-          productData.seagmTypes.length > 0
-        ) {
-          typesData = productData.seagmTypes;
         }
 
         setProductTypes(typesData);
@@ -446,37 +437,26 @@ export default function GameDetailsPage() {
           );
         }
 
-        // Fetch similar games (other DIRECT_TOPUP products)
+        // Fetch other games for recommendations (Similar & Related by Dev)
         try {
-          const similarResponse = await productApi.getProducts({
+          const allGamesResponse = await productApi.getProducts({
             isActive: true,
-            limit: 20,
+            limit: 50,
           });
-          if (similarResponse.success) {
-            // Filter out current product and limit to 5
-            const filtered = similarResponse.data.filter(
+
+          if (allGamesResponse.success) {
+            // 1. Similar Games: Just take first 5 other products
+            const otherGames = allGamesResponse.data.filter(
               (p) => p.id !== productData.id,
             );
-            setSimilarGames(filtered.slice(0, 5));
-          }
-        } catch {
-          // Ignore errors for similar games
-        }
+            setSimilarGames(otherGames.slice(0, 5));
 
-        // Fetch related games by same developer/publisher
-        try {
-          const currentGameDetails = productData.gameDetails;
-          const currentDev = currentGameDetails?.developer;
-          const currentPub = currentGameDetails?.publisher;
+            // 2. Related Games by Developer/Publisher
+            const currentGameDetails = productData.gameDetails;
+            const currentDev = currentGameDetails?.developer;
+            const currentPub = currentGameDetails?.publisher;
 
-          if (currentDev || currentPub) {
-            const allGamesResponse = await productApi.getProducts({
-              isActive: true,
-              limit: 50,
-            });
-
-            if (allGamesResponse.success) {
-              // Filter games with same developer or publisher
+            if (currentDev || currentPub) {
               const related = allGamesResponse.data.filter((p) => {
                 if (p.id === productData.id) return false;
                 const pDetails = p.gameDetails;
@@ -490,7 +470,7 @@ export default function GameDetailsPage() {
             }
           }
         } catch {
-          // Ignore errors for related games
+          // Ignore errors for recommendations
         }
 
         // Check if product is in favorites (only for logged in users)
@@ -1159,7 +1139,7 @@ export default function GameDetailsPage() {
                         ฿
                         {similarGame.types && similarGame.types.length > 0
                           ? Math.min(
-                              ...similarGame.types.map((t) => t.unitPrice),
+                              ...similarGame.types.map((t) => t.displayPrice),
                             ).toFixed(0)
                           : "0"}
                       </span>

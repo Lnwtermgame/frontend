@@ -1,19 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Product, productApi } from '@/lib/services/product-api';
-import { cn, getMinPrice, formatPrice } from '@/lib/utils';
-import { Star, Sparkles } from 'lucide-react';
-import { motion } from '@/lib/framer-exports';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Product, productApi } from "@/lib/services/product-api";
+import { cn, getMinPrice, formatPrice } from "@/lib/utils";
+import { Star, Sparkles } from "lucide-react";
+import { motion } from "@/lib/framer-exports";
 
 interface FeaturedProductsProps {
   limit?: number;
   className?: string;
 }
 
-export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps) {
+export function FeaturedProducts({
+  limit = 8,
+  className,
+}: FeaturedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +28,7 @@ export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps
         const response = await productApi.getFeaturedProducts(limit);
         setProducts(response.data);
       } catch (err) {
-        setError('Failed to load featured products');
+        setError("Failed to load featured products");
       } finally {
         setLoading(false);
       }
@@ -36,12 +39,12 @@ export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps
 
   if (loading) {
     return (
-      <div className={cn('grid grid-cols-2 md:grid-cols-4 gap-4', className)}>
+      <div className={cn("grid grid-cols-2 md:grid-cols-4 gap-4", className)}>
         {Array.from({ length: limit }).map((_, i) => (
           <div
             key={i}
             className="bg-white border-[3px] border-black aspect-[3/4] animate-pulse"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           />
         ))}
       </div>
@@ -55,8 +58,9 @@ export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps
   return (
     <div className={className}>
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
-          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+        <div
+          className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
         >
           <Sparkles className="w-4 h-4 text-black" />
         </div>
@@ -67,13 +71,13 @@ export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps
         {products.map((product) => (
           <motion.div
             key={product.id}
-            whileHover={{ y: -4, boxShadow: '6px 6px 0 0 #000000' }}
+            whileHover={{ y: -4, boxShadow: "6px 6px 0 0 #000000" }}
             transition={{ duration: 0.2 }}
           >
             <Link
               href={`/games/${product.slug}`}
               className="group block bg-white border-[3px] border-black overflow-hidden"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <div className="relative aspect-square bg-gray-100">
                 {product.imageUrl ? (
@@ -89,8 +93,9 @@ export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps
                   </div>
                 )}
                 {product.isFeatured && (
-                  <span className="absolute top-2 left-2 px-2 py-1 bg-brutal-yellow text-black text-xs font-bold border-[2px] border-black"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  <span
+                    className="absolute top-2 left-2 px-2 py-1 bg-brutal-yellow text-black text-xs font-bold border-[2px] border-black"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
                     แนะนำ
                   </span>
@@ -103,14 +108,14 @@ export function FeaturedProducts({ limit = 8, className }: FeaturedProductsProps
                 <div className="flex items-center gap-1 mt-1">
                   <Star className="w-4 h-4 fill-brutal-yellow text-black" />
                   <span className="text-sm text-gray-600 font-medium">
-                    {product.averageRating?.toFixed(1) || '0.0'}
+                    {product.averageRating?.toFixed(1) || "0.0"}
                   </span>
                   <span className="text-sm text-gray-400">
                     ({product.reviewCount || 0})
                   </span>
                 </div>
                 <p className="mt-2 font-black text-brutal-pink text-lg">
-                  {formatPrice(getMinPrice(product.seagmTypes))}
+                  {formatPrice(getMinPrice(product.types))}
                 </p>
               </div>
             </Link>

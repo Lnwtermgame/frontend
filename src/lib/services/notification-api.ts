@@ -65,6 +65,7 @@ class NotificationApiService {
     page = 1,
     limit = 20,
     unreadOnly = false,
+    signal?: AbortSignal,
   ): Promise<NotificationsListResponse> {
     const params = new URLSearchParams();
     params.append("page", String(page));
@@ -73,6 +74,7 @@ class NotificationApiService {
 
     const response = await notificationClient.get<NotificationsListResponse>(
       `/api/notifications?${params}`,
+      { signal },
     );
     return response.data;
   }
@@ -100,10 +102,13 @@ class NotificationApiService {
     return response.data;
   }
 
-  async getPreferences(): Promise<NotificationPreferencesResponse> {
+  async getPreferences(
+    signal?: AbortSignal,
+  ): Promise<NotificationPreferencesResponse> {
     const response =
       await notificationClient.get<NotificationPreferencesResponse>(
         "/api/notifications/preferences",
+        { signal },
       );
     return response.data;
   }

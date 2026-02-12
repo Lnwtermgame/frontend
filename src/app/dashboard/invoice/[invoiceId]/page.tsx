@@ -130,6 +130,12 @@ export default function InvoiceDetailPage() {
     return null;
   }
 
+  // Helper to get safe image URL
+  const getSafeImageUrl = (url?: string | null) => {
+    if (!url) return null;
+    return url.replace(/`/g, "").trim();
+  };
+
   // Format dates
   const issuedDate = new Date(invoice.issuedAt).toLocaleDateString('th-TH', {
     year: 'numeric',
@@ -330,8 +336,16 @@ export default function InvoiceDetailPage() {
                     <tr key={item.id} className="border-b border-gray-200">
                       <td className="py-4">
                         <div className="flex items-center">
-                          <div className="h-12 w-12 bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-4">
-                            <Package className="h-5 w-5 text-gray-600" />
+                          <div className="h-12 w-12 bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-4 overflow-hidden relative">
+                            {getSafeImageUrl(item.imageUrl) ? (
+                              <img
+                                src={getSafeImageUrl(item.imageUrl)!}
+                                alt={item.productName}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <Package className="h-5 w-5 text-gray-600" />
+                            )}
                           </div>
                           <div>
                             <div className="text-black font-bold">{item.productName}</div>

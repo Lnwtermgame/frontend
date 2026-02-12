@@ -94,8 +94,6 @@ export interface Product {
   coverImageUrl?: string;
   images?: ProductImage[];
   productType: "CARD" | "DIRECT_TOPUP";
-  seagmProductId?: string; // Should be removed or kept for compat if not fully migrated? Keeping as optional for now but maybe remove if not needed.
-  seagmId?: number; // External API product ID for order fulfillment
   requiredFields?: SeagmField[];
   isActive: boolean;
   isFeatured?: boolean;
@@ -108,9 +106,8 @@ export interface Product {
   metaDescription?: string;
   metaKeywords?: string;
   gameDetails?: GameDetails;
-  // Product types/denominations - included in getProductBySlug response
+  // Product types/denominations - public response (sanitized)
   types?: ProductType[];
-  seagmTypes?: ProductType[];
   variants?: ProductVariant[];
   attributes?: ProductAttribute[];
   tags?: Tag[];
@@ -262,17 +259,40 @@ export interface SyncResult {
 // Renaming SeagmProduct to Product as we migrated
 export type SeagmProduct = Product;
 
+/**
+ * Public ProductType - sanitized for customer-facing API
+ * Only contains displayPrice, no cost/supplier pricing data
+ */
 export interface ProductType {
   id: string;
   productId: string;
-  seagmProductNumericId?: number; // External supplier product ID
+  name: string;
+  displayPrice: number;
+  currency: string;
+  hasStock: boolean;
+  minAmount: number;
+  maxAmount: number;
+  isActive: boolean;
+  fields?: SeagmField[];
+}
+
+/**
+ * Admin ProductType - full data with all pricing and supplier info
+ * Used only in admin pages (fetched via /api/admin/products)
+ */
+export interface AdminProductType {
+  id: string;
+  productId: string;
+  seagmProductId?: string;
+  seagmProductNumericId?: number;
   seagmTypeId: number;
   name: string;
   parValue: number;
   parValueCurrency: string;
   unitPrice: number;
   originPrice?: number;
-  sellingPrice?: number; // ราคาขายที่เรากำหนดเอง
+  sellingPrice?: number;
+  displayPrice: number;
   discountRate?: number;
   currency: string;
   hasStock: boolean;
@@ -282,6 +302,15 @@ export interface ProductType {
   fields?: SeagmField[];
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Admin Product - full data with supplier info for admin pages
+ */
+export interface AdminProduct extends Omit<Product, "types"> {
+  seagmProductId?: string;
+  seagmId?: number;
+  seagmTypes?: AdminProductType[];
 }
 
 // ============ DTOs ============
@@ -321,12 +350,13 @@ class ProductApiService {
     sortOrder?: "asc" | "desc";
     page?: number;
     limit?: number;
+    signal?: AbortSignal;
   }): Promise<ProductsResponse> {
     const searchParams = new URLSearchParams();
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+        if (value !== undefined && value !== null && key !== "signal") {
           searchParams.append(key, String(value));
         }
       });
@@ -335,6 +365,7 @@ class ProductApiService {
     const query = searchParams.toString();
     const response = await productClient.get<ProductsResponse>(
       `/api/products${query ? `?${query}` : ""}`,
+      { signal: params?.signal },
     );
     return response.data;
   }
@@ -527,8 +558,12 @@ class ProductApiService {
 
   // ============ Categories ============
 
-  async getCategories(): Promise<{ success: boolean; data: Category[] }> {
-    const response = await productClient.get(`/api/products/categories`);
+  async getCategories(
+    signal?: AbortSignal,
+  ): Promise<{ success: boolean; data: Category[] }> {
+    const response = await productClient.get(`/api/products/categories`, {
+      signal,
+    });
     return response.data;
   }
 
@@ -692,6 +727,25 @@ class ProductApiService {
   }
 
   // ============ Admin: Product Sync ============
+
+  /**
+   * Get all products for admin with full pricing/supplier data
+   */
+  async getProductsAdmin(params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<PaginatedResponse<AdminProduct>> {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.append("page", String(params.page));
+    if (params?.limit) searchParams.append("limit", String(params.limit));
+    if (params?.search) searchParams.append("search", params.search);
+    const query = searchParams.toString();
+    const response = await productClient.get(
+      `/api/admin/products${query ? `?${query}` : ""}`,
+    );
+    return response.data;
+  }
 
   async syncAll(): Promise<{ success: boolean; data: SyncResult }> {
     const response = await productClient.post("/api/admin/sync/all");

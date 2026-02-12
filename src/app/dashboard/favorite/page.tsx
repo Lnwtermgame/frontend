@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { favoriteApi, Favorite } from "@/lib/services/favorite-api";
@@ -25,26 +25,43 @@ export default function FavoritePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredFavorites, setFilteredFavorites] = useState<Favorite[]>([]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch favorites from API
   useEffect(() => {
     if (isInitialized && user) {
       fetchFavorites();
     }
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [isInitialized, user]);
 
   const fetchFavorites = async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setIsLoading(true);
     try {
-      const response = await favoriteApi.getFavorites();
+      const response = await favoriteApi.getFavorites(1, 20, controller.signal);
       if (response.success) {
         setFavorites(response.data);
         setFilteredFavorites(response.data);
       }
-    } catch (error) {
-      toast.error("ไม่สามารถโหลดรายการโปรดได้");
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+        toast.error("ไม่สามารถโหลดรายการโปรดได้");
+      }
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -142,16 +159,9 @@ export default function FavoritePage() {
       ) : filteredFavorites.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {filteredFavorites.map((item) => {
-            // Calculate discount
-            const maxDiscount =
-              item.product.seagmTypes && item.product.seagmTypes.length > 0
-                ? Math.max(
-                    ...item.product.seagmTypes.map((t) =>
-                      Number(t.discountRate || 0),
-                    ),
-                  )
-                : 0;
-            const showDiscount = maxDiscount >= 1 && maxDiscount < 100;
+            // Discount is not available in public API
+            const maxDiscount = 0;
+            const showDiscount = false;
 
             return (
               <motion.div
@@ -199,9 +209,8 @@ export default function FavoritePage() {
                     {item.product.name}
                   </h3>
                   <p className="text-gray-500 text-sm font-bold mb-3">
-                    {item.product.seagmTypes &&
-                    item.product.seagmTypes.length > 0
-                      ? formatPrice(getMinPrice(item.product.seagmTypes))
+                    {item.product.types && item.product.types.length > 0
+                      ? formatPrice(getMinPrice(item.product.types))
                       : "เลือกดูราคา"}
                   </p>
 

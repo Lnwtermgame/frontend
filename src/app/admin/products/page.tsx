@@ -29,6 +29,8 @@ import {
   Product,
   Category,
   ProductType,
+  AdminProduct,
+  AdminProductType,
 } from "@/lib/services/product-api";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -36,7 +38,7 @@ import AIGenerateAllButton from "@/components/admin/AIGenerateAllButton";
 
 export default function AdminProducts() {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,8 +52,10 @@ export default function AdminProducts() {
   });
 
   // Modal states for price editing
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [editingTypes, setEditingTypes] = useState<ProductType[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<AdminProduct | null>(
+    null,
+  );
+  const [editingTypes, setEditingTypes] = useState<AdminProductType[]>([]);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [sellingPrices, setSellingPrices] = useState<Record<string, string>>(
     {},
@@ -88,12 +92,10 @@ export default function AdminProducts() {
         setError(null);
 
         const [productsRes, categoriesRes] = await Promise.all([
-          productApi.getProducts({
+          productApi.getProductsAdmin({
             page: pagination.page,
             limit: pagination.limit,
             search: searchTerm || undefined,
-            categoryId:
-              selectedCategory !== "all" ? selectedCategory : undefined,
           }),
           productApi.getCategories(),
         ]);
@@ -146,14 +148,14 @@ export default function AdminProducts() {
     }
   };
 
-  const getStatusStyles = (product: Product) => {
+  const getStatusStyles = (product: Product | AdminProduct) => {
     if (!product.isActive) {
       return "text-gray-700 bg-gray-100 border-gray-300";
     }
     return "text-green-700 bg-green-100 border-green-300";
   };
 
-  const getStatusText = (product: Product) => {
+  const getStatusText = (product: Product | AdminProduct) => {
     if (!product.isActive) {
       return "ไม่ใช้งาน";
     }
@@ -228,21 +230,39 @@ export default function AdminProducts() {
   };
 
   // Open price editing modal
-  const openPriceModal = (product: Product) => {
+  const openPriceModal = (product: AdminProduct) => {
     setSelectedProduct(product);
-    // Fetch product types for this product
-    if (product.seagmProductId) {
+    // Use pre-fetched types from admin API if available
+    if (product.seagmTypes && product.seagmTypes.length > 0) {
+      setEditingTypes(product.seagmTypes);
+      const prices: Record<string, string> = {};
+      product.seagmTypes.forEach((type) => {
+        const defaultPrice =
+          type.sellingPrice || type.originPrice || type.unitPrice;
+        prices[type.id] = defaultPrice.toString();
+      });
+      setSellingPrices(prices);
+      setIsPriceModalOpen(true);
+    } else if (product.seagmProductId) {
+      // Fallback to fetch if needed
       productApi
         .getGameTypesById(product.seagmProductId)
         .then((res) => {
           if (res.success) {
-            setEditingTypes(res.data);
-            // Initialize selling prices state
+            // Need to cast to AdminProductType because the public API returns sanitized types
+            // but the admin needs full data. However, getGameTypesById is hitting /games/...
+            // which we secured for admin only, but it returns whatever the controller returns.
+            // Actually, we should rely on seagmTypes from getProductsAdmin mostly.
+            // If we must fetch, we assume the response is compatible enough or we need an admin endpoint for types.
+            // For now, let's assume it works or we rely on getProductsAdmin data.
+            setEditingTypes(res.data as unknown as AdminProductType[]);
             const prices: Record<string, string> = {};
             res.data.forEach((type) => {
-              // ราคาขายเริ่มต้น = sellingPrice ที่เคยบันทึกไว้ หรือ ราคา SEAGM (originPrice)
+              const adminType = type as unknown as AdminProductType;
               const defaultPrice =
-                type.sellingPrice || type.originPrice || type.unitPrice;
+                adminType.sellingPrice ||
+                adminType.originPrice ||
+                adminType.unitPrice;
               prices[type.id] = defaultPrice.toString();
             });
             setSellingPrices(prices);

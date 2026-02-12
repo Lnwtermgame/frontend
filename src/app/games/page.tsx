@@ -57,37 +57,18 @@ function transformProductToGame(product: Product): GameProduct {
   const publisher =
     product.gameDetails?.publisher || product.gameDetails?.developer;
 
-  // Get starting price from types (lowest sellingPrice)
-  const types = product.types || product.seagmTypes || [];
+  // Get starting price from types (lowest displayPrice)
+  const types = product.types || [];
 
-  // Filter for valid prices (greater than 0)
+  // Calculate starting price from displayPrice
   const validPrices = types
-    .filter((t) => t.sellingPrice && Number(t.sellingPrice) > 0)
-    .map((t) => Number(t.sellingPrice));
+    .filter((t) => t.displayPrice && Number(t.displayPrice) > 0)
+    .map((t) => Number(t.displayPrice));
 
-  // Also check unitPrice if sellingPrice is not available
-  if (validPrices.length === 0) {
-    const unitPrices = types
-      .filter((t) => t.unitPrice && Number(t.unitPrice) > 0)
-      .map((t) => Number(t.unitPrice));
-    validPrices.push(...unitPrices);
-  }
-
-  // Calculate starting price
   const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
 
-  // Get max discount rate from types (use discountRate from API)
-  let discountPercent: number | undefined = undefined;
-  if (types.length > 0) {
-    // Find the highest discount rate among all types
-    const maxDiscount = Math.max(
-      ...types.map((t) => Number(t.discountRate || 0)),
-    );
-    // Only show if discount is between 1% and 99%
-    if (maxDiscount >= 1 && maxDiscount < 100) {
-      discountPercent = maxDiscount;
-    }
-  }
+  // Discount is not available in public API
+  const discountPercent: number | undefined = undefined;
 
   return {
     id: product.id,

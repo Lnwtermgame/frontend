@@ -51,12 +51,12 @@ interface Denomination {
 
 // Helper function to transform Product to CardDetails
 function transformProductToCardDetails(product: Product): CardDetails {
-  // Map seagmTypes to denominations (API returns seagmTypes, not variants)
+  // Map types to denominations
   const denominations: Denomination[] =
-    product.seagmTypes?.map((type) => ({
+    product.types?.map((type) => ({
       id: type.id,
       value: type.name,
-      price: type.sellingPrice ?? (type.originPrice || type.unitPrice),
+      price: type.displayPrice,
     })) || [];
 
   return {
@@ -734,7 +734,7 @@ export default function CardDetailPage() {
                           {relatedProduct.category?.name || "Gift Card"}
                         </div>
                         <div className="text-xs text-black font-bold">
-                          {formatPrice(getMinPrice(relatedProduct.seagmTypes))}
+                          {formatPrice(getMinPrice(relatedProduct.types))}
                         </div>
                       </div>
                     </div>

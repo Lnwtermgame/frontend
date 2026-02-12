@@ -20,11 +20,15 @@ import {
   Pause,
   Eye,
   SkipForward,
+  Star,
+  TrendingUp,
+  Layers,
 } from "lucide-react";
 import {
   aiService,
   GeneratedContent,
   GenerationProgress,
+  AvailableCategory,
 } from "@/lib/services/ai-api";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
@@ -379,6 +383,14 @@ export default function AIGenerateAllButton({
           (c) => c.id === product.categoryId,
         )?.name;
 
+        // Build available categories list for AI classification
+        const availableCategories: AvailableCategory[] = categories.map(
+          (c) => ({
+            name: c.name,
+            slug: c.slug,
+          }),
+        );
+
         const handleProgress = (progress: GenerationProgress) => {
           setProductStates((prev) =>
             prev.map((s, idx) => {
@@ -398,6 +410,7 @@ export default function AIGenerateAllButton({
           product.productType,
           categoryName,
           handleProgress,
+          availableCategories,
         );
       } catch (error) {
         const errorMessage =
@@ -444,7 +457,18 @@ export default function AIGenerateAllButton({
     if (!state || !state.results) return;
 
     try {
-      const updateData = {
+      // Resolve categoryId from AI-selected categorySlug
+      let categoryId = state.product.categoryId; // default to existing
+      if (state.results.categorySlug) {
+        const matchedCategory = categories.find(
+          (c) => c.slug === state.results!.categorySlug,
+        );
+        if (matchedCategory) {
+          categoryId = matchedCategory.id;
+        }
+      }
+
+      const updateData: Record<string, unknown> = {
         description: state.results.description,
         shortDescription: state.results.shortDescription,
         metaTitle: state.results.metaTitle,
@@ -455,7 +479,16 @@ export default function AIGenerateAllButton({
           publisher: state.results.gameDetails?.publisher || "",
           platforms: state.results.gameDetails?.platforms || [],
         },
+        categoryId,
       };
+
+      // Include isFeatured/isBestseller if AI provided them
+      if (state.results.isFeatured !== undefined) {
+        updateData.isFeatured = state.results.isFeatured;
+      }
+      if (state.results.isBestseller !== undefined) {
+        updateData.isBestseller = state.results.isBestseller;
+      }
 
       const response = await productApi.updateProduct(
         state.product.id,
@@ -543,11 +576,18 @@ export default function AIGenerateAllButton({
         );
       };
 
+      // Build available categories list for AI classification
+      const availableCategories: AvailableCategory[] = categories.map((c) => ({
+        name: c.name,
+        slug: c.slug,
+      }));
+
       await aiService.generateProductContent(
         state.product.name,
         state.product.productType,
         state.categoryName,
         handleProgress,
+        availableCategories,
       );
     } catch (error) {
       const errorMessage =
@@ -680,6 +720,7 @@ export default function AIGenerateAllButton({
     const stages: Record<string, string> = {
       idle: "รอเริ่มต้น",
       preparing: "เตรียมข้อมูล",
+      generating_classification: "จัดหมวดหมู่",
       generating_description: "สร้างคำอธิบาย",
       generating_short_description: "สร้างคำอธิบายสั้น",
       generating_meta: "สร้าง SEO Meta",
@@ -694,9 +735,10 @@ export default function AIGenerateAllButton({
   const getStageProgress = (stage?: string) => {
     const stagePercents: Record<string, number> = {
       idle: 0,
-      preparing: 10,
-      generating_description: 25,
-      generating_short_description: 45,
+      preparing: 5,
+      generating_classification: 15,
+      generating_description: 30,
+      generating_short_description: 50,
       generating_meta: 65,
       generating_game_details: 80,
       parsing: 90,
@@ -1197,6 +1239,69 @@ export default function AIGenerateAllButton({
                                       </div>
                                     </div>
                                   )}
+
+                                  {/* AI Classification: Category + Featured/Bestseller */}
+                                  {!isShowingDbData &&
+                                    (displayData.categorySlug ||
+                                      displayData.isFeatured !== undefined ||
+                                      displayData.isBestseller !==
+                                        undefined) && (
+                                      <div className="grid grid-cols-3 gap-3">
+                                        <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
+                                          <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                            <Layers className="w-3 h-3" />
+                                            AI หมวดหมู่
+                                          </h5>
+                                          <p className="text-sm text-gray-800 font-medium">
+                                            {displayData.categoryName ||
+                                              displayData.categorySlug || (
+                                                <span className="text-gray-400 italic">
+                                                  ไม่มีข้อมูล
+                                                </span>
+                                              )}
+                                          </p>
+                                          {displayData.categorySlug && (
+                                            <p className="text-xs text-amber-500 mt-0.5">
+                                              {displayData.categorySlug}
+                                            </p>
+                                          )}
+                                        </div>
+                                        <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
+                                          <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                            <Star className="w-3 h-3" />
+                                            สินค้าแนะนำ
+                                          </h5>
+                                          <span
+                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${
+                                              displayData.isFeatured
+                                                ? "bg-yellow-200 text-yellow-800 border-yellow-400"
+                                                : "bg-gray-100 text-gray-500 border-gray-300"
+                                            }`}
+                                          >
+                                            {displayData.isFeatured
+                                              ? "Featured"
+                                              : "ไม่ใช่"}
+                                          </span>
+                                        </div>
+                                        <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
+                                          <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                            <TrendingUp className="w-3 h-3" />
+                                            สินค้าขายดี
+                                          </h5>
+                                          <span
+                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${
+                                              displayData.isBestseller
+                                                ? "bg-green-200 text-green-800 border-green-400"
+                                                : "bg-gray-100 text-gray-500 border-gray-300"
+                                            }`}
+                                          >
+                                            {displayData.isBestseller
+                                              ? "Bestseller"
+                                              : "ไม่ใช่"}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    )}
 
                                   {/* Per-item action buttons: AI results -> Save/Regenerate/Cancel */}
                                   {!isShowingDbData &&

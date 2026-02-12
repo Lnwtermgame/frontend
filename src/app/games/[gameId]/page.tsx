@@ -420,7 +420,12 @@ export default function GameDetailsPage() {
 
         // Extract product types from response (now included in single API call)
         let typesData: ProductType[] = [];
-        if (productData.seagmTypes && productData.seagmTypes.length > 0) {
+        if (productData.types && productData.types.length > 0) {
+          typesData = productData.types;
+        } else if (
+          productData.seagmTypes &&
+          productData.seagmTypes.length > 0
+        ) {
           typesData = productData.seagmTypes;
         }
 
@@ -1109,7 +1114,7 @@ export default function GameDetailsPage() {
       </div>
 
       {/* Related Games section - show actual similar games */}
-      <section className="mb-10">
+      <section className="mt-16 mb-10">
         <h2 className="text-xl font-bold text-black mb-4 flex items-center">
           <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
           เกมที่คล้ายกัน
@@ -1152,10 +1157,9 @@ export default function GameDetailsPage() {
                       </div>
                       <span className="text-xs text-black font-bold">
                         ฿
-                        {similarGame.seagmTypes &&
-                        similarGame.seagmTypes.length > 0
+                        {similarGame.types && similarGame.types.length > 0
                           ? Math.min(
-                              ...similarGame.seagmTypes.map((t) => t.unitPrice),
+                              ...similarGame.types.map((t) => t.unitPrice),
                             ).toFixed(0)
                           : "0"}
                       </span>

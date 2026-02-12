@@ -23,12 +23,14 @@ import {
   GeneratedContent,
   GenerationProgress,
   DebugLog,
+  AvailableCategory,
 } from "@/lib/services/ai-api";
 
 interface AIGenerateButtonProps {
   productName: string;
   productType: string;
   categoryName?: string;
+  categories?: { name: string; slug: string }[];
   onGenerated: (content: GeneratedContent) => void;
   disabled?: boolean;
 }
@@ -79,6 +81,7 @@ const getStageName = (stage: GenerationProgress["stage"]) => {
   const stages: Record<string, string> = {
     idle: "รอการเริ่มต้น",
     preparing: "กำลังเตรียมข้อมูล",
+    generating_classification: "กำลังจัดหมวดหมู่",
     generating_description: "กำลังสร้างคำอธิบาย",
     generating_short_description: "กำลังสร้างคำอธิบายสั้น",
     generating_meta: "กำลังสร้าง SEO Meta",
@@ -94,6 +97,7 @@ export default function AIGenerateButton({
   productName,
   productType,
   categoryName,
+  categories,
   onGenerated,
   disabled = false,
 }: AIGenerateButtonProps) {
@@ -173,11 +177,19 @@ export default function AIGenerateButton({
     setElapsedTime(0);
 
     try {
+      // Build available categories for AI classification
+      const availableCategories: AvailableCategory[] | undefined =
+        categories?.map((c) => ({
+          name: c.name,
+          slug: c.slug,
+        }));
+
       await aiService.generateProductContent(
         productName,
         productType,
         categoryName,
         handleProgress,
+        availableCategories,
       );
     } catch (error) {
       // Error is already handled in progress callback
@@ -320,23 +332,26 @@ export default function AIGenerateButton({
                         progress.stage === "idle"
                           ? "0%"
                           : progress.stage === "preparing"
-                            ? "10%"
-                            : progress.stage === "generating_description"
-                              ? "20%"
-                              : progress.stage ===
-                                  "generating_short_description"
-                                ? "40%"
-                                : progress.stage === "generating_meta"
-                                  ? "60%"
-                                  : progress.stage === "generating_game_details"
-                                    ? "80%"
-                                    : progress.stage === "parsing"
-                                      ? "90%"
-                                      : progress.stage === "completed"
-                                        ? "100%"
-                                        : progress.stage === "error"
+                            ? "5%"
+                            : progress.stage === "generating_classification"
+                              ? "15%"
+                              : progress.stage === "generating_description"
+                                ? "30%"
+                                : progress.stage ===
+                                    "generating_short_description"
+                                  ? "50%"
+                                  : progress.stage === "generating_meta"
+                                    ? "65%"
+                                    : progress.stage ===
+                                        "generating_game_details"
+                                      ? "80%"
+                                      : progress.stage === "parsing"
+                                        ? "90%"
+                                        : progress.stage === "completed"
                                           ? "100%"
-                                          : "0%",
+                                          : progress.stage === "error"
+                                            ? "100%"
+                                            : "0%",
                     }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                   />

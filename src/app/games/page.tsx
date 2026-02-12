@@ -57,22 +57,31 @@ function transformProductToGame(product: Product): GameProduct {
   const publisher =
     product.gameDetails?.publisher || product.gameDetails?.developer;
 
-  // Get starting price from seagmTypes (lowest sellingPrice)
-  const startingPrice =
-    product.seagmTypes && product.seagmTypes.length > 0
-      ? Math.min(
-          ...product.seagmTypes
-            .filter((t) => t.sellingPrice && t.sellingPrice > 0)
-            .map((t) => Number(t.sellingPrice)),
-        )
-      : 0;
+  // Get starting price from types (lowest sellingPrice)
+  const types = product.types || product.seagmTypes || [];
 
-  // Get max discount rate from seagmTypes (use discountRate from API)
+  // Filter for valid prices (greater than 0)
+  const validPrices = types
+    .filter((t) => t.sellingPrice && Number(t.sellingPrice) > 0)
+    .map((t) => Number(t.sellingPrice));
+
+  // Also check unitPrice if sellingPrice is not available
+  if (validPrices.length === 0) {
+    const unitPrices = types
+      .filter((t) => t.unitPrice && Number(t.unitPrice) > 0)
+      .map((t) => Number(t.unitPrice));
+    validPrices.push(...unitPrices);
+  }
+
+  // Calculate starting price
+  const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
+
+  // Get max discount rate from types (use discountRate from API)
   let discountPercent: number | undefined = undefined;
-  if (product.seagmTypes && product.seagmTypes.length > 0) {
+  if (types.length > 0) {
     // Find the highest discount rate among all types
     const maxDiscount = Math.max(
-      ...product.seagmTypes.map((t) => Number(t.discountRate || 0)),
+      ...types.map((t) => Number(t.discountRate || 0)),
     );
     // Only show if discount is between 1% and 99%
     if (maxDiscount >= 1 && maxDiscount < 100) {

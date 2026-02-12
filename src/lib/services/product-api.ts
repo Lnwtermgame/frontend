@@ -73,6 +73,9 @@ export interface GameDetails {
   developer?: string;
   publisher?: string;
   platforms?: string[];
+  region?: string;
+  autoDelivery?: boolean;
+  mode?: "directtopup" | "card";
 }
 
 export interface Product {
@@ -91,7 +94,7 @@ export interface Product {
   coverImageUrl?: string;
   images?: ProductImage[];
   productType: "CARD" | "DIRECT_TOPUP";
-  seagmProductId?: string;
+  seagmProductId?: string; // Should be removed or kept for compat if not fully migrated? Keeping as optional for now but maybe remove if not needed.
   seagmId?: number; // External API product ID for order fulfillment
   requiredFields?: SeagmField[];
   isActive: boolean;
@@ -106,6 +109,7 @@ export interface Product {
   metaKeywords?: string;
   gameDetails?: GameDetails;
   // Product types/denominations - included in getProductBySlug response
+  types?: ProductType[];
   seagmTypes?: ProductType[];
   variants?: ProductVariant[];
   attributes?: ProductAttribute[];
@@ -255,24 +259,12 @@ export interface SyncResult {
 
 // ============ External Supplier Product Types ============
 
-export interface SeagmProduct {
-  id: string;
-  seagmId: number;
-  name: string;
-  code: string;
-  mode: "directtopup" | "card";
-  region?: string;
-  autoDelivery: boolean;
-  imageUrl?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  types?: ProductType[];
-}
+// Renaming SeagmProduct to Product as we migrated
+export type SeagmProduct = Product;
 
 export interface ProductType {
   id: string;
-  seagmProductId: string;
+  productId: string;
   seagmProductNumericId?: number; // External supplier product ID
   seagmTypeId: number;
   name: string;
@@ -632,6 +624,44 @@ class ProductApiService {
     }
   }
 
+  // ============ Admin: Category CRUD ============
+
+  async createCategory(
+    data: Partial<Category>,
+  ): Promise<{ success: boolean; data: Category }> {
+    const response = await productClient.post("/api/admin/categories", data);
+    return response.data;
+  }
+
+  async updateCategory(
+    categoryId: string,
+    data: Partial<Category>,
+  ): Promise<{ success: boolean; data: Category }> {
+    const response = await productClient.put(
+      `/api/admin/categories/${categoryId}`,
+      data,
+    );
+    return response.data;
+  }
+
+  async deleteCategory(
+    categoryId: string,
+  ): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await productClient.delete(
+      `/api/admin/categories/${categoryId}`,
+    );
+    return response.data;
+  }
+
+  async reorderCategories(
+    categoryIds: string[],
+  ): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await productClient.post("/api/admin/categories/reorder", {
+      categoryIds,
+    });
+    return response.data;
+  }
+
   // ============ Admin: Product CRUD ============
 
   async updateProduct(
@@ -687,7 +717,7 @@ class ProductApiService {
   async getGames(params?: {
     mode?: "directtopup" | "card";
     region?: string;
-  }): Promise<{ success: boolean; data: SeagmProduct[] }> {
+  }): Promise<{ success: boolean; data: Product[] }> {
     const searchParams = new URLSearchParams();
     if (params?.mode) searchParams.append("mode", params.mode);
     if (params?.region) searchParams.append("region", params.region);
@@ -705,7 +735,7 @@ class ProductApiService {
    */
   async getGame(
     gameCode: string,
-  ): Promise<{ success: boolean; data: SeagmProduct }> {
+  ): Promise<{ success: boolean; data: Product }> {
     const response = await productClient.get(`/games/${gameCode}`);
     return response.data;
   }
@@ -723,11 +753,11 @@ class ProductApiService {
 
   /**
    * Get supplier product by internal database ID
-   * Example: getGameById('clj234...') -> SeagmProduct
+   * Example: getGameById('clj234...') -> Product
    */
   async getGameById(
     seagmProductId: string,
-  ): Promise<{ success: boolean; data: SeagmProduct }> {
+  ): Promise<{ success: boolean; data: Product }> {
     const response = await productClient.get(`/games/id/${seagmProductId}`);
     return response.data;
   }
@@ -750,7 +780,7 @@ class ProductApiService {
    */
   async searchGames(
     query: string,
-  ): Promise<{ success: boolean; data: SeagmProduct[] }> {
+  ): Promise<{ success: boolean; data: Product[] }> {
     const response = await productClient.get(
       `/games/search?q=${encodeURIComponent(query)}`,
     );
@@ -763,7 +793,7 @@ class ProductApiService {
    */
   async getGamesByRegion(
     region: string,
-  ): Promise<{ success: boolean; data: SeagmProduct[] }> {
+  ): Promise<{ success: boolean; data: Product[] }> {
     const response = await productClient.get(`/games/region/${region}`);
     return response.data;
   }

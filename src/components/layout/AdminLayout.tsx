@@ -16,7 +16,8 @@ import {
   TrendingUp,
   Users,
   ShoppingCart,
-  Bell
+  Bell,
+  Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -28,48 +29,53 @@ const adminNavItems = [
   {
     title: "แดชบอร์ด",
     href: "/admin",
-    icon: <Home className="w-5 h-5" />
+    icon: <Home className="w-5 h-5" />,
   },
   {
     title: "สินค้า",
     href: "/admin/products",
-    icon: <Package className="w-5 h-5" />
+    icon: <Package className="w-5 h-5" />,
+  },
+  {
+    title: "หมวดหมู่",
+    href: "/admin/categories",
+    icon: <Layers className="w-5 h-5" />,
   },
   {
     title: "คำสั่งซื้อ",
     href: "/admin/orders",
-    icon: <ShoppingCart className="w-5 h-5" />
+    icon: <ShoppingCart className="w-5 h-5" />,
   },
   {
     title: "โปรโมชั่น",
     href: "/admin/promotions",
-    icon: <Tag className="w-5 h-5" />
+    icon: <Tag className="w-5 h-5" />,
   },
   {
     title: "Analytics",
     href: "/admin/analytics",
-    icon: <TrendingUp className="w-5 h-5" />
+    icon: <TrendingUp className="w-5 h-5" />,
   },
   {
     title: "จัดการผู้ใช้",
     href: "/admin/users",
-    icon: <Users className="w-5 h-5" />
+    icon: <Users className="w-5 h-5" />,
   },
   {
     title: "ตั๋วสนับสนุน",
     href: "/admin/tickets",
-    icon: <MessageSquare className="w-5 h-5" />
+    icon: <MessageSquare className="w-5 h-5" />,
   },
   {
     title: "การแจ้งเตือน",
     href: "/admin/notification",
-    icon: <Bell className="w-5 h-5" />
+    icon: <Bell className="w-5 h-5" />,
   },
   {
     title: "ตั้งค่า",
     href: "/admin/settings",
-    icon: <Settings className="w-5 h-5" />
-  }
+    icon: <Settings className="w-5 h-5" />,
+  },
 ];
 
 interface AdminLayoutProps {
@@ -92,8 +98,9 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   if (!isInitialized || !isAdmin) {
     return (
       <div className="page-container text-center">
-        <div className="bg-white border-[3px] border-black p-8"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        <div
+          className="bg-white border-[3px] border-black p-8"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <div className="animate-pulse flex space-x-4 justify-center">
             <div className="rounded-full bg-gray-200 h-12 w-12"></div>
@@ -111,15 +118,29 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   return (
     <div className="page-container">
       {/* Mobile header */}
-      <div className="lg:hidden flex items-center justify-between mb-6 bg-white border-[3px] border-black p-4"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+      <div
+        className="lg:hidden flex items-center justify-between mb-6 bg-white border-[3px] border-black p-4"
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <h1 className="text-xl font-black text-black thai-font flex items-center">
           <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
           {title || "แผงควบคุมผู้ดูแลระบบ"}
         </h1>
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="text-gray-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             {isMenuOpen ? (
               <path d="M18 6L6 18M6 6l12 12" />
             ) : (
@@ -144,8 +165,21 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
                 ผู้ดูแลระบบ
               </h2>
-              <button onClick={() => setIsMenuOpen(false)} className="text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-600"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -156,9 +190,14 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                   <div
                     className={cn(
                       "flex items-center py-3 px-4 text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium",
-                      pathname === item.href && "bg-brutal-yellow text-black font-bold border-[2px] border-black"
+                      pathname === item.href &&
+                        "bg-brutal-yellow text-black font-bold border-[2px] border-black",
                     )}
-                    style={pathname === item.href ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+                    style={
+                      pathname === item.href
+                        ? { boxShadow: "3px 3px 0 0 #000000" }
+                        : undefined
+                    }
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <span className="text-gray-500 mr-3">{item.icon}</span>
@@ -187,13 +226,15 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="bg-white border-[3px] border-black sticky top-24"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          <div
+            className="bg-white border-[3px] border-black sticky top-24"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="p-6 border-b-[2px] border-gray-200 bg-gray-50">
               <h2 className="font-black text-lg text-black flex items-center thai-font">
-                <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center mr-2"
-                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                <div
+                  className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center mr-2"
+                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 >
                   <DollarSign className="w-4 h-4 text-white" />
                 </div>
@@ -206,9 +247,14 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                   <div
                     className={cn(
                       "flex items-center py-3 px-4 text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium",
-                      pathname === item.href && "bg-brutal-yellow text-black font-bold border-[2px] border-black"
+                      pathname === item.href &&
+                        "bg-brutal-yellow text-black font-bold border-[2px] border-black",
                     )}
-                    style={pathname === item.href ? { boxShadow: '3px 3px 0 0 #000000' } : undefined}
+                    style={
+                      pathname === item.href
+                        ? { boxShadow: "3px 3px 0 0 #000000" }
+                        : undefined
+                    }
                   >
                     <span className="text-gray-500 mr-3">{item.icon}</span>
                     {item.title}
@@ -219,14 +265,19 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <hr className="border-gray-200 my-4" />
               <div className="px-4 py-3">
                 <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  <div
+                    className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
                     <User className="w-5 h-5 text-black" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-black">{user?.username || user?.email}</div>
-                    <div className="text-xs text-gray-500 thai-font">ผู้ดูแลระบบ</div>
+                    <div className="text-sm font-bold text-black">
+                      {user?.username || user?.email}
+                    </div>
+                    <div className="text-xs text-gray-500 thai-font">
+                      ผู้ดูแลระบบ
+                    </div>
                   </div>
                 </div>
                 <button

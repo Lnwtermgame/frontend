@@ -202,6 +202,17 @@ export default function EditProductPage() {
     console.log("[AI Generated] Short Description:", content.shortDescription);
 
     setFormData((prev) => {
+      // Resolve categoryId from AI-selected categorySlug
+      let categoryId = prev.categoryId;
+      if (content.categorySlug) {
+        const matchedCategory = categories.find(
+          (c) => c.slug === content.categorySlug,
+        );
+        if (matchedCategory) {
+          categoryId = matchedCategory.id;
+        }
+      }
+
       const newFormData = {
         ...prev,
         description: content.description || "",
@@ -214,6 +225,13 @@ export default function EditProductPage() {
           publisher: content.gameDetails?.publisher || "",
           platforms: content.gameDetails?.platforms || [],
         },
+        categoryId,
+        ...(content.isFeatured !== undefined && {
+          isFeatured: content.isFeatured,
+        }),
+        ...(content.isBestseller !== undefined && {
+          isBestseller: content.isBestseller,
+        }),
       };
       console.log("[AI Generated] New formData:", newFormData);
       return newFormData;
@@ -486,6 +504,10 @@ export default function EditProductPage() {
                   categoryName={
                     categories.find((c) => c.id === formData.categoryId)?.name
                   }
+                  categories={categories.map((c) => ({
+                    name: c.name,
+                    slug: c.slug,
+                  }))}
                   onGenerated={handleAIGenerated}
                   disabled={!formData.name}
                 />

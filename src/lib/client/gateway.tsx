@@ -1,6 +1,12 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosResponse,
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from "axios";
 
-const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3000';
+const GATEWAY_URL =
+  process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:3000";
 
 // Flag to prevent multiple refresh attempts
 let isRefreshing = false;
@@ -24,9 +30,10 @@ const processQueue = (error: unknown | null, token: string | null = null) => {
 
 // Refresh token function
 const refreshAccessToken = async (): Promise<string | null> => {
-  const refreshToken = typeof window !== 'undefined'
-    ? localStorage.getItem('auth_refresh_token')
-    : null;
+  const refreshToken =
+    typeof window !== "undefined"
+      ? localStorage.getItem("auth_refresh_token")
+      : null;
 
   if (!refreshToken) {
     return null;
@@ -39,8 +46,8 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
     if (response.data?.success) {
       const { accessToken, refreshToken: newRefreshToken } = response.data.data;
-      localStorage.setItem('auth_token', accessToken);
-      localStorage.setItem('auth_refresh_token', newRefreshToken);
+      localStorage.setItem("auth_token", accessToken);
+      localStorage.setItem("auth_refresh_token", newRefreshToken);
       return accessToken;
     }
     return null;
@@ -62,20 +69,26 @@ const createServiceClient = (service: string): AxiosInstance => {
   // Request interceptor to add JWT token
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("auth_token")
+          : null;
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
     },
-    (error: AxiosError) => Promise.reject(error)
+    (error: AxiosError) => Promise.reject(error),
   );
 
   // Response interceptor for error handling, token refresh, and rate limit retry
   client.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean; _retryCount?: number };
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+        _retryCount?: number;
+      };
 
       // Handle 429 (Rate Limit) with exponential backoff retry
       if (error.response?.status === 429) {
@@ -87,14 +100,16 @@ const createServiceClient = (service: string): AxiosInstance => {
           // Exponential backoff: 500ms, 1000ms, 2000ms
           const delay = Math.pow(2, retryCount) * 500;
 
-          console.warn(`[Rate Limit] Retrying request in ${delay}ms (attempt ${retryCount + 1}/${maxRetries})`);
+          console.warn(
+            `[Rate Limit] Retrying request in ${delay}ms (attempt ${retryCount + 1}/${maxRetries})`,
+          );
 
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
           return client(originalRequest);
         }
 
         // Max retries reached, show user-friendly error
-        console.error('[Rate Limit] Max retries exceeded');
+        console.error("[Rate Limit] Max retries exceeded");
         return Promise.reject(error);
       }
 
@@ -104,9 +119,10 @@ const createServiceClient = (service: string): AxiosInstance => {
       }
 
       // Don't try to refresh for login/register/refresh-token endpoints
-      const isAuthEndpoint = originalRequest.url?.includes('/login') ||
-                            originalRequest.url?.includes('/register') ||
-                            originalRequest.url?.includes('/refresh-token');
+      const isAuthEndpoint =
+        originalRequest.url?.includes("/login") ||
+        originalRequest.url?.includes("/register") ||
+        originalRequest.url?.includes("/refresh-token");
 
       if (isAuthEndpoint) {
         return Promise.reject(error);
@@ -138,12 +154,12 @@ const createServiceClient = (service: string): AxiosInstance => {
 
         if (!newToken) {
           // Refresh failed, clear auth and redirect
-          processQueue(new Error('Failed to refresh token'), null);
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('auth_refresh_token');
-            localStorage.removeItem('mali-gamepass-user');
-            window.location.href = '/login?session_expired=true';
+          processQueue(new Error("Failed to refresh token"), null);
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("auth_token");
+            localStorage.removeItem("auth_refresh_token");
+            localStorage.removeItem("mali-gamepass-user");
+            window.location.href = "/login?session_expired=true";
           }
           return Promise.reject(error);
         }
@@ -160,7 +176,7 @@ const createServiceClient = (service: string): AxiosInstance => {
       } finally {
         isRefreshing = false;
       }
-    }
+    },
   );
 
   return client;
@@ -168,19 +184,19 @@ const createServiceClient = (service: string): AxiosInstance => {
 
 // Consolidated Service Clients (Backend microservices merged)
 // Auth Service (3001): auth + security
-export const authClient = createServiceClient('auth');
+export const authClient = createServiceClient("auth");
 // Product Service (3002): product + favorite
-export const productClient = createServiceClient('product');
+export const productClient = createServiceClient("product");
 // Order Service (3003): order + cart + coupon
-export const orderClient = createServiceClient('order');
+export const orderClient = createServiceClient("order");
 // Payment Service (3004): payment + credit
-export const paymentClient = createServiceClient('payment');
+export const paymentClient = createServiceClient("payment");
 
 // Support Service (3007): FAQ and Tickets
-export const supportClient = createServiceClient('support');
+export const supportClient = createServiceClient("support");
 
 // Notification Service (3006): Notifications and Push
-export const notificationClient = createServiceClient('notification');
+export const notificationClient = createServiceClient("notification");
 
 // Legacy exports (kept for backward compatibility, map to same clients)
 // Cart API now uses orderClient - cart merged into order service

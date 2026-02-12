@@ -19,11 +19,13 @@ import {
   Globe,
   CheckCircle2,
   AlertCircle,
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import { GeneratedContent } from "@/lib/services/ai-api";
+import { processImageUrl } from "@/lib/services/storage-api";
 import DynamicProductFields from "@/components/products/DynamicProductFields";
 import AIGenerateButton from "@/components/admin/AIGenerateButton";
 
@@ -44,6 +46,7 @@ export default function EditProductPage() {
     shortDescription: "",
     categoryId: "",
     imageUrl: "",
+    coverImageUrl: "",
     metaTitle: "",
     metaDescription: "",
     metaKeywords: "",
@@ -57,6 +60,9 @@ export default function EditProductPage() {
     },
   });
   const [imageError, setImageError] = useState(false);
+  const [coverImageError, setCoverImageError] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +84,7 @@ export default function EditProductPage() {
             shortDescription: productRes.data.shortDescription || "",
             categoryId: productRes.data.categoryId,
             imageUrl: productRes.data.imageUrl || "",
+            coverImageUrl: productRes.data.coverImageUrl || "",
             metaTitle: productRes.data.metaTitle || "",
             metaDescription: productRes.data.metaDescription || "",
             metaKeywords: productRes.data.metaKeywords || "",
@@ -91,6 +98,7 @@ export default function EditProductPage() {
             },
           });
           setImageError(false);
+          setCoverImageError(false);
         }
 
         if (categoriesRes.success) {
@@ -111,6 +119,11 @@ export default function EditProductPage() {
     setImageError(false);
   }, [formData.imageUrl]);
 
+  // Reset cover image error when coverImageUrl changes
+  useEffect(() => {
+    setCoverImageError(false);
+  }, [formData.coverImageUrl]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (typeof id !== "string") return;
@@ -119,6 +132,8 @@ export default function EditProductPage() {
     try {
       console.log("[EditProduct] Submitting update for product:", id);
       console.log("[EditProduct] Form data:", formData);
+      console.log("[EditProduct] imageUrl:", formData.imageUrl);
+      console.log("[EditProduct] coverImageUrl:", formData.coverImageUrl);
 
       const response = await productApi.updateProduct(id, formData);
       console.log("[EditProduct] Update response:", response);
@@ -198,6 +213,85 @@ export default function EditProductPage() {
       duration: 3000,
       position: "top-center",
     });
+  };
+
+  // Handle image upload to Appwrite Storage
+  const handleUploadLogo = async () => {
+    if (!formData.imageUrl?.trim()) {
+      toast.error("กรุณาใส่ URL รูปภาพก่อน");
+      return;
+    }
+
+    // Store old image URL before uploading
+    const oldImageUrl = formData.imageUrl;
+
+    setUploadingLogo(true);
+    try {
+      const appwriteUrl = await processImageUrl(
+        formData.imageUrl,
+        "products/logos",
+        oldImageUrl, // Pass old URL to delete after upload
+      );
+      if (appwriteUrl) {
+        // Update form state with new URL
+        const newFormData = { ...formData, imageUrl: appwriteUrl };
+        setFormData(newFormData);
+        setImageError(false);
+
+        // Auto-save to database
+        if (typeof id === "string") {
+          console.log("[EditProduct] Auto-saving logo URL...", appwriteUrl);
+          const response = await productApi.updateProduct(id, newFormData);
+          if (response.success) {
+            setProduct(response.data);
+            toast.success("อัปโหลดและบันทึกโลโก้สำเร็จ!");
+          } else {
+            toast.error("บันทึกโลโก้ไม่สำเร็จ");
+          }
+        }
+      }
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleUploadCover = async () => {
+    if (!formData.coverImageUrl?.trim()) {
+      toast.error("กรุณาใส่ URL รูปภาพก่อน");
+      return;
+    }
+
+    // Store old image URL before uploading
+    const oldImageUrl = formData.coverImageUrl;
+
+    setUploadingCover(true);
+    try {
+      const appwriteUrl = await processImageUrl(
+        formData.coverImageUrl,
+        "products/covers",
+        oldImageUrl, // Pass old URL to delete after upload
+      );
+      if (appwriteUrl) {
+        // Update form state with new URL
+        const newFormData = { ...formData, coverImageUrl: appwriteUrl };
+        setFormData(newFormData);
+        setCoverImageError(false);
+
+        // Auto-save to database
+        if (typeof id === "string") {
+          console.log("[EditProduct] Auto-saving cover URL...", appwriteUrl);
+          const response = await productApi.updateProduct(id, newFormData);
+          if (response.success) {
+            setProduct(response.data);
+            toast.success("อัปโหลดและบันทึกรูปหน้าปกสำเร็จ!");
+          } else {
+            toast.error("บันทึกรูปหน้าปกไม่สำเร็จ");
+          }
+        }
+      }
+    } finally {
+      setUploadingCover(false);
+    }
   };
 
   if (loading) {
@@ -468,52 +562,161 @@ export default function EditProductPage() {
                 รูปภาพและสื่อ
               </h2>
 
-              <div className="flex flex-col md:flex-row gap-6 relative z-10">
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      ลิงก์รูปภาพหน้าปก
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={formData.imageUrl}
-                        onChange={(e) =>
-                          setFormData({ ...formData, imageUrl: e.target.value })
+              <div className="space-y-8 relative z-10">
+                {/* Logo Image */}
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        ลิงก์โลโก้สินค้า
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={formData.imageUrl}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              imageUrl: e.target.value,
+                            })
+                          }
+                          placeholder="https://..."
+                          className="w-full bg-gray-50 border-[2px] border-black pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                        />
+                        <Globe className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        ใส่ลิงก์ HTTPS สำหรับโลโก้สินค้า (แสดงในรายการสินค้า)
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleUploadLogo}
+                        disabled={
+                          uploadingLogo ||
+                          !(
+                            typeof formData.imageUrl === "string" &&
+                            formData.imageUrl.trim()
+                          )
                         }
-                        placeholder="https://..."
-                        className="w-full bg-gray-50 border-[2px] border-black pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
-                      />
-                      <Globe className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                        className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {uploadingLogo ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>กำลังอัปโหลด...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4" />
+                            <span>อัปโหลดไปยัง Storage</span>
+                          </>
+                        )}
+                      </button>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      ใส่ลิงก์ HTTPS ที่ปลอดภัยสำหรับรูปภาพสินค้า
-                    </p>
+                  </div>
+
+                  <div className="w-full md:w-48 shrink-0">
+                    <label className="block text-sm font-medium text-gray-600 mb-2 text-center md:text-left">
+                      ดูตัวอย่างโลโก้
+                    </label>
+                    <div className="aspect-square border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
+                      {formData.imageUrl && !imageError ? (
+                        <img
+                          src={formData.imageUrl}
+                          alt="Logo Preview"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
+                          onError={() => setImageError(true)}
+                        />
+                      ) : (
+                        <div className="text-center p-4">
+                          <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <span className="text-xs text-gray-500 block">
+                            {formData.imageUrl
+                              ? "โหลดรูปภาพไม่สำเร็จ"
+                              : "ยังไม่มีรูปภาพ"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="w-full md:w-48 shrink-0">
-                  <label className="block text-sm font-medium text-gray-600 mb-2 text-center md:text-left">
-                    ดูตัวอย่าง
-                  </label>
-                  <div className="aspect-square border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
-                    {formData.imageUrl && !imageError ? (
-                      <img
-                        src={formData.imageUrl}
-                        alt="Preview"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
-                        onError={() => setImageError(true)}
-                      />
-                    ) : (
-                      <div className="text-center p-4">
-                        <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <span className="text-xs text-gray-500 block">
-                          {formData.imageUrl
-                            ? "โหลดรูปภาพไม่สำเร็จ"
-                            : "ยังไม่มีรูปภาพ"}
-                        </span>
+                {/* Cover Image */}
+                <div className="flex flex-col md:flex-row gap-6 pt-6 border-t-2 border-gray-200">
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        ลิงก์รูปภาพหน้าปก (Cover Image)
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={formData.coverImageUrl}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              coverImageUrl: e.target.value,
+                            })
+                          }
+                          placeholder="https://..."
+                          className="w-full bg-gray-50 border-[2px] border-black pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                        />
+                        <Globe className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
                       </div>
-                    )}
+                      <p className="text-xs text-gray-500 mt-2">
+                        ใส่ลิงก์ HTTPS สำหรับรูปภาพหน้าปก
+                        (แสดงในหน้ารายละเอียดสินค้า)
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleUploadCover}
+                        disabled={
+                          uploadingCover ||
+                          !(
+                            typeof formData.coverImageUrl === "string" &&
+                            formData.coverImageUrl.trim()
+                          )
+                        }
+                        className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {uploadingCover ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>กำลังอัปโหลด...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4" />
+                            <span>อัปโหลดไปยัง Storage</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="w-full md:w-64 shrink-0">
+                    <label className="block text-sm font-medium text-gray-600 mb-2 text-center md:text-left">
+                      ดูตัวอย่างหน้าปก
+                    </label>
+                    <div className="aspect-video border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
+                      {formData.coverImageUrl && !coverImageError ? (
+                        <img
+                          src={formData.coverImageUrl}
+                          alt="Cover Preview"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
+                          onError={() => setCoverImageError(true)}
+                        />
+                      ) : (
+                        <div className="text-center p-4">
+                          <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <span className="text-xs text-gray-500 block">
+                            {formData.coverImageUrl
+                              ? "โหลดรูปภาพไม่สำเร็จ"
+                              : "ยังไม่มีรูปภาพ"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

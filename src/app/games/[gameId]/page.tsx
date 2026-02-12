@@ -45,6 +45,7 @@ interface GameDetails {
   description: string;
   longDescription?: string;
   mainImage: string;
+  coverImage?: string;
   category: string;
   developer?: string;
   publisher?: string;
@@ -114,6 +115,7 @@ function transformProductToGameDetails(
     mainImage:
       product.imageUrl ||
       `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+    coverImage: product.coverImageUrl,
     category:
       product.category?.name ||
       (product.productType === "DIRECT_TOPUP" ? "Direct Top Up" : "Gift Card"),
@@ -542,10 +544,11 @@ export default function GameDetailsPage() {
         className="bg-white border-[3px] border-black overflow-hidden mb-8"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
-        <div className="relative h-80 md:h-96">
-          {/* Main banner image */}
+        <div className="relative h-80 md:h-96 overflow-hidden">
+          {/* Main banner image - cover full area with crop */}
           <Image
             src={
+              game.coverImage ||
               (game.screenshots && game.screenshots.length > 0
                 ? game.screenshots[0]
                 : game.mainImage) ||
@@ -554,6 +557,7 @@ export default function GameDetailsPage() {
             alt={game.title}
             fill
             className="object-cover"
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
 

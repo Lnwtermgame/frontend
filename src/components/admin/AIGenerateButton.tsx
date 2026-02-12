@@ -159,7 +159,7 @@ export default function AIGenerateButton({
             timestamp: new Date(),
             type: "error",
             message:
-              "Z.ai API key not configured. Please add NEXT_PUBLIC_ZAI_API_KEY to your .env.local file.",
+              "Z.ai API key not configured. Please add NEXT_PUBLIC_ZAI_API_KEY to your .env file.",
           },
         ],
         isGenerating: false,
@@ -216,7 +216,7 @@ export default function AIGenerateButton({
         onClick={handleGenerate}
         disabled={disabled || progress.isGenerating}
         className="group relative inline-flex items-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden hover:-translate-y-0.5"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         {progress.isGenerating ? (
           <>
@@ -247,7 +247,7 @@ export default function AIGenerateButton({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               className="bg-white border-[3px] border-black w-full max-w-2xl max-h-[85vh] overflow-hidden"
-              style={{ boxShadow: '8px 8px 0 0 #000000' }}
+              style={{ boxShadow: "8px 8px 0 0 #000000" }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -286,7 +286,9 @@ export default function AIGenerateButton({
               {/* Progress Status */}
               <div className="px-5 py-4 border-b-[2px] border-gray-200 bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-gray-600 font-medium">สถานะ:</span>
+                  <span className="text-sm text-gray-600 font-medium">
+                    สถานะ:
+                  </span>
                   <span
                     className={`text-sm font-bold ${
                       progress.stage === "completed"
@@ -445,13 +447,13 @@ export default function AIGenerateButton({
                   <div className="flex flex-col gap-3">
                     <div className="p-3 bg-red-100 border-[3px] border-red-500">
                       <p className="text-sm text-red-600 font-medium">
-                        กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env.local
+                        กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
                       </p>
                     </div>
                     <button
                       onClick={() => setIsOpen(false)}
                       className="w-full py-2.5 bg-gray-200 hover:bg-gray-300 text-black border-[3px] border-black font-bold transition-all"
-                      style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
                       ปิด
                     </button>
@@ -468,7 +470,7 @@ export default function AIGenerateButton({
                       <button
                         onClick={handleRetry}
                         className="flex-1 py-2.5 bg-gray-200 hover:bg-gray-300 text-black border-[3px] border-black font-bold transition-all flex items-center justify-center gap-2"
-                        style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         <RefreshCw className="w-4 h-4" />
                         <span>สร้างใหม่</span>
@@ -476,7 +478,7 @@ export default function AIGenerateButton({
                       <button
                         onClick={() => setIsOpen(false)}
                         className="flex-1 py-2.5 bg-brutal-pink hover:bg-brutal-pink/90 text-white border-[3px] border-black font-bold transition-all"
-                        style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         เสร็จสิ้น
                       </button>
@@ -493,7 +495,7 @@ export default function AIGenerateButton({
                       <button
                         onClick={handleRetry}
                         className="flex-1 py-2.5 bg-gray-200 hover:bg-gray-300 text-black border-[3px] border-black font-bold transition-all flex items-center justify-center gap-2"
-                        style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         <RefreshCw className="w-4 h-4" />
                         <span>ลองใหม่</span>
@@ -501,7 +503,7 @@ export default function AIGenerateButton({
                       <button
                         onClick={() => setIsOpen(false)}
                         className="flex-1 py-2.5 bg-gray-400 hover:bg-gray-500 text-white border-[3px] border-black font-bold transition-all"
-                        style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         ปิด
                       </button>
@@ -519,7 +521,7 @@ export default function AIGenerateButton({
                   <button
                     onClick={handleGenerate}
                     className="w-full py-2.5 bg-brutal-pink hover:bg-brutal-pink/90 text-white border-[3px] border-black font-bold transition-all flex items-center justify-center gap-2"
-                    style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   >
                     <Wand2 className="w-4 h-4" />
                     <span>เริ่มสร้างเนื้อหา</span>

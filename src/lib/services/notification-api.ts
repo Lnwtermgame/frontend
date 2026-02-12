@@ -1,10 +1,10 @@
-import { notificationClient } from '@/lib/client/gateway';
+import { notificationClient } from "@/lib/client/gateway";
 
 export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'ORDER' | 'PAYMENT' | 'PROMOTION' | 'SYSTEM';
+  type: "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM";
   isRead: boolean;
   data?: Record<string, any>;
   createdAt: string;
@@ -61,38 +61,61 @@ export interface TestPushResponse {
 }
 
 class NotificationApiService {
-  async getNotifications(page = 1, limit = 20, unreadOnly = false): Promise<NotificationsListResponse> {
+  async getNotifications(
+    page = 1,
+    limit = 20,
+    unreadOnly = false,
+  ): Promise<NotificationsListResponse> {
     const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
-    if (unreadOnly) params.append('unreadOnly', 'true');
+    params.append("page", String(page));
+    params.append("limit", String(limit));
+    if (unreadOnly) params.append("unreadOnly", "true");
 
-    const response = await notificationClient.get<NotificationsListResponse>(`/api/notifications?${params}`);
+    const response = await notificationClient.get<NotificationsListResponse>(
+      `/api/notifications?${params}`,
+    );
     return response.data;
   }
 
   async markAsRead(notificationId: string): Promise<NotificationResponse> {
-    const response = await notificationClient.put<NotificationResponse>(`/api/notifications/${notificationId}/read`);
+    const response = await notificationClient.put<NotificationResponse>(
+      `/api/notifications/${notificationId}/read`,
+    );
     return response.data;
   }
 
   async markAllAsRead(): Promise<NotificationResponse> {
-    const response = await notificationClient.put<NotificationResponse>('/api/notifications/read-all');
+    const response = await notificationClient.put<NotificationResponse>(
+      "/api/notifications/read-all",
+    );
     return response.data;
   }
 
-  async deleteNotification(notificationId: string): Promise<NotificationResponse> {
-    const response = await notificationClient.delete<NotificationResponse>(`/api/notifications/${notificationId}`);
+  async deleteNotification(
+    notificationId: string,
+  ): Promise<NotificationResponse> {
+    const response = await notificationClient.delete<NotificationResponse>(
+      `/api/notifications/${notificationId}`,
+    );
     return response.data;
   }
 
   async getPreferences(): Promise<NotificationPreferencesResponse> {
-    const response = await notificationClient.get<NotificationPreferencesResponse>('/api/notifications/preferences');
+    const response =
+      await notificationClient.get<NotificationPreferencesResponse>(
+        "/api/notifications/preferences",
+      );
     return response.data;
   }
 
-  async updatePreferences(preferences: Partial<NotificationPreferences>): Promise<NotificationPreferencesResponse> {
-    const response = await notificationClient.put<NotificationPreferencesResponse>('/api/notifications/preferences', preferences);
+  async updatePreferences(
+    preferences: Partial<NotificationPreferences>,
+  ): Promise<NotificationPreferencesResponse> {
+    const response =
+      await notificationClient.put<NotificationPreferencesResponse>(
+        "/api/notifications/preferences",
+        preferences,
+      );
     return response.data;
   }
 
@@ -100,42 +123,57 @@ class NotificationApiService {
 
   async getVapidPublicKey(): Promise<string | null> {
     try {
-      const response = await notificationClient.get<VapidKeyResponse>('/api/push/vapid-key');
+      const response = await notificationClient.get<VapidKeyResponse>(
+        "/api/push/vapid-key",
+      );
       return response.data.data.publicKey;
     } catch {
       return null;
     }
   }
 
-  async subscribePush(subscription: PushSubscriptionData): Promise<NotificationResponse> {
-    const response = await notificationClient.post<NotificationResponse>('/api/push/subscribe', { subscription });
+  async subscribePush(
+    subscription: PushSubscriptionData,
+  ): Promise<NotificationResponse> {
+    const response = await notificationClient.post<NotificationResponse>(
+      "/api/push/subscribe",
+      { subscription },
+    );
     return response.data;
   }
 
   async unsubscribePush(endpoint: string): Promise<NotificationResponse> {
-    const response = await notificationClient.post<NotificationResponse>('/api/push/unsubscribe', { endpoint });
+    const response = await notificationClient.post<NotificationResponse>(
+      "/api/push/unsubscribe",
+      { endpoint },
+    );
     return response.data;
   }
 
   async unsubscribeAllPush(): Promise<NotificationResponse> {
-    const response = await notificationClient.post<NotificationResponse>('/api/push/unsubscribe-all');
+    const response = await notificationClient.post<NotificationResponse>(
+      "/api/push/unsubscribe-all",
+    );
     return response.data;
   }
 
   async testPush(): Promise<TestPushResponse> {
-    const response = await notificationClient.post<TestPushResponse>('/api/push/test');
+    const response =
+      await notificationClient.post<TestPushResponse>("/api/push/test");
     return response.data;
   }
 
   getErrorMessage(error: unknown): string {
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { data?: { error?: { message?: string } } } };
-      return axiosError.response?.data?.error?.message || 'An error occurred';
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as {
+        response?: { data?: { error?: { message?: string } } };
+      };
+      return axiosError.response?.data?.error?.message || "An error occurred";
     }
     if (error instanceof Error) {
       return error.message;
     }
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 }
 
@@ -143,7 +181,9 @@ export const notificationApi = new NotificationApiService();
 
 // ==================== WebSocket ====================
 
-const WS_URL = process.env.NEXT_PUBLIC_NOTIFICATION_WS_URL || 'ws://localhost:3006/ws/notifications';
+const WS_URL =
+  process.env.NEXT_PUBLIC_NOTIFICATION_WS_URL ||
+  "ws://localhost:3006/ws/notifications";
 
 export class NotificationWebSocket {
   private ws: WebSocket | null = null;
@@ -166,25 +206,25 @@ export class NotificationWebSocket {
   connect(token: string): void {
     // Prevent multiple simultaneous connection attempts
     if (this.isConnecting) {
-      console.log('[WebSocket] Connection already in progress, skipping');
+      console.log("[WebSocket] Connection already in progress, skipping");
       return;
     }
 
     // Don't reconnect if already connected
     if (this.ws?.readyState === WebSocket.OPEN) {
-      console.log('[WebSocket] Already connected');
+      console.log("[WebSocket] Already connected");
       return;
     }
 
     this.token = token;
     this.reconnectAttempts = 0;
-    console.log('[WebSocket] Connecting with token...');
+    console.log("[WebSocket] Connecting with token...");
     this.connectInternal();
   }
 
   private connectInternal(): void {
-    if (!this.token || typeof window === 'undefined') {
-      console.log('[WebSocket] Cannot connect - no token or not in browser');
+    if (!this.token || typeof window === "undefined") {
+      console.log("[WebSocket] Cannot connect - no token or not in browser");
       return;
     }
 
@@ -197,11 +237,14 @@ export class NotificationWebSocket {
 
     try {
       const wsUrl = `${WS_URL}?token=${this.token}`;
-      console.log('[WebSocket] Connecting to:', wsUrl.replace(/token=[^&]+/, 'token=***'));
+      console.log(
+        "[WebSocket] Connecting to:",
+        wsUrl.replace(/token=[^&]+/, "token=***"),
+      );
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        console.log('[WebSocket] Connected to notification server');
+        console.log("[WebSocket] Connected to notification server");
         this.isConnecting = false;
         this.reconnectAttempts = 0;
         this.startPingInterval();
@@ -213,12 +256,12 @@ export class NotificationWebSocket {
           const message = JSON.parse(event.data);
           this.handleMessage(message);
         } catch (error) {
-          console.error('[WebSocket] Failed to parse message:', error);
+          console.error("[WebSocket] Failed to parse message:", error);
         }
       };
 
       this.ws.onclose = () => {
-        console.log('[WebSocket] Disconnected');
+        console.log("[WebSocket] Disconnected");
         this.isConnecting = false;
         this.stopPingInterval();
         this.onDisconnect?.();
@@ -226,12 +269,12 @@ export class NotificationWebSocket {
       };
 
       this.ws.onerror = (error) => {
-        console.error('[WebSocket] Error:', error);
+        console.error("[WebSocket] Error:", error);
         this.isConnecting = false;
         this.onError?.(error);
       };
     } catch (error) {
-      console.error('[WebSocket] Failed to connect:', error);
+      console.error("[WebSocket] Failed to connect:", error);
       this.isConnecting = false;
       this.attemptReconnect();
     }
@@ -252,14 +295,16 @@ export class NotificationWebSocket {
 
   private attemptReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('[WebSocket] Max reconnection attempts reached');
+      console.log("[WebSocket] Max reconnection attempts reached");
       return;
     }
 
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
 
-    console.log(`[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+    console.log(
+      `[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`,
+    );
 
     setTimeout(() => {
       this.connectInternal();
@@ -268,29 +313,32 @@ export class NotificationWebSocket {
 
   private handleMessage(message: { type: string; data: any }): void {
     switch (message.type) {
-      case 'initial':
+      case "initial":
         this.onUnreadCountChange?.(message.data.unreadCount);
         break;
 
-      case 'new_notification':
-        this.onNotification?.(message.data.notification, message.data.unreadCount);
+      case "new_notification":
+        this.onNotification?.(
+          message.data.notification,
+          message.data.unreadCount,
+        );
         this.onUnreadCountChange?.(message.data.unreadCount);
         break;
 
-      case 'notification_read':
+      case "notification_read":
         this.onNotificationRead?.(message.data.notificationId);
         break;
 
-      case 'all_notifications_read':
+      case "all_notifications_read":
         this.onAllNotificationsRead?.();
         break;
 
-      case 'pong':
+      case "pong":
         // Keep-alive response
         break;
 
       default:
-        console.warn('[WebSocket] Unknown message type:', message.type);
+        console.warn("[WebSocket] Unknown message type:", message.type);
     }
   }
 
@@ -298,21 +346,21 @@ export class NotificationWebSocket {
    * Mark notification as read
    */
   markAsRead(notificationId: string): void {
-    this.send({ type: 'mark_as_read', data: { notificationId } });
+    this.send({ type: "mark_as_read", data: { notificationId } });
   }
 
   /**
    * Mark all notifications as read
    */
   markAllAsRead(): void {
-    this.send({ type: 'mark_all_read', data: {} });
+    this.send({ type: "mark_all_read", data: {} });
   }
 
   /**
    * Send ping to keep connection alive
    */
   ping(): void {
-    this.send({ type: 'ping', data: {} });
+    this.send({ type: "ping", data: {} });
   }
 
   private send(message: { type: string; data: any }): void {

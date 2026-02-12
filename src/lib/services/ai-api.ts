@@ -16,15 +16,15 @@ export interface DebugLog {
 // Generation progress interface
 export interface GenerationProgress {
   stage:
-  | "idle"
-  | "preparing"
-  | "generating_description"
-  | "generating_short_description"
-  | "generating_meta"
-  | "generating_game_details"
-  | "parsing"
-  | "completed"
-  | "error";
+    | "idle"
+    | "preparing"
+    | "generating_description"
+    | "generating_short_description"
+    | "generating_meta"
+    | "generating_game_details"
+    | "parsing"
+    | "completed"
+    | "error";
   currentField: string;
   logs: DebugLog[];
   isGenerating: boolean;
@@ -114,7 +114,11 @@ class AiService {
 
   // Check if API key is configured
   isConfigured(): boolean {
-    return !!ZAI_API_KEY && ZAI_API_KEY.length > 0 && ZAI_API_KEY !== "your_api_key_here";
+    return (
+      !!ZAI_API_KEY &&
+      ZAI_API_KEY.length > 0 &&
+      ZAI_API_KEY !== "your_api_key_here"
+    );
   }
 
   // Get API configuration status for debugging
@@ -150,7 +154,7 @@ class AiService {
 
     if (!this.isConfigured()) {
       const error =
-        "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env.local file.";
+        "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env file.";
       logs.push(this.createLog("error", error, { configStatus }));
       progress = {
         ...progress,
@@ -205,61 +209,105 @@ class AiService {
       let description = choice.message.content?.trim() || "";
 
       // Handle reasoning models - always try to extract better content from reasoning
-      const reasoning = (choice.message as any).reasoning_content as string | undefined;
+      const reasoning = (choice.message as any).reasoning_content as
+        | string
+        | undefined;
       if (reasoning) {
         // Check if content is too short, empty, or ends abruptly (truncated)
         const contentTooShort = !description || description.length < 150;
-        const contentEndsAbruptly = description && (
-          description.endsWith('...') ||
-          description.endsWith('   ') ||
-          /\d+\.$/.test(description) || // Ends with a number (like "1. ")
-          /:$/.test(description) // Ends with colon
-        );
+        const contentEndsAbruptly =
+          description &&
+          (description.endsWith("...") ||
+            description.endsWith("   ") ||
+            /\d+\.$/.test(description) || // Ends with a number (like "1. ")
+            /:$/.test(description)); // Ends with colon
         const needsExtraction = contentTooShort || contentEndsAbruptly;
 
         if (needsExtraction) {
           logs.push(
-            this.createLog("warning", "Content incomplete, extracting from reasoning", {
-              contentLength: description?.length || 0,
-              contentEndsAbruptly,
-              reasoningLength: reasoning.length,
-            }),
+            this.createLog(
+              "warning",
+              "Content incomplete, extracting from reasoning",
+              {
+                contentLength: description?.length || 0,
+                contentEndsAbruptly,
+                reasoningLength: reasoning.length,
+              },
+            ),
           );
           onProgress?.({ ...progress, logs: [...logs] });
 
           // Try to extract from "Final Polish", "Final Selection", or "Refined Draft"
-          const finalPolishMatch = reasoning.match(/\*Final Polish\*:\s*([\s\S]*?)(?=\n\n|$)/i);
-          const finalSelectionMatch = reasoning.match(/\*Final Selection\*:\s*"?([\s\S]*?)(?:"?\s*\n\n|$)/i);
-          const refinedMatch = reasoning.match(/\*Refined Draft\*:\s*([\s\S]*?)(?=\n\n\d+\.|$)/i);
+          const finalPolishMatch = reasoning.match(
+            /\*Final Polish\*:\s*([\s\S]*?)(?=\n\n|$)/i,
+          );
+          const finalSelectionMatch = reasoning.match(
+            /\*Final Selection\*:\s*"?([\s\S]*?)(?:"?\s*\n\n|$)/i,
+          );
+          const refinedMatch = reasoning.match(
+            /\*Refined Draft\*:\s*([\s\S]*?)(?=\n\n\d+\.|$)/i,
+          );
 
           let extractedContent = "";
           if (finalPolishMatch) {
             extractedContent = finalPolishMatch[1].trim();
-            logs.push(this.createLog("success", "Extracted content from 'Final Polish' section"));
+            logs.push(
+              this.createLog(
+                "success",
+                "Extracted content from 'Final Polish' section",
+              ),
+            );
           } else if (finalSelectionMatch) {
             extractedContent = finalSelectionMatch[1].trim();
-            logs.push(this.createLog("success", "Extracted content from 'Final Selection' section"));
+            logs.push(
+              this.createLog(
+                "success",
+                "Extracted content from 'Final Selection' section",
+              ),
+            );
           } else if (refinedMatch) {
             extractedContent = refinedMatch[1].trim();
-            logs.push(this.createLog("success", "Extracted content from 'Refined Draft' section"));
+            logs.push(
+              this.createLog(
+                "success",
+                "Extracted content from 'Refined Draft' section",
+              ),
+            );
           } else {
             // Try to extract from any numbered draft section
-            const draftMatch = reasoning.match(/\d+\.\s*\*\*[^*]+\*\*:\s*([\s\S]*?)(?=\n\n\d+\.|$)/);
+            const draftMatch = reasoning.match(
+              /\d+\.\s*\*\*[^*]+\*\*:\s*([\s\S]*?)(?=\n\n\d+\.|$)/,
+            );
             if (draftMatch) {
               extractedContent = draftMatch[1].trim();
-              logs.push(this.createLog("success", "Extracted content from draft section"));
+              logs.push(
+                this.createLog(
+                  "success",
+                  "Extracted content from draft section",
+                ),
+              );
             } else {
               // Last resort: use the last substantial paragraph of reasoning
-              const paragraphs = reasoning.split('\n\n').filter(p => p.trim().length > 100);
+              const paragraphs = reasoning
+                .split("\n\n")
+                .filter((p) => p.trim().length > 100);
               if (paragraphs.length > 0) {
                 extractedContent = paragraphs[paragraphs.length - 1].trim();
-                logs.push(this.createLog("success", "Extracted content from last paragraph"));
+                logs.push(
+                  this.createLog(
+                    "success",
+                    "Extracted content from last paragraph",
+                  ),
+                );
               }
             }
           }
 
           // Use extracted content if it's better
-          if (extractedContent && extractedContent.length > (description?.length || 0)) {
+          if (
+            extractedContent &&
+            extractedContent.length > (description?.length || 0)
+          ) {
             description = extractedContent;
           }
         }
@@ -301,12 +349,20 @@ class AiService {
       );
       const shortDescResponse = await this.callZaiApi(shortDescPrompt);
       const shortDescChoice = shortDescResponse.choices[0];
-      let shortDescription = (shortDescChoice.message.content?.trim() || "").substring(0, 255);
+      let shortDescription = (
+        shortDescChoice.message.content?.trim() || ""
+      ).substring(0, 255);
 
       // Handle reasoning models
-      if (!shortDescription && (shortDescChoice.message as any).reasoning_content) {
-        const reasoning = (shortDescChoice.message as any).reasoning_content as string;
-        const draftMatch = reasoning.match(/\d+\.\s*\*?[^*]+\*?:\s*([\s\S]*?)(?=\n\n\d+\.|$)/);
+      if (
+        !shortDescription &&
+        (shortDescChoice.message as any).reasoning_content
+      ) {
+        const reasoning = (shortDescChoice.message as any)
+          .reasoning_content as string;
+        const draftMatch = reasoning.match(
+          /\d+\.\s*\*?[^*]+\*?:\s*([\s\S]*?)(?=\n\n\d+\.|$)/,
+        );
         if (draftMatch) {
           shortDescription = draftMatch[1].trim().substring(0, 255);
         }
@@ -345,15 +401,20 @@ class AiService {
 
       // Handle reasoning models
       if (!metaText && (metaChoice.message as any).reasoning_content) {
-        const reasoning = (metaChoice.message as any).reasoning_content as string;
+        const reasoning = (metaChoice.message as any)
+          .reasoning_content as string;
         // Extract from the last section or any explicit format
-        const metaMatch = reasoning.match(/META_TITLE:\s*([^\n]+)\s*\n\s*META_DESCRIPTION:\s*([^\n]+)\s*\n\s*META_KEYWORDS:\s*([^\n]+)/i);
+        const metaMatch = reasoning.match(
+          /META_TITLE:\s*([^\n]+)\s*\n\s*META_DESCRIPTION:\s*([^\n]+)\s*\n\s*META_KEYWORDS:\s*([^\n]+)/i,
+        );
         if (metaMatch) {
           metaText = `META_TITLE: ${metaMatch[1]}\nMETA_DESCRIPTION: ${metaMatch[2]}\nMETA_KEYWORDS: ${metaMatch[3]}`;
         }
       }
 
-      const metaContent = this.parseMetaContent(metaText || metaChoice.message.content?.trim() || "");
+      const metaContent = this.parseMetaContent(
+        metaText || metaChoice.message.content?.trim() || "",
+      );
 
       logs.push(
         this.createLog("success", "Meta content generated", {
@@ -384,22 +445,34 @@ class AiService {
       let gameDetailsText = gameDetailsChoice.message.content?.trim() || "";
 
       // Handle reasoning models
-      if (!gameDetailsText && (gameDetailsChoice.message as any).reasoning_content) {
-        const reasoning = (gameDetailsChoice.message as any).reasoning_content as string;
+      if (
+        !gameDetailsText &&
+        (gameDetailsChoice.message as any).reasoning_content
+      ) {
+        const reasoning = (gameDetailsChoice.message as any)
+          .reasoning_content as string;
         // Try to extract from reasoning
         const devMatch = reasoning.match(/DEVELOPER:\s*([^\n]+)/i);
         const pubMatch = reasoning.match(/PUBLISHER:\s*([^\n]+)/i);
         const platMatch = reasoning.match(/PLATFORMS:\s*([^\n]+)/i);
         if (devMatch || pubMatch || platMatch) {
           gameDetailsText = [
-            devMatch ? `DEVELOPER: ${devMatch[1].trim()}` : "DEVELOPER: Unknown",
-            pubMatch ? `PUBLISHER: ${pubMatch[1].trim()}` : "PUBLISHER: Unknown",
-            platMatch ? `PLATFORMS: ${platMatch[1].trim()}` : "PLATFORMS: iOS, Android",
+            devMatch
+              ? `DEVELOPER: ${devMatch[1].trim()}`
+              : "DEVELOPER: Unknown",
+            pubMatch
+              ? `PUBLISHER: ${pubMatch[1].trim()}`
+              : "PUBLISHER: Unknown",
+            platMatch
+              ? `PLATFORMS: ${platMatch[1].trim()}`
+              : "PLATFORMS: iOS, Android",
           ].join("\n");
         }
       }
 
-      const gameDetails = this.parseGameDetailsContent(gameDetailsText || gameDetailsChoice.message.content?.trim() || "");
+      const gameDetails = this.parseGameDetailsContent(
+        gameDetailsText || gameDetailsChoice.message.content?.trim() || "",
+      );
 
       logs.push(
         this.createLog("success", "Game details generated", {
@@ -578,10 +651,11 @@ class AiService {
           return new Error(
             "Cannot connect to Z.ai API. Please check your network connection.",
           );
-        } else if (error.code === "ETIMEDOUT" || error.code === "ECONNABORTED") {
-          return new Error(
-            "Request to Z.ai API timed out. Please try again.",
-          );
+        } else if (
+          error.code === "ETIMEDOUT" ||
+          error.code === "ECONNABORTED"
+        ) {
+          return new Error("Request to Z.ai API timed out. Please try again.");
         } else if (!ZAI_API_KEY) {
           return new Error(
             "Z.ai API key is missing. Please set NEXT_PUBLIC_ZAI_API_KEY.",
@@ -867,13 +941,25 @@ PLATFORMS: iOS, Android, PC
     if (platforms.length === 0) {
       // Try to infer from content
       const contentLower = content.toLowerCase();
-      if (contentLower.includes("mobile") || contentLower.includes("ios") || contentLower.includes("android")) {
+      if (
+        contentLower.includes("mobile") ||
+        contentLower.includes("ios") ||
+        contentLower.includes("android")
+      ) {
         platforms.push("iOS", "Android");
       }
-      if (contentLower.includes("pc") || contentLower.includes("computer") || contentLower.includes("steam")) {
+      if (
+        contentLower.includes("pc") ||
+        contentLower.includes("computer") ||
+        contentLower.includes("steam")
+      ) {
         platforms.push("PC");
       }
-      if (contentLower.includes("console") || contentLower.includes("playstation") || contentLower.includes("xbox")) {
+      if (
+        contentLower.includes("console") ||
+        contentLower.includes("playstation") ||
+        contentLower.includes("xbox")
+      ) {
         platforms.push("Console");
       }
       // Default to mobile if nothing found (most common for top-ups)

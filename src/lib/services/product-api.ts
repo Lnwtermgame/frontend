@@ -88,6 +88,7 @@ export interface Product {
     slug: string;
   };
   imageUrl?: string;
+  coverImageUrl?: string;
   images?: ProductImage[];
   productType: "CARD" | "DIRECT_TOPUP";
   seagmProductId?: string;

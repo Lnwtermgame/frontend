@@ -7,7 +7,6 @@ import {
   Search,
   Filter,
   Gamepad2,
-  Star,
   Zap,
   Globe,
   Flame,
@@ -28,6 +27,7 @@ interface GameProduct {
   category: string;
   publisher: string;
   mainImage: string;
+  coverImage?: string;
   rating: number;
   price: number;
   discountPercent?: number;
@@ -43,7 +43,7 @@ function getCategoryIcon(category: string) {
     case "moba":
       return <TrendingUp size={16} className="text-brutal-green" />;
     case "rpg":
-      return <Star size={16} className="text-brutal-yellow" />;
+      return <TrendingUp size={16} className="text-brutal-yellow" />;
     case "adventure":
       return <Globe size={16} className="text-brutal-blue" />;
     default:
@@ -483,18 +483,6 @@ function DirectTopupContent() {
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
-
-                        <div
-                          className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold"
-                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                        >
-                          <Star
-                            size={10}
-                            className="mr-0.5 text-brutal-yellow"
-                            fill="currentColor"
-                          />{" "}
-                          {game.rating}
-                        </div>
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

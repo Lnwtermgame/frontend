@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2 } from "lucide-react";
 
 interface ProductDescriptionProps {
   description: string;
@@ -51,32 +50,71 @@ export function ProductDescription({
           );
         }
 
-        // Check if paragraph is a list (starts with number or dash)
-        if (paragraph.match(/^(\d+\.\s+|-\s+)/m)) {
-          const items = paragraph.split("\n").filter((line) => line.trim());
-          return (
-            <ul key={index} className="space-y-2 mb-4">
-              {items.map((item, itemIndex) => {
-                const itemContent = item.replace(/^(\d+\.\s+|-\s+)/, "");
-                return (
-                  <li
-                    key={itemIndex}
-                    className="flex items-start gap-2 text-gray-700"
-                  >
-                    <CheckCircle2 className="w-5 h-5 text-brutal-green shrink-0 mt-0.5" />
-                    <span>{parseContent(itemContent)}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          );
-        }
+        // Mixed content parser: Split paragraph into text, ul, and ol blocks
+        const lines = paragraph.split("\n").filter((line) => line.trim());
+        const blocks: { type: "text" | "ul" | "ol"; items: string[] }[] = [];
+        let currentBlock: {
+          type: "text" | "ul" | "ol";
+          items: string[];
+        } | null = null;
 
-        // Regular paragraph
+        lines.forEach((line) => {
+          let lineType: "text" | "ul" | "ol" = "text";
+          if (line.match(/^-\s+/)) lineType = "ul";
+          else if (line.match(/^\d+\.\s+/)) lineType = "ol";
+
+          if (!currentBlock || currentBlock.type !== lineType) {
+            if (currentBlock) blocks.push(currentBlock);
+            currentBlock = { type: lineType, items: [line] };
+          } else {
+            currentBlock.items.push(line);
+          }
+        });
+        if (currentBlock) blocks.push(currentBlock);
+
         return (
-          <p key={index} className="text-gray-700 leading-relaxed mb-4">
-            {parseContent(paragraph)}
-          </p>
+          <div key={index} className="mb-4">
+            {blocks.map((block, blockIndex) => {
+              if (block.type === "ul") {
+                return (
+                  <ul
+                    key={blockIndex}
+                    className="list-disc pl-6 space-y-2 mb-4 text-gray-700"
+                  >
+                    {block.items.map((item, itemIndex) => {
+                      const itemContent = item.replace(/^-\s+/, "");
+                      return (
+                        <li key={itemIndex}>{parseContent(itemContent)}</li>
+                      );
+                    })}
+                  </ul>
+                );
+              } else if (block.type === "ol") {
+                return (
+                  <ol
+                    key={blockIndex}
+                    className="list-decimal pl-6 space-y-2 mb-4 text-gray-700"
+                  >
+                    {block.items.map((item, itemIndex) => {
+                      const itemContent = item.replace(/^\d+\.\s+/, "");
+                      return (
+                        <li key={itemIndex}>{parseContent(itemContent)}</li>
+                      );
+                    })}
+                  </ol>
+                );
+              } else {
+                return (
+                  <p
+                    key={blockIndex}
+                    className="text-gray-700 leading-relaxed mb-4"
+                  >
+                    {parseContent(block.items.join("\n"))}
+                  </p>
+                );
+              }
+            })}
+          </div>
         );
       })}
     </div>

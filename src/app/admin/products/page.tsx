@@ -32,6 +32,7 @@ import {
 } from "@/lib/services/product-api";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import AIGenerateAllButton from "@/components/admin/AIGenerateAllButton";
 
 export default function AdminProducts() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export default function AdminProducts() {
 
   // Lock body scroll when modal is open
   useEffect(() => {
-    if (isPriceModalOpen) {
+    if (isPriceModalOpen || isBulkPriceModalOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -77,7 +78,7 @@ export default function AdminProducts() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isPriceModalOpen]);
+  }, [isPriceModalOpen, isBulkPriceModalOpen]);
 
   // Fetch products and categories
   useEffect(() => {
@@ -416,6 +417,7 @@ export default function AdminProducts() {
 
           {/* Action Buttons */}
           <div className="flex gap-2 flex-wrap">
+            <AIGenerateAllButton products={products} categories={categories} />
             <button
               onClick={() => setIsBulkPriceModalOpen(true)}
               className="bg-yellow-400 border-[3px] border-black text-black flex items-center justify-center gap-2 px-4 py-2 hover:bg-yellow-500 transition-colors font-medium"

@@ -12,6 +12,7 @@ export interface FavoriteProduct {
     unitPrice: number;
     originPrice?: number;
     sellingPrice?: number;
+    discountRate?: number;
   }[];
 }
 

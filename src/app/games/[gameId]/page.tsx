@@ -38,6 +38,26 @@ import {
   SeagmField,
 } from "@/lib/services/product-api";
 
+// Field label translation map
+const FIELD_LABEL_MAP: Record<string, string> = {
+  "Player ID": "ไอดีผู้เล่น (Player ID)",
+  "User ID": "ไอดีผู้ใช้ (User ID)",
+  "Server ID": "เซิร์ฟเวอร์ (Server ID)",
+  "Zone ID": "รหัสโซน (Zone ID)",
+  "Role Name": "ชื่อตัวละคร",
+  "Character Name": "ชื่อตัวละคร",
+  "Character ID": "ไอดีตัวละคร",
+  Region: "ภูมิภาค",
+  Email: "อีเมล",
+  Phone: "เบอร์โทรศัพท์",
+  "Riot ID": "Riot ID",
+  Tag: "Tag",
+};
+
+const translateLabel = (label: string) => {
+  return FIELD_LABEL_MAP[label] || label;
+};
+
 // Game details interface matching the UI expectations
 interface GameDetails {
   id: string;
@@ -729,11 +749,11 @@ export default function GameDetailsPage() {
                             {option.title}
                           </h4>
 
-                          {option.parValue && option.parValueCurrency && (
+                          {/* {option.parValue && option.parValueCurrency && (
                             <p className="text-center text-gray-600 text-sm mb-2">
                               {option.parValue} {option.parValueCurrency}
                             </p>
-                          )}
+                          )} */}
 
                           <div className="text-center">
                             {option.originalPrice > option.price ? (
@@ -945,7 +965,7 @@ export default function GameDetailsPage() {
                         {option.fields.map((field) => (
                           <div key={field.name} className="mb-4">
                             <label className="block text-sm font-bold text-black mb-2">
-                              {field.label}
+                              {translateLabel(field.label)}
                               {field.required && (
                                 <span className="text-brutal-pink ml-1">*</span>
                               )}
@@ -959,7 +979,7 @@ export default function GameDetailsPage() {
                                 className="w-full bg-white border-[3px] border-black px-4 py-3 text-black focus:outline-none focus:ring-0"
                               >
                                 <option value="" className="bg-white">
-                                  เลือก{field.label}
+                                  เลือก{translateLabel(field.label)}
                                 </option>
                                 {field.options?.map((opt) => (
                                   <option
@@ -980,7 +1000,7 @@ export default function GameDetailsPage() {
                                 }
                                 placeholder={
                                   field.placeholder ||
-                                  `กรอก${field.label}ของคุณ`
+                                  `กรอก${translateLabel(field.label)}ของคุณ`
                                 }
                                 className="w-full bg-white border-[3px] border-black px-4 py-3 text-black focus:outline-none focus:ring-0"
                               />
@@ -1001,11 +1021,11 @@ export default function GameDetailsPage() {
                         <span className="text-black font-bold block">
                           {option.title}
                         </span>
-                        {option.parValue && option.parValueCurrency && (
+                        {/* {option.parValue && option.parValueCurrency && (
                           <span className="text-gray-600 text-sm">
                             {option.parValue} {option.parValueCurrency}
                           </span>
-                        )}
+                        )} */}
                       </div>
                     </div>
 

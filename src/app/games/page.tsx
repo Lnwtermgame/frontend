@@ -30,7 +30,7 @@ interface GameProduct {
   coverImage?: string;
   rating: number;
   price: number;
-  discountPercent?: number;
+  discountPercent?: number | undefined;
   platforms: string[];
 }
 
@@ -57,29 +57,28 @@ function transformProductToGame(product: Product): GameProduct {
   const publisher =
     product.gameDetails?.publisher || product.gameDetails?.developer;
 
-  // Get starting price from seagmTypes (lowest displayPrice: sellingPrice -> originPrice -> unitPrice)
+  // Get starting price from seagmTypes (lowest sellingPrice)
   const startingPrice =
     product.seagmTypes && product.seagmTypes.length > 0
       ? Math.min(
-          ...product.seagmTypes.map((t) =>
-            Number(t.sellingPrice ?? t.originPrice ?? t.unitPrice),
-          ),
+          ...product.seagmTypes
+            .filter((t) => t.sellingPrice && t.sellingPrice > 0)
+            .map((t) => Number(t.sellingPrice)),
         )
       : 0;
 
-  // Calculate discount from originPrice if available
-  const originPrice =
-    product.seagmTypes && product.seagmTypes.length > 0
-      ? Math.max(
-          ...product.seagmTypes.map((t) =>
-            Number(t.originPrice || t.unitPrice),
-          ),
-        )
-      : 0;
-  const discountPercent =
-    originPrice > startingPrice
-      ? Math.round(((originPrice - startingPrice) / originPrice) * 100)
-      : 0;
+  // Get max discount rate from seagmTypes (use discountRate from API)
+  let discountPercent: number | undefined = undefined;
+  if (product.seagmTypes && product.seagmTypes.length > 0) {
+    // Find the highest discount rate among all types
+    const maxDiscount = Math.max(
+      ...product.seagmTypes.map((t) => Number(t.discountRate || 0)),
+    );
+    // Only show if discount is between 1% and 99%
+    if (maxDiscount >= 1 && maxDiscount < 100) {
+      discountPercent = maxDiscount;
+    }
+  }
 
   return {
     id: product.id,
@@ -467,7 +466,7 @@ function DirectTopupContent() {
                       className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
                       style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     >
-                      {game.discountPercent && game.discountPercent > 0 ? (
+                      {game.discountPercent ? (
                         <div
                           className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
                           style={{ boxShadow: "2px 2px 0 0 #000000" }}

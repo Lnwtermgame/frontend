@@ -20,6 +20,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Upload,
+  Copy,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -34,10 +36,13 @@ export default function EditProductPage() {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [refreshingFields, setRefreshingFields] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [imageSearch, setImageSearch] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -70,9 +75,10 @@ export default function EditProductPage() {
 
       try {
         setLoading(true);
-        const [productRes, categoriesRes] = await Promise.all([
+        const [productRes, categoriesRes, productsRes] = await Promise.all([
           productApi.getProductById(id),
           productApi.getCategories(),
+          productApi.getProducts({ limit: 100, isActive: true }),
         ]);
 
         if (productRes.success) {
@@ -103,6 +109,10 @@ export default function EditProductPage() {
 
         if (categoriesRes.success) {
           setCategories(categoriesRes.data);
+        }
+
+        if (productsRes.success) {
+          setAllProducts(productsRes.data.filter((p) => p.id !== id));
         }
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -210,6 +220,28 @@ export default function EditProductPage() {
     });
 
     toast.success("AI สร้างเนื้อหาสำเร็จ!", {
+      duration: 3000,
+      position: "top-center",
+    });
+  };
+
+  const handleCopyImages = () => {
+    const selectedProduct = allProducts.find((p) => p.id === selectedProductId);
+    if (!selectedProduct) return;
+
+    const imageUrlToUse = selectedProduct.imageUrl || "";
+    if (!imageUrlToUse) {
+      toast.error("สินค้าที่เลือกไม่มีรูปภาพ");
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      imageUrl: imageUrlToUse,
+      coverImageUrl: imageUrlToUse,
+    }));
+
+    toast.success("คัดลอกรูปภาพจาก " + selectedProduct.name, {
       duration: 3000,
       position: "top-center",
     });
@@ -717,6 +749,63 @@ export default function EditProductPage() {
                         </div>
                       )}
                     </div>
+                  </div>
+                </div>
+
+                {/* Copy Images from Other Products */}
+                <div className="pt-6 border-t-2 border-gray-200">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="p-2 bg-purple-100 border-2 border-black text-purple-600">
+                      <Copy className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900">
+                      คัดลอกรูปภาพจากสินค้าอื่น
+                    </h3>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    เลือกสินค้าที่เป็นเกมเดียวกัน (คนละประเทศ)
+                    เพื่อนำรูปภาพมาใช้
+                  </p>
+                  <div className="flex gap-3">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="text"
+                        value={imageSearch}
+                        onChange={(e) => setImageSearch(e.target.value)}
+                        placeholder="ค้นหาชื่อสินค้า..."
+                        className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                      />
+                    </div>
+                    <select
+                      value={selectedProductId}
+                      onChange={(e) => setSelectedProductId(e.target.value)}
+                      className="flex-1 bg-gray-50 border-[2px] border-black px-3 py-2.5 text-sm text-gray-900 appearance-none focus:ring-2 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+                    >
+                      <option value="">เลือกสินค้า...</option>
+                      {allProducts
+                        .filter((p) =>
+                          imageSearch
+                            ? p.name
+                                .toLowerCase()
+                                .includes(imageSearch.toLowerCase())
+                            : true,
+                        )
+                        .map((p) => (
+                          <option key={p.id} value={p.id} className="bg-white">
+                            {p.name}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={handleCopyImages}
+                      disabled={!selectedProductId}
+                      className="px-4 py-2.5 bg-purple-600 text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      <Copy className="w-4 h-4" />
+                      <span>คัดลอก</span>
+                    </button>
                   </div>
                 </div>
               </div>

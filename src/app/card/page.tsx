@@ -29,6 +29,30 @@ interface CardProduct {
   image: string;
 }
 
+function getCategoryFlagCode(name: string): string | null {
+  const key = name.toLowerCase();
+  if (key.includes("us") || key.includes("united states") || key.includes("usa")) return "us";
+  if (key.includes("global")) return "un";
+  if (key.includes("thailand")) return "th";
+  if (key.includes("malaysia")) return "my";
+  if (key.includes("singapore")) return "sg";
+  if (key.includes("indonesia")) return "id";
+  if (key.includes("philippines")) return "ph";
+  if (key.includes("vietnam")) return "vn";
+  if (key.includes("china")) return "cn";
+  return null;
+}
+
+function sortGlobalOnTop<T extends { id: string; name: string }>(items: T[]): T[] {
+  const clone = [...items];
+  const idx = clone.findIndex((item) => item.name.toLowerCase() === "global" || item.id.toLowerCase() === "global");
+  if (idx > 1) {
+    const [globalItem] = clone.splice(idx, 1);
+    clone.splice(1, 0, globalItem);
+  }
+  return clone;
+}
+
 // Transform Product to CardProduct
 function transformProductToCard(product: Product): CardProduct {
   // Get starting price from types (lowest displayPrice)
@@ -138,7 +162,7 @@ export default function CardPage() {
               icon: getCategoryIcon(name),
             })),
           ];
-          setCategories(cats);
+          setCategories(sortGlobalOnTop(cats));
         }
       } catch (error) {
         console.error("Failed to fetch cards:", error);
@@ -205,15 +229,18 @@ export default function CardPage() {
                     whileHover={{ x: 3 }}
                   >
                     <div className="flex items-center gap-3">
-                      <span
-                        className={
-                          selectedCategory === category.id
-                            ? "text-black"
-                            : "text-gray-500"
-                        }
-                      >
-                        {category.icon}
-                      </span>
+                      {getCategoryFlagCode(category.name) ? (
+                        <img
+                          src={`https://flagcdn.com/${getCategoryFlagCode(category.name)}.svg`}
+                          alt={`${category.name} flag`}
+                          className="w-6 h-4 border border-black/10"
+                          loading="lazy"
+                          width={24}
+                          height={18}
+                        />
+                      ) : (
+                        <span className="fi fi-un text-lg" aria-hidden></span>
+                      )}
                       <span className="text-sm font-bold">{category.name}</span>
                     </div>
                     <span

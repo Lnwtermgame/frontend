@@ -32,6 +32,20 @@ interface GameProduct {
   price: number;
   discountPercent?: number | undefined;
   platforms: string[];
+  autoDelivery?: boolean;
+}
+
+function getCategoryFlagCode(name: string): string | null {
+  const key = name.toLowerCase();
+  if (key.includes("thailand")) return "th";
+  if (key.includes("malaysia")) return "my";
+  if (key.includes("singapore")) return "sg";
+  if (key.includes("indonesia")) return "id";
+  if (key.includes("philippines")) return "ph";
+  if (key.includes("vietnam")) return "vn";
+  if (key.includes("china")) return "cn";
+  if (key.includes("global")) return "un";
+  return null;
 }
 
 function getCategoryIcon(category: string) {
@@ -67,8 +81,13 @@ function transformProductToGame(product: Product): GameProduct {
 
   const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
 
-  // Discount is not available in public API
-  const discountPercent: number | undefined = undefined;
+  // Use the highest discountRate among active types (if any)
+  const discountRates = types
+    .map((t) => (typeof t.discountRate === "number" ? Number(t.discountRate) : undefined))
+    .filter((v): v is number => v !== undefined && !Number.isNaN(v));
+
+  const discountPercent: number | undefined =
+    discountRates.length > 0 ? Math.max(...discountRates) : undefined;
 
   return {
     id: product.id,
@@ -83,6 +102,7 @@ function transformProductToGame(product: Product): GameProduct {
     price: startingPrice,
     discountPercent: discountPercent,
     platforms: product.gameDetails?.platforms || ["PC", "Mobile"],
+    autoDelivery: product.gameDetails?.autoDelivery,
   };
 }
 
@@ -330,6 +350,18 @@ function DirectTopupContent() {
                     whileHover={{ x: 3 }}
                   >
                     <div className="flex items-center gap-3">
+                      {getCategoryFlagCode(category.name) ? (
+                        <img
+                          src={`https://flagcdn.com/${getCategoryFlagCode(category.name)}.svg`}
+                          alt={`${category.name} flag`}
+                          className="w-6 h-4 border border-black/10"
+                          loading="lazy"
+                          width={24}
+                          height={18}
+                        />
+                      ) : (
+                        <span className="fi fi-un text-lg" aria-hidden></span>
+                      )}
                       <span
                         className={
                           selectedCategory === category.id
@@ -472,6 +504,29 @@ function DirectTopupContent() {
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
+
+                        {game.autoDelivery && (
+                          <div
+                            className="absolute bottom-2 right-2 z-10"
+                            title="ส่งให้ทันทีหลังชำระเงิน"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 512"
+                              className="h-6 w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
+                              role="img"
+                              aria-label="ส่งให้ทันทีหลังชำระเงิน"
+                            >
+                              <g clipRule="evenodd" fillRule="evenodd">
+                                <circle cx="256" cy="256" r="256" fill="#ffc107" />
+                                <path
+                                  fill="#fff"
+                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
+                                />
+                              </g>
+                            </svg>
+                          </div>
+                        )}
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

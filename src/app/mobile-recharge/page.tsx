@@ -25,12 +25,27 @@ interface MobileProduct {
   coverImage?: string;
   rating: number;
   price: number;
+  discountPercent?: number;
+}
+
+// Map country name to ISO code for flagcdn SVGs
+function getCountryFlagCode(country: string): string | null {
+  const key = country.toLowerCase();
+  if (key.includes("thailand")) return "th";
+  if (key.includes("malaysia")) return "my";
+  if (key.includes("singapore")) return "sg";
+  if (key.includes("indonesia")) return "id";
+  if (key.includes("philippines")) return "ph";
+  if (key.includes("vietnam")) return "vn";
+  if (key.includes("china")) return "cn";
+  return null;
 }
 
 // Transform Product to MobileProduct
 function transformProductToMobile(product: Product): MobileProduct {
   // Use game details for region/country if available
-  const region = product.gameDetails?.region || "Unknown";
+  const regionRaw = product.gameDetails?.region || product.category?.slug || product.category?.name || "";
+  const regionCode = regionRaw.toLowerCase();
   const countryMap: Record<string, string> = {
     th: "Thailand",
     my: "Malaysia",
@@ -39,8 +54,16 @@ function transformProductToMobile(product: Product): MobileProduct {
     ph: "Philippines",
     vn: "Vietnam",
     cn: "China",
+    "mobile-recharge-th": "Thailand",
+    "mobile-recharge-my": "Malaysia",
+    "mobile-recharge-sg": "Singapore",
+    "mobile-recharge-id": "Indonesia",
+    "mobile-recharge-ph": "Philippines",
+    "mobile-recharge-vn": "Vietnam",
+    "mobile-recharge-cn": "China",
   };
-  const country = countryMap[region] || region.toUpperCase();
+
+  const country = countryMap[regionCode] || countryMap[regionCode.replace(/\(.*\)/, "")] || regionRaw || "Unknown";
 
   // Get starting price from types (lowest displayPrice)
   const types = product.types || [];
@@ -49,6 +72,14 @@ function transformProductToMobile(product: Product): MobileProduct {
     .map((t) => Number(t.displayPrice));
 
   const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
+
+  // Highest discount rate among types
+  const discountRates = types
+    .map((t) => (typeof t.discountRate === "number" ? Number(t.discountRate) : undefined))
+    .filter((v): v is number => v !== undefined && !Number.isNaN(v));
+
+  const discountPercent: number | undefined =
+    discountRates.length > 0 ? Math.max(...discountRates) : undefined;
 
   return {
     id: product.id,
@@ -61,6 +92,7 @@ function transformProductToMobile(product: Product): MobileProduct {
       `https://placehold.co/400x400/ffffff/000000?text=${encodeURIComponent(product.name)}`,
     rating: product.averageRating || 4.8,
     price: startingPrice,
+    discountPercent,
   };
 }
 
@@ -196,6 +228,18 @@ function MobileRechargeContent() {
                     whileHover={{ x: 3 }}
                   >
                     <div className="flex items-center gap-3">
+                      {getCountryFlagCode(country.name) ? (
+                        <img
+                          src={`https://flagcdn.com/${getCountryFlagCode(country.name)}.svg`}
+                          alt={`${country.name} flag`}
+                          className="w-6 h-4 border border-black/10"
+                          loading="lazy"
+                          width={24}
+                          height={18}
+                        />
+                      ) : (
+                        <span className="fi fi-un text-lg" aria-hidden></span>
+                      )}
                       <span className="text-sm font-bold">{country.name}</span>
                     </div>
                     <span
@@ -305,6 +349,15 @@ function MobileRechargeContent() {
                       className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
                       style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     >
+                      {product.discountPercent ? (
+                        <div
+                          className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
+                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                        >
+                          -{product.discountPercent}%
+                        </div>
+                      ) : null}
+
                       <div className="relative aspect-square w-full overflow-hidden bg-white flex items-center justify-center p-4">
                         <img
                           src={product.mainImage}

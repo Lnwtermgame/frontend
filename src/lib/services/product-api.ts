@@ -273,6 +273,7 @@ export interface ProductType {
   minAmount: number;
   maxAmount: number;
   isActive: boolean;
+  discountRate?: number;
   fields?: SeagmField[];
 }
 

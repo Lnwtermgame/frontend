@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
@@ -22,6 +22,10 @@ import {
   ChevronUp,
   X,
   Settings,
+  Gamepad2,
+  Smartphone,
+  ImageIcon,
+  Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -35,6 +39,7 @@ import {
 import Link from "next/link";
 import toast from "react-hot-toast";
 import AIGenerateAllButton from "@/components/admin/AIGenerateAllButton";
+import { isAppwriteUrl, processImageUrl } from "@/lib/services/storage-api";
 
 export default function AdminProducts() {
   const router = useRouter();
@@ -44,6 +49,8 @@ export default function AdminProducts() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [productTypeFilter, setProductTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -72,9 +79,33 @@ export default function AdminProducts() {
   const [customPercent, setCustomPercent] = useState<string>("10");
   const [isBulkUpdating, setIsBulkUpdating] = useState(false);
 
+  // Fast image modal states
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imageUpdatingProduct, setImageUpdatingProduct] =
+    useState<AdminProduct | null>(null);
+  const [imageUrlInput, setImageUrlInput] = useState("");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isSavingImage, setIsSavingImage] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [imageTarget, setImageTarget] = useState<"logo" | "cover">("logo");
+  const [copySourceProductId, setCopySourceProductId] = useState<string>("");
+
+  const filteredProducts = useMemo<AdminProduct[]>(() => {
+    return products.filter((product) => {
+      const matchesType =
+        productTypeFilter === "all" || product.productType === productTypeFilter;
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" ? product.isActive : !product.isActive);
+
+      return matchesType && matchesStatus;
+    });
+  }, [products, productTypeFilter, statusFilter]);
+
   // Lock body scroll when modal is open
   useEffect(() => {
-    if (isPriceModalOpen || isBulkPriceModalOpen) {
+    if (isPriceModalOpen || isBulkPriceModalOpen || isImageModalOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -82,7 +113,7 @@ export default function AdminProducts() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isPriceModalOpen, isBulkPriceModalOpen]);
+  }, [isPriceModalOpen, isBulkPriceModalOpen, isImageModalOpen]);
 
   // Fetch products and categories
   useEffect(() => {
@@ -127,14 +158,20 @@ export default function AdminProducts() {
     if (productType === "CARD") {
       return <CreditCard className="w-4 h-4 text-brutal-blue" />;
     }
-    return <Zap className="w-4 h-4 text-brutal-orange" />;
+    if ((productType as any) === "MOBILE_RECHARGE") {
+      return <Smartphone className="w-4 h-4 text-brutal-green" />;
+    }
+    return <Gamepad2 className="w-4 h-4 text-brutal-orange" />; // DIRECT_TOPUP
   };
 
   const getProductTypeLabel = (productType: string) => {
     if (productType === "CARD") {
       return "บัตร";
     }
-    return "เติมเงิน";
+    if ((productType as any) === "MOBILE_RECHARGE") {
+      return "เติมเงินมือถือ";
+    }
+    return "เติมเกม";
   };
 
   const handleDeleteProduct = async (productId: string) => {
@@ -161,6 +198,155 @@ export default function AdminProducts() {
       return "ไม่ใช้งาน";
     }
     return "ใช้งาน";
+  };
+
+  const openImageModal = (product: AdminProduct) => {
+    setImageUpdatingProduct(product);
+    setImageUrlInput(product.imageUrl || "");
+    setImageError(false);
+    setImageTarget("logo");
+    setCopySourceProductId("");
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+    setImageUpdatingProduct(null);
+    setImageUrlInput("");
+    setIsUploadingImage(false);
+    setIsSavingImage(false);
+    setImageError(false);
+    setImageTarget("logo");
+    setCopySourceProductId("");
+  };
+
+  const handleTargetChange = (target: "logo" | "cover") => {
+    if (!imageUpdatingProduct) return;
+    setImageTarget(target);
+    setImageError(false);
+    setImageUrlInput(
+      target === "logo"
+        ? imageUpdatingProduct.imageUrl || ""
+        : imageUpdatingProduct.coverImageUrl || "",
+    );
+  };
+
+  const copyImageFromOtherProduct = () => {
+    if (!copySourceProductId || !imageUpdatingProduct) return;
+    const source = products.find((p) => p.id === copySourceProductId);
+    if (!source) return;
+
+    const urlToCopy =
+      imageTarget === "logo" ? source.imageUrl || "" : source.coverImageUrl || "";
+
+    if (!urlToCopy) {
+      toast.error("สินค้าที่เลือกไม่มีรูปภาพสำหรับคัดลอก");
+      return;
+    }
+
+    setImageUrlInput(urlToCopy);
+    setImageError(false);
+    toast.success(`คัดลอกรูปภาพจาก ${source.name}`);
+  };
+
+  const handleUploadImage = async () => {
+    if (!imageUrlInput.trim() || !imageUpdatingProduct) return;
+
+    setIsUploadingImage(true);
+    try {
+      const isLogo = imageTarget === "logo";
+      const newUrl = await processImageUrl(
+        imageUrlInput,
+        isLogo ? "products/logos" : "products/covers",
+        isLogo ? imageUpdatingProduct.imageUrl : imageUpdatingProduct.coverImageUrl,
+      );
+      if (!newUrl) return;
+
+      setImageUrlInput(newUrl);
+      setImageError(false);
+
+      // Auto-save to product record with new Appwrite URL
+      const payload = isLogo ? { imageUrl: newUrl } : { coverImageUrl: newUrl };
+      const response = await productApi.updateProduct(
+        imageUpdatingProduct.id,
+        payload,
+      );
+
+      if (response.success) {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === imageUpdatingProduct.id ? { ...p, ...payload } : p)),
+        );
+        setImageUpdatingProduct((prev) => (prev ? { ...prev, ...payload } : prev));
+        toast.success("อัปโหลดและบันทึกรูปภาพสำเร็จ");
+      } else {
+        toast.error("อัปโหลดสำเร็จแต่บันทึกสินค้าไม่สำเร็จ");
+      }
+    } catch (error) {
+      console.error("Failed to save uploaded image:", error);
+      toast.error("บันทึกรูปภาพไม่สำเร็จ");
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const saveImageUrl = async () => {
+    if (!imageUpdatingProduct) return;
+    if (!imageUrlInput.trim()) {
+      toast.error("กรุณาใส่ลิงก์รูปภาพ");
+      return;
+    }
+
+    setIsSavingImage(true);
+    try {
+      // Ensure URL is stored from Appwrite; if not, upload first
+      let finalUrl = imageUrlInput;
+      if (!isAppwriteUrl(finalUrl)) {
+        const uploaded = await processImageUrl(
+          imageUrlInput,
+          imageTarget === "logo" ? "products/logos" : "products/covers",
+          imageTarget === "logo"
+            ? imageUpdatingProduct.imageUrl
+            : imageUpdatingProduct.coverImageUrl,
+        );
+        if (!uploaded) {
+          setIsSavingImage(false);
+          return;
+        }
+        finalUrl = uploaded;
+        setImageUrlInput(finalUrl);
+      }
+
+      const payload =
+        imageTarget === "logo" ? { imageUrl: finalUrl } : { coverImageUrl: finalUrl };
+
+      const response = await productApi.updateProduct(
+        imageUpdatingProduct.id,
+        payload,
+      );
+
+      if (response.success) {
+        toast.success("บันทึกรูปภาพสำเร็จ");
+        setProducts((prev) =>
+          prev.map((p) => {
+            if (p.id !== imageUpdatingProduct.id) return p;
+            return {
+              ...p,
+              ...(imageTarget === "logo"
+                ? { imageUrl: imageUrlInput }
+                : { coverImageUrl: imageUrlInput }),
+            };
+          }),
+        );
+        closeImageModal();
+      } else {
+        toast.error("ไม่สามารถบันทึกรูปภาพได้");
+      }
+    } catch (error) {
+      console.error("Failed to update image:", error);
+      toast.error("ไม่สามารถบันทึกรูปภาพได้");
+    } finally {
+      setIsSavingImage(false);
+    }
   };
 
   // Calculate profit percentage
@@ -387,7 +573,7 @@ export default function AdminProducts() {
 
         {/* Actions Bar */}
         <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-          {/* Search and Filter */}
+          {/* Search */}
           <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
             <div className="relative w-full sm:max-w-xs">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -400,39 +586,6 @@ export default function AdminProducts() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-            </div>
-            <div className="relative w-full sm:max-w-xs">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Filter className="h-5 w-5 text-gray-500" />
-              </div>
-              <select
-                className="bg-white border-[2px] border-gray-300 text-black pl-10 pr-4 py-2 w-full appearance-none focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="all">ทุกหมวดหมู่</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-gray-500"
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </div>
             </div>
           </div>
 
@@ -481,10 +634,57 @@ export default function AdminProducts() {
           transition={{ duration: 0.4 }}
         >
           <div className="p-5 border-b-[2px] border-black bg-gray-50">
-            <h3 className="text-lg font-semibold text-black flex items-center">
-              <Package className="mr-2 h-5 w-5 text-brutal-blue" />
-              รายการสินค้า
-            </h3>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <h3 className="text-lg font-semibold text-black flex items-center">
+                <Package className="mr-2 h-5 w-5 text-brutal-blue" />
+                รายการสินค้า
+              </h3>
+
+              <div className="flex flex-wrap gap-3">
+                <div className="flex items-center gap-2 bg-white border-[2px] border-black px-3 py-2 text-sm">
+                  <span className="font-semibold text-gray-800">หมวดหมู่:</span>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="bg-transparent outline-none text-gray-800"
+                  >
+                    <option value="all">ทุกหมวดหมู่</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2 bg-white border-[2px] border-black px-3 py-2 text-sm">
+                  <span className="font-semibold text-gray-800">ประเภท:</span>
+                  <select
+                    value={productTypeFilter}
+                    onChange={(e) => setProductTypeFilter(e.target.value)}
+                    className="bg-transparent outline-none text-gray-800"
+                  >
+                    <option value="all">ทั้งหมด</option>
+                    <option value="DIRECT_TOPUP">เติมเกม</option>
+                    <option value="MOBILE_RECHARGE">เติมเงินมือถือ</option>
+                    <option value="CARD">บัตร</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2 bg-white border-[2px] border-black px-3 py-2 text-sm">
+                  <span className="font-semibold text-gray-800">สถานะ:</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="bg-transparent outline-none text-gray-800"
+                  >
+                    <option value="all">ทั้งหมด</option>
+                    <option value="active">เปิดขาย</option>
+                    <option value="inactive">ปิดขาย</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="overflow-x-auto">
             {loading ? (
@@ -504,8 +704,8 @@ export default function AdminProducts() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {products.length > 0 ? (
-                    products.map((product) => (
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => (
                       <tr
                         key={product.id}
                         className="text-sm hover:bg-gray-50 transition-colors"
@@ -558,6 +758,12 @@ export default function AdminProducts() {
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex space-x-2">
+                            <button
+                              onClick={() => openImageModal(product)}
+                              className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors"
+                            >
+                              <ImageIcon className="h-4 w-4" />
+                            </button>
                             <Link href={`/admin/products/${product.id}/edit`}>
                               <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors">
                                 <Edit className="h-4 w-4" />
@@ -591,7 +797,7 @@ export default function AdminProducts() {
           {!loading && pagination.totalPages > 1 && (
             <div className="p-4 border-t border-gray-200 flex justify-between items-center">
               <div className="text-sm text-gray-500">
-                แสดง {products.length} จาก {pagination.total} สินค้า
+                แสดง {filteredProducts.length} จาก {products.length} สินค้าในหน้านี้
               </div>
               <div className="flex space-x-1">
                 <button
@@ -962,6 +1168,175 @@ export default function AdminProducts() {
                       <Loader2 className="h-4 w-4 animate-spin" />
                     )}
                     {isBulkUpdating ? "กำลังอัพเดท..." : "อัพเดทราคาทั้งหมด"}
+                  </button>
+                </div>
+              </motion.div>
+            </div>,
+            document.body,
+          )}
+
+        {/* Fast Image Update Modal */}
+        {isImageModalOpen &&
+          imageUpdatingProduct &&
+          typeof window !== "undefined" &&
+          createPortal(
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
+              style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white border-[3px] border-black w-full max-w-xl overflow-hidden shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+              >
+                <div className="p-5 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <ImageIcon className="h-5 w-5" />
+                    เปลี่ยนโลโก้สินค้า: {imageUpdatingProduct.name}
+                  </h3>
+                  <button
+                    onClick={closeImageModal}
+                    className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <div className="p-5 space-y-5">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={() => handleTargetChange("logo")}
+                      className={`px-4 py-2 border-[2px] text-sm font-medium transition-all ${
+                        imageTarget === "logo"
+                          ? "bg-brutal-blue text-white border-black"
+                          : "bg-white text-black border-gray-300 hover:border-black"
+                      }`}
+                    >
+                      โลโก้ (รายการสินค้า)
+                    </button>
+                    <button
+                      onClick={() => handleTargetChange("cover")}
+                      className={`px-4 py-2 border-[2px] text-sm font-medium transition-all ${
+                        imageTarget === "cover"
+                          ? "bg-brutal-blue text-white border-black"
+                          : "bg-white text-black border-gray-300 hover:border-black"
+                      }`}
+                    >
+                      หน้าปก (หน้ารายละเอียด)
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      {imageTarget === "logo" ? "ลิงก์โลโก้สินค้า" : "ลิงก์รูปภาพหน้าปก"}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={imageUrlInput}
+                        onChange={(e) => {
+                          setImageUrlInput(e.target.value);
+                          setImageError(false);
+                        }}
+                        placeholder="https://..."
+                        className="w-full bg-gray-50 border-[2px] border-black pl-4 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {imageTarget === "logo"
+                        ? "ใส่ลิงก์ HTTPS สำหรับโลโก้สินค้า (แสดงในรายการสินค้า)"
+                        : "ใส่ลิงก์ HTTPS สำหรับรูปหน้าปก (แสดงในหน้ารายละเอียดสินค้า)"}
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={handleUploadImage}
+                        disabled={
+                          isUploadingImage || !(typeof imageUrlInput === "string" && imageUrlInput.trim())
+                        }
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isUploadingImage ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>กำลังอัปโหลด...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4" />
+                            <span>อัปโหลดไปยัง Storage</span>
+                          </>
+                        )}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={copySourceProductId}
+                          onChange={(e) => setCopySourceProductId(e.target.value)}
+                          className="bg-white border-[2px] border-black px-3 py-2 text-sm text-gray-800"
+                        >
+                          <option value="">เลือกสินค้าที่จะคัดลอก</option>
+                          {products
+                            .filter((p) => p.id !== imageUpdatingProduct.id)
+                            .map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name}
+                              </option>
+                            ))}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={copyImageFromOtherProduct}
+                          disabled={!copySourceProductId}
+                          className="px-4 py-2 bg-white border-[2px] border-black text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          คัดลอกจากสินค้าอื่น
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {imageTarget === "logo" ? "ดูตัวอย่างโลโก้" : "ดูตัวอย่างหน้าปก"}
+                    </label>
+                    <div
+                      className={`${
+                        imageTarget === "logo" ? "aspect-square max-w-[180px]" : "aspect-video max-w-[260px]"
+                      } border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview`}
+                    >
+                      {imageUrlInput && !imageError ? (
+                        <img
+                          src={imageUrlInput}
+                          alt="Image Preview"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
+                          onError={() => setImageError(true)}
+                        />
+                      ) : (
+                        <div className="text-center p-4">
+                          <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <span className="text-xs text-gray-500 block">
+                            {imageUrlInput ? "โหลดรูปภาพไม่สำเร็จ" : "ยังไม่มีรูปภาพ"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                  <button
+                    onClick={closeImageModal}
+                    className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    onClick={saveImageUrl}
+                    disabled={isSavingImage}
+                    className="px-4 py-2 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isSavingImage && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {isSavingImage ? "กำลังบันทึก..." : "บันทึกรูปภาพ"}
                   </button>
                 </div>
               </motion.div>

@@ -93,7 +93,7 @@ export interface Product {
   imageUrl?: string;
   coverImageUrl?: string;
   images?: ProductImage[];
-  productType: "CARD" | "DIRECT_TOPUP";
+  productType: "CARD" | "DIRECT_TOPUP" | "MOBILE_RECHARGE";
   requiredFields?: SeagmField[];
   isActive: boolean;
   isFeatured?: boolean;
@@ -735,11 +735,13 @@ class ProductApiService {
     page?: number;
     limit?: number;
     search?: string;
+    categoryId?: string;
   }): Promise<PaginatedResponse<AdminProduct>> {
     const searchParams = new URLSearchParams();
     if (params?.page) searchParams.append("page", String(params.page));
     if (params?.limit) searchParams.append("limit", String(params.limit));
     if (params?.search) searchParams.append("search", params.search);
+    if (params?.categoryId) searchParams.append("categoryId", params.categoryId);
     const query = searchParams.toString();
     const response = await productClient.get(
       `/api/admin/products${query ? `?${query}` : ""}`,
@@ -759,6 +761,13 @@ class ProductApiService {
 
   async syncDirectTopUp(): Promise<{ success: boolean; data: SyncResult }> {
     const response = await productClient.post("/api/admin/sync/direct-topup");
+    return response.data;
+  }
+
+  async syncMobileRecharge(): Promise<{ success: boolean; data: SyncResult }> {
+    const response = await productClient.post(
+      "/api/admin/sync/mobile-recharge",
+    );
     return response.data;
   }
 

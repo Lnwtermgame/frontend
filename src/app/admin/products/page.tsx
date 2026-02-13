@@ -96,6 +96,7 @@ export default function AdminProducts() {
             page: pagination.page,
             limit: pagination.limit,
             search: searchTerm || undefined,
+            categoryId: selectedCategory === "all" ? undefined : selectedCategory,
           }),
           productApi.getCategories(),
         ]);

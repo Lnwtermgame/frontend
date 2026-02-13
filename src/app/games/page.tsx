@@ -74,7 +74,7 @@ function transformProductToGame(product: Product): GameProduct {
     id: product.id,
     slug: product.slug,
     title: product.name,
-    category: "Direct Top-Up",
+    category: product.category?.name || "Direct Top-Up",
     publisher: publisher || "Unknown Publisher",
     mainImage:
       product.imageUrl ||
@@ -242,6 +242,60 @@ function DirectTopupContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
+          {/* Platforms Card */}
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
+            <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
+              <h3 className="text-black font-black text-base flex items-center">
+                <Monitor size={18} className="mr-2" />
+                แพลตฟอร์ม
+              </h3>
+            </div>
+            <div className="p-3 space-y-1">
+              {PLATFORMS.map((platform) => (
+                <motion.button
+                  key={platform.id}
+                  onClick={() => setSelectedPlatform(platform.id)}
+                  className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
+                    selectedPlatform === platform.id
+                      ? "bg-brutal-blue border-black text-black"
+                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                  }`}
+                  style={
+                    selectedPlatform === platform.id
+                      ? { boxShadow: "3px 3px 0 0 #000000" }
+                      : undefined
+                  }
+                  whileHover={{ x: 3 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={
+                        selectedPlatform === platform.id
+                          ? "text-black"
+                          : "text-gray-500"
+                      }
+                    >
+                      {platform.icon}
+                    </span>
+                    <span className="text-sm font-bold">{platform.name}</span>
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                      selectedPlatform === platform.id
+                        ? "bg-white text-black"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {platform.count}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
           {/* Categories Card */}
           <div
             className="bg-white border-[3px] border-black overflow-hidden mb-4"
@@ -300,60 +354,6 @@ function DirectTopupContent() {
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Platforms Card */}
-          <div
-            className="bg-white border-[3px] border-black overflow-hidden mb-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
-              <h3 className="text-black font-black text-base flex items-center">
-                <Monitor size={18} className="mr-2" />
-                แพลตฟอร์ม
-              </h3>
-            </div>
-            <div className="p-3 space-y-1">
-              {PLATFORMS.map((platform) => (
-                <motion.button
-                  key={platform.id}
-                  onClick={() => setSelectedPlatform(platform.id)}
-                  className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
-                    selectedPlatform === platform.id
-                      ? "bg-brutal-blue border-black text-black"
-                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
-                  }`}
-                  style={
-                    selectedPlatform === platform.id
-                      ? { boxShadow: "3px 3px 0 0 #000000" }
-                      : undefined
-                  }
-                  whileHover={{ x: 3 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={
-                        selectedPlatform === platform.id
-                          ? "text-black"
-                          : "text-gray-500"
-                      }
-                    >
-                      {platform.icon}
-                    </span>
-                    <span className="text-sm font-bold">{platform.name}</span>
-                  </div>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                      selectedPlatform === platform.id
-                        ? "bg-white text-black"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {platform.count}
-                  </span>
-                </motion.button>
-              ))}
-            </div>
           </div>
 
           {/* Promo Card */}

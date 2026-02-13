@@ -7,6 +7,7 @@ import {
   RefreshCw,
   CreditCard,
   Zap,
+  Smartphone,
   Database,
   CheckCircle,
   AlertCircle,
@@ -23,30 +24,36 @@ export default function SeagmSyncPage() {
     all: boolean;
     cards: boolean;
     directTopUp: boolean;
+    mobileRecharge: boolean;
   }>({
     all: false,
     cards: false,
     directTopUp: false,
+    mobileRecharge: false,
   });
 
   const [lastSync, setLastSync] = useState<{
     all: Date | null;
     cards: Date | null;
     directTopUp: Date | null;
+    mobileRecharge: Date | null;
   }>({
     all: null,
     cards: null,
     directTopUp: null,
+    mobileRecharge: null,
   });
 
   const [results, setResults] = useState<{
     all: SyncResult | null;
     cards: SyncResult | null;
     directTopUp: SyncResult | null;
+    mobileRecharge: SyncResult | null;
   }>({
     all: null,
     cards: null,
     directTopUp: null,
+    mobileRecharge: null,
   });
 
   const [cacheStats, setCacheStats] = useState<{ size: number } | null>(null);
@@ -117,6 +124,24 @@ export default function SeagmSyncPage() {
       toast.error("ไม่สามารถซิงค์สินค้าเติมเงินได้");
     } finally {
       setIsLoading((prev) => ({ ...prev, directTopUp: false }));
+      loadCacheStats();
+    }
+  };
+
+  const handleSyncMobileRecharge = async () => {
+    setIsLoading((prev) => ({ ...prev, mobileRecharge: true }));
+    try {
+      const response = await productApi.syncMobileRecharge();
+      if (response.success) {
+        setResults((prev) => ({ ...prev, mobileRecharge: response.data }));
+        setLastSync((prev) => ({ ...prev, mobileRecharge: new Date() }));
+        toast.success("ซิงค์สินค้ามือถือสำเร็จ");
+      }
+    } catch (error) {
+      console.error("Sync mobile recharge failed:", error);
+      toast.error("ไม่สามารถซิงค์สินค้ามือถือได้");
+    } finally {
+      setIsLoading((prev) => ({ ...prev, mobileRecharge: false }));
       loadCacheStats();
     }
   };
@@ -264,10 +289,10 @@ export default function SeagmSyncPage() {
         </div>
 
         {/* Sync Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <SyncCard
             title="ซิงค์ทั้งหมด"
-            description="ซิงค์สินค้าทั้งหมด: บัตรและเติมเงิน"
+            description="ซิงค์สินค้าทั้งหมด: บัตร, เติมเงิน และมือถือ"
             icon={Layers}
             onClick={handleSyncAll}
             isLoading={isLoading.all}
@@ -294,6 +319,16 @@ export default function SeagmSyncPage() {
             lastSync={lastSync.directTopUp}
             result={results.directTopUp}
             color="bg-gradient-to-br from-orange-500 to-red-500"
+          />
+          <SyncCard
+            title="ซิงค์มือถือ"
+            description="ซิงค์ผู้ให้บริการและแพ็คเกจมือถือ"
+            icon={Smartphone}
+            onClick={handleSyncMobileRecharge}
+            isLoading={isLoading.mobileRecharge}
+            lastSync={lastSync.mobileRecharge}
+            result={results.mobileRecharge}
+            color="bg-gradient-to-br from-green-500 to-emerald-500"
           />
         </div>
 

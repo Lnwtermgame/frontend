@@ -127,25 +127,16 @@ export default function CardPage() {
           const cats = [
             {
               id: "all",
-              name: "All Cards",
+              name: "บัตรทั้งหมด",
               count: cardProducts.length,
               icon: <CreditCard size={16} />,
             },
-            {
-              id: "popular",
-              name: "Popular",
-              count: cardProducts.filter((c) => c.category === "Popular")
-                .length,
-              icon: <Star size={16} />,
-            },
-            ...Object.entries(categoryCounts)
-              .filter(([name]) => name !== "Popular")
-              .map(([name, count]) => ({
-                id: name.toLowerCase(),
-                name,
-                count,
-                icon: getCategoryIcon(name),
-              })),
+            ...Object.entries(categoryCounts).map(([name, count]) => ({
+              id: name.toLowerCase(),
+              name,
+              count,
+              icon: getCategoryIcon(name),
+            })),
           ];
           setCategories(cats);
         }

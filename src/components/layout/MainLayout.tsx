@@ -20,6 +20,7 @@ import {
   ChevronDown,
   Zap,
   Star,
+  Smartphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
@@ -188,6 +189,11 @@ export function MainLayout({ children }: MainLayoutProps) {
       { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
       { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
       {
+        href: "/mobile-recharge",
+        label: "เติมเงินมือถือ",
+        icon: <Smartphone size={20} />,
+      },
+      {
         href: "/dashboard/favorite",
         label: "รายการโปรด",
         icon: <Heart size={20} />,
@@ -228,7 +234,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         icon: <User size={18} />,
       },
       {
-        href: "/direct-topup",
+        href: "/games",
         label: "เติมเงินโดยตรง",
         icon: <Gamepad2 size={18} />,
       },

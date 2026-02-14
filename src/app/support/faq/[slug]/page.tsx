@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useParams } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
@@ -78,7 +80,7 @@ export default function FaqArticlePage() {
       <div className="page-container bg-brutal-gray">
         <div className="bg-white border-[3px] border-black p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
           <Loader2 className="animate-spin mx-auto text-black mb-4" size={48} />
-          <p className="text-gray-600">Loading article...</p>
+          <p className="text-gray-600">กำลังโหลดบทความ...</p>
         </div>
       </div>
     );
@@ -94,15 +96,15 @@ export default function FaqArticlePage() {
           style={{ boxShadow: '4px 4px 0 0 #000000' }}
         >
           <AlertCircle className="mx-auto text-black mb-3" size={48} />
-          <h2 className="text-xl font-bold text-black mb-2">Article Not Found</h2>
-          <p className="text-gray-800 mb-4">{error || "The article you're looking for doesn't exist."}</p>
+          <h2 className="text-xl font-bold text-black mb-2">ไม่พบบทความ</h2>
+          <p className="text-gray-800 mb-4">{error || "ไม่พบบทความที่คุณต้องการ"}</p>
           <Link
             href="/support/faq"
             className="inline-flex items-center bg-black text-white border-[3px] border-black px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <ArrowLeft size={18} className="mr-2" />
-            Back to FAQ
+            กลับไปหน้าคำถามที่พบบ่อย
           </Link>
         </motion.div>
       </div>
@@ -115,11 +117,11 @@ export default function FaqArticlePage() {
       <div className="mb-6">
         <div className="flex items-center text-sm text-gray-600">
           <Link href="/support" className="hover:text-black transition-colors font-medium">
-            Support
+            ศูนย์ช่วยเหลือ
           </Link>
           <span className="mx-2">/</span>
           <Link href="/support/faq" className="hover:text-black transition-colors font-medium">
-            FAQ
+            คำถามที่พบบ่อย
           </Link>
           <span className="mx-2">/</span>
           <span className="text-black font-medium">{article.title}</span>
@@ -145,8 +147,8 @@ export default function FaqArticlePage() {
               {article.category.name}
             </Link>
             {article.isPinned && (
-              <span className="text-black ml-2" title="Pinned">
-                📌 Pinned
+              <span className="text-black ml-2" title="ปักหมุด">
+                📌 ปักหมุด
               </span>
             )}
           </div>
@@ -160,22 +162,34 @@ export default function FaqArticlePage() {
             </div>
             <div className="flex items-center">
               <Eye size={14} className="mr-1.5" />
-              {article.viewCount} views
+              {article.viewCount} ครั้ง
             </div>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-6 md:p-8">
-          <div className="prose max-w-none">
-            <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+          <div className="prose max-w-none text-gray-800">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h2: (props) => <h2 className="text-xl font-bold text-black mt-4 mb-2" {...props} />,
+                p: (props) => <p className="mb-3 leading-relaxed whitespace-pre-wrap" {...props} />,
+                ul: (props) => <ul className="list-disc pl-6 mb-3" {...props} />,
+                ol: (props) => <ol className="list-decimal pl-6 mb-3" {...props} />,
+                li: (props) => <li className="mb-1" {...props} />,
+                strong: (props) => <strong className="font-semibold" {...props} />,
+                em: (props) => <em className="italic" {...props} />,
+                a: (props) => <a className="text-brutal-blue underline" {...props} />,
+              }}
+            >
               {article.content}
-            </div>
+            </ReactMarkdown>
           </div>
 
           {/* Feedback Section */}
           <div className="mt-10 pt-6 border-t-[3px] border-black">
-            <h3 className="text-lg font-medium text-black mb-4">Was this article helpful?</h3>
+            <h3 className="text-lg font-medium text-black mb-4">บทความนี้มีประโยชน์หรือไม่?</h3>
 
             {showThankYou ? (
               <motion.div
@@ -185,7 +199,7 @@ export default function FaqArticlePage() {
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
                 <CheckCircle className="text-black mr-3" size={20} />
-                <span className="text-black font-medium">Thank you for your feedback!</span>
+                <span className="text-black font-medium">ขอบคุณสำหรับความคิดเห็น!</span>
               </motion.div>
             ) : (
               <div className="flex items-center gap-3">
@@ -199,7 +213,7 @@ export default function FaqArticlePage() {
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <ThumbsUp size={16} className="mr-2" />
-                  Yes ({article.helpfulCount})
+                  ใช่ ({article.helpfulCount})
                 </button>
                 <button
                   onClick={() => handleVote(false)}
@@ -211,7 +225,7 @@ export default function FaqArticlePage() {
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
                   <ThumbsDown size={16} className="mr-2" />
-                  No ({article.unhelpfulCount})
+                  ไม่ ({article.unhelpfulCount})
                 </button>
               </div>
             )}
@@ -222,9 +236,9 @@ export default function FaqArticlePage() {
         <div className="p-6 md:p-8 bg-brutal-gray border-t-[3px] border-black">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
-              <h4 className="text-black font-medium mb-1">Still need help?</h4>
+              <h4 className="text-black font-medium mb-1">ยังต้องการความช่วยเหลือ?</h4>
               <p className="text-gray-600 text-sm">
-                Can&apos;t find what you&apos;re looking for? Contact our support team.
+                หากยังไม่พบที่ต้องการ ติดต่อทีมซัพพอร์ตของเราได้เลย
               </p>
             </div>
             <Link
@@ -233,7 +247,7 @@ export default function FaqArticlePage() {
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
               <MessageSquare size={18} className="mr-2" />
-              Contact Support
+              ติดต่อทีมซัพพอร์ต
             </Link>
           </div>
         </div>

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import { supportApi, FaqCategory, FaqArticleListItem } from "@/lib/services";
 import {
@@ -155,11 +157,11 @@ export default function FaqPage() {
                 <HelpCircle className="h-8 w-8 text-black" />
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-black">
-                Frequently Asked Questions
+                คำถามที่พบบ่อย
               </h1>
             </div>
             <p className="text-gray-600 mb-6">
-              Find answers to common questions about our services, orders, and account management.
+              ค้นหาคำตอบสำหรับคำถามเกี่ยวกับบริการ การสั่งซื้อ และการจัดการบัญชีของคุณ
             </p>
 
             {/* Search Box */}
@@ -167,7 +169,7 @@ export default function FaqPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search for answers..."
+                  placeholder="ค้นหาคำตอบ..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black text-black focus:outline-none focus:border-black transition-colors"
@@ -203,7 +205,7 @@ export default function FaqPage() {
             className="ml-auto text-black hover:text-gray-700 flex items-center font-medium"
           >
             <Clock size={16} className="mr-1" />
-            Retry
+            ลองอีกครั้ง
           </button>
         </motion.div>
       )}
@@ -215,7 +217,7 @@ export default function FaqPage() {
           className="text-black hover:text-gray-700 transition-colors inline-flex items-center font-medium"
         >
           <ArrowLeft size={18} className="mr-1" />
-          Back to Support Center
+          กลับไปหน้าศูนย์ช่วยเหลือ
         </Link>
       </div>
 
@@ -226,7 +228,7 @@ export default function FaqPage() {
             <div className="p-4 bg-brutal-gray border-b-[3px] border-black">
               <h3 className="text-black font-medium flex items-center">
                 <Filter size={16} className="mr-2" />
-                Categories
+                หมวดหมู่
               </h3>
             </div>
             <div className="p-2">
@@ -242,9 +244,9 @@ export default function FaqPage() {
                 }`}
               >
                 <span className="bg-brutal-gray border-[2px] border-black p-1.5 text-black mr-3">
-                  All
+                  ทั้งหมด
                 </span>
-                All Categories
+                หมวดหมู่ทั้งหมด
                 <span className="ml-auto text-xs text-gray-600">
                   {totalArticles}
                 </span>
@@ -279,17 +281,17 @@ export default function FaqPage() {
               <div className="bg-brutal-green p-2 border-[2px] border-black mr-2">
                 <MessageSquare size={20} className="text-black" />
               </div>
-              <h3 className="text-black font-medium">Need More Help?</h3>
+              <h3 className="text-black font-medium">ต้องการความช่วยเหลือเพิ่มเติม?</h3>
             </div>
             <p className="text-gray-600 text-sm mb-4">
-              Can&apos;t find what you&apos;re looking for? Our support team is ready to help.
+              หาไม่เจอหรือ? ทีมซัพพอร์ตของเราพร้อมช่วยเหลือคุณ
             </p>
             <Link
               href="/support/tickets"
               className="bg-black text-white border-[3px] border-black w-full py-2 font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
               style={{ boxShadow: '4px 4px 0 0 #000000' }}
             >
-              Contact Support
+              ติดต่อทีมซัพพอร์ต
             </Link>
           </div>
         </div>
@@ -302,7 +304,7 @@ export default function FaqPage() {
               <div className="flex items-center mb-2">
                 <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
                 <h2 className="text-2xl font-bold text-black">
-                  {getCategoryById(selectedCategory)?.name || "FAQs"}
+                  {getCategoryById(selectedCategory)?.name || "คำถามที่พบบ่อย"}
                 </h2>
               </div>
               <p className="text-gray-600 mt-1">
@@ -318,7 +320,7 @@ export default function FaqPage() {
                 className="animate-spin mx-auto text-black mb-4"
                 size={48}
               />
-              <p className="text-gray-600">Loading FAQs...</p>
+              <p className="text-gray-600">กำลังโหลดคำถามที่พบบ่อย...</p>
             </div>
           ) : articles.length > 0 ? (
             <div className="space-y-4">
@@ -344,7 +346,7 @@ export default function FaqPage() {
                   >
                     <div className="flex items-center gap-3">
                       {article.isPinned && (
-                        <span className="text-black" title="Pinned">
+                        <span className="text-black" title="ปักหมุด">
                           📌
                         </span>
                       )}
@@ -371,22 +373,35 @@ export default function FaqPage() {
                       className="px-5 pb-5"
                     >
                       <div className="border-t-[2px] border-black pt-4 text-gray-700">
-                        <p className="whitespace-pre-line">
-                          {article.excerpt || "Click to read the full article..."}
-                        </p>
+                        <div className="prose max-w-none text-black">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              h2: (props) => <h2 className="text-xl font-bold mt-4 mb-2" {...props} />,
+                              p: (props) => <p className="mb-3 leading-relaxed whitespace-pre-wrap" {...props} />,
+                              ul: (props) => <ul className="list-disc pl-6 mb-3" {...props} />,
+                              ol: (props) => <ol className="list-decimal pl-6 mb-3" {...props} />,
+                              li: (props) => <li className="mb-1" {...props} />,
+                              strong: (props) => <strong className="font-semibold" {...props} />,
+                              em: (props) => <em className="italic" {...props} />,
+                            }}
+                          >
+                            {article.content || article.excerpt || "คลิกเพื่ออ่านบทความเต็ม..."}
+                          </ReactMarkdown>
+                        </div>
 
                         <Link
                           href={`/support/faq/${article.slug}`}
                           className="inline-flex items-center text-black hover:underline mt-3 font-medium"
                         >
-                          Read full article
+                          อ่านบทความเต็ม
                           <ArrowLeft size={16} className="ml-1 rotate-180" />
                         </Link>
 
                         <div className="flex flex-wrap gap-2 mt-4">
                           <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brutal-gray border-[2px] border-black text-black">
                             <Eye size={12} />
-                            {article.viewCount} views
+                            {article.viewCount} ครั้ง
                           </div>
                           <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brutal-gray border-[2px] border-black text-black">
                             <Tag size={12} />
@@ -410,7 +425,7 @@ export default function FaqPage() {
                               }`}
                             >
                               <ThumbsUp size={12} className="mr-1" />
-                              Helpful
+                              มีประโยชน์
                             </button>
                             <button
                               onClick={() => handleVote(article.id, false)}
@@ -421,7 +436,7 @@ export default function FaqPage() {
                               }`}
                             >
                               <ThumbsDown size={12} className="mr-1" />
-                              Not helpful
+                              ไม่ช่วยเลย
                             </button>
                           </div>
                         </div>
@@ -438,11 +453,10 @@ export default function FaqPage() {
                 className="mx-auto text-gray-400 mb-4"
               />
               <h3 className="text-xl font-bold text-black mb-2">
-                No Matching Questions
+                ไม่พบคำถามที่ตรงกัน
               </h3>
               <p className="text-gray-600 mb-6">
-                We couldn&apos;t find any FAQs matching your search. Try adjusting your
-                search terms or browse by category.
+                ไม่พบคำถามที่ตรงกับการค้นหา กรุณาปรับคำค้นหาหรือเลือกดูตามหมวดหมู่
               </p>
               <button
                 onClick={() => {
@@ -452,7 +466,7 @@ export default function FaqPage() {
                 className="bg-black text-white border-[3px] border-black px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
                 style={{ boxShadow: '4px 4px 0 0 #000000' }}
               >
-                View All FAQs
+                ดูคำถามที่พบบ่อยทั้งหมด
               </button>
             </div>
           )}
@@ -463,11 +477,10 @@ export default function FaqPage() {
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-black mb-2">
-                    Still need help?
+                    ต้องการความช่วยเหลือเพิ่มเติม?
                   </h3>
                   <p className="text-gray-800">
-                    If you couldn&apos;t find the answer you were looking for, our
-                    support team is here to help.
+                    หากยังไม่พบคำตอบที่ต้องการ ทีมซัพพอร์ตพร้อมช่วยเหลือคุณ
                   </p>
                 </div>
                 <Link
@@ -475,7 +488,7 @@ export default function FaqPage() {
                   className="mt-4 md:mt-0 bg-black text-white border-[3px] border-black px-6 py-3 font-medium whitespace-nowrap hover:bg-gray-800 transition-colors"
                   style={{ boxShadow: '4px 4px 0 0 #000000' }}
                 >
-                  Contact Support
+                  ติดต่อทีมซัพพอร์ต
                 </Link>
               </div>
             </div>

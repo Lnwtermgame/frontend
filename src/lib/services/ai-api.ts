@@ -1,5 +1,22 @@
 import axios from "axios";
 
+// Local slugify helper for URL-safe English slugs with fallback
+const slugify = (text: string) => {
+  const base = text
+    .toString()
+    .trim()
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  if (base) return base;
+  return `faq-${Math.random().toString(36).slice(2, 8)}`;
+};
+
 // Z.ai API configuration - using Coding endpoint as requested
 const ZAI_API_BASE_URL = "https://api.z.ai/api/coding/paas/v4";
 const ZAI_API_KEY = process.env.NEXT_PUBLIC_ZAI_API_KEY || "";
@@ -1260,6 +1277,150 @@ PLATFORMS: iOS, Android, PC
       publisher,
       platforms,
     };
+  }
+
+  // ============ FAQ Content Generation ============
+
+  /**
+   * Generate FAQ article content using AI
+   */
+  async generateFaqContent(
+    topic: string,
+    categoryName: string,
+    onProgress?: (progress: { stage: string; message: string }) => void,
+  ): Promise<{ title: string; content: string; excerpt: string; slug?: string }> {
+    onProgress?.({ stage: "preparing", message: "กำลังเตรียมข้อมูล..." });
+
+    if (!this.isConfigured()) {
+      throw new Error(
+        "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env file.",
+      );
+    }
+
+    onProgress?.({ stage: "generating", message: "กำลังสร้างเนื้อหาด้วย AI..." });
+
+    const prompt = this.buildFaqPrompt(topic, categoryName);
+    const response = await this.callZaiApi(prompt);
+    const choice = response.choices[0];
+    let content = choice.message.content?.trim() || "";
+
+    // Handle reasoning models
+    const reasoning = (choice.message as any).reasoning_content as string | undefined;
+    if (!content && reasoning) {
+      // Try to extract from reasoning
+      const contentMatch = reasoning.match(/CONTENT:\s*([\s\S]*?)(?=\n\n|$)/i);
+      if (contentMatch) {
+        content = contentMatch[1].trim();
+      }
+    }
+
+    if (!content) {
+      throw new Error("AI returned empty response. Please try again.");
+    }
+
+    onProgress?.({ stage: "parsing", message: "กำลังประมวลผลผลลัพธ์..." });
+
+    const result = this.parseFaqContent(content, topic);
+
+    onProgress?.({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
+
+    return result;
+  }
+
+  private buildFaqPrompt(topic: string, categoryName: string): string {
+    return `สร้างบทความ FAQ (คำถามที่พบบ่อย) สำหรับเว็บไซต์เติมเกม
+
+หัวข้อ: "${topic}"
+หมวดหมู่: ${categoryName}
+
+รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
+TITLE: [หัวข้อคำถามที่ชัดเจน ไม่เกิน 100 ตัวอักษร]
+CONTENT: [คำตอบโดยละเอียด ใช้ภาษาไทย ระดับ 200-500 คำ พร้อมหัวข้อย่อยถ้าจำเป็น]
+EXCERPT: [สรุปสั้นๆ ไม่เกิน 150 ตัวอักษร สำหรับแสดงในรายการ]
+SLUG: [slug ภาษาอังกฤษ ใช้ตัวพิมพ์เล็ก ตัวเลข และขีดกลางเท่านั้น เช่น account-locked-login-help]
+
+ข้อกำหนด:
+1. ใช้ภาษาไทยทั้งหมด
+2. เขียนในเชิงให้คำแนะนำ ช่วยเหลือลูกค้า
+3. เนื้อหาต้องเป็นประโยชน์และเข้าใจง่าย
+4. ถ้าเป็นคำถามเทคนิค ให้อธิบายขั้นตอนอย่างละเอียด
+5. ไม่ใช้อิโมจิ
+6. ใช้ Markdown formatting ได้ (## สำหรับหัวข้อย่อย, **bold** สำหรับคำสำคัญ)
+7. สร้าง SLUG เป็นภาษาอังกฤษ พร้อมเชื่อมคำด้วยขีดกลาง
+
+ตัวอย่างที่ถูกต้อง:
+TITLE: วิธีเติมเพชร Mobile Legends อย่างไรให้ปลอดภัย
+CONTENT: ## ขั้นตอนการเติมเพชร Mobile Legends
+
+การเติมเพชร **Mobile Legends** ผ่านระบบของเรานั้นง่ายและปลอดภัย โดยมีขั้นตอนดังนี้:
+
+1. เข้าสู่ระบบและเลือกจำนวนเพชรที่ต้องการ
+2. กรอก **User ID** และ **Zone ID** ให้ถูกต้อง
+3. เลือกช่องทางชำระเงิน
+4. รอรับเพชรภายใน 1-5 นาที
+
+## ข้อควรระวัง
+- ตรวจสอบ ID ให้ถูกต้องก่อนสั่งซื้อ
+- หากมีปัญหาให้ติดต่อแอดมินทันที
+
+EXCERPT: คู่มือเติมเพชร Mobile Legends ขั้นตอนง่ายๆ ปลอดภัย 100% พร้อมข้อควรระวังสำคัญ
+SLUG: how-to-topup-mobile-legends-safely
+
+สร้างบทความ FAQ ตอนนี้ (ตอบเฉพาะรูปแบบด้านบน):`;
+  }
+
+  private parseFaqContent(content: string, fallbackTopic: string): { title: string; content: string; excerpt: string; slug?: string } {
+    const lines = content.split("\n").map((line) => line.trim());
+
+    let title = "";
+    let articleContent = "";
+    let excerpt = "";
+    let slug = "";
+
+    let currentSection: "title" | "content" | "excerpt" | null = null;
+    let contentBuffer: string[] = [];
+
+    for (const line of lines) {
+      if (line.startsWith("TITLE:")) {
+        title = line.replace("TITLE:", "").trim();
+        currentSection = null;
+      } else if (line.startsWith("CONTENT:")) {
+        currentSection = "content";
+        contentBuffer = [];
+      } else if (line.startsWith("EXCERPT:")) {
+        if (currentSection === "content" && contentBuffer.length > 0) {
+          articleContent = contentBuffer.join("\n").trim();
+        }
+        excerpt = line.replace("EXCERPT:", "").trim();
+        currentSection = null;
+      } else if (line.startsWith("SLUG:")) {
+        slug = line.replace("SLUG:", "").trim();
+        currentSection = null;
+      } else if (currentSection === "content") {
+        contentBuffer.push(line);
+      }
+    }
+
+    // If CONTENT section wasn't closed properly
+    if (currentSection === "content" && contentBuffer.length > 0) {
+      articleContent = contentBuffer.join("\n").trim();
+    }
+
+    // Fallbacks
+    if (!title) {
+      title = fallbackTopic;
+    }
+    if (!articleContent) {
+      articleContent = content;
+    }
+    if (!excerpt) {
+      excerpt = articleContent.substring(0, 147) + "...";
+    }
+
+    // sanitize slug to be URL safe
+    const sanitizedSlug = slugify(slug || title || fallbackTopic);
+
+    return { title, content: articleContent, excerpt, slug: sanitizedSlug };
   }
 }
 

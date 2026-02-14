@@ -40,6 +40,7 @@ export interface FaqArticleListItem {
   categoryName: string;
   title: string;
   slug: string;
+   content: string;
   excerpt?: string;
   isPinned: boolean;
   viewCount: number;
@@ -210,6 +211,38 @@ class SupportApiService {
     const response = await supportClient.post<FaqHelpfulResponse>(`/api/support/faq/articles/${articleId}/helpful`, {
       isHelpful,
     });
+    return response.data;
+  }
+
+  // ============ Admin FAQ Methods ============
+
+  async createFaqCategory(data: Omit<FaqCategory, 'id' | 'articleCount' | 'createdAt'>): Promise<ApiResponse<FaqCategory>> {
+    const response = await supportClient.post<ApiResponse<FaqCategory>>('/api/admin/support/faq/categories', data);
+    return response.data;
+  }
+
+  async updateFaqCategory(categoryId: string, data: Partial<Omit<FaqCategory, 'id' | 'articleCount' | 'createdAt'>>): Promise<ApiResponse<FaqCategory>> {
+    const response = await supportClient.put<ApiResponse<FaqCategory>>(`/api/admin/support/faq/categories/${categoryId}`, data);
+    return response.data;
+  }
+
+  async deleteFaqCategory(categoryId: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await supportClient.delete<ApiResponse<{ message: string }>>(`/api/admin/support/faq/categories/${categoryId}`);
+    return response.data;
+  }
+
+  async createFaqArticle(data: { categoryId: string; title: string; slug?: string; content: string; excerpt?: string; isActive?: boolean; isPinned?: boolean }): Promise<ApiResponse<FaqArticle>> {
+    const response = await supportClient.post<ApiResponse<FaqArticle>>('/api/admin/support/faq/articles', data);
+    return response.data;
+  }
+
+  async updateFaqArticle(articleId: string, data: { title?: string; slug?: string; content?: string; excerpt?: string; isActive?: boolean; isPinned?: boolean }): Promise<ApiResponse<FaqArticle>> {
+    const response = await supportClient.put<ApiResponse<FaqArticle>>(`/api/admin/support/faq/articles/${articleId}`, data);
+    return response.data;
+  }
+
+  async deleteFaqArticle(articleId: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await supportClient.delete<ApiResponse<{ message: string }>>(`/api/admin/support/faq/articles/${articleId}`);
     return response.data;
   }
 

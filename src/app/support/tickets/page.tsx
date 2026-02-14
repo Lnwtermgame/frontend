@@ -24,22 +24,22 @@ import {
 } from "lucide-react";
 
 const categoryLabels: Record<TicketCategory, string> = {
-  ORDER_ISSUE: "Order Issue",
-  PAYMENT_ISSUE: "Payment Issue",
-  PRODUCT_ISSUE: "Product Issue",
-  ACCOUNT_ISSUE: "Account Issue",
-  TECHNICAL_SUPPORT: "Technical Support",
-  REFUND_REQUEST: "Refund Request",
-  GENERAL_INQUIRY: "General Inquiry",
+  ORDER_ISSUE: "ปัญหาการสั่งซื้อ",
+  PAYMENT_ISSUE: "ปัญหาการชำระเงิน",
+  PRODUCT_ISSUE: "ปัญหาสินค้า",
+  ACCOUNT_ISSUE: "ปัญหาบัญชี",
+  TECHNICAL_SUPPORT: "ขอความช่วยเหลือด้านเทคนิค",
+  REFUND_REQUEST: "ขอเงินคืน",
+  GENERAL_INQUIRY: "สอบถามทั่วไป",
 };
 
 const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
-  OPEN: { label: "Open", color: "bg-brutal-blue border-black text-black" },
-  IN_PROGRESS: { label: "In Progress", color: "bg-brutal-yellow border-black text-black" },
-  WAITING_USER: { label: "Waiting for You", color: "bg-brutal-pink border-black text-black" },
-  WAITING_ADMIN: { label: "Waiting for Support", color: "bg-brutal-blue border-black text-black" },
-  RESOLVED: { label: "Resolved", color: "bg-brutal-green border-black text-black" },
-  CLOSED: { label: "Closed", color: "bg-gray-300 border-black text-black" },
+  OPEN: { label: "เปิด", color: "bg-brutal-blue border-black text-black" },
+  IN_PROGRESS: { label: "กำลังดำเนินการ", color: "bg-brutal-yellow border-black text-black" },
+  WAITING_USER: { label: "รอข้อมูลจากคุณ", color: "bg-brutal-pink border-black text-black" },
+  WAITING_ADMIN: { label: "รอเจ้าหน้าที่", color: "bg-brutal-blue border-black text-black" },
+  RESOLVED: { label: "แก้ไขแล้ว", color: "bg-brutal-green border-black text-black" },
+  CLOSED: { label: "ปิดแล้ว", color: "bg-gray-300 border-black text-black" },
 };
 
 export default function TicketsPage() {
@@ -186,15 +186,15 @@ export default function TicketsPage() {
                 className="text-gray-600 hover:text-black mr-4 flex items-center font-medium"
               >
                 <ArrowLeft size={18} className="mr-1" />
-                Back
+                กลับ
               </Link>
               <div className="bg-brutal-blue p-2 border-[3px] border-black mr-3">
                 <MessageSquare className="h-6 w-6 text-black" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-black">My Support Tickets</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-black">ทิคเก็ตช่วยเหลือของฉัน</h1>
             </div>
             <p className="text-gray-600">
-              View and manage your support requests
+              ดูและจัดการคำขอซัพพอร์ตของคุณ
             </p>
           </div>
           <button
@@ -203,7 +203,7 @@ export default function TicketsPage() {
             style={{ boxShadow: '4px 4px 0 0 #000000' }}
           >
             <Plus size={18} className="mr-2" />
-            New Ticket
+            สร้างทิคเก็ตใหม่
           </button>
         </div>
       </motion.div>
@@ -244,7 +244,7 @@ export default function TicketsPage() {
                         : "bg-white text-gray-700 border-black hover:bg-brutal-gray"
                     }`}
                   >
-                    {status === "ALL" ? "All" : statusLabels[status as TicketStatus].label}
+                    {status === "ALL" ? "ทั้งหมด" : statusLabels[status as TicketStatus].label}
                   </button>
                 ))}
               </div>
@@ -255,17 +255,17 @@ export default function TicketsPage() {
               {isLoading ? (
                 <div className="p-8 text-center">
                   <Loader2 className="animate-spin mx-auto text-black mb-3" size={32} />
-                  <p className="text-gray-600">Loading tickets...</p>
+                  <p className="text-gray-600">กำลังโหลดทิคเก็ต...</p>
                 </div>
               ) : filteredTickets.length === 0 ? (
                 <div className="p-8 text-center">
                   <FileText className="mx-auto text-gray-400 mb-3" size={48} />
-                  <p className="text-gray-600 mb-2">No tickets found</p>
+                  <p className="text-gray-600 mb-2">ไม่พบทิคเก็ต</p>
                   <button
                     onClick={() => setShowNewTicketModal(true)}
                     className="text-black hover:underline font-medium"
                   >
-                    Create your first ticket
+                    สร้างทิคเก็ตแรกของคุณ
                   </button>
                 </div>
               ) : (
@@ -329,7 +329,7 @@ export default function TicketsPage() {
                           <button
                             onClick={handleCloseTicket}
                             className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray transition-colors"
-                            title="Close Ticket"
+                            title="ปิดทิคเก็ต"
                           >
                             <X size={18} />
                           </button>
@@ -343,7 +343,7 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex items-center">
                         <Clock size={14} className="mr-1.5" />
-                        Created {new Date(selectedTicket.createdAt).toLocaleString()}
+                        สร้างเมื่อ {new Date(selectedTicket.createdAt).toLocaleString()}
                       </div>
                       {selectedTicket.orderId && (
                         <Link
@@ -351,7 +351,7 @@ export default function TicketsPage() {
                           className="text-black hover:underline flex items-center font-medium"
                         >
                           <FileText size={14} className="mr-1.5" />
-                          Order: {selectedTicket.orderId}
+                          ออร์เดอร์: {selectedTicket.orderId}
                         </Link>
                       )}
                     </div>
@@ -366,7 +366,7 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-black font-medium text-sm">You</span>
+                          <span className="text-black font-medium text-sm">คุณ</span>
                           <span className="text-xs text-gray-600">
                             {new Date(selectedTicket.createdAt).toLocaleString()}
                           </span>
@@ -401,10 +401,10 @@ export default function TicketsPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-black font-medium text-sm">
                               {message.sender === "admin"
-                                ? message.senderName || "Support Team"
+                                ? message.senderName || "ทีมซัพพอร์ต"
                                 : message.sender === "system"
-                                ? "System"
-                                : "You"}
+                                ? "ระบบ"
+                                : "คุณ"}
                             </span>
                             <span className="text-xs text-gray-600">
                               {new Date(message.createdAt).toLocaleString()}
@@ -434,7 +434,7 @@ export default function TicketsPage() {
                           type="text"
                           value={replyMessage}
                           onChange={(e) => setReplyMessage(e.target.value)}
-                          placeholder="Type your reply..."
+                          placeholder="พิมพ์ข้อความตอบกลับ..."
                           className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                         />
                         <button
@@ -448,7 +448,7 @@ export default function TicketsPage() {
                           ) : (
                             <>
                               <Send size={18} className="mr-2" />
-                              Send
+                              ส่ง
                             </>
                           )}
                         </button>
@@ -461,9 +461,9 @@ export default function TicketsPage() {
           ) : (
             <div className="bg-white border-[3px] border-black p-12 text-center h-full flex flex-col items-center justify-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
               <MessageSquare className="text-gray-300 mb-4" size={64} />
-              <h3 className="text-xl font-bold text-black mb-2">Select a Ticket</h3>
+              <h3 className="text-xl font-bold text-black mb-2">เลือกทิคเก็ต</h3>
               <p className="text-gray-600 max-w-sm">
-                Choose a ticket from the list to view details and continue the conversation
+                เลือกทิคเก็ตจากรายการเพื่อดูรายละเอียดและสนทนาต่อ
               </p>
             </div>
           )}
@@ -490,7 +490,7 @@ export default function TicketsPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-                    <h2 className="text-xl font-bold text-black">Create New Ticket</h2>
+                    <h2 className="text-xl font-bold text-black">สร้างทิคเก็ตใหม่</h2>
                   </div>
                   <button
                     onClick={() => setShowNewTicketModal(false)}
@@ -503,7 +503,7 @@ export default function TicketsPage() {
 
               <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">Category</label>
+                  <label className="block text-gray-700 mb-2 font-medium">หมวดหมู่</label>
                   <select
                     value={newTicket.category}
                     onChange={(e) => setNewTicket({ ...newTicket, category: e.target.value as TicketCategory })}
@@ -518,23 +518,23 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">Subject</label>
+                  <label className="block text-gray-700 mb-2 font-medium">หัวข้อ</label>
                   <input
                     type="text"
                     value={newTicket.subject}
                     onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-                    placeholder="Brief summary of your issue"
+                    placeholder="สรุปสั้น ๆ เกี่ยวกับปัญหาของคุณ"
                     required
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">Description</label>
+                  <label className="block text-gray-700 mb-2 font-medium">รายละเอียด</label>
                   <textarea
                     value={newTicket.description}
                     onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })}
-                    placeholder="Please describe your issue in detail..."
+                    placeholder="โปรดอธิบายปัญหาของคุณอย่างละเอียด..."
                     required
                     rows={5}
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none"
@@ -542,12 +542,12 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">Order ID (Optional)</label>
+                  <label className="block text-gray-700 mb-2 font-medium">รหัสคำสั่งซื้อ (ไม่บังคับ)</label>
                   <input
                     type="text"
                     value={newTicket.orderId || ""}
                     onChange={(e) => setNewTicket({ ...newTicket, orderId: e.target.value || undefined })}
-                    placeholder="If this is about a specific order"
+                    placeholder="หากเกี่ยวข้องกับคำสั่งซื้อใด"
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
@@ -558,7 +558,7 @@ export default function TicketsPage() {
                     onClick={() => setShowNewTicketModal(false)}
                     className="flex-1 py-2.5 px-4 border-[3px] border-black text-black hover:bg-brutal-gray transition-colors font-medium"
                   >
-                    Cancel
+                    ยกเลิก
                   </button>
                   <button
                     type="submit"
@@ -569,10 +569,10 @@ export default function TicketsPage() {
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
                         <Loader2 size={18} className="animate-spin mr-2" />
-                        Creating...
+                        กำลังสร้าง...
                       </span>
                     ) : (
-                      "Create Ticket"
+                      "สร้างทิคเก็ต"
                     )}
                   </button>
                 </div>

@@ -18,6 +18,7 @@ import {
   ShoppingCart,
   Bell,
   Layers,
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -60,6 +61,11 @@ const adminNavItems = [
     title: "จัดการผู้ใช้",
     href: "/admin/users",
     icon: <Users className="w-5 h-5" />,
+  },
+  {
+    title: "จัดการ FAQ",
+    href: "/admin/faq",
+    icon: <HelpCircle className="w-5 h-5" />,
   },
   {
     title: "ตั๋วสนับสนุน",

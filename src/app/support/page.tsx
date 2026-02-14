@@ -7,17 +7,18 @@ import {
   Clock,
   AlertCircle,
   ChevronRight,
-  Headphones
+  Headphones,
+  HelpCircle
 } from 'lucide-react';
 import Link from 'next/link';
 
 // Support category tiles - เก็บเฉพาะ Help Guides และ Ticket System
 const supportCategories = [
   {
-    icon: <FileText className="h-6 w-6 text-black" />,
-    title: "คู่มือการใช้งาน",
-    description: "แนะนำการใช้งานเว็บไซต์และวิธีแก้ไขปัญหาเบื้องต้น",
-    link: "/support/guides",
+    icon: <HelpCircle className="h-6 w-6 text-black" />,
+    title: "คำถามที่พบบ่อย (FAQ)",
+    description: "รวมคำถามยอดฮิต วิธีแก้ปัญหา และขั้นตอนต่าง ๆ",
+    link: "/support/faq",
     isExternal: false
   },
   {

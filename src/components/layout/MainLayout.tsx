@@ -29,12 +29,12 @@ import { Footer } from "./footer";
 import { useAuth } from "@/lib/context/auth-context";
 import { useNotifications } from "@/lib/context/notification-context";
 import SearchBar from "@/components/layout/SearchBar";
+import { MobileNav } from "./MobileNav";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-// Memo-ized navigation item component to prevent re-renders
 const NavItem = memo(function NavItem({
   href,
   label,
@@ -138,7 +138,6 @@ export function MainLayout({ children }: MainLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
 
-  // Toggle user menu dropdown
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
@@ -149,14 +148,12 @@ export function MainLayout({ children }: MainLayoutProps) {
     setIsUserMenuOpen(false);
   };
 
-  // Notification state
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { notifications, unreadCount, markAsRead, markAllAsRead } =
     useNotifications();
   const notificationRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -182,7 +179,26 @@ export function MainLayout({ children }: MainLayoutProps) {
     };
   }, [isNotificationOpen, isUserMenuOpen]);
 
-  // Create memoized nav items with hardcoded Thai text
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   const mainNavItems = useMemo(
     () => [
       { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
@@ -306,11 +322,11 @@ export function MainLayout({ children }: MainLayoutProps) {
       </aside>
 
       {/* Mobile navbar */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[3px] border-black lg:hidden"
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-black lg:hidden safe-bottom h-16"
         style={{ boxShadow: "0 -4px 0 0 rgba(0,0,0,0.1)" }}
       >
-        <div className="flex justify-around items-center">
+        <div className="flex justify-around items-center h-full">
           {mobileNavItems.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -327,10 +343,10 @@ export function MainLayout({ children }: MainLayoutProps) {
             );
           })}
         </div>
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
+      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300 w-full overflow-x-hidden pb-20 lg:pb-0">
         {/* Header */}
         <header
           className="sticky top-0 z-20 bg-white border-b-[3px] border-black h-16 flex items-center"
@@ -569,7 +585,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                           {accountMenuItems.slice(0, 4).map((item) => (
                             <Link key={item.href} href={item.href}>
                               <div className="px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3 transition-colors font-medium">
-                                <span className="opacity-70">{item.icon}</span>
+                                <span className="opacity:70">{item.icon}</span>
                                 <span>{item.label}</span>
                               </div>
                             </Link>
@@ -581,7 +597,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                             onClick={handleLogout}
                             className="w-full px-3 py-2.5 text-sm text-brutal-pink hover:bg-brutal-pink/10 flex items-center space-x-3 transition-colors font-medium"
                           >
-                            <LogOut size={18} className="opacity-70" />
+                            <LogOut size={18} className="opacity:70" />
                             <span>ออกจากระบบ</span>
                           </button>
                         </div>
@@ -611,6 +627,11 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Footer */}
         <Footer />
       </div>
+
+      <MobileNav
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
     </div>
   );
 }

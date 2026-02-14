@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "@/lib/framer-exports";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 export default function FaqPage() {
+  const LOCAL_VOTE_KEY = "faqUserVotes";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [expandedArticle, setExpandedArticle] = useState<string | null>(null);
@@ -36,10 +37,27 @@ export default function FaqPage() {
   const [error, setError] = useState<string | null>(null);
   const [totalArticles, setTotalArticles] = useState(0);
   const [userVotes, setUserVotes] = useState<Record<string, boolean | null>>({});
+  const hasInitializedSearch = useRef(false);
+  const hasLoadedVotes = useRef(false);
 
   // Load categories on mount
   useEffect(() => {
     loadCategories();
+  }, []);
+
+  // Rehydrate stored votes (session persistence)
+  useEffect(() => {
+    if (hasLoadedVotes.current) return;
+    hasLoadedVotes.current = true;
+    try {
+      const stored = localStorage.getItem(LOCAL_VOTE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as Record<string, boolean | null>;
+        setUserVotes(parsed);
+      }
+    } catch (err) {
+      console.warn("Failed to load stored FAQ votes", err);
+    }
   }, []);
 
   // Load articles when category changes
@@ -49,6 +67,10 @@ export default function FaqPage() {
 
   // Search debounce
   useEffect(() => {
+    if (!hasInitializedSearch.current) {
+      hasInitializedSearch.current = true;
+      return;
+    }
     const timeout = setTimeout(() => {
       if (searchQuery) {
         performSearch();
@@ -116,8 +138,25 @@ export default function FaqPage() {
           ...prev,
           [articleId]: response.data.userVote,
         }));
-        // Refresh articles to show updated counts
-        loadArticles();
+        try {
+          const current = localStorage.getItem(LOCAL_VOTE_KEY);
+          const parsed = current ? (JSON.parse(current) as Record<string, boolean | null>) : {};
+          parsed[articleId] = response.data.userVote;
+          localStorage.setItem(LOCAL_VOTE_KEY, JSON.stringify(parsed));
+        } catch (err) {
+          console.warn("Failed to persist FAQ vote", err);
+        }
+        setArticles((prev) =>
+          prev.map((article) =>
+            article.id === articleId
+              ? {
+                  ...article,
+                  helpfulCount: response.data.helpfulCount ?? article.helpfulCount,
+                  unhelpfulCount: response.data.unhelpfulCount ?? article.unhelpfulCount,
+                }
+              : article
+          )
+        );
       }
     } catch (err) {
       console.error("Failed to vote:", err);

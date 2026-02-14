@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import UserSidebar from "@/components/account/UserSidebar";
+import UserSidebar, { DashboardLayout } from "@/components/account/UserSidebar";
 import { motion } from "@/lib/framer-exports";
 
 interface UserLayoutProps {
@@ -24,8 +24,9 @@ export default function UserLayout({ children, title }: UserLayoutProps) {
   if (!isInitialized || !user) {
     return (
       <div className="page-container text-center">
-        <div className="bg-white border-[3px] border-black p-8"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        <div
+          className="bg-white border-[3px] border-black p-8"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <div className="animate-pulse flex space-x-4 justify-center">
             <div className="rounded-full bg-gray-200 h-12 w-12"></div>
@@ -41,7 +42,7 @@ export default function UserLayout({ children, title }: UserLayoutProps) {
   }
 
   return (
-    <div className="page-container">
+    <DashboardLayout>
       {title && (
         <motion.h1
           className="text-2xl font-black text-black mb-6 thai-font flex items-center"
@@ -53,32 +54,7 @@ export default function UserLayout({ children, title }: UserLayoutProps) {
           {title}
         </motion.h1>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <motion.div
-          className="col-span-1"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <div className="bg-white border-[3px] border-black sticky top-24 overflow-hidden"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
-          >
-            <UserSidebar />
-          </div>
-        </motion.div>
-
-        {/* Main content */}
-        <motion.div
-          className="col-span-1 md:col-span-3 space-y-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          {children}
-        </motion.div>
-      </div>
-    </div>
+      {children}
+    </DashboardLayout>
   );
 }

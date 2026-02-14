@@ -10,11 +10,13 @@ import {
   Globe,
   Loader2,
   Signal,
+  Zap,
+  Clock,
+  ShieldCheck,
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
 
-// Mobile Product interface
 interface MobileProduct {
   id: string;
   slug: string;
@@ -22,13 +24,12 @@ interface MobileProduct {
   country: string;
   operator: string;
   mainImage: string;
-  coverImage?: string;
   rating: number;
   price: number;
   discountPercent?: number;
+  autoDelivery?: boolean;
 }
 
-// Map country name to ISO code for flagcdn SVGs
 function getCountryFlagCode(country: string): string | null {
   const key = country.toLowerCase();
   if (key.includes("thailand")) return "th";
@@ -41,10 +42,12 @@ function getCountryFlagCode(country: string): string | null {
   return null;
 }
 
-// Transform Product to MobileProduct
 function transformProductToMobile(product: Product): MobileProduct {
-  // Use game details for region/country if available
-  const regionRaw = product.gameDetails?.region || product.category?.slug || product.category?.name || "";
+  const regionRaw =
+    product.gameDetails?.region ||
+    product.category?.slug ||
+    product.category?.name ||
+    "";
   const regionCode = regionRaw.toLowerCase();
   const countryMap: Record<string, string> = {
     th: "Thailand",
@@ -63,21 +66,21 @@ function transformProductToMobile(product: Product): MobileProduct {
     "mobile-recharge-cn": "China",
   };
 
-  const country = countryMap[regionCode] || countryMap[regionCode.replace(/\(.*\)/, "")] || regionRaw || "Unknown";
-
-  // Get starting price from types (lowest displayPrice)
+  const country =
+    countryMap[regionCode] ||
+    countryMap[regionCode.replace(/\(.*\)/, "")] ||
+    regionRaw ||
+    "Unknown";
   const types = product.types || [];
   const validPrices = types
     .filter((t) => t.displayPrice && Number(t.displayPrice) > 0)
     .map((t) => Number(t.displayPrice));
-
   const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
-
-  // Highest discount rate among types
   const discountRates = types
-    .map((t) => (typeof t.discountRate === "number" ? Number(t.discountRate) : undefined))
+    .map((t) =>
+      typeof t.discountRate === "number" ? Number(t.discountRate) : undefined,
+    )
     .filter((v): v is number => v !== undefined && !Number.isNaN(v));
-
   const discountPercent: number | undefined =
     discountRates.length > 0 ? Math.max(...discountRates) : undefined;
 
@@ -86,20 +89,38 @@ function transformProductToMobile(product: Product): MobileProduct {
     slug: product.slug,
     title: product.name,
     country: country,
-    operator: product.name.split("(")[0].trim(), // Simple heuristic
+    operator: product.name.split("(")[0].trim(),
     mainImage:
       product.imageUrl ||
       `https://placehold.co/400x400/ffffff/000000?text=${encodeURIComponent(product.name)}`,
     rating: product.averageRating || 4.8,
     price: startingPrice,
     discountPercent,
+    autoDelivery: true,
   };
+}
+
+function sortThailandFirst<T extends { id: string; name: string }>(
+  items: T[],
+): T[] {
+  const clone = [...items];
+  const idx = clone.findIndex(
+    (item) =>
+      item.name.toLowerCase().includes("thailand") ||
+      item.id.toLowerCase().includes("thailand"),
+  );
+  if (idx > 1) {
+    const [thaiItem] = clone.splice(idx, 1);
+    clone.splice(1, 0, thaiItem);
+  }
+  return clone;
 }
 
 function MobileRechargeContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("search") || "";
   const [selectedCountry, setSelectedCountry] = useState("all");
+  const [selectedProvider, setSelectedProvider] = useState("all");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [products, setProducts] = useState<MobileProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,13 +128,10 @@ function MobileRechargeContent() {
     { id: string; name: string; count: number }[]
   >([]);
 
-  // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        // Fetch products - we'll filter for MOBILE_RECHARGE on client side
-        // since the API might not support filtering by this new type yet or we just fetch all
         const response = await productApi.getProducts({
           isActive: true,
           limit: 100,
@@ -122,14 +140,11 @@ function MobileRechargeContent() {
         });
 
         if (response.success) {
-          // Filter for MOBILE_RECHARGE products only and transform
-          // Note: Backend might return 'MOBILE_RECHARGE' as productType
           const mobileProducts = response.data
             .filter((p) => (p.productType as any) === "MOBILE_RECHARGE")
             .map(transformProductToMobile);
           setProducts(mobileProducts);
 
-          // Build countries list from actual data
           const countryCounts = mobileProducts.reduce(
             (acc, product) => {
               acc[product.country] = (acc[product.country] || 0) + 1;
@@ -139,18 +154,14 @@ function MobileRechargeContent() {
           );
 
           const countryList = [
-            {
-              id: "all",
-              name: "ทุกประเทศ",
-              count: mobileProducts.length,
-            },
+            { id: "all", name: "ทุกประเทศ", count: mobileProducts.length },
             ...Object.entries(countryCounts).map(([name, count]) => ({
               id: name,
               name,
               count,
             })),
           ];
-          setCountries(countryList);
+          setCountries(sortThailandFirst(countryList));
         }
       } catch (error) {
         console.error("Failed to fetch mobile products:", error);
@@ -162,7 +173,6 @@ function MobileRechargeContent() {
     fetchProducts();
   }, []);
 
-  // Update searchQuery when URL params change
   useEffect(() => {
     const query = searchParams.get("search");
     if (query !== null) {
@@ -170,18 +180,55 @@ function MobileRechargeContent() {
     }
   }, [searchParams]);
 
-  // Filter products based on selected country and search query
+  const PROVIDERS = [
+    {
+      id: "all",
+      name: "ทุกเครือข่าย",
+      count: products.length,
+      icon: <Signal size={16} className="text-brutal-green" />,
+    },
+    {
+      id: "ais",
+      name: "AIS",
+      count: products.filter((p) => p.operator.toLowerCase().includes("ais"))
+        .length,
+      icon: <Smartphone size={16} className="text-brutal-blue" />,
+    },
+    {
+      id: "dtac",
+      name: "DTAC",
+      count: products.filter((p) => p.operator.toLowerCase().includes("dtac"))
+        .length,
+      icon: <Smartphone size={16} className="text-brutal-pink" />,
+    },
+    {
+      id: "true",
+      name: "TrueMove",
+      count: products.filter((p) => p.operator.toLowerCase().includes("true"))
+        .length,
+      icon: <Smartphone size={16} className="text-brutal-yellow" />,
+    },
+  ];
+
   const filteredProducts = products.filter((product) => {
-    // Country filter
     const matchesCountry =
       selectedCountry === "all" || product.country === selectedCountry;
-
-    // Search filter
     const matchesSearch =
       !searchQuery ||
       product.title.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCountry && matchesSearch;
+    let matchesProvider = true;
+    if (selectedProvider !== "all") {
+      if (selectedProvider === "ais") {
+        matchesProvider = product.operator.toLowerCase().includes("ais");
+      } else if (selectedProvider === "dtac") {
+        matchesProvider = product.operator.toLowerCase().includes("dtac");
+      } else if (selectedProvider === "true") {
+        matchesProvider = product.operator.toLowerCase().includes("true");
+      }
+    }
+
+    return matchesCountry && matchesSearch && matchesProvider;
   });
 
   return (
@@ -194,6 +241,60 @@ function MobileRechargeContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
+          {/* Providers Card */}
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
+            <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
+              <h3 className="text-black font-black text-base flex items-center">
+                <Signal size={18} className="mr-2" />
+                เครือข่าย
+              </h3>
+            </div>
+            <div className="p-3 space-y-1">
+              {PROVIDERS.map((provider) => (
+                <motion.button
+                  key={provider.id}
+                  onClick={() => setSelectedProvider(provider.id)}
+                  className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
+                    selectedProvider === provider.id
+                      ? "bg-brutal-blue border-black text-black"
+                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                  }`}
+                  style={
+                    selectedProvider === provider.id
+                      ? { boxShadow: "3px 3px 0 0 #000000" }
+                      : undefined
+                  }
+                  whileHover={{ x: 3 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={
+                        selectedProvider === provider.id
+                          ? "text-black"
+                          : "text-gray-500"
+                      }
+                    >
+                      {provider.icon}
+                    </span>
+                    <span className="text-sm font-bold">{provider.name}</span>
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                      selectedProvider === provider.id
+                        ? "bg-white text-black"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {provider.count}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
           {/* Countries Card */}
           <div
             className="bg-white border-[3px] border-black overflow-hidden mb-4"
@@ -238,7 +339,7 @@ function MobileRechargeContent() {
                           height={18}
                         />
                       ) : (
-                        <span className="fi fi-un text-lg" aria-hidden></span>
+                        <Globe size={16} className="text-gray-500" />
                       )}
                       <span className="text-sm font-bold">{country.name}</span>
                     </div>
@@ -264,14 +365,22 @@ function MobileRechargeContent() {
           >
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
-                <Smartphone size={18} className="text-black" />
+                <Zap size={18} className="text-black" />
                 <span className="font-black text-black text-sm">
-                  เติมเงินมือถือ
+                  เติมเงินด่วน
                 </span>
               </div>
               <p className="text-black/80 text-xs mb-3">
                 เติมเงินมือถือทุกเครือข่าย รวดเร็วทันใจ ภายใน 1 นาที
               </p>
+              <motion.button
+                className="w-full bg-black text-white px-3 py-2 text-xs font-bold border-[2px] border-black"
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                เติมเงินเลย
+              </motion.button>
             </div>
           </div>
         </motion.div>
@@ -288,15 +397,11 @@ function MobileRechargeContent() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h1 className="text-gray-900 text-2xl font-black flex items-center">
-                  <Smartphone
-                    size={24}
-                    className="text-brutal-green mr-2"
-                    fill="currentColor"
-                  />
+                  <Smartphone size={24} className="text-brutal-green mr-2" />
                   เติมเงินมือถือ
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">
-                  เลือกเครือข่ายที่คุณต้องการเติมเงิน
+                  เติมเงินมือถือทุกเครือข่าย รวดเร็ว ปลอดภัย
                 </p>
               </div>
 
@@ -316,6 +421,30 @@ function MobileRechargeContent() {
                   <Filter size={16} /> ตัวกรอง
                 </button>
               </div>
+            </div>
+
+            {/* Mobile Horizontal Country Scroll */}
+            <div className="lg:hidden mt-4 -mx-5 px-5 overflow-x-auto scrollbar-hide flex gap-2 pb-2">
+              {countries.slice(0, 6).map((country) => (
+                <button
+                  key={country.id}
+                  onClick={() => setSelectedCountry(country.id)}
+                  className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex-shrink-0 flex items-center gap-1.5 ${
+                    selectedCountry === country.id
+                      ? "bg-brutal-green text-black"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  {getCountryFlagCode(country.name) && (
+                    <img
+                      src={`https://flagcdn.com/${getCountryFlagCode(country.name)}.svg`}
+                      alt=""
+                      className="w-4 h-3 border border-black/10"
+                    />
+                  )}
+                  {country.name}
+                </button>
+              ))}
             </div>
           </motion.div>
 
@@ -358,12 +487,41 @@ function MobileRechargeContent() {
                         </div>
                       ) : null}
 
-                      <div className="relative aspect-square w-full overflow-hidden bg-white flex items-center justify-center p-4">
+                      <div className="relative aspect-square w-full overflow-hidden">
                         <img
                           src={product.mainImage}
                           alt={product.title}
-                          className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
+
+                        {product.autoDelivery && (
+                          <div
+                            className="absolute bottom-2 right-2 z-10"
+                            title="ส่งให้ทันทีหลังชำระเงิน"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 512"
+                              className="h-6 w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
+                              role="img"
+                              aria-label="ส่งให้ทันทีหลังชำระเงิน"
+                            >
+                              <g clipRule="evenodd" fillRule="evenodd">
+                                <circle
+                                  cx="256"
+                                  cy="256"
+                                  r="256"
+                                  fill="#ffc107"
+                                />
+                                <path
+                                  fill="#fff"
+                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
+                                />
+                              </g>
+                            </svg>
+                          </div>
+                        )}
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -376,14 +534,28 @@ function MobileRechargeContent() {
                         </div>
                       </div>
 
-                      <div className="p-2.5 bg-white border-t-[3px] border-black">
-                        <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-green transition-colors text-center">
+                      <div className="p-2.5">
+                        <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-green transition-colors">
                           {product.operator}
                         </p>
-                        <div className="flex items-center justify-center">
-                          <span className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                            {product.country}
-                          </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            {getCountryFlagCode(product.country) ? (
+                              <img
+                                src={`https://flagcdn.com/${getCountryFlagCode(product.country)}.svg`}
+                                alt={product.country}
+                                className="w-4 h-3 border border-black/10"
+                              />
+                            ) : (
+                              <Globe size={12} className="text-gray-400" />
+                            )}
+                            <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">
+                              {product.country}
+                            </span>
+                          </div>
+                          <div className="text-xs text-black font-black">
+                            ฿{product.price}
+                          </div>
                         </div>
                       </div>
                     </div>

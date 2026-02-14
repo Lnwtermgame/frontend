@@ -16,10 +16,14 @@ import {
   Calendar,
   Package,
   XCircle,
+  Check,
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Sheet } from "@/components/ui/Sheet";
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -31,6 +35,7 @@ export default function OrdersPage() {
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch orders from API
@@ -148,42 +153,50 @@ export default function OrdersPage() {
     switch (status) {
       case "COMPLETED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font whitespace-nowrap">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             <CheckCircle className="w-3 h-3 mr-1" /> สำเร็จ
           </span>
         );
       case "PENDING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font whitespace-nowrap">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
           </span>
         );
       case "PROCESSING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black thai-font whitespace-nowrap">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
           </span>
         );
       case "CANCELLED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font whitespace-nowrap">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             <XCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
           </span>
         );
       case "REFUNDED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 thai-font whitespace-nowrap">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             <AlertCircle className="w-3 h-3 mr-1" /> คืนเงินแล้ว
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font whitespace-nowrap">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             {status}
           </span>
         );
     }
   };
+
+  const STATUS_OPTIONS = [
+    { value: "", label: "ทั้งหมด" },
+    { value: "PENDING", label: "รอดำเนินการ" },
+    { value: "PROCESSING", label: "กำลังดำเนินการ" },
+    { value: "COMPLETED", label: "สำเร็จ" },
+    { value: "CANCELLED", label: "ยกเลิก" },
+  ];
 
   // Render card view for mobile
   const renderCardView = () => {
@@ -200,7 +213,7 @@ export default function OrdersPage() {
             transition={{ duration: 0.3 }}
           >
             <div className="flex items-start p-4">
-              <div className="h-16 w-16 border-[2px] border-black mr-4 flex-shrink-0 bg-gray-100 overflow-hidden relative">
+              <div className="h-16 w-16 border-[2px] border-black mr-4 flex-shrink-0 bg-gray-100 overflow-hidden relative shadow-[2px_2px_0_0_#000]">
                 {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
                   <img
                     src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
@@ -249,14 +262,10 @@ export default function OrdersPage() {
 
                 <div className="flex justify-end mt-3">
                   <Link href={`/dashboard/orders/${order.id}`}>
-                    <motion.button
-                      className="text-black flex items-center text-xs px-2 py-1 border-[2px] border-black bg-brutal-blue hover:bg-brutal-blue/80"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Eye className="h-3 w-3 mr-1" />
-                      <span className="thai-font">ดูรายละเอียด</span>
-                    </motion.button>
+                    <Button size="sm" className="text-xs h-8">
+                       <Eye className="h-3 w-3 mr-1.5" />
+                       ดูรายละเอียด
+                    </Button>
                   </Link>
                 </div>
               </div>
@@ -292,34 +301,38 @@ export default function OrdersPage() {
         transition={{ duration: 0.3 }}
       >
         <div className="relative md:w-80">
-          <input
-            type="text"
+          <Input
             placeholder="ค้นหาคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-all text-sm thai-font"
+            icon={<Search size={18} />}
           />
-          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
         </div>
 
         <div className="flex items-center gap-3">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black thai-font"
+          {/* Desktop Filter */}
+          <div className="hidden md:block">
+             <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 bg-white border-[2px] border-black text-black text-sm focus:outline-none shadow-[2px_2px_0_0_#000] thai-font h-10 md:h-12"
+            >
+              {STATUS_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Mobile Filter Button */}
+          <Button 
+             variant="outline" 
+             className="md:hidden"
+             onClick={() => setIsFilterOpen(true)}
           >
-            <option value="">ทั้งหมด</option>
-            <option value="PENDING">รอดำเนินการ</option>
-            <option value="PROCESSING">กำลังดำเนินการ</option>
-            <option value="COMPLETED">สำเร็จ</option>
-            <option value="CANCELLED">ยกเลิก</option>
-          </select>
+             <Filter size={16} className="mr-2" /> ตัวกรอง
+          </Button>
 
-          <motion.div
-            className="bg-white border-[2px] border-black p-1"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-            whileHover={{ scale: 1.03 }}
-          >
+          <div className="hidden md:flex bg-white border-[2px] border-black p-1 shadow-[2px_2px_0_0_#000]">
             <button
               className={`px-3 py-1 text-sm font-medium transition-colors thai-font ${viewMode === "table" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
               onClick={() => setViewMode("table")}
@@ -332,9 +345,47 @@ export default function OrdersPage() {
             >
               การ์ด
             </button>
-          </motion.div>
+          </div>
         </div>
       </motion.div>
+      
+      {/* Mobile Filter Sheet */}
+      <Sheet
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        title="ตัวกรองคำสั่งซื้อ"
+      >
+         <div className="space-y-6">
+            <div>
+               <h3 className="font-bold mb-3 flex items-center">
+                  <Filter size={18} className="mr-2"/> สถานะคำสั่งซื้อ
+               </h3>
+               <div className="space-y-2">
+                  {STATUS_OPTIONS.map((option) => (
+                     <button
+                        key={option.value}
+                        onClick={() => {
+                           setStatusFilter(option.value);
+                           setIsFilterOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
+                           statusFilter === option.value 
+                              ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]" 
+                              : "bg-white text-gray-700"
+                        }`}
+                     >
+                        <span>{option.label}</span>
+                        {statusFilter === option.value && <Check size={18} />}
+                     </button>
+                  ))}
+               </div>
+            </div>
+            
+            <Button fullWidth onClick={() => setIsFilterOpen(false)}>
+               ดูผลลัพธ์
+            </Button>
+         </div>
+      </Sheet>
 
       {/* Orders list */}
       <motion.div
@@ -386,7 +437,7 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100 overflow-hidden relative">
+                          <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100 overflow-hidden relative shadow-[1px_1px_0_0_#000]">
                             {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
                               <img
                                 src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
@@ -419,14 +470,10 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Link href={`/dashboard/orders/${order.id}`}>
-                          <motion.button
-                            className="px-3 py-1.5 border-[2px] border-black bg-brutal-blue text-black text-xs flex items-center hover:bg-brutal-blue/80"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Eye className="h-3 w-3 mr-1.5" />
-                            <span className="thai-font">ดู</span>
-                          </motion.button>
+                           <Button size="sm" className="text-xs h-8 px-3">
+                              <Eye className="h-3 w-3 mr-1.5" />
+                              ดู
+                           </Button>
                         </Link>
                       </td>
                     </motion.tr>

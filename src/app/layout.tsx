@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { ReactGrabInit } from "@/components/ReactGrabInit";
 import { Toaster } from "react-hot-toast";
@@ -20,6 +20,15 @@ import '@fontsource/noto-sans-thai/400.css';
 import '@fontsource/noto-sans-thai/500.css';
 import '@fontsource/noto-sans-thai/700.css';
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5, // Allow zoom for accessibility
+  userScalable: true,
+  viewportFit: "cover", // For iPhone safe areas
+};
+
 export const metadata: Metadata = {
   title: "MaliGamePass - Game Top Up & Digital Cards",
   description: "เติมเงินเกมและซื้อบัตรของขวัญดิจิตอลอย่างรวดเร็ว ปลอดภัย และราคาคุ้มค่า",
@@ -36,8 +45,6 @@ export default function RootLayout({
   return (
     <html lang="th" style={{ colorScheme: 'light' }}>
       <head>
-        <meta name="theme-color" content="#F9FAFB" />
-
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (
           <Script

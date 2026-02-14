@@ -40,11 +40,13 @@ export interface FaqArticleListItem {
   categoryName: string;
   title: string;
   slug: string;
-   content: string;
+  content: string;
   excerpt?: string;
   isPinned: boolean;
   viewCount: number;
   createdAt: string;
+  helpfulCount?: number;
+  unhelpfulCount?: number;
 }
 
 export interface FaqCategoryWithArticles extends FaqCategory {

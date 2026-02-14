@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "@/lib/framer-exports";
+import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,11 +31,13 @@ import ProductDescription from "@/components/products/ProductDescription";
 import {
   productApi,
   Product,
-  ProductVariant,
-  SeagmProduct,
   ProductType,
   SeagmField,
 } from "@/lib/services/product-api";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Grid } from "@/components/ui/Grid";
 
 // Field label translation map
 const FIELD_LABEL_MAP: Record<string, string> = {
@@ -520,13 +522,11 @@ export default function GameDetailsPage() {
           <p className="text-gray-600 mb-6">
             {error || "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
           </p>
-          <Link
-            href="/games"
-            className="bg-black hover:bg-gray-800 text-white px-6 py-3 font-bold inline-flex items-center border-[3px] border-black transition-colors"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
-            <ChevronLeft size={18} className="mr-2" />
-            กลับไปหน้าเกมทั้งหมด
+          <Link href="/games">
+            <Button>
+              <ChevronLeft size={18} className="mr-2" />
+              กลับไปหน้าเกมทั้งหมด
+            </Button>
           </Link>
         </div>
       </div>
@@ -551,7 +551,7 @@ export default function GameDetailsPage() {
         className="bg-white border-[3px] border-black overflow-hidden mb-8"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
-        <div className="relative h-80 md:h-96 overflow-hidden">
+        <div className="relative h-64 md:h-96 overflow-hidden">
           {/* Main banner image - cover full area with crop */}
           <Image
             src={
@@ -569,10 +569,10 @@ export default function GameDetailsPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
 
           {/* Game info overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
             <div className="flex flex-col md:flex-row md:items-end gap-6">
               <div
-                className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border-[3px] border-black"
+                className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
                 style={{ boxShadow: "2px 2px 0 0 #000000" }}
               >
                 <Image
@@ -586,7 +586,7 @@ export default function GameDetailsPage() {
                 />
               </div>
               <div className="flex-1">
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 line-clamp-2">
                   {game.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -609,46 +609,22 @@ export default function GameDetailsPage() {
               </div>
 
               <div className="flex mt-4 md:mt-0 space-x-3">
-                <motion.button
-                  type="button"
+                <Button
+                  variant="secondary"
+                  size="icon"
                   onClick={handleToggleFavorite}
-                  aria-label={
-                    isFavorite ? "ลบออกจากรายการโปรด" : "เพิ่มในรายการโปรด"
-                  }
-                  className={`p-3 border-[3px] border-black transition-all duration-200 ${
-                    isFavorite
-                      ? "bg-brutal-pink text-black"
-                      : "bg-white text-black hover:bg-gray-100"
-                  }`}
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ y: 0 }}
+                  className={isFavorite ? "bg-brutal-pink text-black" : ""}
                 >
-                  <Heart
-                    size={20}
-                    className={isFavorite ? "fill-black" : ""}
-                    aria-hidden="true"
-                  />
-                </motion.button>
-                <motion.button
-                  type="button"
+                  <Heart size={20} className={isFavorite ? "fill-black" : ""} />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
                   onClick={handleCopyLink}
-                  aria-label={copied ? "คัดลอกแล้ว" : "คัดลอกลิงก์"}
-                  className={`p-3 border-[3px] border-black transition-all duration-200 ${
-                    copied
-                      ? "bg-brutal-green text-black"
-                      : "bg-white text-black hover:bg-gray-100"
-                  }`}
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ y: 0 }}
+                  className={copied ? "bg-brutal-green text-black" : ""}
                 >
-                  {copied ? (
-                    <Check size={20} aria-hidden="true" />
-                  ) : (
-                    <Share2 size={20} aria-hidden="true" />
-                  )}
-                </motion.button>
+                  {copied ? <Check size={20} /> : <Share2 size={20} />}
+                </Button>
               </div>
             </div>
           </div>
@@ -667,25 +643,25 @@ export default function GameDetailsPage() {
             <div className="flex border-b-[3px] border-black overflow-x-auto hide-scrollbar">
               <button
                 onClick={() => setActiveTab("topup")}
-                className={`py-4 px-6 text-sm font-bold flex items-center ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`py-4 px-6 text-sm font-bold flex items-center whitespace-nowrap flex-shrink-0 ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <DollarSign size={18} className="mr-2" />
                 ตัวเลือกเติมเงิน
               </button>
               <button
                 onClick={() => setActiveTab("info")}
-                className={`py-4 px-6 text-sm font-bold flex items-center ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`py-4 px-6 text-sm font-bold flex items-center whitespace-nowrap flex-shrink-0 ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <Info size={18} className="mr-2" />
                 ข้อมูลเกม
               </button>
             </div>
 
-            <div className="p-6 md:p-8">
+            <div className="p-4 md:p-8">
               {/* Top Up Options */}
               {activeTab === "topup" && (
                 <div className="space-y-6">
-                  <p className="text-gray-600">เลือกจำนวนที่ต้องการเติม:</p>
+                  <p className="text-gray-600 font-bold">เลือกจำนวนที่ต้องการเติม:</p>
 
                   {game.topUpOptions.length === 0 ? (
                     <div className="text-center py-8 bg-brutal-gray border-[3px] border-black">
@@ -699,7 +675,7 @@ export default function GameDetailsPage() {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
+                    <Grid cols={2} sm={3} gap={4}>
                       {game.topUpOptions.map((option: any) => (
                         <motion.div
                           key={option.id}
@@ -719,26 +695,20 @@ export default function GameDetailsPage() {
                         >
                           {option.isPopular && (
                             <div className="absolute -top-3 left-0 right-0 flex justify-center">
-                              <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black uppercase tracking-wider">
+                              <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000]">
                                 ยอดนิยม
                               </span>
                             </div>
                           )}
 
-                          <h4 className="text-black font-bold text-center mb-1">
+                          <h4 className="text-black font-bold text-center mb-1 text-sm md:text-base line-clamp-2">
                             {option.title}
                           </h4>
-
-                          {/* {option.parValue && option.parValueCurrency && (
-                            <p className="text-center text-gray-600 text-sm mb-2">
-                              {option.parValue} {option.parValueCurrency}
-                            </p>
-                          )} */}
 
                           <div className="text-center">
                             {option.originalPrice > option.price ? (
                               <>
-                                <span className="line-through text-gray-500 text-sm mr-1">
+                                <span className="line-through text-gray-500 text-xs mr-1">
                                   ฿
                                   {Number(option.originalPrice || 0).toFixed(2)}
                                 </span>
@@ -754,13 +724,13 @@ export default function GameDetailsPage() {
                           </div>
 
                           {selectedOption === option.id && (
-                            <div className="absolute bottom-2 right-2 text-black">
+                            <div className="absolute bottom-1 right-1 text-black">
                               <Check size={16} />
                             </div>
                           )}
                         </motion.div>
                       ))}
-                    </div>
+                    </Grid>
                   )}
 
                   {game.topUpOptions.length > 0 && (
@@ -913,9 +883,9 @@ export default function GameDetailsPage() {
         </div>
 
         {/* Right column - Purchase section */}
-        <div>
+        <div className="order-first lg:order-last">
           <div
-            className="bg-white border-[3px] border-black p-6 sticky top-4"
+            className="bg-white border-[3px] border-black p-6 sticky top-24"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <h3 className="text-xl font-bold text-black mb-4 flex items-center">
@@ -936,36 +906,41 @@ export default function GameDetailsPage() {
                     {option.fields && option.fields.length > 0 && (
                       <div className="space-y-4">
                         {option.fields.map((field) => (
-                          <div key={field.name} className="mb-4">
-                            <label className="block text-sm font-bold text-black mb-2">
-                              {translateLabel(field.label)}
-                              {field.required && (
-                                <span className="text-brutal-pink ml-1">*</span>
-                              )}
-                            </label>
+                          <div key={field.name}>
                             {field.type === "select" ? (
-                              <select
-                                value={fieldValues[field.name] || ""}
-                                onChange={(e) =>
-                                  handleFieldChange(field.name, e.target.value)
-                                }
-                                className="w-full bg-white border-[3px] border-black px-4 py-3 text-black focus:outline-none focus:ring-0"
-                              >
-                                <option value="" className="bg-white">
-                                  เลือก{translateLabel(field.label)}
-                                </option>
-                                {field.options?.map((opt) => (
-                                  <option
-                                    key={opt.value}
-                                    value={opt.value}
-                                    className="bg-white"
-                                  >
-                                    {opt.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="space-y-1.5">
+                                  <label className="text-sm font-bold text-gray-700 block">
+                                    {translateLabel(field.label)} {field.required && <span className="text-red-500">*</span>}
+                                  </label>
+                                  <div className="relative">
+                                    <select
+                                      value={fieldValues[field.name] || ""}
+                                      onChange={(e) =>
+                                        handleFieldChange(field.name, e.target.value)
+                                      }
+                                      className="w-full bg-white border-[2px] border-gray-300 px-3 py-2 text-base focus:outline-none focus:border-black appearance-none"
+                                    >
+                                      <option value="" className="bg-white">
+                                        เลือก{translateLabel(field.label)}
+                                      </option>
+                                      {field.options?.map((opt) => (
+                                        <option
+                                          key={opt.value}
+                                          value={opt.value}
+                                          className="bg-white"
+                                        >
+                                          {opt.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                                    </div>
+                                  </div>
+                                </div>
                             ) : (
-                              <input
+                              <Input
+                                label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
                                 type="text"
                                 value={fieldValues[field.name] || ""}
                                 onChange={(e) =>
@@ -975,7 +950,6 @@ export default function GameDetailsPage() {
                                   field.placeholder ||
                                   `กรอก${translateLabel(field.label)}ของคุณ`
                                 }
-                                className="w-full bg-white border-[3px] border-black px-4 py-3 text-black focus:outline-none focus:ring-0"
                               />
                             )}
                             {field.prefix && (
@@ -994,11 +968,6 @@ export default function GameDetailsPage() {
                         <span className="text-black font-bold block">
                           {option.title}
                         </span>
-                        {/* {option.parValue && option.parValueCurrency && (
-                          <span className="text-gray-600 text-sm">
-                            {option.parValue} {option.parValueCurrency}
-                          </span>
-                        )} */}
                       </div>
                     </div>
 
@@ -1010,12 +979,12 @@ export default function GameDetailsPage() {
                             <span className="line-through text-gray-500 text-sm mr-2">
                               ฿{Number(option.originalPrice || 0).toFixed(2)}
                             </span>
-                            <span className="text-black font-bold">
+                            <span className="text-black font-bold text-xl">
                               ฿{Number(option.price || 0).toFixed(2)}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-black font-bold">
+                          <span className="text-black font-bold text-xl">
                             ฿{Number(option.price || 0).toFixed(2)}
                           </span>
                         )}
@@ -1036,21 +1005,15 @@ export default function GameDetailsPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <motion.button
-                        type="button"
+                      <Button
                         onClick={handleBuyNow}
                         disabled={isBuying}
-                        className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                        whileHover={isBuying ? {} : { y: -2 }}
-                        whileTap={isBuying ? {} : { y: 0 }}
+                        isLoading={isBuying}
+                        fullWidth
+                        size="lg"
+                        className="bg-black text-white hover:bg-gray-800"
                       >
-                        {isBuying ? (
-                          <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                            กำลังดำเนินการ...
-                          </>
-                        ) : (
+                        {!isBuying && (
                           <>
                             <ShoppingCart
                               size={18}
@@ -1060,7 +1023,7 @@ export default function GameDetailsPage() {
                             ซื้อเลย
                           </>
                         )}
-                      </motion.button>
+                      </Button>
                     </div>
 
                     <div className="bg-brutal-gray border-[3px] border-black p-3 text-sm">
@@ -1070,7 +1033,7 @@ export default function GameDetailsPage() {
                           className="text-gray-600 mr-2 mt-0.5 flex-shrink-0"
                         />
                         <span className="text-gray-600">
-                          จัดส่งอัตโนมัติทันที (ทดสอบระบบ - ข้ามชำระเงิน)
+                          จัดส่งอัตโนมัติทันที
                         </span>
                       </div>
                     </div>
@@ -1139,12 +1102,13 @@ export default function GameDetailsPage() {
       </section>
 
       {/* Confirmation Modal */}
+      <AnimatePresence>
       {showConfirmModal && verificationStatus && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
           onClick={() => setShowConfirmModal(false)}
         >
           <motion.div
@@ -1269,41 +1233,31 @@ export default function GameDetailsPage() {
 
               {/* Actions */}
               <div className="space-y-3 pt-2">
-                <motion.button
-                  type="button"
+                <Button
                   onClick={createOrder}
                   disabled={isBuying}
-                  className="w-full bg-black text-white py-3 font-bold flex items-center justify-center border-[3px] border-black hover:bg-gray-800 transition-colors disabled:opacity-50"
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                  whileHover={isBuying ? {} : { y: -2 }}
-                  whileTap={isBuying ? {} : { y: 0 }}
+                  isLoading={isBuying}
+                  fullWidth
+                  className="bg-black text-white hover:bg-gray-800"
                 >
-                  {isBuying ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      กำลังดำเนินการ...
-                    </>
-                  ) : (
-                    <>
-                      <Check size={18} className="mr-2" />
-                      ยืนยันการสั่งซื้อ
-                    </>
-                  )}
-                </motion.button>
+                   <Check size={18} className="mr-2" />
+                   ยืนยันการสั่งซื้อ
+                </Button>
 
-                <button
-                  type="button"
+                <Button
+                  variant="secondary"
                   onClick={() => setShowConfirmModal(false)}
                   disabled={isBuying}
-                  className="w-full bg-white text-black py-3 font-bold border-[3px] border-black hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  fullWidth
                 >
                   ยกเลิก
-                </button>
+                </Button>
               </div>
             </div>
           </motion.div>
         </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

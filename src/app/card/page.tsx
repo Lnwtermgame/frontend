@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, Suspense, useEffect } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Search,
   Filter,
@@ -13,25 +15,35 @@ import {
   MessageCircle,
   Loader2,
   Zap,
+  Globe,
+  Flame,
+  TrendingUp,
 } from "lucide-react";
-import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
 
-// Card interface from API
 interface CardProduct {
   id: string;
   slug: string;
   name: string;
   category: string;
+  publisher: string;
+  mainImage: string;
+  rating: number;
   price: number;
-  discountPercent?: number;
-  image: string;
+  discountPercent?: number | undefined;
+  platforms: string[];
+  autoDelivery?: boolean;
 }
 
 function getCategoryFlagCode(name: string): string | null {
   const key = name.toLowerCase();
-  if (key.includes("us") || key.includes("united states") || key.includes("usa")) return "us";
+  if (
+    key.includes("us") ||
+    key.includes("united states") ||
+    key.includes("usa")
+  )
+    return "us";
   if (key.includes("global")) return "un";
   if (key.includes("thailand")) return "th";
   if (key.includes("malaysia")) return "my";
@@ -43,60 +55,10 @@ function getCategoryFlagCode(name: string): string | null {
   return null;
 }
 
-function sortGlobalOnTop<T extends { id: string; name: string }>(items: T[]): T[] {
-  const clone = [...items];
-  const idx = clone.findIndex((item) => item.name.toLowerCase() === "global" || item.id.toLowerCase() === "global");
-  if (idx > 1) {
-    const [globalItem] = clone.splice(idx, 1);
-    clone.splice(1, 0, globalItem);
-  }
-  return clone;
-}
-
-// Transform Product to CardProduct
-function transformProductToCard(product: Product): CardProduct {
-  // Get starting price from types (lowest displayPrice)
-  const startingPrice =
-    product.types && product.types.length > 0
-      ? Math.min(...product.types.map((t) => Number(t.displayPrice)))
-      : 0;
-
-  // Discount is not available in public API
-  const discountPercent = 0;
-
-  return {
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-    category: product.category?.name || "Gift Card",
-    price: startingPrice,
-    discountPercent: discountPercent,
-    image:
-      product.imageUrl ||
-      `https://placehold.co/400x300?text=${encodeURIComponent(product.name)}`,
-  };
-}
-
-function getRandomColor() {
-  const colors = [
-    "1E88E5",
-    "5E35B1",
-    "D81B60",
-    "7CB342",
-    "FB8C00",
-    "6D4C41",
-    "546E7A",
-    "EC407A",
-    "5C6BC0",
-    "26A69A",
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
-
 function getCategoryIcon(category: string) {
   switch (category.toLowerCase()) {
     case "popular":
-      return <Star size={16} className="text-brutal-pink" />;
+      return <Flame size={16} className="text-brutal-pink" />;
     case "gaming":
       return <PlayCircle size={16} className="text-brutal-blue" />;
     case "entertainment":
@@ -110,21 +72,70 @@ function getCategoryIcon(category: string) {
   }
 }
 
-export default function CardPage() {
+function transformProductToCard(product: Product): CardProduct {
+  const publisher = product.category?.name || "Gift Card";
+  const types = product.types || [];
+  const validPrices = types
+    .filter((t) => t.displayPrice && Number(t.displayPrice) > 0)
+    .map((t) => Number(t.displayPrice));
+  const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
+  const discountRates = types
+    .map((t) =>
+      typeof t.discountRate === "number" ? Number(t.discountRate) : undefined,
+    )
+    .filter((v): v is number => v !== undefined && !Number.isNaN(v));
+  const discountPercent: number | undefined =
+    discountRates.length > 0 ? Math.max(...discountRates) : undefined;
+
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    category: product.category?.name || "Gift Card",
+    publisher: publisher,
+    mainImage:
+      product.imageUrl ||
+      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+    rating: product.averageRating || 4.5,
+    price: startingPrice,
+    discountPercent: discountPercent,
+    platforms: ["Digital"],
+    autoDelivery: true,
+  };
+}
+
+function sortGlobalOnTop<T extends { id: string; name: string }>(
+  items: T[],
+): T[] {
+  const clone = [...items];
+  const idx = clone.findIndex(
+    (item) =>
+      item.name.toLowerCase() === "global" ||
+      item.id.toLowerCase() === "global",
+  );
+  if (idx > 1) {
+    const [globalItem] = clone.splice(idx, 1);
+    clone.splice(1, 0, globalItem);
+  }
+  return clone;
+}
+
+function CardContent() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("search") || "";
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("all");
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [cards, setCards] = useState<CardProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<
     { id: string; name: string; count: number; icon: React.ReactNode }[]
   >([]);
 
-  // Fetch cards from API
   useEffect(() => {
     const fetchCards = async () => {
       try {
         setLoading(true);
-        // Fetch CARD products (gift cards)
         const response = await productApi.getProducts({
           isActive: true,
           limit: 100,
@@ -133,13 +144,11 @@ export default function CardPage() {
         });
 
         if (response.success) {
-          // Filter for CARD products only and transform
           const cardProducts = response.data
             .filter((p) => p.productType === "CARD")
             .map(transformProductToCard);
           setCards(cardProducts);
 
-          // Build categories from actual data
           const categoryCounts = cardProducts.reduce(
             (acc, card) => {
               acc[card.category] = (acc[card.category] || 0) + 1;
@@ -153,7 +162,7 @@ export default function CardPage() {
               id: "all",
               name: "บัตรทั้งหมด",
               count: cardProducts.length,
-              icon: <CreditCard size={16} />,
+              icon: <CreditCard size={16} className="text-brutal-pink" />,
             },
             ...Object.entries(categoryCounts).map(([name, count]) => ({
               id: name.toLowerCase(),
@@ -174,15 +183,64 @@ export default function CardPage() {
     fetchCards();
   }, []);
 
-  // Filter cards based on selected category and search query
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query !== null) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
+
+  const REGIONS = [
+    {
+      id: "all",
+      name: "ทุกภูมิภาค",
+      count: cards.length,
+      icon: <Globe size={16} className="text-brutal-blue" />,
+    },
+    {
+      id: "global",
+      name: "Global",
+      count: cards.filter((c) => c.category.toLowerCase().includes("global"))
+        .length,
+      icon: <Globe size={16} className="text-brutal-green" />,
+    },
+    {
+      id: "us",
+      name: "สหรัฐอเมริกา",
+      count: cards.filter((c) => c.category.toLowerCase().includes("us"))
+        .length,
+      icon: <Star size={16} className="text-brutal-yellow" />,
+    },
+    {
+      id: "th",
+      name: "ไทย",
+      count: cards.filter((c) => c.category.toLowerCase().includes("thai"))
+        .length,
+      icon: <Star size={16} className="text-brutal-pink" />,
+    },
+  ];
+
   const filteredCards = cards.filter((card) => {
     const matchesCategory =
       selectedCategory === "all" ||
       card.category.toLowerCase() === selectedCategory.toLowerCase();
+
     const matchesSearch =
       !searchQuery ||
       card.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+
+    let matchesRegion = true;
+    if (selectedRegion !== "all") {
+      if (selectedRegion === "global") {
+        matchesRegion = card.category.toLowerCase().includes("global");
+      } else if (selectedRegion === "us") {
+        matchesRegion = card.category.toLowerCase().includes("us");
+      } else if (selectedRegion === "th") {
+        matchesRegion = card.category.toLowerCase().includes("thai");
+      }
+    }
+
+    return matchesCategory && matchesSearch && matchesRegion;
   });
 
   return (
@@ -195,6 +253,60 @@ export default function CardPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
+          {/* Regions Card */}
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
+            <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
+              <h3 className="text-black font-black text-base flex items-center">
+                <Globe size={18} className="mr-2" />
+                ภูมิภาค
+              </h3>
+            </div>
+            <div className="p-3 space-y-1">
+              {REGIONS.map((region) => (
+                <motion.button
+                  key={region.id}
+                  onClick={() => setSelectedRegion(region.id)}
+                  className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
+                    selectedRegion === region.id
+                      ? "bg-brutal-blue border-black text-black"
+                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                  }`}
+                  style={
+                    selectedRegion === region.id
+                      ? { boxShadow: "3px 3px 0 0 #000000" }
+                      : undefined
+                  }
+                  whileHover={{ x: 3 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={
+                        selectedRegion === region.id
+                          ? "text-black"
+                          : "text-gray-500"
+                      }
+                    >
+                      {region.icon}
+                    </span>
+                    <span className="text-sm font-bold">{region.name}</span>
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
+                      selectedRegion === region.id
+                        ? "bg-white text-black"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {region.count}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
           {/* Categories Card */}
           <div
             className="bg-white border-[3px] border-black overflow-hidden mb-4"
@@ -202,7 +314,7 @@ export default function CardPage() {
           >
             <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
               <h2 className="text-black font-black text-lg flex items-center">
-                <CreditCard size={20} className="mr-2" />
+                <Gift size={20} className="mr-2" />
                 ประเภทบัตร
               </h2>
             </div>
@@ -239,7 +351,15 @@ export default function CardPage() {
                           height={18}
                         />
                       ) : (
-                        <span className="fi fi-un text-lg" aria-hidden></span>
+                        <span
+                          className={
+                            selectedCategory === category.id
+                              ? "text-black"
+                              : "text-gray-500"
+                          }
+                        >
+                          {category.icon}
+                        </span>
                       )}
                       <span className="text-sm font-bold">{category.name}</span>
                     </div>
@@ -260,7 +380,7 @@ export default function CardPage() {
 
           {/* Promo Card */}
           <div
-            className="bg-brutal-pink border-[3px] border-black p-4 relative overflow-hidden"
+            className="bg-brutal-green border-[3px] border-black p-4 relative overflow-hidden"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="relative z-10">
@@ -301,7 +421,7 @@ export default function CardPage() {
                   บัตรเกม & บัตรเติมเงิน
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">
-                  เลือกซื้อบัตรเกมและบัตรเติมเงินได้ทันที
+                  เลือกซื้อบัตรเกมและบัตรเติมเงินได้ทันที ส่งอัตโนมัติ
                 </p>
               </div>
 
@@ -321,6 +441,23 @@ export default function CardPage() {
                   <Filter size={16} /> ตัวกรอง
                 </button>
               </div>
+            </div>
+
+            {/* Mobile Horizontal Category Scroll */}
+            <div className="lg:hidden mt-4 -mx-5 px-5 overflow-x-auto scrollbar-hide flex gap-2 pb-2">
+              {categories.slice(0, 6).map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex-shrink-0 ${
+                    selectedCategory === cat.id
+                      ? "bg-brutal-yellow text-black"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              ))}
             </div>
           </motion.div>
 
@@ -354,38 +491,50 @@ export default function CardPage() {
                       className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
                       style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     >
-                      {(card.discountPercent || 0) > 0 && (
+                      {card.discountPercent ? (
                         <div
                           className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
                           style={{ boxShadow: "2px 2px 0 0 #000000" }}
                         >
                           -{card.discountPercent}%
                         </div>
-                      )}
+                      ) : null}
 
                       <div className="relative aspect-square w-full overflow-hidden">
                         <img
-                          src={
-                            card.image !== undefined
-                              ? card.image
-                              : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`
-                          }
+                          src={card.mainImage}
                           alt={card.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
 
-                        <div
-                          className="absolute top-2 right-2 flex items-center bg-white border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold"
-                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                        >
-                          <Star
-                            size={10}
-                            className="mr-0.5 text-brutal-yellow"
-                            fill="currentColor"
-                          />{" "}
-                          {card.category}
-                        </div>
+                        {card.autoDelivery && (
+                          <div
+                            className="absolute bottom-2 right-2 z-10"
+                            title="ส่งให้ทันทีหลังชำระเงิน"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 512"
+                              className="h-6 w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
+                              role="img"
+                              aria-label="ส่งให้ทันทีหลังชำระเงิน"
+                            >
+                              <g clipRule="evenodd" fillRule="evenodd">
+                                <circle
+                                  cx="256"
+                                  cy="256"
+                                  r="256"
+                                  fill="#ffc107"
+                                />
+                                <path
+                                  fill="#fff"
+                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
+                                />
+                              </g>
+                            </svg>
+                          </div>
+                        )}
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -393,7 +542,7 @@ export default function CardPage() {
                             className="bg-brutal-yellow text-black px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                           >
-                            ดูรายละเอียด
+                            ซื้อบัตร
                           </div>
                         </div>
                       </div>
@@ -406,7 +555,7 @@ export default function CardPage() {
                           <div className="flex items-center">
                             {getCategoryIcon(card.category)}
                             <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">
-                              Digital
+                              {card.category}
                             </span>
                           </div>
                           <div className="text-xs text-black font-black">
@@ -433,5 +582,22 @@ export default function CardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
+            <span className="text-gray-900 font-bold">กำลังโหลด...</span>
+          </div>
+        </div>
+      }
+    >
+      <CardContent />
+    </Suspense>
   );
 }

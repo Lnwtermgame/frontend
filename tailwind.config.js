@@ -48,7 +48,7 @@ module.exports = {
           green: "#95E1D3",
           black: "#000000",
           white: "#FFFFFF",
-          gray: "#F9FAFB",
+          gray: "#F5F5F5", // Updated to match prompt
           dark: "#1a1a2e",
         },
         // Legacy Mali colors (keeping for transition)
@@ -104,6 +104,24 @@ module.exports = {
         'accent-gradient': 'linear-gradient(90deg, #00ff94 0%, #00d179 100%)',
         'game-card-gradient': 'linear-gradient(to top, rgba(18, 20, 28, 0.95) 0%, rgba(18, 20, 28, 0) 100%)',
         'glow-gradient': 'none',
+      },
+      spacing: {
+        '18': '4.5rem',    // 72px - touch target
+        '22': '5.5rem',    // 88px - large buttons
+      },
+      screens: {
+        'xs': '375px',     // iPhone SE
+        'sm': '640px',     // Large phones
+        'md': '768px',     // Tablets
+        'lg': '1024px',    // Laptops
+        'xl': '1280px',    // Desktops
+        '2xl': '1536px',   // Large screens
+      },
+      fontSize: {
+        'mobile-h1': ['1.5rem', { lineHeight: '2rem', fontWeight: '700' }],      // 24px
+        'mobile-h2': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],  // 20px
+        'mobile-body': ['1rem', { lineHeight: '1.5rem' }],                       // 16px
+        'mobile-sm': ['0.875rem', { lineHeight: '1.25rem' }],                    // 14px
       },
       boxShadow: {
         // Neo-Brutalist offset shadows

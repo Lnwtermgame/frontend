@@ -268,6 +268,7 @@ export interface ProductType {
   productId: string;
   name: string;
   displayPrice: number;
+  originPrice?: number;
   currency: string;
   hasStock: boolean;
   minAmount: number;

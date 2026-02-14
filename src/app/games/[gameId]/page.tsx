@@ -11,7 +11,6 @@ import {
   ShoppingCart,
   Heart,
   Share2,
-  Star,
   Package,
   Award,
   Clock,
@@ -109,7 +108,7 @@ function transformProductToGameDetails(
       id: type.id,
       title: type.name,
       price: type.displayPrice,
-      originalPrice: type.displayPrice,
+      originalPrice: type.originPrice || type.displayPrice,
       isPopular: index === 0,
       fields: type.fields,
     }),
@@ -412,6 +411,8 @@ export default function GameDetailsPage() {
         }
 
         const productData = productResponse.data;
+        const productTypeNormalized =
+          (productData.productType as string | undefined) || "DIRECT_TOPUP";
         setProduct(productData);
 
         // Extract product types from response (now included in single API call)
@@ -445,10 +446,11 @@ export default function GameDetailsPage() {
           });
 
           if (allGamesResponse.success) {
-            // 1. Similar Games: Just take first 5 other products
-            const otherGames = allGamesResponse.data.filter(
-              (p) => p.id !== productData.id,
-            );
+            // 1. Similar Games by Category
+            const otherGames = allGamesResponse.data.filter((p) => {
+              const pType = (p.productType as string | undefined) || "DIRECT_TOPUP";
+              return p.id !== productData.id && pType === productTypeNormalized;
+            });
             setSimilarGames(otherGames.slice(0, 5));
 
             // 2. Related Games by Developer/Publisher
@@ -591,13 +593,6 @@ export default function GameDetailsPage() {
                   <span className="bg-brutal-yellow text-black px-3 py-1 font-bold border-[2px] border-black">
                     {game.category}
                   </span>
-                  <div className="flex items-center text-brutal-yellow">
-                    <Star size={16} className="fill-brutal-yellow" />
-                    <span className="ml-1 font-bold">{game.rating}</span>
-                    <span className="ml-1 text-gray-300">
-                      ({game.ratingCount?.toLocaleString() || 0})
-                    </span>
-                  </div>
                   {game.releaseDate && (
                     <span className="text-gray-300 flex items-center">
                       <Calendar size={14} className="mr-1" />
@@ -899,14 +894,7 @@ export default function GameDetailsPage() {
                             {relatedGame.name}
                           </h3>
                           <div className="flex items-center mt-1">
-                            <Star
-                              size={12}
-                              className="text-brutal-yellow fill-brutal-yellow"
-                            />
-                            <span className="ml-1 text-xs text-brutal-yellow font-bold">
-                              {relatedGame.averageRating?.toFixed(1) || "4.5"}
-                            </span>
-                            <span className="ml-2 text-xs bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-bold">
+                            <span className="text-xs bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-bold">
                               {relatedGame.gameDetails?.developer || "เกม"}
                             </span>
                           </div>
@@ -1129,12 +1117,6 @@ export default function GameDetailsPage() {
                       {similarGame.name}
                     </h3>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Star className="h-3 w-3 text-brutal-yellow fill-brutal-yellow" />
-                        <span className="text-gray-600 text-xs ml-1">
-                          {similarGame.averageRating?.toFixed(1) || "4.5"}
-                        </span>
-                      </div>
                       <span className="text-xs text-black font-bold">
                         ฿
                         {similarGame.types && similarGame.types.length > 0

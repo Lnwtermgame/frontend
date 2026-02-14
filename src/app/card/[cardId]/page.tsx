@@ -23,6 +23,7 @@ import { productApi, Product, ProductType } from "@/lib/services/product-api";
 import { orderApi } from "@/lib/services/order-api";
 import { useCart } from "@/lib/context/cart-context";
 import { getMinPrice, formatPrice } from "@/lib/utils";
+import { ProductDescription } from "@/components/products/ProductDescription";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
 
@@ -348,7 +349,10 @@ export default function CardDetailPage() {
                 </div>
               </div>
 
-              <p className="text-gray-600 text-sm mb-4">{card.description}</p>
+              <ProductDescription
+                description={card.description}
+                className="text-sm mb-4"
+              />
 
               <div className="flex flex-wrap gap-2">
                 {card.tags.map((tag) => (

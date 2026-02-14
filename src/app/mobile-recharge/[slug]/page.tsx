@@ -74,7 +74,7 @@ function transformProductToMobileDetails(
       id: type.id,
       title: type.name,
       price: type.displayPrice,
-      originalPrice: type.displayPrice,
+      originalPrice: type.originPrice || type.displayPrice,
       isPopular: false, // We'll set this later or ignore
       fields: type.fields,
     };
@@ -492,9 +492,20 @@ export default function MobileRechargeDetailsPage() {
                             {option.title}
                           </h4>
                           <div className="text-center">
-                            <span className="text-black font-bold">
-                              ฿{Number(option.price).toFixed(2)}
-                            </span>
+                            {option.originalPrice > option.price ? (
+                              <>
+                                <span className="line-through text-gray-500 text-xs mr-1">
+                                  ฿{Number(option.originalPrice || 0).toFixed(2)}
+                                </span>
+                                <span className="text-black font-bold">
+                                  ฿{Number(option.price || 0).toFixed(2)}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-black font-bold">
+                                ฿{Number(option.price || 0).toFixed(2)}
+                              </span>
+                            )}
                           </div>
                           {selectedOption === option.id && (
                             <div className="absolute bottom-2 right-2 text-black">
@@ -590,9 +601,20 @@ export default function MobileRechargeDetailsPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">ราคา:</span>
-                    <span className="text-black font-bold text-lg">
-                      ฿{Number(selectedOptionData.price).toFixed(2)}
-                    </span>
+                    {selectedOptionData.originalPrice > selectedOptionData.price ? (
+                      <div>
+                        <span className="line-through text-gray-500 text-sm mr-2">
+                          ฿{Number(selectedOptionData.originalPrice || 0).toFixed(2)}
+                        </span>
+                        <span className="text-black font-bold text-lg">
+                          ฿{Number(selectedOptionData.price || 0).toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-black font-bold text-lg">
+                        ฿{Number(selectedOptionData.price).toFixed(2)}
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -677,9 +699,20 @@ export default function MobileRechargeDetailsPage() {
                     <span className="font-bold text-black">
                       ราคาที่ต้องชำระ:
                     </span>
-                    <span className="text-xl font-bold text-brutal-green">
-                      ฿{Number(selectedOptionData.price).toFixed(2)}
-                    </span>
+                    {selectedOptionData.originalPrice > selectedOptionData.price ? (
+                      <div className="text-right">
+                        <span className="line-through text-gray-500 text-sm mr-2">
+                          ฿{Number(selectedOptionData.originalPrice || 0).toFixed(2)}
+                        </span>
+                        <span className="text-xl font-bold text-brutal-green">
+                          ฿{Number(selectedOptionData.price || 0).toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-xl font-bold text-brutal-green">
+                        ฿{Number(selectedOptionData.price).toFixed(2)}
+                      </span>
+                    )}
                   </div>
                 </div>
 

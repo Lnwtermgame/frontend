@@ -15,9 +15,11 @@ import {
   Monitor,
   Smartphone,
   Loader2,
+  Check,
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
+import { Sheet } from "@/components/ui/Sheet";
 
 // Game interface from API
 interface GameProduct {
@@ -83,7 +85,9 @@ function transformProductToGame(product: Product): GameProduct {
 
   // Use the highest discountRate among active types (if any)
   const discountRates = types
-    .map((t) => (typeof t.discountRate === "number" ? Number(t.discountRate) : undefined))
+    .map((t) =>
+      typeof t.discountRate === "number" ? Number(t.discountRate) : undefined,
+    )
     .filter((v): v is number => v !== undefined && !Number.isNaN(v));
 
   const discountPercent: number | undefined =
@@ -117,6 +121,7 @@ function DirectTopupContent() {
   const [categories, setCategories] = useState<
     { id: string; name: string; count: number; icon: React.ReactNode }[]
   >([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Fetch games from API
   useEffect(() => {
@@ -451,7 +456,10 @@ function DirectTopupContent() {
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 </div>
 
-                <button className="bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 flex items-center gap-1.5 transition-all font-bold">
+                <button
+                  onClick={() => setIsFilterOpen(true)}
+                  className="lg:hidden bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 flex items-center gap-1.5 transition-all font-bold"
+                >
                   <Filter size={16} /> ตัวกรอง
                 </button>
               </div>
@@ -518,7 +526,12 @@ function DirectTopupContent() {
                               aria-label="ส่งให้ทันทีหลังชำระเงิน"
                             >
                               <g clipRule="evenodd" fillRule="evenodd">
-                                <circle cx="256" cy="256" r="256" fill="#ffc107" />
+                                <circle
+                                  cx="256"
+                                  cy="256"
+                                  r="256"
+                                  fill="#ffc107"
+                                />
                                 <path
                                   fill="#fff"
                                   d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
@@ -573,6 +586,77 @@ function DirectTopupContent() {
           </motion.div>
         </div>
       </div>
+
+      <Sheet
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        title="ตัวกรอง"
+      >
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-bold mb-3 flex items-center">
+              <Monitor size={18} className="mr-2" /> แพลตฟอร์ม
+            </h3>
+            <div className="space-y-2">
+              {PLATFORMS.map((platform) => (
+                <button
+                  key={platform.id}
+                  onClick={() => {
+                    setSelectedPlatform(platform.id);
+                    setIsFilterOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
+                    selectedPlatform === platform.id
+                      ? "bg-brutal-blue text-black shadow-[2px_2px_0_0_#000]"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {platform.icon}
+                    {platform.name}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    ({platform.count})
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-bold mb-3 flex items-center">
+              <Gamepad2 size={18} className="mr-2" /> หมวดหมู่
+            </h3>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                    setIsFilterOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
+                    selectedCategory === category.id
+                      ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {category.icon}
+                    {category.name}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">
+                      ({category.count})
+                    </span>
+                    {selectedCategory === category.id && <Check size={16} />}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Sheet>
     </div>
   );
 }

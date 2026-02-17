@@ -43,19 +43,6 @@ interface FeaturedProduct {
   productType: "CARD" | "DIRECT_TOPUP" | "MOBILE_RECHARGE";
 }
 
-function getRegionFlag(region: string): string | null {
-  const key = region?.toLowerCase() || "";
-  if (key.includes("th") || key.includes("thailand")) return "th";
-  if (key.includes("tw") || key.includes("taiwan")) return "tw";
-  if (key.includes("vn") || key.includes("vietnam")) return "vn";
-  if (key.includes("ph") || key.includes("philippines")) return "ph";
-  if (key.includes("id") || key.includes("indonesia")) return "id";
-  if (key.includes("my") || key.includes("malaysia")) return "my";
-  if (key.includes("sg") || key.includes("singapore")) return "sg";
-  if (key.includes("global")) return "un";
-  if (key.includes("us")) return "us";
-  return null;
-}
 
 function getCategoryIcon(category: string) {
   const key = category?.toLowerCase() || "";

@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 
@@ -32,20 +33,11 @@ interface CardProduct {
   price: number;
   discountPercent?: number;
   image: string;
+  country: string;
 }
 
 function getCategoryFlagCode(name: string): string | null {
-  const key = name.toLowerCase();
-  if (key.includes("us") || key.includes("united states") || key.includes("usa")) return "us";
-  if (key.includes("global")) return "un";
-  if (key.includes("thailand")) return "th";
-  if (key.includes("malaysia")) return "my";
-  if (key.includes("singapore")) return "sg";
-  if (key.includes("indonesia")) return "id";
-  if (key.includes("philippines")) return "ph";
-  if (key.includes("vietnam")) return "vn";
-  if (key.includes("china")) return "cn";
-  return null;
+  return getCountryFlagCode(name);
 }
 
 function sortGlobalOnTop<T extends { id: string; name: string }>(items: T[]): T[] {
@@ -69,16 +61,23 @@ function transformProductToCard(product: Product): CardProduct {
   // Discount is not available in public API
   const discountPercent = 0;
 
+  const categoryName = product.category?.name || "Gift Card";
+  const regionRaw = product.gameDetails?.region || "";
+  
+  // Use category name as country if it's a known country, otherwise use region or default to Global
+  let country = regionRaw || categoryName || "Global";
+
   return {
     id: product.id,
     slug: product.slug,
     name: product.name,
-    category: product.category?.name || "Gift Card",
+    category: categoryName,
     price: startingPrice,
     discountPercent: discountPercent,
     image:
       product.imageUrl ||
       `https://placehold.co/400x300?text=${encodeURIComponent(product.name)}`,
+    country: country,
   };
 }
 
@@ -244,10 +243,10 @@ function CardContent() {
                         >
                           <span className="flex items-center gap-2">
                              {getCategoryFlagCode(category.name) && (
-                                <img
-                                  src={`https://flagcdn.com/${getCategoryFlagCode(category.name)}.svg`}
-                                  alt=""
-                                  className="w-5 h-3.5 border border-black/10"
+                                <CountryFlag
+                                  code={getCategoryFlagCode(category.name)}
+                                  size="S"
+                                  className="mr-2"
                                 />
                              )}
                              {category.name}
@@ -306,18 +305,10 @@ function CardContent() {
                     whileHover={{ x: 3 }}
                   >
                     <div className="flex items-center gap-3">
-                      {getCategoryFlagCode(category.name) ? (
-                        <img
-                          src={`https://flagcdn.com/${getCategoryFlagCode(category.name)}.svg`}
-                          alt={`${category.name} flag`}
-                          className="w-6 h-4 border border-black/10"
-                          loading="lazy"
-                          width={24}
-                          height={18}
-                        />
-                      ) : (
-                        <span className="fi fi-un text-lg" aria-hidden></span>
-                      )}
+                      <CountryFlag
+                        code={getCategoryFlagCode(category.name)}
+                        size="M"
+                      />
                       <span className="text-sm font-bold">{category.name}</span>
                     </div>
                     <span
@@ -504,7 +495,8 @@ function CardContent() {
                           {card.name}
                         </p>
                         <div className="flex items-center justify-center mt-auto">
-                           <span className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full truncate max-w-full">
+                           <span className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full truncate max-w-full flex items-center gap-1">
+                            <CountryFlag code={getCategoryFlagCode(card.country)} size="S" />
                             {card.category}
                           </span>
                         </div>

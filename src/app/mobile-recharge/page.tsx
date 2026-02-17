@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
+import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
+import { BrandIcon } from "@/components/ui/brand-icon";
 
 interface MobileProduct {
   id: string;
@@ -30,17 +32,14 @@ interface MobileProduct {
   autoDelivery?: boolean;
 }
 
-function getCountryFlagCode(country: string): string | null {
-  const key = country.toLowerCase();
-  if (key.includes("thailand")) return "th";
-  if (key.includes("malaysia")) return "my";
-  if (key.includes("singapore")) return "sg";
-  if (key.includes("indonesia")) return "id";
-  if (key.includes("philippines")) return "ph";
-  if (key.includes("vietnam")) return "vn";
-  if (key.includes("china")) return "cn";
-  return null;
+interface Provider {
+  id: string;
+  name: string;
+  count: number;
+  icon: React.ReactNode;
+  brandIcon?: string;
 }
+
 
 function transformProductToMobile(product: Product): MobileProduct {
   const regionRaw =
@@ -180,7 +179,7 @@ function MobileRechargeContent() {
     }
   }, [searchParams]);
 
-  const PROVIDERS = [
+  const PROVIDERS: Provider[] = [
     {
       id: "all",
       name: "ทุกเครือข่าย",
@@ -192,6 +191,7 @@ function MobileRechargeContent() {
       name: "AIS",
       count: products.filter((p) => p.operator.toLowerCase().includes("ais"))
         .length,
+      brandIcon: "ais",
       icon: <Smartphone size={16} className="text-brutal-blue" />,
     },
     {
@@ -199,6 +199,7 @@ function MobileRechargeContent() {
       name: "DTAC",
       count: products.filter((p) => p.operator.toLowerCase().includes("dtac"))
         .length,
+      brandIcon: "dtac",
       icon: <Smartphone size={16} className="text-brutal-pink" />,
     },
     {
@@ -206,6 +207,7 @@ function MobileRechargeContent() {
       name: "TrueMove",
       count: products.filter((p) => p.operator.toLowerCase().includes("true"))
         .length,
+      brandIcon: "true",
       icon: <Smartphone size={16} className="text-brutal-yellow" />,
     },
   ];
@@ -277,7 +279,15 @@ function MobileRechargeContent() {
                           : "text-gray-500"
                       }
                     >
-                      {provider.icon}
+                      {provider.brandIcon ? (
+                        <BrandIcon
+                          brand={provider.brandIcon}
+                          size={39}
+                          fallbackIcon={provider.icon}
+                        />
+                      ) : (
+                        provider.icon
+                      )}
                     </span>
                     <span className="text-sm font-bold">{provider.name}</span>
                   </div>
@@ -329,18 +339,10 @@ function MobileRechargeContent() {
                     whileHover={{ x: 3 }}
                   >
                     <div className="flex items-center gap-3">
-                      {getCountryFlagCode(country.name) ? (
-                        <img
-                          src={`https://flagcdn.com/${getCountryFlagCode(country.name)}.svg`}
-                          alt={`${country.name} flag`}
-                          className="w-6 h-4 border border-black/10"
-                          loading="lazy"
-                          width={24}
-                          height={18}
-                        />
-                      ) : (
-                        <Globe size={16} className="text-gray-500" />
-                      )}
+                      <CountryFlag
+                        code={getCountryFlagCode(country.name)}
+                        size="M"
+                      />
                       <span className="text-sm font-bold">{country.name}</span>
                     </div>
                     <span
@@ -436,10 +438,9 @@ function MobileRechargeContent() {
                   }`}
                 >
                   {getCountryFlagCode(country.name) && (
-                    <img
-                      src={`https://flagcdn.com/${getCountryFlagCode(country.name)}.svg`}
-                      alt=""
-                      className="w-4 h-3 border border-black/10"
+                    <CountryFlag
+                      code={getCountryFlagCode(country.name)}
+                      size="S"
                     />
                   )}
                   {country.name}
@@ -540,15 +541,10 @@ function MobileRechargeContent() {
                         </p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
-                            {getCountryFlagCode(product.country) ? (
-                              <img
-                                src={`https://flagcdn.com/${getCountryFlagCode(product.country)}.svg`}
-                                alt={product.country}
-                                className="w-4 h-3 border border-black/10"
-                              />
-                            ) : (
-                              <Globe size={12} className="text-gray-400" />
-                            )}
+                            <CountryFlag
+                              code={getCountryFlagCode(product.country)}
+                              size="S"
+                            />
                             <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">
                               {product.country}
                             </span>

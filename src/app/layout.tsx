@@ -3,6 +3,7 @@ import Script from "next/script";
 import { ReactGrabInit } from "@/components/ReactGrabInit";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import "flag-icons/css/flag-icons.min.css";
 import { AuthProvider } from "@/lib/context/auth-context";
 import { NotificationProvider } from "@/lib/context/notification-context";
 import { PaymentProvider } from "@/lib/context/payment-context";

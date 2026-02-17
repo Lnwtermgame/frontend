@@ -165,7 +165,18 @@ function transformProductToGameDetails(
 }
 
 export default function GameDetailsPage() {
-  const { gameId } = useParams();
+  const params = useParams<{ gameId?: string; cardId?: string; slug?: string }>();
+  const isCardRoute = typeof params.cardId === "string";
+  const isMobileRechargeRoute =
+    typeof params.slug === "string" && typeof params.gameId !== "string";
+  const productSlug =
+    typeof params.gameId === "string"
+      ? params.gameId
+      : typeof params.cardId === "string"
+        ? params.cardId
+        : typeof params.slug === "string"
+          ? params.slug
+          : null;
   const router = useRouter();
   const { user, isAuthenticated, isInitialized } = useAuth();
   const [game, setGame] = useState<GameDetails | null>(null);
@@ -178,6 +189,7 @@ export default function GameDetailsPage() {
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [mobilePhoneNumber, setMobilePhoneNumber] = useState("");
   const [copied, setCopied] = useState(false);
   const [similarGames, setSimilarGames] = useState<Product[]>([]);
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
@@ -193,6 +205,52 @@ export default function GameDetailsPage() {
     optionName: string;
     price: number;
   } | null>(null);
+
+  const backHref = isCardRoute
+    ? "/card"
+    : isMobileRechargeRoute
+      ? "/mobile-recharge"
+      : "/games";
+  const backLabel = isCardRoute
+    ? "กลับไปหน้าบัตรเติมเงิน"
+    : isMobileRechargeRoute
+      ? "กลับไปหน้าเติมเงินมือถือ"
+      : "กลับไปหน้าเกม";
+  const optionsTabLabel = isCardRoute
+    ? "ตัวเลือกบัตร"
+    : isMobileRechargeRoute
+      ? "แพ็กเกจเติมเงิน"
+      : "ตัวเลือกเติมเงิน";
+  const infoTabLabel =
+    isCardRoute || isMobileRechargeRoute ? "ข้อมูลสินค้า" : "ข้อมูลเกม";
+  const purchaseTitle = isCardRoute
+    ? "รายละเอียดการซื้อ"
+    : isMobileRechargeRoute
+      ? "รายละเอียดการเติมเงินมือถือ"
+      : "รายละเอียดการเติมเงิน";
+
+  const buildPlayerInfo = (): Record<string, string> => {
+    const info = { ...fieldValues };
+
+    if (isMobileRechargeRoute) {
+      const phoneCandidate =
+        mobilePhoneNumber ||
+        info.Phone ||
+        info.phone ||
+        info["User ID"] ||
+        info["userId"] ||
+        "";
+      const normalizedPhone = phoneCandidate.trim();
+
+      if (normalizedPhone) {
+        info.Phone = normalizedPhone;
+        info.phone = normalizedPhone;
+        info["User ID"] = normalizedPhone;
+      }
+    }
+
+    return info;
+  };
 
   // Handle buy now - verify first, then show confirmation
   const handleBuyNow = async () => {
@@ -217,6 +275,26 @@ export default function GameDetailsPage() {
       (opt) => opt.id === selectedOption,
     );
 
+    if (isMobileRechargeRoute) {
+      const phoneCandidate =
+        mobilePhoneNumber ||
+        fieldValues.Phone ||
+        fieldValues.phone ||
+        fieldValues["User ID"] ||
+        "";
+      const normalizedPhone = phoneCandidate.trim();
+
+      if (!normalizedPhone) {
+        toast.error("กรุณากรอกเบอร์โทรศัพท์");
+        return;
+      }
+
+      if (normalizedPhone.length < 9) {
+        toast.error("เบอร์โทรศัพท์ไม่ถูกต้อง");
+        return;
+      }
+    }
+
     if (selectedProductType?.fields) {
       const requiredFields = selectedProductType.fields.filter(
         (f) => f.required !== false,
@@ -236,12 +314,14 @@ export default function GameDetailsPage() {
       setIsBuying(true);
       toast.loading("กำลังตรวจสอบข้อมูล...");
 
+      const playerInfo = buildPlayerInfo();
+
       // Verify player info with SEAGM
       let isVerificationSupported = true;
       try {
         const verifyResult = await productApi.verifyPlayer(
           product.id,
-          fieldValues,
+          playerInfo,
         );
         isVerificationSupported = verifyResult.supported !== false;
 
@@ -260,7 +340,7 @@ export default function GameDetailsPage() {
       toast.dismiss();
       setVerificationStatus({
         supported: isVerificationSupported,
-        playerInfo: fieldValues,
+        playerInfo,
         productName: product.name,
         optionName: selectedOptionData?.title || "",
         price: selectedOptionData?.price || 0,
@@ -286,13 +366,15 @@ export default function GameDetailsPage() {
       setIsBuying(true);
       toast.loading("กำลังสร้างคำสั่งซื้อ...");
 
+      const playerInfo = buildPlayerInfo();
+
       const response = await orderApi.createOrder({
         items: [
           {
             productId: product.id,
             productTypeId: selectedOption, // The selected product type (e.g., 60 UC, 325 UC)
             quantity: 1,
-            playerInfo: fieldValues,
+            playerInfo,
           },
         ],
         paymentMethod: "CREDIT_CARD", // Required field for backend
@@ -359,6 +441,12 @@ export default function GameDetailsPage() {
   // Handle field value changes
   const handleFieldChange = (fieldName: string, value: string) => {
     setFieldValues((prev) => ({ ...prev, [fieldName]: value }));
+    if (
+      isMobileRechargeRoute &&
+      ["phone", "Phone", "User ID"].includes(fieldName)
+    ) {
+      setMobilePhoneNumber(value);
+    }
   };
 
   // Handle favorite toggle
@@ -412,7 +500,7 @@ export default function GameDetailsPage() {
 
   // Load game details from Product table
   useEffect(() => {
-    if (typeof gameId !== "string") return;
+    if (typeof productSlug !== "string") return;
 
     const fetchGameDetails = async () => {
       try {
@@ -421,12 +509,12 @@ export default function GameDetailsPage() {
 
         // Fetch product by ID or slug based on format detection
         let productResponse;
-        if (isValidDatabaseId(gameId)) {
-          // gameId looks like a CUID/UUID - fetch by ID
-          productResponse = await productApi.getProductById(gameId);
+        if (isValidDatabaseId(productSlug)) {
+          // product slug looks like a CUID/UUID - fetch by ID
+          productResponse = await productApi.getProductById(productSlug);
         } else {
-          // gameId looks like a slug - fetch by slug
-          productResponse = await productApi.getProductBySlug(gameId);
+          // product slug looks like a slug - fetch by slug
+          productResponse = await productApi.getProductBySlug(productSlug);
         }
 
         if (!productResponse.success || !productResponse.data) {
@@ -521,7 +609,7 @@ export default function GameDetailsPage() {
     };
 
     fetchGameDetails();
-  }, [gameId, isAuthenticated]);
+  }, [productSlug, isAuthenticated]);
 
   if (loading) {
     return (
@@ -546,10 +634,10 @@ export default function GameDetailsPage() {
           <p className="text-gray-600 mb-6">
             {error || "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
           </p>
-          <Link href="/games">
+          <Link href={backHref}>
             <Button>
               <ChevronLeft size={18} className="mr-2" />
-              กลับไปหน้าเกมทั้งหมด
+              {backLabel}
             </Button>
           </Link>
         </div>
@@ -562,11 +650,11 @@ export default function GameDetailsPage() {
       {/* Back link */}
       <div className="mb-6">
         <Link
-          href="/games"
+          href={backHref}
           className="text-gray-600 hover:text-black transition-colors inline-flex items-center font-medium"
         >
           <ChevronLeft size={18} className="mr-1" />
-          กลับไปหน้าเกม
+          {backLabel}
         </Link>
       </div>
 
@@ -670,20 +758,20 @@ export default function GameDetailsPage() {
                 className={`hidden md:flex py-4 px-6 text-sm font-bold items-center whitespace-nowrap flex-shrink-0 ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <DollarSign size={18} className="mr-2" />
-                ตัวเลือกเติมเงิน
+                {optionsTabLabel}
               </button>
               <button
                 onClick={() => setActiveTab("info")}
                 className={`hidden md:flex py-4 px-6 text-sm font-bold items-center whitespace-nowrap flex-shrink-0 ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <Info size={18} className="mr-2" />
-                ข้อมูลเกม
+                {infoTabLabel}
               </button>
 
               {/* Mobile Header - Always show Game Info header */}
               <div className="md:hidden py-4 px-6 text-sm font-bold flex items-center w-full bg-brutal-yellow text-black">
                 <Info size={18} className="mr-2" />
-                ข้อมูลเกม
+                {infoTabLabel}
               </div>
             </div>
 
@@ -1034,7 +1122,7 @@ export default function GameDetailsPage() {
           >
             <h3 className="text-lg md:text-xl font-bold text-black mb-4 flex items-center">
               <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-              รายละเอียดการเติมเงิน
+              {purchaseTitle}
             </h3>
 
             {selectedOption &&
@@ -1058,6 +1146,20 @@ export default function GameDetailsPage() {
                         </span>
                       </div>
                     )}
+
+                    {isMobileRechargeRoute &&
+                      !(option.fields || []).some((field) =>
+                        /phone|user id/i.test(`${field.name} ${field.label}`),
+                      ) && (
+                        <Input
+                          label="เบอร์โทรศัพท์ *"
+                          type="tel"
+                          value={mobilePhoneNumber}
+                          onChange={(e) => setMobilePhoneNumber(e.target.value)}
+                          placeholder="กรอกเบอร์โทรศัพท์"
+                          disabled={!isAuthenticated}
+                        />
+                      )}
 
                     {/* Dynamic Fields for Direct Top-Up */}
                     {option.fields && option.fields.length > 0 && (

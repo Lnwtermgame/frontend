@@ -62,6 +62,9 @@ export default function EditProductPage() {
       developer: "",
       publisher: "",
       platforms: [] as string[],
+      mode: "" as "directtopup" | "card" | "mobile-recharge" | "gift-card" | "",
+      region: "" as string,
+      autoDelivery: true,
     },
   });
   const [imageError, setImageError] = useState(false);
@@ -101,6 +104,9 @@ export default function EditProductPage() {
               developer: productRes.data.gameDetails?.developer || "",
               publisher: productRes.data.gameDetails?.publisher || "",
               platforms: productRes.data.gameDetails?.platforms || [],
+              mode: (productRes.data.gameDetails as any)?.mode || "",
+              region: (productRes.data.gameDetails as any)?.region || "",
+              autoDelivery: (productRes.data.gameDetails as any)?.autoDelivery ?? true,
             },
           });
           setImageError(false);
@@ -142,6 +148,7 @@ export default function EditProductPage() {
     try {
       console.log("[EditProduct] Submitting update for product:", id);
       console.log("[EditProduct] Form data:", formData);
+      console.log("[EditProduct] gameDetails:", formData.gameDetails);
       console.log("[EditProduct] imageUrl:", formData.imageUrl);
       console.log("[EditProduct] coverImageUrl:", formData.coverImageUrl);
 
@@ -221,6 +228,7 @@ export default function EditProductPage() {
         metaDescription: content.metaDescription || "",
         metaKeywords: content.metaKeywords || "",
         gameDetails: {
+          ...prev.gameDetails,
           developer: content.gameDetails?.developer || "",
           publisher: content.gameDetails?.publisher || "",
           platforms: content.gameDetails?.platforms || [],
@@ -1201,6 +1209,111 @@ export default function EditProductPage() {
                       </label>
                     ))}
                   </div>
+                </div>
+
+                {/* Mode Selection */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    โหมด (Mode)
+                  </label>
+                  <select
+                    value={formData.gameDetails.mode}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        gameDetails: {
+                          ...formData.gameDetails,
+                          mode: e.target.value as any,
+                        },
+                      })
+                    }
+                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 appearance-none focus:ring-1 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
+                    <option value="">-- เลือกโหมด --</option>
+                    <option value="directtopup">เติมตรง (Direct Top-up)</option>
+                    <option value="card">บัตรของขวัญ (Gift Card)</option>
+                    <option value="mobile-recharge">เติมเงินมือถือ (Mobile Recharge)</option>
+                    <option value="gift-card">บัตรของขวัญทั่วไป (Generic Gift Card)</option>
+                  </select>
+                </div>
+
+                {/* Region with Country Autocomplete */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    ภูมิภาค/ประเทศ (Region)
+                  </label>
+                  <div className="relative">
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <input
+                      type="text"
+                      value={formData.gameDetails.region}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          gameDetails: {
+                            ...formData.gameDetails,
+                            region: e.target.value,
+                          },
+                        })
+                      }
+                      list="country-list"
+                      className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-4 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
+                      placeholder="เลือกหรือพิมพ์ชื่อประเทศ..."
+                    />
+                    <datalist id="country-list">
+                      <option value="th">ไทย (Thailand)</option>
+                      <option value="my">มาเลเซีย (Malaysia)</option>
+                      <option value="sg">สิงคโปร์ (Singapore)</option>
+                      <option value="id">อินโดนีเซีย (Indonesia)</option>
+                      <option value="ph">ฟิลิปปินส์ (Philippines)</option>
+                      <option value="vn">เวียดนาม (Vietnam)</option>
+                      <option value="cn">จีน (China)</option>
+                      <option value="us">สหรัฐอเมริกา (United States)</option>
+                      <option value="global">สากล (Global)</option>
+                    </datalist>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    ใช้รหัสประเทศ เช่น th, my, sg, id, ph, vn
+                  </p>
+                </div>
+
+                {/* Auto Delivery Toggle */}
+                <div>
+                  <label className="flex items-center justify-between p-3 border-[2px] border-black cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div>
+                      <span className="text-sm font-medium text-gray-900">
+                        ส่งอัตโนมัติ (Auto Delivery)
+                      </span>
+                      <p className="text-xs text-gray-500">
+                        ระบบจะส่งสินค้าทันทีหลังชำระเงิน
+                      </p>
+                    </div>
+                    <div
+                      className={`w-10 h-6 relative transition-colors ${
+                        formData.gameDetails.autoDelivery ? "bg-brutal-green" : "bg-gray-400"
+                      }`}
+                    >
+                      <div
+                        className={`absolute top-1 left-1 w-4 h-4 bg-white border border-black transition-transform ${
+                          formData.gameDetails.autoDelivery ? "translate-x-4" : "translate-x-0"
+                        }`}
+                      />
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formData.gameDetails.autoDelivery}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          gameDetails: {
+                            ...formData.gameDetails,
+                            autoDelivery: e.target.checked,
+                          },
+                        })
+                      }
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               </div>
             </motion.div>

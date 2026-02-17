@@ -75,7 +75,7 @@ export interface GameDetails {
   platforms?: string[];
   region?: string;
   autoDelivery?: boolean;
-  mode?: "directtopup" | "card";
+  mode?: "directtopup" | "card" | "mobile-recharge" | "gift-card" | "";
 }
 
 export interface Product {

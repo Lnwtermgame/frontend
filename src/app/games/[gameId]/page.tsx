@@ -26,6 +26,7 @@ import {
   X,
   User,
   ShieldAlert,
+  ChevronRight,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
@@ -35,10 +36,12 @@ import {
   ProductType,
   SeagmField,
 } from "@/lib/services/product-api";
-import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Grid } from "@/components/ui/Grid";
+import { Sheet } from "@/components/ui/Sheet";
 
 // Field label translation map
 const FIELD_LABEL_MAP: Record<string, string> = {
@@ -179,6 +182,7 @@ export default function GameDetailsPage() {
   const [similarGames, setSimilarGames] = useState<Product[]>([]);
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
   // Confirmation modal state
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -571,7 +575,7 @@ export default function GameDetailsPage() {
         className="bg-white border-[3px] border-black overflow-hidden mb-8"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
-        <div className="relative h-64 md:h-96 overflow-hidden">
+        <div className="relative min-h-[18rem] md:h-96 overflow-hidden">
           {/* Main banner image - cover full area with crop */}
           <Image
             src={
@@ -586,13 +590,13 @@ export default function GameDetailsPage() {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
           {/* Game info overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-end gap-6">
+          <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
               <div
-                className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
+                className="relative w-20 h-20 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
                 style={{ boxShadow: "2px 2px 0 0 #000000" }}
               >
                 <Image
@@ -605,45 +609,44 @@ export default function GameDetailsPage() {
                   className="object-cover"
                 />
               </div>
-              <div className="flex-1">
-                <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 line-clamp-2">
-                  {game.title}
-                </h1>
-                <div className="flex flex-wrap items-center gap-3 text-sm">
-                  <span className="bg-brutal-yellow text-black px-3 py-1 font-bold border-[2px] border-black">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
+                  <h1 className="text-xl md:text-4xl font-bold text-white line-clamp-2 leading-tight">
+                    {game.title}
+                  </h1>
+                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm">
                     {game.category}
                   </span>
+                </div>
+                <p className="text-gray-300 text-sm md:text-base font-bold mb-2">
+                  โดย {game.publisher || game.developer || "ไม่ระบุ"}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm">
                   {game.releaseDate && (
                     <span className="text-gray-300 flex items-center">
-                      <Calendar size={14} className="mr-1" />
+                      <Calendar size={12} className="mr-1" />
                       {new Date(game.releaseDate).getFullYear()}
                     </span>
                   )}
                 </div>
-                <div className="mt-3">
-                  <span className="text-gray-300 mr-2">โดย</span>
-                  <span className="text-white font-medium">
-                    {game.developer || game.publisher}
-                  </span>
-                </div>
               </div>
 
-              <div className="flex mt-4 md:mt-0 space-x-3">
+              <div className="flex mt-2 md:mt-0 space-x-2">
                 <Button
                   variant="secondary"
                   size="icon"
                   onClick={handleToggleFavorite}
-                  className={isFavorite ? "bg-brutal-pink text-black" : ""}
+                  className={isFavorite ? "bg-brutal-pink text-black w-9 h-9 md:w-10 md:h-10" : "w-9 h-9 md:w-10 md:h-10"}
                 >
-                  <Heart size={20} className={isFavorite ? "fill-black" : ""} />
+                  <Heart size={18} className={isFavorite ? "fill-black" : ""} />
                 </Button>
                 <Button
                   variant="secondary"
                   size="icon"
                   onClick={handleCopyLink}
-                  className={copied ? "bg-brutal-green text-black" : ""}
+                  className={copied ? "bg-brutal-green text-black w-9 h-9 md:w-10 md:h-10" : "w-9 h-9 md:w-10 md:h-10"}
                 >
-                  {copied ? <Check size={20} /> : <Share2 size={20} />}
+                  {copied ? <Check size={18} /> : <Share2 size={18} />}
                 </Button>
               </div>
             </div>
@@ -661,29 +664,38 @@ export default function GameDetailsPage() {
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="flex border-b-[3px] border-black overflow-x-auto hide-scrollbar">
+              {/* Desktop Tabs */}
               <button
                 onClick={() => setActiveTab("topup")}
-                className={`py-4 px-6 text-sm font-bold flex items-center whitespace-nowrap flex-shrink-0 ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`hidden md:flex py-4 px-6 text-sm font-bold items-center whitespace-nowrap flex-shrink-0 ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <DollarSign size={18} className="mr-2" />
                 ตัวเลือกเติมเงิน
               </button>
               <button
                 onClick={() => setActiveTab("info")}
-                className={`py-4 px-6 text-sm font-bold flex items-center whitespace-nowrap flex-shrink-0 ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`hidden md:flex py-4 px-6 text-sm font-bold items-center whitespace-nowrap flex-shrink-0 ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <Info size={18} className="mr-2" />
                 ข้อมูลเกม
               </button>
+
+              {/* Mobile Header - Always show Game Info header */}
+              <div className="md:hidden py-4 px-6 text-sm font-bold flex items-center w-full bg-brutal-yellow text-black">
+                <Info size={18} className="mr-2" />
+                ข้อมูลเกม
+              </div>
             </div>
 
             <div className="p-4 md:p-8">
-              {/* Top Up Options */}
-              {activeTab === "topup" && (
+              {/* Top Up Options - Desktop Only */}
+              <div className={activeTab === "topup" ? "hidden md:block" : "hidden"}>
                 <div className="space-y-6">
-                  <p className="text-gray-600 font-bold">
-                    เลือกจำนวนที่ต้องการเติม:
-                  </p>
+                  <div className="hidden md:flex items-center justify-between">
+                    <p className="text-gray-600 font-bold">
+                      เลือกจำนวนที่ต้องการเติม:
+                    </p>
+                  </div>
 
                   {game.topUpOptions.length === 0 ? (
                     <div className="text-center py-8 bg-brutal-gray border-[3px] border-black">
@@ -697,65 +709,144 @@ export default function GameDetailsPage() {
                       </p>
                     </div>
                   ) : (
-                    <Grid cols={2} sm={3} gap={4}>
-                      {game.topUpOptions.map((option: any) => (
-                        <motion.div
-                          key={option.id}
-                          onClick={() => setSelectedOption(option.id)}
-                          className={`relative border-[3px] p-4 cursor-pointer transition-all ${
-                            selectedOption === option.id
-                              ? "bg-brutal-yellow border-black"
-                              : "bg-white border-black hover:bg-gray-100"
-                          }`}
-                          style={{
-                            boxShadow:
-                              selectedOption === option.id
-                                ? "4px 4px 0 0 #000000"
-                                : "none",
-                          }}
-                          whileHover={{ y: -2 }}
-                        >
-                          {option.isPopular && (
-                            <div className="absolute -top-3 left-0 right-0 flex justify-center">
-                              <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000]">
-                                ยอดนิยม
-                              </span>
-                            </div>
-                          )}
+                    <>
+                      {/* Desktop Grid */}
+                      <div className="hidden md:block">
+                        <Grid cols={2} md={3} gap={3} className="md:gap-4">
+                          {game.topUpOptions.map((option: any) => (
+                            <motion.div
+                              key={option.id}
+                              onClick={() => setSelectedOption(option.id)}
+                              className={`relative border-[3px] p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] ${
+                                selectedOption === option.id
+                                  ? "bg-brutal-yellow border-black"
+                                  : "bg-white border-black hover:bg-gray-100"
+                              }`}
+                              style={{
+                                boxShadow:
+                                  selectedOption === option.id
+                                    ? "4px 4px 0 0 #000000"
+                                    : "none",
+                              }}
+                              whileHover={{ y: -2 }}
+                            >
+                              {option.isPopular && (
+                                <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
+                                  <span className="bg-brutal-pink text-black text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
+                                    ยอดนิยม
+                                  </span>
+                                </div>
+                              )}
 
-                          <h4 className="text-black font-bold text-center mb-1 text-sm md:text-base line-clamp-2">
-                            {option.title}
-                          </h4>
+                              <h4 className="text-black font-bold text-center text-[13px] md:text-base leading-tight line-clamp-2">
+                                {option.title}
+                              </h4>
 
-                          <div className="text-center">
-                            {option.originalPrice > option.price ? (
-                              <>
-                                <span className="line-through text-gray-500 text-xs mr-1">
-                                  ฿
-                                  {Number(option.originalPrice || 0).toFixed(2)}
-                                </span>
-                                <span className="text-black font-bold">
-                                  ฿{Number(option.price || 0).toFixed(2)}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="text-black font-bold">
-                                ฿{Number(option.price || 0).toFixed(2)}
-                              </span>
-                            )}
-                          </div>
+                              <div className="text-center">
+                                {option.originalPrice > option.price ? (
+                                  <div className="flex flex-col items-center">
+                                    <span className="line-through text-gray-500 text-[10px] md:text-xs">
+                                      ฿
+                                      {Number(option.originalPrice || 0).toFixed(
+                                        2,
+                                      )}
+                                    </span>
+                                    <span className="text-black font-bold text-sm md:text-base">
+                                      ฿{Number(option.price || 0).toFixed(2)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-black font-bold text-sm md:text-base">
+                                    ฿{Number(option.price || 0).toFixed(2)}
+                                  </span>
+                                )}
+                              </div>
 
-                          {selectedOption === option.id && (
-                            <div className="absolute bottom-1 right-1 text-black">
-                              <Check size={16} />
-                            </div>
-                          )}
-                        </motion.div>
-                      ))}
-                    </Grid>
+                              {selectedOption === option.id && (
+                                <div className="absolute bottom-1 right-1 text-black">
+                                  <Check size={14} className="md:w-4 md:h-4" />
+                                </div>
+                              )}
+                            </motion.div>
+                          ))}
+                        </Grid>
+                      </div>
+
+                      {/* Mobile Options - Hidden as we use Sheet/Modal on mobile */}
+                      {/* <div className="md:hidden"> ... </div> */}
+
+                      {/* Mobile Options Sheet */}
+                      <Sheet
+                        isOpen={isOptionsModalOpen}
+                        onClose={() => setIsOptionsModalOpen(false)}
+                        title="เลือกจำนวนที่ต้องการเติม"
+                      >
+                        <div className="grid grid-cols-2 gap-3 pb-8">
+                          {game.topUpOptions.map((option: any) => (
+                            <motion.div
+                              key={option.id}
+                              onClick={() => {
+                                setSelectedOption(option.id);
+                                setIsOptionsModalOpen(false);
+                              }}
+                              className={`relative border-[3px] p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] ${
+                                selectedOption === option.id
+                                  ? "bg-brutal-yellow border-black"
+                                  : "bg-white border-black hover:bg-gray-100"
+                              }`}
+                              style={{
+                                boxShadow:
+                                  selectedOption === option.id
+                                    ? "4px 4px 0 0 #000000"
+                                    : "none",
+                              }}
+                            >
+                              {option.isPopular && (
+                                <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
+                                  <span className="bg-brutal-pink text-black text-[9px] font-bold px-1.5 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
+                                    ยอดนิยม
+                                  </span>
+                                </div>
+                              )}
+
+                              <h4 className="text-black font-bold text-center text-[13px] leading-tight line-clamp-2">
+                                {option.title}
+                              </h4>
+
+                              <div className="text-center">
+                                {option.originalPrice > option.price ? (
+                                  <div className="flex flex-col items-center">
+                                    <span className="line-through text-gray-500 text-[10px]">
+                                      ฿
+                                      {Number(option.originalPrice || 0).toFixed(
+                                        2,
+                                      )}
+                                    </span>
+                                    <span className="text-black font-bold text-sm">
+                                      ฿{Number(option.price || 0).toFixed(2)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-black font-bold text-sm">
+                                    ฿{Number(option.price || 0).toFixed(2)}
+                                  </span>
+                                )}
+                              </div>
+
+                              {selectedOption === option.id && (
+                                <div className="absolute bottom-1 right-1 text-black">
+                                  <Check size={14} />
+                                </div>
+                              )}
+                            </motion.div>
+                          ))}
+                        </div>
+                      </Sheet>
+                    </>
                   )}
 
-                  {game.topUpOptions.length > 0 && (
+                  {/* First Purchase Bonus - Removed */}
+                  {/* {game.topUpOptions.length > 0 && (
                     <div className="mt-6 bg-brutal-blue/20 border-[3px] border-black p-4">
                       <div className="flex items-start">
                         <Gift
@@ -773,17 +864,17 @@ export default function GameDetailsPage() {
                         </div>
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
-              )}
+              </div>
 
-              {/* Game Info */}
-              {activeTab === "info" && (
+              {/* Game Info - Visible on Desktop if activeTab=info, Always visible on Mobile */}
+              <div className={activeTab === "info" ? "block" : "block md:hidden"}>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-black font-bold mb-2 flex items-center">
-                      <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-                      เกี่ยวกับ {game.title}
+                    <h3 className="text-lg md:text-xl font-bold text-black mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight">
+                      <span className="w-1.5 h-5 bg-brutal-pink flex-shrink-0 mt-1 md:mt-0"></span>
+                      <span>เกี่ยวกับ {game.title}</span>
                     </h3>
                     <ProductDescription
                       description={game.longDescription || game.description}
@@ -792,7 +883,7 @@ export default function GameDetailsPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div
-                      className="bg-brutal-gray border-[3px] border-black p-4"
+                      className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
                       <h4 className="text-black font-bold mb-2 flex items-center">
@@ -805,7 +896,7 @@ export default function GameDetailsPage() {
                     </div>
 
                     <div
-                      className="bg-brutal-gray border-[3px] border-black p-4"
+                      className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
                       <h4 className="text-black font-bold mb-2 flex items-center">
@@ -819,7 +910,7 @@ export default function GameDetailsPage() {
 
                     {game.releaseDate && (
                       <div
-                        className="bg-brutal-gray border-[3px] border-black p-4"
+                        className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                         style={{ boxShadow: "2px 2px 0 0 #000000" }}
                       >
                         <h4 className="text-black font-bold mb-2 flex items-center">
@@ -836,7 +927,7 @@ export default function GameDetailsPage() {
                     )}
 
                     <div
-                      className="bg-brutal-gray border-[3px] border-black p-4"
+                      className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
                       <h4 className="text-black font-bold mb-2 flex items-center">
@@ -849,19 +940,19 @@ export default function GameDetailsPage() {
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
           {/* Related Games - Same Developer/Publisher */}
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-black mb-4 flex items-center">
-              <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-              เกมที่เกี่ยวข้อง
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {relatedGamesByDev.length > 0 ? (
-                relatedGamesByDev.map((relatedGame) => (
+          {relatedGamesByDev.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+                <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+                เกมที่เกี่ยวข้อง
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {relatedGamesByDev.map((relatedGame) => (
                   <Link
                     href={`/games/${relatedGame.slug}`}
                     key={relatedGame.id}
@@ -894,23 +985,54 @@ export default function GameDetailsPage() {
                       </div>
                     </motion.div>
                   </Link>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-8 text-gray-600">
-                  ไม่พบเกมที่เกี่ยวข้อง
-                </div>
-              )}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right column - Purchase section */}
         <div className="order-first lg:order-last">
+          {/* Mobile Selector - Shown above the main box on mobile */}
+          <div className="md:hidden mb-4">
+            {(() => {
+              const selected = game.topUpOptions.find(
+                (opt) => opt.id === selectedOption,
+              );
+              return (
+                <div
+                  onClick={() => setIsOptionsModalOpen(true)}
+                  className="relative bg-white border-[3px] border-black p-4 flex items-center justify-between cursor-pointer group"
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                >
+                  <div className="flex-1">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase block mb-1">
+                      แพ็กเกจที่เลือก
+                    </span>
+                    <h4 className="text-black font-bold text-base leading-tight">
+                      {selected?.title || "กรุณาเลือกแพ็กเกจ"}
+                    </h4>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {selected && (
+                      <span className="text-black font-bold text-lg">
+                        ฿{Number(selected.price || 0).toFixed(2)}
+                      </span>
+                    )}
+                    <div className="bg-brutal-yellow p-1 border-[2px] border-black group-hover:bg-brutal-yellow/80">
+                      <ChevronRight size={20} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
           <div
-            className="bg-white border-[3px] border-black p-6 sticky top-24"
+            className="bg-white border-[3px] border-black p-4 md:p-6 sticky top-24"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
-            <h3 className="text-xl font-bold text-black mb-4 flex items-center">
+            <h3 className="text-lg md:text-xl font-bold text-black mb-4 flex items-center">
               <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
               รายละเอียดการเติมเงิน
             </h3>
@@ -943,49 +1065,28 @@ export default function GameDetailsPage() {
                         {option.fields.map((field) => (
                           <div key={field.name}>
                             {field.type === "select" ? (
-                              <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-gray-700 block">
-                                  {translateLabel(field.label)}{" "}
-                                  {field.required && (
-                                    <span className="text-red-500">*</span>
-                                  )}
-                                </label>
-                                <div className="relative">
-                                  <select
-                                    value={fieldValues[field.name] || ""}
-                                    onChange={(e) =>
-                                      handleFieldChange(
-                                        field.name,
-                                        e.target.value,
-                                      )
-                                    }
-                                    disabled={!isAuthenticated}
-                                    className="w-full bg-white border-[2px] border-gray-300 px-3 py-2 text-base focus:outline-none focus:border-black appearance-none disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
-                                  >
-                                    <option value="" className="bg-white">
-                                      เลือก{translateLabel(field.label)}
-                                    </option>
-                                    {field.options?.map((opt) => (
-                                      <option
-                                        key={opt.value}
-                                        value={opt.value}
-                                        className="bg-white"
-                                      >
-                                        {opt.label}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg
-                                      className="fill-current h-4 w-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
-                                    >
-                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
-                                  </div>
-                                </div>
-                              </div>
+                              <Select
+                                label={
+                                  <>
+                                    {translateLabel(field.label)}{" "}
+                                    {field.required && (
+                                      <span className="text-red-500">*</span>
+                                    )}
+                                  </>
+                                }
+                                options={
+                                  field.options?.map((opt) => ({
+                                    label: opt.label,
+                                    value: opt.value,
+                                  })) || []
+                                }
+                                value={fieldValues[field.name] || ""}
+                                onChange={(value) =>
+                                  handleFieldChange(field.name, value)
+                                }
+                                placeholder={`เลือก${translateLabel(field.label)}`}
+                                disabled={!isAuthenticated}
+                              />
                             ) : (
                               <Input
                                 label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
@@ -1011,10 +1112,10 @@ export default function GameDetailsPage() {
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">จำนวนที่เลือก:</span>
-                      <div className="text-right">
-                        <span className="text-black font-bold block">
+                    <div className="flex justify-between items-start gap-4">
+                      <span className="text-gray-600 flex-shrink-0 pt-0.5">จำนวนที่เลือก:</span>
+                      <div className="text-right min-w-0">
+                        <span className="text-black font-bold block leading-tight break-words">
                           {option.title}
                         </span>
                       </div>
@@ -1118,26 +1219,18 @@ export default function GameDetailsPage() {
                       alt={similarGame.name}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                     <div className="absolute bottom-2 left-2 right-2">
-                      <span className="text-xs bg-brutal-blue text-black px-2 py-0.5 border border-black font-bold">
-                        {similarGame.category?.name || "เกม"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-bold text-black text-sm mb-1 truncate">
-                      {similarGame.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-black font-bold">
-                        ฿
-                        {similarGame.types && similarGame.types.length > 0
-                          ? Math.min(
-                              ...similarGame.types.map((t) => t.displayPrice),
-                            ).toFixed(0)
-                          : "0"}
-                      </span>
+                      <h3 className="text-sm font-bold text-white line-clamp-1">
+                        {similarGame.name}
+                      </h3>
+                      <div className="flex items-center mt-1">
+                        <span className="text-xs bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-bold">
+                          {similarGame.gameDetails?.developer ||
+                            similarGame.category?.name ||
+                            "เกม"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

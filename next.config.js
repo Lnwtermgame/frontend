@@ -28,7 +28,8 @@ const nextConfig = {
       },
     ],
     dangerouslyAllowSVG: true,
-    contentDispositionType: "attachment",
+    // Use inline disposition so SVG/payment icons render in-place
+    contentDispositionType: "inline",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };

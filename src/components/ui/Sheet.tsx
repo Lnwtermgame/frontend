@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,13 @@ export function Sheet({
   side = "bottom",
   className,
 }: SheetProps) {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
   // Animation variants based on side
   const variants = {
     left: { x: "-100%", y: 0 },
@@ -37,7 +45,9 @@ export function Sheet({
     bottom: "bottom-0 left-0 right-0 h-[90vh] rounded-t-2xl border-t-[3px]",
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -90,6 +100,7 @@ export function Sheet({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

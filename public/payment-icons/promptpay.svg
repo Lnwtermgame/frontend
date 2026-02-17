@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60">
+  <rect width="120" height="60" rx="4" fill="#003d6b"/>
+  <!-- PromptPay icon shape -->
+  <circle cx="30" cy="30" r="16" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <path d="M24 30 L30 36 L38 24" fill="none" stroke="#00b4f0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="72" y="28" font-family="Arial, sans-serif" font-weight="bold" font-size="10" fill="#ffffff" text-anchor="middle">Prompt</text>
+  <text x="72" y="42" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="#00b4f0" text-anchor="middle">Pay</text>
+</svg>

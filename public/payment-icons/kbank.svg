@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60">
+  <rect width="120" height="60" rx="4" fill="#138f2d"/>
+  <rect x="8" y="12" width="36" height="36" rx="4" fill="#ffffff" opacity="0.2"/>
+  <text x="26" y="36" font-family="Arial, sans-serif" font-weight="bold" font-size="18" fill="#ffffff" text-anchor="middle">K</text>
+  <text x="74" y="32" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#ffffff" text-anchor="middle">KBANK</text>
+  <text x="74" y="46" font-family="Arial, sans-serif" font-size="8" fill="#b8e6c1" text-anchor="middle">กสิกรไทย</text>
+</svg>

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import {
@@ -38,31 +37,31 @@ const supportLinks = [
   { label: "เงื่อนไขการใช้บริการ", href: "/terms" },
 ];
 
-// Replace the icon URLs with your Appwrite file URLs
+// Use local SVGs for reliable image loading
 const paymentMethods = [
   {
     name: "Visa / Mastercard",
-    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917aa0001b8e50d7af/view?project=698c7ca4000555520e6b",
+    icon: "/payment-icons/visa-mastercard.svg",
   },
   {
     name: "KBANK",
-    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a82000e61a4f5ce/view?project=698c7ca4000555520e6b&mode=admin",
+    icon: "/payment-icons/kbank.svg",
   },
   {
     name: "PromptPay",
-    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a90002adc81a521/view?project=698c7ca4000555520e6b&mode=admin",
+    icon: "/payment-icons/promptpay.svg",
   },
   {
     name: "TrueMoney",
-    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a9c003443f33870/view?project=698c7ca4000555520e6b&mode=admin",
+    icon: "/payment-icons/truemoney.svg",
   },
   {
     name: "ShopeePay",
-    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a980036c84282da/view?project=698c7ca4000555520e6b&mode=admin",
+    icon: "/payment-icons/shopeepay.svg",
   },
   {
     name: "Krungthai Bank",
-    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a9400216f81dd71/view?project=698c7ca4000555520e6b&mode=admin",
+    icon: "/payment-icons/krungthai.svg",
   },
 ];
 
@@ -107,7 +106,7 @@ export function Footer() {
     <footer className="bg-white border-t-[3px] border-black mt-auto">
       <div className="container mx-auto px-4 py-8 md:py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
-          <div className="lg:col-span-4 space-y-4">
+          <div className="lg:col-span-4 space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
             <Link href="/" className="inline-block">
               <div className="font-black text-2xl flex items-center">
                 <span className="text-brutal-pink">Mali</span>
@@ -184,7 +183,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 hidden md:block">
             <h3 className="text-black font-bold mb-4 text-sm flex items-center">
               <span className="w-1.5 h-4 bg-brutal-pink mr-2 rounded-sm"></span>
               ลิงก์ด่วน
@@ -207,7 +206,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 hidden md:block">
             <h3 className="text-black font-bold mb-4 text-sm flex items-center">
               <span className="w-1.5 h-4 bg-brutal-blue mr-2 rounded-sm"></span>
               ช่วยเหลือ
@@ -226,25 +225,23 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
             <h3 className="text-black font-bold mb-4 text-sm flex items-center">
               <span className="w-1.5 h-4 bg-brutal-yellow mr-2 rounded-sm"></span>
               ช่องทางชำระเงิน
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
               {paymentMethods.map((method) => (
                 <div
                   key={method.name}
-                  className="bg-white border-[2px] border-black rounded-md p-1 flex-shrink-0 h-10 w-fit"
+                  className="bg-white border-[2px] border-black rounded-sm p-2 h-12 flex items-center justify-center relative hover:-translate-y-0.5 transition-transform"
                   style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 >
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={method.icon}
                     alt={method.name}
-                    width={100}
-                    height={40}
-                    className="w-auto h-full object-contain"
-                    loading="lazy"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               ))}

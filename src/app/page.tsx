@@ -541,6 +541,17 @@ export default function HomePage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
 
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div
+                            className="bg-brutal-yellow text-black px-3 py-1.5 text-xs sm:text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
+                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                          >
+                            เติมเกมเลย
+                          </div>
+                        </div>
+
+                        {/* Auto delivery icon */}
                         {product.autoDelivery && (
                           <div
                             className="absolute bottom-2 right-2 z-10"
@@ -568,15 +579,6 @@ export default function HomePage() {
                             </svg>
                           </div>
                         )}
-
-                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div
-                            className="bg-brutal-yellow text-black px-3 py-1.5 text-xs sm:text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                          >
-                            เติมเกมเลย
-                          </div>
-                        </div>
                       </div>
 
                       <div className="p-2 sm:p-2.5">

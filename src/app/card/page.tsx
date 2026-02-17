@@ -2,7 +2,6 @@
 
 import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import {
   Search,
   Filter,
@@ -15,35 +14,29 @@ import {
   MessageCircle,
   Loader2,
   Zap,
-  Globe,
-  Flame,
-  TrendingUp,
+  X,
 } from "lucide-react";
-import { motion } from "@/lib/framer-exports";
+import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { productApi, Product } from "@/lib/services/product-api";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { formatPrice } from "@/lib/utils";
+import Image from "next/image";
 
+// Card interface from API
 interface CardProduct {
   id: string;
   slug: string;
   name: string;
   category: string;
-  publisher: string;
-  mainImage: string;
-  rating: number;
   price: number;
-  discountPercent?: number | undefined;
-  platforms: string[];
-  autoDelivery?: boolean;
+  discountPercent?: number;
+  image: string;
 }
 
 function getCategoryFlagCode(name: string): string | null {
   const key = name.toLowerCase();
-  if (
-    key.includes("us") ||
-    key.includes("united states") ||
-    key.includes("usa")
-  )
-    return "us";
+  if (key.includes("us") || key.includes("united states") || key.includes("usa")) return "us";
   if (key.includes("global")) return "un";
   if (key.includes("thailand")) return "th";
   if (key.includes("malaysia")) return "my";
@@ -55,10 +48,60 @@ function getCategoryFlagCode(name: string): string | null {
   return null;
 }
 
+function sortGlobalOnTop<T extends { id: string; name: string }>(items: T[]): T[] {
+  const clone = [...items];
+  const idx = clone.findIndex((item) => item.name.toLowerCase() === "global" || item.id.toLowerCase() === "global");
+  if (idx > 1) {
+    const [globalItem] = clone.splice(idx, 1);
+    clone.splice(1, 0, globalItem);
+  }
+  return clone;
+}
+
+// Transform Product to CardProduct
+function transformProductToCard(product: Product): CardProduct {
+  // Get starting price from types (lowest displayPrice)
+  const startingPrice =
+    product.types && product.types.length > 0
+      ? Math.min(...product.types.map((t) => Number(t.displayPrice)))
+      : 0;
+
+  // Discount is not available in public API
+  const discountPercent = 0;
+
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    category: product.category?.name || "Gift Card",
+    price: startingPrice,
+    discountPercent: discountPercent,
+    image:
+      product.imageUrl ||
+      `https://placehold.co/400x300?text=${encodeURIComponent(product.name)}`,
+  };
+}
+
+function getRandomColor() {
+  const colors = [
+    "1E88E5",
+    "5E35B1",
+    "D81B60",
+    "7CB342",
+    "FB8C00",
+    "6D4C41",
+    "546E7A",
+    "EC407A",
+    "5C6BC0",
+    "26A69A",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
 function getCategoryIcon(category: string) {
   switch (category.toLowerCase()) {
     case "popular":
-      return <Flame size={16} className="text-brutal-pink" />;
+      return <Star size={16} className="text-brutal-pink" />;
     case "gaming":
       return <PlayCircle size={16} className="text-brutal-blue" />;
     case "entertainment":
@@ -72,70 +115,22 @@ function getCategoryIcon(category: string) {
   }
 }
 
-function transformProductToCard(product: Product): CardProduct {
-  const publisher = product.category?.name || "Gift Card";
-  const types = product.types || [];
-  const validPrices = types
-    .filter((t) => t.displayPrice && Number(t.displayPrice) > 0)
-    .map((t) => Number(t.displayPrice));
-  const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
-  const discountRates = types
-    .map((t) =>
-      typeof t.discountRate === "number" ? Number(t.discountRate) : undefined,
-    )
-    .filter((v): v is number => v !== undefined && !Number.isNaN(v));
-  const discountPercent: number | undefined =
-    discountRates.length > 0 ? Math.max(...discountRates) : undefined;
-
-  return {
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-    category: product.category?.name || "Gift Card",
-    publisher: publisher,
-    mainImage:
-      product.imageUrl ||
-      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
-    rating: product.averageRating || 4.5,
-    price: startingPrice,
-    discountPercent: discountPercent,
-    platforms: ["Digital"],
-    autoDelivery: true,
-  };
-}
-
-function sortGlobalOnTop<T extends { id: string; name: string }>(
-  items: T[],
-): T[] {
-  const clone = [...items];
-  const idx = clone.findIndex(
-    (item) =>
-      item.name.toLowerCase() === "global" ||
-      item.id.toLowerCase() === "global",
-  );
-  if (idx > 1) {
-    const [globalItem] = clone.splice(idx, 1);
-    clone.splice(1, 0, globalItem);
-  }
-  return clone;
-}
-
 function CardContent() {
-  const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("search") || "";
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedRegion, setSelectedRegion] = useState("all");
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [searchQuery, setSearchQuery] = useState("");
   const [cards, setCards] = useState<CardProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<
     { id: string; name: string; count: number; icon: React.ReactNode }[]
   >([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  // Fetch cards from API
   useEffect(() => {
     const fetchCards = async () => {
       try {
         setLoading(true);
+        // Fetch CARD products (gift cards)
         const response = await productApi.getProducts({
           isActive: true,
           limit: 100,
@@ -144,11 +139,13 @@ function CardContent() {
         });
 
         if (response.success) {
+          // Filter for CARD products only and transform
           const cardProducts = response.data
             .filter((p) => p.productType === "CARD")
             .map(transformProductToCard);
           setCards(cardProducts);
 
+          // Build categories from actual data
           const categoryCounts = cardProducts.reduce(
             (acc, card) => {
               acc[card.category] = (acc[card.category] || 0) + 1;
@@ -162,7 +159,7 @@ function CardContent() {
               id: "all",
               name: "บัตรทั้งหมด",
               count: cardProducts.length,
-              icon: <CreditCard size={16} className="text-brutal-pink" />,
+              icon: <CreditCard size={16} />,
             },
             ...Object.entries(categoryCounts).map(([name, count]) => ({
               id: name.toLowerCase(),
@@ -183,130 +180,98 @@ function CardContent() {
     fetchCards();
   }, []);
 
-  useEffect(() => {
-    const query = searchParams.get("search");
-    if (query !== null) {
-      setSearchQuery(query);
-    }
-  }, [searchParams]);
-
-  const REGIONS = [
-    {
-      id: "all",
-      name: "ทุกภูมิภาค",
-      count: cards.length,
-      icon: <Globe size={16} className="text-brutal-blue" />,
-    },
-    {
-      id: "global",
-      name: "Global",
-      count: cards.filter((c) => c.category.toLowerCase().includes("global"))
-        .length,
-      icon: <Globe size={16} className="text-brutal-green" />,
-    },
-    {
-      id: "us",
-      name: "สหรัฐอเมริกา",
-      count: cards.filter((c) => c.category.toLowerCase().includes("us"))
-        .length,
-      icon: <Star size={16} className="text-brutal-yellow" />,
-    },
-    {
-      id: "th",
-      name: "ไทย",
-      count: cards.filter((c) => c.category.toLowerCase().includes("thai"))
-        .length,
-      icon: <Star size={16} className="text-brutal-pink" />,
-    },
-  ];
-
+  // Filter cards based on selected category and search query
   const filteredCards = cards.filter((card) => {
     const matchesCategory =
       selectedCategory === "all" ||
       card.category.toLowerCase() === selectedCategory.toLowerCase();
-
     const matchesSearch =
       !searchQuery ||
       card.name.toLowerCase().includes(searchQuery.toLowerCase());
-
-    let matchesRegion = true;
-    if (selectedRegion !== "all") {
-      if (selectedRegion === "global") {
-        matchesRegion = card.category.toLowerCase().includes("global");
-      } else if (selectedRegion === "us") {
-        matchesRegion = card.category.toLowerCase().includes("us");
-      } else if (selectedRegion === "th") {
-        matchesRegion = card.category.toLowerCase().includes("thai");
-      }
-    }
-
-    return matchesCategory && matchesSearch && matchesRegion;
+    return matchesCategory && matchesSearch;
   });
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row gap-6 min-w-0">
-        {/* Sidebar */}
+        
+        {/* Mobile Filter Sheet */}
+        <AnimatePresence>
+          {isFilterOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsFilterOpen(false)}
+                className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm lg:hidden"
+              />
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed top-0 bottom-0 right-0 w-[80%] max-w-sm bg-white z-50 border-l-[3px] border-black flex flex-col lg:hidden shadow-2xl"
+              >
+                <div className="p-4 border-b-[3px] border-black bg-brutal-yellow flex justify-between items-center">
+                  <h2 className="font-black text-xl flex items-center gap-2">
+                    <Filter size={20} /> ตัวกรอง
+                  </h2>
+                  <button onClick={() => setIsFilterOpen(false)} className="p-1 border-[2px] border-black bg-white hover:bg-gray-100">
+                    <X size={20} />
+                  </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                   {/* Categories Mobile */}
+                   <div>
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <CreditCard size={18} /> ประเภทบัตร
+                    </h3>
+                    <div className="space-y-2">
+                      {categories.map((category) => (
+                        <button
+                          key={category.id}
+                          onClick={() => {
+                            setSelectedCategory(category.id);
+                            setIsFilterOpen(false);
+                          }}
+                          className={`w-full flex justify-between items-center p-3 border-[2px] border-black font-bold transition-all active:scale-95 ${
+                            selectedCategory === category.id
+                              ? "bg-brutal-yellow text-black shadow-[3px_3px_0_0_#000]"
+                              : "bg-white text-gray-700"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                             {getCategoryFlagCode(category.name) && (
+                                <img
+                                  src={`https://flagcdn.com/${getCategoryFlagCode(category.name)}.svg`}
+                                  alt=""
+                                  className="w-5 h-3.5 border border-black/10"
+                                />
+                             )}
+                             {category.name}
+                          </span>
+                          <span className="bg-black text-white text-xs px-2 py-0.5 rounded-full">
+                            {category.count}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                   </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Desktop Sidebar */}
         <motion.div
-          className="w-full lg:w-64 lg:min-w-[256px] shrink-0"
+          className="hidden lg:block w-64 lg:min-w-[256px] shrink-0"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          {/* Regions Card */}
-          <div
-            className="bg-white border-[3px] border-black overflow-hidden mb-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-blue">
-              <h3 className="text-black font-black text-base flex items-center">
-                <Globe size={18} className="mr-2" />
-                ภูมิภาค
-              </h3>
-            </div>
-            <div className="p-3 space-y-1">
-              {REGIONS.map((region) => (
-                <motion.button
-                  key={region.id}
-                  onClick={() => setSelectedRegion(region.id)}
-                  className={`w-full flex justify-between items-center text-left p-3 group transition-all relative overflow-hidden border-[2px] ${
-                    selectedRegion === region.id
-                      ? "bg-brutal-blue border-black text-black"
-                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
-                  }`}
-                  style={
-                    selectedRegion === region.id
-                      ? { boxShadow: "3px 3px 0 0 #000000" }
-                      : undefined
-                  }
-                  whileHover={{ x: 3 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={
-                        selectedRegion === region.id
-                          ? "text-black"
-                          : "text-gray-500"
-                      }
-                    >
-                      {region.icon}
-                    </span>
-                    <span className="text-sm font-bold">{region.name}</span>
-                  </div>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                      selectedRegion === region.id
-                        ? "bg-white text-black"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {region.count}
-                  </span>
-                </motion.button>
-              ))}
-            </div>
-          </div>
-
           {/* Categories Card */}
           <div
             className="bg-white border-[3px] border-black overflow-hidden mb-4"
@@ -314,7 +279,7 @@ function CardContent() {
           >
             <div className="p-4 border-b-[3px] border-black bg-brutal-yellow">
               <h2 className="text-black font-black text-lg flex items-center">
-                <Gift size={20} className="mr-2" />
+                <CreditCard size={20} className="mr-2" />
                 ประเภทบัตร
               </h2>
             </div>
@@ -351,15 +316,7 @@ function CardContent() {
                           height={18}
                         />
                       ) : (
-                        <span
-                          className={
-                            selectedCategory === category.id
-                              ? "text-black"
-                              : "text-gray-500"
-                          }
-                        >
-                          {category.icon}
-                        </span>
+                        <span className="fi fi-un text-lg" aria-hidden></span>
                       )}
                       <span className="text-sm font-bold">{category.name}</span>
                     </div>
@@ -380,7 +337,7 @@ function CardContent() {
 
           {/* Promo Card */}
           <div
-            className="bg-brutal-green border-[3px] border-black p-4 relative overflow-hidden"
+            className="bg-brutal-pink border-[3px] border-black p-4 relative overflow-hidden"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="relative z-10">
@@ -393,14 +350,13 @@ function CardContent() {
               <p className="text-black/80 text-xs mb-3">
                 รับส่วนลดพิเศษสำหรับบัตรเติมเงินและบัตรของขวัญ
               </p>
-              <motion.button
-                className="w-full bg-black text-white px-3 py-2 text-xs font-bold border-[2px] border-black"
-                style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <Button
+                size="sm"
+                fullWidth
+                className="bg-black text-white border-black"
               >
                 ดูโปรโมชั่น
-              </motion.button>
+              </Button>
             </div>
           </div>
         </motion.div>
@@ -421,41 +377,60 @@ function CardContent() {
                   บัตรเกม & บัตรเติมเงิน
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">
-                  เลือกซื้อบัตรเกมและบัตรเติมเงินได้ทันที ส่งอัตโนมัติ
+                  เลือกซื้อบัตรเกมและบัตรเติมเงินได้ทันที
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <input
-                    type="text"
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                <div className="relative w-full sm:w-64">
+                  <Input
                     placeholder="ค้นหาบัตร..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full md:w-64 bg-gray-50 border-[2px] border-gray-300 pl-10 pr-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
+                    icon={<Search size={18} />}
+                    className="bg-gray-50"
                   />
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 </div>
 
-                <button className="bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 flex items-center gap-1.5 transition-all font-bold">
-                  <Filter size={16} /> ตัวกรอง
-                </button>
+                <Button 
+                  variant="outline" 
+                  className="w-full sm:w-auto lg:hidden"
+                  onClick={() => setIsFilterOpen(true)}
+                >
+                  <Filter size={16} className="mr-2" /> ตัวกรอง
+                </Button>
+                
+                <Button 
+                   variant="outline" 
+                   className="hidden lg:flex"
+                   onClick={() => {}}
+                >
+                   <Filter size={16} className="mr-2" /> ตัวกรอง
+                </Button>
               </div>
             </div>
-
-            {/* Mobile Horizontal Category Scroll */}
+            
+             {/* Mobile Horizontal Category Scroll */}
             <div className="lg:hidden mt-4 -mx-5 px-5 overflow-x-auto scrollbar-hide flex gap-2 pb-2">
-              {categories.slice(0, 6).map((cat) => (
+              <button
+                 onClick={() => setSelectedCategory("all")}
+                 className={`whitespace-nowrap px-4 py-2 text-sm font-bold border-[2px] border-black transition-all ${
+                    selectedCategory === "all" ? "bg-black text-white" : "bg-white text-gray-700"
+                 }`}
+              >
+                ทั้งหมด
+              </button>
+              {categories.map((cat) => (
                 <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex-shrink-0 ${
-                    selectedCategory === cat.id
-                      ? "bg-brutal-yellow text-black"
-                      : "bg-white text-gray-700"
-                  }`}
+                   key={cat.id}
+                   onClick={() => setSelectedCategory(cat.id)}
+                   className={`whitespace-nowrap px-4 py-2 text-sm font-bold border-[2px] border-black transition-all ${
+                      selectedCategory === cat.id ? "bg-brutal-yellow text-black" : "bg-white text-gray-700"
+                   }`}
                 >
-                  {cat.name}
+                  <span className="flex items-center gap-1">
+                    {cat.icon} {cat.name}
+                  </span>
                 </button>
               ))}
             </div>
@@ -488,58 +463,35 @@ function CardContent() {
                 >
                   <Link href={`/card/${card.slug}`}>
                     <div
-                      className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
+                      className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group h-full flex flex-col"
                       style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     >
-                      {card.discountPercent ? (
+                      {(card.discountPercent || 0) > 0 && (
                         <div
                           className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
                           style={{ boxShadow: "2px 2px 0 0 #000000" }}
                         >
                           -{card.discountPercent}%
                         </div>
-                      ) : null}
+                      )}
 
-                      <div className="relative aspect-square w-full overflow-hidden">
-                        <img
-                          src={card.mainImage}
+                      <div className="relative aspect-square w-full overflow-hidden bg-white flex items-center justify-center">
+                        <Image
+                          src={
+                            card.image !== undefined
+                              ? card.image
+                              : `https://placehold.co/400x240/${getRandomColor()}/FFFFFF?text=${card.name}`
+                          }
                           alt={card.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
-
-                        {card.autoDelivery && (
-                          <div
-                            className="absolute bottom-2 right-2 z-10"
-                            title="ส่งให้ทันทีหลังชำระเงิน"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 512 512"
-                              className="h-6 w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
-                              role="img"
-                              aria-label="ส่งให้ทันทีหลังชำระเงิน"
-                            >
-                              <g clipRule="evenodd" fillRule="evenodd">
-                                <circle
-                                  cx="256"
-                                  cy="256"
-                                  r="256"
-                                  fill="#ffc107"
-                                />
-                                <path
-                                  fill="#fff"
-                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                        )}
-
+                        
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <div
-                            className="bg-brutal-yellow text-black px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
+                            className="bg-brutal-pink text-white px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                           >
                             ซื้อบัตร
@@ -547,20 +499,14 @@ function CardContent() {
                         </div>
                       </div>
 
-                      <div className="p-2.5">
-                        <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-pink transition-colors">
+                      <div className="p-2.5 bg-white border-t-[3px] border-black flex-1 flex flex-col justify-between">
+                        <p className="text-gray-900 text-xs font-bold line-clamp-2 mb-1 group-hover:text-brutal-pink transition-colors text-center leading-tight">
                           {card.name}
                         </p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            {getCategoryIcon(card.category)}
-                            <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[60px]">
-                              {card.category}
-                            </span>
-                          </div>
-                          <div className="text-xs text-black font-black">
-                            ฿{card.price}
-                          </div>
+                        <div className="flex items-center justify-center mt-auto">
+                           <span className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full truncate max-w-full">
+                            {card.category}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -576,6 +522,16 @@ function CardContent() {
                 <p className="text-gray-400 text-sm mt-1">
                   ลองค้นหาด้วยคำอื่น หรือเลือกหมวดหมู่อื่น
                 </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("all");
+                  }}
+                >
+                  ล้างตัวกรองทั้งหมด
+                </Button>
               </div>
             )}
           </motion.div>

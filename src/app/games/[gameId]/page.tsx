@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { orderApi } from "@/lib/services/order-api";
 import {
   ChevronLeft,
@@ -163,6 +164,7 @@ function transformProductToGameDetails(
 export default function GameDetailsPage() {
   const { gameId } = useParams();
   const router = useRouter();
+  const { user, isAuthenticated, isInitialized } = useAuth();
   const [game, setGame] = useState<GameDetails | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [productTypes, setProductTypes] = useState<ProductType[]>([]);
@@ -192,6 +194,14 @@ export default function GameDetailsPage() {
   const handleBuyNow = async () => {
     if (!product || !selectedOption) {
       toast.error("กรุณาเลือกตัวเลือกเติมเงิน");
+      return;
+    }
+
+    // Check if user is logged in before allowing purchase
+    if (!isAuthenticated) {
+      toast.error("กรุณาเข้าสู่ระบบเพื่อทำการซื้อ", { duration: 3000 });
+      const currentPath = window.location.pathname;
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
 
@@ -351,6 +361,13 @@ export default function GameDetailsPage() {
   const handleToggleFavorite = async () => {
     if (!product) return;
 
+    if (!isAuthenticated) {
+      toast.error("กรุณาเข้าสู่ระบบเพื่อบันทึก", { duration: 3000 });
+      const currentPath = window.location.pathname;
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+      return;
+    }
+
     try {
       if (isFavorite && favoriteId) {
         await productApi.removeFavorite(favoriteId);
@@ -450,7 +467,8 @@ export default function GameDetailsPage() {
           if (allGamesResponse.success) {
             // 1. Similar Games by Category
             const otherGames = allGamesResponse.data.filter((p) => {
-              const pType = (p.productType as string | undefined) || "DIRECT_TOPUP";
+              const pType =
+                (p.productType as string | undefined) || "DIRECT_TOPUP";
               return p.id !== productData.id && pType === productTypeNormalized;
             });
             setSimilarGames(otherGames.slice(0, 5));
@@ -478,15 +496,17 @@ export default function GameDetailsPage() {
         }
 
         // Check if product is in favorites (only for logged in users)
-        try {
-          const isFav = await productApi.checkIsFavorite(productData.id);
-          setIsFavorite(isFav);
-          if (isFav) {
-            const favId = await productApi.findFavoriteId(productData.id);
-            setFavoriteId(favId);
+        if (isAuthenticated) {
+          try {
+            const isFav = await productApi.checkIsFavorite(productData.id);
+            setIsFavorite(isFav);
+            if (isFav) {
+              const favId = await productApi.findFavoriteId(productData.id);
+              setFavoriteId(favId);
+            }
+          } catch {
+            // Ignore auth errors for guests
           }
-        } catch {
-          // Ignore auth errors for guests
         }
       } catch (err) {
         console.error("Error fetching game:", err);
@@ -497,7 +517,7 @@ export default function GameDetailsPage() {
     };
 
     fetchGameDetails();
-  }, [gameId]);
+  }, [gameId, isAuthenticated]);
 
   if (loading) {
     return (
@@ -661,7 +681,9 @@ export default function GameDetailsPage() {
               {/* Top Up Options */}
               {activeTab === "topup" && (
                 <div className="space-y-6">
-                  <p className="text-gray-600 font-bold">เลือกจำนวนที่ต้องการเติม:</p>
+                  <p className="text-gray-600 font-bold">
+                    เลือกจำนวนที่ต้องการเติม:
+                  </p>
 
                   {game.topUpOptions.length === 0 ? (
                     <div className="text-center py-8 bg-brutal-gray border-[3px] border-black">
@@ -902,42 +924,68 @@ export default function GameDetailsPage() {
 
                 return (
                   <div className="space-y-6">
+                    {/* Login required notice for guests */}
+                    {!isAuthenticated && (
+                      <div className="bg-gray-100 border-[2px] border-gray-300 p-3 text-sm flex items-center gap-2">
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-500 flex-shrink-0"
+                        />
+                        <span className="text-gray-500">
+                          กรุณาเข้าสู่ระบบเพื่อกรอกข้อมูลและทำการซื้อ
+                        </span>
+                      </div>
+                    )}
+
                     {/* Dynamic Fields for Direct Top-Up */}
                     {option.fields && option.fields.length > 0 && (
                       <div className="space-y-4">
                         {option.fields.map((field) => (
                           <div key={field.name}>
                             {field.type === "select" ? (
-                                <div className="space-y-1.5">
-                                  <label className="text-sm font-bold text-gray-700 block">
-                                    {translateLabel(field.label)} {field.required && <span className="text-red-500">*</span>}
-                                  </label>
-                                  <div className="relative">
-                                    <select
-                                      value={fieldValues[field.name] || ""}
-                                      onChange={(e) =>
-                                        handleFieldChange(field.name, e.target.value)
-                                      }
-                                      className="w-full bg-white border-[2px] border-gray-300 px-3 py-2 text-base focus:outline-none focus:border-black appearance-none"
-                                    >
-                                      <option value="" className="bg-white">
-                                        เลือก{translateLabel(field.label)}
+                              <div className="space-y-1.5">
+                                <label className="text-sm font-bold text-gray-700 block">
+                                  {translateLabel(field.label)}{" "}
+                                  {field.required && (
+                                    <span className="text-red-500">*</span>
+                                  )}
+                                </label>
+                                <div className="relative">
+                                  <select
+                                    value={fieldValues[field.name] || ""}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        field.name,
+                                        e.target.value,
+                                      )
+                                    }
+                                    disabled={!isAuthenticated}
+                                    className="w-full bg-white border-[2px] border-gray-300 px-3 py-2 text-base focus:outline-none focus:border-black appearance-none disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                  >
+                                    <option value="" className="bg-white">
+                                      เลือก{translateLabel(field.label)}
+                                    </option>
+                                    {field.options?.map((opt) => (
+                                      <option
+                                        key={opt.value}
+                                        value={opt.value}
+                                        className="bg-white"
+                                      >
+                                        {opt.label}
                                       </option>
-                                      {field.options?.map((opt) => (
-                                        <option
-                                          key={opt.value}
-                                          value={opt.value}
-                                          className="bg-white"
-                                        >
-                                          {opt.label}
-                                        </option>
-                                      ))}
-                                    </select>
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                                    </div>
+                                    ))}
+                                  </select>
+                                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <svg
+                                      className="fill-current h-4 w-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
                                   </div>
                                 </div>
+                              </div>
                             ) : (
                               <Input
                                 label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
@@ -950,6 +998,7 @@ export default function GameDetailsPage() {
                                   field.placeholder ||
                                   `กรอก${translateLabel(field.label)}ของคุณ`
                                 }
+                                disabled={!isAuthenticated}
                               />
                             )}
                             {field.prefix && (
@@ -1009,8 +1058,7 @@ export default function GameDetailsPage() {
                         onClick={handleBuyNow}
                         disabled={isBuying}
                         isLoading={isBuying}
-                        fullWidth
-                        size="lg"
+                        size="full"
                         className="bg-black text-white hover:bg-gray-800"
                       >
                         {!isBuying && (
@@ -1020,7 +1068,9 @@ export default function GameDetailsPage() {
                               className="mr-2"
                               aria-hidden="true"
                             />
-                            ซื้อเลย
+                            {isAuthenticated
+                              ? "ซื้อเลย"
+                              : "เข้าสู่ระบบเพื่อซื้อ"}
                           </>
                         )}
                       </Button>
@@ -1103,160 +1153,163 @@ export default function GameDetailsPage() {
 
       {/* Confirmation Modal */}
       <AnimatePresence>
-      {showConfirmModal && verificationStatus && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-          onClick={() => setShowConfirmModal(false)}
-        >
+        {showConfirmModal && verificationStatus && (
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white border-[3px] border-black max-w-md w-full max-h-[90vh] overflow-y-auto"
-            style={{ boxShadow: "8px 8px 0 0 #000000" }}
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+            onClick={() => setShowConfirmModal(false)}
           >
-            {/* Header */}
-            <div className="bg-brutal-yellow border-b-[3px] border-black p-4 flex items-center justify-between">
-              <div className="flex items-center">
-                <AlertTriangle size={24} className="text-black mr-2" />
-                <h2 className="text-lg font-bold text-black">
-                  {!verificationStatus.supported
-                    ? "ไม่สามารถตรวจสอบบัญชีได้"
-                    : "ยืนยันข้อมูล"}
-                </h2>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white border-[3px] border-black max-w-md w-full max-h-[90vh] overflow-y-auto"
+              style={{ boxShadow: "8px 8px 0 0 #000000" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="bg-brutal-yellow border-b-[3px] border-black p-4 flex items-center justify-between">
+                <div className="flex items-center">
+                  <AlertTriangle size={24} className="text-black mr-2" />
+                  <h2 className="text-lg font-bold text-black">
+                    {!verificationStatus.supported
+                      ? "ไม่สามารถตรวจสอบบัญชีได้"
+                      : "ยืนยันข้อมูล"}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="p-1 hover:bg-black/10 rounded"
+                >
+                  <X size={20} />
+                </button>
               </div>
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="p-1 hover:bg-black/10 rounded"
-              >
-                <X size={20} />
-              </button>
-            </div>
 
-            <div className="p-6 space-y-6">
-              {/* Warning message for unsupported verification */}
-              {!verificationStatus.supported && (
-                <div className="bg-brutal-pink/20 border-[3px] border-brutal-pink p-4">
+              <div className="p-6 space-y-6">
+                {/* Warning message for unsupported verification */}
+                {!verificationStatus.supported && (
+                  <div className="bg-brutal-pink/20 border-[3px] border-brutal-pink p-4">
+                    <div className="flex items-start">
+                      <ShieldAlert
+                        size={20}
+                        className="text-brutal-pink mr-2 mt-0.5 flex-shrink-0"
+                      />
+                      <div>
+                        <p className="font-bold text-black mb-1">
+                          เกมนี้ไม่รองรับการตรวจสอบบัญชีอัตโนมัติ
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          ระบบไม่สามารถตรวจสอบว่าข้อมูลบัญชีถูกต้องหรือไม่
+                          กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Order Summary */}
+                <div className="bg-brutal-gray border-[3px] border-black p-4">
+                  <h3 className="font-bold text-black mb-3 flex items-center">
+                    <Package size={18} className="mr-2" />
+                    รายละเอียดการสั่งซื้อ
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">สินค้า:</span>
+                      <span className="font-medium text-black">
+                        {verificationStatus.productName}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">จำนวน:</span>
+                      <span className="font-medium text-black">
+                        {verificationStatus.optionName}
+                      </span>
+                    </div>
+                    <div className="flex justify-between border-t-[2px] border-black/20 pt-2 mt-2">
+                      <span className="text-gray-600">ราคา:</span>
+                      <span className="font-bold text-black">
+                        ฿{verificationStatus.price.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Player Info Display */}
+                {Object.keys(verificationStatus.playerInfo).length > 0 && (
+                  <div className="bg-white border-[3px] border-black p-4">
+                    <h3 className="font-bold text-black mb-3 flex items-center">
+                      <User size={18} className="mr-2" />
+                      ข้อมูลบัญชีที่ระบุ
+                    </h3>
+                    <div className="space-y-2">
+                      {Object.entries(verificationStatus.playerInfo).map(
+                        ([key, value]) => (
+                          <div
+                            key={key}
+                            className="flex justify-between text-sm"
+                          >
+                            <span className="text-gray-600 capitalize">
+                              {key}:
+                            </span>
+                            <span className="font-mono font-bold text-black bg-brutal-gray px-2 py-0.5">
+                              {value}
+                            </span>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* No Refund Warning */}
+                <div className="bg-red-50 border-[3px] border-red-500 p-4">
                   <div className="flex items-start">
-                    <ShieldAlert
+                    <AlertCircle
                       size={20}
-                      className="text-brutal-pink mr-2 mt-0.5 flex-shrink-0"
+                      className="text-red-600 mr-2 mt-0.5 flex-shrink-0"
                     />
                     <div>
-                      <p className="font-bold text-black mb-1">
-                        เกมนี้ไม่รองรับการตรวจสอบบัญชีอัตโนมัติ
+                      <p className="font-bold text-red-700 mb-1">
+                        คำเตือน: ไม่สามารถขอคืนเงินได้
                       </p>
-                      <p className="text-sm text-gray-700">
-                        ระบบไม่สามารถตรวจสอบว่าข้อมูลบัญชีถูกต้องหรือไม่
-                        กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
+                      <p className="text-sm text-red-600">
+                        หากข้อมูลบัญชีที่ระบุไม่ถูกต้อง
+                        ระบบจะไม่สามารถคืนเงินหรือยกเลิกรายการได้
+                        กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนยืนยัน
                       </p>
                     </div>
                   </div>
                 </div>
-              )}
 
-              {/* Order Summary */}
-              <div className="bg-brutal-gray border-[3px] border-black p-4">
-                <h3 className="font-bold text-black mb-3 flex items-center">
-                  <Package size={18} className="mr-2" />
-                  รายละเอียดการสั่งซื้อ
-                </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">สินค้า:</span>
-                    <span className="font-medium text-black">
-                      {verificationStatus.productName}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">จำนวน:</span>
-                    <span className="font-medium text-black">
-                      {verificationStatus.optionName}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-t-[2px] border-black/20 pt-2 mt-2">
-                    <span className="text-gray-600">ราคา:</span>
-                    <span className="font-bold text-black">
-                      ฿{verificationStatus.price.toFixed(2)}
-                    </span>
-                  </div>
+                {/* Actions */}
+                <div className="space-y-3 pt-2">
+                  <Button
+                    onClick={createOrder}
+                    disabled={isBuying}
+                    isLoading={isBuying}
+                    fullWidth
+                    className="bg-black text-white hover:bg-gray-800"
+                  >
+                    <Check size={18} className="mr-2" />
+                    ยืนยันการสั่งซื้อ
+                  </Button>
+
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowConfirmModal(false)}
+                    disabled={isBuying}
+                    fullWidth
+                  >
+                    ยกเลิก
+                  </Button>
                 </div>
               </div>
-
-              {/* Player Info Display */}
-              {Object.keys(verificationStatus.playerInfo).length > 0 && (
-                <div className="bg-white border-[3px] border-black p-4">
-                  <h3 className="font-bold text-black mb-3 flex items-center">
-                    <User size={18} className="mr-2" />
-                    ข้อมูลบัญชีที่ระบุ
-                  </h3>
-                  <div className="space-y-2">
-                    {Object.entries(verificationStatus.playerInfo).map(
-                      ([key, value]) => (
-                        <div key={key} className="flex justify-between text-sm">
-                          <span className="text-gray-600 capitalize">
-                            {key}:
-                          </span>
-                          <span className="font-mono font-bold text-black bg-brutal-gray px-2 py-0.5">
-                            {value}
-                          </span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* No Refund Warning */}
-              <div className="bg-red-50 border-[3px] border-red-500 p-4">
-                <div className="flex items-start">
-                  <AlertCircle
-                    size={20}
-                    className="text-red-600 mr-2 mt-0.5 flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-bold text-red-700 mb-1">
-                      คำเตือน: ไม่สามารถขอคืนเงินได้
-                    </p>
-                    <p className="text-sm text-red-600">
-                      หากข้อมูลบัญชีที่ระบุไม่ถูกต้อง
-                      ระบบจะไม่สามารถคืนเงินหรือยกเลิกรายการได้
-                      กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนยืนยัน
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="space-y-3 pt-2">
-                <Button
-                  onClick={createOrder}
-                  disabled={isBuying}
-                  isLoading={isBuying}
-                  fullWidth
-                  className="bg-black text-white hover:bg-gray-800"
-                >
-                   <Check size={18} className="mr-2" />
-                   ยืนยันการสั่งซื้อ
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowConfirmModal(false)}
-                  disabled={isBuying}
-                  fullWidth
-                >
-                  ยกเลิก
-                </Button>
-              </div>
-            </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
       </AnimatePresence>
     </div>
   );

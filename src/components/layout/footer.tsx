@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import {
@@ -37,13 +38,32 @@ const supportLinks = [
   { label: "เงื่อนไขการใช้บริการ", href: "/terms" },
 ];
 
+// Replace the icon URLs with your Appwrite file URLs
 const paymentMethods = [
-  { name: "Visa", color: "bg-blue-600 text-white" },
-  { name: "Mastercard", color: "bg-red-600 text-white" },
-  { name: "JCB", color: "bg-green-600 text-white" },
-  { name: "PromptPay", color: "bg-blue-500 text-white" },
-  { name: "TrueMoney", color: "bg-red-500 text-white" },
-  { name: "ShopeePay", color: "bg-orange-500 text-white" },
+  {
+    name: "Visa / Mastercard",
+    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917aa0001b8e50d7af/view?project=698c7ca4000555520e6b",
+  },
+  {
+    name: "KBANK",
+    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a82000e61a4f5ce/view?project=698c7ca4000555520e6b&mode=admin",
+  },
+  {
+    name: "PromptPay",
+    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a90002adc81a521/view?project=698c7ca4000555520e6b&mode=admin",
+  },
+  {
+    name: "TrueMoney",
+    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a9c003443f33870/view?project=698c7ca4000555520e6b&mode=admin",
+  },
+  {
+    name: "ShopeePay",
+    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a980036c84282da/view?project=698c7ca4000555520e6b&mode=admin",
+  },
+  {
+    name: "Krungthai Bank",
+    icon: "https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69917a9400216f81dd71/view?project=698c7ca4000555520e6b&mode=admin",
+  },
 ];
 
 const features = [
@@ -211,14 +231,21 @@ export function Footer() {
               <span className="w-1.5 h-4 bg-brutal-yellow mr-2 rounded-sm"></span>
               ช่องทางชำระเงิน
             </h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex flex-wrap gap-2">
               {paymentMethods.map((method) => (
                 <div
                   key={method.name}
-                  className={`${method.color} px-3 py-2 text-xs font-bold border-[2px] border-black flex items-center justify-center`}
+                  className="bg-white border-[2px] border-black rounded-md p-1 flex-shrink-0 h-10 w-fit"
                   style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 >
-                  {method.name}
+                  <Image
+                    src={method.icon}
+                    alt={method.name}
+                    width={100}
+                    height={40}
+                    className="w-auto h-full object-contain"
+                    loading="lazy"
+                  />
                 </div>
               ))}
             </div>

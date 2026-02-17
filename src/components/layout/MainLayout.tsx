@@ -18,6 +18,7 @@ import {
   Heart,
   LogOut,
   ChevronDown,
+  Search,
   Zap,
   Star,
   Smartphone,
@@ -30,6 +31,7 @@ import { useAuth } from "@/lib/context/auth-context";
 import { useNotifications } from "@/lib/context/notification-context";
 import SearchBar from "@/components/layout/SearchBar";
 import { MobileNav } from "./MobileNav";
+import { Sheet } from "@/components/ui/Sheet";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -136,6 +138,7 @@ const MobileNavItem = memo(function MobileNavItem({
 export function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -199,6 +202,8 @@ export function MainLayout({ children }: MainLayoutProps) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  const showFloatingSearch = !pathname.startsWith("/dashboard");
+
   const mainNavItems = useMemo(
     () => [
       { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
@@ -228,7 +233,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
       { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
       {
-        href: "/direct-topup",
+        href: "/mobile-recharge",
         label: "เติมเงิน",
         icon: <DollarSign size={20} />,
       },
@@ -285,7 +290,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   );
 
   return (
-    <div className="flex min-h-screen bg-brutal-gray thai-font">
+    <div className="flex min-h-screen bg-brutal-gray thai-font w-full max-w-full overflow-x-clip">
       {/* Sidebar */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white z-30 hidden lg:flex flex-col border-r-[3px] border-black">
         {/* Logo */}
@@ -346,13 +351,13 @@ export function MainLayout({ children }: MainLayoutProps) {
       </nav>
 
       {/* Main Content */}
-      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300 w-full overflow-x-hidden pb-20 lg:pb-0">
+      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300 w-full max-w-full min-w-0 overflow-x-clip pb-20 lg:pb-0">
         {/* Header */}
         <header
           className="sticky top-0 z-20 bg-white border-b-[3px] border-black h-16 flex items-center"
           style={{ boxShadow: "0 4px 0 0 rgba(0,0,0,0.05)" }}
         >
-          <div className="w-full h-full px-4 flex items-center justify-between">
+          <div className="w-full h-full px-4 flex items-center justify-between min-w-0">
             {/* Mobile Logo and Menu */}
             <div className="flex items-center space-x-4 lg:hidden">
               <button
@@ -378,7 +383,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               {/* Notification Dropdown - Show only when authenticated */}
               {isAuthenticated && (
                 <div className="relative" ref={notificationRef}>
@@ -401,7 +406,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-80 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                        className="fixed top-16 left-2 right-2 w-auto bg-white border-[3px] border-black overflow-hidden z-50 origin-top sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-80 sm:max-w-[calc(100vw-1rem)] sm:origin-top-right"
                         style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
                         <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
@@ -533,7 +538,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-64 bg-white border-[3px] border-black overflow-hidden z-50 origin-top-right"
+                        className="fixed top-16 left-2 right-2 w-auto bg-white border-[3px] border-black overflow-hidden z-50 origin-top sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-64 sm:max-w-[calc(100vw-1rem)] sm:origin-top-right"
                         style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
                         <div className="p-4 border-b-[2px] border-black bg-gray-50">
@@ -620,7 +625,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="py-4 px-4 md:px-6 container mx-auto flex-grow">
+        <main className="py-4 px-4 md:px-6 container mx-auto flex-grow w-full max-w-full min-w-0 overflow-x-clip">
           {children}
         </main>
 
@@ -632,6 +637,32 @@ export function MainLayout({ children }: MainLayoutProps) {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       />
+
+      {showFloatingSearch && (
+        <>
+          <button
+            onClick={() => setIsMobileSearchOpen(true)}
+            className="lg:hidden fixed bottom-20 right-4 z-30 w-14 h-14 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-lg"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            aria-label="เปิดค้นหา"
+          >
+            <Search size={24} className="text-black" />
+          </button>
+
+          <Sheet
+            isOpen={isMobileSearchOpen}
+            onClose={() => setIsMobileSearchOpen(false)}
+            title="ค้นหาเกม"
+          >
+            <div className="space-y-3">
+              <SearchBar variant="full" placeholder="ค้นหาเกม" />
+              <p className="text-xs text-gray-500">
+                พิมพ์ชื่อเกมหรือสินค้าที่ต้องการ แล้วเลือกรายการจากผลลัพธ์
+              </p>
+            </div>
+          </Sheet>
+        </>
+      )}
     </div>
   );
 }

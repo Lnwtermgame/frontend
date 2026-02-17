@@ -69,6 +69,10 @@
     -webkit-text-size-adjust: 100%;
     scroll-behavior: auto;
     overflow-y: scroll;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    width: 100%;
+    max-width: 100%;
   }
 
   /* Thai font class for explicit targeting */
@@ -106,6 +110,25 @@
     min-height: 100vh;
     @apply overflow-x-hidden;
     width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    position: relative;
+  }
+
+  /* Foundation layout guard rails for mobile overflow */
+  #__next,
+  [data-nextjs-scroll-focus-boundary] {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  img,
+  video,
+  canvas,
+  iframe {
+    max-width: 100%;
   }
 }
 

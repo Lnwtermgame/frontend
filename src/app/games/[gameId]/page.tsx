@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
+import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 import {
   productApi,
   Product,
@@ -252,6 +253,67 @@ export default function GameDetailsPage() {
     return info;
   };
 
+  const getNormalizedMobilePhone = (): string =>
+    (
+      mobilePhoneNumber ||
+      fieldValues.Phone ||
+      fieldValues.phone ||
+      fieldValues["User ID"] ||
+      ""
+    ).trim();
+
+  const getMobileVerifyErrorMessage = (
+    errorCode?: number,
+    message?: string,
+  ): string => {
+    if (
+      errorCode === 20114 ||
+      /phone number.*region.*match/i.test(message || "")
+    ) {
+      return "เบอร์โทรศัพท์ไม่ตรงกับภูมิภาคของเครือข่ายที่เลือก กรุณาตรวจสอบเบอร์หรือเปลี่ยนแพ็กเกจให้ตรงประเทศ";
+    }
+
+    if (errorCode === 10406) {
+      return "ข้อมูลไม่ครบถ้วน กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง";
+    }
+
+    return (
+      message || "ไม่สามารถตรวจสอบเบอร์โทรศัพท์ได้ กรุณาตรวจสอบข้อมูลแล้วลองใหม่"
+    );
+  };
+
+  const buildConfirmationPlayerInfo = (
+    info: Record<string, string>,
+  ): Record<string, string> => {
+    if (!isMobileRechargeRoute) {
+      return info;
+    }
+
+    const normalizedPhone =
+      info.Phone?.trim() ||
+      info.phone?.trim() ||
+      info["User ID"]?.trim() ||
+      "";
+    const confirmationInfo: Record<string, string> = {};
+
+    if (normalizedPhone) {
+      confirmationInfo.Phone = normalizedPhone;
+    }
+
+    for (const [key, value] of Object.entries(info)) {
+      if (/^(phone|user id)$/i.test(key)) {
+        continue;
+      }
+
+      const trimmedValue = value?.trim();
+      if (trimmedValue) {
+        confirmationInfo[key] = trimmedValue;
+      }
+    }
+
+    return confirmationInfo;
+  };
+
   // Handle buy now - verify first, then show confirmation
   const handleBuyNow = async () => {
     if (!product || !selectedOption) {
@@ -276,13 +338,7 @@ export default function GameDetailsPage() {
     );
 
     if (isMobileRechargeRoute) {
-      const phoneCandidate =
-        mobilePhoneNumber ||
-        fieldValues.Phone ||
-        fieldValues.phone ||
-        fieldValues["User ID"] ||
-        "";
-      const normalizedPhone = phoneCandidate.trim();
+      const normalizedPhone = getNormalizedMobilePhone();
 
       if (!normalizedPhone) {
         toast.error("กรุณากรอกเบอร์โทรศัพท์");
@@ -315,15 +371,47 @@ export default function GameDetailsPage() {
       toast.loading("กำลังตรวจสอบข้อมูล...");
 
       const playerInfo = buildPlayerInfo();
+      const fallbackStatus = {
+        productName: product.name,
+        optionName: selectedOptionData?.title || "",
+        price: selectedOptionData?.price || 0,
+      };
+
+      if (isCardRoute) {
+        toast.dismiss();
+        setVerificationStatus({
+          supported: true,
+          playerInfo: {},
+          ...fallbackStatus,
+        });
+        setShowConfirmModal(true);
+        return;
+      }
 
       // Verify player info with SEAGM
       let isVerificationSupported = true;
       try {
-        const verifyResult = await productApi.verifyPlayer(
-          product.id,
-          playerInfo,
-        );
+        const verifyResult = isMobileRechargeRoute
+          ? await productApi.verifyMobileRecharge(
+              product.id,
+              selectedOption,
+              getNormalizedMobilePhone(),
+              playerInfo.calling_code || playerInfo.callingCode,
+            )
+          : await productApi.verifyPlayer(product.id, playerInfo, selectedOption);
         isVerificationSupported = verifyResult.supported !== false;
+
+        if (isMobileRechargeRoute && !verifyResult.valid) {
+          toast.dismiss();
+          toast.error(
+            getMobileVerifyErrorMessage(
+              verifyResult.errorCode,
+              verifyResult.message,
+            ),
+            { duration: 5000 },
+          );
+          return;
+        }
 
         if (verifyResult.valid && isVerificationSupported) {
           // Verification passed - proceed directly
@@ -332,6 +420,23 @@ export default function GameDetailsPage() {
           return;
         }
       } catch (verifyErr: any) {
+        if (isMobileRechargeRoute) {
+          toast.dismiss();
+          const errorCode =
+            verifyErr?.response?.data?.data?.errorCode ||
+            verifyErr?.response?.data?.error?.details?.infoCode ||
+            verifyErr?.response?.data?.error?.infoCode;
+          const errorMessage =
+            verifyErr?.response?.data?.data?.message ||
+            verifyErr?.response?.data?.error?.message ||
+            verifyErr?.message;
+
+          toast.error(getMobileVerifyErrorMessage(errorCode, errorMessage), {
+            duration: 5000,
+          });
+          return;
+        }
+
         // If verification API fails, assume not supported
         isVerificationSupported = false;
       }
@@ -340,10 +445,8 @@ export default function GameDetailsPage() {
       toast.dismiss();
       setVerificationStatus({
         supported: isVerificationSupported,
-        playerInfo,
-        productName: product.name,
-        optionName: selectedOptionData?.title || "",
-        price: selectedOptionData?.price || 0,
+        playerInfo: buildConfirmationPlayerInfo(playerInfo),
+        ...fallbackStatus,
       });
       setShowConfirmModal(true);
     } catch (err: any) {
@@ -407,6 +510,14 @@ export default function GameDetailsPage() {
       ) {
         toast.error(
           "User ID หรือ Zone ID ไม่ถูกต้อง กรุณาตรวจสอบข้อมูลบัญชีเกมของคุณ",
+          { duration: 5000 },
+        );
+      } else if (
+        errorCode === 20114 ||
+        /phone number.*region.*match/i.test(errorMessage)
+      ) {
+        toast.error(
+          "เบอร์โทรศัพท์ไม่ตรงกับภูมิภาคของเครือข่ายที่เลือก กรุณาตรวจสอบเบอร์หรือเปลี่ยนแพ็กเกจให้ตรงประเทศ",
           { duration: 5000 },
         );
       } else if (
@@ -702,7 +813,13 @@ export default function GameDetailsPage() {
                   <h1 className="text-xl md:text-4xl font-bold text-white line-clamp-2 leading-tight">
                     {game.title}
                   </h1>
-                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm">
+                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1">
+                    {getCountryFlagCode(game.category) && (
+                      <CountryFlag
+                        code={getCountryFlagCode(game.category)}
+                        size="S"
+                      />
+                    )}
                     {game.category}
                   </span>
                 </div>

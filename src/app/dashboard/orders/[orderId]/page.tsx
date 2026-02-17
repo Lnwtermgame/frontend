@@ -237,6 +237,41 @@ export default function OrderDetailsPage() {
     return methods[method || ""] || method || "ไม่ระบุ";
   };
 
+  const getDisplayPlayerInfo = (
+    playerInfo: Record<string, unknown>,
+  ): Array<{ label: string; value: string }> => {
+    const rows: Array<{ label: string; value: string }> = [];
+    const phoneLikeKeys = new Set(["phone", "user id"]);
+
+    const phoneValue = Object.entries(playerInfo).find(([key, value]) => {
+      if (!phoneLikeKeys.has(key.toLowerCase())) {
+        return false;
+      }
+      const strValue = String(value || "").trim();
+      return strValue.length > 0;
+    });
+
+    if (phoneValue) {
+      rows.push({ label: "Phone", value: String(phoneValue[1]).trim() });
+    }
+
+    for (const [key, value] of Object.entries(playerInfo)) {
+      const normalizedKey = key.toLowerCase();
+      if (phoneLikeKeys.has(normalizedKey)) {
+        continue;
+      }
+
+      const strValue = String(value || "").trim();
+      if (!strValue) {
+        continue;
+      }
+
+      rows.push({ label: key, value: strValue });
+    }
+
+    return rows;
+  };
+
   // If the user is not loaded yet or not logged in, show loading
   if (!isInitialized || !user) {
     return (
@@ -359,23 +394,26 @@ export default function OrderDetailsPage() {
                             จำนวน: {item.quantity}
                           </p>
                           {item.playerInfo &&
-                            Object.keys(item.playerInfo).length > 0 && (
+                            Object.keys(item.playerInfo).length > 0 &&
+                            getDisplayPlayerInfo(
+                              item.playerInfo as Record<string, unknown>,
+                            ).length > 0 && (
                               <div className="mt-2 p-2 bg-brutal-gray border border-black/20 text-sm">
                                 <p className="text-gray-600 text-xs mb-1">
                                   ข้อมูลบัญชี:
                                 </p>
-                                {Object.entries(item.playerInfo).map(
-                                  ([key, value]) => (
-                                    <div key={key} className="flex gap-2">
-                                      <span className="text-gray-600 capitalize">
-                                        {key}:
-                                      </span>
-                                      <span className="font-mono font-bold">
-                                        {String(value)}
-                                      </span>
-                                    </div>
-                                  ),
-                                )}
+                                {getDisplayPlayerInfo(
+                                  item.playerInfo as Record<string, unknown>,
+                                ).map(({ label, value }) => (
+                                  <div key={label} className="flex gap-2">
+                                    <span className="text-gray-600 capitalize">
+                                      {label}:
+                                    </span>
+                                    <span className="font-mono font-bold">
+                                      {value}
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
                             )}
                         </div>

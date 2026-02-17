@@ -933,6 +933,7 @@ class ProductApiService {
   async verifyPlayer(
     productId: string,
     playerInfo: Record<string, string>,
+    productTypeId?: string,
   ): Promise<{
     valid: boolean;
     supported: boolean;
@@ -959,7 +960,47 @@ class ProductApiService {
         };
         errorCode?: number;
       };
-    }>(`/api/products/${productId}/verify-player`, { playerInfo });
+    }>(`/api/products/${productId}/verify-player`, { playerInfo, productTypeId });
+    return response.data.data;
+  }
+
+  async verifyMobileRecharge(
+    productId: string,
+    productTypeId: string,
+    phoneNumber: string,
+    callingCode?: string,
+  ): Promise<{
+    valid: boolean;
+    supported: boolean;
+    message: string;
+    accountInfo?: {
+      username?: string;
+      server?: string;
+      region?: string;
+      [key: string]: any;
+    };
+    errorCode?: number;
+  }> {
+    const response = await productClient.post<{
+      success: boolean;
+      data: {
+        valid: boolean;
+        supported: boolean;
+        message: string;
+        accountInfo?: {
+          username?: string;
+          server?: string;
+          region?: string;
+          [key: string]: any;
+        };
+        errorCode?: number;
+      };
+    }>(`/api/mobile-recharge/verify`, {
+      productId,
+      productTypeId,
+      phoneNumber,
+      callingCode,
+    });
     return response.data.data;
   }
 

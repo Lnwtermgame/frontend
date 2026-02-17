@@ -650,6 +650,20 @@ function DirectTopupContent() {
             {} as Record<string, number>,
           );
 
+          const categoryEntries = Object.entries(categoryCounts);
+          const globalEntryIndex = categoryEntries.findIndex(
+            ([name]) => name.toLowerCase() === "global",
+          );
+          const orderedCategoryEntries =
+            globalEntryIndex >= 0
+              ? [
+                  categoryEntries[globalEntryIndex],
+                  ...categoryEntries.filter(
+                    (_, index) => index !== globalEntryIndex,
+                  ),
+                ]
+              : categoryEntries;
+
           const cats = [
             {
               id: "all",
@@ -657,7 +671,7 @@ function DirectTopupContent() {
               count: gameProducts.length,
               icon: <CustomAllGamesIcon className="w-4 h-4" />,
             },
-            ...Object.entries(categoryCounts).map(([name, count]) => ({
+            ...orderedCategoryEntries.map(([name, count]) => ({
               id: name.toLowerCase(),
               name,
               count,

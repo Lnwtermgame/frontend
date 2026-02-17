@@ -208,9 +208,9 @@ export default function FavoritePage() {
                   <h3 className="text-black text-sm font-bold mb-1 line-clamp-1 group-hover:text-brutal-blue transition-colors">
                     {item.product.name}
                   </h3>
-                  <p className="text-gray-500 text-sm font-bold mb-3">
+                  <p className="text-gray-500 text-sm font-bold mb-3 text-right">
                     {item.product.types && item.product.types.length > 0
-                      ? formatPrice(getMinPrice(item.product.types))
+                      ? `เริ่มต้น ${formatPrice(getMinPrice(item.product.types))}`
                       : "เลือกดูราคา"}
                   </p>
 

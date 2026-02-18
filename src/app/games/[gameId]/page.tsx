@@ -698,19 +698,6 @@ export default function GameDetailsPage() {
           // Ignore errors for recommendations
         }
 
-        // Check if product is in favorites (only for logged in users)
-        if (isAuthenticated) {
-          try {
-            const isFav = await productApi.checkIsFavorite(productData.id);
-            setIsFavorite(isFav);
-            if (isFav) {
-              const favId = await productApi.findFavoriteId(productData.id);
-              setFavoriteId(favId);
-            }
-          } catch {
-            // Ignore auth errors for guests
-          }
-        }
       } catch (err) {
         console.error("Error fetching game:", err);
         setError(productApi.getErrorMessage(err));
@@ -720,7 +707,46 @@ export default function GameDetailsPage() {
     };
 
     fetchGameDetails();
-  }, [productSlug, isAuthenticated]);
+  }, [productSlug]);
+
+  // Check favorite status separately to avoid refetching game details on auth state changes
+  useEffect(() => {
+    if (!product?.id || !isAuthenticated) {
+      setIsFavorite(false);
+      setFavoriteId(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const checkFavorite = async () => {
+      try {
+        const isFav = await productApi.checkIsFavorite(product.id);
+        if (cancelled) return;
+
+        setIsFavorite(isFav);
+        if (isFav) {
+          const favId = await productApi.findFavoriteId(product.id);
+          if (!cancelled) {
+            setFavoriteId(favId);
+          }
+        } else {
+          setFavoriteId(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setIsFavorite(false);
+          setFavoriteId(null);
+        }
+      }
+    };
+
+    checkFavorite();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [product?.id, isAuthenticated]);
 
   if (loading) {
     return (

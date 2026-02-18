@@ -1,5 +1,6 @@
 import axios, {
   AxiosInstance,
+  AxiosRequestConfig,
   AxiosResponse,
   AxiosError,
   InternalAxiosRequestConfig,
@@ -56,6 +57,46 @@ const refreshAccessToken = async (): Promise<string | null> => {
   }
 };
 
+type ExtendedAxiosRequestConfig = AxiosRequestConfig & {
+  // Skip in-flight dedupe for this request
+  skipDedupe?: boolean;
+  // Skip short-lived response cache for this request
+  skipResponseCache?: boolean;
+  // Cache duration in milliseconds (GET only)
+  dedupeTtlMs?: number;
+};
+
+const serializeParams = (params?: AxiosRequestConfig["params"]): string => {
+  if (!params) return "";
+  if (params instanceof URLSearchParams) return params.toString();
+  if (typeof params === "string") return params;
+  if (typeof params !== "object") return String(params);
+
+  return Object.entries(params as Record<string, unknown>)
+    .filter(([, value]) => value !== undefined && value !== null)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => {
+      if (Array.isArray(value)) {
+        return `${key}=${value.join(",")}`;
+      }
+      return `${key}=${String(value)}`;
+    })
+    .join("&");
+};
+
+const buildGetRequestKey = (
+  service: string,
+  url: string,
+  config?: ExtendedAxiosRequestConfig,
+): string => {
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("auth_token") || ""
+      : "";
+  const paramsKey = serializeParams(config?.params);
+  return [service, url, paramsKey, token].join("::");
+};
+
 const createServiceClient = (service: string): AxiosInstance => {
   const client = axios.create({
     baseURL: GATEWAY_URL,
@@ -66,9 +107,21 @@ const createServiceClient = (service: string): AxiosInstance => {
     withCredentials: false,
   });
 
+  // Request coalescing and short-lived cache for GET requests
+  const inFlightGetRequests = new Map<string, Promise<AxiosResponse>>();
+  const getResponseCache = new Map<
+    string,
+    { expiresAt: number; response: AxiosResponse }
+  >();
+
   // Request interceptor to add JWT token
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+      // Any write operation invalidates cached GET responses for this service.
+      if (config.method && config.method.toLowerCase() !== "get") {
+        getResponseCache.clear();
+      }
+
       const token =
         typeof window !== "undefined"
           ? localStorage.getItem("auth_token")
@@ -178,6 +231,61 @@ const createServiceClient = (service: string): AxiosInstance => {
       }
     },
   );
+
+  // Override GET to dedupe identical in-flight requests and add short cache.
+  const originalGet = client.get.bind(client);
+  client.get = ((url: string, config?: ExtendedAxiosRequestConfig) => {
+    const requestConfig = config || {};
+
+    // Requests with AbortSignal are not deduped/cached to avoid cancellation coupling.
+    const skipDedupe = Boolean(requestConfig.skipDedupe || requestConfig.signal);
+    const skipResponseCache = Boolean(
+      requestConfig.skipResponseCache || requestConfig.signal,
+    );
+    const dedupeTtlMs =
+      typeof requestConfig.dedupeTtlMs === "number"
+        ? requestConfig.dedupeTtlMs
+        : 1200;
+
+    const requestKey = buildGetRequestKey(service, url, requestConfig);
+
+    if (!skipResponseCache) {
+      const cached = getResponseCache.get(requestKey);
+      if (cached && cached.expiresAt > Date.now()) {
+        return Promise.resolve(cached.response);
+      }
+      if (cached && cached.expiresAt <= Date.now()) {
+        getResponseCache.delete(requestKey);
+      }
+    }
+
+    if (!skipDedupe) {
+      const inFlight = inFlightGetRequests.get(requestKey);
+      if (inFlight) {
+        return inFlight;
+      }
+    }
+
+    const requestPromise = originalGet(url, requestConfig)
+      .then((response) => {
+        if (!skipResponseCache && dedupeTtlMs > 0) {
+          getResponseCache.set(requestKey, {
+            expiresAt: Date.now() + dedupeTtlMs,
+            response,
+          });
+        }
+        return response;
+      })
+      .finally(() => {
+        inFlightGetRequests.delete(requestKey);
+      });
+
+    if (!skipDedupe) {
+      inFlightGetRequests.set(requestKey, requestPromise);
+    }
+
+    return requestPromise;
+  }) as AxiosInstance["get"];
 
   return client;
 };

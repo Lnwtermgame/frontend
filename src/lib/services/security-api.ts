@@ -163,6 +163,14 @@ class SecurityApiService {
     return response.data;
   }
 
+  /**
+   * Send verification email
+   */
+  async sendVerificationEmail(): Promise<GenericResponse> {
+    const response = await authClient.post<GenericResponse>('/api/auth/security/send-verification-email');
+    return response.data;
+  }
+
   getErrorMessage(error: unknown): string {
     if (error && typeof error === 'object' && 'response' in error) {
       const axiosError = error as { response?: { data?: { error?: { message?: string } } } };

@@ -228,22 +228,24 @@ export default function NotificationPreferencesPage() {
             {isPushSupported && (
               <motion.div
                 whileHover={{ y: -2 }}
-                className="flex items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors mb-4"
+                className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors mb-4 gap-4"
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
-                <div className="flex items-center">
-                  <div className="h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white bg-brutal-pink">
+                <div className="flex items-start md:items-center">
+                  <div className="h-10 w-10 min-w-[2.5rem] border-[3px] border-black flex items-center justify-center mr-4 text-white bg-brutal-pink shrink-0">
                     <Smartphone className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-black font-bold thai-font">
-                      การแจ้งเตือนแบบ Push
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <h4 className="text-black font-bold thai-font">
+                        การแจ้งเตือนแบบ Push
+                      </h4>
                       {isPushSubscribed && (
-                        <span className="ml-2 text-xs bg-brutal-green text-white px-2 py-0.5 border border-black">
+                        <span className="text-[10px] md:text-xs bg-brutal-green text-white px-2 py-0.5 border border-black font-bold">
                           เปิดใช้งาน
                         </span>
                       )}
-                    </h4>
+                    </div>
                     <p className="text-gray-600 text-sm">
                       {isPushSubscribed
                         ? "คุณกำลังรับการแจ้งเตือนแบบ Push อยู่"
@@ -256,7 +258,7 @@ export default function NotificationPreferencesPage() {
                     onClick={handleUnsubscribePush}
                     disabled={isSubscribing}
                     whileHover={{ y: -2 }}
-                    className="flex items-center bg-brutal-pink hover:bg-red-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm"
+                    className="flex items-center justify-center bg-brutal-pink hover:bg-red-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm w-full md:w-auto"
                     style={{ boxShadow: "3px 3px 0 0 #000000" }}
                   >
                     {isSubscribing ? (
@@ -271,7 +273,7 @@ export default function NotificationPreferencesPage() {
                     onClick={handleSubscribePush}
                     disabled={isSubscribing}
                     whileHover={{ y: -2 }}
-                    className="flex items-center bg-brutal-green hover:bg-green-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm"
+                    className="flex items-center justify-center bg-brutal-green hover:bg-green-600 text-white px-4 py-2 border-[3px] border-black font-bold transition-all disabled:opacity-50 text-sm w-full md:w-auto"
                     style={{ boxShadow: "3px 3px 0 0 #000000" }}
                   >
                     {isSubscribing ? (
@@ -290,17 +292,17 @@ export default function NotificationPreferencesPage() {
                 <motion.div
                   key={item.key}
                   whileHover={{ y: -2 }}
-                  className="flex items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors"
+                  className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border-[3px] border-black hover:bg-gray-50 transition-colors gap-4"
                   style={{ boxShadow: "3px 3px 0 0 #000000" }}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-start md:items-center">
                     <div
-                      className={`h-10 w-10 border-[3px] border-black flex items-center justify-center mr-4 text-white ${item.accent}`}
+                      className={`h-10 w-10 min-w-[2.5rem] border-[3px] border-black flex items-center justify-center mr-4 text-white ${item.accent} shrink-0`}
                     >
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-black font-bold thai-font">
+                      <h4 className="text-black font-bold thai-font mb-1 md:mb-0">
                         {item.title}
                       </h4>
                       <p className="text-gray-600 text-sm">
@@ -308,15 +310,17 @@ export default function NotificationPreferencesPage() {
                       </p>
                     </div>
                   </div>
-                  <label className="inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={preferences[item.key]}
-                      onChange={() => togglePreference(item.key)}
-                      className="sr-only peer"
-                    />
-                    <div className="relative w-11 h-6 bg-gray-300 border-[2px] border-black peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-black after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-[2px] after:border-black after:h-5 after:w-5 after:transition-all peer-checked:bg-brutal-green"></div>
-                  </label>
+                  <div className="flex justify-end md:block mt-2 md:mt-0">
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={preferences[item.key]}
+                        onChange={() => togglePreference(item.key)}
+                        className="sr-only peer"
+                      />
+                      <div className="relative w-14 h-8 bg-gray-200 border-[3px] border-black peer-checked:bg-brutal-green transition-colors after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border-[3px] after:border-black after:h-6 after:w-6 after:transition-transform peer-checked:after:translate-x-6 shadow-[2px_2px_0_0_#000]"></div>
+                    </label>
+                  </div>
                 </motion.div>
               ))}
             </div>

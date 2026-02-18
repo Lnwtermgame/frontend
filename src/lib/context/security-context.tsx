@@ -145,25 +145,50 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   // (e.g., on the security settings page), NOT on every page load
 
 
-  const updateSecuritySettings = (
+  const updateSecuritySettings = async (
     settings: Partial<SecuritySettingsExtended>,
   ) => {
+    // Update local state immediately for responsiveness
     setSecuritySettings((prevSettings) => ({
       ...prevSettings,
       ...settings,
     }));
+
+    // Persist settings that have backend fields
+    const apiFields: Partial<SecuritySettings> = {};
+    if (settings.loginNotifications !== undefined) apiFields.loginNotifications = settings.loginNotifications;
+    if (settings.securityQuestions !== undefined) apiFields.securityQuestions = settings.securityQuestions;
+
+    if (Object.keys(apiFields).length > 0) {
+      try {
+        await securityApi.updateSecuritySettings(apiFields);
+      } catch (error) {
+        const message = securityApi.getErrorMessage(error);
+        toast.error(message || "ไม่สามารถบันทึกการตั้งค่าได้");
+        // Revert on failure
+        setSecuritySettings((prevSettings) => ({
+          ...prevSettings,
+          ...Object.fromEntries(
+            Object.keys(apiFields).map(key => [key, !apiFields[key as keyof typeof apiFields]])
+          ),
+        }));
+      }
+    }
   };
 
   const sendVerificationEmail = async (): Promise<boolean> => {
     setIsLoadingSettings(true);
     try {
-      // This would typically call an API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success("ส่งอีเมลยืนยันแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ");
-      return true;
+      const response = await securityApi.sendVerificationEmail();
+      if (response.success) {
+        updateSecuritySettings({ emailVerified: true });
+        toast.success("ยืนยันอีเมลสำเร็จ");
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.error("Error sending verification email:", error);
-      toast.error("ไม่สามารถส่งอีเมลยืนยันได้");
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message || "ไม่สามารถส่งอีเมลยืนยันได้");
       return false;
     } finally {
       setIsLoadingSettings(false);

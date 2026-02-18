@@ -294,12 +294,14 @@ export default function InvoicePage() {
                               <Eye size={16} />
                             </button>
                           </Link>
-                          <button
-                            className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 text-black transition-all"
-                            title="ดาวน์โหลด PDF"
-                          >
-                            <Download size={16} />
-                          </button>
+                          <Link href={`/dashboard/invoice/${invoice.id}`}>
+                            <button
+                              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 text-black transition-all"
+                              title="ดาวน์โหลด PDF"
+                            >
+                              <Download size={16} />
+                            </button>
+                          </Link>
                         </div>
                       </td>
                     </motion.tr>

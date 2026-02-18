@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
@@ -30,6 +30,7 @@ export default function InvoiceDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const invoiceContentRef = useRef<HTMLDivElement>(null);
 
   // Copy invoice ID to clipboard
   const copyInvoiceId = () => {
@@ -39,6 +40,195 @@ export default function InvoiceDetailPage() {
       toast.success("คัดลอกเลขที่ใบแจ้งหนี้แล้ว");
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  // Generate printable HTML for the invoice
+  const generatePrintHtml = useCallback(() => {
+    if (!invoice || !user) return '';
+
+    const issuedDate = new Date(invoice.issuedAt).toLocaleDateString('th-TH', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+    const issuedTime = new Date(invoice.issuedAt).toLocaleTimeString('th-TH');
+
+    const statusLabel = (() => {
+      switch (invoice.status) {
+        case 'COMPLETED': return 'ชำระเงินแล้ว';
+        case 'PENDING': return 'รอชำระเงิน';
+        case 'REFUNDED': return 'คืนเงินแล้ว';
+        default: return invoice.status;
+      }
+    })();
+
+    const itemsRows = invoice.items.map(item => `
+      <tr>
+        <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;">${item.productName}</td>
+        <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">${item.quantity}</td>
+        <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">฿${item.unitPrice.toFixed(2)}</td>
+        <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:bold;">฿${item.total.toFixed(2)}</td>
+      </tr>
+    `).join('');
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Invoice ${invoice.invoiceNumber}</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap');
+          * { margin:0; padding:0; box-sizing:border-box; }
+          body { font-family:'Noto Sans Thai',sans-serif; padding:40px; color:#111; font-size:14px; }
+          .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px; border-bottom:3px solid #000; padding-bottom:20px; }
+          .logo { font-size:24px; font-weight:bold; }
+          .logo span { color:#ec4899; }
+          .invoice-title { text-align:right; }
+          .invoice-title h1 { font-size:28px; margin-bottom:4px; }
+          .invoice-title .inv-number { font-size:14px; color:#666; }
+          .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:30px; }
+          .info-box h3 { font-size:12px; text-transform:uppercase; color:#666; margin-bottom:8px; letter-spacing:1px; }
+          .info-box p { margin:4px 0; }
+          table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+          thead th { text-align:left; padding:12px 8px; border-bottom:3px solid #000; font-size:12px; text-transform:uppercase; color:#666; }
+          thead th:nth-child(2) { text-align:center; }
+          thead th:nth-child(3), thead th:nth-child(4) { text-align:right; }
+          .summary { display:flex; justify-content:flex-end; }
+          .summary-box { width:280px; }
+          .summary-row { display:flex; justify-content:space-between; padding:6px 0; }
+          .summary-total { border-top:3px solid #000; margin-top:8px; padding-top:8px; font-weight:bold; font-size:16px; }
+          .status { display:inline-block; padding:4px 12px; font-size:12px; font-weight:bold; border:2px solid #000; }
+          .status-completed { background:#86efac; }
+          .status-pending { background:#93c5fd; }
+          .footer { margin-top:40px; padding-top:20px; border-top:1px solid #e5e7eb; text-align:center; color:#666; font-size:12px; }
+          @media print { body { padding:20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="logo">Game<span>Topup</span></div>
+          <div class="invoice-title">
+            <h1>ใบแจ้งหนี้</h1>
+            <div class="inv-number">${invoice.invoiceNumber}</div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-box">
+            <h3>ลูกค้า</h3>
+            <p><strong>${user.username || 'ผู้ใช้'}</strong></p>
+            <p>${user.email || ''}</p>
+          </div>
+          <div class="info-box" style="text-align:right;">
+            <h3>รายละเอียดใบแจ้งหนี้</h3>
+            <p>เลขที่: <strong>${invoice.invoiceNumber}</strong></p>
+            <p>วันที่: ${issuedDate}</p>
+            <p>เวลา: ${issuedTime}</p>
+            <p>คำสั่งซื้อ: ${invoice.orderNumber}</p>
+            <p>สถานะ: <span class="status ${invoice.status === 'COMPLETED' ? 'status-completed' : 'status-pending'}">${statusLabel}</span></p>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>รายการ</th>
+              <th>จำนวน</th>
+              <th>ราคาต่อหน่วย</th>
+              <th>จำนวนเงิน</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsRows}
+          </tbody>
+        </table>
+
+        <div class="summary">
+          <div class="summary-box">
+            <div class="summary-row">
+              <span>ยอดรวมย่อย:</span>
+              <span>฿${invoice.amount.toFixed(2)}</span>
+            </div>
+            <div class="summary-row">
+              <span>ภาษีมูลค่าเพิ่ม (7%):</span>
+              <span>฿${invoice.taxAmount.toFixed(2)}</span>
+            </div>
+            <div class="summary-row summary-total">
+              <span>ยอดรวมทั้งหมด:</span>
+              <span>฿${invoice.totalAmount.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>ขอบคุณสำหรับการสั่งซื้อ! ใบแจ้งหนี้ฉบับนี้เป็นเอกสารทางการค้าที่ออกโดยระบบอัตโนมัติ</p>
+          <p style="margin-top:4px;">GameTopup — ${issuedDate}</p>
+        </div>
+      </body>
+      </html>
+    `;
+  }, [invoice, user]);
+
+  // Print invoice
+  const handlePrint = () => {
+    const html = generatePrintHtml();
+    if (!html) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error("ไม่สามารถเปิดหน้าต่างพิมพ์ได้ กรุณาอนุญาต popup");
+      return;
+    }
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+  };
+
+  // Download as PDF (via print dialog's "Save as PDF")
+  const handleDownloadPdf = () => {
+    const html = generatePrintHtml();
+    if (!html) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error("ไม่สามารถเปิดหน้าต่างได้ กรุณาอนุญาต popup");
+      return;
+    }
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+    toast.success("กรุณาเลือก \"Save as PDF\" ในหน้าต่างพิมพ์");
+  };
+
+  // Download invoice data as CSV
+  const handleDownloadCsv = () => {
+    if (!invoice) return;
+
+    const headers = ['รายการ', 'จำนวน', 'ราคาต่อหน่วย', 'จำนวนเงิน'];
+    const rows = invoice.items.map(item => [
+      item.productName,
+      String(item.quantity),
+      item.unitPrice.toFixed(2),
+      item.total.toFixed(2),
+    ]);
+    rows.push([]);
+    rows.push(['', '', 'ยอดรวมย่อย:', invoice.amount.toFixed(2)]);
+    rows.push(['', '', 'ภาษีมูลค่าเพิ่ม (7%):', invoice.taxAmount.toFixed(2)]);
+    rows.push(['', '', 'ยอดรวมทั้งหมด:', invoice.totalAmount.toFixed(2)]);
+
+    const bom = '\uFEFF';
+    const csvContent = bom + [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${invoice.invoiceNumber}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success("ดาวน์โหลด CSV สำเร็จ");
   };
 
   // Fetch invoice data from API
@@ -201,6 +391,8 @@ export default function InvoiceDetailPage() {
               className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handlePrint}
+              title="พิมพ์ใบแจ้งหนี้"
             >
               <Printer className="h-4 w-4" />
             </motion.button>
@@ -209,6 +401,8 @@ export default function InvoiceDetailPage() {
               className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handleDownloadCsv}
+              title="ดาวน์โหลด CSV"
             >
               <Download className="h-4 w-4" />
             </motion.button>
@@ -218,6 +412,7 @@ export default function InvoiceDetailPage() {
               style={{ boxShadow: '3px 3px 0 0 #000000' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handleDownloadPdf}
             >
               ดาวน์โหลด PDF
             </motion.button>

@@ -819,11 +819,11 @@ export default function GameDetailsPage() {
 
           {/* Game info overlay */}
           <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
-              <div
-                className="relative w-20 h-20 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+            <div className="flex flex-row items-center md:items-end gap-3 md:gap-6">
+                <div
+                  className="relative w-20 h-20 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
+                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                >
                 <Image
                   src={
                     game.mainImage ||
@@ -834,12 +834,13 @@ export default function GameDetailsPage() {
                   className="object-cover"
                 />
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
-                  <h1 className="text-xl md:text-4xl font-bold text-white line-clamp-2 leading-tight">
-                    {game.title}
-                  </h1>
-                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1">
+              <div className="flex-1 min-w-0 flex flex-col justify-center md:justify-end gap-1.5 md:gap-2">
+                <h1 className="text-xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">
+                  {game.title}
+                </h1>
+                
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1 shadow-[2px_2px_0_0_#000]">
                     {getCountryFlagCode(game.category) && (
                       <CountryFlag
                         code={getCountryFlagCode(game.category)}
@@ -849,20 +850,13 @@ export default function GameDetailsPage() {
                     {game.category}
                   </span>
                 </div>
-                <p className="text-gray-300 text-sm md:text-base font-bold mb-2">
+
+                <p className="text-gray-300 text-sm md:text-base font-bold drop-shadow-sm">
                   โดย {game.publisher || game.developer || "ไม่ระบุ"}
                 </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm">
-                  {game.releaseDate && (
-                    <span className="text-gray-300 flex items-center">
-                      <Calendar size={12} className="mr-1" />
-                      {new Date(game.releaseDate).getFullYear()}
-                    </span>
-                  )}
-                </div>
               </div>
 
-              <div className="flex mt-2 md:mt-0 space-x-2">
+              <div className="absolute top-4 right-4 flex space-x-2 md:static md:mt-0">
                 <Button
                   variant="secondary"
                   size="icon"

@@ -1,34 +1,73 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ChevronRight,
   Star,
   Shield,
-  History
+  History,
+  Loader2
 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
+import { orderApi, Order } from "@/lib/services/order-api";
 
 export default function AccountPage() {
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Mock data for the account page
-  const orderStats = {
-    waitSend: 0,
-    sending: 0,
-    completed: 1,
-    refunded: 0
+  useEffect(() => {
+    if (isInitialized && user) {
+      fetchOrders();
+    }
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, [isInitialized, user]);
+
+  const fetchOrders = async () => {
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setIsLoading(true);
+    try {
+      const response = await orderApi.getOrders(1, 50, undefined, controller.signal);
+      if (response.success) {
+        setOrders(response.data);
+      }
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
+        console.log("[Account] Failed to fetch orders");
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
+    }
   };
 
-  const recentlyPurchased = [
-    {
-      id: 'marvel1',
-      name: 'Marvel Rivals Top Up',
-      amount: '100 Lattices',
-      image: 'https://placehold.co/60x60/5C3FC9/white?text=Marvel'
-    }
-  ];
+  const orderStats = {
+    waitSend: orders.filter(o => o.status === "PENDING").length,
+    sending: orders.filter(o => o.status === "PROCESSING").length,
+    completed: orders.filter(o => o.status === "COMPLETED").length,
+    refunded: orders.filter(o => o.status === "REFUNDED").length,
+  };
+
+  const recentlyPurchased = orders
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 5)
+    .flatMap(order =>
+      order.items.map(item => ({
+        id: order.id,
+        name: item.product?.name || item.productName || 'สินค้า',
+        amount: item.productType?.name || `${item.quantity} ชิ้น`,
+        image: item.product?.imageUrl || 'https://placehold.co/60x60/5C3FC9/white?text=Game',
+      }))
+    );
 
   const accountLinks = [
     { icon: <Shield size={18} />, label: 'ความปลอดภัย', href: '/dashboard/account/security' }
@@ -64,23 +103,25 @@ export default function AccountPage() {
               {/* Decorative gradient top border */}
 
 
-              <div className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center">
+              <div className="p-4 md:p-6">
+                <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4">
+                  <div className="flex flex-col md:flex-row items-center gap-4">
                     <div className="relative">
-                      <div className="h-16 w-16 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-xl font-bold overflow-hidden">
+                      <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-xl md:text-2xl font-bold overflow-hidden shadow-[2px_2px_0_0_#000]">
                         {user?.username?.charAt(0).toUpperCase() || 'U'}
                       </div>
-                      <span className="absolute bottom-0 right-0 bg-brutal-pink text-xs text-black font-bold px-2 py-0.5 border-[2px] border-black thai-font">
+                      <span className="absolute -bottom-1 -right-1 bg-brutal-pink text-[10px] md:text-xs text-black font-bold px-2 py-0.5 border-[2px] border-black thai-font shadow-[1px_1px_0_0_#000]">
                         VIP
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <h2 className="text-xl font-bold text-black">{user?.username || 'User'}</h2>
-                      <div className="flex items-center mt-1">
-                        <span className="text-gray-600 text-sm thai-font">อีเมล:</span>
-                        <span className="text-gray-900 text-sm ml-2">{user?.email || 'user@example.com'}</span>
-                        <span className="bg-brutal-green text-black text-xs font-bold px-2 py-0.5 border-[2px] border-black ml-2 thai-font">
+                    <div className="flex flex-col items-center md:items-start gap-1">
+                      <h2 className="text-xl md:text-2xl font-bold text-black">{user?.username || 'User'}</h2>
+                      <div className="flex flex-col md:flex-row items-center gap-2">
+                        <div className="flex items-center gap-2">
+                           <span className="text-gray-600 text-sm thai-font">อีเมล:</span>
+                           <span className="text-gray-900 text-sm font-medium">{user?.email || 'user@example.com'}</span>
+                        </div>
+                        <span className="bg-brutal-green text-black text-[10px] md:text-xs font-bold px-2 py-0.5 border-[2px] border-black thai-font">
                           ยืนยันแล้ว
                         </span>
                       </div>
@@ -114,33 +155,33 @@ export default function AccountPage() {
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                   <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                     <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
+                       <History size={18} className="text-black" />
+                     </div>
+                     <div className="text-2xl font-bold text-black">{isLoading ? <Loader2 size={20} className="animate-spin mx-auto" /> : orderStats.waitSend}</div>
+                     <div className="text-gray-600 text-sm thai-font">รอส่ง</div>
+                   </div>
                   <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
                     <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
                       <History size={18} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-black">{orderStats.waitSend}</div>
-                    <div className="text-gray-600 text-sm thai-font">รอส่ง</div>
-                  </div>
-                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-black" />
-                    </div>
-                    <div className="text-2xl font-bold text-black">{orderStats.sending}</div>
-                    <div className="text-gray-600 text-sm thai-font">กำลังส่ง</div>
+                    <div className="text-2xl font-bold text-black">{isLoading ? <Loader2 size={20} className="animate-spin mx-auto" /> : orderStats.sending}</div>
+                     <div className="text-gray-600 text-sm thai-font">กำลังส่ง</div>
                   </div>
                   <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
                     <div className="bg-brutal-green w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
                       <History size={18} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-black">{orderStats.completed}</div>
-                    <div className="text-gray-600 text-sm thai-font">เสร็จสมบูรณ์</div>
+                    <div className="text-2xl font-bold text-black">{isLoading ? <Loader2 size={20} className="animate-spin mx-auto" /> : orderStats.completed}</div>
+                     <div className="text-gray-600 text-sm thai-font">เสร็จสมบูรณ์</div>
                   </div>
                   <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
                     <div className="bg-gray-200 w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
                       <History size={18} className="text-gray-600" />
                     </div>
-                    <div className="text-2xl font-bold text-black">{orderStats.refunded}</div>
-                    <div className="text-gray-600 text-sm thai-font">คืนเงิน</div>
+                    <div className="text-2xl font-bold text-black">{isLoading ? <Loader2 size={20} className="animate-spin mx-auto" /> : orderStats.refunded}</div>
+                     <div className="text-gray-600 text-sm thai-font">คืนเงิน</div>
                   </div>
                 </div>
               </div>

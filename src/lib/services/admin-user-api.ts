@@ -32,6 +32,17 @@ export interface AdminUserDetail {
   updatedAt: string;
 }
 
+export interface UserAuditActivity {
+  id: string;
+  type: string;
+  description: string;
+  ip: string;
+  location: string;
+  timestamp: string;
+  suspicious: boolean;
+  resolved: boolean;
+}
+
 export interface CreateUserData {
   username: string;
   email: string;
@@ -120,9 +131,68 @@ class AdminUserApiService {
     return response.data;
   }
 
+  async updateUserRoleWithReason(
+    userId: string,
+    role: 'USER' | 'ADMIN',
+    reason?: string,
+  ): Promise<{ success: boolean; data: AdminUser }> {
+    const response = await authClient.put(`/api/admin/users/${userId}/role`, { role, reason });
+    return response.data;
+  }
+
   // Update user status
-  async updateUserStatus(userId: string, isActive: boolean): Promise<{ success: boolean; data: AdminUser }> {
-    const response = await authClient.put(`/api/admin/users/${userId}/status`, { isActive });
+  async updateUserStatus(userId: string, isActive: boolean, reason?: string): Promise<{ success: boolean; data: AdminUser }> {
+    const response = await authClient.put(`/api/admin/users/${userId}/status`, { isActive, reason });
+    return response.data;
+  }
+
+  async suspendUser(userId: string, reason: string): Promise<{ success: boolean; data: AdminUser }> {
+    const response = await authClient.post(`/api/admin/users/${userId}/suspend`, { reason });
+    return response.data;
+  }
+
+  async getUserAuditTrail(
+    userId: string,
+    options: {
+      page?: number;
+      limit?: number;
+      type?: string;
+      resolved?: boolean;
+      fromDate?: string;
+      toDate?: string;
+    } = {},
+  ): Promise<{
+    success: boolean;
+    data: {
+      activities: UserAuditActivity[];
+      meta: { total: number; page: number; limit: number; totalPages: number };
+    };
+  }> {
+    const params = new URLSearchParams();
+    params.append("page", String(options.page ?? 1));
+    params.append("limit", String(options.limit ?? 20));
+    if (options.type) params.append("type", options.type);
+    if (typeof options.resolved === "boolean") {
+      params.append("resolved", String(options.resolved));
+    }
+    if (options.fromDate) params.append("fromDate", options.fromDate);
+    if (options.toDate) params.append("toDate", options.toDate);
+
+    const response = await authClient.get(
+      `/api/admin/users/${userId}/audit-trail?${params.toString()}`,
+    );
+    return response.data;
+  }
+
+  async resolveUserAuditActivity(
+    userId: string,
+    activityId: string,
+    reason?: string,
+  ): Promise<{ success: boolean; data: UserAuditActivity }> {
+    const response = await authClient.put(
+      `/api/admin/users/${userId}/audit-trail/${activityId}/resolve`,
+      { reason },
+    );
     return response.data;
   }
 

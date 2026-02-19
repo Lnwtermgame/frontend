@@ -58,6 +58,24 @@ class InvoiceApiService {
     return response.data;
   }
 
+  async getAdminInvoicesByUser(
+    userId: string,
+    page = 1,
+    limit = 20,
+    signal?: AbortSignal,
+  ): Promise<InvoicesListResponse> {
+    const params = new URLSearchParams();
+    params.append("userId", userId);
+    params.append("page", String(page));
+    params.append("limit", String(limit));
+
+    const response = await orderClient.get<InvoicesListResponse>(
+      `/api/admin/invoices?${params}`,
+      { signal },
+    );
+    return response.data;
+  }
+
   async getInvoiceById(invoiceId: string): Promise<InvoiceResponse> {
     const response = await orderClient.get<InvoiceResponse>(
       `/api/invoices/${invoiceId}`,

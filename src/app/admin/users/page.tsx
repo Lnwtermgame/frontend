@@ -1,132 +1,288 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/hooks/use-auth";
 import {
-  Users,
+  adminUserApi,
+  AdminUser,
+  UserStats,
+} from "@/lib/services/admin-user-api";
+import {
   Search,
-  Filter,
-  MoreVertical,
-  Edit,
   Trash2,
   UserCheck,
   UserX,
-  Mail,
-  Shield,
   ChevronLeft,
   ChevronRight,
+  Loader2,
+  RefreshCw,
+  Eye,
 } from "lucide-react";
 
-// Mock users data
-const mockUsers = [
-  {
-    id: "1",
-    name: "สมชาย ใจดี",
-    email: "somchai@example.com",
-    role: "user",
-    status: "active",
-    joinedDate: "2024-01-15",
-    orders: 12,
-    totalSpent: 15400,
-  },
-  {
-    id: "2",
-    name: "สมหญิง รักเรียน",
-    email: "somying@example.com",
-    role: "user",
-    status: "active",
-    joinedDate: "2024-02-20",
-    orders: 8,
-    totalSpent: 8900,
-  },
-  {
-    id: "3",
-    name: "Admin User",
-    email: "admin@gametopup.com",
-    role: "admin",
-    status: "active",
-    joinedDate: "2023-12-01",
-    orders: 0,
-    totalSpent: 0,
-  },
-  {
-    id: "4",
-    name: "ทดสอบ ระบบ",
-    email: "test@example.com",
-    role: "user",
-    status: "inactive",
-    joinedDate: "2024-03-10",
-    orders: 3,
-    totalSpent: 2500,
-  },
-  {
-    id: "5",
-    name: "เกมเมอร์ ตัวจริง",
-    email: "gamer@example.com",
-    role: "user",
-    status: "active",
-    joinedDate: "2024-01-05",
-    orders: 25,
-    totalSpent: 45000,
-  },
-];
+interface UserMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+const DEFAULT_META: UserMeta = {
+  total: 0,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
+
+const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat("th-TH", {
+    style: "currency",
+    currency: "THB",
+    minimumFractionDigits: 0,
+  }).format(amount);
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("th-TH", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
 export default function AdminUsersPage() {
+  const router = useRouter();
+  const { isAdmin, isInitialized } = useAuth();
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [meta, setMeta] = useState<UserMeta>(DEFAULT_META);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isMutating, setIsMutating] = useState(false);
 
-  const filteredUsers = mockUsers.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
-    const matchesStatus =
-      statusFilter === "all" || user.status === statusFilter;
-    return matchesSearch && matchesRole && matchesStatus;
-  });
+  useEffect(() => {
+    if (isInitialized && !isAdmin) {
+      router.push("/");
+    }
+  }, [isAdmin, isInitialized, router]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+      setCurrentPage(1);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [roleFilter, statusFilter]);
+
+  const fetchUsers = useCallback(async () => {
+    if (!isAdmin) return;
+
+    const params: {
+      page: number;
+      limit: number;
+      role?: string;
+      isActive?: boolean;
+      search?: string;
+    } = {
+      page: currentPage,
+      limit: 10,
+    };
+
+    if (roleFilter !== "all") {
+      params.role = roleFilter.toUpperCase();
+    }
+
+    if (statusFilter !== "all") {
+      params.isActive = statusFilter === "active";
+    }
+
+    if (debouncedSearch) {
+      params.search = debouncedSearch;
+    }
+
+    const response = await adminUserApi.getUsers(params);
+    setUsers(response.data.users);
+    setMeta(response.data.meta);
+    setSelectedUsers((prev) =>
+      prev.filter((id) => response.data.users.some((u) => u.id === id)),
+    );
+  }, [currentPage, debouncedSearch, isAdmin, roleFilter, statusFilter]);
+
+  const fetchStats = useCallback(async () => {
+    if (!isAdmin) return;
+    const response = await adminUserApi.getUserStats();
+    setStats(response.data);
+  }, [isAdmin]);
+
+  const fetchData = useCallback(async () => {
+    if (!isAdmin) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      await Promise.all([fetchUsers(), fetchStats()]);
+    } catch (err) {
+      setError(adminUserApi.getErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchStats, fetchUsers, isAdmin]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const toggleUserSelection = (userId: string) => {
     setSelectedUsers((prev) =>
       prev.includes(userId)
         ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+        : [...prev, userId],
     );
   };
 
   const toggleAllSelection = () => {
-    if (selectedUsers.length === filteredUsers.length) {
+    if (selectedUsers.length === users.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredUsers.map((u) => u.id));
+      setSelectedUsers(users.map((u) => u.id));
     }
   };
+
+  const runMutation = async (fn: () => Promise<void>) => {
+    try {
+      setIsMutating(true);
+      setError(null);
+      await fn();
+      await fetchData();
+    } catch (err) {
+      setError(adminUserApi.getErrorMessage(err));
+    } finally {
+      setIsMutating(false);
+    }
+  };
+
+  const handleToggleStatus = async (user: AdminUser) => {
+    await runMutation(async () => {
+      await adminUserApi.updateUserStatus(user.id, !user.isActive);
+    });
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    await runMutation(async () => {
+      await adminUserApi.deleteUser(userId);
+      setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+    });
+  };
+
+  const handleBulkStatus = async (isActive: boolean) => {
+    if (selectedUsers.length === 0) return;
+    await runMutation(async () => {
+      await Promise.all(
+        selectedUsers.map((userId) =>
+          adminUserApi.updateUserStatus(userId, isActive),
+        ),
+      );
+      setSelectedUsers([]);
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedUsers.length === 0) return;
+    await runMutation(async () => {
+      await Promise.all(selectedUsers.map((userId) => adminUserApi.deleteUser(userId)));
+      setSelectedUsers([]);
+    });
+  };
+
+  const roleBadge = (role: AdminUser["role"]) =>
+    role === "ADMIN"
+      ? "bg-purple-100 text-purple-700 border-purple-500"
+      : "bg-gray-100 text-gray-700 border-gray-500";
+
+  const statusBadge = (isActive: boolean) =>
+    isActive
+      ? "bg-green-100 text-green-700 border-green-500"
+      : "bg-red-100 text-red-700 border-red-500";
+
+  const canGoPrev = currentPage > 1;
+  const canGoNext = currentPage < meta.totalPages;
+
+  const summaryText = useMemo(() => {
+    if (meta.total === 0) return "ไม่พบผู้ใช้";
+    const start = (meta.page - 1) * meta.limit + 1;
+    const end = Math.min(meta.page * meta.limit, meta.total);
+    return `แสดง ${start}-${end} จาก ${meta.total} รายการ`;
+  }, [meta]);
+
+  if (!isInitialized || !isAdmin) {
+    return (
+      <AdminLayout title="ผู้ใช้">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout title="ผู้ใช้">
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center">
             <span className="w-1.5 h-6 bg-brutal-yellow mr-2"></span>
             <h1 className="text-2xl font-bold text-black">จัดการผู้ใช้</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="bg-black text-white border-[3px] border-black px-4 py-2 hover:bg-gray-800 transition-colors flex items-center font-medium"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}>
-              <Users className="h-4 w-4 mr-2" />
-              เพิ่มผู้ใช้
-            </button>
-          </div>
+          <button
+            onClick={fetchData}
+            disabled={loading || isMutating}
+            className="bg-white text-black border-[3px] border-black px-4 py-2 hover:bg-gray-50 transition-colors flex items-center font-medium disabled:opacity-60"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            รีเฟรช
+          </button>
         </div>
 
-        {/* Filters */}
+        {stats && (
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+              <p className="text-xs text-gray-500">ผู้ใช้ทั้งหมด</p>
+              <p className="text-xl font-bold text-black">{stats.totalUsers.toLocaleString()}</p>
+            </div>
+            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+              <p className="text-xs text-gray-500">แอดมิน</p>
+              <p className="text-xl font-bold text-black">{stats.totalAdmins.toLocaleString()}</p>
+            </div>
+            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+              <p className="text-xs text-gray-500">ใช้งานอยู่</p>
+              <p className="text-xl font-bold text-green-700">{stats.activeUsers.toLocaleString()}</p>
+            </div>
+            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+              <p className="text-xs text-gray-500">ไม่ใช้งาน</p>
+              <p className="text-xl font-bold text-red-700">{stats.inactiveUsers.toLocaleString()}</p>
+            </div>
+            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+              <p className="text-xs text-gray-500">ใหม่เดือนนี้</p>
+              <p className="text-xl font-bold text-black">{stats.newThisMonth.toLocaleString()}</p>
+            </div>
+          </div>
+        )}
+
         <motion.div
           className="bg-white border-[3px] border-black p-4"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -165,10 +321,9 @@ export default function AdminUsersPage() {
           </div>
         </motion.div>
 
-        {/* Users Table */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
@@ -180,127 +335,135 @@ export default function AdminUsersPage() {
                   <th className="py-3 px-4 text-left">
                     <input
                       type="checkbox"
-                      checked={
-                        selectedUsers.length === filteredUsers.length &&
-                        filteredUsers.length > 0
-                      }
+                      checked={selectedUsers.length === users.length && users.length > 0}
                       onChange={toggleAllSelection}
                       className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
                     />
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
-                    ผู้ใช้
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
-                    บทบาท
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
-                    สถานะ
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
-                    วันที่สมัคร
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
-                    คำสั่งซื้อ
-                  </th>
-                  <th className="text-right py-3 px-4 text-sm font-semibold text-black">
-                    ยอดใช้จ่าย
-                  </th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-black">
-                    จัดการ
-                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">ผู้ใช้</th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">บทบาท</th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">สถานะ</th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">วันที่สมัคร</th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">คำสั่งซื้อ</th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-black">ยอดใช้จ่าย</th>
+                  <th className="text-center py-3 px-4 text-sm font-semibold text-black">จัดการ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="py-3 px-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.includes(user.id)}
-                        onChange={() => toggleUserSelection(user.id)}
-                        className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
-                      />
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-brutal-purple flex items-center justify-center text-white font-bold">
-                          {user.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-black">
-                            {user.name}
-                          </p>
-                          <p className="text-xs text-gray-500">{user.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${
-                          user.role === "admin"
-                            ? "bg-purple-100 text-purple-700 border-purple-500"
-                            : "bg-gray-100 text-gray-700 border-gray-500"
-                        }`}
-                      >
-                        {user.role === "admin" ? "แอดมิน" : "ผู้ใช้"}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${
-                          user.status === "active"
-                            ? "bg-green-100 text-green-700 border-green-500"
-                            : "bg-red-100 text-red-700 border-red-500"
-                        }`}
-                      >
-                        {user.status === "active" ? "ใช้งาน" : "ไม่ใช้งาน"}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
-                      {new Date(user.joinedDate).toLocaleDateString("th-TH")}
-                    </td>
-                    <td className="py-3 px-4 text-sm text-black">
-                      {user.orders}
-                    </td>
-                    <td className="py-3 px-4 text-sm text-black text-right font-medium">
-                      ฿{user.totalSpent.toLocaleString()}
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center justify-center gap-2">
-                        <button className="p-2 text-gray-600 hover:text-brutal-blue hover:bg-blue-50 transition-colors border-[2px] border-transparent hover:border-brutal-blue">
-                          <Edit className="h-4 w-4" />
-                        </button>
-                        <button className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors border-[2px] border-transparent hover:border-red-500">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                {loading && (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-center">
+                      <div className="inline-flex items-center text-gray-600">
+                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        กำลังโหลดข้อมูลผู้ใช้...
                       </div>
                     </td>
                   </tr>
-                ))}
+                )}
+                {!loading &&
+                  users.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.includes(user.id)}
+                          onChange={() => toggleUserSelection(user.id)}
+                          className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
+                        />
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-brutal-purple flex items-center justify-center text-white font-bold">
+                            {user.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <Link
+                              href={`/admin/users/${user.id}`}
+                              className="text-sm font-medium text-black hover:underline"
+                              title="เปิดหน้า User Manager"
+                            >
+                              {user.username}
+                            </Link>
+                            <p className="text-xs text-gray-500">{user.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${roleBadge(user.role)}`}>
+                          {user.role === "ADMIN" ? "แอดมิน" : "ผู้ใช้"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${statusBadge(user.isActive)}`}>
+                          {user.isActive ? "ใช้งาน" : "ไม่ใช้งาน"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-sm text-gray-600">{formatDate(user.createdAt)}</td>
+                      <td className="py-3 px-4 text-sm text-black">{user.orderCount.toLocaleString()}</td>
+                      <td className="py-3 px-4 text-sm text-black text-right font-medium">
+                        {formatCurrency(user.totalSpent)}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleToggleStatus(user)}
+                            disabled={isMutating}
+                            className="p-2 text-gray-600 hover:text-brutal-blue hover:bg-blue-50 transition-colors border-[2px] border-transparent hover:border-brutal-blue disabled:opacity-50"
+                            title={user.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
+                          >
+                            {user.isActive ? (
+                              <UserX className="h-4 w-4" />
+                            ) : (
+                              <UserCheck className="h-4 w-4" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user.id)}
+                            disabled={isMutating}
+                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors border-[2px] border-transparent hover:border-red-500 disabled:opacity-50"
+                            title="ปิดใช้งานผู้ใช้"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                          <Link
+                            href={`/admin/users/${user.id}`}
+                            className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 transition-colors border-[2px] border-transparent hover:border-black"
+                            title="จัดการผู้ใช้แบบเต็ม"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                {!loading && users.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-center text-sm text-gray-500">
+                      ไม่พบข้อมูลผู้ใช้ตามเงื่อนไขที่เลือก
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
 
-          {/* Pagination */}
           <div className="p-4 border-t-[2px] border-gray-200 flex items-center justify-between">
-            <p className="text-sm text-gray-600">
-              แสดง {filteredUsers.length} จาก {mockUsers.length} รายการ
-            </p>
+            <p className="text-sm text-gray-600">{summaryText}</p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
+                disabled={!canGoPrev || loading}
                 className="p-2 border-[2px] border-gray-300 hover:border-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <span className="px-4 py-2 text-sm text-black font-medium">
-                หน้า {currentPage}
+                หน้า {meta.page} / {Math.max(meta.totalPages, 1)}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => p + 1)}
-                className="p-2 border-[2px] border-gray-300 hover:border-black transition-colors"
+                disabled={!canGoNext || loading}
+                className="p-2 border-[2px] border-gray-300 hover:border-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -308,32 +471,54 @@ export default function AdminUsersPage() {
           </div>
         </motion.div>
 
-        {/* Bulk Actions */}
         {selectedUsers.length > 0 && (
           <motion.div
             className="bg-brutal-yellow border-[3px] border-black p-4 flex items-center justify-between"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <span className="text-black font-medium">
-              เลือก {selectedUsers.length} รายการ
-            </span>
+            <span className="text-black font-medium">เลือก {selectedUsers.length} รายการ</span>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium">
+              <button
+                onClick={() => handleBulkStatus(true)}
+                disabled={isMutating}
+                className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
+              >
                 <UserCheck className="h-4 w-4 mr-2" />
                 เปิดใช้งาน
               </button>
-              <button className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium">
+              <button
+                onClick={() => handleBulkStatus(false)}
+                disabled={isMutating}
+                className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
+              >
                 <UserX className="h-4 w-4 mr-2" />
                 ปิดใช้งาน
               </button>
-              <button className="px-4 py-2 bg-red-500 border-[2px] border-black text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium">
+              <button
+                onClick={handleBulkDelete}
+                disabled={isMutating}
+                className="px-4 py-2 bg-red-500 border-[2px] border-black text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
-                ลบ
+                ปิดใช้งานผู้ใช้
               </button>
             </div>
           </motion.div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3">
+            ไม่สามารถดำเนินการได้: {error}
+          </div>
+        )}
+
+        {isMutating && (
+          <div className="fixed bottom-5 right-5 bg-black text-white px-4 py-2 border-[3px] border-black flex items-center z-50">
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            กำลังอัปเดตข้อมูลผู้ใช้...
+          </div>
         )}
       </div>
     </AdminLayout>

@@ -155,11 +155,13 @@ class OrderApiService {
     page = 1,
     limit = 20,
     status?: string,
+    userId?: string,
   ): Promise<OrdersListResponse> {
     const params = new URLSearchParams();
     params.append("page", String(page));
     params.append("limit", String(limit));
     if (status) params.append("status", status);
+    if (userId) params.append("userId", userId);
 
     const response = await orderClient.get<OrdersListResponse>(
       `/api/admin/orders?${params}`,

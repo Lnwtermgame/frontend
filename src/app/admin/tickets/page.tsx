@@ -1,49 +1,32 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AlertCircle, CheckCheck, Download, Loader2, RefreshCcw, Send } from "lucide-react";
 import AdminLayout from "@/components/layout/AdminLayout";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { AdminUser, adminUserApi } from "@/lib/services/admin-user-api";
 import {
-  MessageSquare,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Search,
-  Filter,
-  Send,
-  X,
-  Loader2,
-  RefreshCcw,
-  Tag,
-  FileText,
-  User,
-} from "lucide-react";
+  supportApi,
+  Ticket,
+  TicketCategory,
+  TicketDetail,
+  TicketPriority,
+  TicketStats,
+  TicketStatus,
+} from "@/lib/services/support-api";
 
-// Types
-interface Ticket {
-  id: string;
-  ticketNumber: string;
-  subject: string;
-  category: string;
-  status: "OPEN" | "IN_PROGRESS" | "WAITING_USER" | "WAITING_ADMIN" | "RESOLVED" | "CLOSED";
-  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-  createdAt: string;
-  user?: { username?: string; email?: string };
-}
+const statusLabels: Record<TicketStatus, string> = {
+  OPEN: "เปิด",
+  IN_PROGRESS: "กำลังดำเนินการ",
+  WAITING_USER: "รอผู้ใช้",
+  WAITING_ADMIN: "รอแอดมิน",
+  RESOLVED: "แก้ไขแล้ว",
+  CLOSED: "ปิด",
+};
 
-interface TicketDetail extends Ticket {
-  description: string;
-  orderId?: string;
-  messages: Array<{
-    id: string;
-    content: string;
-    sender: "user" | "admin" | "system";
-    senderName?: string;
-    createdAt: string;
-  }>;
-}
-
-const categoryLabels: Record<string, string> = {
+const categoryLabels: Record<TicketCategory, string> = {
   ORDER_ISSUE: "ปัญหาคำสั่งซื้อ",
   PAYMENT_ISSUE: "ปัญหาการชำระเงิน",
   PRODUCT_ISSUE: "ปัญหาสินค้า",
@@ -53,621 +36,979 @@ const categoryLabels: Record<string, string> = {
   GENERAL_INQUIRY: "สอบถามทั่วไป",
 };
 
-const statusLabels: Record<
-  string,
-  { label: string; color: string; bgColor: string; borderColor: string }
-> = {
-  OPEN: {
-    label: "เปิด",
-    color: "text-blue-700",
-    bgColor: "bg-blue-100",
-    borderColor: "border-blue-500",
-  },
-  IN_PROGRESS: {
-    label: "กำลังดำเนินการ",
-    color: "text-amber-700",
-    bgColor: "bg-amber-100",
-    borderColor: "border-amber-500",
-  },
-  WAITING_USER: {
-    label: "รอลูกค้า",
-    color: "text-purple-700",
-    bgColor: "bg-purple-100",
-    borderColor: "border-purple-500",
-  },
-  WAITING_ADMIN: {
-    label: "รอแอดมิน",
-    color: "text-cyan-700",
-    bgColor: "bg-cyan-100",
-    borderColor: "border-cyan-500",
-  },
-  RESOLVED: {
-    label: "แก้ไขแล้ว",
-    color: "text-green-700",
-    bgColor: "bg-green-100",
-    borderColor: "border-green-500",
-  },
-  CLOSED: {
-    label: "ปิด",
-    color: "text-gray-700",
-    bgColor: "bg-gray-100",
-    borderColor: "border-gray-500",
-  },
+const EMPTY_STATS: TicketStats = {
+  total: 0,
+  open: 0,
+  inProgress: 0,
+  waitingUser: 0,
+  waitingAdmin: 0,
+  resolved: 0,
+  closed: 0,
 };
 
-const priorityLabels: Record<string, { label: string; color: string; bgColor: string; borderColor: string }> =
-  {
-    LOW: { label: "ต่ำ", color: "text-gray-700", bgColor: "bg-gray-100", borderColor: "border-gray-500" },
-    MEDIUM: { label: "ปานกลาง", color: "text-blue-700", bgColor: "bg-blue-100", borderColor: "border-blue-500" },
-    HIGH: { label: "สูง", color: "text-orange-700", bgColor: "bg-orange-100", borderColor: "border-orange-500" },
-    URGENT: { label: "เร่งด่วน", color: "text-red-700", bgColor: "bg-red-100", borderColor: "border-red-500" },
-  };
+type SlaPreset = "ALL" | "SLA_8" | "SLA_24";
 
-// Mock data for tickets
-const mockTickets: Ticket[] = [
-  {
-    id: "1",
-    ticketNumber: "TKT-001",
-    subject: "ไม่ได้รับสินค้า",
-    category: "ORDER_ISSUE",
-    status: "OPEN",
-    priority: "HIGH",
-    createdAt: new Date().toISOString(),
-    user: { username: "customer1", email: "customer1@example.com" },
-  },
-  {
-    id: "2",
-    ticketNumber: "TKT-002",
-    subject: "ขอคืนเงิน",
-    category: "REFUND_REQUEST",
-    status: "IN_PROGRESS",
-    priority: "MEDIUM",
-    createdAt: new Date().toISOString(),
-    user: { username: "customer2", email: "customer2@example.com" },
-  },
-];
+function getHoursSince(dateInput: string): number {
+  const diffMs = Date.now() - new Date(dateInput).getTime();
+  return Math.max(0, diffMs / (1000 * 60 * 60));
+}
 
-const mockTicketDetail: TicketDetail = {
-  id: "1",
-  ticketNumber: "TKT-001",
-  subject: "ไม่ได้รับสินค้า",
-  description: "ฉันสั่งซื้อ PUBG Mobile UC แต่ยังไม่ได้รับสินค้า",
-  category: "ORDER_ISSUE",
-  status: "OPEN",
-  priority: "HIGH",
-  createdAt: new Date().toISOString(),
-  orderId: "ORD-12345",
-  user: { username: "customer1", email: "customer1@example.com" },
-  messages: [],
-};
+function getSlaLevel(ticket: Ticket): "none" | "8h" | "24h" {
+  if (ticket.status === "RESOLVED" || ticket.status === "CLOSED") {
+    return "none";
+  }
+  const ageHours = getHoursSince(ticket.updatedAt);
+  if (ageHours >= 24) return "24h";
+  if (ageHours >= 8) return "8h";
+  return "none";
+}
 
-const mockStats = {
-  total: 50,
-  open: 10,
-  inProgress: 15,
-  waitingUser: 8,
-  waitingAdmin: 5,
-  resolved: 10,
-  closed: 2,
-};
+function toCsvCell(value: string | number | null | undefined): string {
+  const text = String(value ?? "");
+  if (text.includes(",") || text.includes("\n") || text.includes("\"")) {
+    return `"${text.replace(/\"/g, '""')}"`;
+  }
+  return text;
+}
 
 export default function AdminTicketsPage() {
-  const [tickets, setTickets] = useState<Ticket[]>(mockTickets);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { isAdmin, isInitialized } = useAuth();
+  const isMonitorMode = searchParams.get("monitor") === "1";
+
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(null);
-  const [stats, setStats] = useState(mockStats);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [stats, setStats] = useState<TicketStats>(EMPTY_STATS);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
+  const [assigneeFilter, setAssigneeFilter] = useState("ALL");
+  const [bulkAssigneeId, setBulkAssigneeId] = useState("");
+
+  const [loading, setLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [bulkUpdating, setBulkUpdating] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Filters
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [priorityFilter, setPriorityFilter] = useState<string>("ALL");
-  const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Reply state
-  const [replyMessage, setReplyMessage] = useState("");
-  const [isSendingReply, setIsSendingReply] = useState(false);
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<string>("ALL");
+  const [priority, setPriority] = useState<string>("ALL");
+  const [category, setCategory] = useState<string>("ALL");
+  const [sortBy, setSortBy] = useState<"updatedAt" | "createdAt" | "priority" | "status">("updatedAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [createdFrom, setCreatedFrom] = useState("");
+  const [createdTo, setCreatedTo] = useState("");
+  const [slaPreset, setSlaPreset] = useState<SlaPreset>("ALL");
 
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesSearch =
-      ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.ticketNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.user?.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.user?.email?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "ALL" || ticket.status === statusFilter;
-    const matchesPriority = priorityFilter === "ALL" || ticket.priority === priorityFilter;
-    const matchesCategory = categoryFilter === "ALL" || ticket.category === categoryFilter;
-    return matchesSearch && matchesStatus && matchesPriority && matchesCategory;
-  });
+  const [reply, setReply] = useState("");
+  const replyInputRef = useRef<HTMLInputElement | null>(null);
 
-  const loadTicketDetail = async (ticketId: string) => {
-    setIsDetailLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setSelectedTicket(mockTicketDetail);
-    setIsDetailLoading(false);
-  };
+  useEffect(() => {
+    if (isInitialized && !isAdmin) {
+      router.push("/");
+    }
+  }, [isInitialized, isAdmin, router]);
 
-  const handleSendReply = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!replyMessage.trim() || !selectedTicket) return;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput.trim());
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
-    setIsSendingReply(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setReplyMessage("");
-    setIsSendingReply(false);
-  };
+  const resolvedSlaHours = useMemo<number | undefined>(() => {
+    if (slaPreset === "SLA_8") return 8;
+    if (slaPreset === "SLA_24") return 24;
+    return undefined;
+  }, [slaPreset]);
 
-  const handleUpdateStatus = async (
-    status: string,
-    priority?: string
-  ) => {
+  const adminNameById = useMemo(() => {
+    return new Map(admins.map((admin) => [admin.id, admin.username]));
+  }, [admins]);
+
+  const breachedCount = useMemo(() => {
+    let over8 = 0;
+    let over24 = 0;
+    for (const ticket of tickets) {
+      const level = getSlaLevel(ticket);
+      if (level === "24h") {
+        over24 += 1;
+        over8 += 1;
+      } else if (level === "8h") {
+        over8 += 1;
+      }
+    }
+    return { over8, over24 };
+  }, [tickets]);
+
+  const loadTickets = useCallback(async () => {
+    if (!isAdmin) return;
+
+    try {
+      setLoading(true);
+      const [listRes, statsRes] = await Promise.all([
+        supportApi.getAllTickets(page, limit, {
+          status: status !== "ALL" ? (status as TicketStatus) : undefined,
+          priority: priority !== "ALL" ? (priority as TicketPriority) : undefined,
+          category: category !== "ALL" ? (category as TicketCategory) : undefined,
+          assignedTo:
+            assigneeFilter !== "ALL" && assigneeFilter !== "UNASSIGNED"
+              ? assigneeFilter
+              : undefined,
+          unassignedOnly: assigneeFilter === "UNASSIGNED",
+          search: search || undefined,
+          sortBy,
+          sortOrder,
+          createdFrom: createdFrom || undefined,
+          createdTo: createdTo || undefined,
+          slaHours: resolvedSlaHours,
+        }),
+        supportApi.getTicketStats(),
+      ]);
+
+      setTickets(listRes.data);
+      setTotalPages(listRes.meta?.totalPages || 1);
+      setStats(statsRes.data);
+      setSelectedIds((prev) => prev.filter((id) => listRes.data.some((t) => t.id === id)));
+      setLastRefreshedAt(new Date());
+      setError(null);
+    } catch (err) {
+      setError(supportApi.getErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    isAdmin,
+    page,
+    limit,
+    status,
+    priority,
+    category,
+    assigneeFilter,
+    search,
+    sortBy,
+    sortOrder,
+    createdFrom,
+    createdTo,
+    resolvedSlaHours,
+  ]);
+
+  useEffect(() => {
+    loadTickets();
+  }, [loadTickets]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    const loadAdmins = async () => {
+      try {
+        const response = await adminUserApi.getUsers({
+          role: "ADMIN",
+          isActive: true,
+          page: 1,
+          limit: 100,
+        });
+        setAdmins(response.data.users);
+      } catch {
+        setAdmins([]);
+      }
+    };
+    loadAdmins();
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (!isAdmin || !autoRefresh) return;
+    const timer = setInterval(() => {
+      loadTickets();
+    }, 30000);
+    return () => clearInterval(timer);
+  }, [isAdmin, autoRefresh, loadTickets]);
+
+  const loadDetail = useCallback(async (ticketId: string) => {
+    try {
+      setDetailLoading(true);
+      const res = await supportApi.getTicketDetail(ticketId);
+      setSelectedTicket(res.data);
+      setError(null);
+    } catch (err) {
+      setError(supportApi.getErrorMessage(err));
+    } finally {
+      setDetailLoading(false);
+    }
+  }, []);
+
+  const updateSelectedTicket = async (payload: { status?: TicketStatus; priority?: TicketPriority; assignedTo?: string | null }) => {
     if (!selectedTicket) return;
-
-    setIsUpdatingStatus(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsUpdatingStatus(false);
+    try {
+      setUpdating(true);
+      await supportApi.updateTicket(selectedTicket.id, payload);
+      await Promise.all([loadTickets(), loadDetail(selectedTicket.id)]);
+    } catch (err) {
+      setError(supportApi.getErrorMessage(err));
+    } finally {
+      setUpdating(false);
+    }
   };
 
-  return (
-    <AdminLayout title="ตั๋วสนับสนุน">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center">
-          <span className="w-1.5 h-6 bg-brutal-purple mr-2"></span>
-          <h1 className="text-2xl font-bold text-black">จัดการตั๋วสนับสนุน</h1>
+  const sendReplyNow = useCallback(async () => {
+    if (!selectedTicket || !reply.trim()) return;
+
+    try {
+      setSending(true);
+      await supportApi.addReply(selectedTicket.id, { content: reply.trim() });
+      setReply("");
+      await Promise.all([loadTickets(), loadDetail(selectedTicket.id)]);
+    } catch (err) {
+      setError(supportApi.getErrorMessage(err));
+    } finally {
+      setSending(false);
+    }
+  }, [loadDetail, loadTickets, reply, selectedTicket]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const targetTag = target?.tagName.toLowerCase();
+      const editing = targetTag === "input" || targetTag === "textarea" || targetTag === "select";
+      if (editing && !(event.ctrlKey && event.key === "Enter")) return;
+
+      if (event.key === "j" || event.key === "J") {
+        event.preventDefault();
+        if (tickets.length === 0) return;
+        const currentIndex = tickets.findIndex((t) => t.id === selectedTicket?.id);
+        const nextIndex = currentIndex < 0 ? 0 : Math.min(tickets.length - 1, currentIndex + 1);
+        void loadDetail(tickets[nextIndex].id);
+      }
+
+      if (event.key === "k" || event.key === "K") {
+        event.preventDefault();
+        if (tickets.length === 0) return;
+        const currentIndex = tickets.findIndex((t) => t.id === selectedTicket?.id);
+        const prevIndex = currentIndex < 0 ? 0 : Math.max(0, currentIndex - 1);
+        void loadDetail(tickets[prevIndex].id);
+      }
+
+      if (event.key === "r" || event.key === "R") {
+        event.preventDefault();
+        replyInputRef.current?.focus();
+      }
+
+      if (event.ctrlKey && event.key === "Enter") {
+        event.preventDefault();
+        if (!selectedTicket || !reply.trim() || sending) return;
+        void sendReplyNow();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [loadDetail, reply, selectedTicket, sendReplyNow, sending, tickets]);
+
+  const sendReply = (event: React.FormEvent) => {
+    event.preventDefault();
+    void sendReplyNow();
+  };
+
+  const toggleSelectOne = (id: string) => {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  const allVisibleSelected = tickets.length > 0 && tickets.every((ticket) => selectedIds.includes(ticket.id));
+
+  const toggleSelectAllVisible = () => {
+    setSelectedIds((prev) => {
+      if (allVisibleSelected) {
+        return prev.filter((id) => !tickets.some((ticket) => ticket.id === id));
+      }
+      const merged = new Set(prev);
+      tickets.forEach((ticket) => merged.add(ticket.id));
+      return Array.from(merged);
+    });
+  };
+
+  const runBulkUpdate = async (payload: { status?: TicketStatus; priority?: TicketPriority; assignedTo?: string | null }) => {
+    if (selectedIds.length === 0) return;
+
+    try {
+      setBulkUpdating(true);
+      await Promise.all(selectedIds.map((ticketId) => supportApi.updateTicket(ticketId, payload)));
+      const selectedDetailId = selectedTicket?.id;
+      setSelectedIds([]);
+
+      if (selectedDetailId && selectedIds.includes(selectedDetailId)) {
+        await Promise.all([loadTickets(), loadDetail(selectedDetailId)]);
+      } else {
+        await loadTickets();
+      }
+      setError(null);
+    } catch (err) {
+      setError(supportApi.getErrorMessage(err));
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
+
+  const exportCsv = async () => {
+    if (!isAdmin) return;
+
+    try {
+      setExporting(true);
+      const exportLimit = 100;
+      let currentPage = 1;
+      let maxPages = 1;
+      const rows: Ticket[] = [];
+
+      while (currentPage <= maxPages) {
+        const response = await supportApi.getAllTickets(currentPage, exportLimit, {
+          status: status !== "ALL" ? (status as TicketStatus) : undefined,
+          priority: priority !== "ALL" ? (priority as TicketPriority) : undefined,
+          category: category !== "ALL" ? (category as TicketCategory) : undefined,
+          assignedTo:
+            assigneeFilter !== "ALL" && assigneeFilter !== "UNASSIGNED"
+              ? assigneeFilter
+              : undefined,
+          unassignedOnly: assigneeFilter === "UNASSIGNED",
+          search: search || undefined,
+          sortBy,
+          sortOrder,
+          createdFrom: createdFrom || undefined,
+          createdTo: createdTo || undefined,
+          slaHours: resolvedSlaHours,
+        });
+
+        rows.push(...response.data);
+        maxPages = response.meta?.totalPages || 1;
+        currentPage += 1;
+      }
+
+      const headers = [
+        "ticketNumber",
+        "subject",
+        "status",
+        "priority",
+        "category",
+        "username",
+        "email",
+        "assignedTo",
+        "orderId",
+        "createdAt",
+        "updatedAt",
+      ];
+
+      const csv = [
+        headers.join(","),
+        ...rows.map((ticket) =>
+          [
+            ticket.ticketNumber,
+            ticket.subject,
+            ticket.status,
+            ticket.priority,
+            ticket.category,
+            ticket.user?.username ?? "",
+            ticket.user?.email ?? "",
+            ticket.assignedTo ? (adminNameById.get(ticket.assignedTo) ?? ticket.assignedTo) : "",
+            ticket.orderId ?? "",
+            ticket.createdAt,
+            ticket.updatedAt,
+          ]
+            .map(toCsvCell)
+            .join(",")
+        ),
+      ].join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `tickets-export-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(supportApi.getErrorMessage(err));
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const resetFilters = () => {
+    setSearchInput("");
+    setStatus("ALL");
+    setPriority("ALL");
+    setCategory("ALL");
+    setAssigneeFilter("ALL");
+    setSortBy("updatedAt");
+    setSortOrder("desc");
+    setCreatedFrom("");
+    setCreatedTo("");
+    setSlaPreset("ALL");
+    setPage(1);
+  };
+
+  const setQueuePreset = (preset: "ALL" | "WAITING_ADMIN" | "UNASSIGNED") => {
+    if (preset === "UNASSIGNED") {
+      setAssigneeFilter("UNASSIGNED");
+      setStatus("ALL");
+      setPage(1);
+      return;
+    }
+    setAssigneeFilter("ALL");
+    setStatus(preset);
+    setPage(1);
+  };
+
+  const openMonitorWindow = useCallback(() => {
+    const monitorUrl = `${window.location.origin}/admin/tickets?monitor=1`;
+    window.open(
+      monitorUrl,
+      "ticket-monitor-window",
+      "popup=yes,width=1500,height=920,toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes"
+    );
+  }, []);
+
+  if (!isInitialized || !isAdmin) {
+    return (
+      isMonitorMode ? (
+        <div className="min-h-screen bg-gray-50 p-4">
+          <div className="flex h-64 items-center justify-center rounded border-[3px] border-black bg-white">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        </div>
+      ) : (
+        <AdminLayout title="ตั๋วซัพพอร์ต">
+          <div className="flex h-64 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        </AdminLayout>
+      )
+    );
+  }
+
+  const content = (
+    <div className={isMonitorMode ? "space-y-4 p-4" : "space-y-4"}>
+      {isMonitorMode && (
+        <div className="flex items-center justify-between rounded border-[2px] border-black bg-white px-3 py-2 text-sm">
+          <span className="font-medium text-black">หน้าต่างมอนิเตอร์ทิกเก็ต</span>
+          <Link href="/admin/tickets" className="text-blue-600 hover:underline">
+            เปิดหน้าแอดมินแบบเต็ม
+          </Link>
+        </div>
+      )}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-black">จัดการทิกเก็ต</h1>
+          <div className="flex items-center gap-2">
+            {!isMonitorMode && (
+              <button
+                onClick={openMonitorWindow}
+                className="border-[2px] border-black bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-100"
+                title="เปิดหน้าต่างมอนิเตอร์แบบป๊อปอัป"
+              >
+                เปิดหน้าต่างมอนิเตอร์
+              </button>
+            )}
+            <div className="text-right text-xs text-gray-500">
+              <div>อัปเดตล่าสุด: {lastRefreshedAt ? lastRefreshedAt.toLocaleTimeString() : "-"}</div>
+              <div>ความเสี่ยง SLA (หน้านี้): &gt;8ชม. {breachedCount.over8} | &gt;24ชม. {breachedCount.over24}</div>
+            </div>
+          </div>
         </div>
 
-        {/* Stats Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"
-        >
-          {[
-            { label: "ทั้งหมด", value: stats.total, color: "bg-gray-100 text-gray-700 border-gray-500" },
-            { label: "เปิด", value: stats.open, color: "bg-blue-100 text-blue-700 border-blue-500" },
-            { label: "กำลังดำเนินการ", value: stats.inProgress, color: "bg-amber-100 text-amber-700 border-amber-500" },
-            { label: "รอลูกค้า", value: stats.waitingUser, color: "bg-purple-100 text-purple-700 border-purple-500" },
-            { label: "รอแอดมิน", value: stats.waitingAdmin, color: "bg-cyan-100 text-cyan-700 border-cyan-500" },
-            { label: "แก้ไขแล้ว", value: stats.resolved, color: "bg-green-100 text-green-700 border-green-500" },
-            { label: "ปิด", value: stats.closed, color: "bg-gray-100 text-gray-700 border-gray-500" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className={`rounded-xl p-4 text-center border-[3px] ${stat.color}`}
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
-            >
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="text-xs mt-1 font-medium">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Error Message */}
         {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-red-100 border-[3px] border-red-500 rounded-lg p-4 flex items-center"
-          >
-            <AlertCircle className="text-red-600 mr-3" size={20} />
-            <span className="text-red-700">{error}</span>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto text-red-600 hover:text-red-700"
-            >
-              <X size={18} />
-            </button>
-          </motion.div>
+          <div className="flex items-center border-[3px] border-red-500 bg-red-100 p-3 text-red-700">
+            <AlertCircle className="mr-2" size={16} />
+            {error}
+          </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Ticket List */}
-          <div className="lg:col-span-1">
-            <div className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}>
-              {/* Search & Filters */}
-              <div className="p-4 border-b-[2px] border-gray-200 space-y-3">
-                {/* Search */}
-                <div className="relative">
-                  <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={16}
-                  />
-                  <input
-                    type="text"
-                    placeholder="ค้นหาตั๋ว..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full py-2 pl-10 pr-4 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 focus:outline-none focus:border-black"
-                  />
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-7">
+          {[
+            { label: "ทั้งหมด", value: stats.total, key: "ALL" },
+            { label: "เปิด", value: stats.open, key: "OPEN" },
+            { label: "กำลังดำเนินการ", value: stats.inProgress, key: "IN_PROGRESS" },
+            { label: "รอผู้ใช้", value: stats.waitingUser, key: "WAITING_USER" },
+            { label: "รอแอดมิน", value: stats.waitingAdmin, key: "WAITING_ADMIN" },
+            { label: "แก้ไขแล้ว", value: stats.resolved, key: "RESOLVED" },
+            { label: "ปิด", value: stats.closed, key: "CLOSED" },
+          ].map((item) => (
+            <button
+              key={item.key}
+              onClick={() => {
+                setStatus(item.key);
+                setPage(1);
+              }}
+              className={`border-[2px] p-2 text-sm ${
+                status === item.key ? "border-black bg-yellow-100" : "border-gray-300 bg-white"
+              }`}
+            >
+              <div className="font-bold">{item.value}</div>
+              <div className="text-xs">{item.label}</div>
+            </button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 border-[3px] border-black bg-white p-3 md:grid-cols-2 lg:grid-cols-6">
+          <input
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            placeholder="ค้นหาจากเลขทิกเก็ต หัวข้อ หรือผู้ใช้"
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          />
+
+          <select
+            value={priority}
+            onChange={(event) => {
+              setPriority(event.target.value);
+              setPage(1);
+            }}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          >
+            <option value="ALL">ทุกระดับความสำคัญ</option>
+            <option value="LOW">ต่ำ</option>
+            <option value="MEDIUM">ปานกลาง</option>
+            <option value="HIGH">สูง</option>
+            <option value="URGENT">เร่งด่วน</option>
+          </select>
+
+          <select
+            value={category}
+            onChange={(event) => {
+              setCategory(event.target.value);
+              setPage(1);
+            }}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          >
+            <option value="ALL">ทุกหมวดหมู่</option>
+            {Object.entries(categoryLabels).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={assigneeFilter}
+            onChange={(event) => {
+              setAssigneeFilter(event.target.value);
+              setPage(1);
+            }}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          >
+            <option value="ALL">ผู้รับผิดชอบทั้งหมด</option>
+            <option value="UNASSIGNED">ยังไม่มอบหมาย</option>
+            {admins.map((admin) => (
+              <option key={admin.id} value={admin.id}>
+                {admin.username}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={sortBy}
+            onChange={(event) => setSortBy(event.target.value as "updatedAt" | "createdAt" | "priority" | "status")}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          >
+            <option value="updatedAt">เรียงตามเวลาอัปเดต</option>
+            <option value="createdAt">เรียงตามเวลาสร้าง</option>
+            <option value="priority">เรียงตามความสำคัญ</option>
+            <option value="status">เรียงตามสถานะ</option>
+          </select>
+
+          <div className="flex gap-2">
+            <select
+              value={sortOrder}
+              onChange={(event) => setSortOrder(event.target.value as "asc" | "desc")}
+              className="flex-1 border-[2px] border-gray-300 px-2 py-1.5"
+            >
+              <option value="desc">ใหม่ไปเก่า</option>
+              <option value="asc">เก่าไปใหม่</option>
+            </select>
+            <button onClick={loadTickets} className="border-[2px] border-black px-3" title="รีเฟรชทันที">
+              <RefreshCcw size={14} />
+            </button>
+          </div>
+
+          <select
+            value={limit}
+            onChange={(event) => {
+              setLimit(Number(event.target.value));
+              setPage(1);
+            }}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          >
+            <option value={20}>20 / หน้า</option>
+            <option value={50}>50 / หน้า</option>
+            <option value={100}>100 / หน้า</option>
+          </select>
+
+          <input
+            type="date"
+            value={createdFrom}
+            onChange={(event) => {
+              setCreatedFrom(event.target.value);
+              setPage(1);
+            }}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          />
+
+          <input
+            type="date"
+            value={createdTo}
+            onChange={(event) => {
+              setCreatedTo(event.target.value);
+              setPage(1);
+            }}
+            className="border-[2px] border-gray-300 px-2 py-1.5"
+          />
+
+          <div className="flex gap-2 lg:col-span-2">
+            <button
+              onClick={() => setQueuePreset("ALL")}
+              className={`border-[2px] px-3 py-1.5 text-sm ${status === "ALL" ? "border-black bg-yellow-100" : "border-gray-300"}`}
+            >
+              คิวทั้งหมด
+            </button>
+            <button
+              onClick={() => setQueuePreset("WAITING_ADMIN")}
+              className={`border-[2px] px-3 py-1.5 text-sm ${status === "WAITING_ADMIN" ? "border-black bg-yellow-100" : "border-gray-300"}`}
+            >
+              ต้องตอบกลับ
+            </button>
+            <button
+              onClick={() => setQueuePreset("UNASSIGNED")}
+              className={`border-[2px] px-3 py-1.5 text-sm ${assigneeFilter === "UNASSIGNED" ? "border-black bg-yellow-100" : "border-gray-300"}`}
+            >
+              คิวยังไม่มอบหมาย
+            </button>
+          </div>
+
+          <div className="flex gap-2 lg:col-span-2">
+            <button
+              onClick={() => {
+                setSlaPreset("ALL");
+                setPage(1);
+              }}
+              className={`border-[2px] px-3 py-1.5 text-sm ${slaPreset === "ALL" ? "border-black bg-yellow-100" : "border-gray-300"}`}
+            >
+              SLA ทั้งหมด
+            </button>
+            <button
+              onClick={() => {
+                setSlaPreset("SLA_8");
+                setPage(1);
+              }}
+              className={`border-[2px] px-3 py-1.5 text-sm ${slaPreset === "SLA_8" ? "border-black bg-yellow-100" : "border-gray-300"}`}
+            >
+              SLA &gt; 8h
+            </button>
+            <button
+              onClick={() => {
+                setSlaPreset("SLA_24");
+                setPage(1);
+              }}
+              className={`border-[2px] px-3 py-1.5 text-sm ${slaPreset === "SLA_24" ? "border-black bg-yellow-100" : "border-gray-300"}`}
+            >
+              SLA &gt; 24h
+            </button>
+          </div>
+
+          <div className="flex gap-2 lg:col-span-2">
+            <button
+              onClick={() => setAutoRefresh((prev) => !prev)}
+              className={`border-[2px] px-3 py-1.5 text-sm ${autoRefresh ? "border-black bg-green-100" : "border-gray-300"}`}
+            >
+              รีเฟรชอัตโนมัติ 30 วินาที: {autoRefresh ? "เปิด" : "ปิด"}
+            </button>
+            <button onClick={resetFilters} className="border-[2px] border-gray-400 px-3 py-1.5 text-sm">
+              รีเซ็ตตัวกรอง
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 border-[3px] border-black bg-white p-3">
+          <button
+            onClick={toggleSelectAllVisible}
+            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm"
+            disabled={tickets.length === 0}
+          >
+            {allVisibleSelected ? "ยกเลิกเลือกทั้งหน้า" : "เลือกทั้งหน้า"}
+          </button>
+
+          <span className="text-sm font-medium text-gray-700">เลือกรายการ: {selectedIds.length}</span>
+
+          <button
+            onClick={() => runBulkUpdate({ status: "IN_PROGRESS" })}
+            disabled={selectedIds.length === 0 || bulkUpdating}
+            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            {bulkUpdating ? "กำลังดำเนินการ..." : "เปลี่ยนเป็นกำลังดำเนินการ"}
+          </button>
+
+          <button
+            onClick={() => runBulkUpdate({ status: "RESOLVED" })}
+            disabled={selectedIds.length === 0 || bulkUpdating}
+            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            เปลี่ยนเป็นแก้ไขแล้ว
+          </button>
+
+          <button
+            onClick={() => runBulkUpdate({ priority: "URGENT" })}
+            disabled={selectedIds.length === 0 || bulkUpdating}
+            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            เปลี่ยนเป็นเร่งด่วน
+          </button>
+
+          <button
+            onClick={() => runBulkUpdate({ assignedTo: null })}
+            disabled={selectedIds.length === 0 || bulkUpdating}
+            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            ยกเลิกมอบหมาย
+          </button>
+
+          <select
+            value={bulkAssigneeId}
+            onChange={(event) => setBulkAssigneeId(event.target.value)}
+            className="border-[2px] border-gray-400 px-2 py-1.5 text-sm"
+          >
+            <option value="">เลือกแอดมิน</option>
+            {admins.map((admin) => (
+              <option key={admin.id} value={admin.id}>
+                {admin.username}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={() => runBulkUpdate({ assignedTo: bulkAssigneeId })}
+            disabled={selectedIds.length === 0 || bulkUpdating || !bulkAssigneeId}
+            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            มอบหมายแบบกลุ่ม
+          </button>
+
+          <button
+            onClick={exportCsv}
+            disabled={exporting}
+            className="ml-auto flex items-center gap-2 border-[2px] border-black px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            ส่งออก CSV
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <div className="border-[3px] border-black bg-white xl:col-span-1">
+            <div className="max-h-[640px] overflow-y-auto">
+              {loading ? (
+                <div className="p-8 text-center">
+                  <Loader2 className="mx-auto h-8 w-8 animate-spin" />
                 </div>
-
-                {/* Status Filter */}
-                <select
-                  value={statusFilter}
-                  onChange={(e) =>
-                    setStatusFilter(e.target.value)
-                  }
-                  className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black"
-                >
-                  <option value="ALL">ทุกสถานะ</option>
-                  {Object.entries(statusLabels).map(([value, { label }]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Priority Filter */}
-                <select
-                  value={priorityFilter}
-                  onChange={(e) =>
-                    setPriorityFilter(e.target.value)
-                  }
-                  className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black"
-                >
-                  <option value="ALL">ทุกความสำคัญ</option>
-                  {Object.entries(priorityLabels).map(([value, { label }]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Category Filter */}
-                <select
-                  value={categoryFilter}
-                  onChange={(e) =>
-                    setCategoryFilter(e.target.value)
-                  }
-                  className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black"
-                >
-                  <option value="ALL">ทุกหมวดหมู่</option>
-                  {Object.entries(categoryLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Refresh Button */}
-                <button
-                  className="w-full py-2 px-3 bg-gray-100 hover:bg-gray-200 border-[2px] border-gray-300 rounded-lg text-black text-sm flex items-center justify-center transition-colors"
-                >
-                  <RefreshCcw size={14} className="mr-2" />
-                  รีเฟรช
-                </button>
-              </div>
-
-              {/* Ticket List */}
-              <div className="max-h-[600px] overflow-y-auto">
-                {isLoading ? (
-                  <div className="p-8 text-center">
-                    <Loader2
-                      className="animate-spin mx-auto text-brutal-purple mb-3"
-                      size={32}
-                    />
-                    <p className="text-gray-600">กำลังโหลดตั๋ว...</p>
+              ) : (
+                tickets.map((ticket) => (
+                  <div
+                    key={ticket.id}
+                    className={`border-b p-3 ${selectedTicket?.id === ticket.id ? "border-l-4 border-l-black bg-gray-100" : "hover:bg-gray-50"}`}
+                  >
+                    <div className="mb-2 flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(ticket.id)}
+                        onChange={() => toggleSelectOne(ticket.id)}
+                        className="mt-1"
+                      />
+                      <button onClick={() => loadDetail(ticket.id)} className="min-w-0 flex-1 text-left">
+                        <div className="text-xs text-gray-500">{ticket.ticketNumber}</div>
+                        <div className="line-clamp-2 text-sm font-medium text-black">{ticket.subject}</div>
+                        <div className="mt-1 text-xs text-gray-600">
+                          {statusLabels[ticket.status]} | {ticket.priority} | {new Date(ticket.updatedAt).toLocaleString()}
+                        </div>
+                        <div className="mt-1 flex items-center gap-2 text-xs">
+                          {ticket.assignedTo && (
+                            <span className="rounded border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-gray-700">
+                              @{adminNameById.get(ticket.assignedTo) ?? ticket.assignedTo}
+                            </span>
+                          )}
+                          {getSlaLevel(ticket) === "8h" && (
+                            <span className="rounded border border-amber-300 bg-amber-100 px-1.5 py-0.5 text-amber-800">
+                              SLA &gt; 8h
+                            </span>
+                          )}
+                          {getSlaLevel(ticket) === "24h" && (
+                            <span className="rounded border border-red-300 bg-red-100 px-1.5 py-0.5 text-red-800">
+                              SLA &gt; 24h
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-1 text-xs text-gray-500">{ticket.user?.username || ticket.user?.email}</div>
+                      </button>
+                    </div>
                   </div>
-                ) : filteredTickets.length === 0 ? (
-                  <div className="p-8 text-center">
-                    <FileText
-                      className="mx-auto text-gray-300 mb-3"
-                      size={48}
-                    />
-                    <p className="text-gray-600">ไม่พบตั๋ว</p>
-                  </div>
-                ) : (
-                  filteredTickets.map((ticket) => (
-                    <button
-                      key={ticket.id}
-                      onClick={() => loadTicketDetail(ticket.id)}
-                      className={`w-full text-left p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors ${
-                        selectedTicket?.id === ticket.id
-                          ? "bg-gray-100 border-l-4 border-l-brutal-purple"
-                          : ""
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <span className="text-xs text-gray-500">
-                          {ticket.ticketNumber}
-                        </span>
-                        <span
-                          className={`text-xs px-2 py-0.5 rounded-full border-[2px] ${statusLabels[ticket.status].bgColor} ${statusLabels[ticket.status].color} ${statusLabels[ticket.status].borderColor}`}
-                        >
-                          {statusLabels[ticket.status].label}
-                        </span>
-                      </div>
-                      <h4 className="text-black font-medium text-sm mb-1 line-clamp-1">
-                        {ticket.subject}
-                      </h4>
-                      <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
-                        <span>{categoryLabels[ticket.category]}</span>
-                        <span>•</span>
-                        <span className={`${priorityLabels[ticket.priority].color} font-medium`}>
-                          {priorityLabels[ticket.priority].label}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600">
-                          {ticket.user?.username || ticket.user?.email || "Unknown"}
-                        </span>
-                        <span className="text-gray-500">
-                          {new Date(ticket.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
+                ))
+              )}
+              {!loading && tickets.length === 0 && <div className="p-6 text-center text-gray-500">ไม่พบทิกเก็ต</div>}
+            </div>
+
+            <div className="flex items-center justify-between border-t-[2px] border-gray-200 p-3">
+              <button
+                onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                disabled={page <= 1}
+                className="border-[2px] border-gray-300 px-2 py-1 text-sm disabled:opacity-50"
+              >
+                ก่อนหน้า
+              </button>
+              <span className="text-xs text-gray-600">
+                หน้า {page}/{Math.max(totalPages, 1)}
+              </span>
+              <button
+                onClick={() => setPage((prev) => prev + 1)}
+                disabled={page >= totalPages}
+                className="border-[2px] border-gray-300 px-2 py-1 text-sm disabled:opacity-50"
+              >
+                ถัดไป
+              </button>
             </div>
           </div>
 
-          {/* Ticket Detail */}
-          <div className="lg:col-span-2">
-            {selectedTicket ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="bg-white border-[3px] border-black rounded-xl overflow-hidden h-full flex flex-col"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
-              >
-                {isDetailLoading ? (
-                  <div className="flex-1 flex items-center justify-center p-8">
-                    <Loader2
-                      className="animate-spin text-brutal-purple"
-                      size={32}
-                    />
-                  </div>
-                ) : (
-                  <>
-                    {/* Ticket Header */}
-                    <div className="p-6 border-b-[2px] border-gray-200">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm text-gray-500">
-                              {selectedTicket.ticketNumber}
-                            </span>
-                            <span
-                              className={`text-xs px-2 py-0.5 rounded-full border-[2px] ${statusLabels[selectedTicket.status].bgColor} ${statusLabels[selectedTicket.status].color} ${statusLabels[selectedTicket.status].borderColor}`}
-                            >
-                              {statusLabels[selectedTicket.status].label}
-                            </span>
-                          </div>
-                          <h2 className="text-xl font-bold text-black">
-                            {selectedTicket.subject}
-                          </h2>
-                        </div>
-                        <button
-                          onClick={() => setSelectedTicket(null)}
-                          className="p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors border-[2px] border-transparent hover:border-gray-300"
-                        >
-                          <X size={18} />
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div className="space-y-2">
-                          <div className="flex items-center text-gray-600">
-                            <User size={14} className="mr-2" />
-                            <span>
-                              {selectedTicket.user?.username ||
-                                selectedTicket.user?.email ||
-                                "Unknown"}
-                            </span>
-                          </div>
-                          <div className="flex items-center text-gray-600">
-                            <Tag size={14} className="mr-2" />
-                            <span>
-                              {categoryLabels[selectedTicket.category]}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center text-gray-600">
-                            <Clock size={14} className="mr-2" />
-                            <span>
-                              สร้าง:{" "}
-                              {new Date(
-                                selectedTicket.createdAt
-                              ).toLocaleString()}
-                            </span>
-                          </div>
-                          {selectedTicket.orderId && (
-                            <div className="flex items-center">
-                              <FileText size={14} className="mr-2" />
-                              <span className="text-brutal-purple font-medium">
-                                คำสั่งซื้อ: {selectedTicket.orderId}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Status & Priority Controls */}
-                      <div className="mt-4 pt-4 border-t-[2px] border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1 font-medium">
-                            อัปเดตสถานะ
-                          </label>
-                          <select
-                            value={selectedTicket.status}
-                            onChange={(e) =>
-                              handleUpdateStatus(e.target.value)
-                            }
-                            disabled={isUpdatingStatus}
-                            className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
-                          >
-                            {Object.entries(statusLabels).map(
-                              ([value, { label }]) => (
-                                <option key={value} value={value}>
-                                  {label}
-                                </option>
-                              )
-                            )}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1 font-medium">
-                            ความสำคัญ
-                          </label>
-                          <select
-                            value={selectedTicket.priority}
-                            onChange={(e) =>
-                              handleUpdateStatus(
-                                selectedTicket.status,
-                                e.target.value
-                              )
-                            }
-                            disabled={isUpdatingStatus}
-                            className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 rounded-lg text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
-                          >
-                            {Object.entries(priorityLabels).map(
-                              ([value, { label }]) => (
-                                <option key={value} value={value}>
-                                  {label}
-                                </option>
-                              )
-                            )}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Messages */}
-                    <div className="flex-1 p-6 overflow-y-auto max-h-[500px] space-y-4 bg-gray-50">
-                      {/* Initial Message */}
-                      <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-brutal-purple flex items-center justify-center flex-shrink-0">
-                          <User size={16} className="text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-black font-medium text-sm">
-                              {selectedTicket.user?.username || "User"}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {new Date(
-                                selectedTicket.createdAt
-                              ).toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="bg-white border-[2px] border-gray-300 rounded-lg p-3 text-gray-700">
-                            {selectedTicket.description}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Replies */}
-                      {selectedTicket.messages.map((message) => (
-                        <div key={message.id} className="flex gap-4">
-                          <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                              message.sender === "admin"
-                                ? "bg-green-500"
-                                : message.sender === "system"
-                                ? "bg-gray-500"
-                                : "bg-brutal-purple"
-                            }`}
-                          >
-                            {message.sender === "admin" ? (
-                              <span className="text-white text-xs font-bold">
-                                A
-                              </span>
-                            ) : message.sender === "system" ? (
-                              <span className="text-white text-xs">@</span>
-                            ) : (
-                              <User size={16} className="text-white" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-black font-medium text-sm">
-                                {message.sender === "admin"
-                                  ? "Admin"
-                                  : message.sender === "system"
-                                  ? "System"
-                                  : selectedTicket.user?.username || "User"}
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                {new Date(message.createdAt).toLocaleString()}
-                              </span>
-                            </div>
-                            <div
-                              className={`rounded-lg p-3 border-[2px] ${
-                                message.sender === "admin"
-                                  ? "bg-green-100 border-green-500 text-green-800"
-                                  : message.sender === "system"
-                                  ? "bg-gray-100 border-gray-500 text-gray-800"
-                                  : "bg-white border-gray-300 text-gray-700"
-                              }`}
-                            >
-                              {message.content}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Reply Form */}
-                    {!["CLOSED", "RESOLVED"].includes(
-                      selectedTicket.status
-                    ) && (
-                      <div className="p-4 border-t-[2px] border-gray-200 bg-white">
-                        <form onSubmit={handleSendReply} className="flex gap-3">
-                          <input
-                            type="text"
-                            value={replyMessage}
-                            onChange={(e) => setReplyMessage(e.target.value)}
-                            placeholder="พิมพ์ข้อความตอบกลับ..."
-                            className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:border-black"
-                          />
-                          <button
-                            type="submit"
-                            disabled={isSendingReply || !replyMessage.trim()}
-                            className="bg-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium flex items-center border-[3px] border-black"
-                            style={{ boxShadow: '4px 4px 0 0 #000000' }}
-                          >
-                            {isSendingReply ? (
-                              <Loader2 size={18} className="animate-spin" />
-                            ) : (
-                              <>
-                                <Send size={18} className="mr-2" />
-                                ส่ง
-                              </>
-                            )}
-                          </button>
-                        </form>
-                      </div>
-                    )}
-                  </>
-                )}
-              </motion.div>
+          <div className="border-[3px] border-black bg-white xl:col-span-2">
+            {!selectedTicket ? (
+              <div className="h-full p-10 text-center text-gray-500">เลือกทิกเก็ตเพื่อดูรายละเอียด</div>
+            ) : detailLoading ? (
+              <div className="p-10 text-center">
+                <Loader2 className="mx-auto h-8 w-8 animate-spin" />
+              </div>
             ) : (
-              <div className="bg-white border-[3px] border-black rounded-xl p-12 text-center h-full flex flex-col items-center justify-center"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}>
-                <MessageSquare
-                  className="text-gray-300 mb-4"
-                  size={64}
-                />
-                <h3 className="text-xl font-bold text-black mb-2">
-                  เลือกตั๋ว
-                </h3>
-                <p className="text-gray-600 max-w-sm">
-                  เลือกตั๋วจากรายการเพื่อดูรายละเอียดและตอบกลับลูกค้า
-                </p>
+              <div className="space-y-4 p-4">
+                <div className="space-y-1">
+                  <div className="text-sm text-gray-500">{selectedTicket.ticketNumber}</div>
+                  <h2 className="text-xl font-bold text-black">{selectedTicket.subject}</h2>
+                  <div className="text-sm text-gray-600">
+                    {selectedTicket.user?.username || selectedTicket.user?.email} | {categoryLabels[selectedTicket.category as TicketCategory]}
+                  </div>
+                  {selectedTicket.orderId && (
+                    <div className="text-sm">
+                      คำสั่งซื้อ: <Link className="font-medium text-blue-600 hover:underline" href={`/admin/orders/${selectedTicket.orderId}`}>{selectedTicket.orderId}</Link>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <select
+                    value={selectedTicket.status}
+                    onChange={(event) => updateSelectedTicket({ status: event.target.value as TicketStatus })}
+                    disabled={updating}
+                    className="border-[2px] border-gray-300 px-2 py-1.5"
+                  >
+                    {Object.entries(statusLabels).map(([key, value]) => (
+                      <option key={key} value={key}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={selectedTicket.priority}
+                    onChange={(event) => updateSelectedTicket({ priority: event.target.value as TicketPriority })}
+                    disabled={updating}
+                    className="border-[2px] border-gray-300 px-2 py-1.5"
+                  >
+                    <option value="LOW">ต่ำ</option>
+                    <option value="MEDIUM">ปานกลาง</option>
+                    <option value="HIGH">สูง</option>
+                    <option value="URGENT">เร่งด่วน</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <select
+                    value={selectedTicket.assignedTo || ""}
+                    onChange={(event) => updateSelectedTicket({ assignedTo: event.target.value || null })}
+                    disabled={updating}
+                    className="border-[2px] border-gray-300 px-2 py-1.5"
+                  >
+                    <option value="">ยังไม่มอบหมาย</option>
+                    {admins.map((admin) => (
+                      <option key={admin.id} value={admin.id}>
+                        {admin.username}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex items-center text-xs text-gray-600">
+                    คีย์ลัด: `J/K` เลื่อนรายการ | `R` โฟกัสช่องตอบกลับ | `Ctrl+Enter` ส่งข้อความ
+                  </div>
+                </div>
+
+                <div className="border-[2px] border-gray-200 bg-gray-50 p-3 text-gray-700">{selectedTicket.description}</div>
+
+                <div className="max-h-[360px] space-y-2 overflow-y-auto">
+                  {selectedTicket.messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`border-[2px] p-3 ${
+                        message.sender === "admin"
+                          ? "border-green-300 bg-green-50"
+                          : message.sender === "system"
+                            ? "border-gray-300 bg-gray-50"
+                            : "border-gray-300 bg-white"
+                      }`}
+                    >
+                      <div className="mb-1 text-xs text-gray-500">
+                        {message.senderName || message.sender} | {new Date(message.createdAt).toLocaleString()}
+                      </div>
+                      <div className="text-sm text-gray-800">{message.content}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {!( ["CLOSED", "RESOLVED"] as TicketStatus[]).includes(selectedTicket.status) && (
+                  <form onSubmit={sendReply} className="flex gap-2">
+                    <input
+                      ref={replyInputRef}
+                      value={reply}
+                      onChange={(event) => setReply(event.target.value)}
+                      className="flex-1 border-[2px] border-gray-300 px-3 py-2"
+                      placeholder="พิมพ์ข้อความตอบกลับลูกค้า"
+                    />
+                    <button
+                      disabled={sending || !reply.trim()}
+                      className="border-[2px] border-black bg-black px-3 py-2 text-white disabled:opacity-50"
+                    >
+                      {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                    </button>
+                  </form>
+                )}
+
+                {selectedIds.length > 0 && (
+                  <div className="flex items-center gap-2 border-[2px] border-green-300 bg-green-50 p-2 text-sm text-green-900">
+                    <CheckCheck size={16} />
+                    เลือกไว้สำหรับการจัดการแบบกลุ่ม {selectedIds.length} รายการ
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </div>
+  );
+
+  return isMonitorMode ? (
+    <div className="min-h-screen bg-gray-50">{content}</div>
+  ) : (
+    <AdminLayout title="ตั๋วซัพพอร์ต">{content}</AdminLayout>
   );
 }
+

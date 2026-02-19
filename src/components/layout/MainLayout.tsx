@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Home,
   ShoppingCart,
@@ -137,7 +137,11 @@ const MobileNavItem = memo(function MobileNavItem({
 
 export function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isFullBleedPage = pathname.startsWith("/payments/success");
+  const isTicketMonitorMode =
+    pathname.startsWith("/admin/tickets") &&
+    searchParams.get("monitor") === "1";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
@@ -289,6 +293,10 @@ export function MainLayout({ children }: MainLayoutProps) {
     ],
     [],
   );
+
+  if (isTicketMonitorMode) {
+    return <div className="min-h-screen w-full bg-gray-50">{children}</div>;
+  }
 
   return (
     <div className="flex min-h-screen bg-brutal-gray thai-font w-full max-w-full overflow-x-clip">

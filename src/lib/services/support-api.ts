@@ -147,7 +147,7 @@ export interface TicketReplyData {
 export interface UpdateTicketData {
   status?: TicketStatus;
   priority?: TicketPriority;
-  assignedTo?: string;
+  assignedTo?: string | null;
 }
 
 // ============ API Response Types ============
@@ -294,7 +294,14 @@ class SupportApiService {
       priority?: TicketPriority;
       category?: TicketCategory;
       assignedTo?: string;
+      unassignedOnly?: boolean;
       userId?: string;
+      search?: string;
+      sortBy?: "createdAt" | "updatedAt" | "priority" | "status";
+      sortOrder?: "asc" | "desc";
+      createdFrom?: string;
+      createdTo?: string;
+      slaHours?: number;
     }
   ): Promise<ApiResponse<Ticket[]>> {
     const params = new URLSearchParams();
@@ -304,7 +311,14 @@ class SupportApiService {
     if (filters?.priority) params.append('priority', filters.priority);
     if (filters?.category) params.append('category', filters.category);
     if (filters?.assignedTo) params.append('assignedTo', filters.assignedTo);
+    if (filters?.unassignedOnly) params.append('unassignedOnly', 'true');
     if (filters?.userId) params.append('userId', filters.userId);
+    if (filters?.search) params.append('search', filters.search);
+    if (filters?.sortBy) params.append('sortBy', filters.sortBy);
+    if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
+    if (filters?.createdFrom) params.append('createdFrom', filters.createdFrom);
+    if (filters?.createdTo) params.append('createdTo', filters.createdTo);
+    if (filters?.slaHours) params.append('slaHours', String(filters.slaHours));
 
     const response = await supportClient.get<ApiResponse<Ticket[]>>(`/api/support/tickets/admin/all?${params}`);
     return response.data;

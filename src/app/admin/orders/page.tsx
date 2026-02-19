@@ -17,27 +17,30 @@ import { orderApi, Order } from "@/lib/services/order-api";
 import Link from "next/link";
 
 const statusStyles: Record<string, string> = {
-  pending: "text-yellow-700 bg-yellow-100 border-yellow-300",
-  processing: "text-blue-700 bg-blue-100 border-blue-300",
-  completed: "text-green-700 bg-green-100 border-green-300",
-  cancelled: "text-red-700 bg-red-100 border-red-300",
-  refunded: "text-gray-700 bg-gray-100 border-gray-300",
+  PENDING: "text-yellow-700 bg-yellow-100 border-yellow-300",
+  PROCESSING: "text-blue-700 bg-blue-100 border-blue-300",
+  COMPLETED: "text-green-700 bg-green-100 border-green-300",
+  FAILED: "text-red-700 bg-red-100 border-red-300",
+  CANCELLED: "text-red-700 bg-red-100 border-red-300",
+  REFUNDED: "text-gray-700 bg-gray-100 border-gray-300",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
-  pending: <Clock className="h-3 w-3 mr-1" />,
-  processing: <Truck className="h-3 w-3 mr-1" />,
-  completed: <CheckCircle className="h-3 w-3 mr-1" />,
-  cancelled: <XCircle className="h-3 w-3 mr-1" />,
-  refunded: <XCircle className="h-3 w-3 mr-1" />,
+  PENDING: <Clock className="h-3 w-3 mr-1" />,
+  PROCESSING: <Truck className="h-3 w-3 mr-1" />,
+  COMPLETED: <CheckCircle className="h-3 w-3 mr-1" />,
+  FAILED: <XCircle className="h-3 w-3 mr-1" />,
+  CANCELLED: <XCircle className="h-3 w-3 mr-1" />,
+  REFUNDED: <XCircle className="h-3 w-3 mr-1" />,
 };
 
 const statusText: Record<string, string> = {
-  pending: "รอดำเนินการ",
-  processing: "กำลังดำเนินการ",
-  completed: "สำเร็จ",
-  cancelled: "ยกเลิก",
-  refunded: "คืนเงิน",
+  PENDING: "รอดำเนินการ",
+  PROCESSING: "กำลังดำเนินการ",
+  COMPLETED: "สำเร็จ",
+  FAILED: "ล้มเหลว",
+  CANCELLED: "ยกเลิก",
+  REFUNDED: "คืนเงิน",
 };
 
 export default function AdminOrders() {
@@ -146,10 +149,12 @@ export default function AdminOrders() {
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
               <option value="all">ทุกสถานะ</option>
-              <option value="pending">รอดำเนินการ</option>
-              <option value="processing">กำลังดำเนินการ</option>
-              <option value="completed">สำเร็จ</option>
-              <option value="cancelled">ยกเลิก</option>
+              <option value="PENDING">รอดำเนินการ</option>
+              <option value="PROCESSING">กำลังดำเนินการ</option>
+              <option value="COMPLETED">สำเร็จ</option>
+              <option value="FAILED">ล้มเหลว</option>
+              <option value="CANCELLED">ยกเลิก</option>
+              <option value="REFUNDED">คืนเงิน</option>
             </select>
           </div>
         </div>
@@ -230,13 +235,15 @@ export default function AdminOrders() {
                               handleUpdateStatus(order.id, e.target.value)
                             }
                             className={`px-2 py-1 text-xs border-[2px] cursor-pointer font-medium focus:outline-none ${
-                              statusStyles[order.status] || statusStyles.pending
+                              statusStyles[order.status] || statusStyles.PENDING
                             }`}
                           >
-                            <option value="pending">รอดำเนินการ</option>
-                            <option value="processing">กำลังดำเนินการ</option>
-                            <option value="completed">สำเร็จ</option>
-                            <option value="cancelled">ยกเลิก</option>
+                            <option value="PENDING">รอดำเนินการ</option>
+                            <option value="PROCESSING">กำลังดำเนินการ</option>
+                            <option value="COMPLETED">สำเร็จ</option>
+                            <option value="FAILED">ล้มเหลว</option>
+                            <option value="CANCELLED">ยกเลิก</option>
+                            <option value="REFUNDED">คืนเงิน</option>
                           </select>
                         </td>
                         <td className="px-5 py-4 text-gray-500">

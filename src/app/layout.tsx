@@ -15,12 +15,13 @@ import { CartProvider } from "@/lib/context/cart-context";
 import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { TawkTo } from "@/components/tawk-to";
 
 // Import Noto Sans Thai for Thai language support
-import '@fontsource/noto-sans-thai/300.css';
-import '@fontsource/noto-sans-thai/400.css';
-import '@fontsource/noto-sans-thai/500.css';
-import '@fontsource/noto-sans-thai/700.css';
+import "@fontsource/noto-sans-thai/300.css";
+import "@fontsource/noto-sans-thai/400.css";
+import "@fontsource/noto-sans-thai/500.css";
+import "@fontsource/noto-sans-thai/700.css";
 
 export const viewport: Viewport = {
   themeColor: "#000000",
@@ -117,14 +118,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" style={{ colorScheme: 'light' }}>
+    <html lang="th" style={{ colorScheme: "light" }}>
       <head>
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (
@@ -135,11 +135,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body
-        className={cn(
-          "min-h-screen bg-brutal-gray font-sans antialiased",
-        )}
-      >
+      <body className={cn("min-h-screen bg-brutal-gray font-sans antialiased")}>
         <ReactGrabInit />
         <AuthProvider>
           <NotificationProvider>
@@ -148,11 +144,11 @@ export default function RootLayout({
                 <SupportProvider>
                   <DeliveryProvider>
                     <PromotionProvider>
-                    <CartProvider>
-                      <PublicSettingsProvider>
-                        <MainLayout>{children}</MainLayout>
-                      </PublicSettingsProvider>
-                    </CartProvider>
+                      <CartProvider>
+                        <PublicSettingsProvider>
+                          <MainLayout>{children}</MainLayout>
+                        </PublicSettingsProvider>
+                      </CartProvider>
                       <Toaster
                         position="bottom-right"
                         containerStyle={{
@@ -161,23 +157,23 @@ export default function RootLayout({
                         toastOptions={{
                           duration: 4000,
                           style: {
-                            background: '#FFFFFF',
-                            color: '#1f2937',
-                            border: '3px solid #000000',
-                            boxShadow: '4px 4px 0 0 #000000',
-                            borderRadius: '8px',
-                            padding: '12px 16px',
+                            background: "#FFFFFF",
+                            color: "#1f2937",
+                            border: "3px solid #000000",
+                            boxShadow: "4px 4px 0 0 #000000",
+                            borderRadius: "8px",
+                            padding: "12px 16px",
                           },
                           success: {
                             iconTheme: {
-                              primary: '#95E1D3',
-                              secondary: '#000000',
+                              primary: "#95E1D3",
+                              secondary: "#000000",
                             },
                           },
                           error: {
                             iconTheme: {
-                              primary: '#FF6B9D',
-                              secondary: '#FFFFFF',
+                              primary: "#FF6B9D",
+                              secondary: "#FFFFFF",
                             },
                           },
                         }}
@@ -189,6 +185,7 @@ export default function RootLayout({
             </SecurityProvider>
           </NotificationProvider>
         </AuthProvider>
+        <TawkTo />
       </body>
     </html>
   );

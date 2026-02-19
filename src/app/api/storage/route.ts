@@ -1,6 +1,9 @@
 import { Client, Storage, ID, InputFile } from "node-appwrite";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable } from "stream";
+import { lookup } from "dns/promises";
+import net from "net";
+import { extractTokenFromHeader, verifyToken } from "@gametopup/shared";
 
 // Get environment variables (server-side first, fallback to NEXT_PUBLIC)
 const APPWRITE_ENDPOINT =
@@ -31,6 +34,73 @@ const client = new Client()
   .setKey(APPWRITE_API_KEY);
 
 const storage = new Storage(client);
+
+const allowedImageProtocols = new Set(["https:"]);
+const blockedHostSuffixes = [".local", ".internal"];
+const blockedHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1"]);
+
+function isPrivateIpv4(ip: string): boolean {
+  const parts = ip.split(".").map((part) => parseInt(part, 10));
+  if (parts.length !== 4 || parts.some((part) => Number.isNaN(part))) {
+    return false;
+  }
+  const [a, b] = parts;
+  if (a === 10) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  if (a === 127) return true;
+  if (a === 169 && b === 254) return true;
+  if (a === 0) return true;
+  return false;
+}
+
+function isPrivateIpv6(ip: string): boolean {
+  const normalized = ip.toLowerCase();
+  if (normalized === "::1") return true;
+  if (normalized.startsWith("fc") || normalized.startsWith("fd")) return true;
+  if (normalized.startsWith("fe80")) return true;
+  if (normalized === "::") return true;
+  if (normalized.startsWith("::ffff:")) {
+    const v4 = normalized.replace("::ffff:", "");
+    if (net.isIP(v4) === 4) return isPrivateIpv4(v4);
+  }
+  return false;
+}
+
+function isBlockedHost(hostname: string): boolean {
+  const lower = hostname.toLowerCase();
+  if (blockedHosts.has(lower)) return true;
+  if (blockedHostSuffixes.some((suffix) => lower.endsWith(suffix))) return true;
+  const ipType = net.isIP(lower);
+  if (ipType === 4) return isPrivateIpv4(lower);
+  if (ipType === 6) return isPrivateIpv6(lower);
+  return false;
+}
+
+async function isBlockedByDns(hostname: string): Promise<boolean> {
+  try {
+    const records = await lookup(hostname, { all: true });
+    return records.some((record) => {
+      if (record.family === 4) return isPrivateIpv4(record.address);
+      if (record.family === 6) return isPrivateIpv6(record.address);
+      return false;
+    });
+  } catch {
+    return true;
+  }
+}
+
+function getUserFromRequest(request: NextRequest) {
+  const authHeader = request.headers.get("authorization") || undefined;
+  const token = extractTokenFromHeader(authHeader);
+  if (!token) return null;
+  return verifyToken(token);
+}
+
+function sanitizeFolder(value: string): string {
+  const sanitized = value.replace(/[^a-zA-Z0-9/_-]/g, "").replace(/\/+/g, "/");
+  return sanitized.length > 0 ? sanitized : "products";
+}
 
 /**
  * Download image from URL (server-side to avoid CORS)
@@ -77,6 +147,14 @@ async function downloadImage(
 
 export async function POST(request: NextRequest) {
   try {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, error: "Forbidden" },
+        { status: 403 },
+      );
+    }
+
     // Check if storage is configured
     if (!APPWRITE_BUCKET_ID) {
       console.error("[Storage API] Error: BUCKET_ID not configured");
@@ -97,13 +175,32 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const imageUrl = formData.get("imageUrl") as string;
-    const folder = (formData.get("folder") as string) || "products";
+    const folder = sanitizeFolder((formData.get("folder") as string) || "products");
 
     let buffer: Buffer;
     let originalFilename: string;
 
     // If imageUrl is provided, download from URL (avoid CORS)
     if (imageUrl) {
+      const parsedUrl = new URL(imageUrl);
+      if (!allowedImageProtocols.has(parsedUrl.protocol)) {
+        return NextResponse.json(
+          { success: false, error: "Only HTTPS image URLs are allowed" },
+          { status: 400 },
+        );
+      }
+      if (isBlockedHost(parsedUrl.hostname)) {
+        return NextResponse.json(
+          { success: false, error: "Image host is not allowed" },
+          { status: 400 },
+        );
+      }
+      if (await isBlockedByDns(parsedUrl.hostname)) {
+        return NextResponse.json(
+          { success: false, error: "Image host is not allowed" },
+          { status: 400 },
+        );
+      }
       console.log("[Storage API] Processing image URL:", imageUrl);
       const downloaded = await downloadImage(imageUrl);
       if (!downloaded) {
@@ -191,6 +288,14 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, error: "Forbidden" },
+        { status: 403 },
+      );
+    }
+
     if (!APPWRITE_BUCKET_ID) {
       return NextResponse.json(
         { success: false, error: "Storage not configured" },

@@ -181,6 +181,23 @@ const createServiceClient = (service: string): AxiosInstance => {
         return Promise.reject(error);
       }
 
+      // If this request was made without auth context, do not force session-expired redirect.
+      // This prevents guest users from being bounced to login when a protected endpoint
+      // is called incidentally while browsing public pages.
+      const requestHeaders = originalRequest.headers as
+        | Record<string, unknown>
+        | undefined;
+      const requestHadAuthHeader = Boolean(
+        requestHeaders?.Authorization ?? requestHeaders?.authorization,
+      );
+      const hasStoredToken =
+        typeof window !== "undefined" &&
+        Boolean(localStorage.getItem("auth_token"));
+
+      if (!requestHadAuthHeader && !hasStoredToken) {
+        return Promise.reject(error);
+      }
+
       // If already refreshing, queue this request
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -302,6 +319,8 @@ export const paymentClient = createServiceClient("payment");
 
 // Support Service (3007): FAQ and Tickets
 export const supportClient = createServiceClient("support");
+// Public settings endpoint
+export const publicClient = createServiceClient("public");
 
 // Notification Service (3006): Notifications and Push
 export const notificationClient = createServiceClient("notification");

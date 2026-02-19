@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import {
@@ -24,6 +24,7 @@ import { SeasonalEventProps } from "@/components/promotion/SeasonalEventCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { productApi, Product } from "@/lib/services/product-api";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 interface FeaturedProduct {
   id: string;
@@ -110,60 +111,79 @@ function transformProductToFeatured(product: Product): FeaturedProduct {
   };
 }
 
-const heroSlides = [
+const DEFAULT_HERO_SLIDES = [
   {
-    id: 1,
-    title: "รับเงินคืน 10%",
-    subtitle: "เมื่อเติมเกมผ่านธนาคารกรุงเทพ",
+    id: "hero-default-1",
+    title: "10% Cashback",
+    subtitle: "Top up with participating bank channels",
     image: "https://placehold.co/1200x400/FFD93D/000000?text=Promotion",
     link: "/promotions/1",
     color: "yellow",
+    badgeText: "Promotion",
   },
   {
-    id: 2,
-    title: "เครดิตเพิ่ม 50%",
-    subtitle: "สมาชิกใหม่รับโบนัสพิเศษ",
+    id: "hero-default-2",
+    title: "50% Extra Credits",
+    subtitle: "New member bonus campaign",
     image: "https://placehold.co/1200x400/FF6B9D/ffffff?text=Extra+Credit",
     link: "/promotions/2",
     color: "pink",
+    badgeText: "Promotion",
   },
 ];
-
-const categories = [
-  { id: "all", name: "ทั้งหมด", icon: <Gamepad2 size={16} /> },
-  { id: "hot", name: "มาแรง", icon: <Flame size={16} /> },
-  { id: "cards", name: "บัตรเติมเงิน", icon: <CreditCard size={16} /> },
+const DEFAULT_CATEGORY_TABS = [
+  { id: "all", label: "All", icon: "gamepad" as const },
+  { id: "hot", label: "Hot", icon: "flame" as const },
+  { id: "cards", label: "Cards", icon: "card" as const },
 ];
-
-const newsItems = [
+const DEFAULT_PROMO_CARDS = [
+  {
+    id: "promo-1",
+    badge: "Latest",
+    title: "AI Game Assistant",
+    description: "Help players find the right game and top-up package faster",
+    ctaText: "Try now",
+    href: "/support",
+    theme: "blue" as const,
+  },
+  {
+    id: "promo-2",
+    badge: "HOT",
+    title: "50% Extra Credits",
+    description: "For new members",
+    ctaText: "Claim",
+    href: "/promotions",
+    theme: "pink" as const,
+  },
+];
+const DEFAULT_NEWS_ITEMS = [
   {
     id: 1,
-    title: "Valorant เปิดตัวแมพใหม่และตัวละครใหม่ในซีซั่นหน้า",
+    title: "Valorant introduces a new map and agent next season",
     image: "https://placehold.co/400x250/FF6B9D/ffffff?text=Valorant",
-    date: "15 ม.ค. 2023",
-    category: "ข่าวเกม",
+    date: "15 Jan 2023",
+    category: "Game News",
   },
   {
     id: 2,
-    title: "โปรโมชั่นพิเศษสำหรับเกม Steam ในเดือนนี้",
+    title: "Special Steam campaign this month",
     image: "https://placehold.co/400x250/4ECDC4/000000?text=Steam",
-    date: "10 ม.ค. 2023",
-    category: "โปรโมชั่น",
+    date: "10 Jan 2023",
+    category: "Promotion",
   },
   {
     id: 3,
-    title: "การอัปเดตครั้งใหญ่ของ PUBG Mobile",
+    title: "Major PUBG Mobile update",
     image: "https://placehold.co/400x250/FFD93D/000000?text=PUBG",
-    date: "5 ม.ค. 2023",
-    category: "อัปเดต",
+    date: "5 Jan 2023",
+    category: "Update",
   },
 ];
-
-const seasonalEvents: SeasonalEventProps[] = [
+const DEFAULT_SEASONAL_EVENTS: SeasonalEventProps[] = [
   {
     id: "event-1",
-    title: "เติมเกมรับเครดิตพิเศษ 10%",
-    description: "รับเงินคืน 10% เมื่อเติมเกมผ่านธนาคารกรุงเทพ",
+    title: "Top up and get 10% bonus credits",
+    description: "Receive 10% cashback via selected payment channels",
     image: "https://placehold.co/1200x400/FFD93D/000000?text=PromotionBanner",
     startDate: "2025-03-01",
     endDate: "2025-04-30",
@@ -173,49 +193,188 @@ const seasonalEvents: SeasonalEventProps[] = [
     games: ["Mobile Legends", "PUBG Mobile", "Free Fire", "Valorant"],
   },
 ];
-
-const quickActions = [
+const DEFAULT_QUICK_ACTIONS = [
   {
-    icon: CreditCard,
-    label: "เติมเกม",
+    id: "qa-default-1",
+    icon: "credit-card" as const,
+    label: "Top Up",
     href: "/games",
-    color: "bg-brutal-yellow",
+    color: "yellow" as const,
   },
-  { icon: Gift, label: "บัตรเกม", href: "/card", color: "bg-brutal-pink" },
   {
-    icon: Star,
-    label: "โปรโมชั่น",
+    id: "qa-default-2",
+    icon: "gift" as const,
+    label: "Cards",
+    href: "/card",
+    color: "pink" as const,
+  },
+  {
+    id: "qa-default-3",
+    icon: "star" as const,
+    label: "Promo",
     href: "/?promo=true",
-    color: "bg-brutal-green",
+    color: "green" as const,
   },
   {
-    icon: Headphones,
-    label: "ช่วยเหลือ",
+    id: "qa-default-4",
+    icon: "headphones" as const,
+    label: "Support",
     href: "/support",
-    color: "bg-brutal-blue",
+    color: "blue" as const,
   },
 ];
-
-const trustBadges = [
-  { icon: ShieldCheck, title: "ปลอดภัย 100%", desc: "ระบบความปลอดภัยสูง" },
-  { icon: Headphones, title: "บริการ 24 ชม.", desc: "ทีมงานพร้อมช่วยเสมอ" },
-  { icon: Zap, title: "เติมทันที", desc: "ส่งอัตโนมัติรวดเร็ว" },
+const DEFAULT_TRUST_BADGES = [
+  {
+    id: "tb-default-1",
+    icon: "shield" as const,
+    title: "100% Secure",
+    description: "Enterprise-grade security",
+  },
+  {
+    id: "tb-default-2",
+    icon: "headphones" as const,
+    title: "24/7 Support",
+    description: "Support team always online",
+  },
+  {
+    id: "tb-default-3",
+    icon: "zap" as const,
+    title: "Instant Delivery",
+    description: "Automatic fulfillment in seconds",
+  },
 ];
+const QUICK_ACTION_ICON_MAP = {
+  "credit-card": CreditCard,
+  gift: Gift,
+  star: Star,
+  headphones: Headphones,
+} as const;
+const QUICK_ACTION_COLOR_MAP = {
+  yellow: "bg-brutal-yellow",
+  pink: "bg-brutal-pink",
+  green: "bg-brutal-green",
+  blue: "bg-brutal-blue",
+} as const;
+const TRUST_BADGE_ICON_MAP = {
+  shield: ShieldCheck,
+  headphones: Headphones,
+  zap: Zap,
+} as const;
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeCategory, setActiveCategory] = useState("all");
+  const { settings: publicSettings, loading: settingsLoading } = usePublicSettings();
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>(
     [],
   );
   const [loading, setLoading] = useState(true);
+  const sectionLabels = useMemo(
+    () => ({
+      featuredProductsTitle:
+        publicSettings?.homepage.sectionLabels?.featuredProductsTitle ||
+        "Featured Games",
+      specialsTitle:
+        publicSettings?.homepage.sectionLabels?.specialsTitle || "Specials",
+      newsTitle: publicSettings?.homepage.sectionLabels?.newsTitle || "News",
+      viewAllText:
+        publicSettings?.homepage.sectionLabels?.viewAllText || "View all",
+      heroButtonText:
+        publicSettings?.homepage.sectionLabels?.heroButtonText || "Details",
+    }),
+    [publicSettings],
+  );
+
+  const heroSlides = useMemo(() => {
+    if (publicSettings?.homepage.heroSlides?.length) {
+      return publicSettings.homepage.heroSlides;
+    }
+
+    const base = [...DEFAULT_HERO_SLIDES];
+    const configuredTitle = publicSettings?.homepage.heroTitle?.trim() || "";
+    const configuredSubtitle =
+      publicSettings?.homepage.heroSubtitle?.trim() || "";
+
+    if (base[0]) {
+      base[0] = {
+        ...base[0],
+        title: configuredTitle || base[0].title,
+        subtitle: configuredSubtitle || base[0].subtitle,
+      };
+    }
+
+    return base;
+  }, [publicSettings]);
+
+  const categoryTabs = useMemo(
+    () =>
+      publicSettings?.homepage.categoryTabs?.length
+        ? publicSettings.homepage.categoryTabs
+        : DEFAULT_CATEGORY_TABS,
+    [publicSettings],
+  );
+
+  const quickActions = useMemo(
+    () =>
+      publicSettings?.homepage.quickActions?.length
+        ? publicSettings.homepage.quickActions
+        : DEFAULT_QUICK_ACTIONS,
+    [publicSettings],
+  );
+
+  const trustBadges = useMemo(
+    () =>
+      publicSettings?.homepage.trustBadges?.length
+        ? publicSettings.homepage.trustBadges
+        : DEFAULT_TRUST_BADGES,
+    [publicSettings],
+  );
+
+  const promoCards = useMemo(
+    () =>
+      publicSettings?.homepage.promoCards?.length
+        ? publicSettings.homepage.promoCards
+        : DEFAULT_PROMO_CARDS,
+    [publicSettings],
+  );
+  const newsItems = useMemo(
+    () =>
+      publicSettings?.homepage.newsItems?.length
+        ? publicSettings.homepage.newsItems
+        : DEFAULT_NEWS_ITEMS,
+    [publicSettings],
+  );
+  const seasonalEvents = useMemo<SeasonalEventProps[]>(
+    () =>
+      publicSettings?.homepage.seasonalEvents?.length
+        ? publicSettings.homepage.seasonalEvents
+        : DEFAULT_SEASONAL_EVENTS,
+    [publicSettings],
+  );
+  const promotionsEnabled =
+    publicSettings?.features.enablePromotions ?? true;
+  const supportTicketsEnabled =
+    publicSettings?.features.enableSupportTickets ?? true;
+  const visibleQuickActions = useMemo(
+    () =>
+      quickActions.filter((action) => {
+        if (!promotionsEnabled && (action.icon === "star" || action.href.includes("promo"))) {
+          return false;
+        }
+        if (!supportTicketsEnabled && action.href.startsWith("/support")) {
+          return false;
+        }
+        return true;
+      }),
+    [quickActions, promotionsEnabled, supportTicketsEnabled],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroSlides.length]);
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
@@ -260,6 +419,34 @@ export default function HomePage() {
     return true;
   });
 
+  if (settingsLoading || loading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center px-4">
+        <div className="w-full max-w-md border-[3px] border-black bg-white p-8 text-center" style={{ boxShadow: "6px 6px 0 0 #000000" }}>
+          <div className="mx-auto mb-4 flex w-fit items-center gap-2">
+            <motion.div
+              className="h-3 w-3 rounded-full bg-brutal-pink border-[2px] border-black"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 0.6, repeat: Infinity }}
+            />
+            <motion.div
+              className="h-3 w-3 rounded-full bg-brutal-yellow border-[2px] border-black"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 0.6, repeat: Infinity, delay: 0.12 }}
+            />
+            <motion.div
+              className="h-3 w-3 rounded-full bg-brutal-blue border-[2px] border-black"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 0.6, repeat: Infinity, delay: 0.24 }}
+            />
+          </div>
+          <p className="text-base font-black text-black">กำลังโหลดหน้าแรก...</p>
+          <p className="mt-2 text-sm text-gray-600">กำลังซิงก์ข้อมูลล่าสุดจากระบบ</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pb-8">
       {/* Hero Slider */}
@@ -301,7 +488,7 @@ export default function HomePage() {
                             style={{ boxShadow: "2px 2px 0 0 #000000" }}
                           >
                             <Zap size={12} className="inline mr-1" />
-                            โปรโมชั่น
+                            {slide.badgeText || "Promotion"}
                           </div>
                           <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white mb-2 drop-shadow-[2px_2px_0_#000]">
                             {slide.title}
@@ -309,7 +496,7 @@ export default function HomePage() {
                           <p className="text-white/90 text-sm sm:text-lg mb-4 font-medium">
                             {slide.subtitle}
                           </p>
-                          <Link href={slide.link}>
+                          <Link href={slide.link || "/promotions"}>
                             <Button
                               size="lg"
                               className={`font-black text-sm sm:text-base ${
@@ -318,7 +505,7 @@ export default function HomePage() {
                                   : "bg-brutal-yellow text-black hover:bg-yellow-400"
                               }`}
                             >
-                              ดูรายละเอียด
+                              {sectionLabels.heroButtonText}
                               <ChevronRight size={16} className="ml-1" />
                             </Button>
                           </Link>
@@ -369,20 +556,25 @@ export default function HomePage() {
       {/* Quick Actions - Mobile */}
       <section className="px-4 py-4 sm:hidden">
         <div className="grid grid-cols-4 gap-2">
-          {quickActions.map((action) => (
-            <Link key={action.label} href={action.href}>
+          {visibleQuickActions.map((action) => {
+            const ActionIcon =
+              QUICK_ACTION_ICON_MAP[action.icon] || QUICK_ACTION_ICON_MAP["credit-card"];
+            const actionColor =
+              QUICK_ACTION_COLOR_MAP[action.color] || QUICK_ACTION_COLOR_MAP.yellow;
+            return (
+            <Link key={action.id || action.label} href={action.href}>
               <motion.div
-                className={`flex flex-col items-center p-3 ${action.color} border-[2px] border-black`}
+                className={`flex flex-col items-center p-3 ${actionColor} border-[2px] border-black`}
                 style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 whileTap={{ scale: 0.95 }}
               >
-                <action.icon size={20} className="text-black mb-1" />
+                <ActionIcon size={20} className="text-black mb-1" />
                 <span className="text-[10px] font-bold text-black text-center">
                   {action.label}
                 </span>
               </motion.div>
             </Link>
-          ))}
+          )})}
         </div>
       </section>
 
@@ -400,58 +592,60 @@ export default function HomePage() {
         </section>
 
         {/* Featured Promotion Cards */}
+        {promotionsEnabled && (
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <motion.div
-            className="sm:col-span-2 lg:col-span-2 bg-brutal-blue border-[3px] border-black p-4 sm:p-6 relative overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            whileHover={{ y: -2 }}
-          >
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-1 text-black text-xs mb-2 bg-brutal-yellow px-2 py-1 font-bold border-[2px] border-black">
-                <Sparkles size={12} />
-                ใหม่ล่าสุด!
-              </div>
-              <h3 className="font-black text-black text-xl sm:text-2xl mb-2">
-                ผู้ช่วยเกมอัจฉริยะ AI
-              </h3>
-              <p className="text-black/80 text-sm mb-4 max-w-md">
-                ช่วยให้คุณจัดการเกมได้ง่ายขึ้น
-                พร้อมให้คำแนะนำทุกเกมที่คุณต้องการ
-              </p>
-              <Button className="bg-black text-white hover:bg-gray-800 border-black text-sm">
-                ทดลองใช้เลย
-              </Button>
-            </div>
-            <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
-              <Gamepad2 size={140} />
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="bg-brutal-pink border-[3px] border-black p-4 sm:p-6 relative overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            whileHover={{ y: -2 }}
-          >
-            <div className="relative z-10 h-full flex flex-col">
-              <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 font-bold border-[2px] border-black mb-2 self-start">
-                <Flame size={12} />
-                HOT
-              </div>
-              <h3 className="font-black text-white text-lg sm:text-xl mb-2">
-                เครดิตเพิ่ม 50%
-              </h3>
-              <p className="text-white/90 text-sm mb-4">สำหรับสมาชิกใหม่</p>
-              <Button className="w-full bg-white text-black hover:bg-gray-100 border-black text-sm mt-auto">
-                รับสิทธิ์
-              </Button>
-            </div>
-          </motion.div>
+          {promoCards.slice(0, 3).map((card, index) => {
+            const isPrimary = index === 0;
+            const cardClass =
+              card.theme === "pink"
+                ? "bg-brutal-pink"
+                : card.theme === "yellow"
+                  ? "bg-brutal-yellow"
+                  : card.theme === "green"
+                    ? "bg-brutal-green"
+                    : "bg-brutal-blue";
+            return (
+              <motion.div
+                key={card.id}
+                className={`${isPrimary ? "sm:col-span-2 lg:col-span-2" : ""} ${cardClass} border-[3px] border-black p-4 sm:p-6 relative overflow-hidden`}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                whileHover={{ y: -2 }}
+              >
+                <div className="relative z-10 h-full flex flex-col">
+                  {card.badge && (
+                    <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 font-bold border-[2px] border-black mb-2 self-start">
+                      <Sparkles size={12} />
+                      {card.badge}
+                    </div>
+                  )}
+                  <h3 className="font-black text-black text-xl sm:text-2xl mb-2">
+                    {card.title}
+                  </h3>
+                  {card.description && (
+                    <p className="text-black/80 text-sm mb-4 max-w-md">
+                      {card.description}
+                    </p>
+                  )}
+                  <Link href={card.href || "/promotions"} className="mt-auto">
+                    <Button className="bg-black text-white hover:bg-gray-800 border-black text-sm">
+                      {card.ctaText || "ดูรายละเอียด"}
+                    </Button>
+                  </Link>
+                </div>
+                <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
+                  <Gamepad2 size={140} />
+                </div>
+              </motion.div>
+            );
+          })}
         </section>
+        )}
 
         {/* Categories - Horizontal Scroll */}
+        {promotionsEnabled && (
         <section>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            {categories.map((category) => (
+            {categoryTabs.map((category) => (
               <motion.button
                 key={category.id}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold whitespace-nowrap border-[3px] transition-all flex-shrink-0 ${
@@ -467,19 +661,26 @@ export default function HomePage() {
                 onClick={() => setActiveCategory(category.id)}
                 whileTap={{ scale: 0.95 }}
               >
-                {category.icon}
-                <span>{category.name}</span>
+                {category.icon === "flame" ? (
+                  <Flame size={16} />
+                ) : category.icon === "card" ? (
+                  <CreditCard size={16} />
+                ) : (
+                  <Gamepad2 size={16} />
+                )}
+                <span>{category.label}</span>
               </motion.button>
             ))}
           </div>
         </section>
+        )}
 
         {/* Featured Games - From Database */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
               <span className="w-1.5 h-5 sm:h-6 bg-brutal-pink mr-2"></span>
-              เกมแนะนำ
+              {sectionLabels.featuredProductsTitle}
               <span className="ml-2 text-sm font-normal text-gray-500">
                 ({filteredProducts.length})
               </span>
@@ -488,7 +689,7 @@ export default function HomePage() {
               href="/games"
               className="text-brutal-pink text-sm font-bold hover:underline flex items-center"
             >
-              ทั้งหมด
+              {sectionLabels.viewAllText}
               <ChevronRight size={16} />
             </Link>
           </div>
@@ -617,21 +818,24 @@ export default function HomePage() {
 
         {/* Trust Badges */}
         <section className="grid grid-cols-3 gap-2 sm:gap-4">
-          {trustBadges.map((badge, i) => (
+          {trustBadges.map((badge, i) => {
+            const BadgeIcon =
+              TRUST_BADGE_ICON_MAP[badge.icon] || TRUST_BADGE_ICON_MAP.shield;
+            return (
             <div
-              key={i}
+              key={badge.id || i}
               className="bg-white border-[2px] border-black p-3 sm:p-4 text-center"
               style={{ boxShadow: "3px 3px 0 0 #000000" }}
             >
-              <badge.icon size={24} className="mx-auto text-black mb-2" />
+              <BadgeIcon size={24} className="mx-auto text-black mb-2" />
               <p className="text-xs sm:text-sm font-bold text-black">
                 {badge.title}
               </p>
               <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">
-                {badge.desc}
+                {badge.description}
               </p>
             </div>
-          ))}
+          )})}
         </section>
 
         {/* Special Events */}
@@ -639,13 +843,13 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
               <span className="w-1.5 h-5 sm:h-6 bg-brutal-yellow mr-2"></span>
-              โปรโมชั่นพิเศษ
+              {sectionLabels.specialsTitle}
             </h2>
             <Link
               href="/promotions"
               className="text-sm font-bold hover:underline flex items-center"
             >
-              ทั้งหมด
+              {sectionLabels.viewAllText}
               <ChevronRight size={16} />
             </Link>
           </div>
@@ -654,7 +858,7 @@ export default function HomePage() {
             description=""
             events={seasonalEvents}
             viewAllUrl="/promotions"
-            viewAllText="ดูทั้งหมด"
+            viewAllText={sectionLabels.viewAllText}
             featuredLayout={true}
             maxItems={1}
           />
@@ -665,20 +869,26 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
               <span className="w-1.5 h-5 sm:h-6 bg-brutal-blue mr-2"></span>
-              ข่าวสารล่าสุด
+              {sectionLabels.newsTitle}
             </h2>
             <Link
               href="/news"
               className="text-sm font-bold hover:underline flex items-center"
             >
-              ทั้งหมด
+              {sectionLabels.viewAllText}
               <ChevronRight size={16} />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {newsItems.map((item) => (
-              <Link key={item.id} href={`/news/${item.id}`} className="block">
+              <Link
+                key={item.id}
+                href={
+                  ("href" in item && item.href) ? item.href : `/news/${item.id}`
+                }
+                className="block"
+              >
                 <motion.div
                   className="bg-white border-[2px] border-black overflow-hidden h-full"
                   style={{ boxShadow: "3px 3px 0 0 #000000" }}
@@ -712,3 +922,4 @@ export default function HomePage() {
     </div>
   );
 }
+

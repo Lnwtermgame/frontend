@@ -12,6 +12,7 @@ import { SecurityProvider } from "@/lib/context/security-context";
 import { DeliveryProvider } from "@/lib/context/delivery-context";
 import { PromotionProvider } from "@/lib/context/promotion-context";
 import { CartProvider } from "@/lib/context/cart-context";
+import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
 
@@ -30,13 +31,92 @@ export const viewport: Viewport = {
   viewportFit: "cover", // For iPhone safe areas
 };
 
-export const metadata: Metadata = {
-  title: "MaliGamePass - Game Top Up & Digital Cards",
-  description: "เติมเงินเกมและซื้อบัตรของขวัญดิจิตอลอย่างรวดเร็ว ปลอดภัย และราคาคุ้มค่า",
-  icons: {
-    icon: '/favicon.ico',
-  },
+type PublicSettingsMetadataPayload = {
+  general?: { siteName?: string; siteTagline?: string };
+  seo?: { metaTitle?: string; metaDescription?: string };
+  branding?: { faviconUrl?: string | null };
 };
+
+const METADATA_FETCH_TIMEOUT_MS = 2500;
+const METADATA_FETCH_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 250;
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+async function fetchWithTimeout(
+  input: string,
+  init: RequestInit,
+  timeoutMs: number,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function getPublicSettingsMetadata(): Promise<PublicSettingsMetadataPayload | null> {
+  const gatewayUrl =
+    process.env.GATEWAY_URL ||
+    process.env.NEXT_PUBLIC_GATEWAY_URL ||
+    "http://localhost:3000";
+
+  for (let attempt = 0; attempt < METADATA_FETCH_RETRIES; attempt += 1) {
+    try {
+      const response = await fetchWithTimeout(
+        `${gatewayUrl}/api/public/settings`,
+        { next: { revalidate: 60 } },
+        METADATA_FETCH_TIMEOUT_MS,
+      );
+
+      if (!response.ok) {
+        throw new Error(`metadata fetch failed with status ${response.status}`);
+      }
+
+      const json = (await response.json()) as {
+        success?: boolean;
+        data?: PublicSettingsMetadataPayload;
+      };
+      if (json.success && json.data) {
+        return json.data;
+      }
+      throw new Error("metadata payload is invalid");
+    } catch {
+      if (attempt === METADATA_FETCH_RETRIES - 1) {
+        return null;
+      }
+      const backoff = RETRY_BASE_DELAY_MS * 2 ** attempt;
+      await sleep(backoff);
+    }
+  }
+
+  return null;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getPublicSettingsMetadata();
+  const title =
+    settings?.seo?.metaTitle ||
+    settings?.general?.siteName ||
+    "MaliGamePass - Game Top Up & Digital Cards";
+  const description =
+    settings?.seo?.metaDescription ||
+    settings?.general?.siteTagline ||
+    "Fast and secure game top-up and digital card service.";
+  const favicon = settings?.branding?.faviconUrl || "/favicon.ico";
+
+  return {
+    title,
+    description,
+    icons: {
+      icon: favicon,
+    },
+  };
+}
+
 
 export default function RootLayout({
   children,
@@ -69,7 +149,9 @@ export default function RootLayout({
                   <DeliveryProvider>
                     <PromotionProvider>
                     <CartProvider>
-                      <MainLayout>{children}</MainLayout>
+                      <PublicSettingsProvider>
+                        <MainLayout>{children}</MainLayout>
+                      </PublicSettingsProvider>
                     </CartProvider>
                       <Toaster
                         position="bottom-right"

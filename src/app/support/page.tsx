@@ -11,6 +11,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePublicSettings } from '@/lib/context/public-settings-context';
 
 // Support category tiles - เก็บเฉพาะ Help Guides และ Ticket System
 const supportCategories = [
@@ -31,6 +32,13 @@ const supportCategories = [
 ];
 
 export default function SupportPage() {
+  const { settings } = usePublicSettings();
+  const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
+  const visibleSupportCategories = supportCategories.filter((category) => {
+    if (!supportTicketsEnabled && category.link === "/support/tickets") return false;
+    return true;
+  });
+
   return (
     <div className="page-container bg-brutal-gray">
       {/* Hero Section */}
@@ -67,7 +75,7 @@ export default function SupportPage() {
           <h2 className="text-2xl font-bold text-black">ช่องทางการติดต่อ</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {supportCategories.map((category, index) => (
+          {visibleSupportCategories.map((category, index) => (
             <motion.div
               key={index}
               className="bg-white border-[3px] border-black rounded-xl overflow-hidden group"

@@ -17,6 +17,7 @@ import {
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 function LoginContent() {
   const router = useRouter();
@@ -24,9 +25,11 @@ function LoginContent() {
   const sessionExpired = searchParams.get("session_expired") === "true";
   const redirect = searchParams.get("redirect");
   const { login, isLoading, isAuthenticated } = useAuth();
+  const { settings: publicSettings } = usePublicSettings();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const isSubmittingRef = useRef(false);
+  const siteName = publicSettings?.general.siteName || "MaliGamePass";
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -85,7 +88,7 @@ function LoginContent() {
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
             </div>
             <span className="text-2xl font-black text-black thai-font">
-              MaliGamePass
+              {siteName}
             </span>
           </div>
 
@@ -156,7 +159,7 @@ function LoginContent() {
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
               </div>
               <span className="text-xl font-black text-black thai-font">
-                MaliGamePass
+                {siteName}
               </span>
             </div>
 

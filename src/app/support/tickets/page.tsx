@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { supportApi, Ticket, TicketDetail, CreateTicketData, TicketCategory, TicketStatus } from "@/lib/services";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 import {
   MessageSquare,
   Plus,
@@ -45,6 +46,9 @@ const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
 export default function TicketsPage() {
   const router = useRouter();
   const { user, isAuthenticated, isInitialized } = useAuth();
+  const { settings: publicSettings } = usePublicSettings();
+  const supportTicketsEnabled =
+    publicSettings?.features.enableSupportTickets ?? true;
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +70,7 @@ export default function TicketsPage() {
   const [isSendingReply, setIsSendingReply] = useState(false);
 
   useEffect(() => {
+    if (!supportTicketsEnabled) return;
     // Wait for auth to initialize before checking authentication
     if (!isInitialized) return;
 
@@ -74,7 +79,7 @@ export default function TicketsPage() {
       return;
     }
     loadTickets();
-  }, [isInitialized, isAuthenticated, statusFilter]);
+  }, [isInitialized, isAuthenticated, statusFilter, supportTicketsEnabled]);
 
   const loadTickets = async () => {
     setIsLoading(true);
@@ -167,6 +172,30 @@ export default function TicketsPage() {
   };
 
   const filteredTickets = tickets;
+
+  if (!supportTicketsEnabled) {
+    return (
+      <div className="page-container bg-brutal-gray">
+        <div
+          className="mx-auto max-w-2xl border-[3px] border-black bg-white p-8 text-center"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
+          <h1 className="text-2xl font-black text-black">Ticket support is currently disabled</h1>
+          <p className="mt-3 text-sm text-gray-600">
+            Please use the contact page while this channel is temporarily unavailable.
+          </p>
+          <div className="mt-6">
+            <Link
+              href="/support/contact"
+              className="inline-flex border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black"
+            >
+              Go to contact support
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container bg-brutal-gray">

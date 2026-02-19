@@ -8,6 +8,7 @@ import { motion } from "@/lib/framer-exports";
 import { User, Mail, Lock, ArrowRight, CheckCircle, Zap, Gift, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { publicSettingsApi } from "@/lib/services/public-settings-api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,6 +18,9 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [registrationEnabled, setRegistrationEnabled] = useState(true);
+  const [loadingSettings, setLoadingSettings] = useState(true);
+  const [siteName, setSiteName] = useState("MaliGamePass");
 
   // Validate password match
   useEffect(() => {
@@ -27,8 +31,25 @@ export default function RegisterPage() {
     }
   }, [password, confirmPassword]);
 
+  useEffect(() => {
+    const loadPublicSettings = async () => {
+      try {
+        const response = await publicSettingsApi.getPublicSettings();
+        setRegistrationEnabled(response.data.features.enableUserRegistration);
+        setSiteName(response.data.general.siteName || "MaliGamePass");
+      } catch {
+        setRegistrationEnabled(true);
+        setSiteName("MaliGamePass");
+      } finally {
+        setLoadingSettings(false);
+      }
+    };
+    loadPublicSettings();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!registrationEnabled) return;
 
     // Client-side validation
     if (password.length < 8) {
@@ -50,6 +71,20 @@ export default function RegisterPage() {
     }
   };
 
+  if (!loadingSettings && !registrationEnabled) {
+    return (
+      <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-xl bg-white border-[3px] border-black p-8 text-center shadow-[6px_6px_0_0_#000]">
+          <h1 className="text-2xl font-black text-black mb-3 thai-font">ปิดรับสมัครสมาชิกชั่วคราว</h1>
+          <p className="text-gray-600 thai-font mb-6">ผู้ดูแลระบบปิดการสมัครสมาชิกใหม่ไว้ชั่วคราว กรุณาลองใหม่ภายหลัง</p>
+          <Link href="/login" className="inline-block border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black">
+            ไปหน้าเข้าสู่ระบบ
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -64,7 +99,7 @@ export default function RegisterPage() {
             <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_0_#000]">
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
             </div>
-            <span className="text-2xl font-black text-black thai-font">MaliGamePass</span>
+            <span className="text-2xl font-black text-black thai-font">{siteName}</span>
           </div>
 
           <h1 className="text-4xl font-black text-black leading-tight thai-font">
@@ -120,7 +155,7 @@ export default function RegisterPage() {
               <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
               </div>
-              <span className="text-xl font-black text-black thai-font">MaliGamePass</span>
+              <span className="text-xl font-black text-black thai-font">{siteName}</span>
             </div>
 
             <div className="text-center mb-8">

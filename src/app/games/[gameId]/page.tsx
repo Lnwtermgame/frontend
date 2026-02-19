@@ -270,16 +270,24 @@ export default function GameDetailsPage() {
 
   // Fetch payment methods (PromptPay default)
   useEffect(() => {
+    if (!isInitialized) return;
+    if (!isAuthenticated) {
+      setPaymentOptions([]);
+      setSelectedPaymentOption(null);
+      return;
+    }
+
     const loadMethods = async () => {
       try {
         const res = await paymentApi.getMethods();
         if (res.success) {
           setPaymentOptions(res.data);
-          if (!selectedPaymentOption && res.data.length > 0) {
+          setSelectedPaymentOption((prev) => {
+            if (prev || res.data.length === 0) return prev;
             const defaultPromptpay =
               res.data.find((m) => m.method === "PROMPTPAY") || res.data[0];
-            setSelectedPaymentOption(defaultPromptpay.code);
-          }
+            return defaultPromptpay.code;
+          });
         }
       } catch (err) {
         console.error("Load payment methods failed", err);
@@ -287,7 +295,7 @@ export default function GameDetailsPage() {
     };
 
     loadMethods();
-  }, []);
+  }, [isInitialized, isAuthenticated]);
 
   const buildPlayerInfo = (): Record<string, string> => {
     const info = { ...fieldValues };

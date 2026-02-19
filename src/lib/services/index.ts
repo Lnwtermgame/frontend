@@ -34,6 +34,8 @@
 export * from './auth-api';
 export * from './security-api';
 export * from './admin-user-api';
+export * from './admin-settings-api';
+export * from './public-settings-api';
 
 // Product Service (3002)
 export * from './product-api';
@@ -62,6 +64,7 @@ export {
   orderClient,
   paymentClient,
   supportClient,
+  publicClient,
   cartClient,   // Alias for orderClient (backward compat)
   creditClient, // Alias for paymentClient (backward compat)
 } from '@/lib/client/gateway';

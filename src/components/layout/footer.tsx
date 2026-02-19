@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import {
   Facebook,
-  Twitter,
   Instagram,
   Youtube,
   CreditCard,
@@ -20,6 +19,7 @@ import {
   HelpCircle,
   Zap,
 } from "lucide-react";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 const quickLinks = [
   { label: "เกมทั้งหมด", href: "/games", icon: Gamepad2 },
@@ -37,32 +37,13 @@ const supportLinks = [
   { label: "เงื่อนไขการใช้บริการ", href: "/terms" },
 ];
 
-// Use local SVGs for reliable image loading
 const paymentMethods = [
-  {
-    name: "Visa / Mastercard",
-    icon: "/payment-icons/visa-mastercard.svg",
-  },
-  {
-    name: "KBANK",
-    icon: "/payment-icons/kbank.svg",
-  },
-  {
-    name: "PromptPay",
-    icon: "/payment-icons/promptpay.svg",
-  },
-  {
-    name: "TrueMoney",
-    icon: "/payment-icons/truemoney.svg",
-  },
-  {
-    name: "ShopeePay",
-    icon: "/payment-icons/shopeepay.svg",
-  },
-  {
-    name: "Krungthai Bank",
-    icon: "/payment-icons/krungthai.svg",
-  },
+  { name: "Visa / Mastercard", icon: "/payment-icons/visa-mastercard.svg" },
+  { name: "KBANK", icon: "/payment-icons/kbank.svg" },
+  { name: "PromptPay", icon: "/payment-icons/promptpay.svg" },
+  { name: "TrueMoney", icon: "/payment-icons/truemoney.svg" },
+  { name: "ShopeePay", icon: "/payment-icons/shopeepay.svg" },
+  { name: "Krungthai Bank", icon: "/payment-icons/krungthai.svg" },
 ];
 
 const features = [
@@ -81,7 +62,7 @@ const features = [
   {
     icon: DollarSign,
     title: "ราคาคุ้มค่า",
-    desc: "ส่วนลดและโปรฯ พิเศษ",
+    desc: "ส่วนลดและโปรพิเศษ",
     color: "bg-brutal-pink",
   },
   {
@@ -92,15 +73,34 @@ const features = [
   },
 ];
 
-const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Youtube, href: "https://youtube.com", label: "Youtube" },
-];
-
 export function Footer() {
+  const { settings } = usePublicSettings();
   const year = new Date().getFullYear();
+
+  const siteName = settings?.general.siteName || "MaliGamePass";
+  const logoUrl = settings?.branding.logoUrl || "";
+  const siteTagline =
+    settings?.general.siteTagline ||
+    "บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว ปลอดภัย และราคาดีที่สุดในตลาด";
+  const supportEmail = settings?.general.supportEmail || "support@maligamepass.com";
+  const supportPhone = settings?.general.supportPhone || "";
+  const promotionsEnabled = settings?.features.enablePromotions ?? true;
+  const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
+  const visibleQuickLinks = quickLinks.filter((item) => {
+    if (!promotionsEnabled && item.href.includes("promo")) return false;
+    return true;
+  });
+  const visibleSupportLinks = supportLinks.filter((item) => {
+    if (!supportTicketsEnabled && item.href === "/support/tickets") return false;
+    return true;
+  });
+
+  const socialLinks = [
+    { icon: Facebook, href: settings?.social.facebookUrl || "", label: "Facebook" },
+    { icon: MessageCircle, href: settings?.social.lineUrl || "", label: "LINE" },
+    { icon: Instagram, href: settings?.social.discordUrl || "", label: "Discord" },
+    { icon: Youtube, href: "https://youtube.com", label: "Youtube" },
+  ].filter((item) => Boolean(item.href));
 
   return (
     <footer className="bg-white border-t-[3px] border-black mt-auto">
@@ -108,21 +108,24 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
           <div className="lg:col-span-4 space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
             <Link href="/" className="inline-block">
-              <div className="font-black text-2xl flex items-center">
-                <span className="text-brutal-pink">Mali</span>
-                <span className="text-black">Game</span>
-                <span
-                  className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[3px] border-black text-base"
-                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                >
-                  Pass
-                </span>
-              </div>
+              {logoUrl ? (
+                <div className="flex items-center gap-2">
+                  <img
+                    src={logoUrl}
+                    alt={siteName}
+                    className="h-10 w-10 rounded border-[2px] border-black object-cover"
+                  />
+                  <span className="font-black text-2xl text-black">{siteName}</span>
+                </div>
+              ) : (
+                <div className="font-black text-2xl flex items-center">
+                  <span className="text-brutal-pink">{siteName.slice(0, 4) || "Mali"}</span>
+                  <span className="text-black">{siteName.slice(4) || "GamePass"}</span>
+                </div>
+              )}
             </Link>
-            <p className="text-gray-600 text-sm leading-relaxed max-w-sm">
-              บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว
-              ปลอดภัย และราคาดีที่สุดในตลาด
-            </p>
+
+            <p className="text-gray-600 text-sm leading-relaxed max-w-sm">{siteTagline}</p>
 
             <div className="space-y-2">
               <p className="text-xs font-bold text-black flex items-center">
@@ -131,56 +134,69 @@ export function Footer() {
               </p>
               <div className="flex flex-col gap-2">
                 <a
-                  href="mailto:support@maligamepass.com"
+                  href={`mailto:${supportEmail}`}
                   className="flex items-center text-gray-600 hover:text-black transition-colors group"
                 >
                   <div
                     className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink group-hover:text-white transition-colors"
                     style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
-                    <Mail
-                      size={14}
-                      className="text-black group-hover:text-white"
-                    />
+                    <Mail size={14} className="text-black group-hover:text-white" />
                   </div>
-                  <span className="text-sm font-medium">
-                    support@maligamepass.com
-                  </span>
+                  <span className="text-sm font-medium">{supportEmail}</span>
                 </a>
-                <Link
-                  href="/support/tickets"
-                  className="flex items-center text-gray-600 hover:text-black transition-colors group"
-                >
-                  <div
-                    className="w-8 h-8 bg-brutal-green border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
-                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+
+                {supportPhone && (
+                  <a
+                    href={`tel:${supportPhone}`}
+                    className="flex items-center text-gray-600 hover:text-black transition-colors group"
                   >
-                    <MessageCircle size={14} className="text-black" />
-                  </div>
-                  <span className="text-sm font-medium">
-                    แชทสดตลอด 24 ชั่วโมง
-                  </span>
-                </Link>
+                    <div
+                      className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
+                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    >
+                      <Phone size={14} className="text-black" />
+                    </div>
+                    <span className="text-sm font-medium">{supportPhone}</span>
+                  </a>
+                )}
+
+                {supportTicketsEnabled && (
+                  <Link
+                    href="/support/tickets"
+                    className="flex items-center text-gray-600 hover:text-black transition-colors group"
+                  >
+                    <div
+                      className="w-8 h-8 bg-brutal-green border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
+                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    >
+                      <MessageCircle size={14} className="text-black" />
+                    </div>
+                    <span className="text-sm font-medium">แชทสดตลอด 24 ชั่วโมง</span>
+                  </Link>
+                )}
               </div>
             </div>
 
-            <div className="flex gap-2 pt-2">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                  whileHover={{ y: -3, boxShadow: "4px 4px 0 0 #000000" }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <social.icon size={18} />
-                </motion.a>
-              ))}
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="flex gap-2 pt-2">
+                {socialLinks.map((social) => (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    whileHover={{ y: -3, boxShadow: "4px 4px 0 0 #000000" }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <social.icon size={18} />
+                  </motion.a>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="lg:col-span-2 hidden md:block">
@@ -189,7 +205,7 @@ export function Footer() {
               ลิงก์ด่วน
             </h3>
             <ul className="space-y-2">
-              {quickLinks.map((item) => (
+              {visibleQuickLinks.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -212,7 +228,7 @@ export function Footer() {
               ช่วยเหลือ
             </h3>
             <ul className="space-y-2">
-              {supportLinks.map((item) => (
+              {visibleSupportLinks.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -237,7 +253,6 @@ export function Footer() {
                   className="bg-white border-[2px] border-black rounded-sm p-2 h-12 flex items-center justify-center relative hover:-translate-y-0.5 transition-transform"
                   style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={method.icon}
                     alt={method.name}
@@ -267,12 +282,8 @@ export function Footer() {
                 <feature.icon className="text-black" size={18} />
               </div>
               <div className="min-w-0">
-                <p className="text-black font-bold text-xs md:text-sm truncate">
-                  {feature.title}
-                </p>
-                <p className="text-gray-500 text-[10px] md:text-xs hidden sm:block truncate">
-                  {feature.desc}
-                </p>
+                <p className="text-black font-bold text-xs md:text-sm truncate">{feature.title}</p>
+                <p className="text-gray-500 text-[10px] md:text-xs hidden sm:block truncate">{feature.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -280,25 +291,16 @@ export function Footer() {
 
         <div className="pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-xs text-gray-500 font-medium text-center md:text-left">
-            &copy; {year} MaliGamePass สงวนลิขสิทธิ์
+            &copy; {year} {siteName} สงวนลิขสิทธิ์
           </div>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
-            <Link
-              href="/privacy"
-              className="hover:text-black font-medium transition-colors"
-            >
+            <Link href="/privacy" className="hover:text-black font-medium transition-colors">
               นโยบายความเป็นส่วนตัว
             </Link>
-            <Link
-              href="/terms"
-              className="hover:text-black font-medium transition-colors"
-            >
+            <Link href="/terms" className="hover:text-black font-medium transition-colors">
               เงื่อนไขการใช้บริการ
             </Link>
-            <Link
-              href="/refund"
-              className="hover:text-black font-medium transition-colors"
-            >
+            <Link href="/refund" className="hover:text-black font-medium transition-colors">
               นโยบายคืนเงิน
             </Link>
           </div>

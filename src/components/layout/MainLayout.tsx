@@ -22,16 +22,18 @@ import {
   Zap,
   Star,
   Smartphone,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import { useState, useEffect, useMemo, memo, useRef } from "react";
+import { useState, useEffect, useMemo, memo, useRef, type CSSProperties } from "react";
 import { Footer } from "./footer";
 import { useAuth } from "@/lib/context/auth-context";
 import { useNotifications } from "@/lib/context/notification-context";
 import SearchBar from "@/components/layout/SearchBar";
 import { MobileNav } from "./MobileNav";
 import { Sheet } from "@/components/ui/Sheet";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -144,7 +146,8 @@ export function MainLayout({ children }: MainLayoutProps) {
     searchParams.get("monitor") === "1";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { settings: publicSettings } = usePublicSettings();
+  const { user, isAuthenticated, isInitialized, logout } = useAuth();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const toggleUserMenu = () => {
@@ -208,6 +211,27 @@ export function MainLayout({ children }: MainLayoutProps) {
   }, [pathname]);
 
   const showFloatingSearch = !pathname.startsWith("/dashboard");
+  const isMaintenanceBypassPath =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register");
+  const isMaintenanceEnabled = Boolean(
+    publicSettings?.features.enableMaintenanceMode,
+  );
+  const shouldShowMaintenanceScreen =
+    isMaintenanceEnabled && !isMaintenanceBypassPath;
+  const supportTicketsEnabled =
+    publicSettings?.features.enableSupportTickets ?? true;
+  const dynamicThemeStyle = useMemo(
+    () =>
+      ({
+        "--brand-primary":
+          publicSettings?.branding.primaryColor || "#FF6B9D",
+        "--brand-secondary":
+          publicSettings?.branding.secondaryColor || "#95E1D3",
+      }) as CSSProperties,
+    [publicSettings?.branding.primaryColor, publicSettings?.branding.secondaryColor],
+  );
 
   const mainNavItems = useMemo(
     () => [
@@ -231,6 +255,13 @@ export function MainLayout({ children }: MainLayoutProps) {
       },
     ],
     [],
+  );
+  const visibleMainNavItems = useMemo(
+    () =>
+      supportTicketsEnabled
+        ? mainNavItems
+        : mainNavItems.filter((item) => item.href !== "/support"),
+    [mainNavItems, supportTicketsEnabled],
   );
 
   const mobileNavItems = useMemo(
@@ -294,30 +325,95 @@ export function MainLayout({ children }: MainLayoutProps) {
     [],
   );
 
+  useEffect(() => {
+    if (!publicSettings) return;
+    const title = publicSettings.seo.metaTitle || publicSettings.general.siteName;
+    const description = publicSettings.seo.metaDescription || publicSettings.general.siteTagline || "";
+    const favicon = publicSettings.branding.faviconUrl;
+
+    if (title) document.title = title;
+    if (description) {
+      const meta = document.querySelector("meta[name='description']");
+      if (meta) meta.setAttribute("content", description);
+    }
+    if (favicon) {
+      const iconEl = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
+      if (iconEl) {
+        iconEl.href = favicon;
+      } else {
+        const link = document.createElement("link");
+        link.rel = "icon";
+        link.href = favicon;
+        document.head.appendChild(link);
+      }
+    }
+  }, [publicSettings]);
+
+  const renderBrand = (compact = false) => {
+    const siteName = publicSettings?.general.siteName || "MaliGamePass";
+    const logoUrl = publicSettings?.branding.logoUrl;
+
+    if (logoUrl) {
+      return (
+        <div className="flex items-center gap-2">
+          <img src={logoUrl} alt={siteName} className="h-8 w-8 rounded border-[2px] border-black object-cover" />
+          <span className={cn("font-bold text-black", compact ? "text-lg" : "text-2xl")}>{siteName}</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className={cn("font-bold flex items-center", compact ? "text-xl" : "text-2xl")}>
+        <span className="text-brutal-pink">{siteName.slice(0, 4) || "Mali"}</span>
+        <span className="text-black">{siteName.slice(4) || "GamePass"}</span>
+      </div>
+    );
+  };
+
   if (isTicketMonitorMode) {
     return <div className="min-h-screen w-full bg-gray-50">{children}</div>;
   }
 
+  if (shouldShowMaintenanceScreen) {
+    return (
+      <div
+        className="flex min-h-screen items-center justify-center bg-brutal-gray p-6"
+        style={dynamicThemeStyle}
+      >
+        <div
+          className="w-full max-w-2xl border-[3px] border-black bg-white p-8 text-center"
+          style={{ boxShadow: "6px 6px 0 0 #000000" }}
+        >
+          <h1 className="mb-3 text-3xl font-black text-black">
+            {publicSettings?.general.siteName || "MaliGamePass"}
+          </h1>
+          <p className="text-lg font-bold text-black">ระบบอยู่ระหว่างปรับปรุง</p>
+          <p className="mt-3 text-sm text-gray-700">
+            {publicSettings?.features.maintenanceMessage ||
+              "ขออภัยในความไม่สะดวก ทีมงานกำลังปรับปรุงระบบและจะกลับมาให้บริการเร็วที่สุด"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen bg-brutal-gray thai-font w-full max-w-full overflow-x-clip">
+    <div
+      className="flex min-h-screen bg-brutal-gray thai-font w-full max-w-full overflow-x-clip"
+      style={dynamicThemeStyle}
+    >
       {/* Sidebar */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white z-30 hidden lg:flex flex-col border-r-[3px] border-black">
         {/* Logo */}
         <div className="h-16 border-b-[3px] border-black flex items-center px-6">
           <Link href="/">
-            <div className="font-bold text-2xl flex items-center">
-              <span className="text-brutal-pink">Mali</span>
-              <span className="text-black">Game</span>
-              <span className="bg-brutal-yellow px-2 py-0.5 ml-1 border-[2px] border-black">
-                Pass
-              </span>
-            </div>
+            {renderBrand(false)}
           </Link>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 pt-4 px-3 space-y-1 overflow-y-auto">
-          {mainNavItems.map((item) => {
+          {visibleMainNavItems.map((item) => {
             const isActive =
               pathname === item.href ||
               (item.href !== "/" && pathname.startsWith(item.href));
@@ -376,13 +472,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <Menu size={24} />
               </button>
               <Link href="/">
-                <div className="font-bold text-xl flex items-center">
-                  <span className="text-brutal-pink">Mali</span>
-                  <span className="text-black">Game</span>
-                  <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm">
-                    Pass
-                  </span>
-                </div>
+                {renderBrand(true)}
               </Link>
             </div>
 
@@ -515,7 +605,12 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <div className="h-8 w-[2px] bg-gray-200 mx-1"></div>
               )}
 
-              {isAuthenticated ? (
+              {!isInitialized ? (
+                <div className="flex items-center space-x-2 border-[2px] border-gray-300 px-3 py-2 text-sm text-gray-500">
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>กำลังโหลด</span>
+                </div>
+              ) : isAuthenticated ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={toggleUserMenu}
@@ -634,6 +729,16 @@ export function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         {/* Main content */}
+        {publicSettings?.features.enableMaintenanceMode && (
+          <div className="border-b-[3px] border-black bg-red-100 px-4 py-2 text-sm text-red-900">
+            {publicSettings.features.maintenanceMessage || "ระบบอยู่ระหว่างปรับปรุงบางส่วน"}
+          </div>
+        )}
+        {publicSettings?.homepage.announcementEnabled && publicSettings.homepage.announcementText && (
+          <div className="border-b-[2px] border-black bg-yellow-100 px-4 py-2 text-sm text-black">
+            {publicSettings.homepage.announcementText}
+          </div>
+        )}
         <main
           className={cn(
             "flex-grow w-full max-w-full min-w-0 overflow-x-clip",

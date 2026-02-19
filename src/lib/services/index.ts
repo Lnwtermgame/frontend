@@ -46,6 +46,7 @@ export * from './coupon-api';
 export * from './analytics-api';
 
 // Payment Service (3004)
+export * from './payment-api';
 export * from './credit-api';
 
 // Notification Service (3006)

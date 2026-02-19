@@ -137,6 +137,7 @@ const MobileNavItem = memo(function MobileNavItem({
 
 export function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
+  const isFullBleedPage = pathname.startsWith("/payments/success");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
@@ -625,7 +626,14 @@ export function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="py-4 px-4 md:px-6 container mx-auto flex-grow w-full max-w-full min-w-0 overflow-x-clip">
+        <main
+          className={cn(
+            "flex-grow w-full max-w-full min-w-0 overflow-x-clip",
+            isFullBleedPage
+              ? "px-0 py-0"
+              : "container mx-auto px-4 py-4 md:px-6",
+          )}
+        >
           {children}
         </main>
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { orderApi } from "@/lib/services/order-api";
+import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";
 import {
   ChevronLeft,
   ShoppingCart,
@@ -27,6 +28,8 @@ import {
   User,
   ShieldAlert,
   ChevronRight,
+  ShieldCheck,
+  ReceiptText,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
@@ -166,7 +169,11 @@ function transformProductToGameDetails(
 }
 
 export default function GameDetailsPage() {
-  const params = useParams<{ gameId?: string; cardId?: string; slug?: string }>();
+  const params = useParams<{
+    gameId?: string;
+    cardId?: string;
+    slug?: string;
+  }>();
   const isCardRoute = typeof params.cardId === "string";
   const isMobileRechargeRoute =
     typeof params.slug === "string" && typeof params.gameId !== "string";
@@ -189,46 +196,98 @@ export default function GameDetailsPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [paymentOptions, setPaymentOptions] = useState<PaymentMethodOption[]>(
+    [],
+  );
+  const [selectedPaymentOption, setSelectedPaymentOption] = useState<
+    string | null
+  >(null);
+  const [isPaymentSelectOpen, setIsPaymentSelectOpen] = useState(false);
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState<
+    | {
+        supported: boolean;
+        productName: string;
+        optionName: string;
+        playerInfo: Record<string, string>;
+        price?: number;
+      }
+    | null
+  >(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [mobilePhoneNumber, setMobilePhoneNumber] = useState("");
   const [copied, setCopied] = useState(false);
   const [similarGames, setSimilarGames] = useState<Product[]>([]);
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
-  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
-  // Confirmation modal state
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<{
-    supported: boolean;
-    playerInfo: Record<string, string>;
-    productName: string;
-    optionName: string;
-    price: number;
-  } | null>(null);
+  const backHref = "/games";
+  const backLabel = "ย้อนกลับ";
+  const optionsTabLabel = "ตัวเลือกเติมเงิน";
+  const infoTabLabel = "ข้อมูลเกม";
+  const purchaseTitle = "สรุปการสั่งซื้อ";
 
-  const backHref = isCardRoute
-    ? "/card"
-    : isMobileRechargeRoute
-      ? "/mobile-recharge"
-      : "/games";
-  const backLabel = isCardRoute
-    ? "กลับไปหน้าบัตรเติมเงิน"
-    : isMobileRechargeRoute
-      ? "กลับไปหน้าเติมเงินมือถือ"
-      : "กลับไปหน้าเกม";
-  const optionsTabLabel = isCardRoute
-    ? "ตัวเลือกบัตร"
-    : isMobileRechargeRoute
-      ? "แพ็กเกจเติมเงิน"
-      : "ตัวเลือกเติมเงิน";
-  const infoTabLabel =
-    isCardRoute || isMobileRechargeRoute ? "ข้อมูลสินค้า" : "ข้อมูลเกม";
-  const purchaseTitle = isCardRoute
-    ? "รายละเอียดการซื้อ"
-    : isMobileRechargeRoute
-      ? "รายละเอียดการเติมเงินมือถือ"
-      : "รายละเอียดการเติมเงิน";
+  const selectedTopUp = useMemo(() => {
+    if (!selectedOption || !game) return null;
+    return game.topUpOptions.find((opt) => opt.id === selectedOption) || null;
+  }, [selectedOption, game]);
+
+  const priceSummary = useMemo(() => {
+    const base = selectedTopUp?.price || 0;
+    if (!selectedPaymentOption) return { base, fee: 0, total: base };
+    const opt = paymentOptions.find((o) => o.code === selectedPaymentOption);
+    if (!opt) return { base, fee: 0, total: base };
+    const percent = Number(opt.surchargePercent || 0) / 100;
+    const flat = Number(opt.flatFee || 0);
+    const fee = base * percent + flat;
+    return {
+      base,
+      fee,
+      total: base + fee,
+      label: opt.label,
+      method: opt.method,
+    };
+  }, [selectedPaymentOption, paymentOptions, selectedTopUp]);
+
+  const formatTHB = (amount: number) => {
+    return new Intl.NumberFormat("th-TH", {
+      style: "currency",
+      currency: "THB",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount || 0);
+  };
+
+  const copyText = async (value: string, message: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(message);
+    } catch {
+      toast.error("ไม่สามารถคัดลอกข้อมูลได้");
+    }
+  };
+
+  // Fetch payment methods (PromptPay default)
+  useEffect(() => {
+    const loadMethods = async () => {
+      try {
+        const res = await paymentApi.getMethods();
+        if (res.success) {
+          setPaymentOptions(res.data);
+          if (!selectedPaymentOption && res.data.length > 0) {
+            const defaultPromptpay =
+              res.data.find((m) => m.method === "PROMPTPAY") || res.data[0];
+            setSelectedPaymentOption(defaultPromptpay.code);
+          }
+        }
+      } catch (err) {
+        console.error("Load payment methods failed", err);
+      }
+    };
+
+    loadMethods();
+  }, []);
 
   const buildPlayerInfo = (): Record<string, string> => {
     const info = { ...fieldValues };
@@ -262,59 +321,6 @@ export default function GameDetailsPage() {
       ""
     ).trim();
 
-  const getMobileVerifyErrorMessage = (
-    errorCode?: number,
-    message?: string,
-  ): string => {
-    if (
-      errorCode === 20114 ||
-      /phone number.*region.*match/i.test(message || "")
-    ) {
-      return "เบอร์โทรศัพท์ไม่ตรงกับภูมิภาคของเครือข่ายที่เลือก กรุณาตรวจสอบเบอร์หรือเปลี่ยนแพ็กเกจให้ตรงประเทศ";
-    }
-
-    if (errorCode === 10406) {
-      return "ข้อมูลไม่ครบถ้วน กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง";
-    }
-
-    return (
-      message || "ไม่สามารถตรวจสอบเบอร์โทรศัพท์ได้ กรุณาตรวจสอบข้อมูลแล้วลองใหม่"
-    );
-  };
-
-  const buildConfirmationPlayerInfo = (
-    info: Record<string, string>,
-  ): Record<string, string> => {
-    if (!isMobileRechargeRoute) {
-      return info;
-    }
-
-    const normalizedPhone =
-      info.Phone?.trim() ||
-      info.phone?.trim() ||
-      info["User ID"]?.trim() ||
-      "";
-    const confirmationInfo: Record<string, string> = {};
-
-    if (normalizedPhone) {
-      confirmationInfo.Phone = normalizedPhone;
-    }
-
-    for (const [key, value] of Object.entries(info)) {
-      if (/^(phone|user id)$/i.test(key)) {
-        continue;
-      }
-
-      const trimmedValue = value?.trim();
-      if (trimmedValue) {
-        confirmationInfo[key] = trimmedValue;
-      }
-    }
-
-    return confirmationInfo;
-  };
-
-  // Handle buy now - verify first, then show confirmation
   const handleBuyNow = async () => {
     if (!product || !selectedOption) {
       toast.error("กรุณาเลือกตัวเลือกเติมเงิน");
@@ -366,98 +372,40 @@ export default function GameDetailsPage() {
       }
     }
 
+    setShowConfirmModal(true);
+    setVerificationStatus({
+      supported: true,
+      productName: game?.title || product?.name || "",
+      optionName: selectedTopUp?.title || "",
+      playerInfo: buildPlayerInfo(),
+      price: selectedTopUp?.price || priceSummary.total,
+    });
+  };
+
+  const startPaymentFlow = async (
+    orderId: string,
+    paymentOptionCode?: string,
+  ): Promise<boolean> => {
     try {
-      setIsBuying(true);
-      toast.loading("กำลังตรวจสอบข้อมูล...");
-
-      const playerInfo = buildPlayerInfo();
-      const fallbackStatus = {
-        productName: product.name,
-        optionName: selectedOptionData?.title || "",
-        price: selectedOptionData?.price || 0,
-      };
-
-      if (isCardRoute) {
-        toast.dismiss();
-        setVerificationStatus({
-          supported: true,
-          playerInfo: {},
-          ...fallbackStatus,
-        });
-        setShowConfirmModal(true);
-        return;
+      const intentRes = await paymentApi.createIntent(orderId, paymentOptionCode);
+      if (!intentRes.success) {
+        toast.error("สร้างการชำระเงินไม่สำเร็จ");
+        return false;
       }
 
-      // Verify player info with SEAGM
-      let isVerificationSupported = true;
-      try {
-        const verifyResult = isMobileRechargeRoute
-          ? await productApi.verifyMobileRecharge(
-              product.id,
-              selectedOption,
-              getNormalizedMobilePhone(),
-              playerInfo.calling_code || playerInfo.callingCode,
-            )
-          : await productApi.verifyPlayer(product.id, playerInfo, selectedOption);
-        isVerificationSupported = verifyResult.supported !== false;
-
-        if (isMobileRechargeRoute && !verifyResult.valid) {
-          toast.dismiss();
-          toast.error(
-            getMobileVerifyErrorMessage(
-              verifyResult.errorCode,
-              verifyResult.message,
-            ),
-            { duration: 5000 },
-          );
-          return;
-        }
-
-        if (verifyResult.valid && isVerificationSupported) {
-          // Verification passed - proceed directly
-          toast.dismiss();
-          await createOrder();
-          return;
-        }
-      } catch (verifyErr: any) {
-        if (isMobileRechargeRoute) {
-          toast.dismiss();
-          const errorCode =
-            verifyErr?.response?.data?.data?.errorCode ||
-            verifyErr?.response?.data?.error?.details?.infoCode ||
-            verifyErr?.response?.data?.error?.infoCode;
-          const errorMessage =
-            verifyErr?.response?.data?.data?.message ||
-            verifyErr?.response?.data?.error?.message ||
-            verifyErr?.message;
-
-          toast.error(getMobileVerifyErrorMessage(errorCode, errorMessage), {
-            duration: 5000,
-          });
-          return;
-        }
-
-        // If verification API fails, assume not supported
-        isVerificationSupported = false;
+      const { redirectUrl } = intentRes.data;
+      if (!redirectUrl) {
+        toast.error("ไม่พบลิงก์สำหรับชำระเงิน");
+        return false;
       }
 
-      // Show confirmation modal for unsupported verification or failed verification
-      toast.dismiss();
-      setVerificationStatus({
-        supported: isVerificationSupported,
-        playerInfo: buildConfirmationPlayerInfo(playerInfo),
-        ...fallbackStatus,
-      });
-      setShowConfirmModal(true);
-    } catch (err: any) {
-      toast.dismiss();
-      console.error("Buy now error:", err);
-      toast.error(
-        err?.response?.data?.error?.message ||
-          "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-      );
-    } finally {
-      setIsBuying(false);
+      toast.loading("กำลังนำไปหน้าชำระเงิน...", { duration: 2000 });
+      window.location.href = redirectUrl;
+      return true;
+    } catch (err) {
+      console.error("Payment flow error", err);
+      toast.error("ไม่สามารถสร้างการชำระเงินได้");
+      return false;
     }
   };
 
@@ -470,6 +418,7 @@ export default function GameDetailsPage() {
       toast.loading("กำลังสร้างคำสั่งซื้อ...");
 
       const playerInfo = buildPlayerInfo();
+      const paymentOptionCode = selectedPaymentOption || undefined;
 
       const response = await orderApi.createOrder({
         items: [
@@ -480,17 +429,17 @@ export default function GameDetailsPage() {
             playerInfo,
           },
         ],
-        paymentMethod: "CREDIT_CARD", // Required field for backend
-        skipPayment: true, // Bypass payment for testing
+        paymentMethod: "PROMPTPAY",
+        paymentOptionCode,
       });
 
       toast.dismiss();
 
       if (response.success) {
-        toast.success("สั่งซื้อสำเร็จ! กำลังดำเนินการ...");
+        toast.success("สั่งซื้อสำเร็จ! กำลังนำไปหน้าชำระเงิน...");
         setShowConfirmModal(false);
-        // Redirect to order detail page
-        router.push(`/dashboard/orders/${response.data.id}`);
+        setIsPaymentSelectOpen(false);
+        await startPaymentFlow(response.data.id, paymentOptionCode);
       } else {
         toast.error(response.message || "สั่งซื้อไม่สำเร็จ");
       }
@@ -697,7 +646,6 @@ export default function GameDetailsPage() {
         } catch {
           // Ignore errors for recommendations
         }
-
       } catch (err) {
         console.error("Error fetching game:", err);
         setError(productApi.getErrorMessage(err));
@@ -820,10 +768,10 @@ export default function GameDetailsPage() {
           {/* Game info overlay */}
           <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
             <div className="flex flex-row items-center md:items-end gap-3 md:gap-6">
-                <div
-                  className="relative w-20 h-20 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                >
+              <div
+                className="relative w-20 h-20 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
+                style={{ boxShadow: "2px 2px 0 0 #000000" }}
+              >
                 <Image
                   src={
                     game.mainImage ||
@@ -838,7 +786,7 @@ export default function GameDetailsPage() {
                 <h1 className="text-xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">
                   {game.title}
                 </h1>
-                
+
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1 shadow-[2px_2px_0_0_#000]">
                     {getCountryFlagCode(game.category) && (
@@ -861,7 +809,11 @@ export default function GameDetailsPage() {
                   variant="secondary"
                   size="icon"
                   onClick={handleToggleFavorite}
-                  className={isFavorite ? "bg-brutal-pink text-black w-9 h-9 md:w-10 md:h-10" : "w-9 h-9 md:w-10 md:h-10"}
+                  className={
+                    isFavorite
+                      ? "bg-brutal-pink text-black w-9 h-9 md:w-10 md:h-10"
+                      : "w-9 h-9 md:w-10 md:h-10"
+                  }
                 >
                   <Heart size={18} className={isFavorite ? "fill-black" : ""} />
                 </Button>
@@ -869,7 +821,11 @@ export default function GameDetailsPage() {
                   variant="secondary"
                   size="icon"
                   onClick={handleCopyLink}
-                  className={copied ? "bg-brutal-green text-black w-9 h-9 md:w-10 md:h-10" : "w-9 h-9 md:w-10 md:h-10"}
+                  className={
+                    copied
+                      ? "bg-brutal-green text-black w-9 h-9 md:w-10 md:h-10"
+                      : "w-9 h-9 md:w-10 md:h-10"
+                  }
                 >
                   {copied ? <Check size={18} /> : <Share2 size={18} />}
                 </Button>
@@ -914,7 +870,9 @@ export default function GameDetailsPage() {
 
             <div className="p-4 md:p-8">
               {/* Top Up Options - Desktop Only */}
-              <div className={activeTab === "topup" ? "hidden md:block" : "hidden"}>
+              <div
+                className={activeTab === "topup" ? "hidden md:block" : "hidden"}
+              >
                 <div className="space-y-6">
                   <div className="hidden md:flex items-center justify-between">
                     <p className="text-gray-600 font-bold">
@@ -972,9 +930,9 @@ export default function GameDetailsPage() {
                                   <div className="flex flex-col items-center">
                                     <span className="line-through text-gray-500 text-[10px] md:text-xs">
                                       ฿
-                                      {Number(option.originalPrice || 0).toFixed(
-                                        2,
-                                      )}
+                                      {Number(
+                                        option.originalPrice || 0,
+                                      ).toFixed(2)}
                                     </span>
                                     <span className="text-black font-bold text-sm md:text-base">
                                       ฿{Number(option.price || 0).toFixed(2)}
@@ -1043,9 +1001,9 @@ export default function GameDetailsPage() {
                                   <div className="flex flex-col items-center">
                                     <span className="line-through text-gray-500 text-[10px]">
                                       ฿
-                                      {Number(option.originalPrice || 0).toFixed(
-                                        2,
-                                      )}
+                                      {Number(
+                                        option.originalPrice || 0,
+                                      ).toFixed(2)}
                                     </span>
                                     <span className="text-black font-bold text-sm">
                                       ฿{Number(option.price || 0).toFixed(2)}
@@ -1094,7 +1052,9 @@ export default function GameDetailsPage() {
               </div>
 
               {/* Game Info - Visible on Desktop if activeTab=info, Always visible on Mobile */}
-              <div className={activeTab === "info" ? "block" : "block md:hidden"}>
+              <div
+                className={activeTab === "info" ? "block" : "block md:hidden"}
+              >
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg md:text-xl font-bold text-black mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight">
@@ -1352,13 +1312,17 @@ export default function GameDetailsPage() {
                     )}
 
                     <div className="flex justify-between items-start gap-4">
-                      <span className="text-gray-600 flex-shrink-0 pt-0.5">จำนวนที่เลือก:</span>
+                      <span className="text-gray-600 flex-shrink-0 pt-0.5">
+                        จำนวนที่เลือก:
+                      </span>
                       <div className="text-right min-w-0">
                         <span className="text-black font-bold block leading-tight break-words">
                           {option.title}
                         </span>
                       </div>
                     </div>
+
+                    {/* Payment option selection moved to modal after buy */}
 
                     <div className="py-4 border-y-[3px] border-black">
                       <div className="flex justify-between items-center mb-2">
@@ -1483,57 +1447,63 @@ export default function GameDetailsPage() {
         </div>
       </section>
 
-      {/* Confirmation Modal */}
+      {/* Confirmation Modal - Redesigned for horizontal layout */}
       <AnimatePresence>
         {showConfirmModal && verificationStatus && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm"
             onClick={() => setShowConfirmModal(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white border-[3px] border-black max-w-md w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white border-[3px] border-black w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
               style={{ boxShadow: "8px 8px 0 0 #000000" }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-brutal-yellow border-b-[3px] border-black p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <AlertTriangle size={24} className="text-black mr-2" />
-                  <h2 className="text-lg font-bold text-black">
+              <div
+                className={`border-b-[3px] border-black p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-brutal-pink" : "bg-brutal-yellow"}`}
+              >
+                <div className="flex items-center gap-2">
+                  {!verificationStatus.supported ? (
+                    <ShieldAlert size={22} className="text-black" />
+                  ) : (
+                    <Check size={22} className="text-black" />
+                  )}
+                  <h2 className="text-base sm:text-lg font-bold text-black">
                     {!verificationStatus.supported
                       ? "ไม่สามารถตรวจสอบบัญชีได้"
-                      : "ยืนยันข้อมูล"}
+                      : "ยืนยันข้อมูลการสั่งซื้อ"}
                   </h2>
                 </div>
                 <button
                   onClick={() => setShowConfirmModal(false)}
-                  className="p-1 hover:bg-black/10 rounded"
+                  className="p-1.5 hover:bg-black/10 rounded transition-colors"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <div className="p-6 space-y-6">
-                {/* Warning message for unsupported verification */}
+              {/* Content - Horizontal Layout */}
+              <div className="flex-1 overflow-y-auto">
+                {/* Warning Banner - Compact */}
                 {!verificationStatus.supported && (
-                  <div className="bg-brutal-pink/20 border-[3px] border-brutal-pink p-4">
-                    <div className="flex items-start">
-                      <ShieldAlert
-                        size={20}
-                        className="text-brutal-pink mr-2 mt-0.5 flex-shrink-0"
+                  <div className="bg-red-50 border-b-[2px] border-red-200 p-3">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle
+                        size={18}
+                        className="text-red-600 mt-0.5 flex-shrink-0"
                       />
-                      <div>
-                        <p className="font-bold text-black mb-1">
+                      <div className="flex-1">
+                        <p className="font-bold text-red-700 text-sm">
                           เกมนี้ไม่รองรับการตรวจสอบบัญชีอัตโนมัติ
                         </p>
-                        <p className="text-sm text-gray-700">
-                          ระบบไม่สามารถตรวจสอบว่าข้อมูลบัญชีถูกต้องหรือไม่
+                        <p className="text-xs text-red-600 mt-0.5">
                           กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
                         </p>
                       </div>
@@ -1541,102 +1511,343 @@ export default function GameDetailsPage() {
                   </div>
                 )}
 
-                {/* Order Summary */}
-                <div className="bg-brutal-gray border-[3px] border-black p-4">
-                  <h3 className="font-bold text-black mb-3 flex items-center">
-                    <Package size={18} className="mr-2" />
-                    รายละเอียดการสั่งซื้อ
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">สินค้า:</span>
-                      <span className="font-medium text-black">
-                        {verificationStatus.productName}
-                      </span>
+                {/* Main Grid Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  {/* Left Column - Product Info */}
+                  <div className="p-4 sm:p-5 space-y-4 border-b-[2px] lg:border-b-0 lg:border-r-[2px] border-black/10">
+                    {/* Product Summary Card */}
+                    <div className="bg-brutal-gray border-[2px] border-black p-3 sm:p-4 shadow-[3px_3px_0_0_#000]">
+                      <h3 className="font-bold text-black text-sm mb-3 flex items-center gap-1.5">
+                        <Package size={16} />
+                        รายละเอียดสินค้า
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">สินค้า:</span>
+                          <span className="font-medium text-black text-right max-w-[60%]">
+                            {verificationStatus.productName}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">จำนวน:</span>
+                          <span className="font-medium text-black">
+                            {verificationStatus.optionName}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">จำนวน:</span>
-                      <span className="font-medium text-black">
-                        {verificationStatus.optionName}
-                      </span>
-                    </div>
-                    <div className="flex justify-between border-t-[2px] border-black/20 pt-2 mt-2">
-                      <span className="text-gray-600">ราคา:</span>
-                      <span className="font-bold text-black">
-                        ฿{verificationStatus.price.toFixed(2)}
-                      </span>
+
+                    {/* Player Info - Compact */}
+                    {Object.keys(verificationStatus.playerInfo).length > 0 && (
+                      <div className="bg-white border-[2px] border-black p-3 sm:p-4 shadow-[3px_3px_0_0_#000]">
+                        <h3 className="font-bold text-black text-sm mb-2 flex items-center gap-1.5">
+                          <User size={16} />
+                          ข้อมูลบัญชี
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Object.entries(verificationStatus.playerInfo).map(
+                            ([key, value]) => (
+                              <div
+                                key={key}
+                                className="bg-brutal-gray p-2 border border-black/20"
+                              >
+                                <span className="text-xs text-gray-500 block capitalize">
+                                  {key}
+                                </span>
+                                <span className="font-mono font-bold text-black text-sm truncate block">
+                                  {value}
+                                </span>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Warning - No Refund */}
+                    <div className="bg-red-50 border-l-4 border-red-500 p-3">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle
+                          size={16}
+                          className="text-red-600 mt-0.5 flex-shrink-0"
+                        />
+                        <div>
+                          <p className="font-bold text-red-700 text-xs">
+                            ไม่สามารถขอคืนเงินได้
+                          </p>
+                          <p className="text-xs text-red-600 mt-0.5 leading-relaxed">
+                            หากข้อมูลไม่ถูกต้อง
+                            ระบบไม่สามารถคืนเงินหรือยกเลิกรายการได้
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Player Info Display */}
-                {Object.keys(verificationStatus.playerInfo).length > 0 && (
-                  <div className="bg-white border-[3px] border-black p-4">
-                    <h3 className="font-bold text-black mb-3 flex items-center">
-                      <User size={18} className="mr-2" />
-                      ข้อมูลบัญชีที่ระบุ
-                    </h3>
-                    <div className="space-y-2">
-                      {Object.entries(verificationStatus.playerInfo).map(
-                        ([key, value]) => (
-                          <div
-                            key={key}
-                            className="flex justify-between text-sm"
-                          >
-                            <span className="text-gray-600 capitalize">
-                              {key}:
+                  {/* Right Column - Payment & Actions */}
+                  <div className="p-4 sm:p-5 space-y-4 bg-gray-50/50">
+                    {/* Payment Method */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">
+                        ช่องทางชำระเงิน
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-black text-sm">
+                          {priceSummary.label || "เลือกช่องทาง"}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setIsPaymentSelectOpen(true)}
+                          className="text-xs py-1 px-2 h-auto"
+                        >
+                          เปลี่ยน
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Price Breakdown */}
+                    <div className="bg-white border-[2px] border-black p-4 shadow-[3px_3px_0_0_#000]">
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-gray-600">
+                          <span>ยอดสินค้า</span>
+                          <span>
+                            ฿
+                            {Number(
+                              priceSummary.base ||
+                                verificationStatus.price ||
+                                0,
+                            ).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>ค่าธรรมเนียม</span>
+                          <span>
+                            ฿{Number(priceSummary.fee || 0).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="border-t-2 border-black pt-2 mt-2">
+                          <div className="flex justify-between items-baseline">
+                            <span className="font-bold text-black">
+                              ยอดสุทธิ
                             </span>
-                            <span className="font-mono font-bold text-black bg-brutal-gray px-2 py-0.5">
-                              {value}
+                            <span className="text-2xl sm:text-3xl font-black text-black">
+                              ฿
+                              {Number(
+                                priceSummary.total ||
+                                  verificationStatus.price ||
+                                  0,
+                              ).toFixed(2)}
                             </span>
                           </div>
-                        ),
-                      )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
 
-                {/* No Refund Warning */}
-                <div className="bg-red-50 border-[3px] border-red-500 p-4">
-                  <div className="flex items-start">
-                    <AlertCircle
-                      size={20}
-                      className="text-red-600 mr-2 mt-0.5 flex-shrink-0"
-                    />
-                    <div>
-                      <p className="font-bold text-red-700 mb-1">
-                        คำเตือน: ไม่สามารถขอคืนเงินได้
-                      </p>
-                      <p className="text-sm text-red-600">
-                        หากข้อมูลบัญชีที่ระบุไม่ถูกต้อง
-                        ระบบจะไม่สามารถคืนเงินหรือยกเลิกรายการได้
-                        กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนยืนยัน
+                    {/* Security Note */}
+                    <div className="bg-sky-50 border border-sky-200 p-2.5 text-xs text-sky-700 flex items-start gap-2">
+                      <ShieldCheck size={14} className="mt-0.5 flex-shrink-0" />
+                      <span>การชำระเงินปลอดภัยผ่านระบบ Stripe</span>
+                    </div>
+
+                    {/* Action Buttons - Side by Side Layout */}
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        {/* Primary Action - Confirm */}
+                        <Button
+                          onClick={createOrder}
+                          disabled={isBuying}
+                          isLoading={isBuying}
+                          className="flex-1 bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-base sm:text-lg font-bold shadow-[3px_3px_0_0_#000] border-[2px] border-black"
+                        >
+                          {!isBuying && <Check size={20} className="mr-2" />}
+                          ยืนยันการสั่งซื้อ
+                        </Button>
+
+                        {/* Secondary Action - Cancel */}
+                        <Button
+                          variant="secondary"
+                          onClick={() => setShowConfirmModal(false)}
+                          disabled={isBuying}
+                          className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-semibold border-[2px] border-black shadow-[3px_3px_0_0_#000]"
+                        >
+                          ยกเลิก
+                        </Button>
+                      </div>
+
+                      {/* Helper Text */}
+                      <p className="text-center text-xs text-gray-400 mt-3">
+                        กดปุ่มยืนยันเพื่อดำเนินการชำระเงินต่อ
                       </p>
                     </div>
                   </div>
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-                {/* Actions */}
-                <div className="space-y-3 pt-2">
-                  <Button
-                    onClick={createOrder}
-                    disabled={isBuying}
-                    isLoading={isBuying}
-                    fullWidth
-                    className="bg-black text-white hover:bg-gray-800"
-                  >
-                    <Check size={18} className="mr-2" />
-                    ยืนยันการสั่งซื้อ
-                  </Button>
+      {/* Payment selection modal (desktop & mobile) */}
+      <AnimatePresence>
+        {isPaymentSelectOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            onClick={() => setIsPaymentSelectOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white w-full max-w-5xl border-[3px] border-black shadow-brutal p-4 sm:p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start gap-3 mb-5">
+                <div>
+                  <p className="text-xs uppercase text-gray-500 font-bold tracking-widest">
+                    Payment Method
+                  </p>
+                  <h3 className="text-2xl font-black text-black">
+                    เลือกช่องทางชำระเงิน
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    เลือกวิธีที่สะดวก
+                    ระบบจะคำนวณค่าธรรมเนียมและยอดรวมให้อัตโนมัติ
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsPaymentSelectOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded"
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowConfirmModal(false)}
-                    disabled={isBuying}
-                    fullWidth
-                  >
-                    ยกเลิก
-                  </Button>
+              <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1">
+                  {paymentOptions.map((opt: PaymentMethodOption) => {
+                    const isActive = selectedPaymentOption === opt.code;
+                    return (
+                      <label
+                        key={opt.code}
+                        className={`border-[2px] border-black p-4 flex flex-col gap-3 cursor-pointer transition-all ${
+                          isActive ? "bg-brutal-yellow" : "bg-white"
+                        }`}
+                        style={{ boxShadow: "2px 2px 0 0 #000" }}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-2">
+                            <input
+                              type="radio"
+                              name="paymentOptionModal"
+                              value={opt.code}
+                              checked={isActive}
+                              onChange={() =>
+                                setSelectedPaymentOption(opt.code)
+                              }
+                              className="mt-1 accent-black"
+                            />
+                            <div>
+                              <div className="text-black font-semibold text-base flex items-center gap-2">
+                                {opt.label}
+                              </div>
+                              <div className="text-xs text-gray-600 mt-1">
+                                Gateway: {opt.gateway.name}
+                              </div>
+                            </div>
+                          </div>
+                          {isActive && (
+                            <Check size={16} className="text-black" />
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] uppercase border border-black px-2 py-0.5 bg-white text-gray-700 font-bold">
+                            {opt.method}
+                          </span>
+                          <span className="text-xs text-gray-600">
+                            Code: {opt.code}
+                          </span>
+                        </div>
+
+                        <div className="border-t border-black/20 pt-2 text-xs text-gray-700 space-y-1">
+                          <div className="flex justify-between">
+                            <span>ค่าธรรมเนียม %</span>
+                            <span>
+                              {Number(opt.surchargePercent || 0).toFixed(2)}%
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>ค่าธรรมเนียมคงที่</span>
+                            <span>{formatTHB(Number(opt.flatFee || 0))}</span>
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <div className="border-[2px] border-black p-4 bg-gray-50 h-fit space-y-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">
+                      Transaction Summary
+                    </p>
+                    <h4 className="text-lg font-bold text-black mt-1">
+                      สรุปรายการชำระเงิน
+                    </h4>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between text-gray-700">
+                      <span>สินค้า</span>
+                      <span className="font-semibold text-black max-w-[55%] text-right truncate">
+                        {game?.title || "-"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-gray-700">
+                      <span>แพ็กเกจ</span>
+                      <span className="font-semibold text-black max-w-[55%] text-right truncate">
+                        {selectedTopUp?.title || "-"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-gray-700">
+                      <span>ยอดสินค้า</span>
+                      <span>{formatTHB(Number(priceSummary.base || 0))}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-700">
+                      <span>ค่าธรรมเนียม</span>
+                      <span>{formatTHB(Number(priceSummary.fee || 0))}</span>
+                    </div>
+                  </div>
+
+                  <div className="border-t-2 border-black pt-3 flex justify-between items-end">
+                    <span className="text-sm text-gray-600">
+                      ยอดที่ต้องชำระ
+                    </span>
+                    <span className="text-2xl font-black text-black">
+                      {formatTHB(Number(priceSummary.total || 0))}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-2 pt-1">
+                    <Button
+                      onClick={() => setIsPaymentSelectOpen(false)}
+                      disabled={!selectedPaymentOption}
+                      fullWidth
+                    >
+                      ยืนยันช่องทางนี้
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setIsPaymentSelectOpen(false)}
+                      fullWidth
+                    >
+                      ปิดหน้าต่าง
+                    </Button>
+                  </div>
                 </div>
               </div>
             </motion.div>

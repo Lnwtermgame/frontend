@@ -136,6 +136,7 @@ class OrderApiService {
       playerInfo?: Record<string, string>;
     }[];
     paymentMethod?: "CREDIT_CARD" | "PROMPTPAY" | "TRUEMONEY" | "BANK_TRANSFER";
+    paymentOptionCode?: string;
     skipPayment?: boolean;
   }): Promise<OrderResponse> {
     const response = await orderClient.post<OrderResponse>("/api/orders", data);

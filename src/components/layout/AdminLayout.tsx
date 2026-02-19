@@ -19,6 +19,7 @@ import {
   Bell,
   Layers,
   HelpCircle,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -46,6 +47,11 @@ const adminNavItems = [
     title: "คำสั่งซื้อ",
     href: "/admin/orders",
     icon: <ShoppingCart className="w-5 h-5" />,
+  },
+  {
+    title: "การชำระเงิน",
+    href: "/admin/payments",
+    icon: <CreditCard className="w-5 h-5" />,
   },
   {
     title: "โปรโมชั่น",

@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import toast from 'react-hot-toast';
-import { useLocalStorage } from '../hooks/use-local-storage';
-import { authApi, User, AuthTokens } from '../services/auth-api';
+import { authApi, User } from '../services/auth-api';
+import { setAccessToken } from '../client/gateway';
 
 type AuthContextType = {
   user: User | null;
@@ -64,30 +64,66 @@ function getTokenRemainingTime(token: string): number {
 }
 
 // Storage version - bump this when auth structure changes to force clear stale data
-const AUTH_STORAGE_VERSION = '2';
+const AUTH_STORAGE_VERSION = '3';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser, isInitialized] = useLocalStorage<User | null>('mali-gamepass-user', null);
-  const [token, setToken] = useLocalStorage<string | null>('auth_token', null);
-  const [refreshToken, setRefreshToken] = useLocalStorage<string | null>('auth_refresh_token', null);
-  const [storageVersion, setStorageVersion] = useLocalStorage<string | null>('auth_storage_version', null);
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [storageVersion, setStorageVersion] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isCheckingSessionRef = useRef(false);
   const isAuthenticated = !!user && !!token;
   const isAdmin = user?.role === 'ADMIN';
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      setIsInitialized(true);
+      return;
+    }
+    const storedUser = localStorage.getItem('mali-gamepass-user');
+    const storedVersion = localStorage.getItem('auth_storage_version');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser) as User);
+      } catch {
+        localStorage.removeItem('mali-gamepass-user');
+      }
+    }
+    setStorageVersion(storedVersion);
+    setIsInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (user) {
+      localStorage.setItem('mali-gamepass-user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('mali-gamepass-user');
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (storageVersion) {
+      localStorage.setItem('auth_storage_version', storageVersion);
+    }
+  }, [storageVersion]);
 
   // Check and clear stale storage data
   useEffect(() => {
     if (isInitialized && storageVersion !== AUTH_STORAGE_VERSION) {
       console.log('[Auth] Clearing stale auth data due to version mismatch');
       setUser(null);
-      setToken(null);
-      setRefreshToken(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_refresh_token');
+      }
       setStorageVersion(AUTH_STORAGE_VERSION);
     }
-  }, [isInitialized, storageVersion, setUser, setToken, setRefreshToken, setStorageVersion]);
+  }, [isInitialized, storageVersion, setUser, setStorageVersion]);
 
   // Debug logging for admin access issues
   useEffect(() => {
@@ -102,13 +138,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Clear all auth data
   const clearAuth = useCallback(() => {
     setToken(null);
-    setRefreshToken(null);
     setUser(null);
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
-  }, [setToken, setRefreshToken, setUser]);
+    setAccessToken(null);
+  }, [setToken, setUser]);
 
   // Schedule token refresh
   const scheduleTokenRefresh = useCallback((expiresIn: number) => {
@@ -128,12 +164,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Perform token refresh
   const performTokenRefresh = useCallback(async () => {
-    const currentRefreshToken = refreshToken;
-    if (!currentRefreshToken) {
-      console.log('[Auth] No refresh token available');
-      return;
-    }
-
     // Prevent concurrent refresh attempts
     if (isCheckingSessionRef.current) {
       console.log('[Auth] Token refresh already in progress');
@@ -144,13 +174,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log('[Auth] Performing token refresh...');
 
     try {
-      const response = await authApi.refreshToken(currentRefreshToken);
+      const response = await authApi.refreshToken();
 
       if (response.success) {
         console.log('[Auth] Token refresh successful');
         setToken(response.data.accessToken);
-        setRefreshToken(response.data.refreshToken);
         scheduleTokenRefresh(response.data.expiresIn);
+        setAccessToken(response.data.accessToken);
       } else {
         console.log('[Auth] Token refresh failed');
         // Don't clear auth immediately - let the user continue until token actually expires
@@ -168,7 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       isCheckingSessionRef.current = false;
     }
-  }, [refreshToken, setToken, setRefreshToken, clearAuth, scheduleTokenRefresh]);
+  }, [setToken, clearAuth, scheduleTokenRefresh]);
 
   // Hydration check
   useEffect(() => {
@@ -184,45 +214,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Only check if we have a token but no user data
-      if (!token || user) {
-        // If we have both user and token, just schedule refresh
-        if (token && refreshToken && user) {
-          const remainingTime = getTokenRemainingTime(token);
-          if (remainingTime > 60) { // Only schedule if token has more than 1 minute left
-            scheduleTokenRefresh(remainingTime);
+      if (user && token) {
+        const remainingTime = getTokenRemainingTime(token);
+        if (remainingTime > 60) {
+          scheduleTokenRefresh(remainingTime);
+        } else if (remainingTime > 0) {
+          await performTokenRefresh();
+        }
+        return;
+      }
+
+      if (token && !user) {
+        isCheckingSessionRef.current = true;
+        console.log('[Auth] Checking existing session...');
+        try {
+          const response = await authApi.getProfile();
+          if (response.success) {
+            console.log('[Auth] Session valid, restoring user');
+            setUser(response.data);
+            const remainingTime = getTokenRemainingTime(token);
+            if (remainingTime > 60) {
+              scheduleTokenRefresh(remainingTime);
+            } else if (remainingTime > 0) {
+              await performTokenRefresh();
+            }
           }
+        } catch (err) {
+          console.log('[Auth] Session check failed:', err);
+          if ((err as any)?.response?.status === 401) {
+            clearAuth();
+          }
+        } finally {
+          isCheckingSessionRef.current = false;
         }
         return;
       }
 
       isCheckingSessionRef.current = true;
-      console.log('[Auth] Checking existing session...');
-
+      console.log('[Auth] Restoring session from refresh cookie...');
       try {
-        const response = await authApi.getProfile();
-        if (response.success) {
-          console.log('[Auth] Session valid, restoring user');
-          setUser(response.data);
-          // Schedule token refresh if we have a refresh token
-          if (refreshToken) {
-            const remainingTime = getTokenRemainingTime(token);
-            if (remainingTime > 60) { // Only schedule if token has more than 1 minute left
-              scheduleTokenRefresh(remainingTime);
-            } else if (remainingTime > 0) {
-              // Token expiring soon, refresh now
-              console.log('[Auth] Token expiring soon, refreshing...');
-              await performTokenRefresh();
-            }
+        const refreshResponse = await authApi.refreshToken();
+        if (refreshResponse.success) {
+          setToken(refreshResponse.data.accessToken);
+          setAccessToken(refreshResponse.data.accessToken);
+          scheduleTokenRefresh(refreshResponse.data.expiresIn);
+          const profileResponse = await authApi.getProfile();
+          if (profileResponse.success) {
+            setUser(profileResponse.data);
           }
         }
       } catch (err) {
-        console.log('[Auth] Session check failed:', err);
-        // Only clear auth if we get a 401 (unauthorized)
-        // Don't clear on network errors or other issues
-        if ((err as any)?.response?.status === 401) {
-          clearAuth();
-        }
+        console.log('[Auth] Refresh cookie session failed:', err);
       } finally {
         isCheckingSessionRef.current = false;
       }
@@ -271,8 +313,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('[Auth] Login successful, setting up session');
         setUser(response.data.user);
         setToken(response.data.tokens.accessToken);
-        setRefreshToken(response.data.tokens.refreshToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
+        setAccessToken(response.data.tokens.accessToken);
         toast.success('เข้าสู่ระบบสำเร็จ!');
         return true;
       } else {
@@ -310,8 +352,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('[Auth] Register successful, setting up session');
         setUser(response.data.user);
         setToken(response.data.tokens.accessToken);
-        setRefreshToken(response.data.tokens.refreshToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
+        setAccessToken(response.data.tokens.accessToken);
         toast.success('สร้างบัญชีสำเร็จ!');
         return true;
       } else {
@@ -330,8 +372,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout with API
   const logout = async () => {
     try {
-      if (token && refreshToken) {
-        await authApi.logout(refreshToken);
+      if (token) {
+        await authApi.logout();
       }
     } catch {
       // Ignore logout errors
@@ -405,8 +447,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('[Auth] OAuth login successful, setting up session');
         setUser(response.data.user);
         setToken(response.data.tokens.accessToken);
-        setRefreshToken(response.data.tokens.refreshToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
+        setAccessToken(response.data.tokens.accessToken);
         toast.success(response.data.isNewUser ? 'สร้างบัญชีสำเร็จ!' : 'เข้าสู่ระบบสำเร็จ!');
         return true;
       } else {

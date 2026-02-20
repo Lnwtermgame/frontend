@@ -9,6 +9,14 @@ import axios, {
 const GATEWAY_URL =
   process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:3000";
 
+let inMemoryAccessToken: string | null = null;
+
+export const setAccessToken = (token: string | null) => {
+  inMemoryAccessToken = token;
+};
+
+export const getAccessToken = (): string | null => inMemoryAccessToken;
+
 // Flag to prevent multiple refresh attempts
 let isRefreshing = false;
 // Queue of failed requests to retry after token refresh
@@ -31,24 +39,16 @@ const processQueue = (error: unknown | null, token: string | null = null) => {
 
 // Refresh token function
 const refreshAccessToken = async (): Promise<string | null> => {
-  const refreshToken =
-    typeof window !== "undefined"
-      ? localStorage.getItem("auth_refresh_token")
-      : null;
-
-  if (!refreshToken) {
-    return null;
-  }
-
   try {
-    const response = await axios.post(`${GATEWAY_URL}/api/auth/refresh-token`, {
-      refreshToken,
-    });
+    const response = await axios.post(
+      `${GATEWAY_URL}/api/auth/refresh-token`,
+      {},
+      { withCredentials: true },
+    );
 
     if (response.data?.success) {
-      const { accessToken, refreshToken: newRefreshToken } = response.data.data;
-      localStorage.setItem("auth_token", accessToken);
-      localStorage.setItem("auth_refresh_token", newRefreshToken);
+      const { accessToken } = response.data.data;
+      setAccessToken(accessToken);
       return accessToken;
     }
     return null;
@@ -89,10 +89,7 @@ const buildGetRequestKey = (
   url: string,
   config?: ExtendedAxiosRequestConfig,
 ): string => {
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("auth_token") || ""
-      : "";
+  const token = getAccessToken() || "";
   const paramsKey = serializeParams(config?.params);
   return [service, url, paramsKey, token].join("::");
 };
@@ -104,7 +101,7 @@ const createServiceClient = (service: string): AxiosInstance => {
       "Content-Type": "application/json",
       "X-Service": service,
     },
-    withCredentials: false,
+    withCredentials: true,
   });
 
   // Request coalescing and short-lived cache for GET requests
@@ -116,16 +113,21 @@ const createServiceClient = (service: string): AxiosInstance => {
 
   // Request interceptor to add JWT token
   client.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
+    async (config: InternalAxiosRequestConfig) => {
       // Any write operation invalidates cached GET responses for this service.
       if (config.method && config.method.toLowerCase() !== "get") {
         getResponseCache.clear();
       }
 
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("auth_token")
-          : null;
+      let token = getAccessToken();
+      if (!token) {
+        const refreshAttempted = (config as { _refreshAttempted?: boolean })
+          ._refreshAttempted;
+        if (!refreshAttempted) {
+          (config as { _refreshAttempted?: boolean })._refreshAttempted = true;
+          token = await refreshAccessToken();
+        }
+      }
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -190,9 +192,7 @@ const createServiceClient = (service: string): AxiosInstance => {
       const requestHadAuthHeader = Boolean(
         requestHeaders?.Authorization ?? requestHeaders?.authorization,
       );
-      const hasStoredToken =
-        typeof window !== "undefined" &&
-        Boolean(localStorage.getItem("auth_token"));
+      const hasStoredToken = Boolean(getAccessToken());
 
       if (!requestHadAuthHeader && !hasStoredToken) {
         return Promise.reject(error);
@@ -226,8 +226,7 @@ const createServiceClient = (service: string): AxiosInstance => {
           // Refresh failed, clear auth and redirect
           processQueue(new Error("Failed to refresh token"), null);
           if (typeof window !== "undefined") {
-            localStorage.removeItem("auth_token");
-            localStorage.removeItem("auth_refresh_token");
+            setAccessToken(null);
             localStorage.removeItem("mali-gamepass-user");
             window.location.href = "/login?session_expired=true";
           }

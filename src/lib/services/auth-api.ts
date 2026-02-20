@@ -95,17 +95,15 @@ class AuthApiService {
     return response.data;
   }
 
-  async refreshToken(refreshToken: string): Promise<{ success: boolean; data: AuthTokens }> {
-    // Sanitize token: remove surrounding quotes if present (from localStorage JSON)
-    const sanitizedToken = refreshToken.trim().replace(/^"|"$/g, '');
-    const response = await authClient.post('/api/auth/refresh-token', { refreshToken: sanitizedToken });
+  async refreshToken(refreshToken?: string): Promise<{ success: boolean; data: AuthTokens }> {
+    const payload = refreshToken ? { refreshToken } : {};
+    const response = await authClient.post('/api/auth/refresh-token', payload);
     return response.data;
   }
 
   async logout(refreshToken?: string): Promise<void> {
-    // Sanitize token: remove surrounding quotes if present (from localStorage JSON)
-    const sanitizedToken = refreshToken ? refreshToken.trim().replace(/^"|"$/g, '') : undefined;
-    await authClient.post('/api/auth/logout', { refreshToken: sanitizedToken });
+    const payload = refreshToken ? { refreshToken } : {};
+    await authClient.post('/api/auth/logout', payload);
   }
 
   async getProfile(): Promise<ProfileResponse> {

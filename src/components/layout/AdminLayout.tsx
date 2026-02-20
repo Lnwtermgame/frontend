@@ -20,6 +20,8 @@ import {
   Layers,
   HelpCircle,
   CreditCard,
+  FileText,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -77,6 +79,16 @@ const adminNavItems = [
     title: "ตั๋วสนับสนุน",
     href: "/admin/tickets",
     icon: <MessageSquare className="w-5 h-5" />,
+  },
+  {
+    title: "หน้าเว็บ (CMS)",
+    href: "/admin/cms/pages",
+    icon: <FileText className="w-5 h-5" />,
+  },
+  {
+    title: "ข่าวสาร",
+    href: "/admin/cms/news",
+    icon: <Newspaper className="w-5 h-5" />,
   },
   {
     title: "การแจ้งเตือน",

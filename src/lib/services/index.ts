@@ -31,31 +31,32 @@
  */
 
 // Auth Service (3001)
-export * from './auth-api';
-export * from './security-api';
-export * from './admin-user-api';
-export * from './admin-settings-api';
-export * from './public-settings-api';
+export * from "./auth-api";
+export * from "./security-api";
+export * from "./admin-user-api";
+export * from "./admin-settings-api";
+export * from "./public-settings-api";
 
 // Product Service (3002)
-export * from './product-api';
-export * from './favorite-api';
+export * from "./product-api";
+export * from "./favorite-api";
 
 // Order Service (3003)
-export * from './order-api';
-export * from './invoice-api';
-export * from './coupon-api';
-export * from './analytics-api';
+export * from "./order-api";
+export * from "./invoice-api";
+export * from "./coupon-api";
+export * from "./analytics-api";
 
 // Payment Service (3004)
-export * from './payment-api';
-export * from './credit-api';
+export * from "./payment-api";
+export * from "./credit-api";
 
 // Notification Service (3006)
-export * from './notification-api';
+export * from "./notification-api";
 
 // Support Service (3007)
-export * from './support-api';
+export * from "./support-api";
+export * from "./cms-api";
 
 // Re-export clients for direct use
 export {
@@ -65,6 +66,6 @@ export {
   paymentClient,
   supportClient,
   publicClient,
-  cartClient,   // Alias for orderClient (backward compat)
+  cartClient, // Alias for orderClient (backward compat)
   creditClient, // Alias for paymentClient (backward compat)
-} from '@/lib/client/gateway';
+} from "@/lib/client/gateway";

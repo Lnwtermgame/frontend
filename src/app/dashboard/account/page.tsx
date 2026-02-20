@@ -282,54 +282,6 @@ export default function AccountPage() {
                 </div>
               </div>
             </motion.div>
-
-            {/* VIP Status - New section */}
-            <motion.div
-              className="bg-white border-[3px] border-black overflow-hidden"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-              whileHover={{ y: -2 }}
-            >
-
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-bold text-black flex items-center thai-font">
-                    <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-                    สถานะ VIP
-                  </h2>
-                  <Link
-                    href="/star"
-                    className="text-black text-sm flex items-center hover:underline font-medium thai-font"
-                  >
-                    รายละเอียด <ChevronRight size={16} />
-                  </Link>
-                </div>
-                <div className="bg-brutal-yellow/20 p-4 border-[2px] border-black mb-2">
-                  <div className="flex items-center">
-                    <div className="flex mr-3">
-                      <Star size={18} className="text-black" fill="currentColor" />
-                      <Star size={18} className="text-black -ml-1" fill="currentColor" />
-                      <Star size={18} className="text-black -ml-1" fill="currentColor" />
-                    </div>
-                    <span className="font-bold text-black thai-font">สมาชิกโกลด์</span>
-                  </div>
-                  <div className="mt-3">
-                    <div className="h-3 w-full bg-white border-[2px] border-black overflow-hidden">
-                      <div className="h-full bg-brutal-pink w-[65%] border-r-[2px] border-black"></div>
-                    </div>
-                    <div className="flex justify-between mt-1 text-xs">
-                      <span className="text-gray-600">5,200 คะแนน</span>
-                      <span className="text-gray-600 thai-font">อีก 8,000 คะแนนเพื่อแพลทินัม</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-sm text-gray-600 thai-font">
-                  คุณมี <span className="text-brutal-pink font-bold">3</span> รางวัลพิเศษที่สามารถใช้ได้
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </div>

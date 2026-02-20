@@ -14,7 +14,7 @@ const slugify = (text: string) => {
     .replace(/^-+|-+$/g, "");
 
   if (base) return base;
-  return `faq-${Math.random().toString(36).slice(2, 8)}`;
+  return `content-${Math.random().toString(36).slice(2, 8)}`;
 };
 
 // Z.ai API configuration - using Coding endpoint as requested
@@ -77,6 +77,18 @@ export interface AvailableCategory {
   name: string;
   slug: string;
 }
+
+export interface GeneratedEditorialContent {
+  title: string;
+  content: string;
+  excerpt: string;
+  slug?: string;
+}
+
+type ContentGenerationProgressCallback = (progress: {
+  stage: string;
+  message: string;
+}) => void;
 
 // Z.ai API request types
 interface ZaiMessage {
@@ -1279,7 +1291,7 @@ PLATFORMS: iOS, Android, PC
     };
   }
 
-  // ============ FAQ Content Generation ============
+  // ============ Editorial Content Generation ============
 
   /**
    * Generate FAQ article content using AI
@@ -1287,8 +1299,50 @@ PLATFORMS: iOS, Android, PC
   async generateFaqContent(
     topic: string,
     categoryName: string,
-    onProgress?: (progress: { stage: string; message: string }) => void,
-  ): Promise<{ title: string; content: string; excerpt: string; slug?: string }> {
+    onProgress?: ContentGenerationProgressCallback,
+  ): Promise<GeneratedEditorialContent> {
+    return this.generateEditorialContent(
+      topic,
+      this.buildFaqPrompt(topic, categoryName),
+      onProgress,
+    );
+  }
+
+  /**
+   * Generate news article content using AI
+   */
+  async generateNewsContent(
+    topic: string,
+    categoryName: string,
+    onProgress?: ContentGenerationProgressCallback,
+  ): Promise<GeneratedEditorialContent> {
+    return this.generateEditorialContent(
+      topic,
+      this.buildNewsPrompt(topic, categoryName),
+      onProgress,
+    );
+  }
+
+  /**
+   * Generate CMS page content using AI
+   */
+  async generateCmsPageContent(
+    topic: string,
+    pageType: string,
+    onProgress?: ContentGenerationProgressCallback,
+  ): Promise<GeneratedEditorialContent> {
+    return this.generateEditorialContent(
+      topic,
+      this.buildCmsPagePrompt(topic, pageType),
+      onProgress,
+    );
+  }
+
+  private async generateEditorialContent(
+    topic: string,
+    prompt: string,
+    onProgress?: ContentGenerationProgressCallback,
+  ): Promise<GeneratedEditorialContent> {
     onProgress?.({ stage: "preparing", message: "กำลังเตรียมข้อมูล..." });
 
     if (!this.isConfigured()) {
@@ -1299,15 +1353,15 @@ PLATFORMS: iOS, Android, PC
 
     onProgress?.({ stage: "generating", message: "กำลังสร้างเนื้อหาด้วย AI..." });
 
-    const prompt = this.buildFaqPrompt(topic, categoryName);
     const response = await this.callZaiApi(prompt);
     const choice = response.choices[0];
     let content = choice.message.content?.trim() || "";
 
     // Handle reasoning models
-    const reasoning = (choice.message as any).reasoning_content as string | undefined;
+    const reasoning = (choice.message as any).reasoning_content as
+      | string
+      | undefined;
     if (!content && reasoning) {
-      // Try to extract from reasoning
       const contentMatch = reasoning.match(/CONTENT:\s*([\s\S]*?)(?=\n\n|$)/i);
       if (contentMatch) {
         content = contentMatch[1].trim();
@@ -1320,7 +1374,7 @@ PLATFORMS: iOS, Android, PC
 
     onProgress?.({ stage: "parsing", message: "กำลังประมวลผลผลลัพธ์..." });
 
-    const result = this.parseFaqContent(content, topic);
+    const result = this.parseEditorialContent(content, topic);
 
     onProgress?.({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
 
@@ -1369,7 +1423,91 @@ SLUG: how-to-topup-mobile-legends-safely
 สร้างบทความ FAQ ตอนนี้ (ตอบเฉพาะรูปแบบด้านบน):`;
   }
 
-  private parseFaqContent(content: string, fallbackTopic: string): { title: string; content: string; excerpt: string; slug?: string } {
+  private buildNewsPrompt(topic: string, categoryName: string): string {
+    return `สร้างบทความข่าวสารสำหรับเว็บไซต์เติมเกม
+
+หัวข้อข่าว: "${topic}"
+หมวดหมู่ข่าว: ${categoryName}
+
+รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
+TITLE: [พาดหัวข่าวชัดเจน กระชับ ไม่เกิน 100 ตัวอักษร]
+CONTENT: [เนื้อหาข่าวฉบับเต็มภาษาไทย 250-600 คำ มีโครงสร้างอ่านง่าย]
+EXCERPT: [สรุปข่าวสั้นๆ ไม่เกิน 160 ตัวอักษร]
+SLUG: [slug ภาษาอังกฤษ ใช้ตัวพิมพ์เล็ก ตัวเลข และขีดกลางเท่านั้น]
+
+ข้อกำหนด:
+1. ใช้โทนการเขียนแบบข่าวสาร/ประกาศอย่างมืออาชีพ ไม่ใช่สไตล์ FAQ
+2. ย่อหน้าแรกต้องสรุปประเด็นสำคัญของข่าวให้ครบ (ใคร/อะไร/เมื่อไร/ผลกระทบ)
+3. จัดโครงสร้างเนื้อหาด้วยหัวข้อย่อย (##) และ bullet points เมื่อเหมาะสม
+4. เนื้อหาต้องสอดคล้องกับหมวดหมู่ข่าว: ${categoryName}
+5. หลีกเลี่ยงข้อมูลเกินจริงและห้ามใช้ภาษาคลุมเครือ
+6. ไม่ใช้อิโมจิ
+7. สร้าง SLUG เป็นภาษาอังกฤษพร้อมเชื่อมคำด้วยขีดกลาง
+
+ตัวอย่างที่ถูกต้อง:
+TITLE: ประกาศปิดปรับปรุงระบบชำระเงินชั่วคราว 24 ก.พ. 2026
+CONTENT: ระบบจะปิดปรับปรุงชั่วคราวในวันที่ 24 ก.พ. 2026 เวลา 01:00-03:00 น. เพื่อเพิ่มประสิทธิภาพและความเสถียรของธุรกรรม
+
+## รายละเอียดการปรับปรุง
+- ช่วงเวลา: 01:00-03:00 น.
+- บริการที่ได้รับผลกระทบ: การชำระเงินบางช่องทาง
+- บริการที่ยังใช้งานได้: การเรียกดูสินค้าและประวัติคำสั่งซื้อ
+
+## คำแนะนำสำหรับผู้ใช้งาน
+โปรดวางแผนการสั่งซื้อล่วงหน้า หากทำรายการไม่สำเร็จระหว่างช่วงเวลาดังกล่าว สามารถทำรายการใหม่ได้หลังระบบกลับมาปกติ
+
+EXCERPT: แจ้งปิดปรับปรุงระบบชำระเงินชั่วคราว 24 ก.พ. 2026 เวลา 01:00-03:00 น. เพื่อเพิ่มประสิทธิภาพการให้บริการ
+SLUG: payment-system-maintenance-feb-24-2026
+
+สร้างบทความข่าวสารตอนนี้ (ตอบเฉพาะรูปแบบด้านบน):`;
+  }
+
+  private buildCmsPagePrompt(topic: string, pageType: string): string {
+    return `สร้างเนื้อหาหน้าเว็บไซต์แบบ CMS (Static Page) สำหรับเว็บไซต์เติมเกม
+
+ชื่อหน้า: "${topic}"
+ประเภทหน้า: ${pageType}
+
+รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
+TITLE: [ชื่อหน้าชัดเจน เหมาะกับการแสดงผลบนเว็บไซต์]
+CONTENT: [เนื้อหาเต็มภาษาไทย 300-800 คำ ในรูปแบบอ่านง่าย]
+EXCERPT: [สรุปเนื้อหาสั้นๆ ไม่เกิน 160 ตัวอักษร สำหรับ SEO/รายการ]
+SLUG: [slug ภาษาอังกฤษ ใช้ตัวพิมพ์เล็ก ตัวเลข และขีดกลางเท่านั้น]
+
+ข้อกำหนด:
+1. โทนภาษาเป็นทางการ อ่านง่าย และน่าเชื่อถือ
+2. เหมาะสำหรับหน้าเว็บไซต์ถาวร เช่น นโยบายความเป็นส่วนตัว, เงื่อนไขการใช้งาน, เกี่ยวกับเรา
+3. ไม่เขียนแบบข่าว และไม่เขียนแบบ Q&A
+4. ใช้หัวข้อย่อย (##) เพื่อแบ่งเนื้อหาเป็นส่วนชัดเจน
+5. ถ้ามีรายการเงื่อนไข ให้ใช้เลขข้อหรือ bullet points
+6. ไม่ใช้อิโมจิ
+7. หลีกเลี่ยงการอ้างอิงวันที่เฉพาะเจาะจง เว้นแต่จำเป็น
+8. สร้าง SLUG ภาษาอังกฤษให้เหมาะกับ URL ของหน้า CMS
+
+ตัวอย่างที่ถูกต้อง:
+TITLE: นโยบายความเป็นส่วนตัว
+CONTENT: ## ข้อมูลที่เราเก็บรวบรวม
+เราเก็บข้อมูลที่จำเป็นต่อการให้บริการ เช่น ข้อมูลบัญชีผู้ใช้ ประวัติการสั่งซื้อ และข้อมูลการชำระเงินตามความเหมาะสม
+
+## วัตถุประสงค์ในการใช้ข้อมูล
+ข้อมูลถูกใช้เพื่อยืนยันตัวตน ประมวลผลคำสั่งซื้อ ปรับปรุงคุณภาพบริการ และป้องกันการทุจริต
+
+## การเก็บรักษาและความปลอดภัยของข้อมูล
+เรามีมาตรการด้านเทคนิคและกระบวนการภายในเพื่อคุ้มครองข้อมูลส่วนบุคคลจากการเข้าถึงโดยไม่ได้รับอนุญาต
+
+## การติดต่อ
+หากมีคำถามเกี่ยวกับนโยบายนี้ กรุณาติดต่อทีมสนับสนุนผ่านช่องทางที่ระบุบนเว็บไซต์
+
+EXCERPT: นโยบายความเป็นส่วนตัวเกี่ยวกับการเก็บ ใช้ และคุ้มครองข้อมูลส่วนบุคคลของผู้ใช้งานอย่างโปร่งใสและปลอดภัย
+SLUG: privacy-policy
+
+สร้างเนื้อหาหน้า CMS ตอนนี้ (ตอบเฉพาะรูปแบบด้านบน):`;
+  }
+
+  private parseEditorialContent(
+    content: string,
+    fallbackTopic: string,
+  ): GeneratedEditorialContent {
     const lines = content.split("\n").map((line) => line.trim());
 
     let title = "";

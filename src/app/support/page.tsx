@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from '@/lib/framer-exports';
+import { motion } from "@/lib/framer-exports";
 import {
   FileText,
   PanelRight,
@@ -8,10 +8,10 @@ import {
   AlertCircle,
   ChevronRight,
   Headphones,
-  HelpCircle
-} from 'lucide-react';
-import Link from 'next/link';
-import { usePublicSettings } from '@/lib/context/public-settings-context';
+  HelpCircle,
+} from "lucide-react";
+import Link from "next/link";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 // Support category tiles - เก็บเฉพาะ Help Guides และ Ticket System
 const supportCategories = [
@@ -20,22 +20,23 @@ const supportCategories = [
     title: "คำถามที่พบบ่อย (FAQ)",
     description: "รวมคำถามยอดฮิต วิธีแก้ปัญหา และขั้นตอนต่าง ๆ",
     link: "/support/faq",
-    isExternal: false
+    isExternal: false,
   },
   {
     icon: <PanelRight className="h-6 w-6 text-black" />,
     title: "ตั๋วสนับสนุน",
     description: "ส่งคำขอความช่วยเหลือและติดตามสถานะการดำเนินการ",
     link: "/support/tickets",
-    isExternal: false
-  }
+    isExternal: false,
+  },
 ];
 
 export default function SupportPage() {
   const { settings } = usePublicSettings();
   const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
   const visibleSupportCategories = supportCategories.filter((category) => {
-    if (!supportTicketsEnabled && category.link === "/support/tickets") return false;
+    if (!supportTicketsEnabled && category.link === "/support/tickets")
+      return false;
     return true;
   });
 
@@ -44,7 +45,7 @@ export default function SupportPage() {
       {/* Hero Section */}
       <motion.div
         className="bg-white border-[3px] border-black rounded-xl p-8 mb-8"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -59,7 +60,9 @@ export default function SupportPage() {
               <div className="bg-brutal-blue p-3 border-[3px] border-black mr-3">
                 <Headphones className="h-8 w-8 text-black" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-black">ศูนย์ช่วยเหลือ</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-black">
+                ศูนย์ช่วยเหลือ
+              </h1>
             </div>
             <p className="text-gray-600 mb-6">
               มีปัญหาในการใช้งานหรือต้องการสอบถามเพิ่มเติม? เราพร้อมช่วยเหลือคุณ
@@ -79,7 +82,7 @@ export default function SupportPage() {
             <motion.div
               key={index}
               className="bg-white border-[3px] border-black rounded-xl overflow-hidden group"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -91,10 +94,10 @@ export default function SupportPage() {
                     {category.icon}
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-black font-bold text-lg">{category.title}</h3>
-                    <p className="text-gray-600 mt-1">
-                      {category.description}
-                    </p>
+                    <h3 className="text-black font-bold text-lg">
+                      {category.title}
+                    </h3>
+                    <p className="text-gray-600 mt-1">{category.description}</p>
                     <div className="flex items-center mt-3 text-black group-hover:text-gray-700 transition-colors">
                       <span className="text-sm font-medium">เข้าชม</span>
                       <ChevronRight size={16} className="ml-1" />
@@ -110,7 +113,10 @@ export default function SupportPage() {
       {/* Support hours */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
-          <div className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center mb-4">
               <Clock className="text-black mr-3" />
               <h2 className="text-xl font-bold text-black">เวลาทำการ</h2>
@@ -118,14 +124,16 @@ export default function SupportPage() {
 
             <div className="space-y-4">
               <div>
-                <h3 className="text-gray-600 font-medium mb-2">จันทร์ - ศุกร์</h3>
-                <p className="text-black">
-                  09:00 - 22:00 น.
-                </p>
+                <h3 className="text-gray-600 font-medium mb-2">
+                  จันทร์ - ศุกร์
+                </h3>
+                <p className="text-black">09:00 - 22:00 น.</p>
               </div>
 
               <div>
-                <h3 className="text-gray-600 font-medium mb-2">เสาร์ - อาทิตย์ และวันหยุดนักขัตฤกษ์</h3>
+                <h3 className="text-gray-600 font-medium mb-2">
+                  เสาร์ - อาทิตย์ และวันหยุดนักขัตฤกษ์
+                </h3>
                 <p className="text-black">10:00 - 20:00 น.</p>
               </div>
 
@@ -135,10 +143,14 @@ export default function SupportPage() {
             <div className="mt-6 border-t-2 border-gray-200 pt-6">
               <div className="flex items-center">
                 <AlertCircle size={18} className="text-black mr-2" />
-                <span className="text-black font-medium">ต้องการความช่วยเหลือด่วน?</span>
+                <span className="text-black font-medium">
+                  ต้องการความช่วยเหลือด่วน?
+                </span>
               </div>
               <p className="mt-2 text-gray-600">
-                หากพบปัญหาเร่งด่วนเกี่ยวกับคำสั่งซื้อหรือการชำระเงิน แนะนำให้ส่งตั๋วสนับสนุนในหน้าระบบตั๋ว ทีมงานจะรีบดำเนินการโดยเร็วที่สุด
+                หากพบปัญหาเร่งด่วนเกี่ยวกับคำสั่งซื้อหรือการชำระเงิน
+                แนะนำให้ส่งตั๋วสนับสนุนในหน้าระบบตั๋ว
+                ทีมงานจะรีบดำเนินการโดยเร็วที่สุด
               </p>
             </div>
           </div>
@@ -146,7 +158,10 @@ export default function SupportPage() {
 
         {/* Quick Help Topics - ปัญหาที่พบบ่อย */}
         <div className="lg:col-span-2">
-          <div className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
               <h2 className="text-xl font-bold text-black">ปัญหาที่พบบ่อย</h2>
@@ -170,7 +185,9 @@ export default function SupportPage() {
                 href="/support/guides/payment-issues"
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
-                <span className="text-black">โดนหักเงินแต่สถานะคำสั่งซื้อไม่สำเร็จ</span>
+                <span className="text-black">
+                  โดนหักเงินแต่สถานะคำสั่งซื้อไม่สำเร็จ
+                </span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
               <Link

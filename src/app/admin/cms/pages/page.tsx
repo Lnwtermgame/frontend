@@ -213,10 +213,7 @@ export default function AdminCmsPagesPage() {
         ...prev,
         title: result.title,
         content: result.content,
-        slug:
-          !editingPage && !prev.slug?.trim()
-            ? aiSlug
-            : prev.slug,
+        slug: !editingPage && !prev.slug?.trim() ? aiSlug : prev.slug,
         metaTitle: prev.metaTitle?.trim() ? prev.metaTitle : result.title,
         metaDescription: prev.metaDescription?.trim()
           ? prev.metaDescription
@@ -614,7 +611,9 @@ export default function AdminCmsPagesPage() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
                       <Sparkles className="w-5 h-5 text-brutal-pink mr-2" />
-                      <span className="font-medium text-black">สร้างด้วย AI</span>
+                      <span className="font-medium text-black">
+                        สร้างด้วย AI
+                      </span>
                     </div>
                     {!showAIGenerate && (
                       <button
@@ -686,7 +685,8 @@ export default function AdminCmsPagesPage() {
 
                   {!aiService.isConfigured() && showAIGenerate && (
                     <div className="mt-3 p-2 bg-red-50 border-[1px] border-red-300 text-red-700 text-xs">
-                      กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env ก่อนใช้งาน AI
+                      กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
+                      ก่อนใช้งาน AI
                     </div>
                   )}
                 </div>

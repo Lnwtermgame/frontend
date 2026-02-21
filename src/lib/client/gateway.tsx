@@ -254,7 +254,9 @@ const createServiceClient = (service: string): AxiosInstance => {
     const requestConfig = config || {};
 
     // Requests with AbortSignal are not deduped/cached to avoid cancellation coupling.
-    const skipDedupe = Boolean(requestConfig.skipDedupe || requestConfig.signal);
+    const skipDedupe = Boolean(
+      requestConfig.skipDedupe || requestConfig.signal,
+    );
     const skipResponseCache = Boolean(
       requestConfig.skipResponseCache || requestConfig.signal,
     );

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
-import { ProductImage } from '@/lib/services/product-api';
-import { ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { useState } from "react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { ProductImage } from "@/lib/services/product-api";
+import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 
 interface ProductImageGalleryProps {
   images: ProductImage[];
@@ -27,19 +27,20 @@ export function ProductImageGallery({
   });
 
   // Add primary image if not in the list
-  const allImages = primaryImageUrl && !images.some((img) => img.url === primaryImageUrl)
-    ? [
-        {
-          id: 'primary',
-          url: primaryImageUrl,
-          alt: productName,
-          isPrimary: true,
-          sortOrder: -1,
-          createdAt: '',
-        },
-        ...sortedImages,
-      ]
-    : sortedImages;
+  const allImages =
+    primaryImageUrl && !images.some((img) => img.url === primaryImageUrl)
+      ? [
+          {
+            id: "primary",
+            url: primaryImageUrl,
+            alt: productName,
+            isPrimary: true,
+            sortOrder: -1,
+            createdAt: "",
+          },
+          ...sortedImages,
+        ]
+      : sortedImages;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -48,8 +49,8 @@ export function ProductImageGallery({
     return (
       <div
         className={cn(
-          'bg-gray-100 rounded-lg flex items-center justify-center aspect-square',
-          className
+          "bg-gray-100 rounded-lg flex items-center justify-center aspect-square",
+          className,
         )}
       >
         <span className="text-gray-400">No image available</span>
@@ -68,7 +69,7 @@ export function ProductImageGallery({
   };
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn("space-y-4", className)}>
       {/* Main Image */}
       <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group">
         <Image
@@ -76,8 +77,8 @@ export function ProductImageGallery({
           alt={selectedImage.alt || productName}
           fill
           className={cn(
-            'object-cover transition-transform duration-300',
-            isZoomed && 'scale-150 cursor-zoom-out'
+            "object-cover transition-transform duration-300",
+            isZoomed && "scale-150 cursor-zoom-out",
           )}
           onClick={() => setIsZoomed(!isZoomed)}
           priority
@@ -133,10 +134,10 @@ export function ProductImageGallery({
               key={image.id}
               onClick={() => setSelectedIndex(index)}
               className={cn(
-                'relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all',
+                "relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all",
                 selectedIndex === index
-                  ? 'border-blue-600 ring-2 ring-blue-100'
-                  : 'border-transparent hover:border-gray-300'
+                  ? "border-blue-600 ring-2 ring-blue-100"
+                  : "border-transparent hover:border-gray-300",
               )}
             >
               <Image

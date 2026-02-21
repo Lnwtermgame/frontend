@@ -109,8 +109,20 @@ export interface PaymentAuditLogItem {
   eventType: string;
   source: string;
   severity: "INFO" | "WARN" | "ALERT";
-  previousStatus?: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "REFUNDED" | null;
-  newStatus?: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "REFUNDED" | null;
+  previousStatus?:
+    | "PENDING"
+    | "PROCESSING"
+    | "COMPLETED"
+    | "FAILED"
+    | "REFUNDED"
+    | null;
+  newStatus?:
+    | "PENDING"
+    | "PROCESSING"
+    | "COMPLETED"
+    | "FAILED"
+    | "REFUNDED"
+    | null;
   message: string;
   metadata?: Record<string, unknown> | null;
   createdAt: string;
@@ -130,7 +142,10 @@ export interface WebhookNonceItem {
 }
 
 class PaymentApiService {
-  async getMethods(): Promise<{ success: boolean; data: PaymentMethodOption[] }> {
+  async getMethods(): Promise<{
+    success: boolean;
+    data: PaymentMethodOption[];
+  }> {
     const response = await paymentClient.get("/api/payments/methods");
     return response.data;
   }
@@ -146,12 +161,17 @@ class PaymentApiService {
     return response.data;
   }
 
-  async getStatus(orderId: string): Promise<{ success: boolean; data: PaymentStatusResponse }> {
+  async getStatus(
+    orderId: string,
+  ): Promise<{ success: boolean; data: PaymentStatusResponse }> {
     const response = await paymentClient.get(`/api/payments/${orderId}`);
     return response.data;
   }
 
-  async getAdminGateways(): Promise<{ success: boolean; data: AdminPaymentGateway[] }> {
+  async getAdminGateways(): Promise<{
+    success: boolean;
+    data: AdminPaymentGateway[];
+  }> {
     const response = await paymentClient.get("/api/payments/admin/gateways");
     return response.data;
   }
@@ -159,7 +179,10 @@ class PaymentApiService {
   async createGateway(
     payload: GatewayUpsertPayload,
   ): Promise<{ success: boolean; data: AdminPaymentGateway }> {
-    const response = await paymentClient.post("/api/payments/admin/gateways", payload);
+    const response = await paymentClient.post(
+      "/api/payments/admin/gateways",
+      payload,
+    );
     return response.data;
   }
 
@@ -167,11 +190,17 @@ class PaymentApiService {
     gatewayId: string,
     payload: Partial<GatewayUpsertPayload>,
   ): Promise<{ success: boolean; data: AdminPaymentGateway }> {
-    const response = await paymentClient.put(`/api/payments/admin/gateways/${gatewayId}`, payload);
+    const response = await paymentClient.put(
+      `/api/payments/admin/gateways/${gatewayId}`,
+      payload,
+    );
     return response.data;
   }
 
-  async getAdminOptions(): Promise<{ success: boolean; data: AdminPaymentOption[] }> {
+  async getAdminOptions(): Promise<{
+    success: boolean;
+    data: AdminPaymentOption[];
+  }> {
     const response = await paymentClient.get("/api/payments/admin/options");
     return response.data;
   }
@@ -179,7 +208,10 @@ class PaymentApiService {
   async createOption(
     payload: OptionUpsertPayload,
   ): Promise<{ success: boolean; data: AdminPaymentOption }> {
-    const response = await paymentClient.post("/api/payments/admin/options", payload);
+    const response = await paymentClient.post(
+      "/api/payments/admin/options",
+      payload,
+    );
     return response.data;
   }
 
@@ -187,7 +219,10 @@ class PaymentApiService {
     optionId: string,
     payload: Partial<OptionUpsertPayload>,
   ): Promise<{ success: boolean; data: AdminPaymentOption }> {
-    const response = await paymentClient.put(`/api/payments/admin/options/${optionId}`, payload);
+    const response = await paymentClient.put(
+      `/api/payments/admin/options/${optionId}`,
+      payload,
+    );
     return response.data;
   }
 
@@ -197,8 +232,18 @@ class PaymentApiService {
     eventType?: string;
     page?: number;
     limit?: number;
-  }): Promise<{ success: boolean; data: { items: PaymentAuditLogItem[]; total: number; page: number; limit: number } }> {
-    const response = await paymentClient.get("/api/payments/admin/audit-logs", { params });
+  }): Promise<{
+    success: boolean;
+    data: {
+      items: PaymentAuditLogItem[];
+      total: number;
+      page: number;
+      limit: number;
+    };
+  }> {
+    const response = await paymentClient.get("/api/payments/admin/audit-logs", {
+      params,
+    });
     return response.data;
   }
 
@@ -206,8 +251,19 @@ class PaymentApiService {
     provider?: string;
     page?: number;
     limit?: number;
-  }): Promise<{ success: boolean; data: { items: WebhookNonceItem[]; total: number; page: number; limit: number } }> {
-    const response = await paymentClient.get("/api/payments/admin/webhook-nonces", { params });
+  }): Promise<{
+    success: boolean;
+    data: {
+      items: WebhookNonceItem[];
+      total: number;
+      page: number;
+      limit: number;
+    };
+  }> {
+    const response = await paymentClient.get(
+      "/api/payments/admin/webhook-nonces",
+      { params },
+    );
     return response.data;
   }
 }

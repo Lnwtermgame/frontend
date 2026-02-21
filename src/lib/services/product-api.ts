@@ -743,7 +743,8 @@ class ProductApiService {
     if (params?.page) searchParams.append("page", String(params.page));
     if (params?.limit) searchParams.append("limit", String(params.limit));
     if (params?.search) searchParams.append("search", params.search);
-    if (params?.categoryId) searchParams.append("categoryId", params.categoryId);
+    if (params?.categoryId)
+      searchParams.append("categoryId", params.categoryId);
     const query = searchParams.toString();
     const response = await productClient.get(
       `/api/admin/products${query ? `?${query}` : ""}`,
@@ -960,7 +961,10 @@ class ProductApiService {
         };
         errorCode?: number;
       };
-    }>(`/api/products/${productId}/verify-player`, { playerInfo, productTypeId });
+    }>(`/api/products/${productId}/verify-player`, {
+      playerInfo,
+      productTypeId,
+    });
     return response.data.data;
   }
 

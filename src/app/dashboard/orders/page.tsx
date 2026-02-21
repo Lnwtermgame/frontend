@@ -263,8 +263,8 @@ export default function OrdersPage() {
                 <div className="flex justify-end mt-3">
                   <Link href={`/dashboard/orders/${order.id}`}>
                     <Button size="sm" className="text-xs h-8">
-                       <Eye className="h-3 w-3 mr-1.5" />
-                       ดูรายละเอียด
+                      <Eye className="h-3 w-3 mr-1.5" />
+                      ดูรายละเอียด
                     </Button>
                   </Link>
                 </div>
@@ -312,24 +312,26 @@ export default function OrdersPage() {
         <div className="flex items-center gap-3">
           {/* Desktop Filter */}
           <div className="hidden md:block">
-             <select
+            <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-3 py-2 bg-white border-[2px] border-black text-black text-sm focus:outline-none shadow-[2px_2px_0_0_#000] thai-font h-10 md:h-12"
             >
-              {STATUS_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              {STATUS_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
               ))}
             </select>
           </div>
-          
+
           {/* Mobile Filter Button */}
-          <Button 
-             variant="outline" 
-             className="md:hidden"
-             onClick={() => setIsFilterOpen(true)}
+          <Button
+            variant="outline"
+            className="md:hidden"
+            onClick={() => setIsFilterOpen(true)}
           >
-             <Filter size={16} className="mr-2" /> ตัวกรอง
+            <Filter size={16} className="mr-2" /> ตัวกรอง
           </Button>
 
           <div className="hidden md:flex bg-white border-[2px] border-black p-1 shadow-[2px_2px_0_0_#000]">
@@ -348,43 +350,43 @@ export default function OrdersPage() {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Mobile Filter Sheet */}
       <Sheet
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         title="ตัวกรองคำสั่งซื้อ"
       >
-         <div className="space-y-6">
-            <div>
-               <h3 className="font-bold mb-3 flex items-center">
-                  <Filter size={18} className="mr-2"/> สถานะคำสั่งซื้อ
-               </h3>
-               <div className="space-y-2">
-                  {STATUS_OPTIONS.map((option) => (
-                     <button
-                        key={option.value}
-                        onClick={() => {
-                           setStatusFilter(option.value);
-                           setIsFilterOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
-                           statusFilter === option.value 
-                              ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]" 
-                              : "bg-white text-gray-700"
-                        }`}
-                     >
-                        <span>{option.label}</span>
-                        {statusFilter === option.value && <Check size={18} />}
-                     </button>
-                  ))}
-               </div>
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-bold mb-3 flex items-center">
+              <Filter size={18} className="mr-2" /> สถานะคำสั่งซื้อ
+            </h3>
+            <div className="space-y-2">
+              {STATUS_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setStatusFilter(option.value);
+                    setIsFilterOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
+                    statusFilter === option.value
+                      ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  <span>{option.label}</span>
+                  {statusFilter === option.value && <Check size={18} />}
+                </button>
+              ))}
             </div>
-            
-            <Button fullWidth onClick={() => setIsFilterOpen(false)}>
-               ดูผลลัพธ์
-            </Button>
-         </div>
+          </div>
+
+          <Button fullWidth onClick={() => setIsFilterOpen(false)}>
+            ดูผลลัพธ์
+          </Button>
+        </div>
       </Sheet>
 
       {/* Orders list */}
@@ -438,9 +440,15 @@ export default function OrdersPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100 overflow-hidden relative shadow-[1px_1px_0_0_#000]">
-                            {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
+                            {getSafeImageUrl(
+                              order.items[0]?.product?.imageUrl,
+                            ) ? (
                               <img
-                                src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
+                                src={
+                                  getSafeImageUrl(
+                                    order.items[0]?.product?.imageUrl,
+                                  )!
+                                }
                                 alt={order.items[0].product?.name || "Product"}
                                 className="h-full w-full object-cover"
                               />
@@ -470,10 +478,10 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Link href={`/dashboard/orders/${order.id}`}>
-                           <Button size="sm" className="text-xs h-8 px-3">
-                              <Eye className="h-3 w-3 mr-1.5" />
-                              ดู
-                           </Button>
+                          <Button size="sm" className="text-xs h-8 px-3">
+                            <Eye className="h-3 w-3 mr-1.5" />
+                            ดู
+                          </Button>
                         </Link>
                       </td>
                     </motion.tr>

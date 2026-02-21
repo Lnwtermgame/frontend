@@ -1,6 +1,6 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const inputVariants = cva(
   "flex w-full bg-white border-[2px] border-gray-300 px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:border-black focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
@@ -14,27 +14,41 @@ const inputVariants = cva(
       error: {
         true: "border-red-500 focus-visible:border-red-500",
         false: "",
-      }
+      },
     },
     defaultVariants: {
       size: "default",
       error: false,
     },
-  }
-)
+  },
+);
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
-  label?: string
-  errorText?: string
-  icon?: React.ReactNode
-  iconPosition?: "left" | "right"
+  label?: string;
+  errorText?: string;
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, size, error, label, errorText, icon, iconPosition = "left", ...props }, ref) => {
-    const hasError = error || !!errorText
+  (
+    {
+      className,
+      type,
+      size,
+      error,
+      label,
+      errorText,
+      icon,
+      iconPosition = "left",
+      ...props
+    },
+    ref,
+  ) => {
+    const hasError = error || !!errorText;
 
     return (
       <div className="w-full space-y-1.5">
@@ -42,7 +56,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <label
             className={cn(
               "text-sm font-bold text-gray-700 thai-font block mb-1",
-              hasError && "text-red-500"
+              hasError && "text-red-500",
             )}
           >
             {label}
@@ -59,7 +73,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               inputVariants({ size, error: hasError, className }),
               icon && iconPosition === "left" && "pl-10",
-              icon && iconPosition === "right" && "pr-10"
+              icon && iconPosition === "right" && "pr-10",
             )}
             ref={ref}
             {...props}
@@ -76,9 +90,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
       </div>
-    )
-  }
-)
-Input.displayName = "Input"
+    );
+  },
+);
+Input.displayName = "Input";
 
-export { Input }
+export { Input };

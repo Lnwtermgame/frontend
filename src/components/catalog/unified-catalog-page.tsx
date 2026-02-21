@@ -74,7 +74,9 @@ const modeCopy: Record<CatalogMode, ModeCopy> = {
     cta: "เติมเกมเลย",
     primaryTitle: "แพลตฟอร์ม",
     secondaryTitle: "หมวดหมู่",
-    heroIcon: <Zap size={24} className="text-brutal-yellow mr-2" fill="currentColor" />,
+    heroIcon: (
+      <Zap size={24} className="text-brutal-yellow mr-2" fill="currentColor" />
+    ),
     primaryHeaderClass: "bg-brutal-blue",
     secondaryHeaderClass: "bg-brutal-yellow",
     ctaBgClass: "bg-brutal-yellow text-black",
@@ -185,9 +187,13 @@ function transformProduct(product: Product): CatalogItem {
       product.imageUrl ||
       `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
     price: startingPrice,
-    discountPercent: discountRates.length > 0 ? Math.max(...discountRates) : undefined,
+    discountPercent:
+      discountRates.length > 0 ? Math.max(...discountRates) : undefined,
     autoDelivery: product.gameDetails?.autoDelivery ?? true,
-    country: toCountry(product.gameDetails?.region || "", product.category?.name || ""),
+    country: toCountry(
+      product.gameDetails?.region || "",
+      product.category?.name || "",
+    ),
     category: product.category?.name || "General",
     publisher:
       product.gameDetails?.publisher ||
@@ -199,7 +205,9 @@ function transformProduct(product: Product): CatalogItem {
   };
 }
 
-function sortThailandFirst<T extends { id: string; name: string }>(items: T[]): T[] {
+function sortThailandFirst<T extends { id: string; name: string }>(
+  items: T[],
+): T[] {
   const clone = [...items];
   const idx = clone.findIndex(
     (item) =>
@@ -213,26 +221,42 @@ function sortThailandFirst<T extends { id: string; name: string }>(items: T[]): 
   return clone;
 }
 
-function createPrimaryOptions(mode: CatalogMode, items: CatalogItem[]): FilterOption[] {
+function createPrimaryOptions(
+  mode: CatalogMode,
+  items: CatalogItem[],
+): FilterOption[] {
   if (mode === "games") {
     return [
-      { id: "all", name: "ทุกแพลตฟอร์ม", count: items.length, icon: <Gamepad2 size={16} /> },
+      {
+        id: "all",
+        name: "ทุกแพลตฟอร์ม",
+        count: items.length,
+        icon: <Gamepad2 size={16} />,
+      },
       {
         id: "mobile",
         name: "มือถือ",
-        count: items.filter((g) => g.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p))).length,
+        count: items.filter((g) =>
+          g.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p)),
+        ).length,
         icon: <Smartphone size={16} className="text-brutal-green" />,
       },
       {
         id: "pc",
         name: "PC",
-        count: items.filter((g) => g.platforms.some((p) => ["PC", "Mac"].includes(p))).length,
+        count: items.filter((g) =>
+          g.platforms.some((p) => ["PC", "Mac"].includes(p)),
+        ).length,
         icon: <Monitor size={16} className="text-brutal-blue" />,
       },
       {
         id: "console",
         name: "Console",
-        count: items.filter((g) => g.platforms.some((p) => ["Console", "PS4", "PS5", "Xbox"].includes(p))).length,
+        count: items.filter((g) =>
+          g.platforms.some((p) =>
+            ["Console", "PS4", "PS5", "Xbox"].includes(p),
+          ),
+        ).length,
         icon: <Gamepad2 size={16} className="text-brutal-pink" />,
       },
     ];
@@ -240,25 +264,33 @@ function createPrimaryOptions(mode: CatalogMode, items: CatalogItem[]): FilterOp
 
   if (mode === "mobile-recharge") {
     return [
-      { id: "all", name: "ทุกเครือข่าย", count: items.length, icon: <Signal size={16} /> },
+      {
+        id: "all",
+        name: "ทุกเครือข่าย",
+        count: items.length,
+        icon: <Signal size={16} />,
+      },
       {
         id: "ais",
         name: "AIS",
-        count: items.filter((p) => p.operator.toLowerCase().includes("ais")).length,
+        count: items.filter((p) => p.operator.toLowerCase().includes("ais"))
+          .length,
         icon: <Smartphone size={16} className="text-brutal-blue" />,
         brandIcon: "ais",
       },
       {
         id: "dtac",
         name: "DTAC",
-        count: items.filter((p) => p.operator.toLowerCase().includes("dtac")).length,
+        count: items.filter((p) => p.operator.toLowerCase().includes("dtac"))
+          .length,
         icon: <Smartphone size={16} className="text-brutal-pink" />,
         brandIcon: "dtac",
       },
       {
         id: "true",
         name: "TrueMove",
-        count: items.filter((p) => p.operator.toLowerCase().includes("true")).length,
+        count: items.filter((p) => p.operator.toLowerCase().includes("true"))
+          .length,
         icon: <Smartphone size={16} className="text-brutal-yellow" />,
         brandIcon: "true",
       },
@@ -274,7 +306,12 @@ function createPrimaryOptions(mode: CatalogMode, items: CatalogItem[]): FilterOp
   );
 
   return [
-    { id: "all", name: "บัตรทั้งหมด", count: items.length, icon: <CreditCard size={16} /> },
+    {
+      id: "all",
+      name: "บัตรทั้งหมด",
+      count: items.length,
+      icon: <CreditCard size={16} />,
+    },
     ...Object.entries(categoryCounts).map(([name, count]) => ({
       id: name.toLowerCase(),
       name,
@@ -284,7 +321,10 @@ function createPrimaryOptions(mode: CatalogMode, items: CatalogItem[]): FilterOp
   ];
 }
 
-function createSecondaryOptions(mode: CatalogMode, items: CatalogItem[]): FilterOption[] {
+function createSecondaryOptions(
+  mode: CatalogMode,
+  items: CatalogItem[],
+): FilterOption[] {
   if (mode === "games") {
     const categoryCounts = items.reduce(
       (acc, item) => {
@@ -314,25 +354,37 @@ function createSecondaryOptions(mode: CatalogMode, items: CatalogItem[]): Filter
 
     return sortThailandFirst([
       { id: "all", name: "ทุกประเทศ", count: items.length },
-      ...Object.entries(countryCounts).map(([name, count]) => ({ id: name, name, count })),
+      ...Object.entries(countryCounts).map(([name, count]) => ({
+        id: name,
+        name,
+        count,
+      })),
     ]);
   }
 
   return [];
 }
 
-function filterItemByPrimary(mode: CatalogMode, item: CatalogItem, selected: string): boolean {
+function filterItemByPrimary(
+  mode: CatalogMode,
+  item: CatalogItem,
+  selected: string,
+): boolean {
   if (selected === "all") return true;
 
   if (mode === "games") {
     if (selected === "mobile") {
-      return item.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p));
+      return item.platforms.some((p) =>
+        ["Mobile", "Android", "iOS"].includes(p),
+      );
     }
     if (selected === "pc") {
       return item.platforms.some((p) => ["PC", "Mac"].includes(p));
     }
     if (selected === "console") {
-      return item.platforms.some((p) => ["Console", "PS4", "PS5", "Xbox"].includes(p));
+      return item.platforms.some((p) =>
+        ["Console", "PS4", "PS5", "Xbox"].includes(p),
+      );
     }
     return true;
   }
@@ -344,9 +396,14 @@ function filterItemByPrimary(mode: CatalogMode, item: CatalogItem, selected: str
   return item.category.toLowerCase() === selected.toLowerCase();
 }
 
-function filterItemBySecondary(mode: CatalogMode, item: CatalogItem, selected: string): boolean {
+function filterItemBySecondary(
+  mode: CatalogMode,
+  item: CatalogItem,
+  selected: string,
+): boolean {
   if (selected === "all") return true;
-  if (mode === "games") return item.category.toLowerCase() === selected.toLowerCase();
+  if (mode === "games")
+    return item.category.toLowerCase() === selected.toLowerCase();
   if (mode === "mobile-recharge") return item.country === selected;
   return true;
 }
@@ -359,11 +416,21 @@ function renderOptionIcon(
   const brandSize = compact ? 20 : 39;
 
   if (option.brandIcon) {
-    return <BrandIcon brand={option.brandIcon} size={brandSize} fallbackIcon={option.icon} />;
+    return (
+      <BrandIcon
+        brand={option.brandIcon}
+        size={brandSize}
+        fallbackIcon={option.icon}
+      />
+    );
   }
 
   if (!option.icon) return null;
-  return <span className={isActive ? "text-black" : "text-gray-500"}>{option.icon}</span>;
+  return (
+    <span className={isActive ? "text-black" : "text-gray-500"}>
+      {option.icon}
+    </span>
+  );
 }
 
 function getItemLink(mode: CatalogMode, slug: string): string {
@@ -377,7 +444,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<CatalogItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
   const [selectedPrimary, setSelectedPrimary] = useState("all");
   const [selectedSecondary, setSelectedSecondary] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -420,16 +489,27 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
     }
   }, [searchParams]);
 
-  const primaryOptions = useMemo(() => createPrimaryOptions(mode, items), [mode, items]);
-  const secondaryOptions = useMemo(() => createSecondaryOptions(mode, items), [mode, items]);
+  const primaryOptions = useMemo(
+    () => createPrimaryOptions(mode, items),
+    [mode, items],
+  );
+  const secondaryOptions = useMemo(
+    () => createSecondaryOptions(mode, items),
+    [mode, items],
+  );
 
   const filteredItems = useMemo(
     () =>
       items.filter((item) => {
         const matchesSearch =
-          !searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase());
+          !searchQuery ||
+          item.title.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesPrimary = filterItemByPrimary(mode, item, selectedPrimary);
-        const matchesSecondary = filterItemBySecondary(mode, item, selectedSecondary);
+        const matchesSecondary = filterItemBySecondary(
+          mode,
+          item,
+          selectedSecondary,
+        );
         return matchesSearch && matchesPrimary && matchesSecondary;
       }),
     [items, mode, searchQuery, selectedPrimary, selectedSecondary],
@@ -444,10 +524,19 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="bg-white border-[3px] border-black overflow-hidden mb-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
-            <div className={`p-4 border-b-[3px] border-black ${copy.primaryHeaderClass}`}>
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden mb-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
+            <div
+              className={`p-4 border-b-[3px] border-black ${copy.primaryHeaderClass}`}
+            >
               <h3 className="text-black font-black text-base flex items-center">
-                {mode === "mobile-recharge" ? <Signal size={18} className="mr-2" /> : <Filter size={18} className="mr-2" />}
+                {mode === "mobile-recharge" ? (
+                  <Signal size={18} className="mr-2" />
+                ) : (
+                  <Filter size={18} className="mr-2" />
+                )}
                 {copy.primaryTitle}
               </h3>
             </div>
@@ -462,7 +551,11 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       ? "bg-brutal-blue border-black text-black"
                       : "bg-white border-transparent text-gray-700 hover:border-gray-300"
                   }`}
-                  style={selectedPrimary === option.id ? { boxShadow: "3px 3px 0 0 #000000" } : undefined}
+                  style={
+                    selectedPrimary === option.id
+                      ? { boxShadow: "3px 3px 0 0 #000000" }
+                      : undefined
+                  }
                   whileHover={{ x: 3 }}
                 >
                   <span className="flex items-center gap-3 text-sm font-bold">
@@ -471,7 +564,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   </span>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                      selectedPrimary === option.id ? "bg-white text-black" : "bg-gray-100 text-gray-600"
+                      selectedPrimary === option.id
+                        ? "bg-white text-black"
+                        : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {option.count}
@@ -482,8 +577,13 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           </div>
 
           {copy.secondaryTitle && (
-            <div className="bg-white border-[3px] border-black overflow-hidden mb-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
-              <div className={`p-4 border-b-[3px] border-black ${copy.secondaryHeaderClass}`}>
+            <div
+              className="bg-white border-[3px] border-black overflow-hidden mb-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
+              <div
+                className={`p-4 border-b-[3px] border-black ${copy.secondaryHeaderClass}`}
+              >
                 <h3 className="text-black font-black text-base flex items-center">
                   <Globe size={18} className="mr-2" />
                   {copy.secondaryTitle}
@@ -500,18 +600,27 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                         ? "bg-brutal-yellow border-black text-black"
                         : "bg-white border-transparent text-gray-700 hover:border-gray-300"
                     }`}
-                    style={selectedSecondary === option.id ? { boxShadow: "3px 3px 0 0 #000000" } : undefined}
+                    style={
+                      selectedSecondary === option.id
+                        ? { boxShadow: "3px 3px 0 0 #000000" }
+                        : undefined
+                    }
                     whileHover={{ x: 3 }}
                   >
                     <span className="flex items-center gap-3 text-sm font-bold">
                       {getCountryFlagCode(option.name) && (
-                        <CountryFlag code={getCountryFlagCode(option.name)} size="M" />
+                        <CountryFlag
+                          code={getCountryFlagCode(option.name)}
+                          size="M"
+                        />
                       )}
                       {option.name}
                     </span>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                        selectedSecondary === option.id ? "bg-white text-black" : "bg-gray-100 text-gray-600"
+                        selectedSecondary === option.id
+                          ? "bg-white text-black"
+                          : "bg-gray-100 text-gray-600"
                       }`}
                     >
                       {option.count}
@@ -522,12 +631,19 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             </div>
           )}
 
-          <div className={`${copy.promoClass} border-[3px] border-black p-4`} style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+          <div
+            className={`${copy.promoClass} border-[3px] border-black p-4`}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center gap-2 mb-2">
               <Zap size={18} className="text-black" />
-              <span className="font-black text-black text-sm">{copy.promoTitle}</span>
+              <span className="font-black text-black text-sm">
+                {copy.promoTitle}
+              </span>
             </div>
-            <p className="text-black/80 text-xs mb-3">{copy.promoDescription}</p>
+            <p className="text-black/80 text-xs mb-3">
+              {copy.promoDescription}
+            </p>
             <button
               className="w-full bg-black text-white px-3 py-2 text-xs font-bold border-[2px] border-black"
               style={{ boxShadow: "3px 3px 0 0 #000000" }}
@@ -547,7 +663,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h1 className="text-gray-900 text-2xl font-black flex items-center">{copy.heroIcon}{copy.title}</h1>
+                <h1 className="text-gray-900 text-2xl font-black flex items-center">
+                  {copy.heroIcon}
+                  {copy.title}
+                </h1>
                 <p className="text-gray-500 text-sm mt-1">{copy.subtitle}</p>
               </div>
 
@@ -584,7 +703,11 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                         : "bg-white text-gray-700"
                     }`}
                   >
-                    {renderOptionIcon(option, selectedPrimary === option.id, true)}
+                    {renderOptionIcon(
+                      option,
+                      selectedPrimary === option.id,
+                      true,
+                    )}
                     {option.name}
                   </button>
                 ))}
@@ -610,7 +733,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       ) : (
                         <>
                           {getCountryFlagCode(option.name) && (
-                            <CountryFlag code={getCountryFlagCode(option.name)} size="S" />
+                            <CountryFlag
+                              code={getCountryFlagCode(option.name)}
+                              size="S"
+                            />
                           )}
                           {option.name}
                         </>
@@ -630,7 +756,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           >
             <h2 className="text-gray-900 text-lg font-black flex items-center">
               {copy.gridTitle}
-              <span className="ml-2 text-sm font-normal text-gray-500">({filteredItems.length})</span>
+              <span className="ml-2 text-sm font-normal text-gray-500">
+                ({filteredItems.length})
+              </span>
             </h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
@@ -674,7 +802,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                         </div>
 
                         {item.autoDelivery && (
-                          <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 z-10" title="จัดส่งอัตโนมัติหลังชำระเงิน">
+                          <div
+                            className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 z-10"
+                            title="จัดส่งอัตโนมัติหลังชำระเงิน"
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 512 512"
@@ -683,8 +814,16 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                               aria-label="จัดส่งอัตโนมัติหลังชำระเงิน"
                             >
                               <g clipRule="evenodd" fillRule="evenodd">
-                                <circle cx="256" cy="256" r="256" fill="#ffc107" />
-                                <path fill="#fff" d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z" />
+                                <circle
+                                  cx="256"
+                                  cy="256"
+                                  r="256"
+                                  fill="#ffc107"
+                                />
+                                <path
+                                  fill="#fff"
+                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
+                                />
                               </g>
                             </svg>
                           </div>
@@ -694,20 +833,33 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       <div className="p-2 sm:p-2.5">
                         <p
                           className={`text-gray-900 text-[11px] sm:text-xs font-bold ${
-                            mode === "card" ? "line-clamp-2 sm:line-clamp-1" : "line-clamp-1"
+                            mode === "card"
+                              ? "line-clamp-2 sm:line-clamp-1"
+                              : "line-clamp-1"
                           } mb-1 transition-colors ${copy.hoverNameClass}`}
                         >
-                          {mode === "mobile-recharge" ? item.operator : item.title}
+                          {mode === "mobile-recharge"
+                            ? item.operator
+                            : item.title}
                         </p>
 
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
-                            <CountryFlag code={getCountryFlagCode(item.country)} size="S" />
+                            <CountryFlag
+                              code={getCountryFlagCode(item.country)}
+                              size="S"
+                            />
                             <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[70px]">
-                              {mode === "games" ? item.publisher : mode === "card" ? item.category : item.country}
+                              {mode === "games"
+                                ? item.publisher
+                                : mode === "card"
+                                  ? item.category
+                                  : item.country}
                             </span>
                           </div>
-                          <div className="text-xs sm:text-[13px] text-black font-black">฿{item.price}</div>
+                          <div className="text-xs sm:text-[13px] text-black font-black">
+                            ฿{item.price}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -720,7 +872,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
               <div className="text-center py-12">
                 <Globe size={48} className="mx-auto text-gray-300 mb-4" />
                 <p className="text-gray-500 font-bold">ไม่พบข้อมูลที่ค้นหา</p>
-                <p className="text-gray-400 text-sm mt-1">ลองค้นหาคำอื่น หรือปรับตัวกรอง</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  ลองค้นหาคำอื่น หรือปรับตัวกรอง
+                </p>
               </div>
             )}
 
@@ -733,7 +887,11 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
         </div>
       </div>
 
-      <Sheet isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="ตัวกรอง">
+      <Sheet
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        title="ตัวกรอง"
+      >
         <div className="space-y-6">
           <div>
             <h3 className="font-bold mb-3">{copy.primaryTitle}</h3>
@@ -746,14 +904,22 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     setIsFilterOpen(false);
                   }}
                   className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
-                    selectedPrimary === option.id ? "bg-brutal-blue text-black shadow-[2px_2px_0_0_#000]" : "bg-white text-gray-700"
+                    selectedPrimary === option.id
+                      ? "bg-brutal-blue text-black shadow-[2px_2px_0_0_#000]"
+                      : "bg-white text-gray-700"
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    {renderOptionIcon(option, selectedPrimary === option.id, true)}
+                    {renderOptionIcon(
+                      option,
+                      selectedPrimary === option.id,
+                      true,
+                    )}
                     {option.name}
                   </span>
-                  <span className="text-sm text-gray-500">({option.count})</span>
+                  <span className="text-sm text-gray-500">
+                    ({option.count})
+                  </span>
                 </button>
               ))}
             </div>
@@ -771,15 +937,24 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       setIsFilterOpen(false);
                     }}
                     className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
-                      selectedSecondary === option.id ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]" : "bg-white text-gray-700"
+                      selectedSecondary === option.id
+                        ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
+                        : "bg-white text-gray-700"
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      {getCountryFlagCode(option.name) && <CountryFlag code={getCountryFlagCode(option.name)} size="S" />}
+                      {getCountryFlagCode(option.name) && (
+                        <CountryFlag
+                          code={getCountryFlagCode(option.name)}
+                          size="S"
+                        />
+                      )}
                       {option.name}
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500">({option.count})</span>
+                      <span className="text-sm text-gray-500">
+                        ({option.count})
+                      </span>
                       {selectedSecondary === option.id && <Check size={16} />}
                     </div>
                   </button>

@@ -205,16 +205,13 @@ export default function GameDetailsPage() {
   const [isPaymentSelectOpen, setIsPaymentSelectOpen] = useState(false);
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<
-    | {
-        supported: boolean;
-        productName: string;
-        optionName: string;
-        playerInfo: Record<string, string>;
-        price?: number;
-      }
-    | null
-  >(null);
+  const [verificationStatus, setVerificationStatus] = useState<{
+    supported: boolean;
+    productName: string;
+    optionName: string;
+    playerInfo: Record<string, string>;
+    price?: number;
+  } | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [mobilePhoneNumber, setMobilePhoneNumber] = useState("");
   const [copied, setCopied] = useState(false);
@@ -395,7 +392,10 @@ export default function GameDetailsPage() {
     paymentOptionCode?: string,
   ): Promise<boolean> => {
     try {
-      const intentRes = await paymentApi.createIntent(orderId, paymentOptionCode);
+      const intentRes = await paymentApi.createIntent(
+        orderId,
+        paymentOptionCode,
+      );
       if (!intentRes.success) {
         toast.error("สร้างการชำระเงินไม่สำเร็จ");
         return false;

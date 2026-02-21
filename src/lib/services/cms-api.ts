@@ -49,6 +49,7 @@ export interface NewsArticle {
   coverImage: string | null;
   category: NewsCategory;
   tags: string[];
+  sources: string[];
   isPublished: boolean;
   isFeatured: boolean;
   viewCount: number;
@@ -81,18 +82,21 @@ export interface CreateNewsArticleData {
   coverImage?: string;
   category?: NewsCategory;
   tags?: string[];
+  sources?: string[];
   isPublished?: boolean;
   isFeatured?: boolean;
   publishedAt?: string;
 }
 
 export interface UpdateNewsArticleData {
+  slug?: string;
   title?: string;
   excerpt?: string;
   content?: string;
   coverImage?: string;
   category?: NewsCategory;
   tags?: string[];
+  sources?: string[];
   isPublished?: boolean;
   isFeatured?: boolean;
   publishedAt?: string;

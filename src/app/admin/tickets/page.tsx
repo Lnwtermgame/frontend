@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AlertCircle, CheckCheck, Download, Loader2, RefreshCcw, Send } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCheck,
+  Download,
+  Loader2,
+  RefreshCcw,
+  Send,
+} from "lucide-react";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { AdminUser, adminUserApi } from "@/lib/services/admin-user-api";
@@ -65,7 +72,7 @@ function getSlaLevel(ticket: Ticket): "none" | "8h" | "24h" {
 
 function toCsvCell(value: string | number | null | undefined): string {
   const text = String(value ?? "");
-  if (text.includes(",") || text.includes("\n") || text.includes("\"")) {
+  if (text.includes(",") || text.includes("\n") || text.includes('"')) {
     return `"${text.replace(/\"/g, '""')}"`;
   }
   return text;
@@ -78,7 +85,9 @@ export default function AdminTicketsPage() {
   const isMonitorMode = searchParams.get("monitor") === "1";
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(
+    null,
+  );
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [stats, setStats] = useState<TicketStats>(EMPTY_STATS);
   const [admins, setAdmins] = useState<AdminUser[]>([]);
@@ -104,7 +113,9 @@ export default function AdminTicketsPage() {
   const [status, setStatus] = useState<string>("ALL");
   const [priority, setPriority] = useState<string>("ALL");
   const [category, setCategory] = useState<string>("ALL");
-  const [sortBy, setSortBy] = useState<"updatedAt" | "createdAt" | "priority" | "status">("updatedAt");
+  const [sortBy, setSortBy] = useState<
+    "updatedAt" | "createdAt" | "priority" | "status"
+  >("updatedAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [createdFrom, setCreatedFrom] = useState("");
   const [createdTo, setCreatedTo] = useState("");
@@ -160,8 +171,10 @@ export default function AdminTicketsPage() {
       const [listRes, statsRes] = await Promise.all([
         supportApi.getAllTickets(page, limit, {
           status: status !== "ALL" ? (status as TicketStatus) : undefined,
-          priority: priority !== "ALL" ? (priority as TicketPriority) : undefined,
-          category: category !== "ALL" ? (category as TicketCategory) : undefined,
+          priority:
+            priority !== "ALL" ? (priority as TicketPriority) : undefined,
+          category:
+            category !== "ALL" ? (category as TicketCategory) : undefined,
           assignedTo:
             assigneeFilter !== "ALL" && assigneeFilter !== "UNASSIGNED"
               ? assigneeFilter
@@ -180,7 +193,9 @@ export default function AdminTicketsPage() {
       setTickets(listRes.data);
       setTotalPages(listRes.meta?.totalPages || 1);
       setStats(statsRes.data);
-      setSelectedIds((prev) => prev.filter((id) => listRes.data.some((t) => t.id === id)));
+      setSelectedIds((prev) =>
+        prev.filter((id) => listRes.data.some((t) => t.id === id)),
+      );
       setLastRefreshedAt(new Date());
       setError(null);
     } catch (err) {
@@ -247,7 +262,11 @@ export default function AdminTicketsPage() {
     }
   }, []);
 
-  const updateSelectedTicket = async (payload: { status?: TicketStatus; priority?: TicketPriority; assignedTo?: string | null }) => {
+  const updateSelectedTicket = async (payload: {
+    status?: TicketStatus;
+    priority?: TicketPriority;
+    assignedTo?: string | null;
+  }) => {
     if (!selectedTicket) return;
     try {
       setUpdating(true);
@@ -279,21 +298,29 @@ export default function AdminTicketsPage() {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       const targetTag = target?.tagName.toLowerCase();
-      const editing = targetTag === "input" || targetTag === "textarea" || targetTag === "select";
+      const editing =
+        targetTag === "input" ||
+        targetTag === "textarea" ||
+        targetTag === "select";
       if (editing && !(event.ctrlKey && event.key === "Enter")) return;
 
       if (event.key === "j" || event.key === "J") {
         event.preventDefault();
         if (tickets.length === 0) return;
-        const currentIndex = tickets.findIndex((t) => t.id === selectedTicket?.id);
-        const nextIndex = currentIndex < 0 ? 0 : Math.min(tickets.length - 1, currentIndex + 1);
+        const currentIndex = tickets.findIndex(
+          (t) => t.id === selectedTicket?.id,
+        );
+        const nextIndex =
+          currentIndex < 0 ? 0 : Math.min(tickets.length - 1, currentIndex + 1);
         void loadDetail(tickets[nextIndex].id);
       }
 
       if (event.key === "k" || event.key === "K") {
         event.preventDefault();
         if (tickets.length === 0) return;
-        const currentIndex = tickets.findIndex((t) => t.id === selectedTicket?.id);
+        const currentIndex = tickets.findIndex(
+          (t) => t.id === selectedTicket?.id,
+        );
         const prevIndex = currentIndex < 0 ? 0 : Math.max(0, currentIndex - 1);
         void loadDetail(tickets[prevIndex].id);
       }
@@ -320,10 +347,14 @@ export default function AdminTicketsPage() {
   };
 
   const toggleSelectOne = (id: string) => {
-    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
   };
 
-  const allVisibleSelected = tickets.length > 0 && tickets.every((ticket) => selectedIds.includes(ticket.id));
+  const allVisibleSelected =
+    tickets.length > 0 &&
+    tickets.every((ticket) => selectedIds.includes(ticket.id));
 
   const toggleSelectAllVisible = () => {
     setSelectedIds((prev) => {
@@ -336,12 +367,20 @@ export default function AdminTicketsPage() {
     });
   };
 
-  const runBulkUpdate = async (payload: { status?: TicketStatus; priority?: TicketPriority; assignedTo?: string | null }) => {
+  const runBulkUpdate = async (payload: {
+    status?: TicketStatus;
+    priority?: TicketPriority;
+    assignedTo?: string | null;
+  }) => {
     if (selectedIds.length === 0) return;
 
     try {
       setBulkUpdating(true);
-      await Promise.all(selectedIds.map((ticketId) => supportApi.updateTicket(ticketId, payload)));
+      await Promise.all(
+        selectedIds.map((ticketId) =>
+          supportApi.updateTicket(ticketId, payload),
+        ),
+      );
       const selectedDetailId = selectedTicket?.id;
       setSelectedIds([]);
 
@@ -369,22 +408,28 @@ export default function AdminTicketsPage() {
       const rows: Ticket[] = [];
 
       while (currentPage <= maxPages) {
-        const response = await supportApi.getAllTickets(currentPage, exportLimit, {
-          status: status !== "ALL" ? (status as TicketStatus) : undefined,
-          priority: priority !== "ALL" ? (priority as TicketPriority) : undefined,
-          category: category !== "ALL" ? (category as TicketCategory) : undefined,
-          assignedTo:
-            assigneeFilter !== "ALL" && assigneeFilter !== "UNASSIGNED"
-              ? assigneeFilter
-              : undefined,
-          unassignedOnly: assigneeFilter === "UNASSIGNED",
-          search: search || undefined,
-          sortBy,
-          sortOrder,
-          createdFrom: createdFrom || undefined,
-          createdTo: createdTo || undefined,
-          slaHours: resolvedSlaHours,
-        });
+        const response = await supportApi.getAllTickets(
+          currentPage,
+          exportLimit,
+          {
+            status: status !== "ALL" ? (status as TicketStatus) : undefined,
+            priority:
+              priority !== "ALL" ? (priority as TicketPriority) : undefined,
+            category:
+              category !== "ALL" ? (category as TicketCategory) : undefined,
+            assignedTo:
+              assigneeFilter !== "ALL" && assigneeFilter !== "UNASSIGNED"
+                ? assigneeFilter
+                : undefined,
+            unassignedOnly: assigneeFilter === "UNASSIGNED",
+            search: search || undefined,
+            sortBy,
+            sortOrder,
+            createdFrom: createdFrom || undefined,
+            createdTo: createdTo || undefined,
+            slaHours: resolvedSlaHours,
+          },
+        );
 
         rows.push(...response.data);
         maxPages = response.meta?.totalPages || 1;
@@ -416,13 +461,15 @@ export default function AdminTicketsPage() {
             ticket.category,
             ticket.user?.username ?? "",
             ticket.user?.email ?? "",
-            ticket.assignedTo ? (adminNameById.get(ticket.assignedTo) ?? ticket.assignedTo) : "",
+            ticket.assignedTo
+              ? (adminNameById.get(ticket.assignedTo) ?? ticket.assignedTo)
+              : "",
             ticket.orderId ?? "",
             ticket.createdAt,
             ticket.updatedAt,
           ]
             .map(toCsvCell)
-            .join(",")
+            .join(","),
         ),
       ].join("\n");
 
@@ -473,25 +520,23 @@ export default function AdminTicketsPage() {
     window.open(
       monitorUrl,
       "ticket-monitor-window",
-      "popup=yes,width=1500,height=920,toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes"
+      "popup=yes,width=1500,height=920,toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes",
     );
   }, []);
 
   if (!isInitialized || !isAdmin) {
-    return (
-      isMonitorMode ? (
-        <div className="min-h-screen bg-gray-50 p-4">
-          <div className="flex h-64 items-center justify-center rounded border-[3px] border-black bg-white">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
+    return isMonitorMode ? (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="flex h-64 items-center justify-center rounded border-[3px] border-black bg-white">
+          <Loader2 className="h-8 w-8 animate-spin" />
         </div>
-      ) : (
-        <AdminLayout title="ตั๋วซัพพอร์ต">
-          <div className="flex h-64 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        </AdminLayout>
-      )
+      </div>
+    ) : (
+      <AdminLayout title="ตั๋วซัพพอร์ต">
+        <div className="flex h-64 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </AdminLayout>
     );
   }
 
@@ -499,7 +544,9 @@ export default function AdminTicketsPage() {
     <div className={isMonitorMode ? "space-y-4 p-4" : "space-y-4"}>
       {isMonitorMode && (
         <div className="flex items-center justify-between rounded border-[2px] border-black bg-white px-3 py-2 text-sm">
-          <span className="font-medium text-black">หน้าต่างมอนิเตอร์ทิกเก็ต</span>
+          <span className="font-medium text-black">
+            หน้าต่างมอนิเตอร์ทิกเก็ต
+          </span>
           <Link href="/admin/tickets" className="text-blue-600 hover:underline">
             เปิดหน้าแอดมินแบบเต็ม
           </Link>
@@ -519,8 +566,14 @@ export default function AdminTicketsPage() {
               </button>
             )}
             <div className="text-right text-xs text-gray-500">
-              <div>อัปเดตล่าสุด: {lastRefreshedAt ? lastRefreshedAt.toLocaleTimeString() : "-"}</div>
-              <div>ความเสี่ยง SLA (หน้านี้): &gt;8ชม. {breachedCount.over8} | &gt;24ชม. {breachedCount.over24}</div>
+              <div>
+                อัปเดตล่าสุด:{" "}
+                {lastRefreshedAt ? lastRefreshedAt.toLocaleTimeString() : "-"}
+              </div>
+              <div>
+                ความเสี่ยง SLA (หน้านี้): &gt;8ชม. {breachedCount.over8} |
+                &gt;24ชม. {breachedCount.over24}
+              </div>
             </div>
           </div>
         </div>
@@ -536,9 +589,21 @@ export default function AdminTicketsPage() {
           {[
             { label: "ทั้งหมด", value: stats.total, key: "ALL" },
             { label: "เปิด", value: stats.open, key: "OPEN" },
-            { label: "กำลังดำเนินการ", value: stats.inProgress, key: "IN_PROGRESS" },
-            { label: "รอผู้ใช้", value: stats.waitingUser, key: "WAITING_USER" },
-            { label: "รอแอดมิน", value: stats.waitingAdmin, key: "WAITING_ADMIN" },
+            {
+              label: "กำลังดำเนินการ",
+              value: stats.inProgress,
+              key: "IN_PROGRESS",
+            },
+            {
+              label: "รอผู้ใช้",
+              value: stats.waitingUser,
+              key: "WAITING_USER",
+            },
+            {
+              label: "รอแอดมิน",
+              value: stats.waitingAdmin,
+              key: "WAITING_ADMIN",
+            },
             { label: "แก้ไขแล้ว", value: stats.resolved, key: "RESOLVED" },
             { label: "ปิด", value: stats.closed, key: "CLOSED" },
           ].map((item) => (
@@ -549,7 +614,9 @@ export default function AdminTicketsPage() {
                 setPage(1);
               }}
               className={`border-[2px] p-2 text-sm ${
-                status === item.key ? "border-black bg-yellow-100" : "border-gray-300 bg-white"
+                status === item.key
+                  ? "border-black bg-yellow-100"
+                  : "border-gray-300 bg-white"
               }`}
             >
               <div className="font-bold">{item.value}</div>
@@ -616,7 +683,15 @@ export default function AdminTicketsPage() {
 
           <select
             value={sortBy}
-            onChange={(event) => setSortBy(event.target.value as "updatedAt" | "createdAt" | "priority" | "status")}
+            onChange={(event) =>
+              setSortBy(
+                event.target.value as
+                  | "updatedAt"
+                  | "createdAt"
+                  | "priority"
+                  | "status",
+              )
+            }
             className="border-[2px] border-gray-300 px-2 py-1.5"
           >
             <option value="updatedAt">เรียงตามเวลาอัปเดต</option>
@@ -628,13 +703,19 @@ export default function AdminTicketsPage() {
           <div className="flex gap-2">
             <select
               value={sortOrder}
-              onChange={(event) => setSortOrder(event.target.value as "asc" | "desc")}
+              onChange={(event) =>
+                setSortOrder(event.target.value as "asc" | "desc")
+              }
               className="flex-1 border-[2px] border-gray-300 px-2 py-1.5"
             >
               <option value="desc">ใหม่ไปเก่า</option>
               <option value="asc">เก่าไปใหม่</option>
             </select>
-            <button onClick={loadTickets} className="border-[2px] border-black px-3" title="รีเฟรชทันที">
+            <button
+              onClick={loadTickets}
+              className="border-[2px] border-black px-3"
+              title="รีเฟรชทันที"
+            >
               <RefreshCcw size={14} />
             </button>
           </div>
@@ -730,7 +811,10 @@ export default function AdminTicketsPage() {
             >
               รีเฟรชอัตโนมัติ 30 วินาที: {autoRefresh ? "เปิด" : "ปิด"}
             </button>
-            <button onClick={resetFilters} className="border-[2px] border-gray-400 px-3 py-1.5 text-sm">
+            <button
+              onClick={resetFilters}
+              className="border-[2px] border-gray-400 px-3 py-1.5 text-sm"
+            >
               รีเซ็ตตัวกรอง
             </button>
           </div>
@@ -745,7 +829,9 @@ export default function AdminTicketsPage() {
             {allVisibleSelected ? "ยกเลิกเลือกทั้งหน้า" : "เลือกทั้งหน้า"}
           </button>
 
-          <span className="text-sm font-medium text-gray-700">เลือกรายการ: {selectedIds.length}</span>
+          <span className="text-sm font-medium text-gray-700">
+            เลือกรายการ: {selectedIds.length}
+          </span>
 
           <button
             onClick={() => runBulkUpdate({ status: "IN_PROGRESS" })}
@@ -794,7 +880,9 @@ export default function AdminTicketsPage() {
 
           <button
             onClick={() => runBulkUpdate({ assignedTo: bulkAssigneeId })}
-            disabled={selectedIds.length === 0 || bulkUpdating || !bulkAssigneeId}
+            disabled={
+              selectedIds.length === 0 || bulkUpdating || !bulkAssigneeId
+            }
             className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
           >
             มอบหมายแบบกลุ่ม
@@ -805,7 +893,11 @@ export default function AdminTicketsPage() {
             disabled={exporting}
             className="ml-auto flex items-center gap-2 border-[2px] border-black px-3 py-1.5 text-sm disabled:opacity-50"
           >
-            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            {exporting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
             ส่งออก CSV
           </button>
         </div>
@@ -830,16 +922,26 @@ export default function AdminTicketsPage() {
                         onChange={() => toggleSelectOne(ticket.id)}
                         className="mt-1"
                       />
-                      <button onClick={() => loadDetail(ticket.id)} className="min-w-0 flex-1 text-left">
-                        <div className="text-xs text-gray-500">{ticket.ticketNumber}</div>
-                        <div className="line-clamp-2 text-sm font-medium text-black">{ticket.subject}</div>
+                      <button
+                        onClick={() => loadDetail(ticket.id)}
+                        className="min-w-0 flex-1 text-left"
+                      >
+                        <div className="text-xs text-gray-500">
+                          {ticket.ticketNumber}
+                        </div>
+                        <div className="line-clamp-2 text-sm font-medium text-black">
+                          {ticket.subject}
+                        </div>
                         <div className="mt-1 text-xs text-gray-600">
-                          {statusLabels[ticket.status]} | {ticket.priority} | {new Date(ticket.updatedAt).toLocaleString()}
+                          {statusLabels[ticket.status]} | {ticket.priority} |{" "}
+                          {new Date(ticket.updatedAt).toLocaleString()}
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-xs">
                           {ticket.assignedTo && (
                             <span className="rounded border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-gray-700">
-                              @{adminNameById.get(ticket.assignedTo) ?? ticket.assignedTo}
+                              @
+                              {adminNameById.get(ticket.assignedTo) ??
+                                ticket.assignedTo}
                             </span>
                           )}
                           {getSlaLevel(ticket) === "8h" && (
@@ -853,13 +955,19 @@ export default function AdminTicketsPage() {
                             </span>
                           )}
                         </div>
-                        <div className="mt-1 text-xs text-gray-500">{ticket.user?.username || ticket.user?.email}</div>
+                        <div className="mt-1 text-xs text-gray-500">
+                          {ticket.user?.username || ticket.user?.email}
+                        </div>
                       </button>
                     </div>
                   </div>
                 ))
               )}
-              {!loading && tickets.length === 0 && <div className="p-6 text-center text-gray-500">ไม่พบทิกเก็ต</div>}
+              {!loading && tickets.length === 0 && (
+                <div className="p-6 text-center text-gray-500">
+                  ไม่พบทิกเก็ต
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-between border-t-[2px] border-gray-200 p-3">
@@ -885,7 +993,9 @@ export default function AdminTicketsPage() {
 
           <div className="border-[3px] border-black bg-white xl:col-span-2">
             {!selectedTicket ? (
-              <div className="h-full p-10 text-center text-gray-500">เลือกทิกเก็ตเพื่อดูรายละเอียด</div>
+              <div className="h-full p-10 text-center text-gray-500">
+                เลือกทิกเก็ตเพื่อดูรายละเอียด
+              </div>
             ) : detailLoading ? (
               <div className="p-10 text-center">
                 <Loader2 className="mx-auto h-8 w-8 animate-spin" />
@@ -893,14 +1003,27 @@ export default function AdminTicketsPage() {
             ) : (
               <div className="space-y-4 p-4">
                 <div className="space-y-1">
-                  <div className="text-sm text-gray-500">{selectedTicket.ticketNumber}</div>
-                  <h2 className="text-xl font-bold text-black">{selectedTicket.subject}</h2>
+                  <div className="text-sm text-gray-500">
+                    {selectedTicket.ticketNumber}
+                  </div>
+                  <h2 className="text-xl font-bold text-black">
+                    {selectedTicket.subject}
+                  </h2>
                   <div className="text-sm text-gray-600">
-                    {selectedTicket.user?.username || selectedTicket.user?.email} | {categoryLabels[selectedTicket.category as TicketCategory]}
+                    {selectedTicket.user?.username ||
+                      selectedTicket.user?.email}{" "}
+                    |{" "}
+                    {categoryLabels[selectedTicket.category as TicketCategory]}
                   </div>
                   {selectedTicket.orderId && (
                     <div className="text-sm">
-                      คำสั่งซื้อ: <Link className="font-medium text-blue-600 hover:underline" href={`/admin/orders/${selectedTicket.orderId}`}>{selectedTicket.orderId}</Link>
+                      คำสั่งซื้อ:{" "}
+                      <Link
+                        className="font-medium text-blue-600 hover:underline"
+                        href={`/admin/orders/${selectedTicket.orderId}`}
+                      >
+                        {selectedTicket.orderId}
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -908,7 +1031,11 @@ export default function AdminTicketsPage() {
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <select
                     value={selectedTicket.status}
-                    onChange={(event) => updateSelectedTicket({ status: event.target.value as TicketStatus })}
+                    onChange={(event) =>
+                      updateSelectedTicket({
+                        status: event.target.value as TicketStatus,
+                      })
+                    }
                     disabled={updating}
                     className="border-[2px] border-gray-300 px-2 py-1.5"
                   >
@@ -921,7 +1048,11 @@ export default function AdminTicketsPage() {
 
                   <select
                     value={selectedTicket.priority}
-                    onChange={(event) => updateSelectedTicket({ priority: event.target.value as TicketPriority })}
+                    onChange={(event) =>
+                      updateSelectedTicket({
+                        priority: event.target.value as TicketPriority,
+                      })
+                    }
                     disabled={updating}
                     className="border-[2px] border-gray-300 px-2 py-1.5"
                   >
@@ -935,7 +1066,11 @@ export default function AdminTicketsPage() {
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <select
                     value={selectedTicket.assignedTo || ""}
-                    onChange={(event) => updateSelectedTicket({ assignedTo: event.target.value || null })}
+                    onChange={(event) =>
+                      updateSelectedTicket({
+                        assignedTo: event.target.value || null,
+                      })
+                    }
                     disabled={updating}
                     className="border-[2px] border-gray-300 px-2 py-1.5"
                   >
@@ -947,11 +1082,14 @@ export default function AdminTicketsPage() {
                     ))}
                   </select>
                   <div className="flex items-center text-xs text-gray-600">
-                    คีย์ลัด: `J/K` เลื่อนรายการ | `R` โฟกัสช่องตอบกลับ | `Ctrl+Enter` ส่งข้อความ
+                    คีย์ลัด: `J/K` เลื่อนรายการ | `R` โฟกัสช่องตอบกลับ |
+                    `Ctrl+Enter` ส่งข้อความ
                   </div>
                 </div>
 
-                <div className="border-[2px] border-gray-200 bg-gray-50 p-3 text-gray-700">{selectedTicket.description}</div>
+                <div className="border-[2px] border-gray-200 bg-gray-50 p-3 text-gray-700">
+                  {selectedTicket.description}
+                </div>
 
                 <div className="max-h-[360px] space-y-2 overflow-y-auto">
                   {selectedTicket.messages.map((message) => (
@@ -966,14 +1104,19 @@ export default function AdminTicketsPage() {
                       }`}
                     >
                       <div className="mb-1 text-xs text-gray-500">
-                        {message.senderName || message.sender} | {new Date(message.createdAt).toLocaleString()}
+                        {message.senderName || message.sender} |{" "}
+                        {new Date(message.createdAt).toLocaleString()}
                       </div>
-                      <div className="text-sm text-gray-800">{message.content}</div>
+                      <div className="text-sm text-gray-800">
+                        {message.content}
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                {!( ["CLOSED", "RESOLVED"] as TicketStatus[]).includes(selectedTicket.status) && (
+                {!(["CLOSED", "RESOLVED"] as TicketStatus[]).includes(
+                  selectedTicket.status,
+                ) && (
                   <form onSubmit={sendReply} className="flex gap-2">
                     <input
                       ref={replyInputRef}
@@ -986,7 +1129,11 @@ export default function AdminTicketsPage() {
                       disabled={sending || !reply.trim()}
                       className="border-[2px] border-black bg-black px-3 py-2 text-white disabled:opacity-50"
                     >
-                      {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                      {sending ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Send size={16} />
+                      )}
                     </button>
                   </form>
                 )}
@@ -1011,4 +1158,3 @@ export default function AdminTicketsPage() {
     <AdminLayout title="ตั๋วซัพพอร์ต">{content}</AdminLayout>
   );
 }
-

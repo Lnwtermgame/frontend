@@ -41,7 +41,9 @@ export default function AdminNotificationPage() {
   // Form states
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [type, setType] = useState<"ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM">("SYSTEM");
+  const [type, setType] = useState<
+    "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM"
+  >("SYSTEM");
   const [targetMode, setTargetMode] = useState<"all" | "specific">("all");
   const [userIds, setUserIds] = useState("");
   const [sendPush, setSendPush] = useState(true);
@@ -66,12 +68,14 @@ export default function AdminNotificationPage() {
 
   const fetchStats = async () => {
     try {
-      const response = await notificationClient.get('/api/admin/notifications/stats');
+      const response = await notificationClient.get(
+        "/api/admin/notifications/stats",
+      );
       if (response.data.success) {
         setStats(response.data.data);
       }
     } catch (error) {
-      console.error('Failed to fetch stats:', error);
+      console.error("Failed to fetch stats:", error);
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +83,7 @@ export default function AdminNotificationPage() {
 
   const handleSendNotification = async () => {
     if (!title.trim() || !message.trim()) {
-      toast.error('กรุณากรอกหัวข้อและข้อความ');
+      toast.error("กรุณากรอกหัวข้อและข้อความ");
       return;
     }
 
@@ -91,22 +95,29 @@ export default function AdminNotificationPage() {
         message: message.trim(),
         type,
         sendPush,
-        data: {}
+        data: {},
       };
 
       if (link.trim()) {
         payload.data.url = link.trim();
       }
 
-      if (targetMode === 'specific' && userIds.trim()) {
-        payload.userIds = userIds.split(',').map(id => id.trim()).filter(Boolean);
+      if (targetMode === "specific" && userIds.trim()) {
+        payload.userIds = userIds
+          .split(",")
+          .map((id) => id.trim())
+          .filter(Boolean);
       }
 
-      const response = await notificationClient.post('/api/admin/notifications/send', payload);
+      const response = await notificationClient.post(
+        "/api/admin/notifications/send",
+        payload,
+      );
 
       if (response.data.success) {
         const { results } = response.data.data;
-        const failedText = results.failed > 0 ? `(${results.failed} ไม่สำเร็จ)` : '';
+        const failedText =
+          results.failed > 0 ? `(${results.failed} ไม่สำเร็จ)` : "";
         toast.success(`ส่งสำเร็จ ${results.success} รายการ ${failedText}`);
 
         // Reset form
@@ -119,7 +130,7 @@ export default function AdminNotificationPage() {
         fetchStats();
       }
     } catch (error) {
-      toast.error('ไม่สามารถส่งการแจ้งเตือนได้');
+      toast.error("ไม่สามารถส่งการแจ้งเตือนได้");
       console.error(error);
     } finally {
       setIsSending(false);
@@ -128,19 +139,27 @@ export default function AdminNotificationPage() {
 
   const getTypeIcon = (t: string) => {
     switch (t) {
-      case "ORDER": return <CheckCircle className="h-4 w-4" />;
-      case "PAYMENT": return <TrendingUp className="h-4 w-4" />;
-      case "PROMOTION": return <Megaphone className="h-4 w-4" />;
-      default: return <Info className="h-4 w-4" />;
+      case "ORDER":
+        return <CheckCircle className="h-4 w-4" />;
+      case "PAYMENT":
+        return <TrendingUp className="h-4 w-4" />;
+      case "PROMOTION":
+        return <Megaphone className="h-4 w-4" />;
+      default:
+        return <Info className="h-4 w-4" />;
     }
   };
 
   const getTypeColor = (t: string) => {
     switch (t) {
-      case "ORDER": return "bg-blue-100 text-blue-700 border-blue-300";
-      case "PAYMENT": return "bg-green-100 text-green-700 border-green-300";
-      case "PROMOTION": return "bg-pink-100 text-pink-700 border-pink-300";
-      default: return "bg-gray-100 text-gray-700 border-gray-300";
+      case "ORDER":
+        return "bg-blue-100 text-blue-700 border-blue-300";
+      case "PAYMENT":
+        return "bg-green-100 text-green-700 border-green-300";
+      case "PROMOTION":
+        return "bg-pink-100 text-pink-700 border-pink-300";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-300";
     }
   };
 
@@ -168,7 +187,9 @@ export default function AdminNotificationPage() {
               <Bell className="h-6 w-6 text-brutal-pink" />
               จัดการการแจ้งเตือน
             </h1>
-            <p className="text-gray-600 mt-1">ส่งการแจ้งเตือนไปยังผู้ใช้ทั้งหมดหรือเฉพาะราย</p>
+            <p className="text-gray-600 mt-1">
+              ส่งการแจ้งเตือนไปยังผู้ใช้ทั้งหมดหรือเฉพาะราย
+            </p>
           </div>
         </motion.div>
 
@@ -212,7 +233,7 @@ export default function AdminNotificationPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-white border-[3px] border-black"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <div className="p-6 border-b-[3px] border-black bg-gray-50">
             <h2 className="text-lg font-bold flex items-center gap-2">
@@ -224,7 +245,9 @@ export default function AdminNotificationPage() {
           <div className="p-6 space-y-6">
             {/* Type Selection */}
             <div>
-              <label className="block text-sm font-bold mb-2">ประเภทการแจ้งเตือน</label>
+              <label className="block text-sm font-bold mb-2">
+                ประเภทการแจ้งเตือน
+              </label>
               <div className="flex flex-wrap gap-2">
                 {["SYSTEM", "ORDER", "PAYMENT", "PROMOTION"].map((t) => (
                   <button
@@ -277,8 +300,8 @@ export default function AdminNotificationPage() {
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
-                    checked={targetMode === 'all'}
-                    onChange={() => setTargetMode('all')}
+                    checked={targetMode === "all"}
+                    onChange={() => setTargetMode("all")}
                     className="w-4 h-4"
                   />
                   <span>ผู้ใช้ทั้งหมด</span>
@@ -286,21 +309,23 @@ export default function AdminNotificationPage() {
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
-                    checked={targetMode === 'specific'}
-                    onChange={() => setTargetMode('specific')}
+                    checked={targetMode === "specific"}
+                    onChange={() => setTargetMode("specific")}
                     className="w-4 h-4"
                   />
                   <span>เฉพาะราย</span>
                 </label>
               </div>
 
-              {targetMode === 'specific' && (
+              {targetMode === "specific" && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   className="mt-3"
                 >
-                  <label className="block text-sm mb-2">User IDs (คั่นด้วยลูกน้ำ)</label>
+                  <label className="block text-sm mb-2">
+                    User IDs (คั่นด้วยลูกน้ำ)
+                  </label>
                   <textarea
                     value={userIds}
                     onChange={(e) => setUserIds(e.target.value)}
@@ -318,19 +343,25 @@ export default function AdminNotificationPage() {
                 onClick={() => setShowAdvanced(!showAdvanced)}
                 className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-black"
               >
-                {showAdvanced ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                {showAdvanced ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
                 ตัวเลือกเพิ่มเติม
               </button>
 
               {showAdvanced && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   className="mt-4 space-y-4 border-[3px] border-gray-200 p-4"
                 >
                   {/* Delivery Options */}
                   <div>
-                    <label className="block text-sm font-bold mb-2">ช่องทางการส่ง</label>
+                    <label className="block text-sm font-bold mb-2">
+                      ช่องทางการส่ง
+                    </label>
                     <div className="flex gap-4">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -343,11 +374,7 @@ export default function AdminNotificationPage() {
                         <span>Push Notification</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer opacity-50">
-                        <input
-                          type="checkbox"
-                          disabled
-                          className="w-4 h-4"
-                        />
+                        <input type="checkbox" disabled className="w-4 h-4" />
                         <Mail className="h-4 w-4" />
                         <span>Email (เร็วๆ นี้)</span>
                       </label>
@@ -356,7 +383,9 @@ export default function AdminNotificationPage() {
 
                   {/* Link */}
                   <div>
-                    <label className="block text-sm font-bold mb-2">ลิงก์ (ไม่บังคับ)</label>
+                    <label className="block text-sm font-bold mb-2">
+                      ลิงก์ (ไม่บังคับ)
+                    </label>
                     <input
                       type="text"
                       value={link}
@@ -377,7 +406,7 @@ export default function AdminNotificationPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full md:w-auto flex items-center justify-center gap-2 bg-brutal-pink hover:bg-pink-600 text-white px-8 py-3 border-[3px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 {isSending ? (
                   <>
@@ -402,7 +431,7 @@ export default function AdminNotificationPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="bg-white border-[3px] border-black"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="p-6 border-b-[3px] border-black bg-gray-50">
               <h2 className="text-lg font-bold">สถิติตามประเภท</h2>
@@ -423,7 +452,9 @@ export default function AdminNotificationPage() {
                         {type === "PROMOTION" && "โปรโมชั่น"}
                       </span>
                     </div>
-                    <div className="text-2xl font-bold">{count.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">
+                      {count.toLocaleString()}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -455,7 +486,7 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
     <motion.div
       whileHover={{ y: -2 }}
       className={`p-4 border-[3px] ${colorClasses[color]}`}
-      style={{ boxShadow: '3px 3px 0 0 #000000' }}
+      style={{ boxShadow: "3px 3px 0 0 #000000" }}
     >
       <div className="flex items-center justify-between">
         <span className="font-medium">{title}</span>

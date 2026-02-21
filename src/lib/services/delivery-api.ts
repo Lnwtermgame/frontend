@@ -111,7 +111,7 @@ class DeliveryApiService {
 
     const query = searchParams.toString();
     const response = await orderClient.get(
-      `/api/deliveries${query ? `?${query}` : ""}`
+      `/api/deliveries${query ? `?${query}` : ""}`,
     );
     return response.data;
   }
@@ -120,20 +120,16 @@ class DeliveryApiService {
    * Get delivery status for a specific order
    */
   async getDeliveryStatus(orderId: string): Promise<OrderDeliveryStatus> {
-    const response = await orderClient.get(
-      `/api/deliveries/${orderId}/status`
-    );
+    const response = await orderClient.get(`/api/deliveries/${orderId}/status`);
     return response.data.data;
   }
 
   /**
    * Get delivery history for an order
    */
-  async getDeliveryHistory(
-    orderId: string
-  ): Promise<DeliveryHistoryResponse> {
+  async getDeliveryHistory(orderId: string): Promise<DeliveryHistoryResponse> {
     const response = await orderClient.get(
-      `/api/deliveries/${orderId}/history`
+      `/api/deliveries/${orderId}/history`,
     );
     return response.data.data;
   }
@@ -144,7 +140,7 @@ class DeliveryApiService {
   async resendDelivery(orderId: string, itemId: string): Promise<ResendResult> {
     const response = await orderClient.post(
       `/api/deliveries/${orderId}/resend`,
-      { itemId }
+      { itemId },
     );
     return response.data.data;
   }
@@ -154,7 +150,7 @@ class DeliveryApiService {
    */
   async cancelDelivery(orderId: string): Promise<CancelResult> {
     const response = await orderClient.post(
-      `/api/deliveries/${orderId}/cancel`
+      `/api/deliveries/${orderId}/cancel`,
     );
     return response.data.data;
   }
@@ -185,7 +181,7 @@ class DeliveryApiService {
 
     const query = searchParams.toString();
     const response = await orderClient.get(
-      `/api/deliveries/admin/all${query ? `?${query}` : ""}`
+      `/api/deliveries/admin/all${query ? `?${query}` : ""}`,
     );
     return response.data;
   }

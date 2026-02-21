@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 import { motion, useReducedMotion } from "@/lib/framer-exports";
-import type { HTMLMotionProps } from 'framer-motion';
+import type { HTMLMotionProps } from "framer-motion";
 
-import { buttonAnimation, cardHoverAnimation } from '@/lib/framer-exports';
+import { buttonAnimation, cardHoverAnimation } from "@/lib/framer-exports";
 
-type HoverEffectType = 'button' | 'card' | 'lift' | 'glow' | 'scale';
+type HoverEffectType = "button" | "card" | "lift" | "glow" | "scale";
 
 interface HoverAnimationProps extends Omit<HTMLMotionProps<"div">, "children"> {
-  children: ReactNode | ((props: { isHovered: boolean; disabled: boolean }) => ReactNode);
+  children:
+    | ReactNode
+    | ((props: { isHovered: boolean; disabled: boolean }) => ReactNode);
   type?: HoverEffectType;
   className?: string;
   hoverClass?: string;
@@ -18,7 +20,7 @@ interface HoverAnimationProps extends Omit<HTMLMotionProps<"div">, "children"> {
 
 export default function HoverAnimation({
   children,
-  type = 'button',
+  type = "button",
   className,
   hoverClass,
   disabled = false,
@@ -30,34 +32,34 @@ export default function HoverAnimation({
   const getVariants = () => {
     if (disabled || prefersReducedMotion) {
       // No animation if disabled or reduced motion preference
-      return {}; 
+      return {};
     }
 
     switch (type) {
-      case 'button':
+      case "button":
         return buttonAnimation;
-      case 'card':
+      case "card":
         return cardHoverAnimation;
-      case 'lift':
+      case "lift":
         return {
           rest: { y: 0, transition: { duration: 0.2 } },
-          hover: { y: -5, transition: { duration: 0.2 } }
+          hover: { y: -5, transition: { duration: 0.2 } },
         };
-      case 'glow':
+      case "glow":
         return {
-          rest: { 
-            boxShadow: '0 0 0px rgba(255, 255, 255, 0)',
-            transition: { duration: 0.2 }
+          rest: {
+            boxShadow: "0 0 0px rgba(255, 255, 255, 0)",
+            transition: { duration: 0.2 },
           },
-          hover: { 
-            boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)',
-            transition: { duration: 0.2 }
-          }
+          hover: {
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.3)",
+            transition: { duration: 0.2 },
+          },
         };
-      case 'scale':
+      case "scale":
         return {
           rest: { scale: 1, transition: { duration: 0.2 } },
-          hover: { scale: 1.05, transition: { duration: 0.2 } }
+          hover: { scale: 1.05, transition: { duration: 0.2 } },
         };
       default:
         return buttonAnimation;
@@ -66,23 +68,22 @@ export default function HoverAnimation({
 
   return (
     <motion.div
-      className={`${className} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+      className={`${className} ${disabled ? "opacity-70 cursor-not-allowed" : ""}`}
       initial="rest"
       whileHover={disabled ? undefined : "hover"}
       whileTap={disabled ? undefined : "tap"}
       variants={getVariants() as any}
       {...props}
     >
-      {typeof children === 'function' 
+      {typeof children === "function"
         ? children({ isHovered: false, disabled }) // You could use a state for isHovered if needed
-        : children
-      }
+        : children}
     </motion.div>
   );
 }
 
 // Export a version specifically for buttons
-interface AnimatedButtonProps extends Omit<HoverAnimationProps, 'type'> {
+interface AnimatedButtonProps extends Omit<HoverAnimationProps, "type"> {
   onClick?: () => void;
 }
 
@@ -107,7 +108,7 @@ export function AnimatedButton({
 }
 
 // Export a version specifically for cards
-interface AnimatedCardProps extends Omit<HoverAnimationProps, 'type'> {
+interface AnimatedCardProps extends Omit<HoverAnimationProps, "type"> {
   onClick?: () => void;
 }
 
@@ -129,4 +130,4 @@ export function AnimatedCard({
       {children}
     </HoverAnimation>
   );
-} 
+}

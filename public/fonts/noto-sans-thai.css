@@ -1,8 +1,9 @@
 @font-face {
-  font-family: 'Noto Sans Thai';
+  font-family: "Noto Sans Thai";
   font-style: normal;
   font-weight: 400;
   font-stretch: normal;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/notosansthai/v25/iJWnBXeUZi_OHPqn4wq6hQ2_hbJ1xyN9wd43SofNWcd1MKVQt_So_9CdU5RtpzE.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/notosansthai/v25/iJWnBXeUZi_OHPqn4wq6hQ2_hbJ1xyN9wd43SofNWcd1MKVQt_So_9CdU5RtpzE.ttf)
+    format("truetype");
 }

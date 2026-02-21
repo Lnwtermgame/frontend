@@ -1,12 +1,12 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
-  cols?: 1 | 2 | 3 | 4 | 5 | 6
-  sm?: 1 | 2 | 3 | 4 | 5 | 6
-  md?: 1 | 2 | 3 | 4 | 5 | 6
-  lg?: 1 | 2 | 3 | 4 | 5 | 6
-  gap?: number
+  cols?: 1 | 2 | 3 | 4 | 5 | 6;
+  sm?: 1 | 2 | 3 | 4 | 5 | 6;
+  md?: 1 | 2 | 3 | 4 | 5 | 6;
+  lg?: 1 | 2 | 3 | 4 | 5 | 6;
+  gap?: number;
 }
 
 const Grid = React.forwardRef<HTMLDivElement, GridProps>(
@@ -21,7 +21,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
           cols === 2 && "grid-cols-2",
           cols === 3 && "grid-cols-3",
           cols === 4 && "grid-cols-4",
-          
+
           // SM breakpoint
           sm === 1 && "sm:grid-cols-1",
           sm === 2 && "sm:grid-cols-2",
@@ -54,14 +54,14 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
           gap === 4 && "gap-4",
           gap === 6 && "gap-6",
           gap === 8 && "gap-8",
-          
-          className
+
+          className,
         )}
         {...props}
       />
-    )
-  }
-)
-Grid.displayName = "Grid"
+    );
+  },
+);
+Grid.displayName = "Grid";
 
-export { Grid }
+export { Grid };

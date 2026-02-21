@@ -3,7 +3,14 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { supportApi, Ticket, TicketDetail, CreateTicketData, TicketCategory, TicketStatus } from "@/lib/services";
+import {
+  supportApi,
+  Ticket,
+  TicketDetail,
+  CreateTicketData,
+  TicketCategory,
+  TicketStatus,
+} from "@/lib/services";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
@@ -21,7 +28,7 @@ import {
   RefreshCcw,
   Tag,
   FileText,
-  User
+  User,
 } from "lucide-react";
 
 const categoryLabels: Record<TicketCategory, string> = {
@@ -36,10 +43,22 @@ const categoryLabels: Record<TicketCategory, string> = {
 
 const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
   OPEN: { label: "เปิด", color: "bg-brutal-blue border-black text-black" },
-  IN_PROGRESS: { label: "กำลังดำเนินการ", color: "bg-brutal-yellow border-black text-black" },
-  WAITING_USER: { label: "รอข้อมูลจากคุณ", color: "bg-brutal-pink border-black text-black" },
-  WAITING_ADMIN: { label: "รอเจ้าหน้าที่", color: "bg-brutal-blue border-black text-black" },
-  RESOLVED: { label: "แก้ไขแล้ว", color: "bg-brutal-green border-black text-black" },
+  IN_PROGRESS: {
+    label: "กำลังดำเนินการ",
+    color: "bg-brutal-yellow border-black text-black",
+  },
+  WAITING_USER: {
+    label: "รอข้อมูลจากคุณ",
+    color: "bg-brutal-pink border-black text-black",
+  },
+  WAITING_ADMIN: {
+    label: "รอเจ้าหน้าที่",
+    color: "bg-brutal-blue border-black text-black",
+  },
+  RESOLVED: {
+    label: "แก้ไขแล้ว",
+    color: "bg-brutal-green border-black text-black",
+  },
   CLOSED: { label: "ปิดแล้ว", color: "bg-gray-300 border-black text-black" },
 };
 
@@ -50,7 +69,9 @@ export default function TicketsPage() {
   const supportTicketsEnabled =
     publicSettings?.features.enableSupportTickets ?? true;
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,7 +109,7 @@ export default function TicketsPage() {
       const response = await supportApi.getUserTickets(
         1,
         50,
-        statusFilter === "ALL" ? undefined : statusFilter
+        statusFilter === "ALL" ? undefined : statusFilter,
       );
       if (response.success) {
         setTickets(response.data);
@@ -180,9 +201,12 @@ export default function TicketsPage() {
           className="mx-auto max-w-2xl border-[3px] border-black bg-white p-8 text-center"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
-          <h1 className="text-2xl font-black text-black">Ticket support is currently disabled</h1>
+          <h1 className="text-2xl font-black text-black">
+            Ticket support is currently disabled
+          </h1>
           <p className="mt-3 text-sm text-gray-600">
-            Please use the contact page while this channel is temporarily unavailable.
+            Please use the contact page while this channel is temporarily
+            unavailable.
           </p>
           <div className="mt-6">
             <Link
@@ -202,7 +226,7 @@ export default function TicketsPage() {
       {/* Header */}
       <motion.div
         className="bg-white border-[3px] border-black p-6 md:p-8 mb-8"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -220,16 +244,16 @@ export default function TicketsPage() {
               <div className="bg-brutal-blue p-2 border-[3px] border-black mr-3">
                 <MessageSquare className="h-6 w-6 text-black" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-black">ทิคเก็ตช่วยเหลือของฉัน</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-black">
+                ทิคเก็ตช่วยเหลือของฉัน
+              </h1>
             </div>
-            <p className="text-gray-600">
-              ดูและจัดการคำขอซัพพอร์ตของคุณ
-            </p>
+            <p className="text-gray-600">ดูและจัดการคำขอซัพพอร์ตของคุณ</p>
           </div>
           <button
             onClick={() => setShowNewTicketModal(true)}
             className="bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <Plus size={18} className="mr-2" />
             สร้างทิคเก็ตใหม่
@@ -243,7 +267,7 @@ export default function TicketsPage() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle className="text-black mr-3" size={20} />
           <span className="text-black">{error}</span>
@@ -259,21 +283,35 @@ export default function TicketsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Ticket List */}
         <div className="lg:col-span-1">
-          <div className="bg-white border-[3px] border-black overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             {/* Filter Tabs */}
             <div className="p-4 border-b-[3px] border-black">
               <div className="flex flex-wrap gap-2">
-                {["ALL", "OPEN", "IN_PROGRESS", "WAITING_USER", "RESOLVED", "CLOSED"].map((status) => (
+                {[
+                  "ALL",
+                  "OPEN",
+                  "IN_PROGRESS",
+                  "WAITING_USER",
+                  "RESOLVED",
+                  "CLOSED",
+                ].map((status) => (
                   <button
                     key={status}
-                    onClick={() => setStatusFilter(status as TicketStatus | "ALL")}
+                    onClick={() =>
+                      setStatusFilter(status as TicketStatus | "ALL")
+                    }
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border-[2px] transition-colors ${
                       statusFilter === status
                         ? "bg-black text-white border-black"
                         : "bg-white text-gray-700 border-black hover:bg-brutal-gray"
                     }`}
                   >
-                    {status === "ALL" ? "ทั้งหมด" : statusLabels[status as TicketStatus].label}
+                    {status === "ALL"
+                      ? "ทั้งหมด"
+                      : statusLabels[status as TicketStatus].label}
                   </button>
                 ))}
               </div>
@@ -283,7 +321,10 @@ export default function TicketsPage() {
             <div className="max-h-[600px] overflow-y-auto">
               {isLoading ? (
                 <div className="p-8 text-center">
-                  <Loader2 className="animate-spin mx-auto text-black mb-3" size={32} />
+                  <Loader2
+                    className="animate-spin mx-auto text-black mb-3"
+                    size={32}
+                  />
                   <p className="text-gray-600">กำลังโหลดทิคเก็ต...</p>
                 </div>
               ) : filteredTickets.length === 0 ? (
@@ -303,16 +344,24 @@ export default function TicketsPage() {
                     key={ticket.id}
                     onClick={() => loadTicketDetail(ticket.id)}
                     className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-brutal-gray transition-colors ${
-                      selectedTicket?.id === ticket.id ? "bg-brutal-yellow border-l-4 border-l-black" : ""
+                      selectedTicket?.id === ticket.id
+                        ? "bg-brutal-yellow border-l-4 border-l-black"
+                        : ""
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <span className="text-xs text-gray-600">{ticket.ticketNumber}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border-[2px] ${statusLabels[ticket.status].color}`}>
+                      <span className="text-xs text-gray-600">
+                        {ticket.ticketNumber}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full border-[2px] ${statusLabels[ticket.status].color}`}
+                      >
                         {statusLabels[ticket.status].label}
                       </span>
                     </div>
-                    <h4 className="text-black font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h4>
+                    <h4 className="text-black font-medium text-sm mb-1 line-clamp-1">
+                      {ticket.subject}
+                    </h4>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-gray-600">
                         {categoryLabels[ticket.category]}
@@ -335,7 +384,7 @@ export default function TicketsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="bg-white border-[3px] border-black overflow-hidden h-full flex flex-col"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               {isDetailLoading ? (
                 <div className="flex-1 flex items-center justify-center p-8">
@@ -347,14 +396,22 @@ export default function TicketsPage() {
                   <div className="p-6 border-b-[3px] border-black">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <span className="text-sm text-gray-600">{selectedTicket.ticketNumber}</span>
-                        <h2 className="text-xl font-bold text-black mt-1">{selectedTicket.subject}</h2>
+                        <span className="text-sm text-gray-600">
+                          {selectedTicket.ticketNumber}
+                        </span>
+                        <h2 className="text-xl font-bold text-black mt-1">
+                          {selectedTicket.subject}
+                        </h2>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium border-[2px] ${statusLabels[selectedTicket.status].color}`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium border-[2px] ${statusLabels[selectedTicket.status].color}`}
+                        >
                           {statusLabels[selectedTicket.status].label}
                         </span>
-                        {!["CLOSED", "RESOLVED"].includes(selectedTicket.status) && (
+                        {!["CLOSED", "RESOLVED"].includes(
+                          selectedTicket.status,
+                        ) && (
                           <button
                             onClick={handleCloseTicket}
                             className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray transition-colors"
@@ -372,7 +429,8 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex items-center">
                         <Clock size={14} className="mr-1.5" />
-                        สร้างเมื่อ {new Date(selectedTicket.createdAt).toLocaleString()}
+                        สร้างเมื่อ{" "}
+                        {new Date(selectedTicket.createdAt).toLocaleString()}
                       </div>
                       {selectedTicket.orderId && (
                         <Link
@@ -395,9 +453,13 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-black font-medium text-sm">คุณ</span>
+                          <span className="text-black font-medium text-sm">
+                            คุณ
+                          </span>
                           <span className="text-xs text-gray-600">
-                            {new Date(selectedTicket.createdAt).toLocaleString()}
+                            {new Date(
+                              selectedTicket.createdAt,
+                            ).toLocaleString()}
                           </span>
                         </div>
                         <div className="bg-brutal-gray border-[2px] border-black p-3 text-gray-700">
@@ -414,12 +476,14 @@ export default function TicketsPage() {
                             message.sender === "admin"
                               ? "bg-brutal-green"
                               : message.sender === "system"
-                              ? "bg-gray-300"
-                              : "bg-brutal-blue"
+                                ? "bg-gray-300"
+                                : "bg-brutal-blue"
                           }`}
                         >
                           {message.sender === "admin" ? (
-                            <span className="text-black text-xs font-bold">S</span>
+                            <span className="text-black text-xs font-bold">
+                              S
+                            </span>
                           ) : message.sender === "system" ? (
                             <span className="text-black text-xs">@</span>
                           ) : (
@@ -432,8 +496,8 @@ export default function TicketsPage() {
                               {message.sender === "admin"
                                 ? message.senderName || "ทีมซัพพอร์ต"
                                 : message.sender === "system"
-                                ? "ระบบ"
-                                : "คุณ"}
+                                  ? "ระบบ"
+                                  : "คุณ"}
                             </span>
                             <span className="text-xs text-gray-600">
                               {new Date(message.createdAt).toLocaleString()}
@@ -444,8 +508,8 @@ export default function TicketsPage() {
                               message.sender === "admin"
                                 ? "bg-brutal-green text-black"
                                 : message.sender === "system"
-                                ? "bg-gray-200 text-black"
-                                : "bg-brutal-gray text-gray-700"
+                                  ? "bg-gray-200 text-black"
+                                  : "bg-brutal-gray text-gray-700"
                             }`}
                           >
                             {message.content}
@@ -470,7 +534,7 @@ export default function TicketsPage() {
                           type="submit"
                           disabled={isSendingReply || !replyMessage.trim()}
                           className="bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 font-medium flex items-center hover:bg-gray-800 transition-colors"
-                          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                          style={{ boxShadow: "4px 4px 0 0 #000000" }}
                         >
                           {isSendingReply ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -488,9 +552,14 @@ export default function TicketsPage() {
               )}
             </motion.div>
           ) : (
-            <div className="bg-white border-[3px] border-black p-12 text-center h-full flex flex-col items-center justify-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-white border-[3px] border-black p-12 text-center h-full flex flex-col items-center justify-center"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <MessageSquare className="text-gray-300 mb-4" size={64} />
-              <h3 className="text-xl font-bold text-black mb-2">เลือกทิคเก็ต</h3>
+              <h3 className="text-xl font-bold text-black mb-2">
+                เลือกทิคเก็ต
+              </h3>
               <p className="text-gray-600 max-w-sm">
                 เลือกทิคเก็ตจากรายการเพื่อดูรายละเอียดและสนทนาต่อ
               </p>
@@ -513,13 +582,15 @@ export default function TicketsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white border-[3px] border-black w-full max-w-lg max-h-[90vh] overflow-y-auto"
-              style={{ boxShadow: '8px 8px 0 0 #000000' }}
+              style={{ boxShadow: "8px 8px 0 0 #000000" }}
             >
               <div className="p-6 border-b-[3px] border-black">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-                    <h2 className="text-xl font-bold text-black">สร้างทิคเก็ตใหม่</h2>
+                    <h2 className="text-xl font-bold text-black">
+                      สร้างทิคเก็ตใหม่
+                    </h2>
                   </div>
                   <button
                     onClick={() => setShowNewTicketModal(false)}
@@ -532,10 +603,17 @@ export default function TicketsPage() {
 
               <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">หมวดหมู่</label>
+                  <label className="block text-gray-700 mb-2 font-medium">
+                    หมวดหมู่
+                  </label>
                   <select
                     value={newTicket.category}
-                    onChange={(e) => setNewTicket({ ...newTicket, category: e.target.value as TicketCategory })}
+                    onChange={(e) =>
+                      setNewTicket({
+                        ...newTicket,
+                        category: e.target.value as TicketCategory,
+                      })
+                    }
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black focus:outline-none focus:border-black transition-colors"
                   >
                     {Object.entries(categoryLabels).map(([value, label]) => (
@@ -547,11 +625,15 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">หัวข้อ</label>
+                  <label className="block text-gray-700 mb-2 font-medium">
+                    หัวข้อ
+                  </label>
                   <input
                     type="text"
                     value={newTicket.subject}
-                    onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
+                    onChange={(e) =>
+                      setNewTicket({ ...newTicket, subject: e.target.value })
+                    }
                     placeholder="สรุปสั้น ๆ เกี่ยวกับปัญหาของคุณ"
                     required
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
@@ -559,10 +641,17 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">รายละเอียด</label>
+                  <label className="block text-gray-700 mb-2 font-medium">
+                    รายละเอียด
+                  </label>
                   <textarea
                     value={newTicket.description}
-                    onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })}
+                    onChange={(e) =>
+                      setNewTicket({
+                        ...newTicket,
+                        description: e.target.value,
+                      })
+                    }
                     placeholder="โปรดอธิบายปัญหาของคุณอย่างละเอียด..."
                     required
                     rows={5}
@@ -571,11 +660,18 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">รหัสคำสั่งซื้อ (ไม่บังคับ)</label>
+                  <label className="block text-gray-700 mb-2 font-medium">
+                    รหัสคำสั่งซื้อ (ไม่บังคับ)
+                  </label>
                   <input
                     type="text"
                     value={newTicket.orderId || ""}
-                    onChange={(e) => setNewTicket({ ...newTicket, orderId: e.target.value || undefined })}
+                    onChange={(e) =>
+                      setNewTicket({
+                        ...newTicket,
+                        orderId: e.target.value || undefined,
+                      })
+                    }
                     placeholder="หากเกี่ยวข้องกับคำสั่งซื้อใด"
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
@@ -591,9 +687,13 @@ export default function TicketsPage() {
                   </button>
                   <button
                     type="submit"
-                    disabled={isSubmitting || !newTicket.subject.trim() || !newTicket.description.trim()}
+                    disabled={
+                      isSubmitting ||
+                      !newTicket.subject.trim() ||
+                      !newTicket.description.trim()
+                    }
                     className="flex-1 py-2.5 px-4 bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors"
-                    style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">

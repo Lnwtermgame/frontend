@@ -73,7 +73,9 @@ export function PublicSettingsProvider({ children }: { children: ReactNode }) {
 export function usePublicSettings() {
   const ctx = useContext(PublicSettingsContext);
   if (!ctx) {
-    throw new Error("usePublicSettings must be used within PublicSettingsProvider");
+    throw new Error(
+      "usePublicSettings must be used within PublicSettingsProvider",
+    );
   }
   return ctx;
 }

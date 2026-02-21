@@ -93,7 +93,8 @@ export default function AdminProducts() {
   const filteredProducts = useMemo<AdminProduct[]>(() => {
     return products.filter((product) => {
       const matchesType =
-        productTypeFilter === "all" || product.productType === productTypeFilter;
+        productTypeFilter === "all" ||
+        product.productType === productTypeFilter;
 
       const matchesStatus =
         statusFilter === "all" ||
@@ -127,7 +128,8 @@ export default function AdminProducts() {
             page: pagination.page,
             limit: pagination.limit,
             search: searchTerm || undefined,
-            categoryId: selectedCategory === "all" ? undefined : selectedCategory,
+            categoryId:
+              selectedCategory === "all" ? undefined : selectedCategory,
           }),
           productApi.getCategories(),
         ]);
@@ -237,7 +239,9 @@ export default function AdminProducts() {
     if (!source) return;
 
     const urlToCopy =
-      imageTarget === "logo" ? source.imageUrl || "" : source.coverImageUrl || "";
+      imageTarget === "logo"
+        ? source.imageUrl || ""
+        : source.coverImageUrl || "";
 
     if (!urlToCopy) {
       toast.error("สินค้าที่เลือกไม่มีรูปภาพสำหรับคัดลอก");
@@ -258,7 +262,9 @@ export default function AdminProducts() {
       const newUrl = await processImageUrl(
         imageUrlInput,
         isLogo ? "products/logos" : "products/covers",
-        isLogo ? imageUpdatingProduct.imageUrl : imageUpdatingProduct.coverImageUrl,
+        isLogo
+          ? imageUpdatingProduct.imageUrl
+          : imageUpdatingProduct.coverImageUrl,
       );
       if (!newUrl) return;
 
@@ -274,9 +280,13 @@ export default function AdminProducts() {
 
       if (response.success) {
         setProducts((prev) =>
-          prev.map((p) => (p.id === imageUpdatingProduct.id ? { ...p, ...payload } : p)),
+          prev.map((p) =>
+            p.id === imageUpdatingProduct.id ? { ...p, ...payload } : p,
+          ),
         );
-        setImageUpdatingProduct((prev) => (prev ? { ...prev, ...payload } : prev));
+        setImageUpdatingProduct((prev) =>
+          prev ? { ...prev, ...payload } : prev,
+        );
         toast.success("อัปโหลดและบันทึกรูปภาพสำเร็จ");
       } else {
         toast.error("อัปโหลดสำเร็จแต่บันทึกสินค้าไม่สำเร็จ");
@@ -317,7 +327,9 @@ export default function AdminProducts() {
       }
 
       const payload =
-        imageTarget === "logo" ? { imageUrl: finalUrl } : { coverImageUrl: finalUrl };
+        imageTarget === "logo"
+          ? { imageUrl: finalUrl }
+          : { coverImageUrl: finalUrl };
 
       const response = await productApi.updateProduct(
         imageUpdatingProduct.id,
@@ -797,7 +809,8 @@ export default function AdminProducts() {
           {!loading && pagination.totalPages > 1 && (
             <div className="p-4 border-t border-gray-200 flex justify-between items-center">
               <div className="text-sm text-gray-500">
-                แสดง {filteredProducts.length} จาก {products.length} สินค้าในหน้านี้
+                แสดง {filteredProducts.length} จาก {products.length}{" "}
+                สินค้าในหน้านี้
               </div>
               <div className="flex space-x-1">
                 <button
@@ -1182,7 +1195,13 @@ export default function AdminProducts() {
           createPortal(
             <div
               className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
-              style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -1228,7 +1247,9 @@ export default function AdminProducts() {
 
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      {imageTarget === "logo" ? "ลิงก์โลโก้สินค้า" : "ลิงก์รูปภาพหน้าปก"}
+                      {imageTarget === "logo"
+                        ? "ลิงก์โลโก้สินค้า"
+                        : "ลิงก์รูปภาพหน้าปก"}
                     </label>
                     <div className="relative">
                       <input
@@ -1252,7 +1273,11 @@ export default function AdminProducts() {
                         type="button"
                         onClick={handleUploadImage}
                         disabled={
-                          isUploadingImage || !(typeof imageUrlInput === "string" && imageUrlInput.trim())
+                          isUploadingImage ||
+                          !(
+                            typeof imageUrlInput === "string" &&
+                            imageUrlInput.trim()
+                          )
                         }
                         className="inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -1271,7 +1296,9 @@ export default function AdminProducts() {
                       <div className="flex items-center gap-2">
                         <select
                           value={copySourceProductId}
-                          onChange={(e) => setCopySourceProductId(e.target.value)}
+                          onChange={(e) =>
+                            setCopySourceProductId(e.target.value)
+                          }
                           className="bg-white border-[2px] border-black px-3 py-2 text-sm text-gray-800"
                         >
                           <option value="">เลือกสินค้าที่จะคัดลอก</option>
@@ -1297,11 +1324,15 @@ export default function AdminProducts() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {imageTarget === "logo" ? "ดูตัวอย่างโลโก้" : "ดูตัวอย่างหน้าปก"}
+                      {imageTarget === "logo"
+                        ? "ดูตัวอย่างโลโก้"
+                        : "ดูตัวอย่างหน้าปก"}
                     </label>
                     <div
                       className={`${
-                        imageTarget === "logo" ? "aspect-square max-w-[180px]" : "aspect-video max-w-[260px]"
+                        imageTarget === "logo"
+                          ? "aspect-square max-w-[180px]"
+                          : "aspect-video max-w-[260px]"
                       } border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview`}
                     >
                       {imageUrlInput && !imageError ? (
@@ -1315,7 +1346,9 @@ export default function AdminProducts() {
                         <div className="text-center p-4">
                           <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                           <span className="text-xs text-gray-500 block">
-                            {imageUrlInput ? "โหลดรูปภาพไม่สำเร็จ" : "ยังไม่มีรูปภาพ"}
+                            {imageUrlInput
+                              ? "โหลดรูปภาพไม่สำเร็จ"
+                              : "ยังไม่มีรูปภาพ"}
                           </span>
                         </div>
                       )}
@@ -1335,7 +1368,9 @@ export default function AdminProducts() {
                     disabled={isSavingImage}
                     className="px-4 py-2 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    {isSavingImage && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {isSavingImage && (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    )}
                     {isSavingImage ? "กำลังบันทึก..." : "บันทึกรูปภาพ"}
                   </button>
                 </div>

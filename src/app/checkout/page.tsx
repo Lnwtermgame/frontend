@@ -335,7 +335,9 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div className="text-right w-full sm:w-auto flex justify-between sm:block">
-                  <span className="text-gray-600 sm:hidden font-bold">รวม:</span>
+                  <span className="text-gray-600 sm:hidden font-bold">
+                    รวม:
+                  </span>
                   <div>
                     <span className="text-2xl font-black text-black block">
                       ฿{(item.price * item.quantity).toFixed(2)}
@@ -430,7 +432,9 @@ export default function CheckoutPage() {
             <div className="mt-4 text-center">
               <p className="text-gray-500 text-xs">
                 การคลิกยืนยันการสั่งซื้อ แสดงว่าคุณยอมรับ{" "}
-                <Link href="/terms" className="underline hover:text-black">เงื่อนไขการให้บริการ</Link>
+                <Link href="/terms" className="underline hover:text-black">
+                  เงื่อนไขการให้บริการ
+                </Link>
               </p>
             </div>
           </div>

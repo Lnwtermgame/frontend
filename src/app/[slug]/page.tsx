@@ -15,7 +15,8 @@ type CmsRouteParams = {
   slug: string;
 };
 
-const containsHtmlTag = (content: string): boolean => /<\/?[a-z][\s\S]*>/i.test(content);
+const containsHtmlTag = (content: string): boolean =>
+  /<\/?[a-z][\s\S]*>/i.test(content);
 
 // This generates static params for known CMS pages
 export async function generateStaticParams() {
@@ -135,7 +136,9 @@ export default async function CmsPage({ params }: CmsPageProps) {
                   <ul className="list-disc pl-6 mb-4 space-y-1">{children}</ul>
                 ),
                 ol: ({ children }) => (
-                  <ol className="list-decimal pl-6 mb-4 space-y-1">{children}</ol>
+                  <ol className="list-decimal pl-6 mb-4 space-y-1">
+                    {children}
+                  </ol>
                 ),
                 h2: ({ children }) => (
                   <h2 className="text-2xl font-bold text-black mt-8 mb-3 thai-font">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
 import {
@@ -55,6 +56,12 @@ const categories: { value: NewsCategory; label: string; color: string }[] = [
 ];
 
 export default function AdminCmsNewsPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,6 +86,7 @@ export default function AdminCmsNewsPage() {
     coverImage: "",
     category: "general",
     tags: [],
+    sources: [],
     isPublished: false,
     isFeatured: false,
   });
@@ -89,6 +97,78 @@ export default function AdminCmsNewsPage() {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [showAIGenerate, setShowAIGenerate] = useState(false);
+  const [aiGeneratedSources, setAiGeneratedSources] = useState<string[]>([]);
+  const [aiVariation, setAiVariation] = useState<string>("random");
+  const [aiProgress, setAiProgress] = useState<{
+    stage: string;
+    message: string;
+  } | null>(null);
+
+  const aiStageOrder = [
+    "preparing",
+    "searching",
+    "generating",
+    "parsing",
+    "completed",
+    "error",
+  ];
+  const aiStageLabels: Record<string, string> = {
+    preparing: "เตรียมข้อมูล",
+    searching: "ค้นหาข้อมูล",
+    generating: "สร้างเนื้อหา",
+    parsing: "ประมวลผลผลลัพธ์",
+    completed: "เสร็จสมบูรณ์",
+    error: "เกิดปัญหา",
+  };
+
+  // AI content variations
+  const aiVariations = [
+    {
+      value: "random",
+      label: "🎲 สุ่มอัตโนมัติ",
+      description: "สุ่มมุมมองข่าวอัตโนมัติ",
+    },
+    {
+      value: "breaking-news",
+      label: "📰 ข่าวล่าสุด",
+      description: "ข่าวอัปเดตและประกาศใหม่",
+    },
+    {
+      value: "guide",
+      label: "📖 คู่มือ/เคล็ดลับ",
+      description: "แนะนำวิธีการและเทคนิค",
+    },
+    {
+      value: "analysis",
+      label: "🔍 วิเคราะห์",
+      description: "วิเคราะห์เชิงลึกและรีวิว",
+    },
+    {
+      value: "event",
+      label: "🎉 กิจกรรม/โปรโมชั่น",
+      description: "กิจกรรมพิเศษและโปรโมชั่น",
+    },
+    {
+      value: "esports",
+      label: "🏆 อีสปอร์ต",
+      description: "ข่าวการแข่งขันและทีม",
+    },
+    {
+      value: "community",
+      label: "👥 ชุมชน",
+      description: "เรื่องราวจากผู้เล่น",
+    },
+    {
+      value: "comparison",
+      label: "⚖️ เปรียบเทียบ",
+      description: "เปรียบเทียบและจัดอันดับ",
+    },
+    {
+      value: "behind-scenes",
+      label: "🎬 เบื้องหลัง",
+      description: "เบื้องหลังการพัฒนา",
+    },
+  ];
 
   const loadArticles = async () => {
     setIsLoading(true);
@@ -165,12 +245,14 @@ export default function AdminCmsNewsPage() {
     setIsSubmitting(true);
     try {
       const data: UpdateNewsArticleData = {
+        slug: formData.slug,
         title: formData.title,
         excerpt: formData.excerpt,
         content: formData.content,
         coverImage: formData.coverImage,
         category: formData.category,
         tags: formData.tags,
+        sources: formData.sources,
         isPublished: formData.isPublished,
         isFeatured: formData.isFeatured,
       };
@@ -216,11 +298,13 @@ export default function AdminCmsNewsPage() {
       coverImage: article.coverImage || "",
       category: article.category as NewsCategory,
       tags: article.tags,
+      sources: article.sources || [],
       isPublished: article.isPublished,
       isFeatured: article.isFeatured,
     });
     setAiTopic("");
     setShowAIGenerate(false);
+    setAiGeneratedSources(article.sources || []);
     setShowModal(true);
   };
 
@@ -233,41 +317,96 @@ export default function AdminCmsNewsPage() {
       coverImage: "",
       category: "general",
       tags: [],
+      sources: [],
       isPublished: false,
       isFeatured: false,
     });
     setTagInput("");
     setAiTopic("");
     setShowAIGenerate(false);
+    setAiGeneratedSources([]);
+    setAiVariation("random");
+    setAiProgress(null);
   };
 
   const handleGenerateAIContent = async () => {
     if (!aiTopic.trim()) return;
 
     setIsGeneratingAI(true);
+    setError(null);
+    setAiProgress({
+      stage: "preparing",
+      message: "กำลังเริ่มต้นการสร้างเนื้อหา...",
+    });
+
+    console.log("[Generate AI] Starting generation for topic:", aiTopic);
+    console.log("[Generate AI] Selected variation:", aiVariation);
+
     try {
       const categoryLabel =
         categories.find((cat) => cat.value === formData.category)?.label ||
         "ทั่วไป";
+
+      // Get existing article slugs to prevent duplicates
+      const existingSlugs = articles.map((article) => article.slug);
+
+      console.log("[Generate AI] Existing slugs count:", existingSlugs.length);
+      console.log("[Generate AI] Calling aiService.generateNewsContent...");
+
       const result = await aiService.generateNewsContent(
         aiTopic,
         categoryLabel,
+        (progress) => {
+          setAiProgress({
+            stage: progress.stage,
+            message: progress.message,
+          });
+        },
+        existingSlugs, // pass existing slugs to prevent duplicates
+        aiVariation !== "random" ? aiVariation : undefined, // pass preferred angle if not random
       );
-      const aiSlug = result.slug || slugify(result.title);
+
+      console.log("[Generate AI] Result received:", {
+        title: result.title,
+        slug: result.slug,
+        contentLength: result.content?.length,
+      });
+
+      // Ensure unique slug
+      let aiSlug = result.slug || slugify(result.title);
+      let counter = 1;
+      const baseSlug = aiSlug;
+
+      // Keep modifying slug until it's unique
+      while (existingSlugs.includes(aiSlug)) {
+        aiSlug = `${baseSlug}-${counter}`;
+        counter++;
+      }
 
       setFormData((prev) => ({
         ...prev,
         title: result.title,
         content: result.content,
         excerpt: result.excerpt,
-        slug:
-          !editingArticle && !prev.slug?.trim()
-            ? aiSlug
-            : prev.slug,
+        slug: !editingArticle && !prev.slug?.trim() ? aiSlug : prev.slug,
+        tags: result.tags && result.tags.length > 0 ? result.tags : prev.tags,
+        coverImage: result.coverImage || prev.coverImage,
+        sources:
+          result.sources && result.sources.length > 0
+            ? result.sources
+            : prev.sources,
       }));
+
+      // Store sources in state for display
+      setAiGeneratedSources(result.sources || []);
       setError(null);
+      setAiProgress({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
     } catch (err) {
       setError(cmsApi.getErrorMessage(err));
+      setAiProgress({
+        stage: "error",
+        message: cmsApi.getErrorMessage(err),
+      });
     } finally {
       setIsGeneratingAI(false);
     }
@@ -622,361 +761,586 @@ export default function AdminCmsNewsPage() {
       </div>
 
       {/* Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white border-[3px] border-black w-full max-w-3xl max-h-[90vh] overflow-y-auto"
-              style={{ boxShadow: "8px 8px 0 0 #000000" }}
-            >
-              <div className="p-6 border-b-[3px] border-black">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-black">
-                    {editingArticle ? "แก้ไขข่าว" : "เพิ่มข่าวใหม่"}
-                  </h2>
-                  <button
-                    onClick={() => {
-                      setShowModal(false);
-                      setEditingArticle(null);
-                      resetForm();
-                    }}
-                    className="text-gray-600 hover:text-black"
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-              </div>
-
-              <form
-                onSubmit={editingArticle ? handleUpdate : handleCreate}
-                className="p-6 space-y-4"
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {showModal && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
               >
-                {/* Slug */}
-                {!editingArticle && (
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      URL Slug *
-                    </label>
-                    <div className="flex items-center">
-                      <span className="px-3 py-2.5 bg-gray-100 border-[2px] border-r-0 border-gray-300 text-gray-500">
-                        /news/
-                      </span>
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  className="bg-white border-[3px] border-black w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+                  style={{ boxShadow: "8px 8px 0 0 #000000" }}
+                >
+                  <div className="p-6 border-b-[3px] border-black">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-bold text-black">
+                        {editingArticle ? "แก้ไขข่าว" : "เพิ่มข่าวใหม่"}
+                      </h2>
+                      <button
+                        onClick={() => {
+                          setShowModal(false);
+                          setEditingArticle(null);
+                          resetForm();
+                        }}
+                        className="text-gray-600 hover:text-black"
+                      >
+                        <X size={24} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <form
+                    onSubmit={editingArticle ? handleUpdate : handleCreate}
+                    className="p-6 space-y-4"
+                  >
+                    {/* Slug */}
+                    <div>
+                      <label className="block text-gray-700 mb-2 font-medium">
+                        URL Slug *{" "}
+                        {editingArticle && (
+                          <span className="text-amber-600 text-xs">
+                            (ระวัง: การแก้ไขจะทำให้ลิงก์เดิมใช้ไม่ได้)
+                          </span>
+                        )}
+                      </label>
+                      <div className="flex items-center">
+                        <span className="px-3 py-2.5 bg-gray-100 border-[2px] border-r-0 border-gray-300 text-gray-500">
+                          /news/
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.slug}
+                          onChange={(e) =>
+                            setFormData({ ...formData, slug: e.target.value })
+                          }
+                          placeholder="article-slug"
+                          required
+                          className="flex-1 py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {editingArticle
+                          ? "คำเตือน: หากแก้ไข slug ลิงก์เดิมจะใช้งานไม่ได้ ควรตั้งค่า redirect หากจำเป็น"
+                          : "จะสร้างอัตโนมัติจากชื่อถ้าไม่กรอก (ใช้ตัวพิมพ์เล็กและขีดกลางเท่านั้น)"}
+                      </p>
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                      <label className="block text-gray-700 mb-2 font-medium">
+                        หัวข้อข่าว *
+                      </label>
                       <input
                         type="text"
-                        value={formData.slug}
+                        value={formData.title}
                         onChange={(e) =>
-                          setFormData({ ...formData, slug: e.target.value })
+                          setFormData({ ...formData, title: e.target.value })
                         }
-                        placeholder="article-slug"
-                        className="flex-1 py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                        placeholder="หัวข้อข่าว"
+                        required
+                        className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      จะสร้างอัตโนมัติจากชื่อถ้าไม่กรอก
-                    </p>
-                  </div>
-                )}
 
-                {/* Title */}
-                <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
-                    หัวข้อข่าว *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
-                    placeholder="หัวข้อข่าว"
-                    required
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
-                  />
-                </div>
-
-                {/* AI Generate Section */}
-                <div className="bg-brutal-pink/10 border-[2px] border-brutal-pink p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      <Sparkles className="w-5 h-5 text-brutal-pink mr-2" />
-                      <span className="font-medium text-black">สร้างด้วย AI</span>
-                    </div>
-                    {!showAIGenerate && (
-                      <button
-                        type="button"
-                        onClick={() => setShowAIGenerate(true)}
-                        className="text-sm bg-brutal-pink text-white px-3 py-1.5 border-[2px] border-black hover:bg-brutal-pink/80 transition-colors"
-                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                      >
-                        <Wand2 className="w-4 h-4 inline mr-1" />
-                        เปิดใช้งาน
-                      </button>
-                    )}
-                  </div>
-
-                  <AnimatePresence>
-                    {showAIGenerate && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-3"
-                      >
-                        <div>
-                          <label className="block text-gray-700 mb-1 text-sm">
-                            หัวข้อที่ต้องการให้ AI เขียน
-                          </label>
-                          <input
-                            type="text"
-                            value={aiTopic}
-                            onChange={(e) => setAiTopic(e.target.value)}
-                            placeholder="เช่น อัปเดตระบบใหม่, โปรโมชันประจำเดือน"
-                            className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm placeholder-gray-500 focus:outline-none focus:border-black"
-                          />
+                    {/* AI Generate Section */}
+                    <div className="bg-brutal-pink/10 border-[2px] border-brutal-pink p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center">
+                          <Sparkles className="w-5 h-5 text-brutal-pink mr-2" />
+                          <span className="font-medium text-black">
+                            สร้างด้วย AI
+                          </span>
                         </div>
-                        <div className="flex gap-2">
+                        {!showAIGenerate && (
                           <button
                             type="button"
-                            onClick={handleGenerateAIContent}
-                            disabled={isGeneratingAI || !aiTopic.trim()}
-                            className="flex-1 bg-brutal-pink text-white border-[2px] border-black py-2 font-medium flex items-center justify-center disabled:opacity-50 transition-colors"
+                            onClick={() => setShowAIGenerate(true)}
+                            className="text-sm bg-brutal-pink text-white px-3 py-1.5 border-[2px] border-black hover:bg-brutal-pink/80 transition-colors"
                             style={{ boxShadow: "2px 2px 0 0 #000000" }}
                           >
-                            {isGeneratingAI ? (
-                              <>
-                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                กำลังสร้าง...
-                              </>
-                            ) : (
-                              <>
-                                <Wand2 className="w-4 h-4 mr-2" />
-                                สร้างเนื้อหา
-                              </>
-                            )}
+                            <Wand2 className="w-4 h-4 inline mr-1" />
+                            เปิดใช้งาน
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowAIGenerate(false);
-                              setAiTopic("");
-                            }}
-                            className="px-3 py-2 border-[2px] border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+                        )}
+                      </div>
+
+                      <AnimatePresence>
+                        {showAIGenerate && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="space-y-3"
                           >
-                            <X className="w-4 h-4" />
-                          </button>
+                            <div>
+                              <label className="block text-gray-700 mb-1 text-sm">
+                                หัวข้อที่ต้องการให้ AI เขียน
+                              </label>
+                              <input
+                                type="text"
+                                value={aiTopic}
+                                onChange={(e) => setAiTopic(e.target.value)}
+                                placeholder="เช่น อัปเดตระบบใหม่, โปรโมชันประจำเดือน"
+                                className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm placeholder-gray-500 focus:outline-none focus:border-black"
+                              />
+                              <p className="text-xs text-gray-500 mt-1">
+                                AI จะค้นหาข้อมูลจาก SEARXNG
+                                (http://searxng-rkg44wkww4sgo8wcwwos8c44.89.38.101.12.sslip.io/)
+                                พร้อมรูปภาพบรรยากาศเกม วิดีโอ Official
+                                และแหล่งข่าว
+                              </p>
+                            </div>
+
+                            {/* Variation Selector */}
+                            <div>
+                              <label className="block text-gray-700 mb-1 text-sm">
+                                มุมมองข่าว (เลือกเพื่อกันซ้ำ)
+                              </label>
+                              <select
+                                value={aiVariation}
+                                onChange={(e) => setAiVariation(e.target.value)}
+                                className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black"
+                              >
+                                {aiVariations.map((variation) => (
+                                  <option
+                                    key={variation.value}
+                                    value={variation.value}
+                                  >
+                                    {variation.label} - {variation.description}
+                                  </option>
+                                ))}
+                              </select>
+                              <p className="text-xs text-gray-500 mt-1">
+                                💡 เลือกมุมมองต่างกันจะได้ข่าวที่ไม่ซ้ำกัน
+                              </p>
+                            </div>
+
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={handleGenerateAIContent}
+                                disabled={isGeneratingAI || !aiTopic.trim()}
+                                className="flex-1 bg-brutal-pink text-white border-[2px] border-black py-2 font-medium flex items-center justify-center disabled:opacity-50 transition-colors"
+                                style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                              >
+                                {isGeneratingAI ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                    กำลังสร้าง...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Wand2 className="w-4 h-4 mr-2" />
+                                    สร้างเนื้อหา
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowAIGenerate(false);
+                                  setAiTopic("");
+                                  setAiProgress(null);
+                                }}
+                                className="px-3 py-2 border-[2px] border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                            {aiProgress && (
+                              <div className="border-[2px] border-black bg-white p-3">
+                                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                                  <span className="font-medium text-black">
+                                    สถานะ:{" "}
+                                    {aiStageLabels[aiProgress.stage] ||
+                                      "กำลังทำงาน"}
+                                  </span>
+                                  <span>
+                                    {Math.min(
+                                      Math.max(
+                                        aiStageOrder.indexOf(aiProgress.stage),
+                                        0,
+                                      ),
+                                      aiStageOrder.length - 2,
+                                    ) + 1}
+                                    /{aiStageOrder.length - 1}
+                                  </span>
+                                </div>
+                                <div className="w-full h-2 border-[2px] border-black bg-gray-100 mb-2">
+                                  <div
+                                    className={`h-full ${
+                                      aiProgress.stage === "error"
+                                        ? "bg-red-400"
+                                        : aiProgress.stage === "completed"
+                                          ? "bg-brutal-green"
+                                          : "bg-brutal-pink"
+                                    }`}
+                                    style={{
+                                      width: `${
+                                        ((Math.min(
+                                          Math.max(
+                                            aiStageOrder.indexOf(
+                                              aiProgress.stage,
+                                            ),
+                                            0,
+                                          ),
+                                          aiStageOrder.length - 2,
+                                        ) +
+                                          1) /
+                                          (aiStageOrder.length - 1)) *
+                                        100
+                                      }%`,
+                                    }}
+                                  />
+                                </div>
+                                <p
+                                  className={`text-xs ${
+                                    aiProgress.stage === "error"
+                                      ? "text-red-700"
+                                      : "text-gray-700"
+                                  }`}
+                                >
+                                  {aiProgress.message}
+                                </p>
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {!aiService.isConfigured() && showAIGenerate && (
+                        <div className="mt-3 p-2 bg-red-50 border-[1px] border-red-300 text-red-700 text-xs">
+                          กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
+                          ก่อนใช้งาน AI
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {!aiService.isConfigured() && showAIGenerate && (
-                    <div className="mt-3 p-2 bg-red-50 border-[1px] border-red-300 text-red-700 text-xs">
-                      กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env ก่อนใช้งาน AI
+                      )}
                     </div>
-                  )}
-                </div>
 
-                {/* Category & Cover */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      หมวดหมู่ *
-                    </label>
-                    <select
-                      value={formData.category}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          category: e.target.value as NewsCategory,
-                        })
-                      }
-                      className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black focus:outline-none focus:border-black transition-colors"
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      รูปปก (URL)
-                    </label>
-                    <input
-                      type="url"
-                      value={formData.coverImage}
-                      onChange={(e) =>
-                        setFormData({ ...formData, coverImage: e.target.value })
-                      }
-                      placeholder="https://example.com/image.jpg"
-                      className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
-                    />
-                  </div>
-                </div>
+                    {/* Category & Cover */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-700 mb-2 font-medium">
+                          หมวดหมู่ *
+                        </label>
+                        <select
+                          value={formData.category}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              category: e.target.value as NewsCategory,
+                            })
+                          }
+                          className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black focus:outline-none focus:border-black transition-colors"
+                        >
+                          {categories.map((cat) => (
+                            <option key={cat.value} value={cat.value}>
+                              {cat.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 mb-2 font-medium">
+                          รูปปก (URL){" "}
+                          {showAIGenerate && (
+                            <span className="text-brutal-pink text-xs">
+                              (AI จะค้นหารูปให้อัตโนมัติ)
+                            </span>
+                          )}
+                        </label>
+                        <input
+                          type="url"
+                          value={formData.coverImage}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              coverImage: e.target.value,
+                            })
+                          }
+                          placeholder="https://example.com/image.jpg"
+                          className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                        />
+                        {formData.coverImage && (
+                          <div className="mt-2">
+                            <img
+                              src={formData.coverImage}
+                              alt="Preview"
+                              className="h-20 w-auto object-cover border border-gray-300"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display =
+                                  "none";
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-                {/* Excerpt */}
-                <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
-                    บทสรุป (Excerpt) *
-                  </label>
-                  <textarea
-                    value={formData.excerpt}
-                    onChange={(e) =>
-                      setFormData({ ...formData, excerpt: e.target.value })
-                    }
-                    placeholder="สรุปเนื้อหาสั้นๆ (แสดงในรายการ)"
-                    required
-                    rows={2}
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none"
-                  />
-                </div>
-
-                {/* Content */}
-                <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
-                    เนื้อหา *
-                  </label>
-                  <textarea
-                    value={formData.content}
-                    onChange={(e) =>
-                      setFormData({ ...formData, content: e.target.value })
-                    }
-                    placeholder="เนื้อหาข่าวฉบับเต็ม (รองรับ HTML)"
-                    required
-                    rows={10}
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none font-mono text-sm"
-                  />
-                </div>
-
-                {/* Tags */}
-                <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
-                    แท็ก
-                  </label>
-                  <div className="flex gap-2 mb-2">
-                    <input
-                      type="text"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addTag();
+                    {/* Excerpt */}
+                    <div>
+                      <label className="block text-gray-700 mb-2 font-medium">
+                        บทสรุป (Excerpt) *
+                      </label>
+                      <textarea
+                        value={formData.excerpt}
+                        onChange={(e) =>
+                          setFormData({ ...formData, excerpt: e.target.value })
                         }
-                      }}
-                      placeholder="เพิ่มแท็กแล้วกด Enter"
-                      className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black"
-                    />
-                    <button
-                      type="button"
-                      onClick={addTag}
-                      className="px-4 py-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200"
-                    >
-                      เพิ่ม
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {formData.tags?.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-2 py-1 bg-brutal-blue/10 text-brutal-blue text-sm border border-brutal-blue/30"
-                      >
-                        {tag}
+                        placeholder="สรุปเนื้อหาสั้นๆ (แสดงในรายการ)"
+                        required
+                        rows={2}
+                        className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none"
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div>
+                      <label className="block text-gray-700 mb-2 font-medium">
+                        เนื้อหา *
+                      </label>
+                      <textarea
+                        value={formData.content}
+                        onChange={(e) =>
+                          setFormData({ ...formData, content: e.target.value })
+                        }
+                        placeholder="เนื้อหาข่าวฉบับเต็ม (รองรับ HTML)"
+                        required
+                        rows={10}
+                        className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none font-mono text-sm"
+                      />
+                    </div>
+
+                    {/* AI Generated Sources Preview */}
+                    {aiGeneratedSources.length > 0 && (
+                      <div className="bg-green-50 border-[2px] border-green-200 p-4 rounded">
+                        <h4 className="font-medium text-green-800 mb-2">
+                          ✓ AI ค้นพบข้อมูลเพิ่มเติม
+                        </h4>
+                        {aiGeneratedSources.length > 0 && (
+                          <div>
+                            <p className="text-sm text-green-700 mb-1">
+                              แหล่งข่าว:
+                            </p>
+                            <ul className="text-sm space-y-1">
+                              {aiGeneratedSources.map((source, idx) => (
+                                <li key={idx}>
+                                  <a
+                                    href={source}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline"
+                                  >
+                                    {new URL(source).hostname}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Tags */}
+                    <div>
+                      <label className="block text-gray-700 mb-2 font-medium">
+                        แท็ก{" "}
+                        {showAIGenerate && (
+                          <span className="text-brutal-pink text-xs">
+                            (AI จะค้นหาและสร้างให้อัตโนมัติ)
+                          </span>
+                        )}
+                      </label>
+                      <div className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={tagInput}
+                          onChange={(e) => setTagInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              addTag();
+                            }
+                          }}
+                          placeholder="เพิ่มแท็กแล้วกด Enter"
+                          className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black"
+                        />
                         <button
                           type="button"
-                          onClick={() => removeTag(tag)}
-                          className="ml-1 hover:text-red-600"
+                          onClick={addTag}
+                          className="px-4 py-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200"
                         >
-                          <X size={14} />
+                          เพิ่ม
                         </button>
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.tags?.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center px-2 py-1 bg-brutal-blue/10 text-brutal-blue text-sm border border-brutal-blue/30"
+                          >
+                            {tag}
+                            <button
+                              type="button"
+                              onClick={() => removeTag(tag)}
+                              className="ml-1 hover:text-red-600"
+                            >
+                              <X size={14} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Options */}
-                <div className="flex flex-wrap gap-6">
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.isPublished}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          isPublished: e.target.checked,
-                        })
-                      }
-                      className="w-5 h-5 mr-2"
-                    />
-                    <span className="text-gray-700">เผยแพร่</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.isFeatured}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          isFeatured: e.target.checked,
-                        })
-                      }
-                      className="w-5 h-5 mr-2"
-                    />
-                    <span className="text-gray-700">ข่าวเด่น (Featured)</span>
-                  </label>
-                </div>
+                    {/* Sources */}
+                    <div>
+                      <label className="block text-gray-700 mb-2 font-medium">
+                        แหล่งข่าว (Sources){" "}
+                        {showAIGenerate && (
+                          <span className="text-brutal-pink text-xs">
+                            (AI จะค้นหาแหล่งข่าวให้อัตโนมัติ)
+                          </span>
+                        )}
+                      </label>
+                      <div className="space-y-2">
+                        {formData.sources?.map((source, index) => (
+                          <div key={index} className="flex gap-2">
+                            <input
+                              type="url"
+                              value={source}
+                              onChange={(e) => {
+                                const newSources = [
+                                  ...(formData.sources || []),
+                                ];
+                                newSources[index] = e.target.value;
+                                setFormData({
+                                  ...formData,
+                                  sources: newSources,
+                                });
+                              }}
+                              placeholder="https://example.com/news"
+                              className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newSources =
+                                  formData.sources?.filter(
+                                    (_, i) => i !== index,
+                                  ) || [];
+                                setFormData({
+                                  ...formData,
+                                  sources: newSources,
+                                });
+                              }}
+                              className="px-3 py-2 border-[2px] border-red-300 text-red-600 hover:bg-red-50"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              sources: [...(formData.sources || []), ""],
+                            });
+                          }}
+                          className="w-full py-2 px-4 border-[2px] border-dashed border-gray-300 text-gray-600 hover:border-black hover:text-black transition-colors"
+                        >
+                          + เพิ่มแหล่งข่าว
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        แหล่งข่าวจะแสดงในหน้าข่าวเพื่อความน่าเชื่อถือ
+                      </p>
+                    </div>
 
-                {/* Actions */}
-                <div className="flex gap-3 pt-4 border-t-[2px] border-gray-200">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false);
-                      setEditingArticle(null);
-                      resetForm();
-                    }}
-                    className="flex-1 py-2.5 px-4 border-[3px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
-                  >
-                    ยกเลิก
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={
-                      isSubmitting ||
-                      !formData.title?.trim() ||
-                      !formData.content?.trim() ||
-                      !formData.excerpt?.trim()
-                    }
-                    className="flex-1 py-2.5 px-4 bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors"
-                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <Loader2 size={18} className="animate-spin mr-2" />
-                        กำลังบันทึก...
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center">
-                        <Save size={18} className="mr-2" />
-                        บันทึก
-                      </span>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
+                    {/* Options */}
+                    <div className="flex flex-wrap gap-6">
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.isPublished}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              isPublished: e.target.checked,
+                            })
+                          }
+                          className="w-5 h-5 mr-2"
+                        />
+                        <span className="text-gray-700">เผยแพร่</span>
+                      </label>
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.isFeatured}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              isFeatured: e.target.checked,
+                            })
+                          }
+                          className="w-5 h-5 mr-2"
+                        />
+                        <span className="text-gray-700">
+                          ข่าวเด่น (Featured)
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-3 pt-4 border-t-[2px] border-gray-200">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowModal(false);
+                          setEditingArticle(null);
+                          resetForm();
+                        }}
+                        className="flex-1 py-2.5 px-4 border-[3px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
+                      >
+                        ยกเลิก
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={
+                          isSubmitting ||
+                          !formData.title?.trim() ||
+                          !formData.content?.trim() ||
+                          !formData.excerpt?.trim()
+                        }
+                        className="flex-1 py-2.5 px-4 bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors"
+                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center justify-center">
+                            <Loader2 size={18} className="animate-spin mr-2" />
+                            กำลังบันทึก...
+                          </span>
+                        ) : (
+                          <span className="flex items-center justify-center">
+                            <Save size={18} className="mr-2" />
+                            บันทึก
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </AdminLayout>
   );
 }

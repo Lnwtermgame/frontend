@@ -1,15 +1,18 @@
-'use client';
+"use client";
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import { pageTransition } from '@/lib/framer-exports';
+import { pageTransition } from "@/lib/framer-exports";
 
 interface PageTransitionProps {
   children: ReactNode;
   className?: string;
 }
 
-export default function PageTransition({ children, className = '' }: PageTransitionProps) {
+export default function PageTransition({
+  children,
+  className = "",
+}: PageTransitionProps) {
   return (
     <motion.div
       initial="hidden"
@@ -29,12 +32,13 @@ interface AnimatedLayoutProps {
   className?: string;
 }
 
-export function AnimatedLayout({ children, className = '' }: AnimatedLayoutProps) {
+export function AnimatedLayout({
+  children,
+  className = "",
+}: AnimatedLayoutProps) {
   return (
     <AnimatePresence mode="wait">
-      <PageTransition className={className}>
-        {children}
-      </PageTransition>
+      <PageTransition className={className}>{children}</PageTransition>
     </AnimatePresence>
   );
-} 
+}

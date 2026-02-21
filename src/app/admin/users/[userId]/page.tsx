@@ -107,27 +107,37 @@ export default function AdminUserManagerPage() {
       setLoading(true);
       setError(null);
 
-      const [userRes, ordersRes, invoicesRes, deliveriesRes, auditRes] = await Promise.all([
-        adminUserApi.getUserById(userId),
-        orderApi.getAllOrders(ordersMeta.page, ordersMeta.limit, undefined, userId),
-        invoiceApi.getAdminInvoicesByUser(userId, invoicesMeta.page, invoicesMeta.limit),
-        deliveryApi.getAllDeliveries({
-          userId,
-          page: deliveriesMeta.page,
-          limit: deliveriesMeta.limit,
-        }),
-        adminUserApi.getUserAuditTrail(userId, {
-          page: auditMeta.page,
-          limit: auditMeta.limit,
-          type: auditTypeFilter !== "all" ? auditTypeFilter : undefined,
-          resolved:
-            auditResolvedFilter === "all"
-              ? undefined
-              : auditResolvedFilter === "resolved",
-          fromDate: auditFromDate || undefined,
-          toDate: auditToDate || undefined,
-        }),
-      ]);
+      const [userRes, ordersRes, invoicesRes, deliveriesRes, auditRes] =
+        await Promise.all([
+          adminUserApi.getUserById(userId),
+          orderApi.getAllOrders(
+            ordersMeta.page,
+            ordersMeta.limit,
+            undefined,
+            userId,
+          ),
+          invoiceApi.getAdminInvoicesByUser(
+            userId,
+            invoicesMeta.page,
+            invoicesMeta.limit,
+          ),
+          deliveryApi.getAllDeliveries({
+            userId,
+            page: deliveriesMeta.page,
+            limit: deliveriesMeta.limit,
+          }),
+          adminUserApi.getUserAuditTrail(userId, {
+            page: auditMeta.page,
+            limit: auditMeta.limit,
+            type: auditTypeFilter !== "all" ? auditTypeFilter : undefined,
+            resolved:
+              auditResolvedFilter === "all"
+                ? undefined
+                : auditResolvedFilter === "resolved",
+            fromDate: auditFromDate || undefined,
+            toDate: auditToDate || undefined,
+          }),
+        ]);
 
       setUserDetail(userRes.data);
       setRoleDraft(userRes.data.role);
@@ -309,23 +319,32 @@ export default function AdminUserManagerPage() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="bg-white border-[3px] border-black p-4 lg:col-span-2" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+          <div
+            className="bg-white border-[3px] border-black p-4 lg:col-span-2"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <p className="text-xs text-gray-500">ชื่อผู้ใช้</p>
-            <p className="text-lg font-bold text-black">{userDetail.username}</p>
+            <p className="text-lg font-bold text-black">
+              {userDetail.username}
+            </p>
             <p className="text-sm text-gray-600">{userDetail.email}</p>
             <div className="mt-3 flex items-center gap-3">
-              <span className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${
-                userDetail.isActive
-                  ? "bg-green-100 text-green-700 border-green-500"
-                  : "bg-red-100 text-red-700 border-red-500"
-              }`}>
+              <span
+                className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${
+                  userDetail.isActive
+                    ? "bg-green-100 text-green-700 border-green-500"
+                    : "bg-red-100 text-red-700 border-red-500"
+                }`}
+              >
                 {userDetail.isActive ? "ใช้งาน" : "ไม่ใช้งาน"}
               </span>
-              <span className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${
-                userDetail.role === "ADMIN"
-                  ? "bg-purple-100 text-purple-700 border-purple-500"
-                  : "bg-gray-100 text-gray-700 border-gray-500"
-              }`}>
+              <span
+                className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${
+                  userDetail.role === "ADMIN"
+                    ? "bg-purple-100 text-purple-700 border-purple-500"
+                    : "bg-gray-100 text-gray-700 border-gray-500"
+                }`}
+              >
                 {userDetail.role}
               </span>
             </div>
@@ -334,18 +353,30 @@ export default function AdminUserManagerPage() {
             </p>
           </div>
 
-          <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+          <div
+            className="bg-white border-[3px] border-black p-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <p className="text-xs text-gray-500">คำสั่งซื้อทั้งหมด</p>
             <p className="text-2xl font-bold text-black">{orderSummary}</p>
             <p className="text-xs text-gray-500 mt-2">ยอดใช้จ่ายรวม</p>
-            <p className="text-lg font-semibold text-black">{formatCurrency(userDetail.totalSpent)}</p>
+            <p className="text-lg font-semibold text-black">
+              {formatCurrency(userDetail.totalSpent)}
+            </p>
           </div>
 
-          <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+          <div
+            className="bg-white border-[3px] border-black p-4"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <p className="text-xs text-gray-500">เครดิตคงเหลือ</p>
-            <p className="text-2xl font-bold text-black">{formatCurrency(userDetail.creditBalance)}</p>
+            <p className="text-2xl font-bold text-black">
+              {formatCurrency(userDetail.creditBalance)}
+            </p>
             <p className="text-xs text-gray-500 mt-2">Invoice ทั้งหมด</p>
-            <p className="text-lg font-semibold text-black">{invoicesMeta.total.toLocaleString()} รายการ</p>
+            <p className="text-lg font-semibold text-black">
+              {invoicesMeta.total.toLocaleString()} รายการ
+            </p>
           </div>
         </div>
 
@@ -379,7 +410,9 @@ export default function AdminUserManagerPage() {
               <Shield className="h-4 w-4 text-gray-600" />
               <select
                 value={roleDraft}
-                onChange={(e) => setRoleDraft(e.target.value as "USER" | "ADMIN")}
+                onChange={(e) =>
+                  setRoleDraft(e.target.value as "USER" | "ADMIN")
+                }
                 className="px-3 py-2 border-[2px] border-gray-300 bg-white focus:border-black focus:outline-none"
                 disabled={mutating}
               >
@@ -418,10 +451,18 @@ export default function AdminUserManagerPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-[2px] border-gray-200">
                   <tr>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">Order</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">สถานะ</th>
-                    <th className="text-right py-2 px-3 text-xs font-semibold text-black">ยอดรวม</th>
-                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">ดู</th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      Order
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      สถานะ
+                    </th>
+                    <th className="text-right py-2 px-3 text-xs font-semibold text-black">
+                      ยอดรวม
+                    </th>
+                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">
+                      ดู
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -429,9 +470,13 @@ export default function AdminUserManagerPage() {
                     <tr key={order.id}>
                       <td className="py-2 px-3 text-sm text-black">
                         <p className="font-medium">{order.orderNumber}</p>
-                        <p className="text-xs text-gray-500">{formatDateTime(order.createdAt)}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatDateTime(order.createdAt)}
+                        </p>
                       </td>
-                      <td className="py-2 px-3 text-xs text-gray-700">{order.status}</td>
+                      <td className="py-2 px-3 text-xs text-gray-700">
+                        {order.status}
+                      </td>
                       <td className="py-2 px-3 text-sm text-right font-medium text-black">
                         {formatCurrency(order.finalAmount)}
                       </td>
@@ -447,7 +492,10 @@ export default function AdminUserManagerPage() {
                   ))}
                   {orders.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="py-6 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={4}
+                        className="py-6 text-center text-sm text-gray-500"
+                      >
                         ไม่พบคำสั่งซื้อ
                       </td>
                     </tr>
@@ -462,7 +510,10 @@ export default function AdminUserManagerPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    setOrdersMeta((prev) => ({ ...prev, page: Math.max(1, prev.page - 1) }))
+                    setOrdersMeta((prev) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }))
                   }
                   disabled={ordersMeta.page <= 1 || loading}
                   className="px-3 py-1 border-[2px] border-gray-300 hover:border-black disabled:opacity-50"
@@ -502,10 +553,18 @@ export default function AdminUserManagerPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-[2px] border-gray-200">
                   <tr>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">Invoice</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">สถานะ</th>
-                    <th className="text-right py-2 px-3 text-xs font-semibold text-black">ยอดรวม</th>
-                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">Order</th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      Invoice
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      สถานะ
+                    </th>
+                    <th className="text-right py-2 px-3 text-xs font-semibold text-black">
+                      ยอดรวม
+                    </th>
+                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">
+                      Order
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -513,9 +572,13 @@ export default function AdminUserManagerPage() {
                     <tr key={invoice.id}>
                       <td className="py-2 px-3 text-sm text-black">
                         <p className="font-medium">{invoice.invoiceNumber}</p>
-                        <p className="text-xs text-gray-500">{formatDateTime(invoice.issuedAt)}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatDateTime(invoice.issuedAt)}
+                        </p>
                       </td>
-                      <td className="py-2 px-3 text-xs text-gray-700">{invoice.status}</td>
+                      <td className="py-2 px-3 text-xs text-gray-700">
+                        {invoice.status}
+                      </td>
                       <td className="py-2 px-3 text-sm text-right font-medium text-black">
                         {formatCurrency(invoice.totalAmount)}
                       </td>
@@ -531,7 +594,10 @@ export default function AdminUserManagerPage() {
                   ))}
                   {invoices.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="py-6 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={4}
+                        className="py-6 text-center text-sm text-gray-500"
+                      >
                         ไม่พบ invoice
                       </td>
                     </tr>
@@ -541,12 +607,16 @@ export default function AdminUserManagerPage() {
             </div>
             <div className="p-3 border-t-[2px] border-gray-200 flex items-center justify-between">
               <span className="text-xs text-gray-600">
-                หน้า {invoicesMeta.page} / {Math.max(invoicesMeta.totalPages, 1)}
+                หน้า {invoicesMeta.page} /{" "}
+                {Math.max(invoicesMeta.totalPages, 1)}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    setInvoicesMeta((prev) => ({ ...prev, page: Math.max(1, prev.page - 1) }))
+                    setInvoicesMeta((prev) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }))
                   }
                   disabled={invoicesMeta.page <= 1 || loading}
                   className="px-3 py-1 border-[2px] border-gray-300 hover:border-black disabled:opacity-50"
@@ -555,9 +625,14 @@ export default function AdminUserManagerPage() {
                 </button>
                 <button
                   onClick={() =>
-                    setInvoicesMeta((prev) => ({ ...prev, page: prev.page + 1 }))
+                    setInvoicesMeta((prev) => ({
+                      ...prev,
+                      page: prev.page + 1,
+                    }))
                   }
-                  disabled={invoicesMeta.page >= invoicesMeta.totalPages || loading}
+                  disabled={
+                    invoicesMeta.page >= invoicesMeta.totalPages || loading
+                  }
                   className="px-3 py-1 border-[2px] border-gray-300 hover:border-black disabled:opacity-50"
                 >
                   ถัดไป
@@ -588,10 +663,18 @@ export default function AdminUserManagerPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-[2px] border-gray-200">
                   <tr>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">Order</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">สถานะ</th>
-                    <th className="text-right py-2 px-3 text-xs font-semibold text-black">จำนวน Item</th>
-                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">ดู</th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      Order
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      สถานะ
+                    </th>
+                    <th className="text-right py-2 px-3 text-xs font-semibold text-black">
+                      จำนวน Item
+                    </th>
+                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">
+                      ดู
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -599,9 +682,13 @@ export default function AdminUserManagerPage() {
                     <tr key={delivery.orderId}>
                       <td className="py-2 px-3 text-sm text-black">
                         <p className="font-medium">{delivery.orderNumber}</p>
-                        <p className="text-xs text-gray-500">{formatDateTime(delivery.updatedAt)}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatDateTime(delivery.updatedAt)}
+                        </p>
                       </td>
-                      <td className="py-2 px-3 text-xs text-gray-700">{delivery.status}</td>
+                      <td className="py-2 px-3 text-xs text-gray-700">
+                        {delivery.status}
+                      </td>
                       <td className="py-2 px-3 text-sm text-right font-medium text-black">
                         {delivery.items.length.toLocaleString()}
                       </td>
@@ -617,7 +704,10 @@ export default function AdminUserManagerPage() {
                   ))}
                   {deliveries.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="py-6 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={4}
+                        className="py-6 text-center text-sm text-gray-500"
+                      >
                         ไม่พบ delivery logs
                       </td>
                     </tr>
@@ -627,12 +717,16 @@ export default function AdminUserManagerPage() {
             </div>
             <div className="p-3 border-t-[2px] border-gray-200 flex items-center justify-between">
               <span className="text-xs text-gray-600">
-                หน้า {deliveriesMeta.page} / {Math.max(deliveriesMeta.totalPages, 1)}
+                หน้า {deliveriesMeta.page} /{" "}
+                {Math.max(deliveriesMeta.totalPages, 1)}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    setDeliveriesMeta((prev) => ({ ...prev, page: Math.max(1, prev.page - 1) }))
+                    setDeliveriesMeta((prev) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }))
                   }
                   disabled={deliveriesMeta.page <= 1 || loading}
                   className="px-3 py-1 border-[2px] border-gray-300 hover:border-black disabled:opacity-50"
@@ -641,9 +735,14 @@ export default function AdminUserManagerPage() {
                 </button>
                 <button
                   onClick={() =>
-                    setDeliveriesMeta((prev) => ({ ...prev, page: prev.page + 1 }))
+                    setDeliveriesMeta((prev) => ({
+                      ...prev,
+                      page: prev.page + 1,
+                    }))
                   }
-                  disabled={deliveriesMeta.page >= deliveriesMeta.totalPages || loading}
+                  disabled={
+                    deliveriesMeta.page >= deliveriesMeta.totalPages || loading
+                  }
                   className="px-3 py-1 border-[2px] border-gray-300 hover:border-black disabled:opacity-50"
                 >
                   ถัดไป
@@ -669,7 +768,10 @@ export default function AdminUserManagerPage() {
               </span>
             </div>
             <div className="p-3 border-b-[2px] border-gray-200 bg-gray-50">
-              <label htmlFor="adminReason" className="text-xs font-medium text-gray-700">
+              <label
+                htmlFor="adminReason"
+                className="text-xs font-medium text-gray-700"
+              >
                 เหตุผลการจัดการบัญชี
               </label>
               <textarea
@@ -742,32 +844,52 @@ export default function AdminUserManagerPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-[2px] border-gray-200">
                   <tr>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">เวลา</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">ประเภท</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">รายละเอียด</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">สถานะ</th>
-                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">จัดการ</th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      เวลา
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      ประเภท
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      รายละเอียด
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-semibold text-black">
+                      สถานะ
+                    </th>
+                    <th className="text-center py-2 px-3 text-xs font-semibold text-black">
+                      จัดการ
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {auditTrail.map((activity) => (
                     <tr key={activity.id}>
-                      <td className="py-2 px-3 text-xs text-gray-600">{formatDateTime(activity.timestamp)}</td>
-                      <td className="py-2 px-3 text-xs text-black">{activity.type}</td>
-                      <td className="py-2 px-3 text-xs text-gray-700">{activity.description}</td>
+                      <td className="py-2 px-3 text-xs text-gray-600">
+                        {formatDateTime(activity.timestamp)}
+                      </td>
+                      <td className="py-2 px-3 text-xs text-black">
+                        {activity.type}
+                      </td>
+                      <td className="py-2 px-3 text-xs text-gray-700">
+                        {activity.description}
+                      </td>
                       <td className="py-2 px-3 text-xs">
-                        <span className={`px-2 py-1 rounded border ${
-                          activity.resolved
-                            ? "bg-green-100 text-green-700 border-green-300"
-                            : "bg-yellow-100 text-yellow-700 border-yellow-300"
-                        }`}>
+                        <span
+                          className={`px-2 py-1 rounded border ${
+                            activity.resolved
+                              ? "bg-green-100 text-green-700 border-green-300"
+                              : "bg-yellow-100 text-yellow-700 border-yellow-300"
+                          }`}
+                        >
                           {activity.resolved ? "Resolved" : "Unresolved"}
                         </span>
                       </td>
                       <td className="py-2 px-3 text-center">
                         {!activity.resolved ? (
                           <button
-                            onClick={() => handleResolveAuditActivity(activity.id)}
+                            onClick={() =>
+                              handleResolveAuditActivity(activity.id)
+                            }
                             disabled={mutating}
                             className="px-2 py-1 text-xs bg-black text-white border-[2px] border-black hover:bg-gray-800 disabled:opacity-50"
                           >
@@ -781,7 +903,10 @@ export default function AdminUserManagerPage() {
                   ))}
                   {auditTrail.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-6 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={5}
+                        className="py-6 text-center text-sm text-gray-500"
+                      >
                         ไม่พบ audit trail
                       </td>
                     </tr>
@@ -796,7 +921,10 @@ export default function AdminUserManagerPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    setAuditMeta((prev) => ({ ...prev, page: Math.max(1, prev.page - 1) }))
+                    setAuditMeta((prev) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }))
                   }
                   disabled={auditMeta.page <= 1 || loading}
                   className="px-3 py-1 border-[2px] border-gray-300 hover:border-black disabled:opacity-50"

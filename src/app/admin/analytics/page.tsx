@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type ElementType } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ElementType,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -276,12 +282,11 @@ export default function AdminAnalyticsPage() {
         ["Orders", data.salesAnalytics.totalOrders.toString()],
         [
           "New Users",
-          (
-            dateRange === "24h"
-              ? data.userAnalytics.newUsers.today
-              : dateRange === "7d"
-                ? data.userAnalytics.newUsers.thisWeek
-                : data.userAnalytics.newUsers.thisMonth
+          (dateRange === "24h"
+            ? data.userAnalytics.newUsers.today
+            : dateRange === "7d"
+              ? data.userAnalytics.newUsers.thisWeek
+              : data.userAnalytics.newUsers.thisMonth
           ).toString(),
         ],
         ["Products", data.dashboardStats.products.total.toString()],
@@ -470,9 +475,14 @@ export default function AdminAnalyticsPage() {
                   maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
                 const height = item.revenue > 0 ? Math.max(rawHeight, 8) : 0;
                 const labelStep = salesChartData.length > 10 ? 2 : 1;
-                const shouldShowLabel = index % labelStep === 0 || index === salesChartData.length - 1;
+                const shouldShowLabel =
+                  index % labelStep === 0 ||
+                  index === salesChartData.length - 1;
                 return (
-                  <div key={item.key} className="flex-1 h-full flex flex-col items-center justify-end">
+                  <div
+                    key={item.key}
+                    className="flex-1 h-full flex flex-col items-center justify-end"
+                  >
                     <div
                       className={`w-full bg-brutal-pink transition-all duration-500 ${
                         item.revenue > 0 ? "min-h-[2px]" : ""
@@ -526,8 +536,12 @@ export default function AdminAnalyticsPage() {
                       {index + 1}
                     </span>
                     <div>
-                      <p className="text-sm font-medium text-black">{product.name}</p>
-                      <p className="text-xs text-gray-500">{product.salesCount} ขาย</p>
+                      <p className="text-sm font-medium text-black">
+                        {product.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {product.salesCount} ขาย
+                      </p>
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-black">
@@ -536,7 +550,9 @@ export default function AdminAnalyticsPage() {
                 </div>
               ))}
               {topProducts.length === 0 && (
-                <div className="text-sm text-gray-500">ยังไม่มีข้อมูลสินค้าขายดี</div>
+                <div className="text-sm text-gray-500">
+                  ยังไม่มีข้อมูลสินค้าขายดี
+                </div>
               )}
             </div>
           </motion.div>
@@ -552,7 +568,9 @@ export default function AdminAnalyticsPage() {
           <div className="p-5 border-b-[2px] border-black bg-gray-50">
             <div className="flex items-center">
               <Calendar className="h-5 w-5 text-brutal-purple mr-2" />
-              <h3 className="text-lg font-semibold text-black">กิจกรรมล่าสุด</h3>
+              <h3 className="text-lg font-semibold text-black">
+                กิจกรรมล่าสุด
+              </h3>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -610,7 +628,10 @@ export default function AdminAnalyticsPage() {
                 ))}
                 {data.recentOrders.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-6 px-4 text-center text-sm text-gray-500">
+                    <td
+                      colSpan={5}
+                      className="py-6 px-4 text-center text-sm text-gray-500"
+                    >
                       ยังไม่มีกิจกรรมล่าสุด
                     </td>
                   </tr>

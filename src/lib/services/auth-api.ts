@@ -1,11 +1,11 @@
-import { authClient } from '@/lib/client/gateway';
+import { authClient } from "@/lib/client/gateway";
 
 // User type matching backend UserResponse with optional frontend fields
 export interface User {
   id: string;
   username: string;
   email: string;
-  role: 'USER' | 'ADMIN';
+  role: "USER" | "ADMIN";
   isActive: boolean;
   createdAt: string;
   // Optional frontend-only fields (not provided by backend yet)
@@ -71,7 +71,7 @@ export interface ChangePasswordData {
 
 export interface OAuthLoginData {
   code: string;
-  provider: 'google' | 'discord';
+  provider: "google" | "discord";
 }
 
 export interface OAuthResponse {
@@ -86,56 +86,72 @@ export interface OAuthResponse {
 
 class AuthApiService {
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await authClient.post<AuthResponse>('/api/auth/register', data);
+    const response = await authClient.post<AuthResponse>(
+      "/api/auth/register",
+      data,
+    );
     return response.data;
   }
 
   async login(data: LoginData): Promise<AuthResponse> {
-    const response = await authClient.post<AuthResponse>('/api/auth/login', data);
+    const response = await authClient.post<AuthResponse>(
+      "/api/auth/login",
+      data,
+    );
     return response.data;
   }
 
-  async refreshToken(refreshToken?: string): Promise<{ success: boolean; data: AuthTokens }> {
+  async refreshToken(
+    refreshToken?: string,
+  ): Promise<{ success: boolean; data: AuthTokens }> {
     const payload = refreshToken ? { refreshToken } : {};
-    const response = await authClient.post('/api/auth/refresh-token', payload);
+    const response = await authClient.post("/api/auth/refresh-token", payload);
     return response.data;
   }
 
   async logout(refreshToken?: string): Promise<void> {
     const payload = refreshToken ? { refreshToken } : {};
-    await authClient.post('/api/auth/logout', payload);
+    await authClient.post("/api/auth/logout", payload);
   }
 
   async getProfile(): Promise<ProfileResponse> {
-    const response = await authClient.get<ProfileResponse>('/api/auth/profile');
+    const response = await authClient.get<ProfileResponse>("/api/auth/profile");
     return response.data;
   }
 
   async updateProfile(data: UpdateProfileData): Promise<ProfileResponse> {
-    const response = await authClient.put<ProfileResponse>('/api/auth/profile', data);
+    const response = await authClient.put<ProfileResponse>(
+      "/api/auth/profile",
+      data,
+    );
     return response.data;
   }
 
-  async changePassword(data: ChangePasswordData): Promise<{ success: boolean; data: { message: string } }> {
-    const response = await authClient.put('/api/auth/change-password', data);
+  async changePassword(
+    data: ChangePasswordData,
+  ): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await authClient.put("/api/auth/change-password", data);
     return response.data;
   }
 
   async oauthLogin(data: OAuthLoginData): Promise<OAuthResponse> {
-    const response = await authClient.post<OAuthResponse>('/api/auth/oauth', data);
+    const response = await authClient.post<OAuthResponse>(
+      "/api/auth/oauth",
+      data,
+    );
     return response.data;
   }
 
   // Helper to get error message from API error
   getErrorMessage(error: unknown): string {
-    if (error && typeof error === 'object' && 'response' in error) {
+    if (error && typeof error === "object" && "response" in error) {
       const axiosError = error as { response?: { data?: ApiError } };
-      return axiosError.response?.data?.error?.message || 'An error occurred';
+      return axiosError.response?.data?.error?.message || "An error occurred";
     }
     if (error instanceof Error) {
       return error.message;
     }
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 }
 

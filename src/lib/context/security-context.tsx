@@ -144,7 +144,6 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   // Security data is loaded lazily - only when refreshSecurityData() is called
   // (e.g., on the security settings page), NOT on every page load
 
-
   const updateSecuritySettings = async (
     settings: Partial<SecuritySettingsExtended>,
   ) => {
@@ -156,8 +155,10 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
 
     // Persist settings that have backend fields
     const apiFields: Partial<SecuritySettings> = {};
-    if (settings.loginNotifications !== undefined) apiFields.loginNotifications = settings.loginNotifications;
-    if (settings.securityQuestions !== undefined) apiFields.securityQuestions = settings.securityQuestions;
+    if (settings.loginNotifications !== undefined)
+      apiFields.loginNotifications = settings.loginNotifications;
+    if (settings.securityQuestions !== undefined)
+      apiFields.securityQuestions = settings.securityQuestions;
 
     if (Object.keys(apiFields).length > 0) {
       try {
@@ -169,7 +170,10 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         setSecuritySettings((prevSettings) => ({
           ...prevSettings,
           ...Object.fromEntries(
-            Object.keys(apiFields).map(key => [key, !apiFields[key as keyof typeof apiFields]])
+            Object.keys(apiFields).map((key) => [
+              key,
+              !apiFields[key as keyof typeof apiFields],
+            ]),
           ),
         }));
       }

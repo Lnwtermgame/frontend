@@ -1,5 +1,5 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
 // Custom World/Global Icon
 const CustomWorldIcon = ({ className }: { className?: string }) => (
@@ -26,30 +26,34 @@ const CustomWorldIcon = ({ className }: { className?: string }) => (
 interface CountryFlagProps {
   code: string | null;
   className?: string;
-  size?: 'S' | 'M' | 'L';
+  size?: "S" | "M" | "L";
   hasDropShadow?: boolean;
   hasBorder?: boolean;
   hasBorderRadius?: boolean;
-  gradient?: 'top-down' | 'real-linear' | 'real-circular' | '';
+  gradient?: "top-down" | "real-linear" | "real-circular" | "";
 }
 
 // Map size to flag-icons size class
 const flagIconSizes = {
-  S: 'fis',
-  M: 'fim',
-  L: 'fil',
+  S: "fis",
+  M: "fim",
+  L: "fil",
 };
 
 export function CountryFlag({
   code,
   className,
-  size = 'L',
+  size = "L",
   hasDropShadow = true,
   hasBorderRadius = true,
 }: CountryFlagProps) {
   // Handle null, undefined, or global codes
-  if (!code || ['un', 'global', 'unknown', 'world'].includes(code.toLowerCase())) {
-    const iconSize = size === 'S' ? 'w-3 h-3' : size === 'M' ? 'w-4 h-4' : 'w-5 h-5';
+  if (
+    !code ||
+    ["un", "global", "unknown", "world"].includes(code.toLowerCase())
+  ) {
+    const iconSize =
+      size === "S" ? "w-3 h-3" : size === "M" ? "w-4 h-4" : "w-5 h-5";
     return (
       <div className={cn("inline-flex items-center justify-center", className)}>
         <CustomWorldIcon className={cn(iconSize)} />
@@ -58,12 +62,13 @@ export function CountryFlag({
   }
 
   const lowerCode = code.toLowerCase();
-  
+
   // Validate if it's a supported country code (ASEAN + China + UN + US)
-  const supportedCodes = ['th', 'my', 'sg', 'id', 'ph', 'vn', 'cn', 'un', 'us'];
+  const supportedCodes = ["th", "my", "sg", "id", "ph", "vn", "cn", "un", "us"];
   if (!supportedCodes.includes(lowerCode)) {
     // Fallback to globe if flag not found
-    const iconSize = size === 'S' ? 'w-3 h-3' : size === 'M' ? 'w-4 h-4' : 'w-5 h-5';
+    const iconSize =
+      size === "S" ? "w-3 h-3" : size === "M" ? "w-4 h-4" : "w-5 h-5";
     return (
       <div className={cn("inline-flex items-center justify-center", className)}>
         <CustomWorldIcon className={cn(iconSize)} />
@@ -72,9 +77,9 @@ export function CountryFlag({
   }
 
   const sizeStyles = {
-    S: { width: '16px', aspectRatio: '4/3' },
-    M: { width: '20px', aspectRatio: '4/3' },
-    L: { width: '24px', aspectRatio: '4/3' },
+    S: { width: "16px", aspectRatio: "4/3" },
+    M: { width: "20px", aspectRatio: "4/3" },
+    L: { width: "24px", aspectRatio: "4/3" },
   };
 
   return (
@@ -83,18 +88,20 @@ export function CountryFlag({
         "fi inline-block flex-shrink-0",
         `fi-${lowerCode}`,
         hasBorderRadius && "rounded-sm overflow-hidden",
-        className
+        className,
       )}
       style={{
         ...sizeStyles[size],
-        ...(hasDropShadow ? { boxShadow: "0 0.5px 0 0 rgba(0,0,0,0.1)" } : {})
+        ...(hasDropShadow ? { boxShadow: "0 0.5px 0 0 rgba(0,0,0,0.1)" } : {}),
       }}
     />
   );
 }
 
 // Helper function to get flag code from country name
-export function getCountryFlagCode(country: string | null | undefined): string | null {
+export function getCountryFlagCode(
+  country: string | null | undefined,
+): string | null {
   if (!country) return null;
   const key = country.toLowerCase();
   const directCodes = ["th", "my", "sg", "id", "ph", "vn", "cn", "un", "us"];

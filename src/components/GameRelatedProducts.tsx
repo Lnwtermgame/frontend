@@ -1,10 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion } from '@/lib/framer-exports';
-import { ChevronRight, ChevronLeft, Sparkles, Zap, ShoppingCart } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import React, { useState } from "react";
+import { motion } from "@/lib/framer-exports";
+import {
+  ChevronRight,
+  ChevronLeft,
+  Sparkles,
+  Zap,
+  ShoppingCart,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export interface RelatedProduct {
   id: string;
@@ -12,18 +18,18 @@ export interface RelatedProduct {
   image: string;
   price: number;
   originalPrice?: number;
-  type: 'game' | 'card' | 'subscription' | 'addon' | 'bundle';
+  type: "game" | "card" | "subscription" | "addon" | "bundle";
   region?: string;
   discount?: string;
   tag?: string;
-  tagColor?: 'blue' | 'green' | 'purple' | 'pink' | 'orange';
+  tagColor?: "blue" | "green" | "purple" | "pink" | "orange";
 }
 
 export interface GameRelatedProductsProps {
   title?: string;
   subtitle?: string;
   products: RelatedProduct[];
-  type?: 'cross-sell' | 'up-sell' | 'bundle';
+  type?: "cross-sell" | "up-sell" | "bundle";
   viewAllUrl?: string;
   viewAllText?: string;
   className?: string;
@@ -34,31 +40,31 @@ export function GameRelatedProducts({
   title = "You may also like",
   subtitle,
   products = [],
-  type = 'cross-sell',
+  type = "cross-sell",
   viewAllUrl,
   viewAllText = "View all",
   className = "",
-  itemsToShow = 4
+  itemsToShow = 4,
 }: GameRelatedProductsProps) {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   // Get title and icon based on type
   const getTitleAndIcon = () => {
     switch (type) {
-      case 'up-sell':
+      case "up-sell":
         return {
           defaultTitle: "Upgrade your experience",
-          icon: <Sparkles className="h-5 w-5 text-brutal-pink" />
+          icon: <Sparkles className="h-5 w-5 text-brutal-pink" />,
         };
-      case 'bundle':
+      case "bundle":
         return {
           defaultTitle: "Bundle & Save",
-          icon: <ShoppingCart className="h-5 w-5 text-brutal-green" />
+          icon: <ShoppingCart className="h-5 w-5 text-brutal-green" />,
         };
       default:
         return {
           defaultTitle: "You may also like",
-          icon: <Zap className="h-5 w-5 text-brutal-blue" />
+          icon: <Zap className="h-5 w-5 text-brutal-blue" />,
         };
     }
   };
@@ -69,21 +75,27 @@ export function GameRelatedProducts({
   // Get tag color class
   const getTagColorClass = (color?: string) => {
     switch (color) {
-      case 'blue': return 'bg-brutal-blue border-black';
-      case 'green': return 'bg-brutal-green border-black';
-      case 'purple': return 'bg-brutal-purple border-black';
-      case 'pink': return 'bg-brutal-pink border-black';
-      case 'orange': return 'bg-brutal-yellow border-black';
-      default: return 'bg-brutal-blue border-black';
+      case "blue":
+        return "bg-brutal-blue border-black";
+      case "green":
+        return "bg-brutal-green border-black";
+      case "purple":
+        return "bg-brutal-purple border-black";
+      case "pink":
+        return "bg-brutal-pink border-black";
+      case "orange":
+        return "bg-brutal-yellow border-black";
+      default:
+        return "bg-brutal-blue border-black";
     }
   };
 
   // Handle horizontal scrolling
-  const scroll = (direction: 'left' | 'right') => {
-    const container = document.getElementById('related-products-container');
+  const scroll = (direction: "left" | "right") => {
+    const container = document.getElementById("related-products-container");
     if (container) {
-      const scrollAmount = direction === 'left' ? -250 : 250;
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollAmount = direction === "left" ? -250 : 250;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
       setScrollPosition(container.scrollLeft + scrollAmount);
     }
   };
@@ -99,7 +111,7 @@ export function GameRelatedProducts({
         <div className="flex items-center mb-2 sm:mb-0">
           <div
             className="h-8 w-8 flex items-center justify-center mr-3 bg-brutal-yellow border-[2px] border-black"
-            style={{ boxShadow: '2px 2px 0 0 #000000' }}
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             {icon}
           </div>
@@ -124,9 +136,9 @@ export function GameRelatedProducts({
       <div className="relative">
         {/* Left Scroll Arrow */}
         <button
-          onClick={() => scroll('left')}
+          onClick={() => scroll("left")}
           className="absolute -left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white hover:bg-gray-100 border-[2px] border-black p-2 text-black transition-colors"
-          style={{ boxShadow: '3px 3px 0 0 #000000' }}
+          style={{ boxShadow: "3px 3px 0 0 #000000" }}
           aria-label="Scroll left"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -136,7 +148,7 @@ export function GameRelatedProducts({
         <div
           id="related-products-container"
           className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4 -mx-2 px-2"
-          style={{ scrollBehavior: 'smooth' }}
+          style={{ scrollBehavior: "smooth" }}
         >
           {products.map((product, index) => (
             <motion.div
@@ -149,7 +161,7 @@ export function GameRelatedProducts({
               <Link href={`/games/${product.id}`}>
                 <div
                   className="bg-white border-[3px] border-black overflow-hidden group h-full flex flex-col"
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   {/* Product Image */}
                   <div className="aspect-[4/3] relative overflow-hidden">
@@ -164,7 +176,7 @@ export function GameRelatedProducts({
                     {product.discount && (
                       <div
                         className="absolute top-2 right-2 bg-brutal-pink text-black text-xs px-2 py-0.5 font-bold border-[2px] border-black"
-                        style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
                       >
                         {product.discount}
                       </div>
@@ -174,7 +186,7 @@ export function GameRelatedProducts({
                     {product.tag && (
                       <div
                         className={`absolute top-2 left-2 ${getTagColorClass(product.tagColor)} text-black text-xs px-2 py-0.5 font-bold border-[2px] border-black`}
-                        style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
                       >
                         {product.tag}
                       </div>
@@ -182,9 +194,7 @@ export function GameRelatedProducts({
 
                     {/* Region Badge */}
                     {product.region && (
-                      <div
-                        className="absolute bottom-2 left-2 bg-black text-white text-xs px-2 py-0.5 font-medium border-[2px] border-black"
-                      >
+                      <div className="absolute bottom-2 left-2 bg-black text-white text-xs px-2 py-0.5 font-medium border-[2px] border-black">
                         {product.region}
                       </div>
                     )}
@@ -192,7 +202,9 @@ export function GameRelatedProducts({
 
                   {/* Product Info */}
                   <div className="p-3 flex flex-col flex-grow">
-                    <h4 className="font-medium text-black mb-1 line-clamp-2">{product.title}</h4>
+                    <h4 className="font-medium text-black mb-1 line-clamp-2">
+                      {product.title}
+                    </h4>
 
                     <div className="flex items-center justify-between mt-auto pt-2">
                       <div className="flex items-baseline">
@@ -206,13 +218,20 @@ export function GameRelatedProducts({
                         )}
                       </div>
 
-                      <div className={`
+                      <div
+                        className={`
                         px-1.5 py-0.5 text-xs font-medium border-[2px] border-black
-                        ${product.type === 'game' ? 'bg-brutal-blue text-black' :
-                          product.type === 'card' ? 'bg-brutal-green text-black' :
-                            product.type === 'subscription' ? 'bg-brutal-purple text-white' :
-                              'bg-brutal-yellow text-black'}
-                      `}>
+                        ${
+                          product.type === "game"
+                            ? "bg-brutal-blue text-black"
+                            : product.type === "card"
+                              ? "bg-brutal-green text-black"
+                              : product.type === "subscription"
+                                ? "bg-brutal-purple text-white"
+                                : "bg-brutal-yellow text-black"
+                        }
+                      `}
+                      >
                         {product.type}
                       </div>
                     </div>
@@ -225,9 +244,9 @@ export function GameRelatedProducts({
 
         {/* Right Scroll Arrow */}
         <button
-          onClick={() => scroll('right')}
+          onClick={() => scroll("right")}
           className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white hover:bg-gray-100 border-[2px] border-black p-2 text-black transition-colors"
-          style={{ boxShadow: '3px 3px 0 0 #000000' }}
+          style={{ boxShadow: "3px 3px 0 0 #000000" }}
           aria-label="Scroll right"
         >
           <ChevronRight className="h-5 w-5" />
@@ -239,10 +258,12 @@ export function GameRelatedProducts({
         {[...Array(Math.ceil(products.length / itemsToShow))].map((_, i) => (
           <div
             key={i}
-            className={`h-1.5 transition-all duration-300 border-[2px] border-black ${i * itemsToShow <= scrollPosition && scrollPosition < (i + 1) * itemsToShow
-                ? 'w-6 bg-brutal-blue'
-                : 'w-1.5 bg-gray-300'
-              }`}
+            className={`h-1.5 transition-all duration-300 border-[2px] border-black ${
+              i * itemsToShow <= scrollPosition &&
+              scrollPosition < (i + 1) * itemsToShow
+                ? "w-6 bg-brutal-blue"
+                : "w-1.5 bg-gray-300"
+            }`}
           />
         ))}
       </div>

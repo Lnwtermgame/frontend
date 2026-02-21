@@ -4,4 +4,4 @@ export default function InvoiceDetailLayout({
   children: React.ReactNode;
 }) {
   return children;
-} 
+}

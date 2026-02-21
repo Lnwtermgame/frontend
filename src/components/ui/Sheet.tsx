@@ -69,7 +69,7 @@ export function Sheet({
             className={cn(
               "fixed bg-white z-[70] border-black shadow-2xl flex flex-col",
               sideClasses[side],
-              className
+              className,
             )}
           >
             {/* Handle for bottom sheet */}
@@ -101,6 +101,6 @@ export function Sheet({
         </>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }

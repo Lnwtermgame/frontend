@@ -24,6 +24,7 @@ import { SeasonalEventProps } from "@/components/promotion/SeasonalEventCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { productApi, Product } from "@/lib/services/product-api";
+import { cmsApi, NewsArticleListItem } from "@/lib/services/cms-api";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 interface FeaturedProduct {
@@ -43,7 +44,6 @@ interface FeaturedProduct {
   isFeatured: boolean;
   productType: "CARD" | "DIRECT_TOPUP" | "MOBILE_RECHARGE";
 }
-
 
 function getCategoryIcon(category: string) {
   const key = category?.toLowerCase() || "";
@@ -264,10 +264,12 @@ const TRUST_BADGE_ICON_MAP = {
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeCategory, setActiveCategory] = useState("all");
-  const { settings: publicSettings, loading: settingsLoading } = usePublicSettings();
+  const { settings: publicSettings, loading: settingsLoading } =
+    usePublicSettings();
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>(
     [],
   );
+  const [newsArticles, setNewsArticles] = useState<NewsArticleListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const sectionLabels = useMemo(
     () => ({
@@ -351,14 +353,16 @@ export default function HomePage() {
         : DEFAULT_SEASONAL_EVENTS,
     [publicSettings],
   );
-  const promotionsEnabled =
-    publicSettings?.features.enablePromotions ?? true;
+  const promotionsEnabled = publicSettings?.features.enablePromotions ?? true;
   const supportTicketsEnabled =
     publicSettings?.features.enableSupportTickets ?? true;
   const visibleQuickActions = useMemo(
     () =>
       quickActions.filter((action) => {
-        if (!promotionsEnabled && (action.icon === "star" || action.href.includes("promo"))) {
+        if (
+          !promotionsEnabled &&
+          (action.icon === "star" || action.href.includes("promo"))
+        ) {
           return false;
         }
         if (!supportTicketsEnabled && action.href.startsWith("/support")) {
@@ -402,6 +406,22 @@ export default function HomePage() {
     fetchFeaturedProducts();
   }, []);
 
+  // Fetch news from CMS API
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await cmsApi.getNewsArticles(1, 6);
+        if (response.success && response.data) {
+          setNewsArticles(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
   const nextSlide = () =>
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
   const prevSlide = () =>
@@ -422,7 +442,10 @@ export default function HomePage() {
   if (settingsLoading || loading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4">
-        <div className="w-full max-w-md border-[3px] border-black bg-white p-8 text-center" style={{ boxShadow: "6px 6px 0 0 #000000" }}>
+        <div
+          className="w-full max-w-md border-[3px] border-black bg-white p-8 text-center"
+          style={{ boxShadow: "6px 6px 0 0 #000000" }}
+        >
           <div className="mx-auto mb-4 flex w-fit items-center gap-2">
             <motion.div
               className="h-3 w-3 rounded-full bg-brutal-pink border-[2px] border-black"
@@ -441,7 +464,9 @@ export default function HomePage() {
             />
           </div>
           <p className="text-base font-black text-black">กำลังโหลดหน้าแรก...</p>
-          <p className="mt-2 text-sm text-gray-600">กำลังซิงก์ข้อมูลล่าสุดจากระบบ</p>
+          <p className="mt-2 text-sm text-gray-600">
+            กำลังซิงก์ข้อมูลล่าสุดจากระบบ
+          </p>
         </div>
       </div>
     );
@@ -558,23 +583,26 @@ export default function HomePage() {
         <div className="grid grid-cols-4 gap-2">
           {visibleQuickActions.map((action) => {
             const ActionIcon =
-              QUICK_ACTION_ICON_MAP[action.icon] || QUICK_ACTION_ICON_MAP["credit-card"];
+              QUICK_ACTION_ICON_MAP[action.icon] ||
+              QUICK_ACTION_ICON_MAP["credit-card"];
             const actionColor =
-              QUICK_ACTION_COLOR_MAP[action.color] || QUICK_ACTION_COLOR_MAP.yellow;
+              QUICK_ACTION_COLOR_MAP[action.color] ||
+              QUICK_ACTION_COLOR_MAP.yellow;
             return (
-            <Link key={action.id || action.label} href={action.href}>
-              <motion.div
-                className={`flex flex-col items-center p-3 ${actionColor} border-[2px] border-black`}
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <ActionIcon size={20} className="text-black mb-1" />
-                <span className="text-[10px] font-bold text-black text-center">
-                  {action.label}
-                </span>
-              </motion.div>
-            </Link>
-          )})}
+              <Link key={action.id || action.label} href={action.href}>
+                <motion.div
+                  className={`flex flex-col items-center p-3 ${actionColor} border-[2px] border-black`}
+                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <ActionIcon size={20} className="text-black mb-1" />
+                  <span className="text-[10px] font-bold text-black text-center">
+                    {action.label}
+                  </span>
+                </motion.div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -593,86 +621,86 @@ export default function HomePage() {
 
         {/* Featured Promotion Cards */}
         {promotionsEnabled && (
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {promoCards.slice(0, 3).map((card, index) => {
-            const isPrimary = index === 0;
-            const cardClass =
-              card.theme === "pink"
-                ? "bg-brutal-pink"
-                : card.theme === "yellow"
-                  ? "bg-brutal-yellow"
-                  : card.theme === "green"
-                    ? "bg-brutal-green"
-                    : "bg-brutal-blue";
-            return (
-              <motion.div
-                key={card.id}
-                className={`${isPrimary ? "sm:col-span-2 lg:col-span-2" : ""} ${cardClass} border-[3px] border-black p-4 sm:p-6 relative overflow-hidden`}
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                whileHover={{ y: -2 }}
-              >
-                <div className="relative z-10 h-full flex flex-col">
-                  {card.badge && (
-                    <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 font-bold border-[2px] border-black mb-2 self-start">
-                      <Sparkles size={12} />
-                      {card.badge}
-                    </div>
-                  )}
-                  <h3 className="font-black text-black text-xl sm:text-2xl mb-2">
-                    {card.title}
-                  </h3>
-                  {card.description && (
-                    <p className="text-black/80 text-sm mb-4 max-w-md">
-                      {card.description}
-                    </p>
-                  )}
-                  <Link href={card.href || "/promotions"} className="mt-auto">
-                    <Button className="bg-black text-white hover:bg-gray-800 border-black text-sm">
-                      {card.ctaText || "ดูรายละเอียด"}
-                    </Button>
-                  </Link>
-                </div>
-                <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
-                  <Gamepad2 size={140} />
-                </div>
-              </motion.div>
-            );
-          })}
-        </section>
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {promoCards.slice(0, 3).map((card, index) => {
+              const isPrimary = index === 0;
+              const cardClass =
+                card.theme === "pink"
+                  ? "bg-brutal-pink"
+                  : card.theme === "yellow"
+                    ? "bg-brutal-yellow"
+                    : card.theme === "green"
+                      ? "bg-brutal-green"
+                      : "bg-brutal-blue";
+              return (
+                <motion.div
+                  key={card.id}
+                  className={`${isPrimary ? "sm:col-span-2 lg:col-span-2" : ""} ${cardClass} border-[3px] border-black p-4 sm:p-6 relative overflow-hidden`}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  whileHover={{ y: -2 }}
+                >
+                  <div className="relative z-10 h-full flex flex-col">
+                    {card.badge && (
+                      <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 font-bold border-[2px] border-black mb-2 self-start">
+                        <Sparkles size={12} />
+                        {card.badge}
+                      </div>
+                    )}
+                    <h3 className="font-black text-black text-xl sm:text-2xl mb-2">
+                      {card.title}
+                    </h3>
+                    {card.description && (
+                      <p className="text-black/80 text-sm mb-4 max-w-md">
+                        {card.description}
+                      </p>
+                    )}
+                    <Link href={card.href || "/promotions"} className="mt-auto">
+                      <Button className="bg-black text-white hover:bg-gray-800 border-black text-sm">
+                        {card.ctaText || "ดูรายละเอียด"}
+                      </Button>
+                    </Link>
+                  </div>
+                  <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
+                    <Gamepad2 size={140} />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </section>
         )}
 
         {/* Categories - Horizontal Scroll */}
         {promotionsEnabled && (
-        <section>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            {categoryTabs.map((category) => (
-              <motion.button
-                key={category.id}
-                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold whitespace-nowrap border-[3px] transition-all flex-shrink-0 ${
-                  activeCategory === category.id
-                    ? "bg-brutal-yellow border-black text-black"
-                    : "bg-white border-gray-300 text-gray-700 hover:border-black"
-                }`}
-                style={
-                  activeCategory === category.id
-                    ? { boxShadow: "3px 3px 0 0 #000000" }
-                    : undefined
-                }
-                onClick={() => setActiveCategory(category.id)}
-                whileTap={{ scale: 0.95 }}
-              >
-                {category.icon === "flame" ? (
-                  <Flame size={16} />
-                ) : category.icon === "card" ? (
-                  <CreditCard size={16} />
-                ) : (
-                  <Gamepad2 size={16} />
-                )}
-                <span>{category.label}</span>
-              </motion.button>
-            ))}
-          </div>
-        </section>
+          <section>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+              {categoryTabs.map((category) => (
+                <motion.button
+                  key={category.id}
+                  className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold whitespace-nowrap border-[3px] transition-all flex-shrink-0 ${
+                    activeCategory === category.id
+                      ? "bg-brutal-yellow border-black text-black"
+                      : "bg-white border-gray-300 text-gray-700 hover:border-black"
+                  }`}
+                  style={
+                    activeCategory === category.id
+                      ? { boxShadow: "3px 3px 0 0 #000000" }
+                      : undefined
+                  }
+                  onClick={() => setActiveCategory(category.id)}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {category.icon === "flame" ? (
+                    <Flame size={16} />
+                  ) : category.icon === "card" ? (
+                    <CreditCard size={16} />
+                  ) : (
+                    <Gamepad2 size={16} />
+                  )}
+                  <span>{category.label}</span>
+                </motion.button>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Featured Games - From Database */}
@@ -822,20 +850,21 @@ export default function HomePage() {
             const BadgeIcon =
               TRUST_BADGE_ICON_MAP[badge.icon] || TRUST_BADGE_ICON_MAP.shield;
             return (
-            <div
-              key={badge.id || i}
-              className="bg-white border-[2px] border-black p-3 sm:p-4 text-center"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              <BadgeIcon size={24} className="mx-auto text-black mb-2" />
-              <p className="text-xs sm:text-sm font-bold text-black">
-                {badge.title}
-              </p>
-              <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">
-                {badge.description}
-              </p>
-            </div>
-          )})}
+              <div
+                key={badge.id || i}
+                className="bg-white border-[2px] border-black p-3 sm:p-4 text-center"
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
+              >
+                <BadgeIcon size={24} className="mx-auto text-black mb-2" />
+                <p className="text-xs sm:text-sm font-bold text-black">
+                  {badge.title}
+                </p>
+                <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">
+                  {badge.description}
+                </p>
+              </div>
+            );
+          })}
         </section>
 
         {/* Special Events */}
@@ -881,45 +910,105 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            {newsItems.map((item) => (
-              <Link
-                key={item.id}
-                href={
-                  ("href" in item && item.href) ? item.href : `/news/${item.id}`
-                }
-                className="block"
-              >
-                <motion.div
-                  className="bg-white border-[2px] border-black overflow-hidden h-full"
-                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                  whileHover={{ y: -2 }}
-                >
-                  <div className="aspect-video relative">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 left-2 bg-brutal-green text-black text-[10px] sm:text-xs font-bold px-2 py-0.5 border-[2px] border-black">
-                      {item.category}
-                    </div>
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <div className="flex items-center text-gray-500 text-[10px] sm:text-xs font-medium">
-                      <Clock size={12} className="mr-1" />
-                      <span>{item.date}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
+            {newsArticles.length > 0
+              ? newsArticles.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/news/${item.slug}`}
+                    className="block"
+                  >
+                    <motion.div
+                      className="bg-white border-[2px] border-black overflow-hidden h-full"
+                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                      whileHover={{ y: -2 }}
+                    >
+                      <div className="aspect-video relative">
+                        <img
+                          src={
+                            item.coverImage ||
+                            `https://placehold.co/400x250?text=${encodeURIComponent(item.title)}`
+                          }
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-2 left-2 bg-brutal-green text-black text-[10px] sm:text-xs font-bold px-2 py-0.5 border-[2px] border-black">
+                          {item.category === "general" && "ทั่วไป"}
+                          {item.category === "promotion" && "โปรโมชั่น"}
+                          {item.category === "update" && "อัปเดต"}
+                          {item.category === "event" && "กิจกรรม"}
+                        </div>
+                      </div>
+                      <div className="p-3">
+                        <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">
+                          {item.title}
+                        </h3>
+                        <div className="flex items-center text-gray-500 text-[10px] sm:text-xs font-medium">
+                          <Clock size={12} className="mr-1" />
+                          <span>
+                            {item.publishedAt
+                              ? new Date(item.publishedAt).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )
+                              : new Date(item.createdAt).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))
+              : // Fallback to newsItems from publicSettings if no API data
+                newsItems.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={
+                      "href" in item && item.href
+                        ? item.href
+                        : `/news/${item.id}`
+                    }
+                    className="block"
+                  >
+                    <motion.div
+                      className="bg-white border-[2px] border-black overflow-hidden h-full"
+                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                      whileHover={{ y: -2 }}
+                    >
+                      <div className="aspect-video relative">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-2 left-2 bg-brutal-green text-black text-[10px] sm:text-xs font-bold px-2 py-0.5 border-[2px] border-black">
+                          {item.category}
+                        </div>
+                      </div>
+                      <div className="p-3">
+                        <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">
+                          {item.title}
+                        </h3>
+                        <div className="flex items-center text-gray-500 text-[10px] sm:text-xs font-medium">
+                          <Clock size={12} className="mr-1" />
+                          <span>{item.date}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))}
           </div>
         </section>
       </div>
     </div>
   );
 }
-

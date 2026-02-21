@@ -52,7 +52,10 @@ export default function FaqArticlePage() {
   const handleVote = async (isHelpful: boolean) => {
     if (!article) return;
     try {
-      const response = await supportApi.markArticleHelpful(article.id, isHelpful);
+      const response = await supportApi.markArticleHelpful(
+        article.id,
+        isHelpful,
+      );
       if (response.success) {
         setUserVote(response.data.userVote);
         setShowThankYou(true);
@@ -65,7 +68,7 @@ export default function FaqArticlePage() {
                 helpfulCount: response.data.helpfulCount,
                 unhelpfulCount: response.data.unhelpfulCount,
               }
-            : null
+            : null,
         );
       }
     } catch (err) {
@@ -76,8 +79,14 @@ export default function FaqArticlePage() {
   if (isLoading) {
     return (
       <div className="page-container">
-        <div className="bg-white border-[3px] border-black p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
-          <Loader2 className="animate-spin mx-auto text-brutal-blue mb-4" size={48} />
+        <div
+          className="bg-white border-[3px] border-black p-12 text-center"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
+          <Loader2
+            className="animate-spin mx-auto text-brutal-blue mb-4"
+            size={48}
+          />
           <p className="text-gray-600">Loading article...</p>
         </div>
       </div>
@@ -91,15 +100,19 @@ export default function FaqArticlePage() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-red-100 border-[3px] border-red-500 p-6 text-center"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />
-          <h2 className="text-xl font-bold text-black mb-2">Article Not Found</h2>
-          <p className="text-red-600 mb-4">{error || "The article you're looking for doesn't exist."}</p>
+          <h2 className="text-xl font-bold text-black mb-2">
+            Article Not Found
+          </h2>
+          <p className="text-red-600 mb-4">
+            {error || "The article you're looking for doesn't exist."}
+          </p>
           <Link
             href="/support/faq"
             className="inline-flex items-center bg-brutal-blue hover:bg-brutal-blue/90 text-white px-6 py-2 font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
-            style={{ boxShadow: '4px 4px 0 0 #000000' }}
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <ArrowLeft size={18} className="mr-2" />
             Back to FAQ
@@ -118,7 +131,10 @@ export default function FaqArticlePage() {
             Support
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/support/faq" className="hover:text-black transition-colors">
+          <Link
+            href="/support/faq"
+            className="hover:text-black transition-colors"
+          >
             FAQ
           </Link>
           <span className="mx-2">/</span>
@@ -132,7 +148,7 @@ export default function FaqArticlePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="bg-white border-[3px] border-black overflow-hidden"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         {/* Header */}
         <div className="p-6 md:p-8 border-b-[3px] border-black bg-brutal-gray">
@@ -145,13 +161,18 @@ export default function FaqArticlePage() {
               {article.category.name}
             </Link>
             {article.isPinned && (
-              <span className="bg-brutal-yellow px-2 py-0.5 border-[2px] border-black text-xs font-bold ml-2" title="Pinned">
+              <span
+                className="bg-brutal-yellow px-2 py-0.5 border-[2px] border-black text-xs font-bold ml-2"
+                title="Pinned"
+              >
                 📌 Pinned
               </span>
             )}
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-black mb-4">{article.title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-black mb-4">
+            {article.title}
+          </h1>
 
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <div className="flex items-center">
@@ -175,17 +196,21 @@ export default function FaqArticlePage() {
 
           {/* Feedback Section */}
           <div className="mt-10 pt-6 border-t-[2px] border-gray-200">
-            <h3 className="text-lg font-bold text-black mb-4">Was this article helpful?</h3>
+            <h3 className="text-lg font-bold text-black mb-4">
+              Was this article helpful?
+            </h3>
 
             {showThankYou ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-green-100 border-[3px] border-green-500 p-4 flex items-center"
-                style={{ boxShadow: '3px 3px 0 0 #000000' }}
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 <CheckCircle className="text-green-600 mr-3" size={20} />
-                <span className="text-green-700 font-medium">Thank you for your feedback!</span>
+                <span className="text-green-700 font-medium">
+                  Thank you for your feedback!
+                </span>
               </motion.div>
             ) : (
               <div className="flex items-center gap-3">
@@ -196,7 +221,12 @@ export default function FaqArticlePage() {
                       ? "bg-green-100 border-green-600 text-green-700"
                       : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
-                  style={{ boxShadow: userVote === true ? '3px 3px 0 0 #16a34a' : '3px 3px 0 0 #000000' }}
+                  style={{
+                    boxShadow:
+                      userVote === true
+                        ? "3px 3px 0 0 #16a34a"
+                        : "3px 3px 0 0 #000000",
+                  }}
                 >
                   <ThumbsUp size={16} className="mr-2" />
                   Yes ({article.helpfulCount})
@@ -208,7 +238,12 @@ export default function FaqArticlePage() {
                       ? "bg-red-100 border-red-600 text-red-700"
                       : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
-                  style={{ boxShadow: userVote === false ? '3px 3px 0 0 #dc2626' : '3px 3px 0 0 #000000' }}
+                  style={{
+                    boxShadow:
+                      userVote === false
+                        ? "3px 3px 0 0 #dc2626"
+                        : "3px 3px 0 0 #000000",
+                  }}
                 >
                   <ThumbsDown size={16} className="mr-2" />
                   No ({article.unhelpfulCount})
@@ -224,13 +259,14 @@ export default function FaqArticlePage() {
             <div>
               <h4 className="text-black font-bold mb-1">Still need help?</h4>
               <p className="text-gray-600 text-sm">
-                Can&apos;t find what you&apos;re looking for? Contact our support team.
+                Can&apos;t find what you&apos;re looking for? Contact our
+                support team.
               </p>
             </div>
             <Link
               href="/support/tickets"
               className="bg-brutal-blue hover:bg-brutal-blue/90 text-white px-6 py-3 font-bold border-[3px] border-black flex items-center transition-all hover:-translate-y-0.5"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <MessageSquare size={18} className="mr-2" />
               Contact Support

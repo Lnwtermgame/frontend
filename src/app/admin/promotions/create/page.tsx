@@ -90,7 +90,7 @@ export default function AdminPromotionCreate() {
         {/* Form Container */}
         <motion.div
           className="bg-white border-[3px] border-black  overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -412,7 +412,7 @@ export default function AdminPromotionCreate() {
                 <button
                   type="button"
                   className="px-5 py-2.5  border-[3px] border-black bg-white text-black hover:bg-gray-100 transition-colors w-full sm:w-auto flex items-center justify-center font-medium"
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <X className="h-5 w-5 mr-2" />
                   ยกเลิก
@@ -422,7 +422,7 @@ export default function AdminPromotionCreate() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`px-5 py-2.5  bg-black text-white border-[3px] border-black hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 <Save className="h-5 w-5 mr-2" />
                 {isSubmitting ? "กำลังสร้าง..." : "สร้างโปรโมชั่น"}

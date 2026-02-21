@@ -10,7 +10,7 @@ interface SearchBarProps {
 
 export default function SearchBar({
   variant = "header",
-    placeholder = "ค้นหาเกม..."
+  placeholder = "ค้นหาเกม...",
 }: SearchBarProps) {
   const router = useRouter();
 
@@ -19,9 +19,12 @@ export default function SearchBar({
   };
 
   // Apply different styles based on variant
-  const className = variant === "sidebar" ? "w-full"
-    : variant === "full" ? "w-full max-w-3xl mx-auto"
-      : "w-full";
+  const className =
+    variant === "sidebar"
+      ? "w-full"
+      : variant === "full"
+        ? "w-full max-w-3xl mx-auto"
+        : "w-full";
 
   return (
     <SmartSearchBar
@@ -31,4 +34,4 @@ export default function SearchBar({
       maxResults={5}
     />
   );
-} 
+}

@@ -11,7 +11,7 @@ import {
   Coins,
   Bell,
   Globe,
-  Languages
+  Languages,
 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useCart } from "@/lib/hooks/use-cart";
@@ -33,7 +33,10 @@ export function Header() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
         setShowUserMenu(false);
       }
     }
@@ -62,14 +65,14 @@ export function Header() {
       transition: {
         type: "spring" as const,
         stiffness: 500,
-        damping: 30
-      }
+        damping: 30,
+      },
     },
     hover: {
       backgroundColor: "#F9FAFB",
       color: "#000000",
-      transition: { duration: 0.2 }
-    }
+      transition: { duration: 0.2 },
+    },
   };
 
   const dropdownVariants = {
@@ -82,21 +85,21 @@ export function Header() {
         type: "spring" as const,
         stiffness: 500,
         damping: 30,
-        staggerChildren: 0.05
-      }
+        staggerChildren: 0.05,
+      },
     },
     exit: {
       opacity: 0,
       y: -10,
       scale: 0.95,
-      transition: { duration: 0.2 }
-    }
+      transition: { duration: 0.2 },
+    },
   };
 
   return (
     <motion.header
       className="w-full bg-white border-b-[3px] border-black"
-      style={{ boxShadow: '0 2px 0 0 rgba(0,0,0,0.05)' }}
+      style={{ boxShadow: "0 2px 0 0 rgba(0,0,0,0.05)" }}
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -105,13 +108,28 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between px-4 py-2 border-b border-gray-200 text-xs text-gray-600">
         <div className="flex items-center space-x-6">
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/news" className="text-xs font-medium hover:text-black transition-colors thai-font">ข่าวสาร</Link>
+            <Link
+              href="/news"
+              className="text-xs font-medium hover:text-black transition-colors thai-font"
+            >
+              ข่าวสาร
+            </Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/support" className="text-xs font-medium hover:text-black transition-colors thai-font">ติดต่อเรา</Link>
+            <Link
+              href="/support"
+              className="text-xs font-medium hover:text-black transition-colors thai-font"
+            >
+              ติดต่อเรา
+            </Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
-            <Link href="/games" className="text-xs font-medium hover:text-black transition-colors thai-font">เกมทั้งหมด</Link>
+            <Link
+              href="/games"
+              className="text-xs font-medium hover:text-black transition-colors thai-font"
+            >
+              เกมทั้งหมด
+            </Link>
           </motion.div>
         </div>
         <div className="flex items-center space-x-4">
@@ -144,34 +162,38 @@ export function Header() {
               <div className="font-black text-xl flex items-center">
                 <span className="text-brutal-pink">Mali</span>
                 <span className="text-black">Game</span>
-                <span className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm"
-                  style={{ boxShadow: '2px 2px 0 0 #000000' }}
-                >Pass</span>
+                <span
+                  className="bg-brutal-yellow px-1.5 py-0.5 ml-1 border-[2px] border-black text-sm"
+                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                >
+                  Pass
+                </span>
               </div>
             </Link>
           </motion.div>
 
           <nav className="hidden lg:grid grid-cols-3 gap-4 items-center justify-items-center min-w-[400px]">
-            <motion.div
-              className="group relative"
-              whileHover={{ y: -2 }}
-            >
-              <Link href="/card" className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors thai-font">
+            <motion.div className="group relative" whileHover={{ y: -2 }}>
+              <Link
+                href="/card"
+                className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors thai-font"
+              >
                 บัตรเติม <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
-            <motion.div
-              className="group relative"
-              whileHover={{ y: -2 }}
-            >
-              <Link href="/direct-topup" className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors thai-font">
+            <motion.div className="group relative" whileHover={{ y: -2 }}>
+              <Link
+                href="/direct-topup"
+                className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors thai-font"
+              >
                 เติมเกม <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
-            <motion.div
-              whileHover={{ y: -2 }}
-            >
-              <Link href="/mobile-recharge" className="px-2 py-1 text-sm text-black uppercase hover:text-brutal-pink font-bold transition-colors thai-font">
+            <motion.div whileHover={{ y: -2 }}>
+              <Link
+                href="/mobile-recharge"
+                className="px-2 py-1 text-sm text-black uppercase hover:text-brutal-pink font-bold transition-colors thai-font"
+              >
                 เติมเงินมือถือ
               </Link>
             </motion.div>
@@ -179,10 +201,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <motion.div
-            className="relative w-64"
-            whileHover={{ scale: 1.01 }}
-          >
+          <motion.div className="relative w-64" whileHover={{ scale: 1.01 }}>
             <input
               type="text"
               placeholder="ค้นหาเกม..."
@@ -190,7 +209,10 @@ export function Header() {
               autoComplete="off"
               className="w-full bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
             />
-            <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+            <Search
+              className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              aria-hidden="true"
+            />
           </motion.div>
 
           <div className="flex items-center space-x-3">
@@ -200,7 +222,7 @@ export function Header() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
-              style={{ boxShadow: '2px 2px 0 0 #000000' }}
+              style={{ boxShadow: "2px 2px 0 0 #000000" }}
             >
               <Bell size={18} aria-hidden="true" />
             </motion.button>
@@ -211,7 +233,7 @@ export function Header() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-green transition-colors relative"
-              style={{ boxShadow: '2px 2px 0 0 #000000' }}
+              style={{ boxShadow: "2px 2px 0 0 #000000" }}
             >
               <ShoppingCart size={18} aria-hidden="true" />
               {cartItemCount > 0 && (
@@ -229,12 +251,15 @@ export function Header() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
-                    style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                  <div
+                    className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
                     <User className="h-5 w-5 text-black" />
                   </div>
-                  <span className="hidden md:block">{user.name?.split(' ')[0] || user.username || user.email}</span>
+                  <span className="hidden md:block">
+                    {user.name?.split(" ")[0] || user.username || user.email}
+                  </span>
                   <ChevronDown className="h-3 w-3" />
                 </motion.button>
 
@@ -242,7 +267,7 @@ export function Header() {
                   {isMounted && showUserMenu && (
                     <motion.div
                       className="absolute right-0 mt-2 w-64 bg-white border-[3px] border-black z-50 overflow-hidden"
-                      style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       variants={dropdownVariants}
                       initial="hidden"
                       animate="visible"
@@ -251,19 +276,34 @@ export function Header() {
                       <div className="p-4 border-b-[2px] border-gray-200 flex items-center bg-gray-50">
                         <motion.div
                           className="h-10 w-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3"
-                          style={{ boxShadow: '2px 2px 0 0 #000000' }}
+                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
                           whileHover={{ scale: 1.05 }}
                         >
-                          <span className="text-black font-bold text-lg">{(user.name?.charAt(0) || user.username?.charAt(0) || user.email?.charAt(0) || 'U').toUpperCase()}</span>
+                          <span className="text-black font-bold text-lg">
+                            {(
+                              user.name?.charAt(0) ||
+                              user.username?.charAt(0) ||
+                              user.email?.charAt(0) ||
+                              "U"
+                            ).toUpperCase()}
+                          </span>
                         </motion.div>
                         <div>
-                          <div className="font-bold text-black text-sm">{user.name || user.username || user.email}</div>
-                          <div className="text-gray-500 text-xs truncate">{user.email}</div>
+                          <div className="font-bold text-black text-sm">
+                            {user.name || user.username || user.email}
+                          </div>
+                          <div className="text-gray-500 text-xs truncate">
+                            {user.email}
+                          </div>
                         </div>
                       </div>
 
                       <div className="py-2">
-                        <Link href="/dashboard/account" className="block" onClick={() => setShowUserMenu(false)}>
+                        <Link
+                          href="/dashboard/account"
+                          className="block"
+                          onClick={() => setShowUserMenu(false)}
+                        >
                           <motion.div
                             variants={menuItemVariants}
                             whileHover="hover"
@@ -274,24 +314,38 @@ export function Header() {
                           </motion.div>
                         </Link>
 
-                        <Link href="/dashboard/credits" className="block" onClick={() => setShowUserMenu(false)}>
+                        <Link
+                          href="/dashboard/credits"
+                          className="block"
+                          onClick={() => setShowUserMenu(false)}
+                        >
                           <motion.div
                             variants={menuItemVariants}
                             whileHover="hover"
                             className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer thai-font"
                           >
-                            <Coins className="h-4 w-4 mr-3" aria-hidden="true" />
+                            <Coins
+                              className="h-4 w-4 mr-3"
+                              aria-hidden="true"
+                            />
                             <span>เครดิต</span>
                           </motion.div>
                         </Link>
 
-                        <Link href="/dashboard/orders" className="block" onClick={() => setShowUserMenu(false)}>
+                        <Link
+                          href="/dashboard/orders"
+                          className="block"
+                          onClick={() => setShowUserMenu(false)}
+                        >
                           <motion.div
                             variants={menuItemVariants}
                             whileHover="hover"
                             className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer thai-font"
                           >
-                            <ShoppingCart className="h-4 w-4 mr-3" aria-hidden="true" />
+                            <ShoppingCart
+                              className="h-4 w-4 mr-3"
+                              aria-hidden="true"
+                            />
                             <span>ประวัติการสั่งซื้อ</span>
                           </motion.div>
                         </Link>
@@ -315,11 +369,15 @@ export function Header() {
               </div>
             ) : (
               <motion.button
-                whileHover={{ scale: 1.05, y: -2, boxShadow: '4px 4px 0 0 #000000' }}
+                whileHover={{
+                  scale: 1.05,
+                  y: -2,
+                  boxShadow: "4px 4px 0 0 #000000",
+                }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-black text-white text-sm px-5 py-2.5 border-[3px] border-black font-bold thai-font"
-                style={{ boxShadow: '3px 3px 0 0 #000000' }}
-                onClick={() => router.push('/login')}
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                onClick={() => router.push("/login")}
               >
                 เข้าสู่ระบบ
               </motion.button>
@@ -329,4 +387,4 @@ export function Header() {
       </div>
     </motion.header>
   );
-} 
+}

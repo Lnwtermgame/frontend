@@ -1,10 +1,10 @@
 "use client";
 
-import React from 'react';
-import { motion } from '@/lib/framer-exports';
-import { SeasonalEventCard, SeasonalEventProps } from './SeasonalEventCard';
-import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import React from "react";
+import { motion } from "@/lib/framer-exports";
+import { SeasonalEventCard, SeasonalEventProps } from "./SeasonalEventCard";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export interface SeasonalEventsGridProps {
   title?: string;
@@ -25,10 +25,10 @@ export function SeasonalEventsGrid({
   viewAllText = "View all events",
   featuredLayout = false,
   className = "",
-  maxItems
+  maxItems,
 }: SeasonalEventsGridProps) {
   const displayEvents = maxItems ? events.slice(0, maxItems) : events;
-  
+
   // If no events, display a message
   if (events.length === 0) {
     return (
@@ -36,19 +36,28 @@ export function SeasonalEventsGrid({
         {title && (
           <div className="flex justify-between items-end mb-4">
             <div>
-              <h2 className="text-2xl font-black text-black thai-font">{title}</h2>
-              {description && <p className="text-gray-600 mt-1 thai-font">{description}</p>}
+              <h2 className="text-2xl font-black text-black thai-font">
+                {title}
+              </h2>
+              {description && (
+                <p className="text-gray-600 mt-1 thai-font">{description}</p>
+              )}
             </div>
           </div>
         )}
-        <div className="bg-white border-[3px] border-black p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-8 text-center"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <p className="text-gray-500 thai-font">ไม่มีโปรโมชั่นพิเศษในขณะนี้</p>
-          <p className="text-gray-500 mt-1 thai-font">กลับมาตรวจสอบใหม่ภายหลัง!</p>
+          <p className="text-gray-500 mt-1 thai-font">
+            กลับมาตรวจสอบใหม่ภายหลัง!
+          </p>
         </div>
       </div>
     );
   }
-  
+
   return (
     <div className={`space-y-6 ${className}`}>
       {title && (
@@ -59,27 +68,37 @@ export function SeasonalEventsGrid({
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center"
-              style={{ boxShadow: '2px 2px 0 0 #000000' }}
+            <div
+              className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center"
+              style={{ boxShadow: "2px 2px 0 0 #000000" }}
             >
               <span className="text-white font-black">%</span>
             </div>
             <div>
-              <h2 className="text-2xl font-black text-black thai-font">{title}</h2>
-              {description && <p className="text-gray-600 mt-1 thai-font">{description}</p>}
+              <h2 className="text-2xl font-black text-black thai-font">
+                {title}
+              </h2>
+              {description && (
+                <p className="text-gray-600 mt-1 thai-font">{description}</p>
+              )}
             </div>
           </div>
 
           {viewAllUrl && events.length > (maxItems || 0) && (
-            <Link href={viewAllUrl} className="text-black hover:text-brutal-pink transition-colors flex items-center group font-bold thai-font">
+            <Link
+              href={viewAllUrl}
+              className="text-black hover:text-brutal-pink transition-colors flex items-center group font-bold thai-font"
+            >
               <span>{viewAllText}</span>
               <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           )}
         </motion.div>
       )}
-      
-      <div className={`grid grid-cols-1 ${featuredLayout ? 'gap-6' : 'md:grid-cols-2 gap-4'}`}>
+
+      <div
+        className={`grid grid-cols-1 ${featuredLayout ? "gap-6" : "md:grid-cols-2 gap-4"}`}
+      >
         {displayEvents.map((event, index) => (
           <motion.div
             key={event.id}
@@ -87,8 +106,8 @@ export function SeasonalEventsGrid({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
           >
-            <SeasonalEventCard 
-              {...event} 
+            <SeasonalEventCard
+              {...event}
               featured={index === 0 && featuredLayout}
             />
           </motion.div>
@@ -96,4 +115,4 @@ export function SeasonalEventsGrid({
       </div>
     </div>
   );
-} 
+}

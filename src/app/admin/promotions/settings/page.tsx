@@ -127,9 +127,7 @@ export default function AdminPromotionSettings() {
           {label}
         </label>
         {description && (
-          <p className="text-gray-500 text-xs mt-0.5">
-            {description}
-          </p>
+          <p className="text-gray-500 text-xs mt-0.5">{description}</p>
         )}
       </div>
     </div>
@@ -166,7 +164,7 @@ export default function AdminPromotionSettings() {
         {/* Settings Container */}
         <motion.div
           className="bg-white border-[3px] border-black rounded-xl overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -444,7 +442,7 @@ export default function AdminPromotionSettings() {
                 type="button"
                 onClick={() => router.push("/admin/promotions")}
                 className="px-6 py-2 bg-white border-[3px] border-black text-black rounded-lg hover:bg-gray-100 transition-colors font-medium"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 ยกเลิก
               </button>
@@ -452,7 +450,7 @@ export default function AdminPromotionSettings() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`px-6 py-2 bg-black text-white border-[3px] border-black rounded-lg hover:bg-gray-800 transition-colors font-medium flex items-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกการตั้งค่า"}

@@ -1,52 +1,10 @@
-import { Metadata } from "next";
-import { MainLayout } from "@/components/layout/MainLayout";
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Newspaper, Calendar, Eye } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: "ข่าวสารและประกาศ - Lnwtermgame",
-  description: "ข่าวสาร โปรโมชั่น และประกาศล่าสุดจาก Lnwtermgame",
-};
-
-async function getNewsArticles() {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/cms/news`,
-      {
-        cache: "no-store",
-      },
-    );
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const data = await response.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    return [];
-  }
-}
-
-async function getFeaturedNews() {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/cms/news/featured?limit=3`,
-      {
-        cache: "no-store",
-      },
-    );
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const data = await response.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    return [];
-  }
-}
+import { motion } from "@/lib/framer-exports";
+import { Newspaper, Calendar, Eye, Loader2 } from "lucide-react";
+import { cmsApi, NewsArticle, NewsArticleListItem } from "@/lib/services";
 
 const categoryLabels: Record<string, string> = {
   general: "ทั่วไป",
@@ -62,91 +20,144 @@ const categoryColors: Record<string, string> = {
   event: "bg-yellow-100 text-yellow-700",
 };
 
-export default async function NewsPage() {
-  const [articles, featured] = await Promise.all([
-    getNewsArticles(),
-    getFeaturedNews(),
-  ]);
+export default function NewsPage() {
+  const [articles, setArticles] = useState<NewsArticleListItem[]>([]);
+  const [featured, setFeatured] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [articlesRes, featuredRes] = await Promise.all([
+          cmsApi.getNewsArticles(1, 20),
+          cmsApi.getFeaturedNews(3),
+        ]);
+
+        if (articlesRes.success && articlesRes.data) {
+          setArticles(articlesRes.data);
+        }
+
+        if (featuredRes.success && featuredRes.data) {
+          setFeatured(featuredRes.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="page-container">
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-brutal-pink" />
+            <p className="text-gray-600">กำลังโหลด...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <MainLayout>
-      <div className="page-container">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <Newspaper className="w-8 h-8 text-brutal-pink mr-3" />
-            <h1 className="text-3xl font-bold text-black thai-font">
-              ข่าวสารและประกาศ
-            </h1>
-          </div>
-          <p className="text-gray-600 thai-font">
-            ติดตามข่าวสาร โปรโมชั่น และอัปเดตล่าสุด
-          </p>
+    <div className="page-container">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <div className="flex items-center mb-4">
+          <Newspaper className="w-8 h-8 text-brutal-pink mr-3" />
+          <h1 className="text-3xl font-bold text-black thai-font">
+            ข่าวสารและประกาศ
+          </h1>
         </div>
+        <p className="text-gray-600 thai-font">
+          ติดตามข่าวสาร โปรโมชั่น และอัปเดตล่าสุด
+        </p>
+      </motion.div>
 
-        {/* Featured News */}
-        {featured.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-xl font-bold text-black thai-font mb-4 flex items-center">
-              <span className="w-1.5 h-6 bg-brutal-yellow mr-2"></span>
-              ข่าวเด่น
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featured.map((article: any) => (
-                <Link
-                  key={article.id}
-                  href={`/news/${article.slug}`}
-                  className="group bg-white border-[3px] border-black overflow-hidden hover:shadow-[4px_4px_0_0_#FF6B9D] transition-shadow"
-                >
-                  <div className="aspect-video bg-gray-100 overflow-hidden">
-                    {article.coverImage ? (
-                      <img
-                        src={article.coverImage}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                        <Newspaper className="w-12 h-12 text-gray-400" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <span
-                      className={`inline-block px-2 py-0.5 text-xs font-medium mb-2 ${
-                        categoryColors[article.category] ||
-                        categoryColors.general
-                      }`}
-                    >
-                      {categoryLabels[article.category] || "ทั่วไป"}
-                    </span>
-                    <h3 className="font-bold text-black thai-font line-clamp-2 group-hover:text-brutal-pink transition-colors">
-                      {article.title}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* All News */}
-        <div>
+      {/* Featured News */}
+      {featured.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-12"
+        >
           <h2 className="text-xl font-bold text-black thai-font mb-4 flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-pink mr-2"></span>
-            ข่าวทั้งหมด
+            <span className="w-1.5 h-6 bg-brutal-yellow mr-2"></span>
+            ข่าวเด่น
           </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featured.map((article) => (
+              <Link
+                key={article.id}
+                href={`/news/${article.slug}`}
+                className="group bg-white border-[3px] border-black overflow-hidden hover:shadow-[4px_4px_0_0_#FF6B9D] transition-shadow"
+              >
+                <div className="aspect-video bg-gray-100 overflow-hidden">
+                  {article.coverImage ? (
+                    <img
+                      src={article.coverImage}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <Newspaper className="w-12 h-12 text-gray-400" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <span
+                    className={`inline-block px-2 py-0.5 text-xs font-medium mb-2 ${
+                      categoryColors[article.category] || categoryColors.general
+                    }`}
+                  >
+                    {categoryLabels[article.category] || "ทั่วไป"}
+                  </span>
+                  <h3 className="font-bold text-black thai-font line-clamp-2 group-hover:text-brutal-pink transition-colors">
+                    {article.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
-          {articles.length === 0 ? (
-            <div className="text-center py-16 bg-white border-[3px] border-black">
-              <Newspaper className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-600 thai-font">ยังไม่มีข่าวสาร</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {articles.map((article: any) => (
+      {/* All News */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <h2 className="text-xl font-bold text-black thai-font mb-4 flex items-center">
+          <span className="w-1.5 h-6 bg-brutal-pink mr-2"></span>
+          ข่าวทั้งหมด
+        </h2>
+
+        {articles.length === 0 ? (
+          <div className="text-center py-16 bg-white border-[3px] border-black">
+            <Newspaper className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+            <p className="text-gray-600 thai-font">ยังไม่มีข่าวสาร</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {articles.map((article, index) => (
+              <motion.div
+                key={article.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+              >
                 <Link
-                  key={article.id}
                   href={`/news/${article.slug}`}
                   className="block bg-white border-[3px] border-black p-4 hover:shadow-[4px_4px_0_0_#000] transition-shadow"
                 >
@@ -208,11 +219,11 @@ export default async function NewsPage() {
                     </div>
                   </div>
                 </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </MainLayout>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </div>
   );
 }

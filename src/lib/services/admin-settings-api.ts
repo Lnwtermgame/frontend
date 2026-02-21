@@ -152,8 +152,9 @@ type ApiResponse<T> = {
 
 class AdminSettingsApiService {
   async getSettings(): Promise<ApiResponse<SettingsEnvelope>> {
-    const response =
-      await authClient.get<ApiResponse<SettingsEnvelope>>("/api/admin/settings");
+    const response = await authClient.get<ApiResponse<SettingsEnvelope>>(
+      "/api/admin/settings",
+    );
     return response.data;
   }
 
@@ -182,9 +183,9 @@ class AdminSettingsApiService {
   }
 
   async getPermissions(): Promise<ApiResponse<AdminSettingsPermissionRow[]>> {
-    const response = await authClient.get<ApiResponse<AdminSettingsPermissionRow[]>>(
-      "/api/admin/settings/permissions",
-    );
+    const response = await authClient.get<
+      ApiResponse<AdminSettingsPermissionRow[]>
+    >("/api/admin/settings/permissions");
     return response.data;
   }
 
@@ -192,14 +193,16 @@ class AdminSettingsApiService {
     adminId: string,
     payload: { read?: boolean; write?: boolean },
   ): Promise<ApiResponse<AdminSettingsPermissionRow | null>> {
-    const response = await authClient.put<ApiResponse<AdminSettingsPermissionRow | null>>(
-      `/api/admin/settings/permissions/${adminId}`,
-      payload,
-    );
+    const response = await authClient.put<
+      ApiResponse<AdminSettingsPermissionRow | null>
+    >(`/api/admin/settings/permissions/${adminId}`, payload);
     return response.data;
   }
 
-  async getAuditLogs(page = 1, limit = 20): Promise<
+  async getAuditLogs(
+    page = 1,
+    limit = 20,
+  ): Promise<
     ApiResponse<{
       logs: AdminSettingsAuditLog[];
       meta: { total: number; page: number; limit: number; totalPages: number };
@@ -208,7 +211,12 @@ class AdminSettingsApiService {
     const response = await authClient.get<
       ApiResponse<{
         logs: AdminSettingsAuditLog[];
-        meta: { total: number; page: number; limit: number; totalPages: number };
+        meta: {
+          total: number;
+          page: number;
+          limit: number;
+          totalPages: number;
+        };
       }>
     >(`/api/admin/settings/audit?page=${page}&limit=${limit}`);
     return response.data;

@@ -21,6 +21,11 @@ const slugify = (text: string) => {
 const ZAI_API_BASE_URL = "https://api.z.ai/api/coding/paas/v4";
 const ZAI_API_KEY = process.env.NEXT_PUBLIC_ZAI_API_KEY || "";
 
+// SEARXNG API configuration
+const SEARXNG_BASE_URL =
+  "http://searxng-rkg44wkww4sgo8wcwwos8c44.89.38.101.12.sslip.io";
+const SEARXNG_API_KEY = process.env.NEXT_PUBLIC_SEARXNG_API_KEY || "";
+
 // Debug log interface
 export interface DebugLog {
   id: string;
@@ -83,6 +88,9 @@ export interface GeneratedEditorialContent {
   content: string;
   excerpt: string;
   slug?: string;
+  tags?: string[];
+  coverImage?: string;
+  sources?: string[];
 }
 
 type ContentGenerationProgressCallback = (progress: {
@@ -102,6 +110,17 @@ interface ZaiChatCompletionRequest {
   temperature?: number;
   max_tokens?: number;
   stream?: boolean;
+  tools?: Array<{
+    type: string;
+    function?: {
+      name: string;
+      description?: string;
+      parameters?: Record<string, unknown>;
+    };
+    web_search?: {
+      enable: boolean;
+    };
+  }>;
 }
 
 interface ZaiChatCompletionResponse {
@@ -160,6 +179,469 @@ class AiService {
       ZAI_API_KEY.length > 0 &&
       ZAI_API_KEY !== "your_api_key_here"
     );
+  }
+
+  // ============ Image URL Validation & Quality Scoring ============
+
+  /**
+   * Valid image extensions
+   */
+  private static readonly VALID_IMAGE_EXTENSIONS = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".webp",
+    ".bmp",
+  ];
+
+  /**
+   * Trusted game image sources (high quality, official)
+   * Higher score = better source
+   */
+  private static readonly TRUSTED_IMAGE_SOURCES: Record<string, number> = {
+    // Official game stores & platforms (highest quality)
+    "cdn.steamstatic.com": 100,
+    "store.steampowered.com": 100,
+    "steamuserimages-a.akamaihd.net": 95,
+    "cdn.cloudflare.steamstatic.com": 100,
+    "cdn2.steamgriddb.com": 90,
+    "steamcdn-a.akamaihd.net": 100,
+
+    // Epic Games
+    "cdn1.epicgames.com": 95,
+    "epicgames.com": 90,
+
+    // Game news & press (high quality)
+    "media.steampowered.com": 100,
+    "assets.rockstargames.com": 95,
+    "images.ctfassets.net": 85,
+
+    // Game journalism (good quality)
+    "static.wikia.nocookie.net": 75,
+    "vignette.wikia.nocookie.net": 75,
+    "upload.wikimedia.org": 80, // Wikipedia
+    "commons.wikimedia.org": 80,
+
+    // Game specific CDNs
+    "blz-contentstack-images.akamaized.net": 90, // Blizzard
+    "images.contentstack.io": 85,
+    "ubiservices.cdn.ubi.com": 90, // Ubisoft
+    "images.igdb.com": 85, // IGDB
+  };
+
+  /**
+   * Medium quality sources (acceptable but not ideal)
+   */
+  private static readonly MEDIUM_QUALITY_SOURCES: Record<string, number> = {
+    "i.imgur.com": 70,
+    "imgur.com": 65,
+    "i.redd.it": 65,
+    "preview.redd.it": 60,
+    "cdn.discordapp.com": 60,
+    "images.unsplash.com": 70,
+    "cdn.pixabay.com": 65,
+  };
+
+  /**
+   * Domains that should be excluded from image results
+   * These often return HTML pages, thumbnails, or low quality images
+   */
+  private static readonly EXCLUDED_IMAGE_DOMAINS = [
+    // Social media (thumbnails, profile pics)
+    "facebook.com",
+    "fb.com",
+    "instagram.com",
+    "twitter.com",
+    "x.com",
+    "tiktok.com",
+    "pinterest.com",
+    "linkedin.com",
+    "reddit.com", // Use i.redd.it instead
+    "t.co",
+    // URL shorteners
+    "bit.ly",
+    "tinyurl.com",
+    "goo.gl",
+    // YouTube (thumbnails only)
+    "youtube.com",
+    "youtu.be",
+    "i.ytimg.com", // YouTube thumbnails
+    "yt3.ggpht.com", // YouTube channel avatars
+    "yt3.googleusercontent.com",
+    // Generic CDNs that serve thumbnails
+    "thumb",
+    "avatar",
+  ];
+
+  /**
+   * URL patterns that indicate low quality/thumbnail images
+   */
+  private static readonly THUMBNAIL_PATTERNS = [
+    /thumb/i,
+    /thumbs?\//i,
+    /small/i,
+    /mini/i,
+    /icon/i,
+    /avatar/i,
+    /profile/i,
+    /_\d+x\d+\./i, // like _150x150.jpg
+    /\/\d+x\d+\//i, // like /150x150/
+    /\/s\d+x\d+\//i, // like /s150x150/
+    /\/w\d+\//i, // like /w150/
+    /\/h\d+\//i, // like /h150/
+    /default/i,
+    /placeholder/i,
+    /preview/i,
+    /lowres/i,
+    /low_res/i,
+    /crop/i,
+    /channel/i, // YouTube channel images
+    /userpic/i,
+    /favicon/i,
+  ];
+
+  /**
+   * URL patterns that indicate HIGH quality images
+   */
+  private static readonly HIGH_QUALITY_PATTERNS = [
+    /original/i,
+    /full/i,
+    /hd/i,
+    /high/i,
+    /wallpaper/i,
+    /screenshot/i,
+    /artwork/i,
+    /banner/i,
+    /header/i,
+    /cover/i,
+    /hero/i,
+    /splash/i,
+    /promo/i,
+    /official/i,
+    /4k/i,
+    /1920/i,
+    /1080/i,
+    /2560/i,
+    /3840/i,
+  ];
+
+  /**
+   * Check if a URL is a valid image URL
+   * Validates: extension, domain, URL format, and NOT a thumbnail
+   */
+  private isValidImageUrl(url: string | undefined | null): boolean {
+    if (!url || typeof url !== "string") return false;
+
+    try {
+      const parsedUrl = new URL(url);
+      const fullUrl = url.toLowerCase();
+      const hostname = parsedUrl.hostname.toLowerCase();
+      const pathname = parsedUrl.pathname.toLowerCase();
+
+      // Check if domain is excluded
+      const isExcluded = AiService.EXCLUDED_IMAGE_DOMAINS.some(
+        (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+      );
+      if (isExcluded) {
+        console.log(`[Image Validation] Excluded domain: ${hostname}`);
+        return false;
+      }
+
+      // Check for thumbnail patterns - reject these!
+      const isThumbnail = AiService.THUMBNAIL_PATTERNS.some((pattern) =>
+        pattern.test(fullUrl),
+      );
+      if (isThumbnail) {
+        console.log(`[Image Validation] Rejected thumbnail: ${pathname}`);
+        return false;
+      }
+
+      // Check pathname has valid image extension
+      const hasValidExtension = AiService.VALID_IMAGE_EXTENSIONS.some((ext) =>
+        pathname.endsWith(ext),
+      );
+
+      // If has valid extension and not thumbnail, it's valid
+      if (hasValidExtension) {
+        return true;
+      }
+
+      // Check if URL contains image-related query params
+      const searchParams = parsedUrl.searchParams;
+      const hasImageParams =
+        searchParams.has("format") ||
+        searchParams.has("image") ||
+        searchParams.has("img") ||
+        searchParams.has("src");
+
+      // Special handling for common image hosting services
+      const imageHostingDomains = [
+        "imgur.com",
+        "i.imgur.com",
+        "cdn.",
+        "images.",
+        "img.",
+        "static.",
+        "media.",
+        "picsum.photos",
+        "unsplash.com",
+        "pexels.com",
+        "flickr.com",
+        "cloudinary.com",
+        "imgbb.com",
+        "postimg.cc",
+      ];
+
+      const isImageHosting = imageHostingDomains.some(
+        (domain) => hostname.includes(domain) || hostname.startsWith(domain),
+      );
+
+      if (isImageHosting) {
+        // For image hosting, be more lenient but still check for obvious red flags
+        const hasObviousNonImageIndicators =
+          pathname.includes("/watch") ||
+          pathname.includes("/video") ||
+          pathname.includes("/page") ||
+          pathname.includes("/post") ||
+          pathname.includes("/user") ||
+          pathname.includes("/profile");
+
+        return !hasObviousNonImageIndicators;
+      }
+
+      // If URL has no extension and no image params, reject
+      if (!hasImageParams) {
+        console.log(
+          `[Image Validation] No valid extension or image params: ${pathname}`,
+        );
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      console.log(`[Image Validation] Invalid URL: ${url}`);
+      return false;
+    }
+  }
+
+  /**
+   * Score image quality based on source and URL patterns
+   * Higher score = better quality image
+   */
+  private scoreImageQuality(url: string): number {
+    try {
+      const parsedUrl = new URL(url);
+      const hostname = parsedUrl.hostname.toLowerCase();
+      const fullUrl = url.toLowerCase();
+      let score = 50; // Base score
+
+      // Check trusted sources (high quality)
+      for (const [domain, domainScore] of Object.entries(
+        AiService.TRUSTED_IMAGE_SOURCES,
+      )) {
+        if (hostname.includes(domain) || hostname === domain) {
+          score = Math.max(score, domainScore);
+          break;
+        }
+      }
+
+      // Check medium quality sources
+      for (const [domain, domainScore] of Object.entries(
+        AiService.MEDIUM_QUALITY_SOURCES,
+      )) {
+        if (hostname.includes(domain) || hostname === domain) {
+          score = Math.max(score, domainScore);
+          break;
+        }
+      }
+
+      // Bonus for high quality patterns in URL
+      for (const pattern of AiService.HIGH_QUALITY_PATTERNS) {
+        if (pattern.test(fullUrl)) {
+          score += 10;
+        }
+      }
+
+      // Penalty for any remaining thumbnail-like patterns
+      for (const pattern of AiService.THUMBNAIL_PATTERNS) {
+        if (pattern.test(fullUrl)) {
+          score -= 30;
+        }
+      }
+
+      // Bonus for larger file size indicators
+      if (fullUrl.includes("1920") || fullUrl.includes("1080")) score += 5;
+      if (fullUrl.includes("2560") || fullUrl.includes("1440")) score += 10;
+      if (fullUrl.includes("4k") || fullUrl.includes("3840")) score += 15;
+
+      return Math.max(0, Math.min(100, score));
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * Filter and validate image URLs from SEARXNG results
+   * Returns only URLs that are likely to be actual HIGH QUALITY images
+   * Sorted by quality score (best first)
+   */
+  private filterValidImageUrls(
+    images: any[],
+  ): { url: string; title?: string; score: number }[] {
+    const validImages: { url: string; title?: string; score: number }[] = [];
+
+    for (const img of images) {
+      // Try different URL fields from SEARXNG - prioritize img_src over thumbnail
+      const possibleUrls = [
+        img.img_src, // Often the full size image
+        img.url, // Sometimes the source page
+        img.image, // Alternative field
+        // Skip thumbnail fields - we want full size images
+      ].filter(Boolean);
+
+      for (const url of possibleUrls) {
+        if (this.isValidImageUrl(url)) {
+          const score = this.scoreImageQuality(url);
+          // Only accept images with decent quality score
+          if (score >= 40) {
+            validImages.push({
+              url,
+              title: img.title || img.content || "",
+              score,
+            });
+            break; // Only add the first valid URL for this image
+          }
+        }
+      }
+    }
+
+    // Sort by score (highest first)
+    validImages.sort((a, b) => b.score - a.score);
+
+    console.log(
+      `[Image Validation] Filtered ${validImages.length}/${images.length} high quality images`,
+    );
+
+    if (validImages.length > 0) {
+      console.log(
+        `[Image Validation] Top 3 scores:`,
+        validImages.slice(0, 3).map((i) => ({
+          score: i.score,
+          domain: new URL(i.url).hostname,
+        })),
+      );
+    }
+
+    return validImages;
+  }
+
+  // Search using SEARXNG via proxy API route
+  private async searchWithSearxng(
+    query: string,
+    categories?: string[],
+    lang: string = "th",
+  ): Promise<{
+    results: any[];
+    images: { url: string; title?: string; score: number }[];
+    videos: any[];
+  }> {
+    try {
+      console.log("[SEARXNG] Searching for:", query);
+
+      // Search for text content via proxy
+      const searchParams = new URLSearchParams({
+        q: query,
+        language: lang,
+        time_range: "week",
+      });
+
+      if (categories && categories.length > 0) {
+        searchParams.append("category", categories.join(","));
+      }
+
+      const proxyUrl = `/api/searxng?${searchParams.toString()}`;
+
+      const response = await axios.get(proxyUrl, {
+        timeout: 30000,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      console.log("[SEARXNG] Search results:", {
+        resultsCount: response.data?.results?.length || 0,
+      });
+
+      // Search for images via proxy
+      const imageParams = new URLSearchParams({
+        q: query,
+        category: "images",
+        time_range: "month",
+      });
+
+      const imageProxyUrl = `/api/searxng?${imageParams.toString()}`;
+
+      let validImages: { url: string; title?: string; score: number }[] = [];
+      try {
+        const imageResponse = await axios.get(imageProxyUrl, {
+          timeout: 30000,
+          headers: {
+            Accept: "application/json",
+          },
+        });
+        const imageResults = imageResponse.data?.results || [];
+
+        // Filter valid image URLs
+        validImages = this.filterValidImageUrls(imageResults);
+
+        console.log("[SEARXNG] Image results:", {
+          raw: imageResults.length,
+          valid: validImages.length,
+        });
+      } catch (imageError) {
+        console.log("[SEARXNG] Image search failed:", imageError);
+      }
+
+      // Search for videos via proxy
+      const videoParams = new URLSearchParams({
+        q: `${query} official trailer gameplay`,
+        category: "videos",
+        time_range: "month",
+      });
+
+      const videoProxyUrl = `/api/searxng?${videoParams.toString()}`;
+
+      let videoResults: any[] = [];
+      try {
+        const videoResponse = await axios.get(videoProxyUrl, {
+          timeout: 30000,
+          headers: {
+            Accept: "application/json",
+          },
+        });
+        videoResults = videoResponse.data?.results || [];
+        console.log("[SEARXNG] Video results:", {
+          videosCount: videoResults.length,
+        });
+      } catch (videoError) {
+        console.log("[SEARXNG] Video search failed:", videoError);
+      }
+
+      return {
+        results: response.data?.results || [],
+        images: validImages, // Return validated images with scores
+        videos: videoResults,
+      };
+    } catch (error) {
+      console.error("[SEARXNG] Search error:", error);
+      // Return empty results on error so AI can still generate content
+      return { results: [], images: [], videos: [] } as {
+        results: any[];
+        images: { url: string; title?: string; score: number }[];
+        videos: any[];
+      };
+    }
   }
 
   // Get API configuration status for debugging
@@ -680,7 +1162,7 @@ class AiService {
   // Call Z.ai API with retry logic
   private async callZaiApi(
     prompt: string,
-    retries = 2,
+    retries = 3, // เพิ่มเป็น 3 ครั้ง
   ): Promise<ZaiChatCompletionResponse> {
     const request: ZaiChatCompletionRequest = {
       model: "glm-4.7",
@@ -696,7 +1178,7 @@ class AiService {
         },
       ],
       temperature: 0.7,
-      max_tokens: 6000,
+      max_tokens: 8000,
       stream: false,
     };
 
@@ -745,6 +1227,104 @@ class AiService {
             const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
             console.log(
               `[Z.ai API] Request failed, retrying in ${delay}ms...`,
+              error.message,
+            );
+            await new Promise((resolve) => setTimeout(resolve, delay));
+            continue;
+          }
+        }
+
+        // Out of retries or non-retryable error
+        break;
+      }
+    }
+
+    // All retries exhausted - handle the final error
+    const finalError = lastError || new Error("Unknown error");
+    throw this.formatApiError(finalError);
+  }
+
+  // Call Z.ai API with web search tool enabled
+  private async callZaiApiWithWebSearch(
+    prompt: string,
+    retries = 2,
+  ): Promise<ZaiChatCompletionResponse> {
+    const request: ZaiChatCompletionRequest = {
+      model: "glm-4.7",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an expert e-commerce copywriter with access to web search. Use web search to find real news, promotions, and updates about gaming. Respond directly with the requested content in Thai language.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 8000,
+      stream: false,
+      tools: [
+        {
+          type: "web_search",
+          web_search: {
+            enable: true,
+          },
+        },
+      ],
+    };
+
+    let lastError: Error | undefined;
+
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        if (attempt > 0) {
+          console.log(
+            `[Z.ai Web Search] Retry attempt ${attempt}/${retries}...`,
+          );
+        }
+
+        console.log(
+          "[Z.ai Web Search] Sending request with web search enabled:",
+          {
+            url: "/chat/completions",
+            model: request.model,
+            attempt: attempt + 1,
+          },
+        );
+
+        const response = await this.client.post<ZaiChatCompletionResponse>(
+          "/chat/completions",
+          request,
+        );
+
+        console.log("[Z.ai Web Search] Response received:", {
+          status: response.status,
+          hasContent: !!response.data?.choices?.[0]?.message?.content,
+          hasToolCalls: !!(response.data?.choices?.[0]?.message as any)
+            ?.tool_calls,
+        });
+
+        return response.data;
+      } catch (error) {
+        lastError = error as Error;
+
+        if (axios.isAxiosError(error)) {
+          const status = error.response?.status;
+
+          // Don't retry on 401 (auth error)
+          if (status === 401) {
+            throw new Error(
+              "Invalid API key. Please check your Z.ai API key configuration.",
+            );
+          }
+
+          // Retry on timeout or server errors
+          if (attempt < retries) {
+            const delay = Math.min(1000 * Math.pow(2, attempt), 5000);
+            console.log(
+              `[Z.ai Web Search] Request failed, retrying in ${delay}ms...`,
               error.message,
             );
             await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1308,19 +1888,189 @@ PLATFORMS: iOS, Android, PC
     );
   }
 
+  // Store used topics and their variations to prevent duplicates
+  private usedTopicsCache: Map<string, string[]> = new Map();
+
   /**
-   * Generate news article content using AI
+   * Generate news article content using AI with SEARXNG search
+   * Includes anti-duplication logic: random angles, dynamic search, and variation
    */
   async generateNewsContent(
     topic: string,
     categoryName: string,
     onProgress?: ContentGenerationProgressCallback,
+    existingSlugs?: string[], // Pass existing article slugs to avoid duplicates
+    preferredAngle?: string, // Optional: specific angle to use instead of random
   ): Promise<GeneratedEditorialContent> {
-    return this.generateEditorialContent(
-      topic,
-      this.buildNewsPrompt(topic, categoryName),
-      onProgress,
-    );
+    try {
+      onProgress?.({
+        stage: "preparing",
+        message: "กำลังวิเคราะห์และสร้างมุมมองข่าวที่ไม่ซ้ำ...",
+      });
+
+      if (!this.isConfigured()) {
+        throw new Error(
+          "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env file.",
+        );
+      }
+
+      onProgress?.({
+        stage: "searching",
+        message: "กำลังค้นหาข้อมูลจากแหล่งต่างๆ...",
+      });
+
+      // Step 1: Generate unique search strategy with multiple variations
+      const searchVariations = this.generateSearchVariations(
+        topic,
+        categoryName,
+      );
+
+      // Try different search queries and combine results
+      let allResults: {
+        results: any[];
+        images: { url: string; title?: string; score: number }[];
+        videos: any[];
+      } = {
+        results: [],
+        images: [],
+        videos: [],
+      };
+
+      // Search with multiple queries to get diverse results
+      for (const query of searchVariations.slice(0, 3)) {
+        try {
+          const results = await this.searchWithSearxng(query, [
+            "general",
+            "news",
+          ]);
+          allResults.results.push(...results.results);
+          allResults.images.push(...results.images);
+          allResults.videos.push(...results.videos);
+        } catch (e) {
+          console.log("[AI News] Search variation failed:", query);
+        }
+      }
+
+      // Remove duplicates from combined results
+      allResults.results = this.deduplicateResults(allResults.results, "url");
+      allResults.images = this.deduplicateResults(allResults.images, "url");
+      allResults.videos = this.deduplicateResults(allResults.videos, "url");
+
+      console.log("[AI News] Combined search completed:", {
+        textResults: allResults.results.length,
+        imageResults: allResults.images.length,
+        videoResults: allResults.videos.length,
+      });
+
+      onProgress?.({
+        stage: "generating",
+        message: "กำลังสร้างเนื้อหาข่าวที่ไม่ซ้ำ...",
+      });
+
+      // Step 2: Generate unique content angle (or use preferred if provided)
+      const newsAngle = this.generateNewsAngle(
+        topic,
+        categoryName,
+        preferredAngle,
+      );
+
+      console.log("[AI News] Generated angle:", newsAngle);
+
+      // Step 3: Build prompt with search results and unique angle
+      const prompt = this.buildNewsPromptWithSearxng(
+        topic,
+        categoryName,
+        allResults,
+        newsAngle,
+        existingSlugs,
+      );
+
+      console.log("[AI News] Calling Z.ai API...");
+
+      // Step 3: Generate content with AI
+      const response = await this.callZaiApi(prompt);
+
+      console.log("[AI News] Z.ai API response received");
+
+      const choice = response.choices[0];
+      let content = choice.message.content?.trim() || "";
+
+      // Handle reasoning models
+      const reasoning = (choice.message as any).reasoning_content as
+        | string
+        | undefined;
+      if (!content && reasoning) {
+        const contentMatch = reasoning.match(
+          /CONTENT:\s*([\s\S]*?)(?=\n\n|$)/i,
+        );
+        if (contentMatch) {
+          content = contentMatch[1].trim();
+        }
+      }
+
+      if (!content) {
+        throw new Error("AI returned empty response. Please try again.");
+      }
+
+      onProgress?.({ stage: "parsing", message: "กำลังประมวลผลผลลัพธ์..." });
+
+      const result = this.parseEditorialContent(content, topic);
+
+      // Separate cover image from content images
+      // Use first image for cover, rest for content
+      const coverImage =
+        allResults.images.length > 0 ? allResults.images[0] : null;
+      const contentImages = allResults.images.slice(1); // Skip first image for content
+
+      // Set cover image from SEARXNG if not provided by AI
+      if (!result.coverImage && coverImage) {
+        result.coverImage = coverImage.url;
+        console.log(
+          "[AI News] Cover image set:",
+          result.coverImage,
+          `(score: ${coverImage.score})`,
+        );
+      }
+
+      // Log content images (different from cover)
+      if (contentImages.length > 0) {
+        console.log(
+          "[AI News] Content images available:",
+          contentImages.length,
+          "images (different from cover)",
+        );
+      }
+
+      // Embed YouTube video in content if available and not already in content
+      if (allResults.videos.length > 0) {
+        const officialVideo = allResults.videos.find(
+          (v) => v.url?.includes("youtube.com") || v.url?.includes("youtu.be"),
+        );
+        if (officialVideo && !result.content.includes(officialVideo.url)) {
+          // Extract video ID from YouTube URL
+          const videoId = extractYoutubeVideoId(officialVideo.url);
+          if (videoId) {
+            // Append video embed to content
+            result.content += `\n\n## วิดีโอที่เกี่ยวข้อง\n\n[![วิดีโอบน YouTube](https://img.youtube.com/vi/${videoId}/0.jpg)](${officialVideo.url})\n\n[▶️ ดูวิดีโอบน YouTube](${officialVideo.url})\n`;
+          }
+        }
+      }
+
+      // Add sources from SEARXNG results
+      if (allResults.results.length > 0) {
+        result.sources = allResults.results
+          .slice(0, 3)
+          .map((r) => r.url)
+          .filter((url): url is string => !!url);
+      }
+
+      onProgress?.({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
+
+      return result;
+    } catch (error) {
+      console.error("[AI News] Generation failed:", error);
+      throw error;
+    }
   }
 
   /**
@@ -1351,7 +2101,10 @@ PLATFORMS: iOS, Android, PC
       );
     }
 
-    onProgress?.({ stage: "generating", message: "กำลังสร้างเนื้อหาด้วย AI..." });
+    onProgress?.({
+      stage: "generating",
+      message: "กำลังสร้างเนื้อหาด้วย AI...",
+    });
 
     const response = await this.callZaiApi(prompt);
     const choice = response.choices[0];
@@ -1431,35 +2184,429 @@ SLUG: how-to-topup-mobile-legends-safely
 
 รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
 TITLE: [พาดหัวข่าวชัดเจน กระชับ ไม่เกิน 100 ตัวอักษร]
-CONTENT: [เนื้อหาข่าวฉบับเต็มภาษาไทย 250-600 คำ มีโครงสร้างอ่านง่าย]
+CONTENT: [เนื้อหาข่าวฉบับเต็มภาษาไทย 800-1500 คำ มีโครงสร้างอ่านง่าย เนื้อหาละเอียดครบถ้วน]
 EXCERPT: [สรุปข่าวสั้นๆ ไม่เกิน 160 ตัวอักษร]
 SLUG: [slug ภาษาอังกฤษ ใช้ตัวพิมพ์เล็ก ตัวเลข และขีดกลางเท่านั้น]
+TAGS: [แท็ก 3-7 คำ คั่นด้วยลูกน้ำ เช่น โปรโมชั่น, เติมเกม, ส่วนลด, ลูกค้าใหม่]
 
-ข้อกำหนด:
-1. ใช้โทนการเขียนแบบข่าวสาร/ประกาศอย่างมืออาชีพ ไม่ใช่สไตล์ FAQ
-2. ย่อหน้าแรกต้องสรุปประเด็นสำคัญของข่าวให้ครบ (ใคร/อะไร/เมื่อไร/ผลกระทบ)
-3. จัดโครงสร้างเนื้อหาด้วยหัวข้อย่อย (##) และ bullet points เมื่อเหมาะสม
-4. เนื้อหาต้องสอดคล้องกับหมวดหมู่ข่าว: ${categoryName}
-5. หลีกเลี่ยงข้อมูลเกินจริงและห้ามใช้ภาษาคลุมเครือ
-6. ไม่ใช้อิโมจิ
-7. สร้าง SLUG เป็นภาษาอังกฤษพร้อมเชื่อมคำด้วยขีดกลาง
+ข้อกำหนดที่สำคัญ:
+1. ต้องเป็นข่าวจริงเท่านั้น (factual news) - ห้ามสร้างข้อมูลเท็จหรือข่าวปลอม
+2. เนื้อหาข่าวต้องยาว 800-1500 คำ อย่างน้อย 5-7 ย่อหน้า ครอบคลุมรายละเอียดทุกด้าน
+3. ระยะเวลาของเหตุการณ์หรือโปรโมชั่นในข่าวต้องไม่เกิน 7 วันนับจากวันนี้ (ถ้าไม่ระบุวันที่ ให้ถือว่าเป็นข่าวล่าสุด)
+4. ใช้โทนการเขียนแบบข่าวสาร/ประกาศอย่างมืออาชีพ เป็นทางการแต่เข้าใจง่าย
+5. ย่อหน้าแรกต้องสรุปประเด็นสำคัญของข่าวให้ครบ (ใคร/อะไร/เมื่อไร/ที่ไหน/ทำไม)
+6. เนื้อหาต้องประกอบด้วย:
+   - บทนำสรุปสาระสำคัญ
+   - รายละเอียดเหตุการณ์/โปรโมชั่น
+   - เงื่อนไขหรือข้อควรรู้ (ถ้ามี)
+   - ขั้นตอนการเข้าร่วม/ใช้งาน (ถ้ามี)
+   - สรุปหรือคำแนะนำท้ายข่าว
+7. ใช้หัวข้อย่อย (##) แบ่งเนื้อหาให้ชัดเจน อย่างน้อย 3-4 หัวข้อย่อย
+8. เนื้อหาต้องสอดคล้องกับหมวดหมู่ข่าว: ${categoryName}
+9. หลีกเลี่ยงข้อมูลเกินจริงและห้ามใช้ภาษาคลุมเครือ
+10. ไม่ใช้อิโมจิ ไม่ใช้ภาษาวัยรุ่น
+11. สร้าง SLUG เป็นภาษาอังกฤษพร้อมเชื่อมคำด้วยขีดกลาง
+12. แท็ก (TAGS) ต้องเป็นภาษาไทย 3-7 คำ ที่เกี่ยวข้องกับเนื้อหาโดยตรง คั่นด้วยลูกน้ำ
 
 ตัวอย่างที่ถูกต้อง:
-TITLE: ประกาศปิดปรับปรุงระบบชำระเงินชั่วคราว 24 ก.พ. 2026
-CONTENT: ระบบจะปิดปรับปรุงชั่วคราวในวันที่ 24 ก.พ. 2026 เวลา 01:00-03:00 น. เพื่อเพิ่มประสิทธิภาพและความเสถียรของธุรกรรม
+TITLE: ประกาศโปรโมชั่นพิเศษรับวันวาเลนไทน์ ลดสูงสุด 50% ทุกเกม
+CONTENT: ## โปรโมชั่นพิเศษรับวันแห่งความรัก
 
-## รายละเอียดการปรับปรุง
-- ช่วงเวลา: 01:00-03:00 น.
-- บริการที่ได้รับผลกระทบ: การชำระเงินบางช่องทาง
-- บริการที่ยังใช้งานได้: การเรียกดูสินค้าและประวัติคำสั่งซื้อ
+เว็บไซต์ Lnwtermgame ขอมอบของขวัญสุดพิเศษรับเทศกาลวันวาเลนไทน์ 2568 ด้วยโปรโมชั่นลดราคาค่าเติมเกมสูงสุดถึง 50% สำหรับทุกเกมในระบบ ตั้งแต่วันที่ 10-16 กุมภาพันธ์ 2568
 
-## คำแนะนำสำหรับผู้ใช้งาน
-โปรดวางแผนการสั่งซื้อล่วงหน้า หากทำรายการไม่สำเร็จระหว่างช่วงเวลาดังกล่าว สามารถทำรายการใหม่ได้หลังระบบกลับมาปกติ
+## รายละเอียดโปรโมชั่น
+- ส่วนลดสูงสุด 50% สำหรับการเติมเกมทุกประเภท
+- ไม่จำกัดจำนวนครั้งในการใช้สิทธิ์
+- รับสิทธิ์ได้ทันทีโดยไม่ต้องใช้รหัสคูปอง
 
-EXCERPT: แจ้งปิดปรับปรุงระบบชำระเงินชั่วคราว 24 ก.พ. 2026 เวลา 01:00-03:00 น. เพื่อเพิ่มประสิทธิภาพการให้บริการ
-SLUG: payment-system-maintenance-feb-24-2026
+## เงื่อนไขการเข้าร่วม
+1. สมาชิกทุกระดับสามารถใช้สิทธิ์ได้
+2. โปรโมชั่นนี้ไม่สามารถใช้ร่วมกับโปรโมชั่นอื่นได้
+3. ส่วนลดจะคำนวณจากราคาปกติเท่านั้น
+
+## วิธีการรับสิทธิ์
+เพียงเข้าสู่ระบบและทำการสั่งซื้อตามปกติ ระบบจะคำนวณส่วนลดให้อัตโนมัติ หากมีข้อสงสัยสามารถติดต่อฝ่ายบริการลูกค้าได้ตลอด 24 ชั่วโมง
+
+EXCERPT: โปรโมชั่นวันวาเลนไทน์ 2568 ลดสูงสุด 50% ทุกเกม ตั้งแต่ 10-16 ก.พ. นี้ เติมเกมคุ้มกว่าที่เคย
+SLUG: valentine-promotion-2026-50-percent-off
+TAGS: โปรโมชั่น, วันวาเลนไทน์, ลดราคา, เติมเกม, ส่วนลด 50%, จำกัดเวลา
 
 สร้างบทความข่าวสารตอนนี้ (ตอบเฉพาะรูปแบบด้านบน):`;
+  }
+
+  // ============ Anti-Duplication Helper Methods ============
+
+  /**
+   * Generate multiple search query variations for the same topic
+   * This helps find different sources and angles
+   * Includes queries optimized for finding high-quality game images
+   */
+  private generateSearchVariations(
+    topic: string,
+    categoryName: string,
+  ): string[] {
+    const variations: string[] = [];
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    // Base variations with different focuses
+    const templates = [
+      `${topic} latest news`,
+      `${topic} update ${currentYear}`,
+      `${topic} new features`,
+      `${topic} gameplay changes`,
+      `${topic} event ${currentMonth}`,
+      `${topic} patch notes`,
+      `${topic} community`,
+      `${topic} esports`,
+      `${topic} guide tips`,
+      `${topic} review ${currentYear}`,
+      `${topic} release date`,
+      `${topic} announcement`,
+      `${topic} trailer`,
+      `${topic} beta alpha`,
+      `${topic} season pass`,
+    ];
+
+    // Image-optimized search queries (for finding high quality game images)
+    const imageOptimizedQueries = [
+      `${topic} official screenshot hd`,
+      `${topic} gameplay screenshot`,
+      `${topic} wallpaper hd`,
+      `${topic} official artwork`,
+      `${topic} game cover art`,
+      `${topic} steam store`,
+      `${topic} official website`,
+    ];
+
+    // Shuffle and pick random variations
+    const shuffled = templates.sort(() => Math.random() - 0.5);
+    const shuffledImages = imageOptimizedQueries.sort(
+      () => Math.random() - 0.5,
+    );
+
+    // Always include base topic + category
+    variations.push(`${topic} gaming news ${categoryName}`);
+
+    // Add 3 random content variations
+    variations.push(...shuffled.slice(0, 3));
+
+    // Add 2 image-optimized queries (these help find high quality images)
+    variations.push(...shuffledImages.slice(0, 2));
+
+    return variations;
+  }
+
+  /**
+   * Remove duplicate results based on a key field
+   */
+  private deduplicateResults<T extends Record<string, any>>(
+    results: T[],
+    keyField: string,
+  ): T[] {
+    const seen = new Set<string>();
+    return results.filter((item) => {
+      const key = item[keyField];
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  /**
+   * Generate a random news angle/focus to ensure variety
+   * If preferredAngle is provided and valid, use that instead of random
+   */
+  private generateNewsAngle(
+    topic: string,
+    categoryName: string,
+    preferredAngle?: string,
+  ): {
+    angle: string;
+    contentType: string;
+    tone: string;
+    focusKeywords: string[];
+  } {
+    // Different news angles to rotate through
+    const angles = [
+      {
+        angle: "ข่าวล่าสุดและการอัปเดต",
+        contentType: "breaking-news",
+        tone: "ตื่นเต้น เร่งด่วน",
+        focusKeywords: ["ล่าสุด", "เพิ่งประกาศ", "อัปเดตใหม่", " Breaking"],
+      },
+      {
+        angle: "คู่มือและเคล็ดลับ",
+        contentType: "guide",
+        tone: "ให้คำแนะนำ เป็นประโยชน์",
+        focusKeywords: ["วิธี", "เคล็ดลับ", "คู่มือ", "สอน"],
+      },
+      {
+        angle: "วิเคราะห์และรีวิว",
+        contentType: "analysis",
+        tone: "เชิงลึก เป็นกลาง",
+        focusKeywords: ["วิเคราะห์", "รีวิว", "ประเมิน", "สรุป"],
+      },
+      {
+        angle: "ข่าวกิจกรรมและโปรโมชั่น",
+        contentType: "event",
+        tone: "สร้างความตื่นเต้น กระตุ้น",
+        focusKeywords: ["กิจกรรม", "โปรโมชั่น", "รางวัล", "ลุ้น"],
+      },
+      {
+        angle: "ข่าวอีสปอร์ตและการแข่งขัน",
+        contentType: "esports",
+        tone: "กระชับ ตื่นเต้น",
+        focusKeywords: ["แข่งขัน", "ทัวร์นาเมนต์", "ทีม", "ชนะ"],
+      },
+      {
+        angle: "เรื่องราวชุมชน",
+        contentType: "community",
+        tone: "เป็นกันเอง สนุกสนาน",
+        focusKeywords: ["ผู้เล่น", "ชุมชน", "แฟนๆ", "พูดคุย"],
+      },
+      {
+        angle: "การเปรียบเทียบและอันดับ",
+        contentType: "comparison",
+        tone: "ให้ข้อมูล เปรียบเทียบ",
+        focusKeywords: ["เปรียบเทียบ", "Top", "อันดับ", "VS"],
+      },
+      {
+        angle: "เบื้องหลังและการพัฒนา",
+        contentType: "behind-scenes",
+        tone: "ลึกซึ้ง น่าสนใจ",
+        focusKeywords: ["พัฒนา", "ทีมงาน", "เบื้องหลัง", "การสร้าง"],
+      },
+    ];
+
+    // If preferred angle is provided and valid, use it
+    let selectedAngle: (typeof angles)[0];
+
+    if (preferredAngle && preferredAngle !== "random") {
+      const foundAngle = angles.find((a) => a.contentType === preferredAngle);
+      if (foundAngle) {
+        selectedAngle = foundAngle;
+      } else {
+        // Fallback to random if preferred angle not found
+        selectedAngle = angles[Math.floor(Math.random() * angles.length)];
+      }
+    } else {
+      // Randomly select an angle
+      selectedAngle = angles[Math.floor(Math.random() * angles.length)];
+    }
+
+    // Random seed is not needed in keywords - just return the angle as-is
+    // The random selection of angles already provides enough variety
+    return selectedAngle;
+  }
+
+  /**
+   * Generate a unique slug by adding timestamp or random suffix if needed
+   */
+  private generateUniqueSlug(
+    baseSlug: string,
+    existingSlugs?: string[],
+  ): string {
+    let slug = baseSlug;
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    // Check against existing slugs
+    if (existingSlugs) {
+      while (existingSlugs.includes(slug) && attempts < maxAttempts) {
+        const timestamp = Date.now().toString(36).slice(-4);
+        const random = Math.floor(Math.random() * 1000);
+        slug = `${baseSlug}-${timestamp}-${random}`;
+        attempts++;
+      }
+    }
+
+    // If still not unique, add timestamp
+    if (existingSlugs?.includes(slug)) {
+      slug = `${baseSlug}-${Date.now()}`;
+    }
+
+    return slug;
+  }
+
+  /**
+   * Get specific writing guidelines based on content type
+   */
+  private getAngleSpecificGuidelines(contentType: string): string {
+    const guidelines: Record<string, string> = {
+      "breaking-news": `- เน้นข้อมูลล่าสุดและเพิ่งเกิดขึ้น
+- ใช้คำกริยาที่แสดงความเร่งด่วน เช่น "เพิ่งประกาศ", "ล่าสุด", "ด่วน"
+- ระบุวันที่และเวลาที่ชัดเจน
+- เน้นความใหม่ของข้อมูล`,
+
+      guide: `- โครงสร้างเป็นแบบ Step-by-step
+- ใช้หัวข้อย่อยที่ชัดเจน เช่น "ขั้นตอนที่ 1", "ขั้นตอนที่ 2"
+- ให้ตัวอย่างที่เข้าใจง่าย
+- มีเคล็ดลับพิเศษ (Pro Tips)
+- สรุปจุดสำคัญท้ายบทความ`,
+
+      analysis: `- เริ่มต้นด้วยบทสรุปผลการวิเคราะห์
+- ให้ข้อมูลเชิงลึกและนัยสำคัญ
+- เปรียบเทียบข้อดีข้อเสีย
+- อ้างอิงแหล่งที่มาของข้อมูล
+- ให้มุมมองที่เป็นกลาง`,
+
+      event: `- ระบุช่วงเวลาของกิจกรรมชัดเจน (วันที่ เวลา)
+- เน้นของรางวัลหรือสิทธิประโยชน์
+- อธิบายวิธีการเข้าร่วมอย่างละเอียด
+- สร้างความตื่นเต้นและอยากเข้าร่วม
+- ใส่ Call-to-action ชัดเจน`,
+
+      esports: `- เน้นผลการแข่งขันและสถิติ
+- ระบุชื่อทีมและผู้เล่นที่สำคัญ
+- อธิบายรูปแบบการแข่งขัน
+- ให้ข้อมูลรางวัลและเงินรางวัล
+- บอกวันที่และเวลาถ่ายทอดสด`,
+
+      community: `- เล่าเรื่องราวของผู้เล่น
+- เน้นประสบการณ์และความรู้สึก
+- มี quotes หรือคำพูดที่น่าสนใจ
+- สร้างความสัมพันธ์กับผู้อ่าน
+- ชวนให้แสดงความคิดเห็น`,
+
+      comparison: `- ใช้ตารางเปรียบเทียบถ้าเป็นไปได้
+- ระบุหมวดหมู่ที่เปรียบเทียบชัดเจน
+- ให้คะแนนหรืออันดับ
+- อธิบายเหตุผลของการจัดอันดับ
+- สรุปว่าอันไหนเหมาะกับใคร`,
+
+      "behind-scenes": `- เล่าเรื่องราวเบื้องหลัง
+- ให้ข้อมูลเกี่ยวกับทีมพัฒนา
+- อธิบายกระบวนการสร้างสรรค์
+- มี quotes จากผู้พัฒนา
+- เผยข้อมูลที่หลายคนไม่รู้`,
+    };
+
+    return guidelines[contentType] || guidelines["breaking-news"];
+  }
+
+  private buildNewsPromptWithSearxng(
+    topic: string,
+    categoryName: string,
+    searchResults: {
+      results: any[];
+      images: { url: string; title?: string; score: number }[];
+      videos: any[];
+    },
+    newsAngle?: {
+      angle: string;
+      contentType: string;
+      tone: string;
+      focusKeywords: string[];
+    },
+    existingSlugs?: string[],
+  ): string {
+    // Format search results for the prompt
+    const topResults = searchResults.results
+      .slice(0, 5)
+      .map(
+        (r, i) =>
+          `${i + 1}. ${r.title}\n   ${r.content?.substring(0, 200) || r.title}\n   URL: ${r.url}`,
+      )
+      .join("\n\n");
+
+    // SEPARATE: Cover image (first) vs Content images (rest)
+    // Cover image - use ONLY for COVER_IMAGE field
+    const coverImageUrl = searchResults.images[0]?.url || "";
+    const coverImageTitle = searchResults.images[0]?.title || "";
+
+    // Content images - use INSIDE the article content
+    // Skip the first image since it's used for cover
+    const contentImages = searchResults.images.slice(1, 6);
+    const contentImageUrls = contentImages
+      .map(
+        (img, i) =>
+          `Content Image ${i + 1}: ${img.url}${img.title ? ` (${img.title})` : ""}`,
+      )
+      .join("\n");
+
+    const videoUrls = searchResults.videos
+      .slice(0, 3)
+      .map((v, i) => `Video ${i + 1}: ${v.title} - ${v.url}`)
+      .join("\n");
+
+    const sourceUrls = searchResults.results
+      .slice(0, 3)
+      .map((r) => r.url)
+      .filter((url) => !!url)
+      .join(", ");
+
+    // Generate random angle-specific instructions
+    const angleInstructions = newsAngle
+      ? `
+=== มุมมองและแนวทางการเขียนข่าว ===
+ประเภทข่าว: ${newsAngle.contentType}
+มุมมอง: ${newsAngle.angle}
+โทนการเขียน: ${newsAngle.tone}
+คำสำคัญที่ควรใช้: ${newsAngle.focusKeywords.join(", ")}
+
+คำแนะนำเฉพาะสำหรับมุมมองนี้:
+${this.getAngleSpecificGuidelines(newsAngle.contentType)}
+`
+      : "";
+
+    // Generate unique slug hint based on angle
+    const slugHint = newsAngle
+      ? `${slugify(topic)}-${newsAngle.contentType}-${Date.now()
+          .toString(36)
+          .slice(-4)}`
+      : slugify(topic);
+
+    return `สร้างบทความข่าวสารสำหรับเว็บไซต์เติมเกม โดยใช้ข้อมูลจากการค้นหาด้านล่าง
+
+หัวข้อข่าว: "${topic}"
+หมวดหมู่ข่าว: ${categoryName}
+${angleInstructions}
+=== ข้อมูลจากการค้นหา (SEARXNG) ===
+
+ข่าวและบทความที่เกี่ยวข้อง:
+${topResults || "ไม่พบข้อมูลเฉพาะเจาะจง"}
+
+=== รูปภาพ (แยกชัดเจน) ===
+
+📌 รูปปก (COVER_IMAGE) - ใช้สำหรับหน้าปกเท่านั้น:
+${coverImageUrl ? `${coverImageUrl}${coverImageTitle ? ` (${coverImageTitle})` : ""}` : "ไม่พบรูปปก"}
+
+📸 รูปภาพสำหรับเนื้อหา (Content Images) - ใช้แทรกในเนื้อหาเท่านั้น (ต่างจากรูปปก):
+${contentImageUrls || "ไม่พบรูปภาพสำหรับเนื้อหา"}
+
+วิดีโอที่เกี่ยวข้อง:
+${videoUrls || "ไม่พบวิดีโอ"}
+
+=== ข้อกำหนดสำคัญ ===
+1. สร้างบทความข่าวที่มีเนื้อหาเป็นเอกลักษณ์ ไม่ซ้ำกับข่าวอื่น
+2. เน้นข้อมูลล่าสุดและเป็นปัจจุบัน
+3. เนื้อหาต้องเป็นข้อเท็จจริง ไม่สร้างข้อมูลเท็จ
+4. ⚠️ รูปปกและรูปในเนื้อหาต้องเป็นคนละรูปกัน
+5. แสดงแหล่งที่มาของข่าวเพื่อความน่าเชื่อถือ
+
+รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
+TITLE: [พาดหัวข่าวชัดเจน กระชับ ไม่เกิน 100 ตัวอักษร]
+CONTENT: [เนื้อหาข่าวฉบับเต็มภาษาไทย 800-1500 คำ แทรกรูปภาพจาก "รูปภาพสำหรับเนื้อหา" 2-3 รูป ใช้ Markdown: ![รายละเอียด](URL) และถ้ามีวิดีโอ ใช้ HTML iframe embed]
+EXCERPT: [สรุปข่าวสั้นๆ ไม่เกิน 160 ตัวอักษร]
+SLUG: [slug ภาษาอังกฤษ เช่น ${slugHint}]
+TAGS: [แท็ก 3-7 คำ คั่นด้วยลูกน้ำ]
+COVER_IMAGE: [ใช้ URL จาก "รูปปก" ด้านบน เช่น ${coverImageUrl}]
+SOURCES: [แหล่งข่าว เช่น ${sourceUrls}]
+
+ข้อกำหนดเพิ่มเติม:
+1. เนื้อหาข่าวยาว 800-1500 คำ อย่างน้อย 5-7 ย่อหน้า
+2. ⚠️ แทรกรูปภาพในเนื้อหาจาก "รูปภาพสำหรับเนื้อหา" เท่านั้น (ไม่ใช่รูปปก)
+3. ⚠️ ถ้ามีวิดีโอ YouTube ให้แทรกเป็น EMBED โดยตรงในเนื้อหา ใช้ HTML:
+   <div class="youtube-embed"><iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe></div>
+   (เปลี่ยน VIDEO_ID เป็น ID จริงจาก URL วิดีโอ เช่น ถ้า URL คือ https://www.youtube.com/watch?v=ABC123 ให้ใช้ ABC123)
+4. ใช้หัวข้อย่อย (##) อย่างน้อย 3-4 หัวข้อ
+5. ไม่ใช้อิโมจิ
+6. ⚠️ COVER_IMAGE และรูปใน CONTENT ต้องไม่ซ้ำกัน
+7. ห้ามใช้รูปแบบ [▶️ ดูวิดีโอบน YouTube](URL) - ต้องใช้ iframe embed เท่านั้น
+
+สร้างบทความข่าวสารที่น่าสนใจตอนนี้:`;
   }
 
   private buildCmsPagePrompt(topic: string, pageType: string): string {
@@ -1514,6 +2661,9 @@ SLUG: privacy-policy
     let articleContent = "";
     let excerpt = "";
     let slug = "";
+    let tags: string[] = [];
+    let coverImage = "";
+    let sources: string[] = [];
 
     let currentSection: "title" | "content" | "excerpt" | null = null;
     let contentBuffer: string[] = [];
@@ -1533,6 +2683,29 @@ SLUG: privacy-policy
         currentSection = null;
       } else if (line.startsWith("SLUG:")) {
         slug = line.replace("SLUG:", "").trim();
+        currentSection = null;
+      } else if (line.startsWith("TAGS:")) {
+        if (currentSection === "content" && contentBuffer.length > 0) {
+          articleContent = contentBuffer.join("\n").trim();
+        }
+        const tagsStr = line.replace("TAGS:", "").trim();
+        tags = tagsStr
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t.length > 0);
+        currentSection = null;
+      } else if (line.startsWith("COVER_IMAGE:")) {
+        coverImage = line.replace("COVER_IMAGE:", "").trim();
+        currentSection = null;
+      } else if (line.startsWith("SOURCES:")) {
+        if (currentSection === "content" && contentBuffer.length > 0) {
+          articleContent = contentBuffer.join("\n").trim();
+        }
+        const sourcesStr = line.replace("SOURCES:", "").trim();
+        sources = sourcesStr
+          .split(",")
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0 && s.startsWith("http"));
         currentSection = null;
       } else if (currentSection === "content") {
         contentBuffer.push(line);
@@ -1558,8 +2731,36 @@ SLUG: privacy-policy
     // sanitize slug to be URL safe
     const sanitizedSlug = slugify(slug || title || fallbackTopic);
 
-    return { title, content: articleContent, excerpt, slug: sanitizedSlug };
+    // Validate URLs
+    const validCoverImage =
+      coverImage && coverImage.startsWith("http") ? coverImage : undefined;
+
+    return {
+      title,
+      content: articleContent,
+      excerpt,
+      slug: sanitizedSlug,
+      tags,
+      coverImage: validCoverImage,
+      sources: sources.length > 0 ? sources : undefined,
+    };
   }
+}
+
+// Helper function to extract YouTube video ID from URL
+function extractYoutubeVideoId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]{11})/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) {
+      return match[1];
+    }
+  }
+  return null;
 }
 
 export const aiService = new AiService();

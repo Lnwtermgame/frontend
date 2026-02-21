@@ -90,7 +90,7 @@ export default function DynamicProductFields({
   // Validate all fields
   const validateFields = (
     fieldValues: Record<string, string>,
-    fields: SeagmField[]
+    fields: SeagmField[],
   ): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -136,7 +136,10 @@ export default function DynamicProductFields({
       const isRequired = field.required !== false;
 
       if (isRequired && (!value || value.trim() === "")) {
-        setErrors((prev) => ({ ...prev, [name]: `${field.label} is required` }));
+        setErrors((prev) => ({
+          ...prev,
+          [name]: `${field.label} is required`,
+        }));
       }
     }
   };
@@ -147,10 +150,15 @@ export default function DynamicProductFields({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label htmlFor={field.name} className="block text-sm font-medium text-gray-900">
+        <label
+          htmlFor={field.name}
+          className="block text-sm font-medium text-gray-900"
+        >
           {field.label}
           {field.required !== false && (
-            <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+            <span className="text-red-500 ml-1" aria-hidden="true">
+              *
+            </span>
           )}
         </label>
         {field.multiline ? (
@@ -216,10 +224,15 @@ export default function DynamicProductFields({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label htmlFor={field.name} className="block text-sm font-medium text-gray-900">
+        <label
+          htmlFor={field.name}
+          className="block text-sm font-medium text-gray-900"
+        >
           {field.label}
           {field.required !== false && (
-            <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+            <span className="text-red-500 ml-1" aria-hidden="true">
+              *
+            </span>
           )}
         </label>
         <select
@@ -272,7 +285,7 @@ export default function DynamicProductFields({
                   {option.child.map((childField) => {
                     // Find the parent_value that matches current selection
                     const parentOptions = childField.options.find(
-                      (opt) => opt.parent_value === option.value
+                      (opt) => opt.parent_value === option.value,
                     );
 
                     if (!parentOptions?.child_options?.length) return null;
@@ -313,7 +326,9 @@ export default function DynamicProductFields({
                               backgroundSize: "16px",
                             }}
                           >
-                            <option value="">Select {childField.label}...</option>
+                            <option value="">
+                              Select {childField.label}...
+                            </option>
                             {parentOptions.child_options.map((opt) => (
                               <option key={opt.value} value={opt.value}>
                                 {opt.label}
@@ -356,7 +371,10 @@ export default function DynamicProductFields({
 
   if (state.loading) {
     return (
-      <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+      <div
+        className="bg-white border-[3px] border-black p-6"
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      >
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-8 h-8 text-brutal-blue animate-spin" />
         </div>
@@ -366,7 +384,10 @@ export default function DynamicProductFields({
 
   if (state.error) {
     return (
-      <div className="bg-red-100 border-[3px] border-red-500 p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+      <div
+        className="bg-red-100 border-[3px] border-red-500 p-6"
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      >
         <div className="flex items-center gap-3 text-red-600">
           <AlertCircle className="w-6 h-6" />
           <div>
@@ -381,7 +402,10 @@ export default function DynamicProductFields({
   // No fields required (CARD products or no fields configured)
   if (state.fields.length === 0) {
     return (
-      <div className="bg-brutal-green/20 border-[3px] border-brutal-green p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+      <div
+        className="bg-brutal-green/20 border-[3px] border-brutal-green p-6"
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      >
         <div className="flex items-center gap-3 text-green-700">
           <CheckCircle2 className="w-6 h-6" />
           <div>
@@ -402,7 +426,10 @@ export default function DynamicProductFields({
   }
 
   return (
-    <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+    <div
+      className="bg-white border-[3px] border-black p-6"
+      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+    >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Required Information
@@ -432,9 +459,9 @@ export default function DynamicProductFields({
       {state.productType === "DIRECT_TOPUP" && (
         <div className="mt-6 p-4 bg-brutal-blue/10 border-[2px] border-brutal-blue">
           <p className="text-sm text-gray-700">
-            <strong className="text-gray-900">Important:</strong> Please double-check
-            your information before proceeding. Incorrect details may result in
-            failed delivery.
+            <strong className="text-gray-900">Important:</strong> Please
+            double-check your information before proceeding. Incorrect details
+            may result in failed delivery.
           </p>
         </div>
       )}

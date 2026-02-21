@@ -20,7 +20,7 @@ import {
   Clock,
   Loader2,
   AlertCircle,
-  Eye
+  Eye,
 } from "lucide-react";
 
 export default function FaqPage() {
@@ -36,7 +36,9 @@ export default function FaqPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalArticles, setTotalArticles] = useState(0);
-  const [userVotes, setUserVotes] = useState<Record<string, boolean | null>>({});
+  const [userVotes, setUserVotes] = useState<Record<string, boolean | null>>(
+    {},
+  );
   const hasInitializedSearch = useRef(false);
   const hasLoadedVotes = useRef(false);
 
@@ -101,7 +103,7 @@ export default function FaqPage() {
         50,
         selectedCategory || undefined,
         undefined,
-        undefined
+        undefined,
       );
       if (response.success) {
         setArticles(response.data);
@@ -132,7 +134,10 @@ export default function FaqPage() {
 
   const handleVote = async (articleId: string, isHelpful: boolean) => {
     try {
-      const response = await supportApi.markArticleHelpful(articleId, isHelpful);
+      const response = await supportApi.markArticleHelpful(
+        articleId,
+        isHelpful,
+      );
       if (response.success) {
         setUserVotes((prev) => ({
           ...prev,
@@ -140,7 +145,9 @@ export default function FaqPage() {
         }));
         try {
           const current = localStorage.getItem(LOCAL_VOTE_KEY);
-          const parsed = current ? (JSON.parse(current) as Record<string, boolean | null>) : {};
+          const parsed = current
+            ? (JSON.parse(current) as Record<string, boolean | null>)
+            : {};
           parsed[articleId] = response.data.userVote;
           localStorage.setItem(LOCAL_VOTE_KEY, JSON.stringify(parsed));
         } catch (err) {
@@ -151,11 +158,13 @@ export default function FaqPage() {
             article.id === articleId
               ? {
                   ...article,
-                  helpfulCount: response.data.helpfulCount ?? article.helpfulCount,
-                  unhelpfulCount: response.data.unhelpfulCount ?? article.unhelpfulCount,
+                  helpfulCount:
+                    response.data.helpfulCount ?? article.helpfulCount,
+                  unhelpfulCount:
+                    response.data.unhelpfulCount ?? article.unhelpfulCount,
                 }
-              : article
-          )
+              : article,
+          ),
         );
       }
     } catch (err) {
@@ -170,7 +179,11 @@ export default function FaqPage() {
   const getCategoryIcon = (categoryId: string) => {
     const category = getCategoryById(categoryId);
     if (!category?.icon) {
-      return <span className="bg-brutal-gray p-1.5 border-[2px] border-black text-black">?</span>;
+      return (
+        <span className="bg-brutal-gray p-1.5 border-[2px] border-black text-black">
+          ?
+        </span>
+      );
     }
     return <span className="text-2xl">{category.icon}</span>;
   };
@@ -180,7 +193,7 @@ export default function FaqPage() {
       {/* Hero Section */}
       <motion.div
         className="bg-white border-[3px] border-black p-8 mb-8"
-        style={{ boxShadow: '4px 4px 0 0 #000000' }}
+        style={{ boxShadow: "4px 4px 0 0 #000000" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -200,7 +213,8 @@ export default function FaqPage() {
               </h1>
             </div>
             <p className="text-gray-600 mb-6">
-              ค้นหาคำตอบสำหรับคำถามเกี่ยวกับบริการ การสั่งซื้อ และการจัดการบัญชีของคุณ
+              ค้นหาคำตอบสำหรับคำถามเกี่ยวกับบริการ การสั่งซื้อ
+              และการจัดการบัญชีของคุณ
             </p>
 
             {/* Search Box */}
@@ -235,7 +249,7 @@ export default function FaqPage() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle className="text-black mr-3" size={20} />
           <span className="text-black">{error}</span>
@@ -263,7 +277,10 @@ export default function FaqPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar - Categories */}
         <div className="lg:col-span-1">
-          <div className="bg-white border-[3px] border-black overflow-hidden" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="p-4 bg-brutal-gray border-b-[3px] border-black">
               <h3 className="text-black font-medium flex items-center">
                 <Filter size={16} className="mr-2" />
@@ -315,12 +332,17 @@ export default function FaqPage() {
           </div>
 
           {/* Need more help */}
-          <div className="bg-white border-[3px] border-black p-5 mt-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black p-5 mt-6"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center mb-4">
               <div className="bg-brutal-green p-2 border-[2px] border-black mr-2">
                 <MessageSquare size={20} className="text-black" />
               </div>
-              <h3 className="text-black font-medium">ต้องการความช่วยเหลือเพิ่มเติม?</h3>
+              <h3 className="text-black font-medium">
+                ต้องการความช่วยเหลือเพิ่มเติม?
+              </h3>
             </div>
             <p className="text-gray-600 text-sm mb-4">
               หาไม่เจอหรือ? ทีมซัพพอร์ตของเราพร้อมช่วยเหลือคุณ
@@ -328,7 +350,7 @@ export default function FaqPage() {
             <Link
               href="/support/tickets"
               className="bg-black text-white border-[3px] border-black w-full py-2 font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
-              style={{ boxShadow: '4px 4px 0 0 #000000' }}
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               ติดต่อทีมซัพพอร์ต
             </Link>
@@ -354,7 +376,10 @@ export default function FaqPage() {
 
           {/* Loading State */}
           {isLoading ? (
-            <div className="bg-white border-[3px] border-black p-12 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-white border-[3px] border-black p-12 text-center"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <Loader2
                 className="animate-spin mx-auto text-black mb-4"
                 size={48}
@@ -373,12 +398,12 @@ export default function FaqPage() {
                       ? "bg-brutal-gray"
                       : "bg-white"
                   }`}
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <button
                     onClick={() =>
                       setExpandedArticle(
-                        expandedArticle === article.id ? null : article.id
+                        expandedArticle === article.id ? null : article.id,
                       )
                     }
                     className="w-full text-left p-5 font-medium text-black focus:outline-none flex justify-between items-center"
@@ -416,16 +441,42 @@ export default function FaqPage() {
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                              h2: (props) => <h2 className="text-xl font-bold mt-4 mb-2" {...props} />,
-                              p: (props) => <p className="mb-3 leading-relaxed whitespace-pre-wrap" {...props} />,
-                              ul: (props) => <ul className="list-disc pl-6 mb-3" {...props} />,
-                              ol: (props) => <ol className="list-decimal pl-6 mb-3" {...props} />,
+                              h2: (props) => (
+                                <h2
+                                  className="text-xl font-bold mt-4 mb-2"
+                                  {...props}
+                                />
+                              ),
+                              p: (props) => (
+                                <p
+                                  className="mb-3 leading-relaxed whitespace-pre-wrap"
+                                  {...props}
+                                />
+                              ),
+                              ul: (props) => (
+                                <ul
+                                  className="list-disc pl-6 mb-3"
+                                  {...props}
+                                />
+                              ),
+                              ol: (props) => (
+                                <ol
+                                  className="list-decimal pl-6 mb-3"
+                                  {...props}
+                                />
+                              ),
                               li: (props) => <li className="mb-1" {...props} />,
-                              strong: (props) => <strong className="font-semibold" {...props} />,
-                              em: (props) => <em className="italic" {...props} />,
+                              strong: (props) => (
+                                <strong className="font-semibold" {...props} />
+                              ),
+                              em: (props) => (
+                                <em className="italic" {...props} />
+                              ),
                             }}
                           >
-                            {article.content || article.excerpt || "คลิกเพื่ออ่านบทความเต็ม..."}
+                            {article.content ||
+                              article.excerpt ||
+                              "คลิกเพื่ออ่านบทความเต็ม..."}
                           </ReactMarkdown>
                         </div>
 
@@ -486,16 +537,17 @@ export default function FaqPage() {
               ))}
             </div>
           ) : (
-            <div className="bg-white border-[3px] border-black p-8 text-center" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
-              <HelpCircle
-                size={48}
-                className="mx-auto text-gray-400 mb-4"
-              />
+            <div
+              className="bg-white border-[3px] border-black p-8 text-center"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
+              <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-bold text-black mb-2">
                 ไม่พบคำถามที่ตรงกัน
               </h3>
               <p className="text-gray-600 mb-6">
-                ไม่พบคำถามที่ตรงกับการค้นหา กรุณาปรับคำค้นหาหรือเลือกดูตามหมวดหมู่
+                ไม่พบคำถามที่ตรงกับการค้นหา
+                กรุณาปรับคำค้นหาหรือเลือกดูตามหมวดหมู่
               </p>
               <button
                 onClick={() => {
@@ -503,7 +555,7 @@ export default function FaqPage() {
                   setSelectedCategory(null);
                 }}
                 className="bg-black text-white border-[3px] border-black px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
-                style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
               >
                 ดูคำถามที่พบบ่อยทั้งหมด
               </button>
@@ -512,7 +564,10 @@ export default function FaqPage() {
 
           {/* Contact Support CTA */}
           {(articles.length > 0 || !isLoading) && (
-            <div className="bg-brutal-blue border-[3px] border-black p-6 mt-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+            <div
+              className="bg-brutal-blue border-[3px] border-black p-6 mt-8"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-black mb-2">
@@ -525,7 +580,7 @@ export default function FaqPage() {
                 <Link
                   href="/support/tickets"
                   className="mt-4 md:mt-0 bg-black text-white border-[3px] border-black px-6 py-3 font-medium whitespace-nowrap hover:bg-gray-800 transition-colors"
-                  style={{ boxShadow: '4px 4px 0 0 #000000' }}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   ติดต่อทีมซัพพอร์ต
                 </Link>

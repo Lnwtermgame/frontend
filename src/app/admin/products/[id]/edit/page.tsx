@@ -106,7 +106,8 @@ export default function EditProductPage() {
               platforms: productRes.data.gameDetails?.platforms || [],
               mode: (productRes.data.gameDetails as any)?.mode || "",
               region: (productRes.data.gameDetails as any)?.region || "",
-              autoDelivery: (productRes.data.gameDetails as any)?.autoDelivery ?? true,
+              autoDelivery:
+                (productRes.data.gameDetails as any)?.autoDelivery ?? true,
             },
           });
           setImageError(false);
@@ -1232,8 +1233,12 @@ export default function EditProductPage() {
                     <option value="">-- เลือกโหมด --</option>
                     <option value="directtopup">เติมตรง (Direct Top-up)</option>
                     <option value="card">บัตรของขวัญ (Gift Card)</option>
-                    <option value="mobile-recharge">เติมเงินมือถือ (Mobile Recharge)</option>
-                    <option value="gift-card">บัตรของขวัญทั่วไป (Generic Gift Card)</option>
+                    <option value="mobile-recharge">
+                      เติมเงินมือถือ (Mobile Recharge)
+                    </option>
+                    <option value="gift-card">
+                      บัตรของขวัญทั่วไป (Generic Gift Card)
+                    </option>
                   </select>
                 </div>
 
@@ -1290,12 +1295,16 @@ export default function EditProductPage() {
                     </div>
                     <div
                       className={`w-10 h-6 relative transition-colors ${
-                        formData.gameDetails.autoDelivery ? "bg-brutal-green" : "bg-gray-400"
+                        formData.gameDetails.autoDelivery
+                          ? "bg-brutal-green"
+                          : "bg-gray-400"
                       }`}
                     >
                       <div
                         className={`absolute top-1 left-1 w-4 h-4 bg-white border border-black transition-transform ${
-                          formData.gameDetails.autoDelivery ? "translate-x-4" : "translate-x-0"
+                          formData.gameDetails.autoDelivery
+                            ? "translate-x-4"
+                            : "translate-x-0"
                         }`}
                       />
                     </div>

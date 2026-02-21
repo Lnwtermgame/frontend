@@ -15,7 +15,7 @@ import {
   User,
   LogOut,
   ChevronRight,
-  Star
+  Star,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/auth-context";
 
@@ -85,35 +85,50 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-6">
-              
               {/* User Section */}
               {isAuthenticated ? (
-                <div className="bg-gray-50 border-[2px] border-black p-4 space-y-3" style={{ boxShadow: "3px 3px 0 0 #000000" }}>
+                <div
+                  className="bg-gray-50 border-[2px] border-black p-4 space-y-3"
+                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                >
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white border-[2px] border-black flex items-center justify-center overflow-hidden">
-                       <img
-                        src={user?.avatar || "https://placehold.co/200x200?text=User"}
+                      <img
+                        src={
+                          user?.avatar ||
+                          "https://placehold.co/200x200?text=User"
+                        }
                         alt={user?.username}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold truncate">{user?.username}</p>
-                      <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {user?.email}
+                      </p>
                     </div>
                   </div>
-                  
+
                   {user?.isPremium && (
                     <div className="bg-brutal-yellow border border-black px-2 py-1 text-xs font-bold inline-flex items-center">
-                       <Star size={12} className="mr-1 fill-black" /> Premium
+                      <Star size={12} className="mr-1 fill-black" /> Premium
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    <Link href="/dashboard/account" onClick={onClose} className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50">
+                    <Link
+                      href="/dashboard/account"
+                      onClick={onClose}
+                      className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50"
+                    >
                       บัญชี
                     </Link>
-                    <Link href="/dashboard/orders" onClick={onClose} className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50">
+                    <Link
+                      href="/dashboard/orders"
+                      onClick={onClose}
+                      className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50"
+                    >
                       คำสั่งซื้อ
                     </Link>
                   </div>
@@ -132,7 +147,9 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               {/* Navigation Links */}
               <nav className="space-y-2">
                 {mainNavItems.map((item) => {
-                  const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== "/" && pathname.startsWith(item.href));
                   return (
                     <Link
                       key={item.href}
@@ -140,10 +157,19 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       onClick={onClose}
                       className={cn(
                         "flex items-center p-3 border-[2px] border-black transition-all active:translate-y-[2px]",
-                        isActive ? "bg-brutal-blue text-black font-bold shadow-brutal-mobile" : "bg-white hover:bg-gray-50"
+                        isActive
+                          ? "bg-brutal-blue text-black font-bold shadow-brutal-mobile"
+                          : "bg-white hover:bg-gray-50",
                       )}
                     >
-                      <span className={cn("mr-3", isActive ? "text-black" : "text-gray-500")}>{item.icon}</span>
+                      <span
+                        className={cn(
+                          "mr-3",
+                          isActive ? "text-black" : "text-gray-500",
+                        )}
+                      >
+                        {item.icon}
+                      </span>
                       {item.label}
                       <ChevronRight size={16} className="ml-auto opacity-50" />
                     </Link>

@@ -58,7 +58,7 @@ export function GameCard({
                 No Image
               </div>
             )}
-            
+
             {/* Featured Badge */}
             {isFeatured && (
               <div className="absolute left-2 top-2 bg-brutal-yellow border-2 border-black px-2 py-0.5 text-xs font-bold shadow-[2px_2px_0_0_#000]">
@@ -83,14 +83,19 @@ export function GameCard({
 
           {/* Content */}
           <CardContent className="flex-1 p-3 space-y-2">
-            <h3 className="font-bold text-black text-base line-clamp-1 thai-font" title={title}>
+            <h3
+              className="font-bold text-black text-base line-clamp-1 thai-font"
+              title={title}
+            >
               {title}
             </h3>
-            
+
             <div className="flex items-center gap-1 text-sm">
               <Star className="w-3.5 h-3.5 fill-brutal-yellow text-black" />
               <span className="font-bold">{rating?.toFixed(1) || "0.0"}</span>
-              <span className="text-gray-500 text-xs">({reviewCount || 0})</span>
+              <span className="text-gray-500 text-xs">
+                ({reviewCount || 0})
+              </span>
             </div>
           </CardContent>
 
@@ -99,14 +104,16 @@ export function GameCard({
             <div className="flex flex-col">
               {originalPrice && (
                 <span className="text-xs text-gray-500 line-through">
-                  {typeof originalPrice === 'number' ? formatPrice(originalPrice) : originalPrice}
+                  {typeof originalPrice === "number"
+                    ? formatPrice(originalPrice)
+                    : originalPrice}
                 </span>
               )}
               <span className="text-lg font-black text-brutal-pink">
-                {typeof price === 'number' ? formatPrice(price) : price}
+                {typeof price === "number" ? formatPrice(price) : price}
               </span>
             </div>
-            
+
             <div className="bg-black text-white p-2 rounded-none hover:bg-gray-800 transition-colors">
               <ShoppingCart size={16} />
             </div>

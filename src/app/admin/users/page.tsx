@@ -201,7 +201,9 @@ export default function AdminUsersPage() {
   const handleBulkDelete = async () => {
     if (selectedUsers.length === 0) return;
     await runMutation(async () => {
-      await Promise.all(selectedUsers.map((userId) => adminUserApi.deleteUser(userId)));
+      await Promise.all(
+        selectedUsers.map((userId) => adminUserApi.deleteUser(userId)),
+      );
       setSelectedUsers([]);
     });
   };
@@ -257,25 +259,50 @@ export default function AdminUsersPage() {
 
         {stats && (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+            <div
+              className="bg-white border-[3px] border-black p-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <p className="text-xs text-gray-500">ผู้ใช้ทั้งหมด</p>
-              <p className="text-xl font-bold text-black">{stats.totalUsers.toLocaleString()}</p>
+              <p className="text-xl font-bold text-black">
+                {stats.totalUsers.toLocaleString()}
+              </p>
             </div>
-            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+            <div
+              className="bg-white border-[3px] border-black p-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <p className="text-xs text-gray-500">แอดมิน</p>
-              <p className="text-xl font-bold text-black">{stats.totalAdmins.toLocaleString()}</p>
+              <p className="text-xl font-bold text-black">
+                {stats.totalAdmins.toLocaleString()}
+              </p>
             </div>
-            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+            <div
+              className="bg-white border-[3px] border-black p-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <p className="text-xs text-gray-500">ใช้งานอยู่</p>
-              <p className="text-xl font-bold text-green-700">{stats.activeUsers.toLocaleString()}</p>
+              <p className="text-xl font-bold text-green-700">
+                {stats.activeUsers.toLocaleString()}
+              </p>
             </div>
-            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+            <div
+              className="bg-white border-[3px] border-black p-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <p className="text-xs text-gray-500">ไม่ใช้งาน</p>
-              <p className="text-xl font-bold text-red-700">{stats.inactiveUsers.toLocaleString()}</p>
+              <p className="text-xl font-bold text-red-700">
+                {stats.inactiveUsers.toLocaleString()}
+              </p>
             </div>
-            <div className="bg-white border-[3px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+            <div
+              className="bg-white border-[3px] border-black p-4"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            >
               <p className="text-xs text-gray-500">ใหม่เดือนนี้</p>
-              <p className="text-xl font-bold text-black">{stats.newThisMonth.toLocaleString()}</p>
+              <p className="text-xl font-bold text-black">
+                {stats.newThisMonth.toLocaleString()}
+              </p>
             </div>
           </div>
         )}
@@ -335,18 +362,35 @@ export default function AdminUsersPage() {
                   <th className="py-3 px-4 text-left">
                     <input
                       type="checkbox"
-                      checked={selectedUsers.length === users.length && users.length > 0}
+                      checked={
+                        selectedUsers.length === users.length &&
+                        users.length > 0
+                      }
                       onChange={toggleAllSelection}
                       className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
                     />
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">ผู้ใช้</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">บทบาท</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">สถานะ</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">วันที่สมัคร</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">คำสั่งซื้อ</th>
-                  <th className="text-right py-3 px-4 text-sm font-semibold text-black">ยอดใช้จ่าย</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-black">จัดการ</th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                    ผู้ใช้
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                    บทบาท
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                    สถานะ
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                    วันที่สมัคร
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                    คำสั่งซื้อ
+                  </th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-black">
+                    ยอดใช้จ่าย
+                  </th>
+                  <th className="text-center py-3 px-4 text-sm font-semibold text-black">
+                    จัดการ
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -384,22 +428,32 @@ export default function AdminUsersPage() {
                             >
                               {user.username}
                             </Link>
-                            <p className="text-xs text-gray-500">{user.email}</p>
+                            <p className="text-xs text-gray-500">
+                              {user.email}
+                            </p>
                           </div>
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${roleBadge(user.role)}`}>
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${roleBadge(user.role)}`}
+                        >
                           {user.role === "ADMIN" ? "แอดมิน" : "ผู้ใช้"}
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${statusBadge(user.isActive)}`}>
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${statusBadge(user.isActive)}`}
+                        >
                           {user.isActive ? "ใช้งาน" : "ไม่ใช้งาน"}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">{formatDate(user.createdAt)}</td>
-                      <td className="py-3 px-4 text-sm text-black">{user.orderCount.toLocaleString()}</td>
+                      <td className="py-3 px-4 text-sm text-gray-600">
+                        {formatDate(user.createdAt)}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-black">
+                        {user.orderCount.toLocaleString()}
+                      </td>
                       <td className="py-3 px-4 text-sm text-black text-right font-medium">
                         {formatCurrency(user.totalSpent)}
                       </td>
@@ -438,7 +492,10 @@ export default function AdminUsersPage() {
                   ))}
                 {!loading && users.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="py-10 text-center text-sm text-gray-500">
+                    <td
+                      colSpan={8}
+                      className="py-10 text-center text-sm text-gray-500"
+                    >
                       ไม่พบข้อมูลผู้ใช้ตามเงื่อนไขที่เลือก
                     </td>
                   </tr>
@@ -478,7 +535,9 @@ export default function AdminUsersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <span className="text-black font-medium">เลือก {selectedUsers.length} รายการ</span>
+            <span className="text-black font-medium">
+              เลือก {selectedUsers.length} รายการ
+            </span>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => handleBulkStatus(true)}

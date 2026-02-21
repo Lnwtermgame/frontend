@@ -158,13 +158,19 @@ export default function AdminPromotions() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/admin/promotions/settings">
-              <button className="bg-white border-[3px] border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <button
+                className="bg-white border-[3px] border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors font-medium"
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              >
                 <Settings className="h-5 w-5" />
                 <span>ตั้งค่า</span>
               </button>
             </Link>
             <Link href="/admin/promotions/create">
-              <button className="bg-black text-white border-[3px] border-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 transition-colors font-medium" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+              <button
+                className="bg-black text-white border-[3px] border-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 transition-colors font-medium"
+                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              >
                 <Plus className="h-5 w-5" />
                 <span>สร้างโปรโมชั่น</span>
               </button>
@@ -175,7 +181,7 @@ export default function AdminPromotions() {
         {/* Promotions Table */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -226,7 +232,9 @@ export default function AdminPromotions() {
                       <td className="px-5 py-4 text-black font-medium">
                         {promotion.discount}
                       </td>
-                      <td className="px-5 py-4 text-black">{promotion.usageCount}</td>
+                      <td className="px-5 py-4 text-black">
+                        {promotion.usageCount}
+                      </td>
                       <td className="px-5 py-4 text-gray-600 text-xs">
                         <div className="flex items-center">
                           <Calendar className="h-3 w-3 mr-1 text-gray-500" />
@@ -301,7 +309,10 @@ export default function AdminPromotions() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black p-6"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center justify-between">
               <h3 className="text-black text-lg font-medium">ใช้งานอยู่</h3>
               <div className="p-2 bg-green-100 border-[2px] border-green-500 text-green-700">
@@ -319,7 +330,10 @@ export default function AdminPromotions() {
             </div>
           </div>
 
-          <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black p-6"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center justify-between">
               <h3 className="text-black text-lg font-medium">กำหนดเวลา</h3>
               <div className="p-2 bg-amber-100 border-[2px] border-amber-500 text-amber-700">
@@ -337,7 +351,10 @@ export default function AdminPromotions() {
             </div>
           </div>
 
-          <div className="bg-white border-[3px] border-black p-6" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+          <div
+            className="bg-white border-[3px] border-black p-6"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          >
             <div className="flex items-center justify-between">
               <h3 className="text-black text-lg font-medium">ใช้ทั้งหมด</h3>
               <div className="p-2 bg-blue-100 border-[2px] border-blue-500 text-blue-700">

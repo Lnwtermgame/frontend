@@ -77,12 +77,13 @@ export function Footer() {
   const { settings } = usePublicSettings();
   const year = new Date().getFullYear();
 
-  const siteName = settings?.general.siteName || "MaliGamePass";
+  const siteName = settings?.general.siteName || "Lnwtermgame";
   const logoUrl = settings?.branding.logoUrl || "";
   const siteTagline =
     settings?.general.siteTagline ||
     "บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว ปลอดภัย และราคาดีที่สุดในตลาด";
-  const supportEmail = settings?.general.supportEmail || "support@maligamepass.com";
+  const supportEmail =
+    settings?.general.supportEmail || "support@lnwtermgame.com";
   const supportPhone = settings?.general.supportPhone || "";
   const promotionsEnabled = settings?.features.enablePromotions ?? true;
   const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
@@ -91,14 +92,27 @@ export function Footer() {
     return true;
   });
   const visibleSupportLinks = supportLinks.filter((item) => {
-    if (!supportTicketsEnabled && item.href === "/support/tickets") return false;
+    if (!supportTicketsEnabled && item.href === "/support/tickets")
+      return false;
     return true;
   });
 
   const socialLinks = [
-    { icon: Facebook, href: settings?.social.facebookUrl || "", label: "Facebook" },
-    { icon: MessageCircle, href: settings?.social.lineUrl || "", label: "LINE" },
-    { icon: Instagram, href: settings?.social.discordUrl || "", label: "Discord" },
+    {
+      icon: Facebook,
+      href: settings?.social.facebookUrl || "",
+      label: "Facebook",
+    },
+    {
+      icon: MessageCircle,
+      href: settings?.social.lineUrl || "",
+      label: "LINE",
+    },
+    {
+      icon: Instagram,
+      href: settings?.social.discordUrl || "",
+      label: "Discord",
+    },
     { icon: Youtube, href: "https://youtube.com", label: "Youtube" },
   ].filter((item) => Boolean(item.href));
 
@@ -115,17 +129,25 @@ export function Footer() {
                     alt={siteName}
                     className="h-10 w-10 rounded border-[2px] border-black object-cover"
                   />
-                  <span className="font-black text-2xl text-black">{siteName}</span>
+                  <span className="font-black text-2xl text-black">
+                    {siteName}
+                  </span>
                 </div>
               ) : (
                 <div className="font-black text-2xl flex items-center">
-                  <span className="text-brutal-pink">{siteName.slice(0, 4) || "Mali"}</span>
-                  <span className="text-black">{siteName.slice(4) || "GamePass"}</span>
+                  <span className="text-brutal-pink">
+                    {siteName.slice(0, 4) || "Mali"}
+                  </span>
+                  <span className="text-black">
+                    {siteName.slice(4) || "GamePass"}
+                  </span>
                 </div>
               )}
             </Link>
 
-            <p className="text-gray-600 text-sm leading-relaxed max-w-sm">{siteTagline}</p>
+            <p className="text-gray-600 text-sm leading-relaxed max-w-sm">
+              {siteTagline}
+            </p>
 
             <div className="space-y-2">
               <p className="text-xs font-bold text-black flex items-center">
@@ -141,7 +163,10 @@ export function Footer() {
                     className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink group-hover:text-white transition-colors"
                     style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
-                    <Mail size={14} className="text-black group-hover:text-white" />
+                    <Mail
+                      size={14}
+                      className="text-black group-hover:text-white"
+                    />
                   </div>
                   <span className="text-sm font-medium">{supportEmail}</span>
                 </a>
@@ -172,7 +197,9 @@ export function Footer() {
                     >
                       <MessageCircle size={14} className="text-black" />
                     </div>
-                    <span className="text-sm font-medium">แชทสดตลอด 24 ชั่วโมง</span>
+                    <span className="text-sm font-medium">
+                      แชทสดตลอด 24 ชั่วโมง
+                    </span>
                   </Link>
                 )}
               </div>
@@ -282,8 +309,12 @@ export function Footer() {
                 <feature.icon className="text-black" size={18} />
               </div>
               <div className="min-w-0">
-                <p className="text-black font-bold text-xs md:text-sm truncate">{feature.title}</p>
-                <p className="text-gray-500 text-[10px] md:text-xs hidden sm:block truncate">{feature.desc}</p>
+                <p className="text-black font-bold text-xs md:text-sm truncate">
+                  {feature.title}
+                </p>
+                <p className="text-gray-500 text-[10px] md:text-xs hidden sm:block truncate">
+                  {feature.desc}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -294,13 +325,22 @@ export function Footer() {
             &copy; {year} {siteName} สงวนลิขสิทธิ์
           </div>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
-            <Link href="/privacy" className="hover:text-black font-medium transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-black font-medium transition-colors"
+            >
               นโยบายความเป็นส่วนตัว
             </Link>
-            <Link href="/terms" className="hover:text-black font-medium transition-colors">
+            <Link
+              href="/terms"
+              className="hover:text-black font-medium transition-colors"
+            >
               เงื่อนไขการใช้บริการ
             </Link>
-            <Link href="/refund" className="hover:text-black font-medium transition-colors">
+            <Link
+              href="/refund"
+              className="hover:text-black font-medium transition-colors"
+            >
               นโยบายคืนเงิน
             </Link>
           </div>

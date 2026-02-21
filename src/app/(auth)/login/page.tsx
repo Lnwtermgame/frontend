@@ -29,7 +29,7 @@ function LoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const isSubmittingRef = useRef(false);
-  const siteName = publicSettings?.general.siteName || "MaliGamePass";
+  const siteName = publicSettings?.general.siteName || "Lnwtermgame";
 
   // Redirect if already authenticated
   useEffect(() => {

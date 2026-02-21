@@ -102,7 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title =
     settings?.seo?.metaTitle ||
     settings?.general?.siteName ||
-    "MaliGamePass - Game Top Up & Digital Cards";
+    "Lnwtermgame - Game Top Up & Digital Cards";
   const description =
     settings?.seo?.metaDescription ||
     settings?.general?.siteTagline ||

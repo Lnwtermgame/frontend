@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Readable } from "stream";
 import { lookup } from "dns/promises";
 import net from "net";
-import { extractTokenFromHeader, verifyToken } from "@gametopup/shared";
+import { extractTokenFromHeader, verifyToken } from "@lnwtermgame/shared";
 
 // Get environment variables (server-side first, fallback to NEXT_PUBLIC)
 const APPWRITE_ENDPOINT =
@@ -175,7 +175,9 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const imageUrl = formData.get("imageUrl") as string;
-    const folder = sanitizeFolder((formData.get("folder") as string) || "products");
+    const folder = sanitizeFolder(
+      (formData.get("folder") as string) || "products",
+    );
 
     let buffer: Buffer;
     let originalFilename: string;

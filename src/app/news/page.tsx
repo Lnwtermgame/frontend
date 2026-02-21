@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Newspaper, Calendar, Eye } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "ข่าวสารและประกาศ - GameTopup",
-  description: "ข่าวสาร โปรโมชั่น และประกาศล่าสุดจาก GameTopup",
+  title: "ข่าวสารและประกาศ - Lnwtermgame",
+  description: "ข่าวสาร โปรโมชั่น และประกาศล่าสุดจาก Lnwtermgame",
 };
 
 async function getNewsArticles() {

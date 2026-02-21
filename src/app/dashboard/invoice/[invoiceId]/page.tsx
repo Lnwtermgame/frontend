@@ -19,7 +19,7 @@ import {
   AlertCircle,
   FileText,
   ExternalLink,
-  Package
+  Package,
 } from "lucide-react";
 
 export default function InvoiceDetailPage() {
@@ -44,30 +44,40 @@ export default function InvoiceDetailPage() {
 
   // Generate printable HTML for the invoice
   const generatePrintHtml = useCallback(() => {
-    if (!invoice || !user) return '';
+    if (!invoice || !user) return "";
 
-    const issuedDate = new Date(invoice.issuedAt).toLocaleDateString('th-TH', {
-      year: 'numeric', month: 'long', day: 'numeric'
+    const issuedDate = new Date(invoice.issuedAt).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
-    const issuedTime = new Date(invoice.issuedAt).toLocaleTimeString('th-TH');
+    const issuedTime = new Date(invoice.issuedAt).toLocaleTimeString("th-TH");
 
     const statusLabel = (() => {
       switch (invoice.status) {
-        case 'COMPLETED': return 'ชำระเงินแล้ว';
-        case 'PENDING': return 'รอชำระเงิน';
-        case 'REFUNDED': return 'คืนเงินแล้ว';
-        default: return invoice.status;
+        case "COMPLETED":
+          return "ชำระเงินแล้ว";
+        case "PENDING":
+          return "รอชำระเงิน";
+        case "REFUNDED":
+          return "คืนเงินแล้ว";
+        default:
+          return invoice.status;
       }
     })();
 
-    const itemsRows = invoice.items.map(item => `
+    const itemsRows = invoice.items
+      .map(
+        (item) => `
       <tr>
         <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;">${item.productName}</td>
         <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;text-align:center;">${item.quantity}</td>
         <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;text-align:right;">฿${item.unitPrice.toFixed(2)}</td>
         <td style="padding:12px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:bold;">฿${item.total.toFixed(2)}</td>
       </tr>
-    `).join('');
+    `,
+      )
+      .join("");
 
     return `
       <!DOCTYPE html>
@@ -115,8 +125,8 @@ export default function InvoiceDetailPage() {
         <div class="info-grid">
           <div class="info-box">
             <h3>ลูกค้า</h3>
-            <p><strong>${user.username || 'ผู้ใช้'}</strong></p>
-            <p>${user.email || ''}</p>
+            <p><strong>${user.username || "ผู้ใช้"}</strong></p>
+            <p>${user.email || ""}</p>
           </div>
           <div class="info-box" style="text-align:right;">
             <h3>รายละเอียดใบแจ้งหนี้</h3>
@@ -124,7 +134,7 @@ export default function InvoiceDetailPage() {
             <p>วันที่: ${issuedDate}</p>
             <p>เวลา: ${issuedTime}</p>
             <p>คำสั่งซื้อ: ${invoice.orderNumber}</p>
-            <p>สถานะ: <span class="status ${invoice.status === 'COMPLETED' ? 'status-completed' : 'status-pending'}">${statusLabel}</span></p>
+            <p>สถานะ: <span class="status ${invoice.status === "COMPLETED" ? "status-completed" : "status-pending"}">${statusLabel}</span></p>
           </div>
         </div>
 
@@ -161,7 +171,7 @@ export default function InvoiceDetailPage() {
 
         <div class="footer">
           <p>ขอบคุณสำหรับการสั่งซื้อ! ใบแจ้งหนี้ฉบับนี้เป็นเอกสารทางการค้าที่ออกโดยระบบอัตโนมัติ</p>
-          <p style="margin-top:4px;">GameTopup — ${issuedDate}</p>
+          <p style="margin-top:4px;">Lnwtermgame — ${issuedDate}</p>
         </div>
       </body>
       </html>
@@ -173,7 +183,7 @@ export default function InvoiceDetailPage() {
     const html = generatePrintHtml();
     if (!html) return;
 
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) {
       toast.error("ไม่สามารถเปิดหน้าต่างพิมพ์ได้ กรุณาอนุญาต popup");
       return;
@@ -190,7 +200,7 @@ export default function InvoiceDetailPage() {
     const html = generatePrintHtml();
     if (!html) return;
 
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) {
       toast.error("ไม่สามารถเปิดหน้าต่างได้ กรุณาอนุญาต popup");
       return;
@@ -200,30 +210,31 @@ export default function InvoiceDetailPage() {
     printWindow.onload = () => {
       printWindow.print();
     };
-    toast.success("กรุณาเลือก \"Save as PDF\" ในหน้าต่างพิมพ์");
+    toast.success('กรุณาเลือก "Save as PDF" ในหน้าต่างพิมพ์');
   };
 
   // Download invoice data as CSV
   const handleDownloadCsv = () => {
     if (!invoice) return;
 
-    const headers = ['รายการ', 'จำนวน', 'ราคาต่อหน่วย', 'จำนวนเงิน'];
-    const rows = invoice.items.map(item => [
+    const headers = ["รายการ", "จำนวน", "ราคาต่อหน่วย", "จำนวนเงิน"];
+    const rows = invoice.items.map((item) => [
       item.productName,
       String(item.quantity),
       item.unitPrice.toFixed(2),
       item.total.toFixed(2),
     ]);
     rows.push([]);
-    rows.push(['', '', 'ยอดรวมย่อย:', invoice.amount.toFixed(2)]);
-    rows.push(['', '', 'ภาษีมูลค่าเพิ่ม (7%):', invoice.taxAmount.toFixed(2)]);
-    rows.push(['', '', 'ยอดรวมทั้งหมด:', invoice.totalAmount.toFixed(2)]);
+    rows.push(["", "", "ยอดรวมย่อย:", invoice.amount.toFixed(2)]);
+    rows.push(["", "", "ภาษีมูลค่าเพิ่ม (7%):", invoice.taxAmount.toFixed(2)]);
+    rows.push(["", "", "ยอดรวมทั้งหมด:", invoice.totalAmount.toFixed(2)]);
 
-    const bom = '\uFEFF';
-    const csvContent = bom + [headers, ...rows].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const bom = "\uFEFF";
+    const csvContent =
+      bom + [headers, ...rows].map((row) => row.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `${invoice.invoiceNumber}.csv`;
     link.click();
@@ -245,7 +256,7 @@ export default function InvoiceDetailPage() {
         setLoading(true);
         setError(null);
 
-        if (typeof invoiceId !== 'string') {
+        if (typeof invoiceId !== "string") {
           setError("รหัสใบแจ้งหนี้ไม่ถูกต้อง");
           return;
         }
@@ -272,7 +283,10 @@ export default function InvoiceDetailPage() {
   if (loading) {
     return (
       <div className="page-container text-center">
-        <div className="bg-white border-[3px] border-black p-8" style={{ boxShadow: '4px 4px 0 0 #000000' }}>
+        <div
+          className="bg-white border-[3px] border-black p-8"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
           <div className="animate-pulse flex space-x-4 justify-center">
             <div className="rounded-full bg-gray-200 h-12 w-12"></div>
             <div className="flex-1 space-y-4 max-w-md">
@@ -293,7 +307,7 @@ export default function InvoiceDetailPage() {
       <div className="page-container">
         <motion.div
           className="bg-white border-[3px] border-black p-8 text-center"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -301,12 +315,14 @@ export default function InvoiceDetailPage() {
           <div className="w-16 h-16 bg-red-100 border-[2px] border-black flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="h-8 w-8 text-red-600" />
           </div>
-          <h2 className="text-xl font-bold text-black mb-2 thai-font">ข้อผิดพลาด</h2>
+          <h2 className="text-xl font-bold text-black mb-2 thai-font">
+            ข้อผิดพลาด
+          </h2>
           <p className="text-gray-600 mb-6 thai-font">{error}</p>
           <button
-            onClick={() => router.push('/dashboard/invoice')}
+            onClick={() => router.push("/dashboard/invoice")}
             className="inline-flex items-center bg-black text-white px-5 py-2.5 border-[2px] border-black font-bold hover:bg-gray-800 transition-all thai-font"
-            style={{ boxShadow: '3px 3px 0 0 #000000' }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             กลับไปหน้าใบแจ้งหนี้
@@ -327,36 +343,36 @@ export default function InvoiceDetailPage() {
   };
 
   // Format dates
-  const issuedDate = new Date(invoice.issuedAt).toLocaleDateString('th-TH', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const issuedDate = new Date(invoice.issuedAt).toLocaleDateString("th-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
-  const issuedTime = new Date(invoice.issuedAt).toLocaleTimeString('th-TH');
+  const issuedTime = new Date(invoice.issuedAt).toLocaleTimeString("th-TH");
 
   // Status styling
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'COMPLETED':
-      case 'Paid':
-        return 'bg-brutal-green text-black';
-      case 'REFUNDED':
-        return 'bg-brutal-yellow text-black';
-      case 'PENDING':
-        return 'bg-brutal-blue text-black';
+      case "COMPLETED":
+      case "Paid":
+        return "bg-brutal-green text-black";
+      case "REFUNDED":
+        return "bg-brutal-yellow text-black";
+      case "PENDING":
+        return "bg-brutal-blue text-black";
       default:
-        return 'bg-gray-200 text-black';
+        return "bg-gray-200 text-black";
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'COMPLETED':
-        return 'ชำระเงินแล้ว';
-      case 'PENDING':
-        return 'รอชำระเงิน';
-      case 'REFUNDED':
-        return 'คืนเงินแล้ว';
+      case "COMPLETED":
+        return "ชำระเงินแล้ว";
+      case "PENDING":
+        return "รอชำระเงิน";
+      case "REFUNDED":
+        return "คืนเงินแล้ว";
       default:
         return status;
     }
@@ -384,7 +400,11 @@ export default function InvoiceDetailPage() {
               whileTap={{ scale: 0.95 }}
               onClick={copyInvoiceId}
             >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
             </motion.button>
 
             <motion.button
@@ -409,7 +429,7 @@ export default function InvoiceDetailPage() {
 
             <motion.button
               className="px-5 py-2 border-[3px] border-black bg-black text-white font-bold inline-flex items-center hover:bg-gray-800 thai-font"
-              style={{ boxShadow: '3px 3px 0 0 #000000' }}
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleDownloadPdf}
@@ -425,10 +445,10 @@ export default function InvoiceDetailPage() {
             ใบแจ้งหนี้ #{invoice.invoiceNumber}
           </h1>
           <div className="flex items-center gap-2 mt-2">
-            <p className="text-gray-600">
-              {issuedDate}
-            </p>
-            <span className={`px-3 py-1 border-[2px] border-black text-xs font-bold ${getStatusStyle(invoice.status)}`}>
+            <p className="text-gray-600">{issuedDate}</p>
+            <span
+              className={`px-3 py-1 border-[2px] border-black text-xs font-bold ${getStatusStyle(invoice.status)}`}
+            >
               {getStatusLabel(invoice.status)}
             </span>
           </div>
@@ -440,7 +460,7 @@ export default function InvoiceDetailPage() {
         {/* Invoice Summary Card */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
@@ -449,20 +469,28 @@ export default function InvoiceDetailPage() {
           <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Customer Info */}
             <div>
-              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">ลูกค้า</h3>
-              <p className="text-black font-bold">{user?.username || 'ผู้ใช้'}</p>
-              <p className="text-gray-600 text-sm">{user?.email || ''}</p>
+              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">
+                ลูกค้า
+              </h3>
+              <p className="text-black font-bold">
+                {user?.username || "ผู้ใช้"}
+              </p>
+              <p className="text-gray-600 text-sm">{user?.email || ""}</p>
             </div>
 
             {/* Payment Info */}
             <div>
-              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">รายละเอียดการชำระเงิน</h3>
+              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">
+                รายละเอียดการชำระเงิน
+              </h3>
               <div className="flex items-start gap-3">
                 <div className="p-2 bg-brutal-blue border-[2px] border-black mt-0.5">
                   <CreditCard className="h-4 w-4 text-black" />
                 </div>
                 <div>
-                  <p className="text-black font-bold">{getStatusLabel(invoice.status)}</p>
+                  <p className="text-black font-bold">
+                    {getStatusLabel(invoice.status)}
+                  </p>
                   <p className="text-gray-600 text-sm mt-1">
                     {issuedDate} เวลา {issuedTime}
                   </p>
@@ -472,10 +500,14 @@ export default function InvoiceDetailPage() {
 
             {/* Order Info */}
             <div>
-              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">ข้อมูลคำสั่งซื้อ</h3>
+              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">
+                ข้อมูลคำสั่งซื้อ
+              </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm thai-font">อ้างอิงคำสั่งซื้อ:</span>
+                  <span className="text-gray-600 text-sm thai-font">
+                    อ้างอิงคำสั่งซื้อ:
+                  </span>
                   <Link
                     href={`/dashboard/orders/${invoice.orderId}`}
                     target="_blank"
@@ -487,13 +519,20 @@ export default function InvoiceDetailPage() {
                   </Link>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm thai-font">เลขที่ใบแจ้งหนี้:</span>
-                  <span className="text-black text-sm font-mono">{invoice.invoiceNumber}</span>
+                  <span className="text-gray-600 text-sm thai-font">
+                    เลขที่ใบแจ้งหนี้:
+                  </span>
+                  <span className="text-black text-sm font-mono">
+                    {invoice.invoiceNumber}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm thai-font">สถานะ:</span>
+                  <span className="text-gray-600 text-sm thai-font">
+                    สถานะ:
+                  </span>
                   <span className="text-brutal-green font-bold text-sm flex items-center thai-font">
-                    <CheckCircle className="h-3.5 w-3.5 mr-1.5" /> {getStatusLabel(invoice.status)}
+                    <CheckCircle className="h-3.5 w-3.5 mr-1.5" />{" "}
+                    {getStatusLabel(invoice.status)}
                   </span>
                 </div>
               </div>
@@ -504,7 +543,7 @@ export default function InvoiceDetailPage() {
         {/* Invoice Items */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
@@ -520,10 +559,18 @@ export default function InvoiceDetailPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b-[2px] border-black">
-                    <th className="text-left text-xs uppercase text-gray-600 font-bold pb-4 thai-font">รายการ</th>
-                    <th className="text-center text-xs uppercase text-gray-600 font-bold pb-4 thai-font">จำนวน</th>
-                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">ราคาต่อหน่วย</th>
-                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">จำนวนเงิน</th>
+                    <th className="text-left text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                      รายการ
+                    </th>
+                    <th className="text-center text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                      จำนวน
+                    </th>
+                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                      ราคาต่อหน่วย
+                    </th>
+                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                      จำนวนเงิน
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -543,14 +590,24 @@ export default function InvoiceDetailPage() {
                             )}
                           </div>
                           <div>
-                            <div className="text-black font-bold">{item.productName}</div>
-                            <div className="text-gray-600 text-sm font-mono">{item.id.slice(0, 8)}...</div>
+                            <div className="text-black font-bold">
+                              {item.productName}
+                            </div>
+                            <div className="text-gray-600 text-sm font-mono">
+                              {item.id.slice(0, 8)}...
+                            </div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 text-center text-gray-600">{item.quantity}</td>
-                      <td className="py-4 text-right text-gray-600">฿{item.unitPrice.toFixed(2)}</td>
-                      <td className="py-4 text-right text-black font-bold">฿{item.total.toFixed(2)}</td>
+                      <td className="py-4 text-center text-gray-600">
+                        {item.quantity}
+                      </td>
+                      <td className="py-4 text-right text-gray-600">
+                        ฿{item.unitPrice.toFixed(2)}
+                      </td>
+                      <td className="py-4 text-right text-black font-bold">
+                        ฿{item.total.toFixed(2)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -582,7 +639,7 @@ export default function InvoiceDetailPage() {
         {/* Notes & Info */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: '4px 4px 0 0 #000000' }}
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.4 }}
@@ -594,7 +651,8 @@ export default function InvoiceDetailPage() {
               หมายเหตุ
             </h3>
             <p className="text-gray-600">
-              ขอบคุณสำหรับการสั่งซื้อ! ใบแจ้งหนี้ฉบับนี้เป็นเอกสารทางการค้าที่ออกโดยระบบอัตโนมัติ
+              ขอบคุณสำหรับการสั่งซื้อ!
+              ใบแจ้งหนี้ฉบับนี้เป็นเอกสารทางการค้าที่ออกโดยระบบอัตโนมัติ
               หากมีคำถามหรือต้องการความช่วยเหลือ กรุณาติดต่อฝ่ายสนับสนุนลูกค้า
             </p>
 

@@ -5,7 +5,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
-import { User, Mail, Lock, ArrowRight, CheckCircle, Zap, Gift, Clock } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  ArrowRight,
+  CheckCircle,
+  Zap,
+  Gift,
+  Clock,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { publicSettingsApi } from "@/lib/services/public-settings-api";
@@ -20,7 +29,7 @@ export default function RegisterPage() {
   const [passwordError, setPasswordError] = useState("");
   const [registrationEnabled, setRegistrationEnabled] = useState(true);
   const [loadingSettings, setLoadingSettings] = useState(true);
-  const [siteName, setSiteName] = useState("MaliGamePass");
+  const [siteName, setSiteName] = useState("Lnwtermgame");
 
   // Validate password match
   useEffect(() => {
@@ -36,10 +45,10 @@ export default function RegisterPage() {
       try {
         const response = await publicSettingsApi.getPublicSettings();
         setRegistrationEnabled(response.data.features.enableUserRegistration);
-        setSiteName(response.data.general.siteName || "MaliGamePass");
+        setSiteName(response.data.general.siteName || "Lnwtermgame");
       } catch {
         setRegistrationEnabled(true);
-        setSiteName("MaliGamePass");
+        setSiteName("Lnwtermgame");
       } finally {
         setLoadingSettings(false);
       }
@@ -75,9 +84,16 @@ export default function RegisterPage() {
     return (
       <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-xl bg-white border-[3px] border-black p-8 text-center shadow-[6px_6px_0_0_#000]">
-          <h1 className="text-2xl font-black text-black mb-3 thai-font">ปิดรับสมัครสมาชิกชั่วคราว</h1>
-          <p className="text-gray-600 thai-font mb-6">ผู้ดูแลระบบปิดการสมัครสมาชิกใหม่ไว้ชั่วคราว กรุณาลองใหม่ภายหลัง</p>
-          <Link href="/login" className="inline-block border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black">
+          <h1 className="text-2xl font-black text-black mb-3 thai-font">
+            ปิดรับสมัครสมาชิกชั่วคราว
+          </h1>
+          <p className="text-gray-600 thai-font mb-6">
+            ผู้ดูแลระบบปิดการสมัครสมาชิกใหม่ไว้ชั่วคราว กรุณาลองใหม่ภายหลัง
+          </p>
+          <Link
+            href="/login"
+            className="inline-block border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black"
+          >
             ไปหน้าเข้าสู่ระบบ
           </Link>
         </div>
@@ -99,11 +115,14 @@ export default function RegisterPage() {
             <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_0_#000]">
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
             </div>
-            <span className="text-2xl font-black text-black thai-font">{siteName}</span>
+            <span className="text-2xl font-black text-black thai-font">
+              {siteName}
+            </span>
           </div>
 
           <h1 className="text-4xl font-black text-black leading-tight thai-font">
-            สมัครสมาชิกวันนี้<br />
+            สมัครสมาชิกวันนี้
+            <br />
             รับสิทธิ์ <span className="text-brutal-pink">พิเศษมากมาย</span>
           </h1>
 
@@ -115,7 +134,12 @@ export default function RegisterPage() {
           <div className="grid grid-cols-1 gap-4 pt-4">
             <motion.div
               className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000]"
-              whileHover={{ scale: 1.02, x: -2, y: -2, boxShadow: '6px 6px 0 0 #000000' }}
+              whileHover={{
+                scale: 1.02,
+                x: -2,
+                y: -2,
+                boxShadow: "6px 6px 0 0 #000000",
+              }}
               transition={{ duration: 0.2 }}
             >
               <div className="w-10 h-10 bg-brutal-pink border-[2px] border-black flex items-center justify-center">
@@ -123,13 +147,20 @@ export default function RegisterPage() {
               </div>
               <div>
                 <h3 className="text-black font-bold thai-font">โบนัสต้อนรับ</h3>
-                <p className="text-gray-500 text-sm">รับแต้มสะสมฟรีเมื่อสมัครครั้งแรก</p>
+                <p className="text-gray-500 text-sm">
+                  รับแต้มสะสมฟรีเมื่อสมัครครั้งแรก
+                </p>
               </div>
             </motion.div>
 
             <motion.div
               className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000]"
-              whileHover={{ scale: 1.02, x: -2, y: -2, boxShadow: '6px 6px 0 0 #000000' }}
+              whileHover={{
+                scale: 1.02,
+                x: -2,
+                y: -2,
+                boxShadow: "6px 6px 0 0 #000000",
+              }}
               transition={{ duration: 0.2 }}
             >
               <div className="w-10 h-10 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
@@ -137,7 +168,9 @@ export default function RegisterPage() {
               </div>
               <div>
                 <h3 className="text-black font-bold thai-font">เติมไว 24/7</h3>
-                <p className="text-gray-500 text-sm">บริการตลอด 24 ชั่วโมง ไม่มีวันหยุด</p>
+                <p className="text-gray-500 text-sm">
+                  บริการตลอด 24 ชั่วโมง ไม่มีวันหยุด
+                </p>
               </div>
             </motion.div>
           </div>
@@ -155,7 +188,9 @@ export default function RegisterPage() {
               <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
               </div>
-              <span className="text-xl font-black text-black thai-font">{siteName}</span>
+              <span className="text-xl font-black text-black thai-font">
+                {siteName}
+              </span>
             </div>
 
             <div className="text-center mb-8">
@@ -210,7 +245,9 @@ export default function RegisterPage() {
                   icon={<Lock className="h-5 w-5" />}
                   autoComplete="new-password"
                 />
-                <p className="text-xs text-gray-500">รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</p>
+                <p className="text-xs text-gray-500">
+                  รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร
+                </p>
               </div>
 
               <div className="space-y-1.5">
@@ -226,14 +263,18 @@ export default function RegisterPage() {
                   icon={
                     <CheckCircle
                       className={`h-5 w-5 transition-colors ${
-                        password && confirmPassword && password === confirmPassword
-                          ? 'text-brutal-green'
-                          : 'text-gray-400'
+                        password &&
+                        confirmPassword &&
+                        password === confirmPassword
+                          ? "text-brutal-green"
+                          : "text-gray-400"
                       }`}
                     />
                   }
                   errorText={passwordError}
-                  className={passwordError ? "border-brutal-pink bg-brutal-pink/10" : ""}
+                  className={
+                    passwordError ? "border-brutal-pink bg-brutal-pink/10" : ""
+                  }
                 />
               </div>
 
@@ -255,7 +296,10 @@ export default function RegisterPage() {
             <div className="mt-8 pt-6 border-t border-gray-200 text-center">
               <p className="text-gray-500 thai-font">
                 มีบัญชีอยู่แล้ว?{" "}
-                <Link href="/login" className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors">
+                <Link
+                  href="/login"
+                  className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
+                >
                   เข้าสู่ระบบ
                 </Link>
               </p>
@@ -263,11 +307,17 @@ export default function RegisterPage() {
 
             <div className="mt-6 text-center text-xs text-gray-500 thai-font">
               การสมัครสมาชิกแสดงว่าคุณยอมรับ{" "}
-              <Link href="/terms" className="text-gray-700 hover:text-black font-bold transition-colors">
+              <Link
+                href="/terms"
+                className="text-gray-700 hover:text-black font-bold transition-colors"
+              >
                 เงื่อนไขการใช้งาน
               </Link>{" "}
               และ{" "}
-              <Link href="/privacy" className="text-gray-700 hover:text-black font-bold transition-colors">
+              <Link
+                href="/privacy"
+                className="text-gray-700 hover:text-black font-bold transition-colors"
+              >
                 นโยบายความเป็นส่วนตัว
               </Link>
             </div>

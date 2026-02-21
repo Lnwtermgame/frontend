@@ -19,7 +19,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${article.title} - GameTopup News`,
+    title: `${article.title} - Lnwtermgame News`,
     description: article.excerpt,
   };
 }

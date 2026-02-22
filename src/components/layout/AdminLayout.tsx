@@ -22,6 +22,7 @@ import {
   CreditCard,
   FileText,
   Newspaper,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -94,6 +95,11 @@ const adminNavItems = [
     title: "การแจ้งเตือน",
     href: "/admin/notification",
     icon: <Bell className="w-5 h-5" />,
+  },
+  {
+    title: "อีเมล",
+    href: "/admin/email",
+    icon: <Mail className="w-5 h-5" />,
   },
   {
     title: "ตั้งค่า",

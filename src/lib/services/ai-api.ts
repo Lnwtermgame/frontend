@@ -21,11 +21,6 @@ const slugify = (text: string) => {
 const ZAI_API_BASE_URL = "https://api.z.ai/api/coding/paas/v4";
 const ZAI_API_KEY = process.env.NEXT_PUBLIC_ZAI_API_KEY || "";
 
-// SEARXNG API configuration
-const SEARXNG_BASE_URL =
-  "http://searxng-rkg44wkww4sgo8wcwwos8c44.89.38.101.12.sslip.io";
-const SEARXNG_API_KEY = process.env.NEXT_PUBLIC_SEARXNG_API_KEY || "";
-
 // Debug log interface
 export interface DebugLog {
   id: string;

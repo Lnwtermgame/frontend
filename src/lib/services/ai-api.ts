@@ -2041,21 +2041,6 @@ PLATFORMS: iOS, Android, PC
         );
       }
 
-      // Embed YouTube video in content if available and not already in content
-      if (allResults.videos.length > 0) {
-        const officialVideo = allResults.videos.find(
-          (v) => v.url?.includes("youtube.com") || v.url?.includes("youtu.be"),
-        );
-        if (officialVideo && !result.content.includes(officialVideo.url)) {
-          // Extract video ID from YouTube URL
-          const videoId = extractYoutubeVideoId(officialVideo.url);
-          if (videoId) {
-            // Append video embed to content
-            result.content += `\n\n## วิดีโอที่เกี่ยวข้อง\n\n[![วิดีโอบน YouTube](https://img.youtube.com/vi/${videoId}/0.jpg)](${officialVideo.url})\n\n[▶️ ดูวิดีโอบน YouTube](${officialVideo.url})\n`;
-          }
-        }
-      }
-
       // Add sources from SEARXNG results
       if (allResults.results.length > 0) {
         result.sources = allResults.results
@@ -2576,8 +2561,6 @@ ${coverImageUrl ? `${coverImageUrl}${coverImageTitle ? ` (${coverImageTitle})` :
 📸 รูปภาพสำหรับเนื้อหา (Content Images) - ใช้แทรกในเนื้อหาเท่านั้น (ต่างจากรูปปก):
 ${contentImageUrls || "ไม่พบรูปภาพสำหรับเนื้อหา"}
 
-วิดีโอที่เกี่ยวข้อง:
-${videoUrls || "ไม่พบวิดีโอ"}
 
 === ข้อกำหนดสำคัญ ===
 1. สร้างบทความข่าวที่มีเนื้อหาเป็นเอกลักษณ์ ไม่ซ้ำกับข่าวอื่น
@@ -2599,7 +2582,7 @@ SOURCES: [แหล่งข่าว เช่น ${sourceUrls}]
 1. เนื้อหาข่าวยาว 800-1500 คำ อย่างน้อย 5-7 ย่อหน้า
 2. ⚠️ แทรกรูปภาพในเนื้อหาจาก "รูปภาพสำหรับเนื้อหา" เท่านั้น (ไม่ใช่รูปปก)
 3. ⚠️ ถ้ามีวิดีโอ YouTube ให้แทรกเป็น EMBED โดยตรงในเนื้อหา ใช้ HTML:
-   <div class="youtube-embed"><iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe></div>
+   <iframe width="100%" height="420" src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
    (เปลี่ยน VIDEO_ID เป็น ID จริงจาก URL วิดีโอ เช่น ถ้า URL คือ https://www.youtube.com/watch?v=ABC123 ให้ใช้ ABC123)
 4. ใช้หัวข้อย่อย (##) อย่างน้อย 3-4 หัวข้อ
 5. ไม่ใช้อิโมจิ

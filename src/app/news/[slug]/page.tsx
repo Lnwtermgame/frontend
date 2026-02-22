@@ -156,6 +156,10 @@ export default function NewsArticlePage() {
   const category = categoryLabels[article.category] || "ทั่วไป";
   const categoryColor =
     categoryColors[article.category] || categoryColors.general;
+  const cleanedContent = article.content.replace(
+    /(?:^|\n)##\s*วิดีโอที่เกี่ยวข้อง[\s\S]*?(?=\n##\s|\n#\s|\n*$)/g,
+    "",
+  );
 
   return (
     <div className="page-container">
@@ -289,10 +293,19 @@ export default function NewsArticlePage() {
                 div: ({ className, children }) => (
                   <div className={className}>{children}</div>
                 ),
-                iframe: ({ ...props }) => (
-                  <div className="youtube-embed">
-                    <iframe {...props} className="youtube-embed_iframe" />
-                  </div>
+                iframe: ({ width, height, ...props }) => (
+                  <iframe
+                    {...props}
+                    width={width || "100%"}
+                    height={height || "420"}
+                  />
+                ),
+                img: ({ src, alt }) => (
+                  <img
+                    src={src}
+                    alt={alt || ""}
+                    className="my-6 w-full rounded-xl border-[2px] border-black"
+                  />
                 ),
                 table: ({ children }) => (
                   <div className="overflow-x-auto">
@@ -320,7 +333,7 @@ export default function NewsArticlePage() {
                 ),
               }}
             >
-              {article.content}
+              {cleanedContent}
             </ReactMarkdown>
           </article>
 

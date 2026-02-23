@@ -11,7 +11,11 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import { authApi, User } from "../services/auth-api";
-import { setAccessToken } from "../client/gateway";
+import {
+  setAccessToken,
+  refreshAccessToken,
+  RefreshResult,
+} from "../client/gateway";
 
 type AuthContextType = {
   user: User | null;
@@ -39,6 +43,7 @@ type AuthContextType = {
     newPassword: string,
   ) => Promise<boolean>;
   isInitialized: boolean;
+  isSessionChecked: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -96,14 +101,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isSessionChecked, setIsSessionChecked] = useState(false);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isCheckingSessionRef = useRef(false);
   const isAuthenticated = !!user && !!token;
-  const isAdmin = user?.role === "ADMIN";
+  const isAdmin = isAuthenticated && user?.role === "ADMIN";
 
   useEffect(() => {
     if (typeof window === "undefined") {
       setIsInitialized(true);
+      setIsSessionChecked(true);
       return;
     }
     const storedUser = localStorage.getItem("mali-gamepass-user");
@@ -187,39 +194,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Perform token refresh
   const performTokenRefresh = useCallback(async () => {
-    // Prevent concurrent refresh attempts
-    if (isCheckingSessionRef.current) {
-      console.log("[Auth] Token refresh already in progress");
-      return;
-    }
-
-    isCheckingSessionRef.current = true;
     console.log("[Auth] Performing token refresh...");
 
     try {
-      const response = await authApi.refreshToken();
+      const result = await refreshAccessToken();
 
-      if (response.success) {
+      if (result) {
         console.log("[Auth] Token refresh successful");
-        setToken(response.data.accessToken);
-        scheduleTokenRefresh(response.data.expiresIn);
-        setAccessToken(response.data.accessToken);
+        setToken(result.accessToken);
+        scheduleTokenRefresh(result.expiresIn);
       } else {
         console.log("[Auth] Token refresh failed");
-        // Don't clear auth immediately - let the user continue until token actually expires
         toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
         clearAuth();
       }
     } catch (err) {
       console.log("[Auth] Token refresh error:", err);
-      // Only clear auth on 401 errors from refresh endpoint
-      if ((err as any)?.response?.status === 401) {
-        toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
-        clearAuth();
-      }
-      // On other errors (network, etc.), don't clear - the user might still have valid session
-    } finally {
-      isCheckingSessionRef.current = false;
+      toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
+      clearAuth();
     }
   }, [setToken, clearAuth, scheduleTokenRefresh]);
 
@@ -244,6 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else if (remainingTime > 0) {
           await performTokenRefresh();
         }
+        setIsSessionChecked(true);
         return;
       }
 
@@ -269,6 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } finally {
           isCheckingSessionRef.current = false;
+          setIsSessionChecked(true);
         }
         return;
       }
@@ -276,11 +270,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isCheckingSessionRef.current = true;
       console.log("[Auth] Restoring session from refresh cookie...");
       try {
-        const refreshResponse = await authApi.refreshToken();
-        if (refreshResponse.success) {
-          setToken(refreshResponse.data.accessToken);
-          setAccessToken(refreshResponse.data.accessToken);
-          scheduleTokenRefresh(refreshResponse.data.expiresIn);
+        const refreshResult = await refreshAccessToken();
+        if (refreshResult) {
+          setToken(refreshResult.accessToken);
+          scheduleTokenRefresh(refreshResult.expiresIn);
           const profileResponse = await authApi.getProfile();
           if (profileResponse.success) {
             setUser(profileResponse.data);
@@ -290,6 +283,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log("[Auth] Refresh cookie session failed:", err);
       } finally {
         isCheckingSessionRef.current = false;
+        setIsSessionChecked(true);
       }
     };
 
@@ -519,7 +513,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         updateProfile,
         changePassword,
-        isInitialized: isInitialized && isHydrated,
+        // "Initialized" means hydration + session restore has completed.
+        isInitialized: isInitialized && isHydrated && isSessionChecked,
+        isSessionChecked,
       }}
     >
       {children}

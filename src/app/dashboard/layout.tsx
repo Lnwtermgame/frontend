@@ -11,15 +11,15 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { user, isInitialized } = useAuth();
+  const { user, isSessionChecked } = useAuth();
 
   useEffect(() => {
-    if (isInitialized && !user) {
+    if (isSessionChecked && !user) {
       router.push("/login");
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isSessionChecked]);
 
-  if (!isInitialized) {
+  if (!isSessionChecked) {
     return null;
   }
 

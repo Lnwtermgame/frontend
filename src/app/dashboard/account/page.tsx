@@ -2,16 +2,68 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ChevronRight, Star, Shield, History, Loader2 } from "lucide-react";
+import {
+  ChevronRight,
+  Star,
+  Shield,
+  History,
+  Loader2,
+  Mail,
+  CheckCircle,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
 import { orderApi, Order } from "@/lib/services/order-api";
+import { securityApi } from "@/lib/services/security-api";
+import toast from "react-hot-toast";
+
+// Cooldown time in seconds for resend verification email
+const RESEND_COOLDOWN_SECONDS = 60;
 
 export default function AccountPage() {
   const { user, isInitialized } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Load cooldown from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCooldownEnd = localStorage.getItem(
+        "verification_cooldown_end",
+      );
+      if (storedCooldownEnd) {
+        const endTime = parseInt(storedCooldownEnd, 10);
+        const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+        if (remaining > 0) {
+          setCooldownSeconds(remaining);
+        } else {
+          localStorage.removeItem("verification_cooldown_end");
+        }
+      }
+    }
+  }, []);
+
+  // Countdown timer
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return;
+
+    const timer = setInterval(() => {
+      setCooldownSeconds((prev) => {
+        const newValue = prev - 1;
+        if (newValue <= 0) {
+          localStorage.removeItem("verification_cooldown_end");
+        }
+        return Math.max(0, newValue);
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [cooldownSeconds > 0]);
 
   useEffect(() => {
     if (isInitialized && user) {
@@ -49,6 +101,30 @@ export default function AccountPage() {
     }
   };
 
+  const handleSendVerificationEmail = async () => {
+    if (cooldownSeconds > 0 || isSendingVerification) return;
+
+    setIsSendingVerification(true);
+    try {
+      const response = await securityApi.sendVerificationEmail();
+      if (response.success) {
+        toast.success("ส่งอีเมลยืนยันแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ");
+
+        // Set cooldown
+        const endTime = Date.now() + RESEND_COOLDOWN_SECONDS * 1000;
+        localStorage.setItem("verification_cooldown_end", endTime.toString());
+        setCooldownSeconds(RESEND_COOLDOWN_SECONDS);
+      } else {
+        toast.error(response.message || "ไม่สามารถส่งอีเมลได้");
+      }
+    } catch (error: any) {
+      const message = securityApi.getErrorMessage(error);
+      toast.error(message);
+    } finally {
+      setIsSendingVerification(false);
+    }
+  };
+
   const orderStats = {
     waitSend: orders.filter((o) => o.status === "PENDING").length,
     sending: orders.filter((o) => o.status === "PROCESSING").length,
@@ -81,6 +157,9 @@ export default function AccountPage() {
     },
   ];
 
+  // Check if email is verified
+  const isEmailVerified = user?.emailVerified ?? true; // Default to true if not provided (for backward compatibility)
+
   return (
     <div className="bg-brutal-gray min-h-full">
       {/* Page Header */}
@@ -110,8 +189,6 @@ export default function AccountPage() {
               transition={{ duration: 0.3 }}
               whileHover={{ y: -2 }}
             >
-              {/* Decorative gradient top border */}
-
               <div className="p-4 md:p-6">
                 <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4">
                   <div className="flex flex-col md:flex-row items-center gap-4">
@@ -119,9 +196,6 @@ export default function AccountPage() {
                       <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-xl md:text-2xl font-bold overflow-hidden shadow-[2px_2px_0_0_#000]">
                         {user?.username?.charAt(0).toUpperCase() || "U"}
                       </div>
-                      <span className="absolute -bottom-1 -right-1 bg-brutal-pink text-[10px] md:text-xs text-black font-bold px-2 py-0.5 border-[2px] border-black thai-font shadow-[1px_1px_0_0_#000]">
-                        VIP
-                      </span>
                     </div>
                     <div className="flex flex-col items-center md:items-start gap-1">
                       <h2 className="text-xl md:text-2xl font-bold text-black">
@@ -136,13 +210,81 @@ export default function AccountPage() {
                             {user?.email || "user@example.com"}
                           </span>
                         </div>
-                        <span className="bg-brutal-green text-black text-[10px] md:text-xs font-bold px-2 py-0.5 border-[2px] border-black thai-font">
-                          ยืนยันแล้ว
-                        </span>
+                        {isEmailVerified ? (
+                          <span className="bg-brutal-green text-black text-[10px] md:text-xs font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
+                            <CheckCircle size={12} />
+                            ยืนยันแล้ว
+                          </span>
+                        ) : (
+                          <span className="bg-brutal-pink text-black text-[10px] md:text-xs font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
+                            <AlertCircle size={12} />
+                            ยังไม่ยืนยัน
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Email verification banner - shown if not verified */}
+                {!isEmailVerified && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="mt-4 p-4 bg-brutal-pink/20 border-[2px] border-black"
+                  >
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center flex-shrink-0">
+                          <Mail size={16} className="text-black" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-black thai-font">
+                            กรุณายืนยันอีเมลของคุณ
+                          </p>
+                          <p className="text-xs text-gray-600 thai-font mt-1">
+                            ยืนยันอีเมลเพื่อรับการแจ้งเตือนและกู้คืนบัญชี
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleSendVerificationEmail}
+                        disabled={cooldownSeconds > 0 || isSendingVerification}
+                        className={`
+                          flex items-center gap-2 px-4 py-2 text-sm font-bold border-[2px] border-black
+                          transition-all duration-200 thai-font whitespace-nowrap
+                          ${
+                            cooldownSeconds > 0 || isSendingVerification
+                              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                              : "bg-brutal-yellow text-black hover:bg-brutal-blue hover:text-white"
+                          }
+                        `}
+                      >
+                        {isSendingVerification ? (
+                          <>
+                            <Loader2 size={14} className="animate-spin" />
+                            กำลังส่ง...
+                          </>
+                        ) : cooldownSeconds > 0 ? (
+                          <>
+                            <RefreshCw size={14} className="opacity-50" />
+                            รอ {cooldownSeconds} วินาที
+                          </>
+                        ) : (
+                          <>
+                            <Mail size={14} />
+                            ส่งอีเมลยืนยัน
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    {cooldownSeconds > 0 && (
+                      <p className="text-xs text-gray-500 thai-font mt-2 text-center md:text-right">
+                        หากไม่ได้รับอีเมล กรุณาตรวจสอบในโฟลเดอร์ Spam
+                      </p>
+                    )}
+                  </motion.div>
+                )}
               </div>
             </motion.div>
 
@@ -314,7 +456,7 @@ export default function AccountPage() {
                   ตั้งค่าบัญชี
                 </h2>
                 <div className="divide-y divide-gray-200">
-                  {accountLinks.map((link, index) => (
+                  {accountLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}

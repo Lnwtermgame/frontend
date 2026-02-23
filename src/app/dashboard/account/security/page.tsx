@@ -604,7 +604,9 @@ export default function SecurityPage() {
                                 <div className="bg-white p-4 border-[2px] border-black inline-block">
                                   {twoFactorSetupData.qrCodeUrl && (
                                     <Image
-                                      src={twoFactorSetupData.qrCodeUrl}
+                                      src={
+                                        twoFactorSetupData.qrCodeUrl as string
+                                      }
                                       alt="Two-Factor Authentication QR Code"
                                       width={150}
                                       height={150}

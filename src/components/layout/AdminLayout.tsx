@@ -116,16 +116,19 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isAdmin, logout, isInitialized } = useAuth();
+  const { user, isAdmin, logout, isInitialized, isSessionChecked } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (isInitialized && !isAdmin) {
+    // Only redirect after session check is complete
+    if (isInitialized && isSessionChecked && !isAdmin) {
       router.push("/");
     }
-  }, [isAdmin, router, isInitialized]);
+  }, [isAdmin, router, isInitialized, isSessionChecked]);
 
-  if (!isInitialized || !isAdmin) {
+  // Wait for both initialization AND session check before rendering
+  // This ensures the API token is properly set before any API calls
+  if (!isInitialized || !isSessionChecked || !isAdmin) {
     return (
       <div className="page-container text-center">
         <div

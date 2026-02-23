@@ -17,15 +17,12 @@ export const setAccessToken = (token: string | null) => {
 
 export const getAccessToken = (): string | null => inMemoryAccessToken;
 
-// Flag to prevent multiple refresh attempts
 let isRefreshing = false;
-// Queue of failed requests to retry after token refresh
 let failedQueue: Array<{
   resolve: (token: string) => void;
   reject: (error: unknown) => void;
 }> = [];
 
-// Process the queue of failed requests
 const processQueue = (error: unknown | null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -37,8 +34,23 @@ const processQueue = (error: unknown | null, token: string | null = null) => {
   failedQueue = [];
 };
 
-// Refresh token function
-const refreshAccessToken = async (): Promise<string | null> => {
+export interface RefreshResult {
+  accessToken: string;
+  expiresIn: number;
+}
+
+export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({
+        resolve: (token: string) =>
+          resolve({ accessToken: token, expiresIn: 900 }),
+        reject,
+      });
+    });
+  }
+
+  isRefreshing = true;
   try {
     const response = await axios.post(
       `${GATEWAY_URL}/api/auth/refresh-token`,
@@ -47,13 +59,18 @@ const refreshAccessToken = async (): Promise<string | null> => {
     );
 
     if (response.data?.success) {
-      const { accessToken } = response.data.data;
+      const { accessToken, expiresIn } = response.data.data;
       setAccessToken(accessToken);
-      return accessToken;
+      processQueue(null, accessToken);
+      return { accessToken, expiresIn: expiresIn || 900 };
     }
+    processQueue(new Error("Refresh failed"), null);
     return null;
-  } catch {
+  } catch (error) {
+    processQueue(error, null);
     return null;
+  } finally {
+    isRefreshing = false;
   }
 };
 
@@ -119,15 +136,7 @@ const createServiceClient = (service: string): AxiosInstance => {
         getResponseCache.clear();
       }
 
-      let token = getAccessToken();
-      if (!token) {
-        const refreshAttempted = (config as { _refreshAttempted?: boolean })
-          ._refreshAttempted;
-        if (!refreshAttempted) {
-          (config as { _refreshAttempted?: boolean })._refreshAttempted = true;
-          token = await refreshAccessToken();
-        }
-      }
+      const token = getAccessToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -220,9 +229,9 @@ const createServiceClient = (service: string): AxiosInstance => {
       originalRequest._retry = true;
 
       try {
-        const newToken = await refreshAccessToken();
+        const refreshResult = await refreshAccessToken();
 
-        if (!newToken) {
+        if (!refreshResult) {
           // Refresh failed, clear auth and redirect
           processQueue(new Error("Failed to refresh token"), null);
           if (typeof window !== "undefined") {
@@ -234,9 +243,9 @@ const createServiceClient = (service: string): AxiosInstance => {
         }
 
         // Refresh succeeded, retry original request and process queue
-        processQueue(null, newToken);
+        processQueue(null, refreshResult.accessToken);
         if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          originalRequest.headers.Authorization = `Bearer ${refreshResult.accessToken}`;
         }
         return client(originalRequest);
       } catch (refreshError) {

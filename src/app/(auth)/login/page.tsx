@@ -208,7 +208,7 @@ function LoginContent() {
                     รหัสผ่าน
                   </label>
                   <Link
-                    href="#"
+                    href="/forgot-password"
                     className="text-xs text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors thai-font"
                   >
                     ลืมรหัสผ่าน?

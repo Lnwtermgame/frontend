@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 
 export default function CouponsPage() {
   const router = useRouter();
-  const { user, isInitialized } = useAuth();
+  const { user, isSessionChecked } = useAuth();
   const [coupons, setCoupons] = useState<UserCoupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,7 +35,7 @@ export default function CouponsPage() {
 
   // Fetch coupons from API
   useEffect(() => {
-    if (isInitialized && user) {
+    if (isSessionChecked && user) {
       fetchCoupons();
     }
 
@@ -44,7 +44,7 @@ export default function CouponsPage() {
         abortControllerRef.current.abort();
       }
     };
-  }, [isInitialized, user]);
+  }, [isSessionChecked, user]);
 
   const fetchCoupons = async () => {
     if (abortControllerRef.current) {
@@ -73,10 +73,10 @@ export default function CouponsPage() {
 
   // If not logged in, redirect to login page
   useEffect(() => {
-    if (isInitialized && !user) {
+    if (isSessionChecked && !user) {
       router.push("/login");
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isSessionChecked]);
 
   // Filter coupons based on search term and status
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function CouponsPage() {
   };
 
   // If the user is not loaded yet or not logged in, show loading
-  if (!isInitialized || !user) {
+  if (!isSessionChecked || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">

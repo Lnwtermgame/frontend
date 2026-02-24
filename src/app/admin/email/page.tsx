@@ -419,7 +419,7 @@ export default function AdminEmailPage() {
 
   return (
     <AdminLayout title="จัดการอีเมล">
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -427,20 +427,20 @@ export default function AdminEmailPage() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-              <Mail className="h-6 w-6 text-brutal-pink" />
+            <h1 className="text-xl font-bold text-black flex items-center gap-2">
+              <Mail className="h-5 w-5 text-brutal-pink" />
               จัดการอีเมล
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-600 mt-1 text-sm">
               จัดการเทมเพลตอีเมล อีเวนต์ และดูสถิติ
             </p>
           </div>
           <button
             onClick={fetchAllData}
-            className="flex items-center gap-2 px-4 py-2 border-[3px] border-black bg-white hover:bg-gray-50 font-bold"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-white hover:bg-gray-50 font-bold text-sm"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-3.5 w-3.5" />
             รีเฟรช
           </button>
         </motion.div>
@@ -450,26 +450,26 @@ export default function AdminEmailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`p-4 border-[3px] border-black flex items-center gap-3 ${
+            className={`p-3 border-[2px] border-black flex items-center gap-3 ${
               smtpConfig.configured
                 ? "bg-green-50 border-green-300"
                 : "bg-red-50 border-red-300"
             }`}
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             {smtpConfig.configured ? (
-              <CheckCircle className="h-5 w-5 text-green-600" />
+              <CheckCircle className="h-4 w-4 text-green-600" />
             ) : (
-              <AlertCircle className="h-5 w-5 text-red-600" />
+              <AlertCircle className="h-4 w-4 text-red-600" />
             )}
             <div>
-              <p className="font-bold">
+              <p className="font-bold text-sm">
                 {smtpConfig.configured
                   ? "SMTP พร้อมใช้งาน"
                   : "SMTP ยังไม่ได้กำหนดค่า"}
               </p>
               {smtpConfig.configured && (
-                <p className="text-sm text-gray-600">
+                <p className="text-xs text-gray-600">
                   {smtpConfig.smtp.host}:{smtpConfig.smtp.port} •{" "}
                   {smtpConfig.smtp.from}
                 </p>
@@ -483,30 +483,30 @@ export default function AdminEmailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-4 gap-4"
+            className="grid grid-cols-1 md:grid-cols-4 gap-3"
           >
             <StatCard
               title="ส่งแล้ว"
               value={stats.totalSent.toLocaleString()}
-              icon={<CheckCircle className="h-5 w-5" />}
+              icon={<CheckCircle className="h-4 w-4" />}
               color="green"
             />
             <StatCard
               title="ล้มเหลว"
               value={stats.totalFailed.toLocaleString()}
-              icon={<XCircle className="h-5 w-5" />}
+              icon={<XCircle className="h-4 w-4" />}
               color="red"
             />
             <StatCard
               title="อัตราส่งถึง"
               value={`${stats.deliveryRate.toFixed(1)}%`}
-              icon={<Send className="h-5 w-5" />}
+              icon={<Send className="h-4 w-4" />}
               color="blue"
             />
             <StatCard
               title="24 ชม. ล่าสุด"
               value={stats.last24Hours.sent.toLocaleString()}
-              icon={<Clock className="h-5 w-5" />}
+              icon={<Clock className="h-4 w-4" />}
               color="pink"
             />
           </motion.div>
@@ -516,42 +516,42 @@ export default function AdminEmailPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="border-b-[3px] border-black"
+          className="border-b-[2px] border-black"
         >
           <div className="flex gap-0 flex-wrap">
             {[
               {
                 id: "templates",
                 label: "เทมเพลต",
-                icon: <FileText className="h-4 w-4" />,
+                icon: <FileText className="h-3.5 w-3.5" />,
               },
               {
                 id: "events",
                 label: "อีเวนต์",
-                icon: <Bell className="h-4 w-4" />,
+                icon: <Bell className="h-3.5 w-3.5" />,
               },
               {
                 id: "branding",
                 label: "แบรนด์",
-                icon: <Palette className="h-4 w-4" />,
+                icon: <Palette className="h-3.5 w-3.5" />,
               },
               {
                 id: "logs",
                 label: "ประวัติ",
-                icon: <Clock className="h-4 w-4" />,
+                icon: <Clock className="h-3.5 w-3.5" />,
               },
               {
                 id: "settings",
                 label: "ตั้งค่า SMTP",
-                icon: <Settings className="h-4 w-4" />,
+                icon: <Settings className="h-3.5 w-3.5" />,
               },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabType)}
-                className={`flex items-center gap-2 px-6 py-3 font-bold border-[3px] border-b-0 transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 font-bold text-sm border-[2px] border-b-0 transition-all ${
                   activeTab === tab.id
-                    ? "bg-brutal-yellow border-black -mb-[3px]"
+                    ? "bg-brutal-yellow border-black -mb-[2px]"
                     : "bg-white border-gray-300 hover:border-gray-400"
                 }`}
               >
@@ -570,25 +570,25 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-4"
+              className="space-y-3"
             >
               {/* Toolbar */}
-              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-                <div className="flex flex-1 gap-3">
+              <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
+                <div className="flex flex-1 gap-2">
                   <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
                     <input
                       type="text"
                       placeholder="ค้นหาเทมเพลต..."
                       value={templateSearch}
                       onChange={(e) => setTemplateSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border-[3px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink"
+                      className="w-full pl-9 pr-3 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
                     />
                   </div>
                   <select
                     value={templateCategory}
                     onChange={(e) => setTemplateCategory(e.target.value)}
-                    className="px-4 py-2 border-[3px] border-black bg-white focus:outline-none"
+                    className="px-3 py-1.5 border-[2px] border-black bg-white focus:outline-none text-sm"
                   >
                     <option value="">ทุกหมวดหมู่</option>
                     {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -602,18 +602,18 @@ export default function AdminEmailPage() {
                   {templates.length === 0 && (
                     <button
                       onClick={handleSeedTemplates}
-                      className="flex items-center gap-2 px-4 py-2 border-[3px] border-black bg-gray-100 hover:bg-gray-200 font-bold"
+                      className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 font-bold text-sm"
                     >
-                      <RefreshCw className="h-4 w-4" />
+                      <RefreshCw className="h-3.5 w-3.5" />
                       สร้างเทมเพลตเริ่มต้น
                     </button>
                   )}
                   <button
                     onClick={() => router.push("/admin/email/new")}
-                    className="flex items-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold"
-                    style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-3.5 w-3.5" />
                     สร้างเทมเพลต
                   </button>
                 </div>
@@ -621,55 +621,55 @@ export default function AdminEmailPage() {
 
               {/* Templates List */}
               {isLoading ? (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
                 </div>
               ) : filteredTemplates.length === 0 ? (
-                <div className="text-center py-12 bg-white border-[3px] border-black">
-                  <FileText className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500 mb-4">ไม่พบเทมเพลต</p>
+                <div className="text-center py-8 bg-white border-[2px] border-black">
+                  <FileText className="h-10 w-10 mx-auto text-gray-300 mb-3" />
+                  <p className="text-gray-500 mb-3 text-sm">ไม่พบเทมเพลต</p>
                   <button
                     onClick={handleSeedTemplates}
-                    className="px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold"
+                    className="px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
                   >
                     สร้างเทมเพลตเริ่มต้น
                   </button>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                   {filteredTemplates.map((template) => (
                     <motion.div
                       key={template.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white border-[3px] border-black p-4 hover:shadow-lg transition-shadow"
-                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                      className="bg-white border-[2px] border-black p-3 hover:shadow-lg transition-shadow"
+                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-bold text-lg">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <h3 className="font-bold text-base">
                               {template.name}
                             </h3>
                             <span
-                              className={`px-2 py-1 text-xs font-bold border-[2px] ${
+                              className={`px-1.5 py-0.5 text-[10px] font-bold border-[1px] ${
                                 CATEGORY_COLORS[template.category]
                               }`}
                             >
                               {CATEGORY_LABELS[template.category]}
                             </span>
                             {template.isSystem && (
-                              <span className="px-2 py-1 text-xs font-bold bg-gray-800 text-white border-[2px] border-gray-800">
+                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-gray-800 text-white border-[1px] border-gray-800">
                                 ระบบ
                               </span>
                             )}
                             {!template.isActive && (
-                              <span className="px-2 py-1 text-xs font-bold bg-red-100 text-red-700 border-[2px] border-red-300">
+                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 border-[1px] border-red-300">
                                 ปิดใช้งาน
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-600 text-sm mb-2">
+                          <p className="text-gray-600 text-xs mb-1.5">
                             <code className="bg-gray-100 px-1 py-0.5 rounded text-brutal-pink">
                               {template.code}
                             </code>
@@ -680,38 +680,38 @@ export default function AdminEmailPage() {
                             {template.placeholders.map((p) => (
                               <span
                                 key={p}
-                                className="px-2 py-0.5 text-xs bg-gray-100 text-gray-600 border border-gray-200"
+                                className="px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-600 border border-gray-200"
                               >
                                 {`{{${p}}}`}
                               </span>
                             ))}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <button
                             onClick={() =>
                               router.push(`/admin/email/${template.id}`)
                             }
-                            className="p-2 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
                             title="แก้ไข"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => handleDuplicateTemplate(template.id)}
-                            className="p-2 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
                             title="คัดลอก"
                           >
-                            <Copy className="h-4 w-4" />
+                            <Copy className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() =>
                               router.push(`/admin/email/${template.id}/preview`)
                             }
-                            className="p-2 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
                             title="ดูตัวอย่าง"
                           >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() =>
@@ -720,7 +720,7 @@ export default function AdminEmailPage() {
                                 template.isActive,
                               )
                             }
-                            className={`p-2 border-[2px] border-black ${
+                            className={`p-1.5 border-[2px] border-black ${
                               template.isActive
                                 ? "bg-green-100 hover:bg-green-200"
                                 : "bg-gray-100 hover:bg-gray-200"
@@ -730,18 +730,18 @@ export default function AdminEmailPage() {
                             }
                           >
                             {template.isActive ? (
-                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                             ) : (
-                              <XCircle className="h-4 w-4 text-gray-400" />
+                              <XCircle className="h-3.5 w-3.5 text-gray-400" />
                             )}
                           </button>
                           {!template.isSystem && (
                             <button
                               onClick={() => handleDeleteTemplate(template.id)}
-                              className="p-2 border-[2px] border-black hover:bg-red-100 text-red-600"
+                              className="p-1.5 border-[2px] border-black hover:bg-red-100 text-red-600"
                               title="ลบ"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           )}
                         </div>
@@ -759,36 +759,36 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-4"
+              className="space-y-3"
             >
               {/* Toolbar */}
-              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+              <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
                 <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
                   <input
                     type="text"
                     placeholder="ค้นหาอีเวนต์..."
                     value={eventSearch}
                     onChange={(e) => setEventSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border-[3px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink"
+                    className="w-full pl-9 pr-3 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
                   />
                 </div>
                 <div className="flex gap-2">
                   {events.length === 0 && (
                     <button
                       onClick={handleSeedEvents}
-                      className="flex items-center gap-2 px-4 py-2 border-[3px] border-black bg-gray-100 hover:bg-gray-200 font-bold"
+                      className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 font-bold text-sm"
                     >
-                      <RefreshCw className="h-4 w-4" />
+                      <RefreshCw className="h-3.5 w-3.5" />
                       สร้างอีเวนต์เริ่มต้น
                     </button>
                   )}
                   <button
                     onClick={() => router.push("/admin/email/events/new")}
-                    className="flex items-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold"
-                    style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-3.5 w-3.5" />
                     สร้างอีเวนต์
                   </button>
                 </div>
@@ -796,41 +796,41 @@ export default function AdminEmailPage() {
 
               {/* Events List */}
               {isLoading ? (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
                 </div>
               ) : filteredEvents.length === 0 ? (
-                <div className="text-center py-12 bg-white border-[3px] border-black">
-                  <Bell className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500 mb-4">ไม่พบอีเวนต์</p>
+                <div className="text-center py-8 bg-white border-[2px] border-black">
+                  <Bell className="h-10 w-10 mx-auto text-gray-300 mb-3" />
+                  <p className="text-gray-500 mb-3 text-sm">ไม่พบอีเวนต์</p>
                   <button
                     onClick={handleSeedEvents}
-                    className="px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold"
+                    className="px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
                   >
                     สร้างอีเวนต์เริ่มต้น
                   </button>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                   {filteredEvents.map((event) => (
                     <motion.div
                       key={event.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white border-[3px] border-black p-4 hover:shadow-lg transition-shadow"
-                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                      className="bg-white border-[2px] border-black p-3 hover:shadow-lg transition-shadow"
+                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-bold text-lg">{event.name}</h3>
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <h3 className="font-bold text-base">{event.name}</h3>
                             {!event.isActive && (
-                              <span className="px-2 py-1 text-xs font-bold bg-red-100 text-red-700 border-[2px] border-red-300">
+                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 border-[1px] border-red-300">
                                 ปิดใช้งาน
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-600 text-sm mb-2">
+                          <p className="text-gray-600 text-xs mb-1.5">
                             <code className="bg-gray-100 px-1 py-0.5 rounded text-brutal-pink">
                               {event.code}
                             </code>
@@ -839,7 +839,7 @@ export default function AdminEmailPage() {
                               {event.triggerEvent}
                             </code>
                           </p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-3 text-xs text-gray-500">
                             <span>เทมเพลต: {event.template?.name || "-"}</span>
                             {event.delayMinutes > 0 && (
                               <span className="flex items-center gap-1">
@@ -849,21 +849,21 @@ export default function AdminEmailPage() {
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <button
                             onClick={() =>
                               router.push(`/admin/email/events/${event.id}`)
                             }
-                            className="p-2 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
                             title="แก้ไข"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() =>
                               handleToggleEvent(event.id, event.isActive)
                             }
-                            className={`p-2 border-[2px] border-black ${
+                            className={`p-1.5 border-[2px] border-black ${
                               event.isActive
                                 ? "bg-green-100 hover:bg-green-200"
                                 : "bg-gray-100 hover:bg-gray-200"
@@ -871,17 +871,17 @@ export default function AdminEmailPage() {
                             title={event.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                           >
                             {event.isActive ? (
-                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                             ) : (
-                              <XCircle className="h-4 w-4 text-gray-400" />
+                              <XCircle className="h-3.5 w-3.5 text-gray-400" />
                             )}
                           </button>
                           <button
                             onClick={() => handleDeleteEvent(event.id)}
-                            className="p-2 border-[2px] border-black hover:bg-red-100 text-red-600"
+                            className="p-1.5 border-[2px] border-black hover:bg-red-100 text-red-600"
                             title="ลบ"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       </div>
@@ -909,7 +909,7 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-6"
+              className="space-y-4"
             >
               <EmailBrandingSection
                 branding={branding}
@@ -925,55 +925,55 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-white border-[3px] border-black p-6"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-white border-[2px] border-black p-4"
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
             >
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Settings className="h-5 w-5" />
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Settings className="h-4 w-4" />
                 การตั้งค่า SMTP
               </h2>
 
               {smtpConfig ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-bold mb-1">
+                      <label className="block text-xs font-bold mb-1">
                         Host
                       </label>
-                      <p className="p-3 bg-gray-100 border-[2px] border-gray-200">
+                      <p className="p-2 bg-gray-100 border-[1px] border-gray-200 text-sm">
                         {smtpConfig.smtp.host}
                       </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold mb-1">
+                      <label className="block text-xs font-bold mb-1">
                         Port
                       </label>
-                      <p className="p-3 bg-gray-100 border-[2px] border-gray-200">
+                      <p className="p-2 bg-gray-100 border-[1px] border-gray-200 text-sm">
                         {smtpConfig.smtp.port}
                       </p>
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-sm font-bold mb-1">
+                      <label className="block text-xs font-bold mb-1">
                         From Email
                       </label>
-                      <p className="p-3 bg-gray-100 border-[2px] border-gray-200">
+                      <p className="p-2 bg-gray-100 border-[1px] border-gray-200 text-sm">
                         {smtpConfig.smtp.from}
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-yellow-50 border-[2px] border-yellow-300 mt-4">
-                    <p className="text-sm">
+                  <div className="p-3 bg-yellow-50 border-[1px] border-yellow-300 mt-3">
+                    <p className="text-xs">
                       <strong>หมายเหตุ:</strong> หากต้องการเปลี่ยนการตั้งค่า
                       SMTP กรุณาแก้ไขไฟล์ <code>.env</code> ในเซิร์ฟเวอร์
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <AlertCircle className="h-12 w-12 mx-auto text-red-500 mb-4" />
-                  <p className="text-gray-500 mb-4">SMTP ยังไม่ได้กำหนดค่า</p>
-                  <p className="text-sm text-gray-400">
+                <div className="text-center py-6">
+                  <AlertCircle className="h-10 w-10 mx-auto text-red-500 mb-3" />
+                  <p className="text-gray-500 mb-3 text-sm">SMTP ยังไม่ได้กำหนดค่า</p>
+                  <p className="text-xs text-gray-400">
                     กรุณาเพิ่มค่า SMTP_* ในไฟล์ .env
                   </p>
                 </div>
@@ -1030,51 +1030,51 @@ function EmailLogsSection() {
     switch (status) {
       case "SENT":
       case "DELIVERED":
-        return <CheckCircle className="h-4 w-4" />;
+        return <CheckCircle className="h-3.5 w-3.5" />;
       case "FAILED":
       case "BOUNCED":
-        return <XCircle className="h-4 w-4" />;
+        return <XCircle className="h-3.5 w-3.5" />;
       case "PENDING":
-        return <Clock className="h-4 w-4" />;
+        return <Clock className="h-3.5 w-3.5" />;
       default:
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-3.5 w-3.5" />;
     }
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+      <div className="flex justify-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
       </div>
     );
   }
 
   return (
     <div
-      className="bg-white border-[3px] border-black"
-      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      className="bg-white border-[2px] border-black"
+      style={{ boxShadow: "3px 3px 0 0 #000000" }}
     >
-      <div className="p-4 border-b-[3px] border-black bg-gray-50">
-        <h3 className="font-bold flex items-center gap-2">
-          <Clock className="h-5 w-5" />
+      <div className="p-3 border-b-[2px] border-black bg-gray-50">
+        <h3 className="font-bold flex items-center gap-2 text-base">
+          <Clock className="h-4 w-4" />
           ประวัติการส่งอีเมล
         </h3>
       </div>
 
       {logs.length === 0 ? (
-        <div className="text-center py-12">
-          <Mail className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-          <p className="text-gray-500">ยังไม่มีประวัติการส่งอีเมล</p>
+        <div className="text-center py-8">
+          <Mail className="h-10 w-10 mx-auto text-gray-300 mb-3" />
+          <p className="text-gray-500 text-sm">ยังไม่มีประวัติการส่งอีเมล</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b-[2px] border-gray-200 bg-gray-50">
-                <th className="text-left p-3 font-bold">ผู้รับ</th>
-                <th className="text-left p-3 font-bold">หัวข้อ</th>
-                <th className="text-left p-3 font-bold">สถานะ</th>
-                <th className="text-left p-3 font-bold">เวลา</th>
+              <tr className="border-b-[1px] border-gray-200 bg-gray-50">
+                <th className="text-left p-2 font-bold text-sm">ผู้รับ</th>
+                <th className="text-left p-2 font-bold text-sm">หัวข้อ</th>
+                <th className="text-left p-2 font-bold text-sm">สถานะ</th>
+                <th className="text-left p-2 font-bold text-sm">เวลา</th>
               </tr>
             </thead>
             <tbody>
@@ -1083,13 +1083,13 @@ function EmailLogsSection() {
                   key={log.id}
                   className="border-b border-gray-100 hover:bg-gray-50"
                 >
-                  <td className="p-3 text-sm">{log.recipient}</td>
-                  <td className="p-3 text-sm max-w-xs truncate">
+                  <td className="p-2 text-xs">{log.recipient}</td>
+                  <td className="p-2 text-xs max-w-xs truncate">
                     {log.subject}
                   </td>
-                  <td className="p-3">
+                  <td className="p-2">
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-bold border-[2px] ${getStatusBadge(
+                      className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold border-[1px] ${getStatusBadge(
                         log.status,
                       )}`}
                     >
@@ -1097,7 +1097,7 @@ function EmailLogsSection() {
                       {log.status}
                     </span>
                   </td>
-                  <td className="p-3 text-sm text-gray-500">
+                  <td className="p-2 text-xs text-gray-500">
                     {new Date(log.createdAt).toLocaleString("th-TH")}
                   </td>
                 </tr>
@@ -1108,21 +1108,21 @@ function EmailLogsSection() {
       )}
 
       {totalPages > 1 && (
-        <div className="p-4 border-t-[2px] border-gray-200 flex justify-center gap-2">
+        <div className="p-3 border-t-[2px] border-gray-200 flex justify-center gap-2">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 border-[2px] border-black disabled:opacity-50"
+            className="px-3 py-1.5 border-[2px] border-black disabled:opacity-50 text-sm"
           >
             ก่อนหน้า
           </button>
-          <span className="px-4 py-2 bg-gray-100 border-[2px] border-black">
+          <span className="px-3 py-1.5 bg-gray-100 border-[2px] border-black text-sm">
             {page} / {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 border-[2px] border-black disabled:opacity-50"
+            className="px-3 py-1.5 border-[2px] border-black disabled:opacity-50 text-sm"
           >
             ถัดไป
           </button>
@@ -1213,47 +1213,47 @@ function EmailBrandingSection({
     field: keyof EmailBranding;
   }) => (
     <div>
-      <label className="block text-sm font-bold mb-1">{label}</label>
+      <label className="block text-xs font-bold mb-1">{label}</label>
       <div className="flex items-center gap-2">
         <input
           type="color"
           value={value}
           onChange={(e) => update(field, e.target.value)}
-          className="w-10 h-10 border-[2px] border-black cursor-pointer"
+          className="w-8 h-8 border-[2px] border-black cursor-pointer"
         />
         <input
           type="text"
           value={value}
           onChange={(e) => update(field, e.target.value)}
-          className="flex-1 px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm font-mono"
+          className="flex-1 px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-xs font-mono"
         />
       </div>
     </div>
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Logo & Branding */}
       <div
-        className="bg-white border-[3px] border-black p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-white border-[2px] border-black p-4"
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-          <Image className="h-5 w-5" />
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <Image className="h-4 w-4" />
           โลโก้และแบรนด์
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-bold mb-1">URL โลโก้</label>
+            <label className="block text-xs font-bold mb-1">URL โลโก้</label>
             <input
               type="url"
               value={form.logoUrl || ""}
               onChange={(e) => update("logoUrl", e.target.value || null)}
               placeholder="https://example.com/logo.png"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
             {form.logoUrl && (
-              <div className="mt-3 p-4 bg-gray-50 border-[2px] border-gray-200 flex items-center justify-center">
+              <div className="mt-2 p-3 bg-gray-50 border-[2px] border-gray-200 flex items-center justify-center">
                 <img
                   src={form.logoUrl}
                   alt="Logo preview"
@@ -1269,21 +1269,21 @@ function EmailBrandingSection({
               </div>
             )}
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
-              <label className="block text-sm font-bold mb-1">
+              <label className="block text-xs font-bold mb-1">
                 ชื่อเว็บไซต์
               </label>
               <input
                 type="text"
                 value={form.siteName || ""}
                 onChange={(e) => update("siteName", e.target.value)}
-                className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+                className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-bold mb-1">
+                <label className="block text-xs font-bold mb-1">
                   ความกว้างโลโก้ (px)
                 </label>
                 <input
@@ -1292,11 +1292,11 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoWidth", parseInt(e.target.value))
                   }
-                  className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+                  className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-1">
+                <label className="block text-xs font-bold mb-1">
                   ความสูงโลโก้ (px)
                 </label>
                 <input
@@ -1305,7 +1305,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoHeight", parseInt(e.target.value))
                   }
-                  className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+                  className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
                 />
               </div>
             </div>
@@ -1314,9 +1314,9 @@ function EmailBrandingSection({
                 type="checkbox"
                 checked={form.showLogoInHeader ?? true}
                 onChange={(e) => update("showLogoInHeader", e.target.checked)}
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
               />
-              <span className="text-sm font-bold">แสดงโลโก้ใน Header</span>
+              <span className="text-xs font-bold">แสดงโลโก้ใน Header</span>
             </label>
           </div>
         </div>
@@ -1324,14 +1324,14 @@ function EmailBrandingSection({
 
       {/* Colors */}
       <div
-        className="bg-white border-[3px] border-black p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-white border-[2px] border-black p-4"
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-          <Palette className="h-5 w-5" />
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <Palette className="h-4 w-4" />
           สีของอีเมล
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <ColorInput
             label="สีหลัก"
             value={form.primaryColor || "#6366f1"}
@@ -1362,11 +1362,11 @@ function EmailBrandingSection({
 
       {/* Header Settings */}
       <div
-        className="bg-white border-[3px] border-black p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-white border-[2px] border-black p-4"
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <h2 className="text-xl font-bold mb-6">ตั้งค่า Header</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h2 className="text-lg font-bold mb-4">ตั้งค่า Header</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ColorInput
             label="สีพื้นหลัง Header"
             value={form.headerBgColor || "#6366f1"}
@@ -1378,7 +1378,7 @@ function EmailBrandingSection({
             field="headerTextColor"
           />
           <div className="md:col-span-2">
-            <label className="block text-sm font-bold mb-1">
+            <label className="block text-xs font-bold mb-1">
               ข้อความ Header (ไม่บังคับ)
             </label>
             <input
@@ -1386,17 +1386,17 @@ function EmailBrandingSection({
               value={form.headerText || ""}
               onChange={(e) => update("headerText", e.target.value || null)}
               placeholder="เช่น Lnwtermgame - บริการเติมเกมออนไลน์"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
         </div>
         {/* Header preview */}
-        <div className="mt-4">
-          <label className="block text-sm font-bold mb-2">
+        <div className="mt-3">
+          <label className="block text-xs font-bold mb-2">
             ตัวอย่าง Header
           </label>
           <div
-            className="p-6 text-center rounded"
+            className="p-4 text-center rounded"
             style={{
               backgroundColor: form.headerBgColor || "#1E3A8A",
             }}
@@ -1415,7 +1415,7 @@ function EmailBrandingSection({
             )}
             {form.headerText && (
               <p
-                className="mt-2 text-lg font-bold"
+                className="mt-2 text-base font-bold"
                 style={{ color: form.headerTextColor || "#ffffff" }}
               >
                 {form.headerText}
@@ -1424,7 +1424,7 @@ function EmailBrandingSection({
             {!form.logoUrl && !form.headerText && (
               <p
                 style={{ color: form.headerTextColor || "#ffffff" }}
-                className="font-bold text-lg"
+                className="font-bold text-base"
               >
                 {form.siteName || "Lnwtermgame"}
               </p>
@@ -1435,11 +1435,11 @@ function EmailBrandingSection({
 
       {/* Footer Settings */}
       <div
-        className="bg-white border-[3px] border-black p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-white border-[2px] border-black p-4"
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <h2 className="text-xl font-bold mb-6">ตั้งค่า Footer</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h2 className="text-lg font-bold mb-4">ตั้งค่า Footer</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ColorInput
             label="สีพื้นหลัง Footer"
             value={form.footerBgColor || "#f9fafb"}
@@ -1451,7 +1451,7 @@ function EmailBrandingSection({
             field="footerTextColor"
           />
           <div>
-            <label className="block text-sm font-bold mb-1">
+            <label className="block text-xs font-bold mb-1">
               ข้อความ Footer
             </label>
             <input
@@ -1459,11 +1459,11 @@ function EmailBrandingSection({
               value={form.footerText || ""}
               onChange={(e) => update("footerText", e.target.value || null)}
               placeholder="ข้อความแสดงใน Footer"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">
+            <label className="block text-xs font-bold mb-1">
               ข้อความลิขสิทธิ์
             </label>
             <input
@@ -1471,19 +1471,19 @@ function EmailBrandingSection({
               value={form.copyrightText || ""}
               onChange={(e) => update("copyrightText", e.target.value || null)}
               placeholder={`© ${new Date().getFullYear()} Lnwtermgame. All rights reserved.`}
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
         </div>
-        <div className="mt-4 space-y-3">
+        <div className="mt-3 space-y-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={form.showSocialLinks ?? true}
               onChange={(e) => update("showSocialLinks", e.target.checked)}
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
             />
-            <span className="text-sm font-bold">
+            <span className="text-xs font-bold">
               แสดงลิงก์โซเชียลมีเดียใน Footer
             </span>
           </label>
@@ -1492,9 +1492,9 @@ function EmailBrandingSection({
               type="checkbox"
               checked={form.showUnsubscribe ?? true}
               onChange={(e) => update("showUnsubscribe", e.target.checked)}
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
             />
-            <span className="text-sm font-bold">
+            <span className="text-xs font-bold">
               แสดงลิงก์ยกเลิกการรับข่าวสาร
             </span>
           </label>
@@ -1503,115 +1503,115 @@ function EmailBrandingSection({
 
       {/* Social Links */}
       <div
-        className="bg-white border-[3px] border-black p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-white border-[2px] border-black p-4"
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-          <Globe className="h-5 w-5" />
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <Globe className="h-4 w-4" />
           โซเชียลมีเดียและข้อมูลติดต่อ
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-bold mb-1">Facebook</label>
+            <label className="block text-xs font-bold mb-1">Facebook</label>
             <input
               type="url"
               value={form.facebookUrl || ""}
               onChange={(e) => update("facebookUrl", e.target.value || null)}
               placeholder="https://facebook.com/..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">LINE</label>
+            <label className="block text-xs font-bold mb-1">LINE</label>
             <input
               type="url"
               value={form.lineUrl || ""}
               onChange={(e) => update("lineUrl", e.target.value || null)}
               placeholder="https://line.me/..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">Discord</label>
+            <label className="block text-xs font-bold mb-1">Discord</label>
             <input
               type="url"
               value={form.discordUrl || ""}
               onChange={(e) => update("discordUrl", e.target.value || null)}
               placeholder="https://discord.gg/..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">Twitter/X</label>
+            <label className="block text-xs font-bold mb-1">Twitter/X</label>
             <input
               type="url"
               value={form.twitterUrl || ""}
               onChange={(e) => update("twitterUrl", e.target.value || null)}
               placeholder="https://twitter.com/..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">YouTube</label>
+            <label className="block text-xs font-bold mb-1">YouTube</label>
             <input
               type="url"
               value={form.youtubeUrl || ""}
               onChange={(e) => update("youtubeUrl", e.target.value || null)}
               placeholder="https://youtube.com/..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">Instagram</label>
+            <label className="block text-xs font-bold mb-1">Instagram</label>
             <input
               type="url"
               value={form.instagramUrl || ""}
               onChange={(e) => update("instagramUrl", e.target.value || null)}
               placeholder="https://instagram.com/..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
         </div>
 
-        <hr className="my-6 border-gray-200" />
+        <hr className="my-4 border-gray-200" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-bold mb-1 flex items-center gap-1">
-              <MailIcon className="h-4 w-4" /> อีเมลฝ่ายสนับสนุน
+            <label className="block text-xs font-bold mb-1 flex items-center gap-1">
+              <MailIcon className="h-3.5 w-3.5" /> อีเมลฝ่ายสนับสนุน
             </label>
             <input
               type="email"
               value={form.supportEmail || ""}
               onChange={(e) => update("supportEmail", e.target.value || null)}
               placeholder="support@example.com"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1 flex items-center gap-1">
-              <Phone className="h-4 w-4" /> เบอร์โทรศัพท์
+            <label className="block text-xs font-bold mb-1 flex items-center gap-1">
+              <Phone className="h-3.5 w-3.5" /> เบอร์โทรศัพท์
             </label>
             <input
               type="text"
               value={form.supportPhone || ""}
               onChange={(e) => update("supportPhone", e.target.value || null)}
               placeholder="02-xxx-xxxx"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">URL เว็บไซต์</label>
+            <label className="block text-xs font-bold mb-1">URL เว็บไซต์</label>
             <input
               type="url"
               value={form.websiteUrl || ""}
               onChange={(e) => update("websiteUrl", e.target.value || null)}
               placeholder="https://www.example.com"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">
+            <label className="block text-xs font-bold mb-1">
               URL ยกเลิกรับข่าวสาร
             </label>
             <input
@@ -1619,26 +1619,26 @@ function EmailBrandingSection({
               value={form.unsubscribeUrl || ""}
               onChange={(e) => update("unsubscribeUrl", e.target.value || null)}
               placeholder="https://www.example.com/unsubscribe"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
         </div>
 
-        <hr className="my-6 border-gray-200" />
+        <hr className="my-4 border-gray-200" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-bold mb-1">ชื่อบริษัท</label>
+            <label className="block text-xs font-bold mb-1">ชื่อบริษัท</label>
             <input
               type="text"
               value={form.companyName || ""}
               onChange={(e) => update("companyName", e.target.value || null)}
               placeholder="บริษัท ตัวอย่าง จำกัด"
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">
+            <label className="block text-xs font-bold mb-1">
               ที่อยู่บริษัท
             </label>
             <input
@@ -1646,7 +1646,7 @@ function EmailBrandingSection({
               value={form.companyAddress || ""}
               onChange={(e) => update("companyAddress", e.target.value || null)}
               placeholder="123 ถนนตัวอย่าง แขวง/ตำบล..."
-              className="w-full px-3 py-2 border-[2px] border-gray-300 focus:border-black focus:outline-none"
+              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1654,28 +1654,28 @@ function EmailBrandingSection({
 
       {/* Tracking */}
       <div
-        className="bg-white border-[3px] border-black p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-white border-[2px] border-black p-4"
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <h2 className="text-xl font-bold mb-4">การติดตาม</h2>
-        <div className="flex flex-wrap gap-6">
+        <h2 className="text-lg font-bold mb-3">การติดตาม</h2>
+        <div className="flex flex-wrap gap-4">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={form.trackOpens ?? true}
               onChange={(e) => update("trackOpens", e.target.checked)}
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
             />
-            <span className="text-sm font-bold">ติดตามการเปิดอ่าน</span>
+            <span className="text-xs font-bold">ติดตามการเปิดอ่าน</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={form.trackClicks ?? true}
               onChange={(e) => update("trackClicks", e.target.checked)}
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
             />
-            <span className="text-sm font-bold">ติดตามการคลิกลิงก์</span>
+            <span className="text-xs font-bold">ติดตามการคลิกลิงก์</span>
           </label>
         </div>
       </div>
@@ -1685,26 +1685,26 @@ function EmailBrandingSection({
         <button
           onClick={() => onSave(form)}
           disabled={isSaving}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-brutal-pink text-white border-[3px] border-black font-bold disabled:opacity-50"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[2px] border-black font-bold disabled:opacity-50 text-sm"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
         >
           {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <Save className="h-4 w-4" />
+            <Save className="h-3.5 w-3.5" />
           )}
           บันทึกการตั้งค่า
         </button>
         <button
           onClick={handlePreview}
           disabled={isLoadingPreview}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-white border-[3px] border-black font-bold hover:bg-gray-50 disabled:opacity-50"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-white border-[2px] border-black font-bold hover:bg-gray-50 disabled:opacity-50 text-sm"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
         >
           {isLoadingPreview ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <Eye className="h-4 w-4" />
+            <Eye className="h-3.5 w-3.5" />
           )}
           บันทึกและดูตัวอย่างอีเมล
         </button>
@@ -1713,25 +1713,25 @@ function EmailBrandingSection({
       {/* Email Preview */}
       {previewHtml && (
         <div
-          className="bg-white border-[3px] border-black"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-white border-[2px] border-black"
+          style={{ boxShadow: "3px 3px 0 0 #000000" }}
         >
-          <div className="p-4 border-b-[3px] border-black bg-gray-50 flex items-center justify-between">
-            <h3 className="font-bold flex items-center gap-2">
-              <Eye className="h-5 w-5" />
+          <div className="p-3 border-b-[2px] border-black bg-gray-50 flex items-center justify-between">
+            <h3 className="font-bold flex items-center gap-2 text-sm">
+              <Eye className="h-4 w-4" />
               ตัวอย่างอีเมล
             </h3>
             <button
               onClick={() => setPreviewHtml("")}
               className="p-1 hover:bg-gray-200 rounded"
             >
-              <XCircle className="h-4 w-4" />
+              <XCircle className="h-3.5 w-3.5" />
             </button>
           </div>
-          <div className="p-4">
+          <div className="p-3">
             <iframe
               srcDoc={previewHtml}
-              className="w-full border-[2px] border-gray-200 rounded"
+              className="w-full border-[1px] border-gray-200 rounded"
               style={{ minHeight: 600 }}
               title="Email Preview"
             />
@@ -1746,14 +1746,14 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className={`p-4 border-[3px] ${statColorClasses[color]}`}
-      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+      className={`p-3 border-[2px] ${statColorClasses[color]}`}
+      style={{ boxShadow: "2px 2px 0 0 #000000" }}
     >
       <div className="flex items-center justify-between">
-        <span className="font-medium">{title}</span>
-        <span className="p-2 bg-white border-[2px] border-black">{icon}</span>
+        <span className="font-medium text-sm">{title}</span>
+        <span className="p-1.5 bg-white border-[1px] border-black">{icon}</span>
       </div>
-      <div className="text-2xl font-bold mt-2">{value}</div>
+      <div className="text-xl font-bold mt-1">{value}</div>
     </motion.div>
   );
 }

@@ -211,24 +211,24 @@ export default function OrderViewPage() {
   const status = statusConfig[order.status] || statusConfig.PENDING;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="flex items-center gap-3">
           <Link
             href="/admin/orders"
-            className="p-2 bg-white border-[3px] border-black hover:bg-gray-100 transition-colors"
+            className="p-1.5 bg-white border-[3px] border-black hover:bg-gray-100 transition-colors"
             style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-black flex items-center gap-2">
-              <Package className="h-6 w-6 text-brutal-pink" />
+            <h1 className="text-xl font-black text-black flex items-center gap-2">
+              <Package className="h-5 w-5 text-brutal-pink" />
               คำสั่งซื้อ #
               {order.orderNumber || order.id.slice(-8).toUpperCase()}
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs">
               รายละเอียดและจัดการคำสั่งซื้อ
             </p>
           </div>
@@ -237,10 +237,10 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchOrder}
-            className="flex items-center gap-2 px-4 py-2.5 bg-brutal-yellow border-[3px] border-black font-bold hover:bg-brutal-yellow/90 transition-all hover:-translate-y-0.5"
+            className="flex items-center gap-2 px-3 py-1.5 bg-brutal-yellow border-[3px] border-black font-bold hover:bg-brutal-yellow/90 transition-all hover:-translate-y-0.5 text-sm"
             style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-3 w-3" />
             รีเฟรช
           </button>
         </div>
@@ -250,43 +250,43 @@ export default function OrderViewPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${status.bgColor} border-[3px] border-black p-4 flex items-center justify-between print:hidden`}
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className={`${status.bgColor} border-[3px] border-black p-3 flex items-center justify-between print:hidden`}
+        style={{ boxShadow: "3px 3px 0 0 #000000" }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <div
-            className={`p-2 bg-white border-[2px] border-black ${status.color}`}
+            className={`p-1.5 bg-white border-[2px] border-black ${status.color}`}
           >
             {status.icon}
           </div>
           <div>
-            <p className="text-sm text-gray-600">สถานะคำสั่งซื้อ</p>
-            <p className={`text-lg font-bold ${status.color}`}>
+            <p className="text-xs text-gray-600">สถานะคำสั่งซื้อ</p>
+            <p className={`text-base font-bold ${status.color}`}>
               {status.label}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-sm text-gray-600">วันที่สั่งซื้อ</p>
-          <p className="font-bold text-black">{formatDate(order.createdAt)}</p>
+          <p className="text-xs text-gray-600">วันที่สั่งซื้อ</p>
+          <p className="font-bold text-black text-sm">{formatDate(order.createdAt)}</p>
         </div>
       </motion.div>
 
       {/* Order Management Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 print:hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 print:hidden">
         {/* Left Column - Order Details */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4">
           {/* Items */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2">
-                <Package className="h-5 w-5 text-brutal-blue" />
+            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
+              <h2 className="font-bold text-black flex items-center gap-2 text-base">
+                <Package className="h-4 w-4 text-brutal-blue" />
                 รายการสินค้า
               </h2>
             </div>
@@ -297,23 +297,23 @@ export default function OrderViewPage() {
                 return (
                   <div
                     key={item.id}
-                    className="p-4 flex items-center justify-between"
+                    className="p-3 flex items-center justify-between"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-brutal-gray border-[2px] border-black flex items-center justify-center font-bold text-gray-600">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-brutal-gray border-[2px] border-black flex items-center justify-center font-bold text-gray-600 text-xs">
                         {index + 1}
                       </div>
                       <div>
-                        <p className="font-bold text-black">
+                        <p className="font-bold text-black text-sm">
                           {item.productName || "สินค้า"}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs text-gray-600">
                           จำนวน: {item.quantity} | ราคา:{" "}
                           {formatPrice(item.priceAtPurchase || item.price || 0)}
                         </p>
                         {item.playerInfo &&
                           Object.keys(item.playerInfo).length > 0 && (
-                            <div className="mt-2 text-xs text-gray-500 bg-gray-100 p-2 border border-gray-300">
+                            <div className="mt-1 text-[10px] text-gray-500 bg-gray-100 p-1.5 border border-gray-300">
                               {Object.entries(item.playerInfo).map(
                                 ([key, value]) => (
                                   <div key={key}>
@@ -327,7 +327,7 @@ export default function OrderViewPage() {
                     </div>
                     <div className="text-right">
                       <span
-                        className={`inline-flex items-center px-3 py-1 border-[2px] border-black text-xs font-bold ${itemStatus.bgColor} ${itemStatus.color}`}
+                        className={`inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold ${itemStatus.bgColor} ${itemStatus.color}`}
                       >
                         {itemStatus.label}
                       </span>
@@ -344,27 +344,27 @@ export default function OrderViewPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-brutal-green" />
+            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
+              <h2 className="font-bold text-black flex items-center gap-2 text-base">
+                <CreditCard className="h-4 w-4 text-brutal-green" />
                 สรุปการชำระเงิน
               </h2>
             </div>
-            <div className="p-4 space-y-3">
-              <div className="flex justify-between text-gray-600">
+            <div className="p-3 space-y-2">
+              <div className="flex justify-between text-gray-600 text-sm">
                 <span>ยอดรวมสินค้า</span>
                 <span>{formatPrice(order.totalAmount)}</span>
               </div>
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-gray-600 text-sm">
                 <span>ส่วนลด</span>
                 <span className="text-green-600">
                   -{formatPrice(order.discountAmount)}
                 </span>
               </div>
-              <div className="border-t-[2px] border-gray-200 pt-3">
-                <div className="flex justify-between text-xl font-bold text-black">
+              <div className="border-t-[2px] border-gray-200 pt-2">
+                <div className="flex justify-between text-lg font-bold text-black">
                   <span>ยอดสุทธิ</span>
                   <span className="text-brutal-pink">
                     {formatPrice(order.finalAmount)}
@@ -376,44 +376,44 @@ export default function OrderViewPage() {
         </div>
 
         {/* Right Column - Customer & Actions */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Customer Info */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2">
-                <User className="h-5 w-5 text-brutal-purple" />
+            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
+              <h2 className="font-bold text-black flex items-center gap-2 text-base">
+                <User className="h-4 w-4 text-brutal-purple" />
                 ข้อมูลลูกค้า
               </h2>
             </div>
-            <div className="p-4 space-y-4">
+            <div className="p-3 space-y-3">
               {order.user ? (
                 <>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-brutal-yellow border-[2px] border-black flex items-center justify-center">
-                      <User className="h-6 w-6 text-black" />
+                    <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center">
+                      <User className="h-5 w-5 text-black" />
                     </div>
                     <div>
-                      <p className="font-bold text-black">
+                      <p className="font-bold text-black text-sm">
                         {order.user.username || "ไม่ระบุชื่อ"}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-gray-600">
                         ID: {order.user.id.slice(-8).toUpperCase()}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600 bg-gray-50 p-3 border border-gray-200">
-                    <Mail className="h-4 w-4" />
-                    <span className="text-sm">{order.user.email}</span>
+                  <div className="flex items-center gap-2 text-gray-600 bg-gray-50 p-2 border border-gray-200">
+                    <Mail className="h-3 w-3" />
+                    <span className="text-xs">{order.user.email}</span>
                   </div>
                 </>
               ) : (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-500 text-center py-3 text-sm">
                   ไม่พบข้อมูลลูกค้า
                 </p>
               )}
@@ -426,31 +426,31 @@ export default function OrderViewPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2">
-                <FileText className="h-5 w-5 text-brutal-yellow" />
+            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
+              <h2 className="font-bold text-black flex items-center gap-2 text-base">
+                <FileText className="h-4 w-4 text-brutal-yellow" />
                 ข้อมูลคำสั่งซื้อ
               </h2>
             </div>
-            <div className="p-4 space-y-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Tag className="h-4 w-4 text-gray-400" />
+            <div className="p-3 space-y-2">
+              <div className="flex items-center gap-2 text-xs">
+                <Tag className="h-3 w-3 text-gray-400" />
                 <span className="text-gray-600">รหัสคำสั่งซื้อ:</span>
                 <span className="font-mono font-bold text-black">
                   {order.id}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 text-xs">
+                <Calendar className="h-3 w-3 text-gray-400" />
                 <span className="text-gray-600">สร้างเมื่อ:</span>
                 <span className="font-bold text-black">
                   {formatDate(order.createdAt)}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <RefreshCw className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 text-xs">
+                <RefreshCw className="h-3 w-3 text-gray-400" />
                 <span className="text-gray-600">อัปเดตล่าสุด:</span>
                 <span className="font-bold text-black">
                   {formatDate(order.updatedAt)}
@@ -465,21 +465,21 @@ export default function OrderViewPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <div className="p-4 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black">จัดการคำสั่งซื้อ</h2>
+            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
+              <h2 className="font-bold text-black text-base">จัดการคำสั่งซื้อ</h2>
             </div>
-            <div className="p-4 space-y-4">
+            <div className="p-3 space-y-3">
               {/* Status Update */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1.5">
                   อัปเดตสถานะ
                 </label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-white border-[3px] border-black px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brutal-blue"
+                  className="w-full bg-white border-[2px] border-black px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-brutal-blue text-sm"
                 >
                   <option value="PENDING">รอดำเนินการ</option>
                   <option value="PROCESSING">กำลังดำเนินการ</option>
@@ -492,17 +492,17 @@ export default function OrderViewPage() {
               <button
                 onClick={handleUpdateStatus}
                 disabled={updating || selectedStatus === order.status}
-                className="w-full py-2 bg-brutal-blue hover:bg-brutal-blue/90 text-white font-bold border-[3px] border-black transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-1.5 bg-brutal-blue hover:bg-brutal-blue/90 text-white font-bold border-[2px] border-black transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 style={{
                   boxShadow:
                     updating || selectedStatus === order.status
                       ? "none"
-                      : "3px 3px 0 0 #000000",
+                      : "2px 2px 0 0 #000000",
                 }}
               >
                 {updating ? (
                   <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin" />
                     กำลังอัปเดต...
                   </span>
                 ) : (
@@ -515,14 +515,14 @@ export default function OrderViewPage() {
                 <button
                   onClick={handleFulfill}
                   disabled={updating}
-                  className="w-full py-2 bg-brutal-green hover:bg-brutal-green/90 text-black font-bold border-[3px] border-black transition-all hover:-translate-y-0.5 disabled:opacity-50"
+                  className="w-full py-1.5 bg-brutal-green hover:bg-brutal-green/90 text-black font-bold border-[2px] border-black transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
                   style={{
-                    boxShadow: updating ? "none" : "3px 3px 0 0 #000000",
+                    boxShadow: updating ? "none" : "2px 2px 0 0 #000000",
                   }}
                 >
                   {updating ? (
                     <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-3 w-3 animate-spin" />
                       กำลังดำเนินการ...
                     </span>
                   ) : (
@@ -536,8 +536,8 @@ export default function OrderViewPage() {
                 order.status === "PROCESSING") && (
                 <button
                   onClick={() => setSelectedStatus("CANCELLED")}
-                  className="w-full py-2 bg-red-100 hover:bg-red-200 text-red-700 font-bold border-[3px] border-red-500 transition-all hover:-translate-y-0.5"
-                  style={{ boxShadow: "3px 3px 0 0 #ef4444" }}
+                  className="w-full py-1.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold border-[2px] border-red-500 transition-all hover:-translate-y-0.5 text-sm"
+                  style={{ boxShadow: "2px 2px 0 0 #ef4444" }}
                 >
                   ยกเลิกคำสั่งซื้อ
                 </button>

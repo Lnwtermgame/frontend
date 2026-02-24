@@ -118,23 +118,23 @@ export function Footer() {
 
   return (
     <footer className="bg-white border-t-[3px] border-black mt-auto">
-      <div className="container mx-auto px-4 py-8 md:py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
-          <div className="lg:col-span-4 space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
+      <div className="container mx-auto px-4 py-6 md:py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8">
+          <div className="lg:col-span-4 space-y-3 flex flex-col items-center md:items-start text-center md:text-left">
             <Link href="/" className="inline-block">
               {logoUrl ? (
                 <div className="flex items-center gap-2">
                   <img
                     src={logoUrl}
                     alt={siteName}
-                    className="h-10 w-10 rounded border-[2px] border-black object-cover"
+                    className="h-8 w-8 rounded border-[2px] border-black object-cover"
                   />
-                  <span className="font-black text-2xl text-black">
+                  <span className="font-black text-xl text-black">
                     {siteName}
                   </span>
                 </div>
               ) : (
-                <div className="font-black text-2xl flex items-center">
+                <div className="font-black text-xl flex items-center">
                   <span className="text-brutal-pink">
                     {siteName.slice(0, 4) || "Mali"}
                   </span>
@@ -145,12 +145,12 @@ export function Footer() {
               )}
             </Link>
 
-            <p className="text-gray-600 text-sm leading-relaxed max-w-sm">
+            <p className="text-gray-600 text-xs leading-relaxed max-w-sm">
               {siteTagline}
             </p>
 
             <div className="space-y-2">
-              <p className="text-xs font-bold text-black flex items-center">
+              <p className="text-[10px] font-bold text-black flex items-center">
                 <span className="w-1 h-3 bg-brutal-blue mr-2 rounded-sm"></span>
                 ติดต่อเรา
               </p>
@@ -160,15 +160,15 @@ export function Footer() {
                   className="flex items-center text-gray-600 hover:text-black transition-colors group"
                 >
                   <div
-                    className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink group-hover:text-white transition-colors"
+                    className="w-7 h-7 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink group-hover:text-white transition-colors"
                     style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
                     <Mail
-                      size={14}
+                      size={12}
                       className="text-black group-hover:text-white"
                     />
                   </div>
-                  <span className="text-sm font-medium">{supportEmail}</span>
+                  <span className="text-xs font-medium">{supportEmail}</span>
                 </a>
 
                 {supportPhone && (
@@ -177,12 +177,12 @@ export function Footer() {
                     className="flex items-center text-gray-600 hover:text-black transition-colors group"
                   >
                     <div
-                      className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
+                      className="w-7 h-7 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
-                      <Phone size={14} className="text-black" />
+                      <Phone size={12} className="text-black" />
                     </div>
-                    <span className="text-sm font-medium">{supportPhone}</span>
+                    <span className="text-xs font-medium">{supportPhone}</span>
                   </a>
                 )}
 
@@ -192,12 +192,12 @@ export function Footer() {
                     className="flex items-center text-gray-600 hover:text-black transition-colors group"
                   >
                     <div
-                      className="w-8 h-8 bg-brutal-green border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
+                      className="w-7 h-7 bg-brutal-green border-[2px] border-black flex items-center justify-center mr-2 group-hover:bg-brutal-pink transition-colors"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
-                      <MessageCircle size={14} className="text-black" />
+                      <MessageCircle size={12} className="text-black" />
                     </div>
-                    <span className="text-sm font-medium">
+                    <span className="text-xs font-medium">
                       แชทสดตลอด 24 ชั่วโมง
                     </span>
                   </Link>
@@ -214,12 +214,12 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
+                    className="w-8 h-8 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
                     style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    whileHover={{ y: -3, boxShadow: "4px 4px 0 0 #000000" }}
+                    whileHover={{ y: -3, boxShadow: "3px 3px 0 0 #000000" }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <social.icon size={18} />
+                    <social.icon size={16} />
                   </motion.a>
                 ))}
               </div>
@@ -227,11 +227,11 @@ export function Footer() {
           </div>
 
           <div className="lg:col-span-2 hidden md:block">
-            <h3 className="text-black font-bold mb-4 text-sm flex items-center">
-              <span className="w-1.5 h-4 bg-brutal-pink mr-2 rounded-sm"></span>
+            <h3 className="text-black font-bold mb-3 text-xs flex items-center">
+              <span className="w-1.5 h-3 bg-brutal-pink mr-2 rounded-sm"></span>
               ลิงก์ด่วน
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {visibleQuickLinks.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -239,10 +239,10 @@ export function Footer() {
                     className="flex items-center text-gray-600 hover:text-black transition-colors group"
                   >
                     <item.icon
-                      size={14}
+                      size={12}
                       className="mr-2 text-gray-400 group-hover:text-brutal-pink transition-colors"
                     />
-                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-xs font-medium">{item.label}</span>
                   </Link>
                 </li>
               ))}
@@ -250,16 +250,16 @@ export function Footer() {
           </div>
 
           <div className="lg:col-span-2 hidden md:block">
-            <h3 className="text-black font-bold mb-4 text-sm flex items-center">
-              <span className="w-1.5 h-4 bg-brutal-blue mr-2 rounded-sm"></span>
+            <h3 className="text-black font-bold mb-3 text-xs flex items-center">
+              <span className="w-1.5 h-3 bg-brutal-blue mr-2 rounded-sm"></span>
               ช่วยเหลือ
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {visibleSupportLinks.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-gray-600 hover:text-black text-sm font-medium transition-colors"
+                    className="text-gray-600 hover:text-black text-xs font-medium transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -269,15 +269,15 @@ export function Footer() {
           </div>
 
           <div className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
-            <h3 className="text-black font-bold mb-4 text-sm flex items-center">
-              <span className="w-1.5 h-4 bg-brutal-yellow mr-2 rounded-sm"></span>
+            <h3 className="text-black font-bold mb-3 text-xs flex items-center">
+              <span className="w-1.5 h-3 bg-brutal-yellow mr-2 rounded-sm"></span>
               ช่องทางชำระเงิน
             </h3>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {paymentMethods.map((method) => (
                 <div
                   key={method.name}
-                  className="bg-white border-[2px] border-black rounded-sm p-2 h-12 flex items-center justify-center relative hover:-translate-y-0.5 transition-transform"
+                  className="bg-white border-[2px] border-black rounded-sm p-1.5 h-10 flex items-center justify-center relative hover:-translate-y-0.5 transition-transform"
                   style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 >
                   <img
@@ -288,31 +288,31 @@ export function Footer() {
                 </div>
               ))}
             </div>
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-[10px] text-gray-500 mt-2">
               รองรับการชำระเงินผ่านบัตรเครดิต/เดบิต และ e-Wallet ทุกประเภท
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 py-6 mt-6 border-t-[2px] border-b-[2px] border-black">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 py-4 mt-4 border-t-[2px] border-b-[2px] border-black">
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              className="flex items-center gap-3 p-3 bg-brutal-gray border-[2px] border-black"
+              className="flex items-center gap-2.5 p-2.5 bg-brutal-gray border-[2px] border-black"
               style={{ boxShadow: "3px 3px 0 0 #000000" }}
               whileHover={{ y: -2, boxShadow: "4px 4px 0 0 #000000" }}
             >
               <div
-                className={`w-10 h-10 ${feature.color} border-[2px] border-black flex items-center justify-center flex-shrink-0`}
+                className={`w-8 h-8 ${feature.color} border-[2px] border-black flex items-center justify-center flex-shrink-0`}
                 style={{ boxShadow: "2px 2px 0 0 #000000" }}
               >
-                <feature.icon className="text-black" size={18} />
+                <feature.icon className="text-black" size={16} />
               </div>
               <div className="min-w-0">
-                <p className="text-black font-bold text-xs md:text-sm truncate">
+                <p className="text-black font-bold text-xs truncate">
                   {feature.title}
                 </p>
-                <p className="text-gray-500 text-[10px] md:text-xs hidden sm:block truncate">
+                <p className="text-gray-500 text-[10px] hidden sm:block truncate">
                   {feature.desc}
                 </p>
               </div>
@@ -320,11 +320,11 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-xs text-gray-500 font-medium text-center md:text-left">
+        <div className="pt-4 flex flex-col md:flex-row justify-between items-center gap-3">
+          <div className="text-[10px] text-gray-500 font-medium text-center md:text-left">
             &copy; {year} {siteName} สงวนลิขสิทธิ์
           </div>
-          <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
+          <div className="flex flex-wrap justify-center gap-3 text-[10px] text-gray-500">
             <Link
               href="/privacy"
               className="hover:text-black font-medium transition-colors"

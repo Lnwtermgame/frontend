@@ -331,31 +331,31 @@ export default function AdminAnalyticsPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-white border-[3px] border-black p-6"
-      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      className="bg-white border-[2px] border-black p-2"
+      style={{ boxShadow: "2px 2px 0 0 #000000" }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 ${color}`}>
-          <Icon className="h-6 w-6 text-white" />
+      <div className="flex items-center justify-between mb-1.5">
+        <div className={`p-1.5 ${color}`}>
+          <Icon className="h-3 w-3 text-white" />
         </div>
         <div
-          className={`flex items-center text-sm font-medium ${
+          className={`flex items-center text-[9px] font-medium ${
             change >= 0 ? "text-green-600" : "text-red-600"
           }`}
         >
           {change >= 0 ? (
-            <TrendingUp className="h-4 w-4 mr-1" />
+            <TrendingUp className="h-2.5 w-2.5 mr-1" />
           ) : (
-            <TrendingDown className="h-4 w-4 mr-1" />
+            <TrendingDown className="h-2.5 w-2.5 mr-1" />
           )}
           {formatPercent(change)}%
         </div>
       </div>
-      <h3 className="text-gray-600 text-sm font-medium">{title}</h3>
-      <p className="text-2xl font-bold text-black mt-1">{value}</p>
+      <h3 className="text-gray-600 text-[9px] font-medium">{title}</h3>
+      <p className="text-base font-bold text-black mt-0.5">{value}</p>
     </motion.div>
   );
 
@@ -381,17 +381,17 @@ export default function AdminAnalyticsPage() {
 
   return (
     <AdminLayout title="วิเคราะห์">
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-pink mr-2"></span>
-            <h1 className="text-2xl font-bold text-black">วิเคราะห์</h1>
+            <span className="w-1.5 h-3.5 bg-brutal-pink mr-2"></span>
+            <h1 className="text-base font-bold text-black">วิเคราะห์</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-white border-[2px] border-gray-300 text-black px-4 py-2 focus:border-black focus:outline-none"
+              className="bg-white border-[2px] border-gray-300 text-black px-2 py-1 text-[10px] focus:border-black focus:outline-none"
             >
               <option value="24h">24 ชั่วโมง</option>
               <option value="7d">7 วัน</option>
@@ -400,31 +400,31 @@ export default function AdminAnalyticsPage() {
             </select>
             <button
               onClick={fetchAnalyticsData}
-              className="bg-white text-black border-[3px] border-black px-4 py-2 hover:bg-gray-50 transition-colors flex items-center font-medium"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-white text-black border-[2px] border-black px-2 py-1 text-[10px] hover:bg-gray-50 transition-colors flex items-center font-medium"
+              style={{ boxShadow: "1px 1px 0 0 #000000" }}
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className="h-3 w-3 mr-1" />
               รีเฟรช
             </button>
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="bg-black text-white border-[3px] border-black px-4 py-2 hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-black text-white border-[2px] border-black px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70"
+              style={{ boxShadow: "1px 1px 0 0 #000000" }}
             >
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-3 w-3 mr-1" />
               {isExporting ? "กำลังส่งออก..." : "ส่งออก"}
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3">
+          <div className="bg-red-100 border-[2px] border-red-500 text-red-700 px-3 py-2 text-[10px]">
             ไม่สามารถโหลดข้อมูลได้: {error}
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           <StatCard
             title="รายได้ทั้งหมด"
             value={formatCurrency(statValues.revenue.current)}
@@ -455,21 +455,21 @@ export default function AdminAnalyticsPage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           <motion.div
-            className="lg:col-span-2 bg-white border-[3px] border-black p-6"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="lg:col-span-2 bg-white border-[2px] border-black p-2"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
-                <BarChart3 className="h-5 w-5 text-brutal-pink mr-2" />
-                <h3 className="text-lg font-semibold text-black">ยอดขาย</h3>
+                <BarChart3 className="h-3 w-3 text-brutal-pink mr-1.5" />
+                <h3 className="text-xs font-semibold text-black">ยอดขาย</h3>
               </div>
             </div>
-            <div className="h-64 flex items-end justify-between gap-2">
+            <div className="h-40 flex items-end justify-between gap-2">
               {salesChartData.map((item, index) => {
                 const rawHeight =
                   maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
@@ -490,14 +490,14 @@ export default function AdminAnalyticsPage() {
                       style={{ height: `${height}%` }}
                       title={`${item.label}: ${formatCurrency(item.revenue)} (${item.orders.toLocaleString()} ออเดอร์)`}
                     ></div>
-                    <span className="text-[10px] sm:text-xs text-gray-500 mt-2 text-center leading-tight min-h-8">
+                    <span className="text-[8px] text-gray-500 mt-1.5 text-center leading-tight min-h-5">
                       {shouldShowLabel ? item.label : ""}
                     </span>
                   </div>
                 );
               })}
               {salesChartData.length === 0 && (
-                <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">
+                <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-500">
                   ยังไม่มีข้อมูลยอดขาย
                 </div>
               )}
@@ -505,25 +505,25 @@ export default function AdminAnalyticsPage() {
           </motion.div>
 
           <motion.div
-            className="bg-white border-[3px] border-black p-6"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-white border-[2px] border-black p-2"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <div className="flex items-center mb-6">
-              <Package className="h-5 w-5 text-brutal-blue mr-2" />
-              <h3 className="text-lg font-semibold text-black">สินค้าขายดี</h3>
+            <div className="flex items-center mb-2">
+              <Package className="h-3 w-3 text-brutal-blue mr-1.5" />
+              <h3 className="text-xs font-semibold text-black">สินค้าขายดี</h3>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-1.5">
               {topProducts.map((product, index) => (
                 <div
                   key={product.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 border-[2px] border-gray-200"
+                  className="flex items-center justify-between p-1.5 bg-gray-50 border-[1px] border-gray-200"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
                     <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
                         index === 0
                           ? "bg-yellow-400 text-black"
                           : index === 1
@@ -536,21 +536,21 @@ export default function AdminAnalyticsPage() {
                       {index + 1}
                     </span>
                     <div>
-                      <p className="text-sm font-medium text-black">
+                      <p className="text-[10px] font-medium text-black">
                         {product.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-[8px] text-gray-500">
                         {product.salesCount} ขาย
                       </p>
                     </div>
                   </div>
-                  <span className="text-sm font-semibold text-black">
+                  <span className="text-[9px] font-semibold text-black">
                     {formatCurrency(product.revenue)}
                   </span>
                 </div>
               ))}
               {topProducts.length === 0 && (
-                <div className="text-sm text-gray-500">
+                <div className="text-[10px] text-gray-500">
                   ยังไม่มีข้อมูลสินค้าขายดี
                 </div>
               )}
@@ -559,37 +559,37 @@ export default function AdminAnalyticsPage() {
         </div>
 
         <motion.div
-          className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-white border-[2px] border-black overflow-hidden"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <div className="p-5 border-b-[2px] border-black bg-gray-50">
+          <div className="p-2 border-b-[2px] border-black bg-gray-50">
             <div className="flex items-center">
-              <Calendar className="h-5 w-5 text-brutal-purple mr-2" />
-              <h3 className="text-lg font-semibold text-black">
+              <Calendar className="h-3 w-3 text-brutal-purple mr-1.5" />
+              <h3 className="text-xs font-semibold text-black">
                 กิจกรรมล่าสุด
               </h3>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b-[2px] border-gray-200">
+              <thead className="bg-gray-50 border-b-[1px] border-gray-200">
                 <tr>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
                     วันที่
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
                     รายการ
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
                     ลูกค้า
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
                     สถานะ
                   </th>
-                  <th className="text-right py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-right py-1.5 px-2 text-[9px] font-semibold text-black">
                     จำนวน
                   </th>
                 </tr>
@@ -597,10 +597,10 @@ export default function AdminAnalyticsPage() {
               <tbody className="divide-y divide-gray-200">
                 {data.recentOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="py-3 px-4 text-sm text-gray-600">
+                    <td className="py-1.5 px-2 text-[9px] text-gray-600">
                       {new Date(order.createdAt).toLocaleDateString("th-TH")}
                     </td>
-                    <td className="py-3 px-4 text-sm text-black font-medium">
+                    <td className="py-1.5 px-2 text-[9px] text-black font-medium">
                       <Link
                         href={`/admin/orders/${order.id}`}
                         className="underline decoration-transparent hover:decoration-black transition-all"
@@ -609,19 +609,19 @@ export default function AdminAnalyticsPage() {
                         คำสั่งซื้อ #{order.orderNumber}
                       </Link>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
+                    <td className="py-1.5 px-2 text-[9px] text-gray-600">
                       {order.user.username}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-1.5 px-2">
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${getOrderStatusClassName(
+                        className={`px-1 py-0.5 text-[8px] font-medium rounded-full border-[1px] ${getOrderStatusClassName(
                           order.status,
                         )}`}
                       >
                         {getOrderStatusText(order.status)}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-black text-right font-medium">
+                    <td className="py-1.5 px-2 text-[9px] text-black text-right font-medium">
                       {formatCurrency(order.finalAmount)}
                     </td>
                   </tr>
@@ -630,7 +630,7 @@ export default function AdminAnalyticsPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-6 px-4 text-center text-sm text-gray-500"
+                      className="py-3 px-2 text-center text-[9px] text-gray-500"
                     >
                       ยังไม่มีกิจกรรมล่าสุด
                     </td>

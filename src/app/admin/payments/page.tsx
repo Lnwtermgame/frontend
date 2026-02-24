@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast";
 
 import AdminLayout from "@/components/layout/AdminLayout";
+import { useAuth } from "@/lib/hooks/use-auth";
 import {
   AdminPaymentGateway,
   AdminPaymentOption,
@@ -70,6 +71,7 @@ const defaultOptionForm: OptionFormState = {
 };
 
 export default function AdminPaymentsPage() {
+  const { isAdmin, isInitialized, isSessionChecked } = useAuth();
   const [gateways, setGateways] = useState<AdminPaymentGateway[]>([]);
   const [options, setOptions] = useState<AdminPaymentOption[]>([]);
   const [loading, setLoading] = useState(true);
@@ -136,8 +138,11 @@ export default function AdminPaymentsPage() {
   };
 
   useEffect(() => {
+    if (!isInitialized || !isSessionChecked || !isAdmin) {
+      return;
+    }
     fetchAll();
-  }, []);
+  }, [isInitialized, isSessionChecked, isAdmin]);
 
   const resetGatewayForm = () => {
     setGatewayForm(defaultGatewayForm);
@@ -293,47 +298,47 @@ export default function AdminPaymentsPage() {
 
   return (
     <AdminLayout title="จัดการช่องทางชำระเงิน">
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-black text-black">
+            <h2 className="text-xl font-black text-black">
               Payment Gateways & Options
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs text-gray-600">
               จัดการผู้ให้บริการชำระเงินและช่องทางรับเงินทั้งหมด
             </p>
           </div>
           <button
             onClick={() => fetchAll(false)}
             disabled={refreshing}
-            className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-4 py-2 text-sm font-semibold hover:bg-gray-100 disabled:opacity-60"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100 disabled:opacity-60"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             {refreshing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-3 w-3 animate-spin" />
             ) : (
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-3 w-3" />
             )}
             รีเฟรช
           </button>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
           </div>
         ) : (
           <>
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-4 rounded-none border-[3px] border-black bg-white p-5"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="space-y-3 rounded-none border-[3px] border-black bg-white p-3"
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
             >
-              <h3 className="text-lg font-bold text-black">Payment Gateway</h3>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+              <h3 className="text-base font-bold text-black">Payment Gateway</h3>
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
                 <input
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="ชื่อ Gateway"
                   value={gatewayForm.name}
                   onChange={(e) =>
@@ -344,7 +349,7 @@ export default function AdminPaymentsPage() {
                   }
                 />
                 <input
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Provider (e.g. stripe)"
                   value={gatewayForm.provider}
                   onChange={(e) =>
@@ -357,7 +362,7 @@ export default function AdminPaymentsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Gateway Fee %"
                   value={gatewayForm.feePercent}
                   onChange={(e) =>
@@ -370,7 +375,7 @@ export default function AdminPaymentsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Flat Fee"
                   value={gatewayForm.flatFee}
                   onChange={(e) =>
@@ -380,7 +385,7 @@ export default function AdminPaymentsPage() {
                     }))
                   }
                 />
-                <label className="flex items-center gap-2 border-2 border-black px-3 py-2 font-medium">
+                <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
                   <input
                     type="checkbox"
                     checked={gatewayForm.isActive}
@@ -398,28 +403,28 @@ export default function AdminPaymentsPage() {
                 <button
                   onClick={handleSaveGateway}
                   disabled={savingGateway}
-                  className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
+                  className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
                 >
                   {savingGateway ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin" />
                   ) : (
-                    <Save className="h-4 w-4" />
+                    <Save className="h-3 w-3" />
                   )}
                   {editingGatewayId ? "บันทึกการแก้ไข" : "สร้าง Gateway"}
                 </button>
                 {editingGatewayId && (
                   <button
                     onClick={resetGatewayForm}
-                    className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-4 py-2 text-sm font-semibold hover:bg-gray-100"
+                    className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
                   >
-                    <XCircle className="h-4 w-4" />
+                    <XCircle className="h-3 w-3" />
                     ยกเลิก
                   </button>
                 )}
               </div>
 
               <div className="overflow-x-auto border-2 border-black">
-                <table className="w-full min-w-[720px] text-sm">
+                <table className="w-full min-w-[720px] text-xs">
                   <thead className="bg-gray-100 text-left">
                     <tr>
                       <th className="px-3 py-2">Gateway</th>
@@ -444,11 +449,11 @@ export default function AdminPaymentsPage() {
                         <td className="px-3 py-2">
                           {gateway.isActive ? (
                             <span className="inline-flex items-center gap-1 text-green-700">
-                              <CheckCircle2 className="h-4 w-4" /> Active
+                              <CheckCircle2 className="h-3 w-3" /> Active
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-gray-500">
-                              <XCircle className="h-4 w-4" /> Inactive
+                              <XCircle className="h-3 w-3" /> Inactive
                             </span>
                           )}
                         </td>
@@ -456,13 +461,13 @@ export default function AdminPaymentsPage() {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleEditGateway(gateway)}
-                              className="rounded-none border border-black px-2 py-1 font-medium hover:bg-gray-100"
+                              className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
                             >
                               แก้ไข
                             </button>
                             <button
                               onClick={() => toggleGateway(gateway)}
-                              className="rounded-none border border-black px-2 py-1 font-medium hover:bg-gray-100"
+                              className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
                             >
                               {gateway.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                             </button>
@@ -478,13 +483,13 @@ export default function AdminPaymentsPage() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-4 rounded-none border-[3px] border-black bg-white p-5"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="space-y-3 rounded-none border-[3px] border-black bg-white p-3"
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
             >
-              <h3 className="text-lg font-bold text-black">Payment Options</h3>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <h3 className="text-base font-bold text-black">Payment Options</h3>
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
                 <select
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   value={optionForm.gatewayId}
                   onChange={(e) =>
                     setOptionForm((prev) => ({
@@ -501,7 +506,7 @@ export default function AdminPaymentsPage() {
                   ))}
                 </select>
                 <input
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Option Code (e.g. STRIPE_PROMPTPAY)"
                   value={optionForm.code}
                   onChange={(e) =>
@@ -509,7 +514,7 @@ export default function AdminPaymentsPage() {
                   }
                 />
                 <input
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Label"
                   value={optionForm.label}
                   onChange={(e) =>
@@ -520,7 +525,7 @@ export default function AdminPaymentsPage() {
                   }
                 />
                 <select
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   value={optionForm.method}
                   onChange={(e) =>
                     setOptionForm((prev) => ({
@@ -538,7 +543,7 @@ export default function AdminPaymentsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Surcharge %"
                   value={optionForm.surchargePercent}
                   onChange={(e) =>
@@ -551,7 +556,7 @@ export default function AdminPaymentsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Flat Fee"
                   value={optionForm.flatFee}
                   onChange={(e) =>
@@ -564,7 +569,7 @@ export default function AdminPaymentsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Min Amount (optional)"
                   value={optionForm.minAmount}
                   onChange={(e) =>
@@ -577,7 +582,7 @@ export default function AdminPaymentsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="border-2 border-black px-3 py-2"
+                  className="border-2 border-black px-2 py-1.5 text-sm"
                   placeholder="Max Amount (optional)"
                   value={optionForm.maxAmount}
                   onChange={(e) =>
@@ -587,7 +592,7 @@ export default function AdminPaymentsPage() {
                     }))
                   }
                 />
-                <label className="flex items-center gap-2 border-2 border-black px-3 py-2 font-medium">
+                <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
                   <input
                     type="checkbox"
                     checked={optionForm.isActive}
@@ -606,30 +611,30 @@ export default function AdminPaymentsPage() {
                 <button
                   onClick={handleSaveOption}
                   disabled={savingOption}
-                  className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
+                  className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
                 >
                   {savingOption ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin" />
                   ) : editingOptionId ? (
-                    <Save className="h-4 w-4" />
+                    <Save className="h-3 w-3" />
                   ) : (
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-3 w-3" />
                   )}
                   {editingOptionId ? "บันทึกการแก้ไข" : "สร้าง Option"}
                 </button>
                 {editingOptionId && (
                   <button
                     onClick={resetOptionForm}
-                    className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-4 py-2 text-sm font-semibold hover:bg-gray-100"
+                    className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
                   >
-                    <XCircle className="h-4 w-4" />
+                    <XCircle className="h-3 w-3" />
                     ยกเลิก
                   </button>
                 )}
               </div>
 
               <div className="overflow-x-auto border-2 border-black">
-                <table className="w-full min-w-[900px] text-sm">
+                <table className="w-full min-w-[900px] text-xs">
                   <thead className="bg-gray-100 text-left">
                     <tr>
                       <th className="px-3 py-2">Code</th>
@@ -665,11 +670,11 @@ export default function AdminPaymentsPage() {
                         <td className="px-3 py-2">
                           {option.isActive ? (
                             <span className="inline-flex items-center gap-1 text-green-700">
-                              <CheckCircle2 className="h-4 w-4" /> Active
+                              <CheckCircle2 className="h-3 w-3" /> Active
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-gray-500">
-                              <XCircle className="h-4 w-4" /> Inactive
+                              <XCircle className="h-3 w-3" /> Inactive
                             </span>
                           )}
                         </td>
@@ -677,13 +682,13 @@ export default function AdminPaymentsPage() {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleEditOption(option)}
-                              className="rounded-none border border-black px-2 py-1 font-medium hover:bg-gray-100"
+                              className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
                             >
                               แก้ไข
                             </button>
                             <button
                               onClick={() => toggleOption(option)}
-                              className="rounded-none border border-black px-2 py-1 font-medium hover:bg-gray-100"
+                              className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
                             >
                               {option.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                             </button>
@@ -699,32 +704,32 @@ export default function AdminPaymentsPage() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-4 rounded-none border-[3px] border-black bg-white p-5"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="space-y-3 rounded-none border-[3px] border-black bg-white p-3"
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
             >
-              <h3 className="text-lg font-bold text-black">
+              <h3 className="text-base font-bold text-black">
                 Security Monitoring
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs text-gray-600">
                 Track payment transitions, suspicious events, and webhook nonce
                 records for replay detection.
               </p>
 
-              <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-black">
+                  <h4 className="font-semibold text-black text-sm">
                     Payment Audit Logs
                   </h4>
-                  <div className="max-h-[420px] overflow-auto border-2 border-black">
-                    <table className="w-full min-w-[760px] text-xs">
+                  <div className="max-h-[300px] overflow-auto border-2 border-black">
+                    <table className="w-full min-w-[760px] text-[10px]">
                       <thead className="bg-gray-100 text-left">
                         <tr>
-                          <th className="px-2 py-2">Time</th>
-                          <th className="px-2 py-2">Severity</th>
-                          <th className="px-2 py-2">Event</th>
-                          <th className="px-2 py-2">Order</th>
-                          <th className="px-2 py-2">Status</th>
-                          <th className="px-2 py-2">Message</th>
+                          <th className="px-2 py-1.5">Time</th>
+                          <th className="px-2 py-1.5">Severity</th>
+                          <th className="px-2 py-1.5">Event</th>
+                          <th className="px-2 py-1.5">Order</th>
+                          <th className="px-2 py-1.5">Status</th>
+                          <th className="px-2 py-1.5">Message</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -733,28 +738,28 @@ export default function AdminPaymentsPage() {
                             key={log.id}
                             className="border-t border-gray-200 align-top"
                           >
-                            <td className="px-2 py-2 whitespace-nowrap">
+                            <td className="px-2 py-1.5 whitespace-nowrap">
                               {new Date(log.createdAt).toLocaleString()}
                             </td>
-                            <td className="px-2 py-2 font-semibold">
+                            <td className="px-2 py-1.5 font-semibold">
                               {log.severity}
                             </td>
-                            <td className="px-2 py-2">{log.eventType}</td>
-                            <td className="px-2 py-2">
+                            <td className="px-2 py-1.5">{log.eventType}</td>
+                            <td className="px-2 py-1.5">
                               {log.order?.orderNumber || log.orderId || "-"}
                             </td>
-                            <td className="px-2 py-2">
+                            <td className="px-2 py-1.5">
                               {log.previousStatus || "-"} {"->"}{" "}
                               {log.newStatus || "-"}
                             </td>
-                            <td className="px-2 py-2">{log.message}</td>
+                            <td className="px-2 py-1.5">{log.message}</td>
                           </tr>
                         ))}
                         {auditLogs.length === 0 && (
                           <tr>
                             <td
                               colSpan={6}
-                              className="px-2 py-6 text-center text-gray-500"
+                              className="px-2 py-4 text-center text-gray-500"
                             >
                               No audit logs
                             </td>
@@ -766,17 +771,17 @@ export default function AdminPaymentsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-black">
+                  <h4 className="font-semibold text-black text-sm">
                     SEAGM Webhook Nonce Store
                   </h4>
-                  <div className="max-h-[420px] overflow-auto border-2 border-black">
-                    <table className="w-full min-w-[680px] text-xs">
+                  <div className="max-h-[300px] overflow-auto border-2 border-black">
+                    <table className="w-full min-w-[680px] text-[10px]">
                       <thead className="bg-gray-100 text-left">
                         <tr>
-                          <th className="px-2 py-2">Created</th>
-                          <th className="px-2 py-2">Provider</th>
-                          <th className="px-2 py-2">Nonce Hash</th>
-                          <th className="px-2 py-2">Expires</th>
+                          <th className="px-2 py-1.5">Created</th>
+                          <th className="px-2 py-1.5">Provider</th>
+                          <th className="px-2 py-1.5">Nonce Hash</th>
+                          <th className="px-2 py-1.5">Expires</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -785,14 +790,14 @@ export default function AdminPaymentsPage() {
                             key={item.id}
                             className="border-t border-gray-200 align-top"
                           >
-                            <td className="px-2 py-2 whitespace-nowrap">
+                            <td className="px-2 py-1.5 whitespace-nowrap">
                               {new Date(item.createdAt).toLocaleString()}
                             </td>
-                            <td className="px-2 py-2">{item.provider}</td>
-                            <td className="px-2 py-2 font-mono text-[10px]">
+                            <td className="px-2 py-1.5">{item.provider}</td>
+                            <td className="px-2 py-1.5 font-mono text-[9px]">
                               {item.nonceHash.slice(0, 18)}...
                             </td>
-                            <td className="px-2 py-2 whitespace-nowrap">
+                            <td className="px-2 py-1.5 whitespace-nowrap">
                               {new Date(item.expiresAt).toLocaleString()}
                             </td>
                           </tr>
@@ -801,7 +806,7 @@ export default function AdminPaymentsPage() {
                           <tr>
                             <td
                               colSpan={4}
-                              className="px-2 py-6 text-center text-gray-500"
+                              className="px-2 py-4 text-center text-gray-500"
                             >
                               No nonce records
                             </td>

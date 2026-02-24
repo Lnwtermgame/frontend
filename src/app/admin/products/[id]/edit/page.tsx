@@ -394,29 +394,26 @@ export default function EditProductPage() {
 
   return (
     <AdminLayout title={`Edit: ${formData.name || "Product"}`}>
-      <div className="pb-10 space-y-8 max-w-7xl mx-auto">
+      <div className="pb-8 space-y-6 max-w-7xl mx-auto">
         {/* Success Banner */}
         {showSuccessBanner && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-brutal-green border-[3px] border-black p-4 flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            className="bg-brutal-green border-[2px] border-black p-3 flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           >
-            <div className="p-2 bg-white border-2 border-black">
-              <CheckCircle2 className="w-5 h-5 text-black" />
+            <div className="p-1.5 bg-white border border-black">
+              <CheckCircle2 className="w-4 h-4 text-black" />
             </div>
             <div className="flex-1">
-              <p className="text-black font-medium">
+              <p className="text-black font-medium text-sm">
                 บันทึกการเปลี่ยนแปลงสำเร็จ!
-              </p>
-              <p className="text-sm text-gray-700">
-                ข้อมูลสินค้าถูกอัปเดตเรียบร้อยแล้ว
               </p>
             </div>
             <button
               onClick={() => setShowSuccessBanner(false)}
-              className="p-1.5 hover:bg-black/10 transition-colors"
+              className="p-1 hover:bg-black/10 transition-colors"
             >
               <span className="sr-only">ปิด</span>
               <svg
@@ -438,20 +435,20 @@ export default function EditProductPage() {
 
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/admin/products"
-              className="group p-2.5 bg-white border-[3px] border-black text-gray-600 hover:text-black hover:bg-gray-50 transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
+              className="group p-2 bg-white border-[2px] border-black text-gray-600 hover:text-black hover:bg-gray-50 transition-all duration-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px]"
             >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             </Link>
             <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-gray-900 tracking-tight">
                   แก้ไขสินค้า
                 </h1>
                 <span
-                  className={`px-2.5 py-0.5 text-xs font-medium border-[2px] border-black ${
+                  className={`px-2 py-0.5 text-[10px] font-medium border-[1px] border-black ${
                     formData.isActive
                       ? "bg-brutal-green text-black"
                       : "bg-gray-200 text-gray-600"
@@ -460,8 +457,8 @@ export default function EditProductPage() {
                   {formData.isActive ? "เผยแพร่แล้ว" : "ฉบับร่าง"}
                 </span>
               </div>
-              <p className="text-gray-600 text-sm mt-1 font-medium">
-                {product.name} <span className="mx-2 text-gray-400">•</span>{" "}
+              <p className="text-gray-600 text-xs mt-0.5 font-medium">
+                {product.name} <span className="mx-1 text-gray-400">•</span>{" "}
                 รหัส: {product.id.slice(0, 8)}...
               </p>
             </div>
@@ -470,16 +467,16 @@ export default function EditProductPage() {
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-brutal-blue text-white border-[3px] border-black font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+            className="group relative inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden text-sm"
           >
             {saving ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
                 <span>กำลังบันทึก...</span>
               </>
             ) : (
               <>
-                <Save className="w-5 h-5" />
+                <Save className="w-4 h-4" />
                 <span>บันทึกการเปลี่ยนแปลง</span>
               </>
             )}
@@ -487,23 +484,23 @@ export default function EditProductPage() {
         </div>
 
         {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 items-start">
           {/* LEFT COLUMN - Main Content */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-5">
             {/* Basic Info Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border-[3px] border-black p-6 overflow-hidden relative group shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-2 border-black p-4 overflow-hidden relative group shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <FileText className="w-24 h-24 text-brutal-blue transform rotate-12 translate-x-8 -translate-y-8" />
+              <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                <FileText className="w-20 h-20 text-brutal-blue transform rotate-12 translate-x-6 -translate-y-6" />
               </div>
 
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <div className="p-2 bg-brutal-blue/10 border-2 border-black text-brutal-blue">
-                    <FileText className="w-5 h-5" />
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                  <div className="p-1.5 bg-brutal-blue/10 border-2 border-black text-brutal-blue">
+                    <FileText className="w-4 h-4" />
                   </div>
                   ข้อมูลทั่วไป
                 </h2>
@@ -522,9 +519,9 @@ export default function EditProductPage() {
                 />
               </div>
 
-              <div className="space-y-5 relative z-10">
+              <div className="space-y-4 relative z-10">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                  <label className="block text-xs font-medium text-gray-600 mb-1.5">
                     ชื่อสินค้า
                   </label>
                   <input
@@ -533,17 +530,17 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 focus:border-black outline-none transition-all"
+                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 focus:border-black outline-none transition-all"
                     placeholder="เช่น Mobile Legends Diamonds"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                  <label className="block text-xs font-medium text-gray-600 mb-1.5">
                     URL สินค้า (Slug)
                   </label>
                   <div className="flex bg-gray-50 border-[2px] border-black focus-within:ring-2 focus-within:ring-brutal-blue/50 focus-within:border-black transition-all overflow-hidden">
-                    <span className="px-4 py-3 text-gray-500 bg-gray-100 border-r-2 border-black text-sm flex items-center">
+                    <span className="px-3 py-2 text-gray-500 bg-gray-100 border-r-2 border-black text-xs flex items-center">
                       /products/
                     </span>
                     <input
@@ -552,14 +549,14 @@ export default function EditProductPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, slug: e.target.value })
                       }
-                      className="flex-1 bg-transparent px-4 py-3 text-gray-900 placeholder-gray-400 outline-none"
+                      className="flex-1 bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1.5">
                       คำอธิบายสั้น
                     </label>
                     <textarea
@@ -572,17 +569,17 @@ export default function EditProductPage() {
                       }
                       rows={2}
                       maxLength={255}
-                      className="w-full bg-gray-50 border-[2px] border-black px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none resize-none transition-all"
+                      className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none resize-none transition-all"
                     />
                     <div className="flex justify-end mt-1">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-[10px] text-gray-500">
                         {formData.shortDescription.length}/255
                       </span>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1.5">
                       คำอธิบายแบบเต็ม
                     </label>
                     <textarea
@@ -595,10 +592,10 @@ export default function EditProductPage() {
                         }))
                       }
                       rows={6}
-                      className="w-full bg-gray-50 border-[2px] border-black px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                      className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
                     />
                     {process.env.NODE_ENV === "development" && (
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-[10px] text-gray-500 mt-1">
                         Debug: length={formData.description?.length || 0}
                       </div>
                     )}
@@ -612,25 +609,25 @@ export default function EditProductPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white border-[3px] border-black p-6 relative group overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-[2px] border-black p-5 relative group overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
               <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <ImageIcon className="w-24 h-24 text-brutal-blue transform -rotate-12 translate-x-8 -translate-y-8" />
+                <ImageIcon className="w-20 h-20 text-brutal-blue transform -rotate-12 translate-x-6 -translate-y-6" />
               </div>
 
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                <div className="p-2 bg-brutal-blue/10 border-2 border-black text-brutal-blue">
-                  <ImageIcon className="w-5 h-5" />
+              <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2 mb-5">
+                <div className="p-1.5 bg-brutal-blue/10 border border-black text-brutal-blue">
+                  <ImageIcon className="w-4 h-4" />
                 </div>
                 รูปภาพและสื่อ
               </h2>
 
-              <div className="space-y-8 relative z-10">
+              <div className="space-y-6 relative z-10">
                 {/* Logo Image */}
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-1 space-y-4">
+                <div className="flex flex-col md:flex-row gap-5">
+                  <div className="flex-1 space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      <label className="block text-xs font-medium text-gray-600 mb-1.5">
                         ลิงก์โลโก้สินค้า
                       </label>
                       <div className="relative">
@@ -644,11 +641,11 @@ export default function EditProductPage() {
                             })
                           }
                           placeholder="https://..."
-                          className="w-full bg-gray-50 border-[2px] border-black pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                          className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
                         />
-                        <Globe className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <Globe className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
                       </div>
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className="text-[10px] text-gray-500 mt-1">
                         ใส่ลิงก์ HTTPS สำหรับโลโก้สินค้า (แสดงในรายการสินค้า)
                       </p>
                       <button
@@ -661,16 +658,16 @@ export default function EditProductPage() {
                             formData.imageUrl.trim()
                           )
                         }
-                        className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs"
                       >
                         {uploadingLogo ? (
                           <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <Loader2 className="w-3 h-3 animate-spin" />
                             <span>กำลังอัปโหลด...</span>
                           </>
                         ) : (
                           <>
-                            <Upload className="w-4 h-4" />
+                            <Upload className="w-3 h-3" />
                             <span>อัปโหลดไปยัง Storage</span>
                           </>
                         )}
@@ -678,11 +675,11 @@ export default function EditProductPage() {
                     </div>
                   </div>
 
-                  <div className="w-full md:w-48 shrink-0">
-                    <label className="block text-sm font-medium text-gray-600 mb-2 text-center md:text-left">
+                  <div className="w-full md:w-36 shrink-0">
+                    <label className="block text-xs font-medium text-gray-600 mb-1.5 text-center md:text-left">
                       ดูตัวอย่างโลโก้
                     </label>
-                    <div className="aspect-square border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
+                    <div className="aspect-square border-[2px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
                       {formData.imageUrl && !imageError ? (
                         <img
                           src={formData.imageUrl}
@@ -691,9 +688,9 @@ export default function EditProductPage() {
                           onError={() => setImageError(true)}
                         />
                       ) : (
-                        <div className="text-center p-4">
-                          <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <span className="text-xs text-gray-500 block">
+                        <div className="text-center p-3">
+                          <ImageIcon className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+                          <span className="text-[10px] text-gray-500 block">
                             {formData.imageUrl
                               ? "โหลดรูปภาพไม่สำเร็จ"
                               : "ยังไม่มีรูปภาพ"}
@@ -705,10 +702,10 @@ export default function EditProductPage() {
                 </div>
 
                 {/* Cover Image */}
-                <div className="flex flex-col md:flex-row gap-6 pt-6 border-t-2 border-gray-200">
-                  <div className="flex-1 space-y-4">
+                <div className="flex flex-col md:flex-row gap-5 pt-5 border-t border-gray-200">
+                  <div className="flex-1 space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      <label className="block text-xs font-medium text-gray-600 mb-1.5">
                         ลิงก์รูปภาพหน้าปก (Cover Image)
                       </label>
                       <div className="relative">
@@ -722,11 +719,11 @@ export default function EditProductPage() {
                             })
                           }
                           placeholder="https://..."
-                          className="w-full bg-gray-50 border-[2px] border-black pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                          className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
                         />
-                        <Globe className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <Globe className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
                       </div>
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className="text-[10px] text-gray-500 mt-1">
                         ใส่ลิงก์ HTTPS สำหรับรูปภาพหน้าปก
                         (แสดงในหน้ารายละเอียดสินค้า)
                       </p>
@@ -740,16 +737,16 @@ export default function EditProductPage() {
                             formData.coverImageUrl.trim()
                           )
                         }
-                        className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs"
                       >
                         {uploadingCover ? (
                           <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <Loader2 className="w-3 h-3 animate-spin" />
                             <span>กำลังอัปโหลด...</span>
                           </>
                         ) : (
                           <>
-                            <Upload className="w-4 h-4" />
+                            <Upload className="w-3 h-3" />
                             <span>อัปโหลดไปยัง Storage</span>
                           </>
                         )}
@@ -757,11 +754,11 @@ export default function EditProductPage() {
                     </div>
                   </div>
 
-                  <div className="w-full md:w-64 shrink-0">
-                    <label className="block text-sm font-medium text-gray-600 mb-2 text-center md:text-left">
+                  <div className="w-full md:w-48 shrink-0">
+                    <label className="block text-xs font-medium text-gray-600 mb-1.5 text-center md:text-left">
                       ดูตัวอย่างหน้าปก
                     </label>
-                    <div className="aspect-video border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
+                    <div className="aspect-video border-[2px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview">
                       {formData.coverImageUrl && !coverImageError ? (
                         <img
                           src={formData.coverImageUrl}
@@ -770,9 +767,9 @@ export default function EditProductPage() {
                           onError={() => setCoverImageError(true)}
                         />
                       ) : (
-                        <div className="text-center p-4">
-                          <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <span className="text-xs text-gray-500 block">
+                        <div className="text-center p-3">
+                          <ImageIcon className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+                          <span className="text-[10px] text-gray-500 block">
                             {formData.coverImageUrl
                               ? "โหลดรูปภาพไม่สำเร็จ"
                               : "ยังไม่มีรูปภาพ"}
@@ -784,34 +781,34 @@ export default function EditProductPage() {
                 </div>
 
                 {/* Copy Images from Other Products */}
-                <div className="pt-6 border-t-2 border-gray-200">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="p-2 bg-purple-100 border-2 border-black text-purple-600">
-                      <Copy className="w-5 h-5" />
+                <div className="pt-5 border-t border-gray-200">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 bg-purple-100 border border-black text-purple-600">
+                      <Copy className="w-3.5 h-3.5" />
                     </div>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="text-sm font-semibold text-gray-900">
                       คัดลอกรูปภาพจากสินค้าอื่น
                     </h3>
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-xs text-gray-600 mb-3">
                     เลือกสินค้าที่เป็นเกมเดียวกัน (คนละประเทศ)
                     เพื่อนำรูปภาพมาใช้
                   </p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     <div className="flex-1 relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
                       <input
                         type="text"
                         value={imageSearch}
                         onChange={(e) => setImageSearch(e.target.value)}
                         placeholder="ค้นหาชื่อสินค้า..."
-                        className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                        className="w-full bg-gray-50 border-[2px] border-black pl-8 pr-3 py-1.5 text-xs text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
                       />
                     </div>
                     <select
                       value={selectedProductId}
                       onChange={(e) => setSelectedProductId(e.target.value)}
-                      className="flex-1 bg-gray-50 border-[2px] border-black px-3 py-2.5 text-sm text-gray-900 appearance-none focus:ring-2 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+                      className="flex-1 bg-gray-50 border-[2px] border-black px-2 py-1.5 text-xs text-gray-900 appearance-none focus:ring-2 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
                     >
                       <option value="">เลือกสินค้า...</option>
                       {allProducts
@@ -832,9 +829,9 @@ export default function EditProductPage() {
                       type="button"
                       onClick={handleCopyImages}
                       disabled={!selectedProductId}
-                      className="px-4 py-2.5 bg-purple-600 text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-3 py-1.5 bg-purple-600 text-white border-[2px] border-black font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3 h-3" />
                       <span>คัดลอก</span>
                     </button>
                   </div>
@@ -848,28 +845,28 @@ export default function EditProductPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white border-[3px] border-black p-6 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                className="bg-white border-[2px] border-black p-5 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <div className="p-2 bg-orange-100 border-2 border-black text-orange-600">
-                      <Zap className="w-5 h-5" />
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                    <div className="p-1.5 bg-orange-100 border border-black text-orange-600">
+                      <Zap className="w-4 h-4" />
                     </div>
                     การตั้งค่า SEAGM
                   </h2>
                   <button
                     onClick={handleRefreshFields}
                     disabled={refreshingFields}
-                    className="text-sm font-medium text-brutal-blue hover:text-black bg-brutal-blue/10 hover:bg-brutal-blue/20 px-3 py-1.5 border-[2px] border-black transition-all flex items-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                    className="text-xs font-medium text-brutal-blue hover:text-black bg-brutal-blue/10 hover:bg-brutal-blue/20 px-2.5 py-1 border-[1px] border-black transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]"
                   >
                     <RefreshCw
-                      className={`w-3.5 h-3.5 ${refreshingFields ? "animate-spin" : ""}`}
+                      className={`w-3 h-3 ${refreshingFields ? "animate-spin" : ""}`}
                     />
                     ซิงค์ฟิลด์
                   </button>
                 </div>
 
-                <div className="bg-gray-50 p-5 border-[2px] border-black">
+                <div className="bg-gray-50 p-4 border-[1px] border-black">
                   <DynamicProductFields
                     productId={product.id}
                     onFieldsChange={(values, isValid) => {
@@ -880,9 +877,9 @@ export default function EditProductPage() {
                     }}
                     disabled={true}
                   />
-                  <div className="mt-4 flex items-start gap-3 p-3 bg-brutal-blue/10 border-[2px] border-brutal-blue">
-                    <AlertCircle className="w-5 h-5 text-brutal-blue shrink-0 mt-0.5" />
-                    <p className="text-sm text-gray-700">
+                  <div className="mt-3 flex items-start gap-2 p-2.5 bg-brutal-blue/10 border border-brutal-blue">
+                    <AlertCircle className="w-4 h-4 text-brutal-blue shrink-0 mt-0.5" />
+                    <p className="text-xs text-gray-700">
                       ฟิลด์เหล่านี้ถูกกำหนดโดย API ของ Seagm
                       ค่าที่ผู้ใช้กรอกจะถูกตรวจสอบตามรูปแบบนี้เมื่อชำระเงิน
                     </p>
@@ -893,34 +890,34 @@ export default function EditProductPage() {
           </div>
 
           {/* RIGHT COLUMN - Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Status Card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white border-[3px] border-black p-5 space-y-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-[2px] border-black p-4 space-y-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
-              <h3 className="font-semibold text-gray-900 text-base flex items-center gap-2">
+              <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-brutal-blue" />
                 การแสดงผล
               </h3>
 
               <div className="space-y-1">
                 <label
-                  className={`flex items-center gap-3 p-3 border-[2px] border-black transition-all cursor-pointer ${
+                  className={`flex items-center gap-3 p-2.5 border-[2px] border-black transition-all cursor-pointer ${
                     formData.isActive
                       ? "bg-brutal-green/20"
                       : "bg-gray-100 hover:bg-gray-200"
                   }`}
                 >
                   <div
-                    className={`w-10 h-6 relative transition-colors ${
+                    className={`w-8 h-5 relative transition-colors ${
                       formData.isActive ? "bg-brutal-green" : "bg-gray-400"
                     }`}
                   >
                     <div
-                      className={`absolute top-1 left-1 w-4 h-4 bg-white border border-black transition-transform ${
-                        formData.isActive ? "translate-x-4" : "translate-x-0"
+                      className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white border border-black transition-transform ${
+                        formData.isActive ? "translate-x-3" : "translate-x-0"
                       }`}
                     />
                   </div>
@@ -933,34 +930,34 @@ export default function EditProductPage() {
                     className="hidden"
                   />
                   <span
-                    className={`font-medium ${formData.isActive ? "text-black" : "text-gray-600"}`}
+                    className={`font-medium text-sm ${formData.isActive ? "text-black" : "text-gray-600"}`}
                   >
                     {formData.isActive ? "เผยแพร่แล้ว" : "ซ่อน"}
                   </span>
                 </label>
               </div>
 
-              <div className="pt-4 border-t-2 border-gray-200 space-y-2">
-                <label className="flex items-center justify-between group cursor-pointer p-2 hover:bg-gray-100 transition-colors">
-                  <span className="text-gray-600 group-hover:text-gray-900 transition-colors">
+              <div className="pt-3 border-t border-gray-200 space-y-1">
+                <label className="flex items-center justify-between group cursor-pointer p-1.5 hover:bg-gray-100 transition-colors">
+                  <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
                     สินค้าแนะนำ
                   </span>
                   <input
                     type="checkbox"
-                    className="w-4 h-4 border-2 border-black text-brutal-blue focus:ring-brutal-blue/50"
+                    className="w-3.5 h-3.5 border-2 border-black text-brutal-blue focus:ring-brutal-blue/50"
                     checked={formData.isFeatured}
                     onChange={(e) =>
                       setFormData({ ...formData, isFeatured: e.target.checked })
                     }
                   />
                 </label>
-                <label className="flex items-center justify-between group cursor-pointer p-2 hover:bg-gray-100 transition-colors">
-                  <span className="text-gray-600 group-hover:text-gray-900 transition-colors">
+                <label className="flex items-center justify-between group cursor-pointer p-1.5 hover:bg-gray-100 transition-colors">
+                  <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
                     สินค้าขายดี
                   </span>
                   <input
                     type="checkbox"
-                    className="w-4 h-4 border-2 border-black text-brutal-blue focus:ring-brutal-blue/50"
+                    className="w-3.5 h-3.5 border-2 border-black text-brutal-blue focus:ring-brutal-blue/50"
                     checked={formData.isBestseller}
                     onChange={(e) =>
                       setFormData({
@@ -978,25 +975,25 @@ export default function EditProductPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white border-[3px] border-black p-5 space-y-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-[2px] border-black p-4 space-y-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
-              <h3 className="font-semibold text-gray-900 text-base flex items-center gap-2">
+              <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-brutal-blue" />
                 การจัดหมวดหมู่
               </h3>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                <label className="block text-[10px] font-medium text-gray-500 mb-1.5 uppercase tracking-wider">
                   หมวดหมู่
                 </label>
                 <div className="relative">
-                  <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
                   <select
                     value={formData.categoryId}
                     onChange={(e) =>
                       setFormData({ ...formData, categoryId: e.target.value })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-4 py-2.5 text-gray-900 appearance-none focus:ring-2 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-full bg-gray-50 border-[2px] border-black pl-8 pr-3 py-2 text-sm text-gray-900 appearance-none focus:ring-2 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <option value="" className="bg-white">
                       เลือกหมวดหมู่
@@ -1008,40 +1005,40 @@ export default function EditProductPage() {
                     ))}
                   </select>
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <ArrowLeft className="w-4 h-4 text-gray-500 -rotate-90" />
+                    <ArrowLeft className="w-3.5 h-3.5 text-gray-500 -rotate-90" />
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t-2 border-gray-200">
-                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+              <div className="pt-3 border-t border-gray-200">
+                <label className="block text-[10px] font-medium text-gray-500 mb-1.5 uppercase tracking-wider">
                   ประเภทสินค้า
                 </label>
                 <div
-                  className={`p-3 border-[2px] border-black flex items-center gap-3 ${
+                  className={`p-2.5 border-[2px] border-black flex items-center gap-2.5 ${
                     isDirectTopUp ? "bg-orange-100" : "bg-blue-100"
                   }`}
                 >
                   <div
-                    className={`p-1.5 border-2 border-black ${
+                    className={`p-1 border border-black ${
                       isDirectTopUp
                         ? "bg-orange-200 text-orange-700"
                         : "bg-blue-200 text-blue-700"
                     }`}
                   >
                     {isDirectTopUp ? (
-                      <Zap className="w-5 h-5" />
+                      <Zap className="w-4 h-4" />
                     ) : (
-                      <CreditCard className="w-5 h-5" />
+                      <CreditCard className="w-4 h-4" />
                     )}
                   </div>
                   <div>
                     <p
-                      className={`font-medium ${isDirectTopUp ? "text-orange-700" : "text-blue-700"}`}
+                      className={`font-medium text-sm ${isDirectTopUp ? "text-orange-700" : "text-blue-700"}`}
                     >
                       {isDirectTopUp ? "เติมตรง" : "บัตรของขวัญ"}
                     </p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-[10px] text-gray-600">
                       {isDirectTopUp ? "ต้องใช้ User ID" : "ส่ง PIN ทันที"}
                     </p>
                   </div>
@@ -1054,16 +1051,16 @@ export default function EditProductPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white border-[3px] border-black p-5 space-y-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-[2px] border-black p-4 space-y-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
-              <h3 className="font-semibold text-gray-900 text-base flex items-center gap-2">
+              <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-brutal-blue" />
                 การตั้งค่า SEO
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     ชื่อ Meta
                   </label>
                   <input
@@ -1072,13 +1069,13 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, metaTitle: e.target.value })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
+                    className="w-full bg-gray-50 border-[2px] border-black px-2.5 py-1.5 text-xs text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
                     placeholder="เหมือนชื่อสินค้า"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     คำอธิบาย Meta
                   </label>
                   <textarea
@@ -1090,12 +1087,12 @@ export default function EditProductPage() {
                       })
                     }
                     rows={3}
-                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none resize-none"
+                    className="w-full bg-gray-50 border-[2px] border-black px-2.5 py-1.5 text-xs text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     คีย์เวิร์ด
                   </label>
                   <input
@@ -1104,7 +1101,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, metaKeywords: e.target.value })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
+                    className="w-full bg-gray-50 border-[2px] border-black px-2.5 py-1.5 text-xs text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
                     placeholder="เติมเกม, ราคาถูก, โปรโมชั่น"
                   />
                 </div>
@@ -1116,16 +1113,16 @@ export default function EditProductPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white border-[3px] border-black p-5 space-y-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-[2px] border-black p-4 space-y-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
-              <h3 className="font-semibold text-gray-900 text-base flex items-center gap-2">
+              <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-purple-500" />
                 ข้อมูลเกม
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     ผู้พัฒนา (Developer)
                   </label>
                   <input
@@ -1140,13 +1137,13 @@ export default function EditProductPage() {
                         },
                       })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
+                    className="w-full bg-gray-50 border-[2px] border-black px-2.5 py-1.5 text-xs text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
                     placeholder="เช่น Riot Games, miHoYo"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     ผู้จัดจำหน่าย (Publisher)
                   </label>
                   <input
@@ -1161,20 +1158,20 @@ export default function EditProductPage() {
                         },
                       })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
+                    className="w-full bg-gray-50 border-[2px] border-black px-2.5 py-1.5 text-xs text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
                     placeholder="เช่น Tencent, Blizzard"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-2">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1.5">
                     แพลตฟอร์ม (Platforms)
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {["iOS", "Android", "PC", "Console"].map((platform) => (
                       <label
                         key={platform}
-                        className={`flex items-center gap-2 p-2.5 border-[2px] border-black cursor-pointer transition-all ${
+                        className={`flex items-center gap-2 p-2 border-[1px] border-black cursor-pointer transition-all ${
                           formData.gameDetails.platforms.includes(platform)
                             ? "bg-purple-100 border-black"
                             : "bg-gray-50 hover:bg-gray-100"
@@ -1202,9 +1199,9 @@ export default function EditProductPage() {
                               },
                             });
                           }}
-                          className="w-4 h-4 border-2 border-black text-purple-600 focus:ring-purple-500/50"
+                          className="w-3.5 h-3.5 border border-black text-purple-600 focus:ring-purple-500/50"
                         />
-                        <span className="text-sm text-gray-900">
+                        <span className="text-xs text-gray-900">
                           {platform}
                         </span>
                       </label>
@@ -1214,7 +1211,7 @@ export default function EditProductPage() {
 
                 {/* Mode Selection */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     โหมด (Mode)
                   </label>
                   <select
@@ -1228,7 +1225,7 @@ export default function EditProductPage() {
                         },
                       })
                     }
-                    className="w-full bg-gray-50 border-[2px] border-black px-3 py-2 text-sm text-gray-900 appearance-none focus:ring-1 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="w-full bg-gray-50 border-[2px] border-black px-2.5 py-1.5 text-xs text-gray-900 appearance-none focus:ring-1 focus:ring-brutal-blue/50 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     <option value="">-- เลือกโหมด --</option>
                     <option value="directtopup">เติมตรง (Direct Top-up)</option>
@@ -1244,11 +1241,11 @@ export default function EditProductPage() {
 
                 {/* Region with Country Autocomplete */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-[10px] font-medium text-gray-500 mb-1">
                     ภูมิภาค/ประเทศ (Region)
                   </label>
                   <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
                     <input
                       type="text"
                       value={formData.gameDetails.region}
@@ -1262,7 +1259,7 @@ export default function EditProductPage() {
                         })
                       }
                       list="country-list"
-                      className="w-full bg-gray-50 border-[2px] border-black pl-9 pr-4 py-2 text-sm text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
+                      className="w-full bg-gray-50 border-[2px] border-black pl-8 pr-3 py-1.5 text-xs text-gray-900 focus:ring-1 focus:ring-brutal-blue/50 outline-none"
                       placeholder="เลือกหรือพิมพ์ชื่อประเทศ..."
                     />
                     <datalist id="country-list">
@@ -1277,33 +1274,33 @@ export default function EditProductPage() {
                       <option value="global">สากล (Global)</option>
                     </datalist>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-[10px] text-gray-400 mt-0.5">
                     ใช้รหัสประเทศ เช่น th, my, sg, id, ph, vn
                   </p>
                 </div>
 
                 {/* Auto Delivery Toggle */}
                 <div>
-                  <label className="flex items-center justify-between p-3 border-[2px] border-black cursor-pointer hover:bg-gray-50 transition-colors">
+                  <label className="flex items-center justify-between p-2.5 border-[2px] border-black cursor-pointer hover:bg-gray-50 transition-colors">
                     <div>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-xs font-medium text-gray-900">
                         ส่งอัตโนมัติ (Auto Delivery)
                       </span>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-[10px] text-gray-500">
                         ระบบจะส่งสินค้าทันทีหลังชำระเงิน
                       </p>
                     </div>
                     <div
-                      className={`w-10 h-6 relative transition-colors ${
+                      className={`w-8 h-5 relative transition-colors ${
                         formData.gameDetails.autoDelivery
                           ? "bg-brutal-green"
                           : "bg-gray-400"
                       }`}
                     >
                       <div
-                        className={`absolute top-1 left-1 w-4 h-4 bg-white border border-black transition-transform ${
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white border border-black transition-transform ${
                           formData.gameDetails.autoDelivery
-                            ? "translate-x-4"
+                            ? "translate-x-3"
                             : "translate-x-0"
                         }`}
                       />
@@ -1328,15 +1325,15 @@ export default function EditProductPage() {
             </motion.div>
 
             {/* Metadata Info */}
-            <div className="px-2">
-              <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+            <div className="px-1">
+              <div className="flex items-center gap-2 text-[10px] text-gray-500 mb-0.5">
                 <Calendar className="w-3 h-3" />
                 สร้างเมื่อ:{" "}
                 {product.createdAt
                   ? new Date(product.createdAt).toLocaleDateString("th-TH")
                   : "-"}
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
+              <div className="flex items-center gap-2 text-[10px] text-gray-500">
                 <RefreshCw className="w-3 h-3" />
                 แก้ไขล่าสุด:{" "}
                 {product.updatedAt

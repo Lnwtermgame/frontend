@@ -101,33 +101,33 @@ export default function AdminPromotions() {
 
   return (
     <AdminLayout title={"โปรโมชั่น" as any}>
-      <div className="space-y-6">
+      <div className="space-y-5">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row gap-4 justify-between">
+        <div className="flex flex-col lg:flex-row gap-3 justify-between">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-purple mr-2"></span>
-            <h1 className="text-2xl font-bold text-black">จัดการโปรโมชั่น</h1>
+            <span className="w-1.5 h-5 bg-brutal-purple mr-2"></span>
+            <h1 className="text-xl font-bold text-black">จัดการโปรโมชั่น</h1>
           </div>
           {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <div className="relative w-full sm:max-w-xs">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-500" />
+                <Search className="h-4 w-4 text-gray-500" />
               </div>
               <input
                 type="text"
                 placeholder="ค้นหาโปรโมชั่นหรือรหัส..."
-                className="bg-white border-[2px] border-gray-300 text-black pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="relative w-full sm:max-w-xs">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Info className="h-5 w-5 text-gray-500" />
+                <Info className="h-4 w-4 text-gray-500" />
               </div>
               <select
-                className="bg-white border-[2px] border-gray-300 text-black pl-10 pr-4 py-2 w-full appearance-none focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-1.5 w-full appearance-none text-sm focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
@@ -139,8 +139,8 @@ export default function AdminPromotions() {
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -156,22 +156,22 @@ export default function AdminPromotions() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Link href="/admin/promotions/settings">
               <button
-                className="bg-white border-[3px] border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors font-medium"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                className="bg-white border-2 border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-100 transition-colors font-medium"
+                style={{ boxShadow: "2px 2px 0 0 #000000" }}
               >
-                <Settings className="h-5 w-5" />
+                <Settings className="h-4 w-4" />
                 <span>ตั้งค่า</span>
               </button>
             </Link>
             <Link href="/admin/promotions/create">
               <button
-                className="bg-black text-white border-[3px] border-black w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 transition-colors font-medium"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                className="bg-black text-white border-2 border-black w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium"
+                style={{ boxShadow: "2px 2px 0 0 #000000" }}
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="h-4 w-4" />
                 <span>สร้างโปรโมชั่น</span>
               </button>
             </Link>
@@ -180,31 +180,31 @@ export default function AdminPromotions() {
 
         {/* Promotions Table */}
         <motion.div
-          className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-white border-2 border-black overflow-hidden"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-5 border-b-[2px] border-black bg-gray-50">
-            <h3 className="text-lg font-semibold text-black flex items-center">
+          <div className="p-3 border-b-2 border-black bg-gray-50">
+            <h3 className="text-base font-semibold text-black flex items-center">
               <span className="w-1.5 h-5 bg-brutal-purple mr-2"></span>
-              <Tag className="mr-2 h-5 w-5 text-brutal-purple" />
+              <Tag className="mr-2 h-4 w-4 text-brutal-purple" />
               รายการโปรโมชั่น
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-gray-600 text-sm border-b border-gray-200">
-                  <th className="px-5 py-3 text-left">โปรโมชั่น</th>
-                  <th className="px-5 py-3 text-left">รหัส</th>
-                  <th className="px-5 py-3 text-left">ประเภท</th>
-                  <th className="px-5 py-3 text-left">ส่วนลด</th>
-                  <th className="px-5 py-3 text-left">ใช้แล้ว</th>
-                  <th className="px-5 py-3 text-left">วันที่</th>
-                  <th className="px-5 py-3 text-left">สถานะ</th>
-                  <th className="px-5 py-3 text-left">การดำเนินการ</th>
+                <tr className="text-gray-600 text-xs border-b border-gray-200">
+                  <th className="px-3 py-2 text-left">โปรโมชั่น</th>
+                  <th className="px-3 py-2 text-left">รหัส</th>
+                  <th className="px-3 py-2 text-left">ประเภท</th>
+                  <th className="px-3 py-2 text-left">ส่วนลด</th>
+                  <th className="px-3 py-2 text-left">ใช้แล้ว</th>
+                  <th className="px-3 py-2 text-left">วันที่</th>
+                  <th className="px-3 py-2 text-left">สถานะ</th>
+                  <th className="px-3 py-2 text-left">การดำเนินการ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -214,31 +214,31 @@ export default function AdminPromotions() {
                       key={promotion.id}
                       className="text-sm hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-5 py-4 font-medium text-black">
+                      <td className="px-3 py-2 font-medium text-black">
                         {promotion.title}
                       </td>
-                      <td className="px-5 py-4">
-                        <span className="font-mono bg-gray-100 border-[2px] border-gray-300 px-2 py-1 text-black">
+                      <td className="px-3 py-2">
+                        <span className="font-mono bg-gray-100 border-2 border-gray-300 px-1.5 py-0.5 text-black text-xs">
                           {promotion.code}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-2">
                         <span
-                          className={`border-[2px] px-2 py-1 text-xs font-medium ${getPromotionTypeStyles(promotion.type)}`}
+                          className={`border-2 px-1.5 py-0.5 text-[10px] font-medium ${getPromotionTypeStyles(promotion.type)}`}
                         >
                           {getPromotionTypeText(promotion.type)}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-black font-medium">
+                      <td className="px-3 py-2 text-black font-medium">
                         {promotion.discount}
                       </td>
-                      <td className="px-5 py-4 text-black">
+                      <td className="px-3 py-2 text-black">
                         {promotion.usageCount}
                       </td>
-                      <td className="px-5 py-4 text-gray-600 text-xs">
+                      <td className="px-3 py-2 text-gray-600 text-xs">
                         <div className="flex items-center">
                           <Calendar className="h-3 w-3 mr-1 text-gray-500" />
-                          <span>
+                          <span className="text-[10px]">
                             {new Date(promotion.startDate).toLocaleDateString(
                               "th-TH",
                             )}{" "}
@@ -249,23 +249,23 @@ export default function AdminPromotions() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-2">
                         <span
-                          className={`px-2 py-1 text-xs border-[2px] font-medium ${getStatusStyles(promotion.status)}`}
+                          className={`px-1.5 py-0.5 text-[10px] border-2 font-medium ${getStatusStyles(promotion.status)}`}
                         >
                           {getStatusText(promotion.status)}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
-                        <div className="flex space-x-2">
-                          <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors">
-                            <Edit className="h-4 w-4" />
+                      <td className="px-3 py-2">
+                        <div className="flex space-x-1">
+                          <button className="p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors">
+                            <Edit className="h-3.5 w-3.5" />
                           </button>
-                          <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-brutal-purple hover:text-white hover:border-black transition-colors">
-                            <ExternalLink className="h-4 w-4" />
+                          <button className="p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-brutal-purple hover:text-white hover:border-black transition-colors">
+                            <ExternalLink className="h-3.5 w-3.5" />
                           </button>
-                          <button className="p-2 bg-gray-100 border-[2px] border-gray-300 text-black hover:bg-red-500 hover:text-white hover:border-black transition-colors">
-                            <Trash2 className="h-4 w-4" />
+                          <button className="p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-red-500 hover:text-white hover:border-black transition-colors">
+                            <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       </td>
@@ -274,7 +274,7 @@ export default function AdminPromotions() {
                 ) : (
                   <tr>
                     <td
-                      className="px-5 py-8 text-center text-gray-500"
+                      className="px-3 py-6 text-center text-gray-500 text-sm"
                       colSpan={8}
                     >
                       ไม่พบโปรโมชั่นที่ตรงกับเงื่อนไขการค้นหา
@@ -304,70 +304,70 @@ export default function AdminPromotions() {
 
         {/* Active Promotions Summary */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-5"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
           <div
-            className="bg-white border-[3px] border-black p-6"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-white border-2 border-black p-4"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-black text-lg font-medium">ใช้งานอยู่</h3>
-              <div className="p-2 bg-green-100 border-[2px] border-green-500 text-green-700">
-                <Clock className="h-5 w-5" />
+              <h3 className="text-black text-base font-medium">ใช้งานอยู่</h3>
+              <div className="p-1.5 bg-green-100 border-2 border-green-500 text-green-700">
+                <Clock className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-4 text-3xl font-bold text-black">
+            <div className="mt-2 text-2xl font-bold text-black">
               {
                 promotions.filter((p: Promotion) => p.status === "active")
                   .length
               }
             </div>
-            <div className="mt-1 text-gray-500 text-sm">
+            <div className="mt-1 text-gray-500 text-xs">
               โปรโมชั่นที่กำลังทำงาน
             </div>
           </div>
 
           <div
-            className="bg-white border-[3px] border-black p-6"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-white border-2 border-black p-4"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-black text-lg font-medium">กำหนดเวลา</h3>
-              <div className="p-2 bg-amber-100 border-[2px] border-amber-500 text-amber-700">
-                <Calendar className="h-5 w-5" />
+              <h3 className="text-black text-base font-medium">กำหนดเวลา</h3>
+              <div className="p-1.5 bg-amber-100 border-2 border-amber-500 text-amber-700">
+                <Calendar className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-4 text-3xl font-bold text-black">
+            <div className="mt-2 text-2xl font-bold text-black">
               {
                 promotions.filter((p: Promotion) => p.status === "scheduled")
                   .length
               }
             </div>
-            <div className="mt-1 text-gray-500 text-sm">
+            <div className="mt-1 text-gray-500 text-xs">
               โปรโมชั่นที่จะเริ่ม
             </div>
           </div>
 
           <div
-            className="bg-white border-[3px] border-black p-6"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-white border-2 border-black p-4"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-black text-lg font-medium">ใช้ทั้งหมด</h3>
-              <div className="p-2 bg-blue-100 border-[2px] border-blue-500 text-blue-700">
-                <Tag className="h-5 w-5" />
+              <h3 className="text-black text-base font-medium">ใช้ทั้งหมด</h3>
+              <div className="p-1.5 bg-blue-100 border-2 border-blue-500 text-blue-700">
+                <Tag className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-4 text-3xl font-bold text-black">
+            <div className="mt-2 text-2xl font-bold text-black">
               {promotions.reduce(
                 (total: number, p: Promotion) => total + p.usageCount,
                 0,
               )}
             </div>
-            <div className="mt-1 text-gray-500 text-sm">
+            <div className="mt-1 text-gray-500 text-xs">
               จำนวนครั้งที่ใช้โปรโมชั่น
             </div>
           </div>

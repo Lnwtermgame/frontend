@@ -207,48 +207,48 @@ export default function CouponsPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="relative mb-6">
+      <div className="relative mb-4">
         <motion.h2
-          className="text-xl font-bold text-black mb-1 relative flex items-center"
+          className="text-lg font-bold text-black mb-1 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
+          <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
           คูปองของฉัน
         </motion.h2>
-        <p className="text-gray-600 text-sm relative thai-font">
+        <p className="text-gray-600 text-xs relative thai-font">
           คุณมีคูปองที่ใช้งานได้ {activeCouponCount} ใบ
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
         <div className="relative w-full sm:w-64">
           <input
             type="text"
             placeholder="ค้นหาคูปอง..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-black focus:outline-none focus:border-black pl-10 transition-all thai-font"
+            className="w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black pl-8 transition-all thai-font"
           />
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
         </div>
 
         <div className="relative w-full sm:w-auto ml-auto">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-4 py-2 pr-10 text-sm text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
+            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 pr-8 text-xs text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
           >
             <option value="all">คูปองทั้งหมด</option>
             <option value="active">ใช้งานได้</option>
             <option value="used">ใช้แล้ว</option>
             <option value="expired">หมดอายุ</option>
           </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 pointer-events-none" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
@@ -256,30 +256,30 @@ export default function CouponsPage() {
             </div>
           ) : filteredCoupons.length === 0 ? (
             <motion.div
-              className="bg-white border-[3px] border-black p-8 text-center"
+              className="bg-white border-[3px] border-black p-6 text-center"
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Ticket className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-              <h2 className="text-xl font-bold text-black mb-2 thai-font">
+              <Ticket className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+              <h2 className="text-lg font-bold text-black mb-1 thai-font">
                 ไม่พบคูปอง
               </h2>
-              <p className="text-gray-600 mb-6 thai-font">
+              <p className="text-gray-600 text-xs mb-4 thai-font">
                 {searchTerm
                   ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"`
                   : "คุณยังไม่มีคูปองในระบบ"}
               </p>
               <Link
                 href="/products"
-                className="bg-black text-white border-[3px] border-black px-4 py-2 font-bold inline-flex items-center hover:bg-gray-800 transition-all thai-font"
+                className="bg-black text-white border-[3px] border-black px-3 py-1.5 text-xs font-bold inline-flex items-center hover:bg-gray-800 transition-all thai-font"
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 ช้อปปิ้งเลย
               </Link>
             </motion.div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {filteredCoupons.map((coupon, index) => {
                 const status = getCouponStatus(coupon);
                 return (
@@ -293,19 +293,19 @@ export default function CouponsPage() {
                     whileHover={{ y: -2 }}
                   >
                     <div
-                      className="p-4 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
+                      className="p-3 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
                       onClick={() => toggleCouponExpansion(coupon.id)}
                     >
-                      <div className="flex items-center mb-3 sm:mb-0">
-                        <div className="h-12 w-12 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-4">
-                          <Ticket className="h-6 w-6 text-black" />
+                      <div className="flex items-center mb-2 sm:mb-0">
+                        <div className="h-10 w-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3">
+                          <Ticket className="h-5 w-5 text-black" />
                         </div>
                         <div>
-                          <div className="text-black font-bold text-lg">
+                          <div className="text-black font-bold text-base">
                             {coupon.description ||
                               `ส่วนลด ${coupon.discountPercentage}%`}
                           </div>
-                          <div className="text-gray-600 text-sm">
+                          <div className="text-gray-600 text-xs">
                             {coupon.minPurchase
                               ? `ขั้นต่ำ ${formatCurrency(coupon.minPurchase)}`
                               : "ไม่มีขั้นต่ำ"}
@@ -313,9 +313,9 @@ export default function CouponsPage() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
-                        <div className="mr-4">
+                        <div className="mr-3">
                           <span
-                            className={`text-xs px-2.5 py-1 border-[2px] border-black inline-flex items-center font-bold
+                            className={`text-[10px] px-2 py-0.5 border-[2px] border-black inline-flex items-center font-bold
                             ${
                               status === "active"
                                 ? "bg-brutal-green text-black"
@@ -332,23 +332,23 @@ export default function CouponsPage() {
                           </span>
                         </div>
                         {expandedCoupons.includes(coupon.id) ? (
-                          <ChevronUp className="h-5 w-5 text-gray-600" />
+                          <ChevronUp className="h-4 w-4 text-gray-600" />
                         ) : (
-                          <ChevronDown className="h-5 w-5 text-gray-600" />
+                          <ChevronDown className="h-4 w-4 text-gray-600" />
                         )}
                       </div>
                     </div>
 
                     {expandedCoupons.includes(coupon.id) && (
-                      <div className="p-4 border-t-[2px] border-black bg-gray-50">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="bg-white p-4 border-[2px] border-black">
-                            <h3 className="text-black text-sm font-bold mb-3 flex items-center gap-2 thai-font">
-                              <Clock size={14} className="text-black" />{" "}
+                      <div className="p-3 border-t-[2px] border-black bg-gray-50">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="bg-white p-3 border-[2px] border-black">
+                            <h3 className="text-black text-xs font-bold mb-2 flex items-center gap-1.5 thai-font">
+                              <Clock size={12} className="text-black" />{" "}
                               รายละเอียดคูปอง
                             </h3>
-                            <div className="space-y-2 text-sm">
-                              <div className="flex justify-between p-2 border-b border-gray-200">
+                            <div className="space-y-1.5 text-xs">
+                              <div className="flex justify-between p-1.5 border-b border-gray-200">
                                 <span className="text-gray-600 thai-font">
                                   ส่วนลด:
                                 </span>
@@ -357,7 +357,7 @@ export default function CouponsPage() {
                                 </span>
                               </div>
                               {coupon.maxDiscount && (
-                                <div className="flex justify-between p-2 border-b border-gray-200">
+                                <div className="flex justify-between p-1.5 border-b border-gray-200">
                                   <span className="text-gray-600 thai-font">
                                     ส่วนลดสูงสุด:
                                   </span>
@@ -366,7 +366,7 @@ export default function CouponsPage() {
                                   </span>
                                 </div>
                               )}
-                              <div className="flex justify-between p-2 border-b border-gray-200">
+                              <div className="flex justify-between p-1.5 border-b border-gray-200">
                                 <span className="text-gray-600 thai-font">
                                   ใช้ได้ถึง:
                                 </span>
@@ -379,7 +379,7 @@ export default function CouponsPage() {
                                 </span>
                               </div>
                               {coupon.isUsed && coupon.usedAt && (
-                                <div className="flex justify-between p-2 border-b border-gray-200">
+                                <div className="flex justify-between p-1.5 border-b border-gray-200">
                                   <span className="text-gray-600 thai-font">
                                     ใช้เมื่อ:
                                   </span>
@@ -393,9 +393,9 @@ export default function CouponsPage() {
                             </div>
                           </div>
 
-                          <div className="bg-white p-4 border-[2px] border-black">
-                            <div className="flex justify-between items-center mb-3">
-                              <h3 className="text-black text-sm font-bold thai-font">
+                          <div className="bg-white p-3 border-[2px] border-black">
+                            <div className="flex justify-between items-center mb-2">
+                              <h3 className="text-black text-xs font-bold thai-font">
                                 รหัสคูปอง
                               </h3>
                               {status === "active" && (
@@ -404,7 +404,7 @@ export default function CouponsPage() {
                                     e.stopPropagation();
                                     copyToClipboard(coupon.code, coupon.id);
                                   }}
-                                  className="text-xs text-black underline font-medium flex items-center transition-colors thai-font"
+                                  className="text-[10px] text-black underline font-medium flex items-center transition-colors thai-font"
                                 >
                                   {copiedCode === coupon.id ? (
                                     <>
@@ -420,15 +420,15 @@ export default function CouponsPage() {
                                 </button>
                               )}
                             </div>
-                            <div className="p-3 bg-gray-100 border-[2px] border-black font-mono text-black text-sm select-all text-center tracking-wider">
+                            <div className="p-2 bg-gray-100 border-[2px] border-black font-mono text-black text-xs select-all text-center tracking-wider">
                               {coupon.code}
                             </div>
 
                             {status === "active" && (
-                              <div className="mt-4 text-center">
+                              <div className="mt-3 text-center">
                                 <Link
                                   href="/products"
-                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black inline-flex items-center justify-center text-sm py-2 transition-all font-bold thai-font"
+                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black inline-flex items-center justify-center text-xs py-1.5 transition-all font-bold thai-font"
                                 >
                                   ใช้ทันที
                                 </Link>
@@ -445,21 +445,21 @@ export default function CouponsPage() {
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <motion.div
-            className="bg-white border-[3px] border-black p-5"
+            className="bg-white border-[3px] border-black p-4"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-4 flex items-center gap-2 thai-font">
-              <Plus size={18} className="text-black" /> เพิ่มคูปอง
+            <h2 className="text-black font-bold mb-3 flex items-center gap-2 thai-font text-sm">
+              <Plus size={16} className="text-black" /> เพิ่มคูปอง
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div>
-                <label className="block text-sm text-gray-600 mb-2 thai-font">
+                <label className="block text-xs text-gray-600 mb-1.5 thai-font">
                   กรอกรหัสคูปอง
                 </label>
                 <div className="flex gap-2">
@@ -472,19 +472,19 @@ export default function CouponsPage() {
                       setErrorMessage("");
                     }}
                     onKeyPress={(e) => e.key === "Enter" && handleClaimCoupon()}
-                    className="flex-1 bg-white border-[2px] border-gray-300 px-3 py-2 text-sm text-black focus:outline-none focus:border-black transition-all"
+                    className="flex-1 bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black transition-all"
                   />
                   <button
                     onClick={handleClaimCoupon}
-                    className="bg-black border-[2px] border-black text-white px-3 py-2 flex items-center hover:bg-gray-800 transition-all"
+                    className="bg-black border-[2px] border-black text-white px-3 py-1.5 flex items-center hover:bg-gray-800 transition-all"
                     style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
                 {errorMessage && (
                   <motion.div
-                    className={`mt-2 text-xs flex items-start p-2 border-[2px] ${
+                    className={`mt-2 text-[10px] flex items-start p-1.5 border-[2px] ${
                       errorMessage.includes("กำลัง")
                         ? "text-yellow-700 bg-yellow-50 border-yellow-500"
                         : "text-red-600 bg-red-50 border-red-500"
@@ -496,7 +496,7 @@ export default function CouponsPage() {
                     <span>{errorMessage}</span>
                   </motion.div>
                 )}
-                <p className="text-gray-600 text-xs mt-2 thai-font">
+                <p className="text-gray-600 text-[10px] mt-1.5 thai-font">
                   กรอกรหัสคูปองที่ถูกต้องเพื่อเพิ่มลงในบัญชีของคุณ
                 </p>
               </div>
@@ -505,51 +505,51 @@ export default function CouponsPage() {
 
           {/* How to Use Section */}
           <motion.div
-            className="bg-white border-[3px] border-black p-5"
+            className="bg-white border-[3px] border-black p-4"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-4 thai-font">วิธีใช้งาน</h2>
-            <div className="space-y-4">
+            <h2 className="text-black font-bold mb-3 thai-font text-sm">วิธีใช้งาน</h2>
+            <div className="space-y-3">
               <div className="flex">
-                <div className="h-6 w-6 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-3 flex-shrink-0 text-xs font-bold">
+                <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">
                   1
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm thai-font">
+                  <p className="text-gray-600 text-xs thai-font">
                     ค้นหาคูปองหรือกรอกรหัสคูปอง
                   </p>
                 </div>
               </div>
 
               <div className="flex">
-                <div className="h-6 w-6 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-3 flex-shrink-0 text-xs font-bold">
+                <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">
                   2
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm thai-font">
+                  <p className="text-gray-600 text-xs thai-font">
                     คัดลอกรหัสคูปอง
                   </p>
                 </div>
               </div>
 
               <div className="flex">
-                <div className="h-6 w-6 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-3 flex-shrink-0 text-xs font-bold">
+                <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">
                   3
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm thai-font">
+                  <p className="text-gray-600 text-xs thai-font">
                     ใช้รหัสตอนชำระเงิน
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center mt-3 pt-3 border-t-[2px] border-black">
-                <Clock className="h-4 w-4 text-gray-600 mr-2" />
-                <span className="text-gray-600 text-xs thai-font">
+              <div className="flex items-center mt-2 pt-2 border-t-[2px] border-black">
+                <Clock className="h-3.5 w-3.5 text-gray-600 mr-1.5" />
+                <span className="text-gray-600 text-[10px] thai-font">
                   คูปองมีวันหมดอายุ โปรดใช้ก่อนที่จะหมดอายุ
                 </span>
               </div>

@@ -175,7 +175,7 @@ export default function AdminNotificationPage() {
 
   return (
     <AdminLayout title="จัดการการแจ้งเตือน">
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -183,11 +183,11 @@ export default function AdminNotificationPage() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-              <Bell className="h-6 w-6 text-brutal-pink" />
+            <h1 className="text-xl font-bold text-black flex items-center gap-2">
+              <Bell className="h-5 w-5 text-brutal-pink" />
               จัดการการแจ้งเตือน
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-xs text-gray-600 mt-1">
               ส่งการแจ้งเตือนไปยังผู้ใช้ทั้งหมดหรือเฉพาะราย
             </p>
           </div>
@@ -198,30 +198,30 @@ export default function AdminNotificationPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-4 gap-4"
+            className="grid grid-cols-1 md:grid-cols-4 gap-3"
           >
             <StatCard
               title="การแจ้งเตือนทั้งหมด"
               value={stats.total.toLocaleString()}
-              icon={<Bell className="h-5 w-5" />}
+              icon={<Bell className="h-4 w-4" />}
               color="blue"
             />
             <StatCard
               title="ยังไม่อ่าน"
               value={stats.unread.toLocaleString()}
-              icon={<AlertTriangle className="h-5 w-5" />}
+              icon={<AlertTriangle className="h-4 w-4" />}
               color="yellow"
             />
             <StatCard
               title="Push Subscriptions"
               value={stats.pushSubscriptions.toLocaleString()}
-              icon={<Smartphone className="h-5 w-5" />}
+              icon={<Smartphone className="h-4 w-4" />}
               color="pink"
             />
             <StatCard
               title="Online Now"
               value={stats.connectedUsers.toLocaleString()}
-              icon={<Users className="h-5 w-5" />}
+              icon={<Users className="h-4 w-4" />}
               color="green"
             />
           </motion.div>
@@ -233,19 +233,19 @@ export default function AdminNotificationPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-white border-[3px] border-black"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          style={{ boxShadow: "3px 3px 0 0 #000000" }}
         >
-          <div className="p-6 border-b-[3px] border-black bg-gray-50">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <Send className="h-5 w-5 text-brutal-blue" />
+          <div className="p-4 border-b-[3px] border-black bg-gray-50">
+            <h2 className="text-base font-bold flex items-center gap-2">
+              <Send className="h-4 w-4 text-brutal-blue" />
               เขียนการแจ้งเตือน
             </h2>
           </div>
 
-          <div className="p-6 space-y-6">
+          <div className="p-4 space-y-4">
             {/* Type Selection */}
             <div>
-              <label className="block text-sm font-bold mb-2">
+              <label className="block text-xs font-bold mb-2">
                 ประเภทการแจ้งเตือน
               </label>
               <div className="flex flex-wrap gap-2">
@@ -253,7 +253,7 @@ export default function AdminNotificationPage() {
                   <button
                     key={t}
                     onClick={() => setType(t as any)}
-                    className={`flex items-center gap-2 px-4 py-2 border-[3px] font-medium transition-all ${
+                    className={`flex items-center gap-2 px-3 py-1.5 border-[2px] text-xs font-medium transition-all ${
                       type === t
                         ? `${getTypeColor(t)} border-black`
                         : "bg-white border-gray-300 hover:border-gray-400"
@@ -271,47 +271,47 @@ export default function AdminNotificationPage() {
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-bold mb-2">หัวข้อ *</label>
+              <label className="block text-xs font-bold mb-2">หัวข้อ *</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="เช่น โปรโมชั่นพิเศษ!"
-                className="w-full px-4 py-3 border-[3px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink"
+                className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
               />
             </div>
 
             {/* Message */}
             <div>
-              <label className="block text-sm font-bold mb-2">ข้อความ *</label>
+              <label className="block text-xs font-bold mb-2">ข้อความ *</label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="เขียนข้อความที่ต้องการส่ง..."
-                rows={4}
-                className="w-full px-4 py-3 border-[3px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink resize-none"
+                rows={3}
+                className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink resize-none text-sm"
               />
             </div>
 
             {/* Target Selection */}
-            <div className="border-[3px] border-gray-200 p-4">
-              <label className="block text-sm font-bold mb-3">ผู้รับ</label>
-              <div className="flex gap-4 mb-4">
-                <label className="flex items-center gap-2 cursor-pointer">
+            <div className="border-[2px] border-gray-200 p-3">
+              <label className="block text-xs font-bold mb-2">ผู้รับ</label>
+              <div className="flex gap-4 mb-3">
+                <label className="flex items-center gap-2 cursor-pointer text-xs">
                   <input
                     type="radio"
                     checked={targetMode === "all"}
                     onChange={() => setTargetMode("all")}
-                    className="w-4 h-4"
+                    className="w-3 h-3"
                   />
                   <span>ผู้ใช้ทั้งหมด</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer text-xs">
                   <input
                     type="radio"
                     checked={targetMode === "specific"}
                     onChange={() => setTargetMode("specific")}
-                    className="w-4 h-4"
+                    className="w-3 h-3"
                   />
                   <span>เฉพาะราย</span>
                 </label>
@@ -321,9 +321,9 @@ export default function AdminNotificationPage() {
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="mt-3"
+                  className="mt-2"
                 >
-                  <label className="block text-sm mb-2">
+                  <label className="block text-xs mb-1">
                     User IDs (คั่นด้วยลูกน้ำ)
                   </label>
                   <textarea
@@ -331,7 +331,7 @@ export default function AdminNotificationPage() {
                     onChange={(e) => setUserIds(e.target.value)}
                     placeholder="user-id-1, user-id-2, user-id-3"
                     rows={2}
-                    className="w-full px-3 py-2 border-[3px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink resize-none text-sm font-mono"
+                    className="w-full px-2 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink resize-none text-xs font-mono"
                   />
                 </motion.div>
               )}
@@ -341,12 +341,12 @@ export default function AdminNotificationPage() {
             <div>
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-black"
+                className="flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-black"
               >
                 {showAdvanced ? (
-                  <ChevronUp className="h-4 w-4" />
+                  <ChevronUp className="h-3 w-3" />
                 ) : (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-3 w-3" />
                 )}
                 ตัวเลือกเพิ่มเติม
               </button>
@@ -355,27 +355,27 @@ export default function AdminNotificationPage() {
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="mt-4 space-y-4 border-[3px] border-gray-200 p-4"
+                  className="mt-3 space-y-3 border-[2px] border-gray-200 p-3"
                 >
                   {/* Delivery Options */}
                   <div>
-                    <label className="block text-sm font-bold mb-2">
+                    <label className="block text-xs font-bold mb-1">
                       ช่องทางการส่ง
                     </label>
-                    <div className="flex gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
+                    <div className="flex gap-3">
+                      <label className="flex items-center gap-1.5 cursor-pointer text-xs">
                         <input
                           type="checkbox"
                           checked={sendPush}
                           onChange={(e) => setSendPush(e.target.checked)}
-                          className="w-4 h-4"
+                          className="w-3 h-3"
                         />
-                        <Smartphone className="h-4 w-4" />
+                        <Smartphone className="h-3 w-3" />
                         <span>Push Notification</span>
                       </label>
-                      <label className="flex items-center gap-2 cursor-pointer opacity-50">
-                        <input type="checkbox" disabled className="w-4 h-4" />
-                        <Mail className="h-4 w-4" />
+                      <label className="flex items-center gap-1.5 cursor-pointer opacity-50 text-xs">
+                        <input type="checkbox" disabled className="w-3 h-3" />
+                        <Mail className="h-3 w-3" />
                         <span>Email (เร็วๆ นี้)</span>
                       </label>
                     </div>
@@ -383,7 +383,7 @@ export default function AdminNotificationPage() {
 
                   {/* Link */}
                   <div>
-                    <label className="block text-sm font-bold mb-2">
+                    <label className="block text-xs font-bold mb-1">
                       ลิงก์ (ไม่บังคับ)
                     </label>
                     <input
@@ -391,7 +391,7 @@ export default function AdminNotificationPage() {
                       value={link}
                       onChange={(e) => setLink(e.target.value)}
                       placeholder="/dashboard/promotions"
-                      className="w-full px-3 py-2 border-[3px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
+                      className="w-full px-2 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-xs"
                     />
                   </div>
                 </motion.div>
@@ -399,23 +399,23 @@ export default function AdminNotificationPage() {
             </div>
 
             {/* Send Button */}
-            <div className="pt-4 border-t-[3px] border-gray-200">
+            <div className="pt-3 border-t-[2px] border-gray-200">
               <motion.button
                 onClick={handleSendNotification}
                 disabled={isSending || !title.trim() || !message.trim()}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-brutal-pink hover:bg-pink-600 text-white px-8 py-3 border-[3px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-brutal-pink hover:bg-pink-600 text-white px-6 py-2.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 {isSending ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     กำลังส่ง...
                   </>
                 ) : (
                   <>
-                    <Send className="h-5 w-5" />
+                    <Send className="h-4 w-4" />
                     ส่งการแจ้งเตือน
                   </>
                 )}
@@ -431,28 +431,28 @@ export default function AdminNotificationPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="bg-white border-[3px] border-black"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            <div className="p-6 border-b-[3px] border-black bg-gray-50">
-              <h2 className="text-lg font-bold">สถิติตามประเภท</h2>
+            <div className="p-4 border-b-[3px] border-black bg-gray-50">
+              <h2 className="text-base font-bold">สถิติตามประเภท</h2>
             </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="p-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(stats.byType).map(([type, count]) => (
                   <div
                     key={type}
-                    className={`p-4 border-[3px] ${getTypeColor(type)}`}
+                    className={`p-3 border-[2px] ${getTypeColor(type)}`}
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-1.5">
                       {getTypeIcon(type)}
-                      <span className="font-bold">
+                      <span className="font-bold text-xs">
                         {type === "SYSTEM" && "ระบบ"}
                         {type === "ORDER" && "คำสั่งซื้อ"}
                         {type === "PAYMENT" && "ชำระเงิน"}
                         {type === "PROMOTION" && "โปรโมชั่น"}
                       </span>
                     </div>
-                    <div className="text-2xl font-bold">
+                    <div className="text-xl font-bold">
                       {count.toLocaleString()}
                     </div>
                   </div>
@@ -485,14 +485,14 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className={`p-4 border-[3px] ${colorClasses[color]}`}
+      className={`p-3 border-[3px] ${colorClasses[color]}`}
       style={{ boxShadow: "3px 3px 0 0 #000000" }}
     >
       <div className="flex items-center justify-between">
-        <span className="font-medium">{title}</span>
-        <span className="p-2 bg-white border-[2px] border-black">{icon}</span>
+        <span className="text-xs font-medium">{title}</span>
+        <span className="p-1.5 bg-white border-[2px] border-black">{icon}</span>
       </div>
-      <div className="text-2xl font-bold mt-2">{value}</div>
+      <div className="text-xl font-bold mt-1.5">{value}</div>
     </motion.div>
   );
 }

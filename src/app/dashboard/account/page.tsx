@@ -137,17 +137,18 @@ export default function AccountPage() {
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
-    .slice(0, 5)
     .flatMap((order) =>
       order.items.map((item) => ({
         id: order.id,
+        itemId: item.id,
         name: item.product?.name || item.productName || "สินค้า",
         amount: item.productType?.name || `${item.quantity} ชิ้น`,
         image:
           item.product?.imageUrl ||
           "https://placehold.co/60x60/5C3FC9/white?text=Game",
       })),
-    );
+    )
+    .slice(0, 5);
 
   const accountLinks = [
     {
@@ -163,23 +164,23 @@ export default function AccountPage() {
   return (
     <div className="bg-brutal-gray min-h-full">
       {/* Page Header */}
-      <div className="relative mb-6">
+      <div className="relative mb-4">
         <motion.h2
-          className="text-xl font-bold text-black mb-1 relative flex items-center"
+          className="text-lg font-bold text-black mb-1 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
+          <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
           บัญชีของฉัน
         </motion.h2>
-        <p className="text-gray-600 text-sm relative thai-font">
+        <p className="text-gray-600 text-xs relative thai-font">
           จัดการการตั้งค่าและความชอบของบัญชีของคุณ
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          <div className="grid gap-6">
+          <div className="grid gap-4">
             {/* User profile - Enhanced with gradient border */}
             <motion.div
               className="bg-white border-[3px] border-black overflow-hidden relative"
@@ -189,35 +190,35 @@ export default function AccountPage() {
               transition={{ duration: 0.3 }}
               whileHover={{ y: -2 }}
             >
-              <div className="p-4 md:p-6">
-                <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4">
-                  <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="p-4">
+                <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-3">
+                  <div className="flex flex-col md:flex-row items-center gap-3">
                     <div className="relative">
-                      <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-xl md:text-2xl font-bold overflow-hidden shadow-[2px_2px_0_0_#000]">
+                      <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-lg md:text-xl font-bold overflow-hidden shadow-[2px_2px_0_0_#000]">
                         {user?.username?.charAt(0).toUpperCase() || "U"}
                       </div>
                     </div>
                     <div className="flex flex-col items-center md:items-start gap-1">
-                      <h2 className="text-xl md:text-2xl font-bold text-black">
+                      <h2 className="text-lg md:text-xl font-bold text-black">
                         {user?.username || "User"}
                       </h2>
                       <div className="flex flex-col md:flex-row items-center gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-600 text-sm thai-font">
+                          <span className="text-gray-600 text-xs thai-font">
                             อีเมล:
                           </span>
-                          <span className="text-gray-900 text-sm font-medium">
+                          <span className="text-gray-900 text-xs font-medium">
                             {user?.email || "user@example.com"}
                           </span>
                         </div>
                         {isEmailVerified ? (
-                          <span className="bg-brutal-green text-black text-[10px] md:text-xs font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
-                            <CheckCircle size={12} />
+                          <span className="bg-brutal-green text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
+                            <CheckCircle size={10} />
                             ยืนยันแล้ว
                           </span>
                         ) : (
-                          <span className="bg-brutal-pink text-black text-[10px] md:text-xs font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
-                            <AlertCircle size={12} />
+                          <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
+                            <AlertCircle size={10} />
                             ยังไม่ยืนยัน
                           </span>
                         )}
@@ -231,18 +232,18 @@ export default function AccountPage() {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="mt-4 p-4 bg-brutal-pink/20 border-[2px] border-black"
+                    className="mt-3 p-3 bg-brutal-pink/20 border-[2px] border-black"
                   >
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center flex-shrink-0">
-                          <Mail size={16} className="text-black" />
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 bg-brutal-yellow border-[2px] border-black flex items-center justify-center flex-shrink-0">
+                          <Mail size={14} className="text-black" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-black thai-font">
+                          <p className="text-xs font-bold text-black thai-font">
                             กรุณายืนยันอีเมลของคุณ
                           </p>
-                          <p className="text-xs text-gray-600 thai-font mt-1">
+                          <p className="text-[10px] text-gray-600 thai-font mt-0.5">
                             ยืนยันอีเมลเพื่อรับการแจ้งเตือนและกู้คืนบัญชี
                           </p>
                         </div>
@@ -251,7 +252,7 @@ export default function AccountPage() {
                         onClick={handleSendVerificationEmail}
                         disabled={cooldownSeconds > 0 || isSendingVerification}
                         className={`
-                          flex items-center gap-2 px-4 py-2 text-sm font-bold border-[2px] border-black
+                          flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border-[2px] border-black
                           transition-all duration-200 thai-font whitespace-nowrap
                           ${
                             cooldownSeconds > 0 || isSendingVerification
@@ -262,24 +263,24 @@ export default function AccountPage() {
                       >
                         {isSendingVerification ? (
                           <>
-                            <Loader2 size={14} className="animate-spin" />
+                            <Loader2 size={12} className="animate-spin" />
                             กำลังส่ง...
                           </>
                         ) : cooldownSeconds > 0 ? (
                           <>
-                            <RefreshCw size={14} className="opacity-50" />
+                            <RefreshCw size={12} className="opacity-50" />
                             รอ {cooldownSeconds} วินาที
                           </>
                         ) : (
                           <>
-                            <Mail size={14} />
+                            <Mail size={12} />
                             ส่งอีเมลยืนยัน
                           </>
                         )}
                       </button>
                     </div>
                     {cooldownSeconds > 0 && (
-                      <p className="text-xs text-gray-500 thai-font mt-2 text-center md:text-right">
+                      <p className="text-[10px] text-gray-500 thai-font mt-1 text-center md:text-right">
                         หากไม่ได้รับอีเมล กรุณาตรวจสอบในโฟลเดอร์ Spam
                       </p>
                     )}
@@ -297,75 +298,75 @@ export default function AccountPage() {
               transition={{ duration: 0.3, delay: 0.1 }}
               whileHover={{ y: -2 }}
             >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-bold text-black flex items-center thai-font">
-                    <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-base font-bold text-black flex items-center thai-font">
+                    <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
                     คำสั่งซื้อของฉัน
                   </h2>
                   <Link
                     href="/dashboard/orders"
-                    className="text-black text-sm flex items-center hover:underline font-medium thai-font"
+                    className="text-black text-xs flex items-center hover:underline font-medium thai-font"
                   >
-                    คำสั่งซื้อทั้งหมด <ChevronRight size={16} />
+                    คำสั่งซื้อทั้งหมด <ChevronRight size={14} />
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-black" />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-brutal-blue w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
+                      <History size={16} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-black">
+                    <div className="text-xl font-bold text-black">
                       {isLoading ? (
-                        <Loader2 size={20} className="animate-spin mx-auto" />
+                        <Loader2 size={16} className="animate-spin mx-auto" />
                       ) : (
                         orderStats.waitSend
                       )}
                     </div>
-                    <div className="text-gray-600 text-sm thai-font">รอส่ง</div>
+                    <div className="text-gray-600 text-xs thai-font">รอส่ง</div>
                   </div>
-                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-blue w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-black" />
+                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-brutal-blue w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
+                      <History size={16} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-black">
+                    <div className="text-xl font-bold text-black">
                       {isLoading ? (
-                        <Loader2 size={20} className="animate-spin mx-auto" />
+                        <Loader2 size={16} className="animate-spin mx-auto" />
                       ) : (
                         orderStats.sending
                       )}
                     </div>
-                    <div className="text-gray-600 text-sm thai-font">
+                    <div className="text-gray-600 text-xs thai-font">
                       กำลังส่ง
                     </div>
                   </div>
-                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-green w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-black" />
+                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-brutal-green w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
+                      <History size={16} className="text-black" />
                     </div>
-                    <div className="text-2xl font-bold text-black">
+                    <div className="text-xl font-bold text-black">
                       {isLoading ? (
-                        <Loader2 size={20} className="animate-spin mx-auto" />
+                        <Loader2 size={16} className="animate-spin mx-auto" />
                       ) : (
                         orderStats.completed
                       )}
                     </div>
-                    <div className="text-gray-600 text-sm thai-font">
+                    <div className="text-gray-600 text-xs thai-font">
                       เสร็จสมบูรณ์
                     </div>
                   </div>
-                  <div className="p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-gray-200 w-10 h-10 border-[2px] border-black flex items-center justify-center mx-auto mb-2">
-                      <History size={18} className="text-gray-600" />
+                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
+                    <div className="bg-gray-200 w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
+                      <History size={16} className="text-gray-600" />
                     </div>
-                    <div className="text-2xl font-bold text-black">
+                    <div className="text-xl font-bold text-black">
                       {isLoading ? (
-                        <Loader2 size={20} className="animate-spin mx-auto" />
+                        <Loader2 size={16} className="animate-spin mx-auto" />
                       ) : (
                         orderStats.refunded
                       )}
                     </div>
-                    <div className="text-gray-600 text-sm thai-font">
+                    <div className="text-gray-600 text-xs thai-font">
                       คืนเงิน
                     </div>
                   </div>
@@ -382,20 +383,20 @@ export default function AccountPage() {
               transition={{ duration: 0.3, delay: 0.3 }}
               whileHover={{ y: -2 }}
             >
-              <div className="p-6">
-                <h2 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
-                  <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
+              <div className="p-4">
+                <h2 className="text-base font-bold text-black mb-3 flex items-center thai-font">
+                  <span className="w-1.5 h-4 bg-brutal-green mr-2"></span>
                   ซื้อล่าสุด
                 </h2>
                 {recentlyPurchased.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {recentlyPurchased.map((item) => (
                       <motion.div
-                        key={item.id}
-                        className="flex items-center p-4 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/10 transition-colors"
+                        key={item.itemId}
+                        className="flex items-center p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/10 transition-colors"
                         whileHover={{ x: 2 }}
                       >
-                        <div className="w-14 h-14 border-[2px] border-black overflow-hidden mr-4 bg-white">
+                        <div className="w-10 h-10 border-[2px] border-black overflow-hidden mr-3 bg-white">
                           <img
                             src={item.image}
                             alt={item.name}
@@ -403,35 +404,35 @@ export default function AccountPage() {
                           />
                         </div>
                         <div>
-                          <h3 className="font-bold text-black">{item.name}</h3>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <h3 className="font-bold text-black text-sm">{item.name}</h3>
+                          <p className="text-xs text-gray-600 mt-0.5">
                             {item.amount}
                           </p>
                         </div>
                         <div className="flex gap-2 ml-auto">
                           <motion.button
-                            className="bg-brutal-yellow border-[2px] border-black w-8 h-8 flex items-center justify-center text-black hover:bg-brutal-pink transition-colors"
+                            className="bg-brutal-yellow border-[2px] border-black w-7 h-7 flex items-center justify-center text-black hover:bg-brutal-pink transition-colors"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                           >
-                            <Star size={16} />
+                            <Star size={14} />
                           </motion.button>
                           <Link
                             href={`/dashboard/orders/${item.id}`}
-                            className="bg-black border-[2px] border-black w-8 h-8 flex items-center justify-center text-white hover:bg-gray-800 transition-colors"
+                            className="bg-black border-[2px] border-black w-7 h-7 flex items-center justify-center text-white hover:bg-gray-800 transition-colors"
                           >
-                            <ChevronRight size={16} />
+                            <ChevronRight size={14} />
                           </Link>
                         </div>
                       </motion.div>
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-gray-100 text-gray-600 text-center py-8 border-[2px] border-black">
-                    <div className="w-16 h-16 mx-auto mb-3 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
-                      <History size={24} className="text-black" />
+                  <div className="bg-gray-100 text-gray-600 text-center py-6 border-[2px] border-black">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
+                      <History size={20} className="text-black" />
                     </div>
-                    <p className="thai-font">ไม่พบรายการซื้อล่าสุด</p>
+                    <p className="thai-font text-sm">ไม่พบรายการซื้อล่าสุด</p>
                   </div>
                 )}
               </div>
@@ -440,7 +441,7 @@ export default function AccountPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="grid gap-6">
+          <div className="grid gap-4">
             {/* Account Links - New section */}
             <motion.div
               className="bg-white border-[3px] border-black"
@@ -450,9 +451,9 @@ export default function AccountPage() {
               transition={{ duration: 0.3, delay: 0.4 }}
               whileHover={{ y: -2 }}
             >
-              <div className="p-6">
-                <h2 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
-                  <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
+              <div className="p-4">
+                <h2 className="text-base font-bold text-black mb-3 flex items-center thai-font">
+                  <span className="w-1.5 h-4 bg-brutal-yellow mr-2"></span>
                   ตั้งค่าบัญชี
                 </h2>
                 <div className="divide-y divide-gray-200">
@@ -460,13 +461,13 @@ export default function AccountPage() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="flex items-center py-3 text-gray-600 hover:text-black transition-colors thai-font"
+                      className="flex items-center py-2.5 text-gray-600 hover:text-black transition-colors thai-font"
                     >
-                      <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center text-black mr-3">
+                      <div className="w-7 h-7 bg-brutal-blue border-[2px] border-black flex items-center justify-center text-black mr-3">
                         {link.icon}
                       </div>
-                      <span className="font-medium">{link.label}</span>
-                      <ChevronRight size={16} className="ml-auto" />
+                      <span className="font-medium text-sm">{link.label}</span>
+                      <ChevronRight size={14} className="ml-auto" />
                     </Link>
                   ))}
                 </div>

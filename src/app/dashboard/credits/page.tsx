@@ -188,16 +188,16 @@ export default function CreditsPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="relative mb-6">
+      <div className="relative mb-4">
         <motion.h2
-          className="text-xl font-bold text-black mb-1 relative flex items-center"
+          className="text-lg font-bold text-black mb-1 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
+          <span className="w-1.5 h-4 bg-brutal-yellow mr-2"></span>
           เครดิต
         </motion.h2>
-        <p className="text-gray-600 text-sm relative thai-font">
+        <p className="text-gray-600 text-xs relative thai-font">
           สะสมและแลกเครดิตเพื่อรับของรางวัลสุดพิเศษ
         </p>
       </div>
@@ -209,7 +209,7 @@ export default function CreditsPage() {
       ) : (
         <>
           {/* Credits Overview */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             <div className="lg:col-span-2">
               <motion.div
                 className="bg-white border-[3px] border-black overflow-hidden h-full"
@@ -219,74 +219,74 @@ export default function CreditsPage() {
                 transition={{ duration: 0.4, delay: 0.1 }}
                 whileHover={{ y: -2 }}
               >
-                <div className="p-6 md:p-8">
-                  <div className="flex items-center mb-6">
-                    <div className="text-black p-3 bg-brutal-yellow border-[3px] border-black mr-4">
-                      <Coins size={32} />
+                <div className="p-4">
+                  <div className="flex items-center mb-4">
+                    <div className="text-black p-2 bg-brutal-yellow border-[3px] border-black mr-3">
+                      <Coins size={24} />
                     </div>
                     <div>
-                      <h2 className="text-3xl font-bold text-black thai-font">
+                      <h2 className="text-xl font-bold text-black thai-font">
                         {balance.toLocaleString()} เครดิต
                       </h2>
-                      <p className="text-gray-600 text-sm thai-font">
+                      <p className="text-gray-600 text-xs thai-font">
                         มูลค่าเทียบเท่า {formatCurrency(balance * 0.01)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-gray-50 border-[2px] border-black p-4 transition-colors hover:bg-brutal-green/20">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-600 text-sm thai-font">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                    <div className="bg-gray-50 border-[2px] border-black p-3 transition-colors hover:bg-brutal-green/20">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-gray-600 text-xs thai-font">
                           เครดิตที่ได้รับ
                         </span>
-                        <span className="bg-brutal-green border-[2px] border-black text-black text-xs px-2 py-0.5 font-bold">
+                        <span className="bg-brutal-green border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold">
                           +{earnedCredits.toLocaleString()}
                         </span>
                       </div>
-                      <div className="text-xl font-bold text-black">
+                      <div className="text-lg font-bold text-black">
                         {earnedCredits.toLocaleString()}
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 border-[2px] border-black p-4 transition-colors hover:bg-brutal-yellow/20">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-600 text-sm thai-font">
+                    <div className="bg-gray-50 border-[2px] border-black p-3 transition-colors hover:bg-brutal-yellow/20">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-gray-600 text-xs thai-font">
                           เครดิตที่ใช้ไป
                         </span>
-                        <span className="bg-brutal-yellow border-[2px] border-black text-black text-xs px-2 py-0.5 font-bold">
+                        <span className="bg-brutal-yellow border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold">
                           -{spentCredits.toLocaleString()}
                         </span>
                       </div>
-                      <div className="text-xl font-bold text-black">
+                      <div className="text-lg font-bold text-black">
                         {spentCredits.toLocaleString()}
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 border-[2px] border-black p-4 transition-colors hover:bg-brutal-blue/20">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-600 text-sm thai-font">
+                    <div className="bg-gray-50 border-[2px] border-black p-3 transition-colors hover:bg-brutal-blue/20">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-gray-600 text-xs thai-font">
                           ธุรกรรมทั้งหมด
                         </span>
-                        <span className="bg-brutal-blue border-[2px] border-black text-black text-xs px-2 py-0.5 font-bold">
+                        <span className="bg-brutal-blue border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold">
                           {transactions.length}
                         </span>
                       </div>
-                      <div className="text-xl font-bold text-black">
+                      <div className="text-lg font-bold text-black">
                         {transactions.length}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col md:flex-row gap-3">
                     <button
                       onClick={() =>
                         toast.success("ฟีเจอร์เติมเงินจะเปิดให้ใช้งานเร็วๆ นี้")
                       }
-                      className="flex-1 bg-black text-white border-[3px] border-black text-center py-3 px-4 font-bold flex items-center justify-center hover:bg-gray-800 transition-all thai-font"
+                      className="flex-1 bg-black text-white border-[3px] border-black text-center py-2 px-3 font-bold flex items-center justify-center hover:bg-gray-800 transition-all thai-font text-sm"
                       style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
-                      <Coins size={18} className="mr-2" />
+                      <Coins size={16} className="mr-2" />
                       เติมเครดิต
                     </button>
                   </div>
@@ -303,52 +303,52 @@ export default function CreditsPage() {
                 transition={{ duration: 0.4, delay: 0.2 }}
                 whileHover={{ y: -2 }}
               >
-                <div className="p-5 border-b-[3px] border-black bg-brutal-blue">
-                  <h3 className="text-lg font-bold text-black flex items-center thai-font">
-                    <InfoIcon size={18} className="text-black mr-2" />
+                <div className="p-3 border-b-[3px] border-black bg-brutal-blue">
+                  <h3 className="text-base font-bold text-black flex items-center thai-font">
+                    <InfoIcon size={16} className="text-black mr-2" />
                     เกี่ยวกับเครดิต
                   </h3>
                 </div>
 
-                <div className="p-5">
-                  <div className="space-y-4 text-gray-600">
+                <div className="p-4">
+                  <div className="space-y-3 text-gray-600">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-3 text-black font-bold">
-                        <span className="font-bold text-sm">1</span>
+                      <div className="flex-shrink-0 w-6 h-6 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-2 text-black font-bold">
+                        <span className="font-bold text-xs">1</span>
                       </div>
                       <div>
-                        <h4 className="font-bold text-black mb-1 thai-font">
+                        <h4 className="font-bold text-black mb-0.5 thai-font text-sm">
                           รับเครดิต
                         </h4>
-                        <p className="text-sm thai-font">
+                        <p className="text-xs thai-font">
                           รับเครดิตจากการซื้อสินค้า โปรโมชั่น และการแนะนำเพื่อน
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-3 text-black font-bold">
-                        <span className="font-bold text-sm">2</span>
+                      <div className="flex-shrink-0 w-6 h-6 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-2 text-black font-bold">
+                        <span className="font-bold text-xs">2</span>
                       </div>
                       <div>
-                        <h4 className="font-bold text-black mb-1 thai-font">
+                        <h4 className="font-bold text-black mb-0.5 thai-font text-sm">
                           แลกเครดิต
                         </h4>
-                        <p className="text-sm thai-font">
+                        <p className="text-xs thai-font">
                           ใช้เครดิตเป็นส่วนลดในการซื้อสินค้าหรือแลกของรางวัล
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-3 text-black font-bold">
-                        <span className="font-bold text-sm">3</span>
+                      <div className="flex-shrink-0 w-6 h-6 bg-brutal-blue border-[2px] border-black flex items-center justify-center mr-2 text-black font-bold">
+                        <span className="font-bold text-xs">3</span>
                       </div>
                       <div>
-                        <h4 className="font-bold text-black mb-1 thai-font">
+                        <h4 className="font-bold text-black mb-0.5 thai-font text-sm">
                           มูลค่าเครดิต
                         </h4>
-                        <p className="text-sm thai-font">
+                        <p className="text-xs thai-font">
                           ทุกๆ 100 เครดิตมีมูลค่า 1 THB เมื่อใช้เป็นส่วนลด
                         </p>
                       </div>
@@ -369,58 +369,58 @@ export default function CreditsPage() {
               className="bg-white border-[3px] border-black overflow-hidden"
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
-              <div className="p-5 border-b-[3px] border-black bg-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <h3 className="text-lg font-bold text-black flex items-center thai-font">
-                  <History size={18} className="text-black mr-2" />
+              <div className="p-3 border-b-[3px] border-black bg-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="text-base font-bold text-black flex items-center thai-font">
+                  <History size={16} className="text-black mr-2" />
                   ประวัติเครดิต
                 </h3>
 
                 <div className="flex bg-white border-[2px] border-black p-1">
                   <button
                     onClick={() => setPeriod("all")}
-                    className={`px-3 py-1.5 text-xs font-bold transition-all thai-font ${period === "all" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+                    className={`px-2 py-1 text-[10px] font-bold transition-all thai-font ${period === "all" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
                   >
                     ทั้งหมด
                   </button>
                   <button
                     onClick={() => setPeriod("month")}
-                    className={`px-3 py-1.5 text-xs font-bold transition-all thai-font ${period === "month" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+                    className={`px-2 py-1 text-[10px] font-bold transition-all thai-font ${period === "month" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
                   >
                     เดือนนี้
                   </button>
                   <button
                     onClick={() => setPeriod("week")}
-                    className={`px-3 py-1.5 text-xs font-bold transition-all thai-font ${period === "week" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+                    className={`px-2 py-1 text-[10px] font-bold transition-all thai-font ${period === "week" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
                   >
                     สัปดาห์นี้
                   </button>
                 </div>
               </div>
 
-              <div className="p-5">
+              <div className="p-3">
                 {filteredTransactions.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {filteredTransactions.map((transaction) => (
                       <div
                         key={transaction.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 border-[2px] border-black hover:bg-gray-100 transition-colors"
+                        className="flex items-center justify-between p-3 bg-gray-50 border-[2px] border-black hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex items-center">
                           <div
-                            className={`p-3 mr-4 ${getTransactionIconBg(transaction.type)}`}
+                            className={`p-2 mr-3 ${getTransactionIconBg(transaction.type)}`}
                           >
                             {transaction.type === "PURCHASE" ? (
-                              <CreditCard size={20} className="text-black" />
+                              <CreditCard size={16} className="text-black" />
                             ) : (
-                              <Coins size={20} className="text-black" />
+                              <Coins size={16} className="text-black" />
                             )}
                           </div>
                           <div>
-                            <p className="font-bold text-black">
+                            <p className="font-bold text-black text-sm">
                               {transaction.description ||
                                 getTransactionTypeLabel(transaction.type)}
                             </p>
-                            <p className="text-xs text-gray-600 flex items-center mt-1">
+                            <p className="text-[10px] text-gray-600 flex items-center mt-0.5">
                               <Calendar size={10} className="mr-1" />
                               {new Date(
                                 transaction.createdAt,
@@ -436,7 +436,7 @@ export default function CreditsPage() {
                           </div>
                         </div>
                         <div
-                          className={`text-lg font-bold ${getTransactionTypeColor(transaction.type)}`}
+                          className={`text-base font-bold ${getTransactionTypeColor(transaction.type)}`}
                         >
                           {transaction.amount > 0 ? "+" : ""}
                           {transaction.amount.toLocaleString()}
@@ -445,14 +445,14 @@ export default function CreditsPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-4">
-                      <Coins size={32} className="text-gray-400" />
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-3">
+                      <Coins size={24} className="text-gray-400" />
                     </div>
-                    <h4 className="text-lg font-bold text-black mb-2 thai-font">
+                    <h4 className="text-base font-bold text-black mb-1 thai-font">
                       ไม่มีรายการเคลื่อนไหวเครดิต
                     </h4>
-                    <p className="text-gray-600 text-sm thai-font">
+                    <p className="text-gray-600 text-xs thai-font">
                       คุณไม่มีรายการเคลื่อนไหวเครดิตในช่วงเวลาที่เลือก
                     </p>
                   </div>

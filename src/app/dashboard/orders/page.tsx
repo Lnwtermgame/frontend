@@ -201,7 +201,7 @@ export default function OrdersPage() {
   // Render card view for mobile
   const renderCardView = () => {
     return (
-      <div className="grid grid-cols-1 gap-4 p-4">
+      <div className="grid grid-cols-1 gap-3 p-3">
         {filteredOrders.map((order) => (
           <motion.div
             key={order.id}
@@ -212,8 +212,8 @@ export default function OrdersPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex items-start p-4">
-              <div className="h-16 w-16 border-[2px] border-black mr-4 flex-shrink-0 bg-gray-100 overflow-hidden relative shadow-[2px_2px_0_0_#000]">
+            <div className="flex items-start p-3">
+              <div className="h-14 w-14 border-[2px] border-black mr-3 flex-shrink-0 bg-gray-100 overflow-hidden relative shadow-[2px_2px_0_0_#000]">
                 {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
                   <img
                     src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
@@ -222,14 +222,14 @@ export default function OrdersPage() {
                   />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-black" />
+                    <Package className="h-6 w-6 text-black" />
                   </div>
                 )}
               </div>
 
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-black font-bold text-sm line-clamp-1">
+                  <h3 className="text-black font-bold text-xs line-clamp-1">
                     {order.items[0]?.product?.name
                       ? order.items[0]?.productType?.name
                         ? `${order.items[0].product.name} - ${order.items[0].productType.name}`
@@ -260,10 +260,10 @@ export default function OrdersPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-end mt-3">
+                <div className="flex justify-end mt-2">
                   <Link href={`/dashboard/orders/${order.id}`}>
-                    <Button size="sm" className="text-xs h-8">
-                      <Eye className="h-3 w-3 mr-1.5" />
+                    <Button size="sm" className="text-xs h-7 px-2">
+                      <Eye className="h-3 w-3 mr-1" />
                       ดูรายละเอียด
                     </Button>
                   </Link>
@@ -279,43 +279,44 @@ export default function OrdersPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="relative mb-6">
+      <div className="relative mb-4">
         <motion.h2
-          className="text-xl font-bold text-black mb-1 relative flex items-center thai-font"
+          className="text-lg font-bold text-black mb-1 relative flex items-center thai-font"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+          <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
           คำสั่งซื้อของฉัน
         </motion.h2>
-        <p className="text-gray-600 text-sm relative thai-font">
+        <p className="text-gray-600 text-xs relative thai-font">
           ติดตามและจัดการการสั่งซื้อของคุณ
         </p>
       </div>
 
       {/* Search and filter bar */}
       <motion.div
-        className="flex flex-col md:flex-row gap-4 justify-between mb-6"
+        className="flex flex-col md:flex-row gap-3 justify-between mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative md:w-80">
+        <div className="relative md:w-72">
           <Input
             placeholder="ค้นหาคำสั่งซื้อ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            icon={<Search size={18} />}
+            icon={<Search size={16} />}
+            className="text-sm h-10"
           />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Desktop Filter */}
           <div className="hidden md:block">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-white border-[2px] border-black text-black text-sm focus:outline-none shadow-[2px_2px_0_0_#000] thai-font h-10 md:h-12"
+              className="px-3 py-1.5 bg-white border-[2px] border-black text-black text-xs focus:outline-none shadow-[2px_2px_0_0_#000] thai-font h-10"
             >
               {STATUS_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -328,21 +329,21 @@ export default function OrdersPage() {
           {/* Mobile Filter Button */}
           <Button
             variant="outline"
-            className="md:hidden"
+            className="md:hidden h-10 text-xs"
             onClick={() => setIsFilterOpen(true)}
           >
-            <Filter size={16} className="mr-2" /> ตัวกรอง
+            <Filter size={14} className="mr-2" /> ตัวกรอง
           </Button>
 
           <div className="hidden md:flex bg-white border-[2px] border-black p-1 shadow-[2px_2px_0_0_#000]">
             <button
-              className={`px-3 py-1 text-sm font-medium transition-colors thai-font ${viewMode === "table" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+              className={`px-3 py-1 text-xs font-medium transition-colors thai-font ${viewMode === "table" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
               onClick={() => setViewMode("table")}
             >
               ตาราง
             </button>
             <button
-              className={`px-3 py-1 text-sm font-medium transition-colors thai-font ${viewMode === "card" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+              className={`px-3 py-1 text-xs font-medium transition-colors thai-font ${viewMode === "card" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
               onClick={() => setViewMode("card")}
             >
               การ์ด
@@ -406,22 +407,22 @@ export default function OrdersPage() {
             <table className="w-full text-left">
               <thead className="bg-gray-100 border-b-[3px] border-black">
                 <tr>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
                     รหัสคำสั่งซื้อ
                   </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
                     สินค้า
                   </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
                     วันที่
                   </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
                     จำนวนเงิน
                   </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700 thai-font">
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
                     สถานะ
                   </th>
-                  <th className="px-6 py-4 text-sm font-bold text-gray-700"></th>
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -434,12 +435,12 @@ export default function OrdersPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <td className="px-6 py-4 text-sm font-bold text-black">
+                      <td className="px-4 py-3 text-xs font-bold text-black">
                         {order.orderNumber}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 border-[2px] border-black mr-3 bg-gray-100 overflow-hidden relative shadow-[1px_1px_0_0_#000]">
+                          <div className="h-8 w-8 border-[2px] border-black mr-3 bg-gray-100 overflow-hidden relative shadow-[1px_1px_0_0_#000]">
                             {getSafeImageUrl(
                               order.items[0]?.product?.imageUrl,
                             ) ? (
@@ -454,11 +455,11 @@ export default function OrdersPage() {
                               />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center">
-                                <Package className="h-5 w-5 text-black" />
+                                <Package className="h-4 w-4 text-black" />
                               </div>
                             )}
                           </div>
-                          <span className="text-black text-sm line-clamp-1">
+                          <span className="text-black text-xs line-clamp-1">
                             {order.items[0]?.product?.name
                               ? order.items[0]?.productType?.name
                                 ? `${order.items[0].product.name} - ${order.items[0].productType.name}`
@@ -467,19 +468,19 @@ export default function OrdersPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-xs text-gray-600">
                         {formatDate(order.createdAt)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-black font-bold">
+                      <td className="px-4 py-3 text-xs text-black font-bold">
                         {formatCurrency(order.finalAmount)}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         {renderStatusBadge(order.status)}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 py-3 text-right">
                         <Link href={`/dashboard/orders/${order.id}`}>
-                          <Button size="sm" className="text-xs h-8 px-3">
-                            <Eye className="h-3 w-3 mr-1.5" />
+                          <Button size="sm" className="text-xs h-7 px-2">
+                            <Eye className="h-3 w-3 mr-1" />
                             ดู
                           </Button>
                         </Link>
@@ -488,13 +489,13 @@ export default function OrdersPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
+                    <td colSpan={6} className="px-4 py-8 text-center">
                       <div className="text-gray-600">
-                        <ShoppingBag className="h-12 w-12 mx-auto opacity-50 mb-4" />
-                        <p className="text-black text-lg font-bold mb-1 thai-font">
+                        <ShoppingBag className="h-10 w-10 mx-auto opacity-50 mb-3" />
+                        <p className="text-black text-base font-bold mb-1 thai-font">
                           ไม่พบคำสั่งซื้อ
                         </p>
-                        <p className="text-sm max-w-md mx-auto thai-font">
+                        <p className="text-xs max-w-md mx-auto thai-font">
                           {searchTerm
                             ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"`
                             : "คุณยังไม่มีคำสั่งซื้อใดๆ"}

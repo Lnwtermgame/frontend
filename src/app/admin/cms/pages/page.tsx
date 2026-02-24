@@ -26,6 +26,7 @@ import {
   UpdateCmsPageData,
 } from "@/lib/services";
 import { aiService } from "@/lib/services/ai-api";
+import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
 
 // Slugify helper
@@ -40,6 +41,7 @@ const slugify = (text: string) => {
 };
 
 export default function AdminCmsPagesPage() {
+  const { isAdmin, isInitialized, isSessionChecked } = useAuth();
   const [pages, setPages] = useState<CmsPage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +70,10 @@ export default function AdminCmsPagesPage() {
   const [showAIGenerate, setShowAIGenerate] = useState(false);
 
   const loadPages = async () => {
+    if (!isInitialized || !isSessionChecked || !isAdmin) {
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
@@ -86,7 +92,7 @@ export default function AdminCmsPagesPage() {
 
   useEffect(() => {
     loadPages();
-  }, [searchQuery, statusFilter]);
+  }, [searchQuery, statusFilter, isInitialized, isSessionChecked, isAdmin]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -240,22 +246,22 @@ export default function AdminCmsPagesPage() {
 
   return (
     <AdminLayout title="จัดการหน้าเว็บ (CMS)">
-      <div className="space-y-6">
+      <div className="space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-pink mr-2"></span>
-            <h1 className="text-2xl font-bold text-black">
+            <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
+            <h1 className="text-lg font-bold text-black">
               จัดการหน้าเว็บ (CMS)
             </h1>
           </div>
           <button
             onClick={openCreateModal}
-            className="bg-black text-white border-[3px] border-black px-4 py-2 font-medium flex items-center hover:bg-gray-800 transition-colors"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-black text-white border-[2px] border-black px-2.5 py-1 font-medium flex items-center hover:bg-gray-800 transition-colors"
+            style={{ boxShadow: "2px 2px 0 0 #000000" }}
           >
-            <Plus size={18} className="mr-2" />
-            เพิ่มหน้าใหม่
+            <Plus size={14} className="mr-2" />
+            <span className="text-xs">เพิ่มหน้าใหม่</span>
           </button>
         </div>
 
@@ -266,16 +272,16 @@ export default function AdminCmsPagesPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-red-100 border-[3px] border-red-500 p-4 flex items-center"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-red-100 border-[2px] border-red-500 p-2 flex items-center"
+              style={{ boxShadow: "2px 2px 0 0 #000000" }}
             >
-              <AlertCircle className="text-red-600 mr-3" size={20} />
-              <span className="text-red-700">{error}</span>
+              <AlertCircle className="text-red-600 mr-2" size={16} />
+              <span className="text-red-700 text-xs">{error}</span>
               <button
                 onClick={() => setError(null)}
                 className="ml-auto text-red-600 hover:text-red-700"
               >
-                <X size={18} />
+                <X size={14} />
               </button>
             </motion.div>
           )}
@@ -285,7 +291,7 @@ export default function AdminCmsPagesPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          className="grid grid-cols-2 md:grid-cols-4 gap-2"
         >
           {[
             {
@@ -318,11 +324,11 @@ export default function AdminCmsPagesPage() {
           ].map((stat, index) => (
             <div
               key={index}
-              className={`p-4 text-center border-[3px] ${stat.color}`}
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className={`p-2 text-center border-[2px] ${stat.color}`}
+              style={{ boxShadow: "2px 2px 0 0 #000000" }}
             >
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="text-xs mt-1 font-medium">{stat.label}</div>
+              <div className="text-lg font-bold">{stat.value}</div>
+              <div className="text-[10px] mt-0.5 font-medium">{stat.label}</div>
             </div>
           ))}
         </motion.div>
@@ -332,27 +338,27 @@ export default function AdminCmsPagesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border-[3px] border-black p-4"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-white border-[2px] border-black p-2"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
         >
-          <div className="flex flex-wrap gap-4">
-            <div className="relative flex-1 min-w-[200px]">
+          <div className="flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-[180px]">
               <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={16}
+                className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={12}
               />
               <input
                 type="text"
                 placeholder="ค้นหาหน้า..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2 pl-10 pr-4 bg-white border-[2px] border-gray-300 text-black text-sm placeholder-gray-400 focus:outline-none focus:border-black"
+                className="w-full py-1 pl-8 pr-3 bg-white border-[1px] border-gray-300 text-black text-xs placeholder-gray-400 focus:outline-none focus:border-black"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black"
+              className="py-1 px-2 bg-white border-[1px] border-gray-300 text-black text-xs focus:outline-none focus:border-black"
             >
               <option value="ALL">ทุกสถานะ</option>
               <option value="PUBLISHED">เผยแพร่แล้ว</option>
@@ -361,11 +367,11 @@ export default function AdminCmsPagesPage() {
             <button
               onClick={loadPages}
               disabled={isLoading}
-              className="py-2 px-3 bg-gray-100 hover:bg-gray-200 border-[2px] border-gray-300 text-black text-sm flex items-center transition-colors disabled:opacity-50"
+              className="py-1 px-2 bg-gray-100 hover:bg-gray-200 border-[1px] border-gray-300 text-black text-xs flex items-center transition-colors disabled:opacity-50"
             >
               <RefreshCw
-                size={14}
-                className={`mr-2 ${isLoading ? "animate-spin" : ""}`}
+                size={12}
+                className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`}
               />
               รีเฟรช
             </button>
@@ -377,36 +383,36 @@ export default function AdminCmsPagesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-white border-[2px] border-black overflow-hidden"
+          style={{ boxShadow: "2px 2px 0 0 #000000" }}
         >
-          <div className="p-4 border-b-[3px] border-black bg-gray-50">
-            <h2 className="text-lg font-bold text-black flex items-center">
-              <FileText size={20} className="mr-2" />
+          <div className="p-2 border-b-[2px] border-black bg-gray-50">
+            <h2 className="text-sm font-bold text-black flex items-center">
+              <FileText size={16} className="mr-2" />
               รายการหน้า ({filteredPages.length})
             </h2>
           </div>
 
-          <div className="divide-y-[2px] divide-gray-200">
+          <div className="divide-y-[1px] divide-gray-200">
             {isLoading ? (
-              <div className="p-12 text-center">
+              <div className="p-8 text-center">
                 <Loader2
-                  className="animate-spin mx-auto text-black mb-4"
-                  size={48}
+                  className="animate-spin mx-auto text-black mb-2"
+                  size={28}
                 />
-                <p className="text-gray-600">กำลังโหลด...</p>
+                <p className="text-gray-600 text-xs">กำลังโหลด...</p>
               </div>
             ) : filteredPages.length === 0 ? (
-              <div className="p-12 text-center">
-                <FileText size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-600">ไม่พบหน้าเว็บ</p>
+              <div className="p-8 text-center">
+                <FileText size={28} className="mx-auto text-gray-300 mb-2" />
+                <p className="text-gray-600 text-xs">ไม่พบหน้าเว็บ</p>
                 {searchQuery && (
                   <button
                     onClick={() => {
                       setSearchQuery("");
                       setStatusFilter("ALL");
                     }}
-                    className="text-brutal-blue hover:underline mt-2"
+                    className="text-brutal-blue hover:underline mt-1 text-xs"
                   >
                     ล้างตัวกรอง
                   </button>
@@ -416,37 +422,37 @@ export default function AdminCmsPagesPage() {
               filteredPages.map((page) => (
                 <div
                   key={page.id}
-                  className="p-4 hover:bg-gray-50 transition-colors"
+                  className="p-2 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-1">
                         {page.isPublished ? (
-                          <span className="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium border border-green-500">
-                            <CheckCircle size={12} className="mr-1" />
+                          <span className="inline-flex items-center px-1 py-0.5 bg-green-100 text-green-700 text-[10px] font-medium border border-green-500">
+                            <CheckCircle size={8} className="mr-1" />
                             เผยแพร่
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium border border-gray-400">
+                          <span className="inline-flex items-center px-1 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-medium border border-gray-400">
                             ฉบับร่าง
                           </span>
                         )}
-                        <span className="text-sm text-gray-500">
+                        <span className="text-[10px] text-gray-500">
                           /{page.slug}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-[10px] text-gray-400">
                           v{page.version}
                         </span>
                       </div>
-                      <h3 className="font-bold text-black mb-1">
+                      <h3 className="font-bold text-black mb-0.5 text-xs">
                         {page.title}
                       </h3>
                       {page.metaDescription && (
-                        <p className="text-sm text-gray-600 line-clamp-1">
+                        <p className="text-[10px] text-gray-600 line-clamp-1">
                           {page.metaDescription}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 mt-1 text-[10px] text-gray-500">
                         <span>
                           แก้ไขล่าสุด:{" "}
                           {new Date(page.updatedAt).toLocaleDateString("th-TH")}
@@ -461,30 +467,30 @@ export default function AdminCmsPagesPage() {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 ml-4">
+                    <div className="flex items-center gap-1 ml-2">
                       {page.isPublished && (
                         <Link
                           href={`/${page.slug}`}
                           target="_blank"
-                          className="p-2 text-gray-600 hover:text-black hover:bg-gray-200 transition-colors"
+                          className="p-1 text-gray-600 hover:text-black hover:bg-gray-200 transition-colors"
                           title="ดูหน้าเว็บ"
                         >
-                          <Eye size={18} />
+                          <Eye size={14} />
                         </Link>
                       )}
                       <button
                         onClick={() => openEditModal(page)}
-                        className="p-2 text-gray-600 hover:text-black hover:bg-gray-200 transition-colors"
+                        className="p-1 text-gray-600 hover:text-black hover:bg-gray-200 transition-colors"
                         title="แก้ไข"
                       >
-                        <Edit2 size={18} />
+                        <Edit2 size={14} />
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(page.id)}
-                        className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                        className="p-1 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
                         title="ลบ"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
@@ -496,21 +502,21 @@ export default function AdminCmsPagesPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="mt-4 p-3 bg-red-50 border-[2px] border-red-300"
+                        className="mt-2 p-2 bg-red-50 border-[1px] border-red-300"
                       >
-                        <p className="text-sm text-red-700 mb-3">
+                        <p className="text-xs text-red-700 mb-2">
                           คุณแน่ใจหรือไม่ว่าต้องการลบหน้านี้?
                         </p>
                         <div className="flex gap-2">
                           <button
                             onClick={() => setDeleteConfirm(null)}
-                            className="px-3 py-1.5 text-sm border-[2px] border-gray-300 text-gray-700 hover:bg-gray-100"
+                            className="px-2 py-1 text-xs border-[1px] border-gray-300 text-gray-700 hover:bg-gray-100"
                           >
                             ยกเลิก
                           </button>
                           <button
                             onClick={() => handleDelete(page.id)}
-                            className="px-3 py-1.5 text-sm bg-red-600 text-white border-[2px] border-red-600 hover:bg-red-700"
+                            className="px-2 py-1 text-xs bg-red-600 text-white border-[1px] border-red-600 hover:bg-red-700"
                           >
                             ยืนยันการลบ
                           </button>
@@ -532,18 +538,18 @@ export default function AdminCmsPagesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-3"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white border-[3px] border-black w-full max-w-3xl max-h-[90vh] overflow-y-auto"
-              style={{ boxShadow: "8px 8px 0 0 #000000" }}
+              className="bg-white border-[2px] border-black w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
-              <div className="p-6 border-b-[3px] border-black">
+              <div className="p-3 border-b-[2px] border-black">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-black">
+                  <h2 className="text-base font-bold text-black">
                     {editingPage ? "แก้ไขหน้า" : "เพิ่มหน้าใหม่"}
                   </h2>
                   <button
@@ -554,22 +560,22 @@ export default function AdminCmsPagesPage() {
                     }}
                     className="text-gray-600 hover:text-black"
                   >
-                    <X size={24} />
+                    <X size={18} />
                   </button>
                 </div>
               </div>
 
               <form
                 onSubmit={editingPage ? handleUpdate : handleCreate}
-                className="p-6 space-y-4"
+                className="p-3 space-y-2.5"
               >
                 {/* Slug */}
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-700 mb-1 font-medium text-xs">
                     URL Slug {editingPage ? "*" : ""}
                   </label>
                   <div className="flex items-center">
-                    <span className="px-3 py-2.5 bg-gray-100 border-[2px] border-r-0 border-gray-300 text-gray-500">
+                    <span className="px-2 py-1 bg-gray-100 border-[1px] border-r-0 border-gray-300 text-gray-500 text-xs">
                       /
                     </span>
                     <input
@@ -579,10 +585,10 @@ export default function AdminCmsPagesPage() {
                         setFormData({ ...formData, slug: e.target.value })
                       }
                       placeholder="terms, privacy, about"
-                      className="flex-1 py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                      className="flex-1 py-1 px-2 bg-white border-[1px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors text-xs"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-[10px] text-gray-500 mt-0.5">
                     {editingPage
                       ? "แก้ไข URL ของหน้านี้ได้ (เฉพาะตัวพิมพ์เล็ก, ตัวเลข, และขีดกลาง)"
                       : "จะสร้างอัตโนมัติจากชื่อถ้าไม่กรอก (เฉพาะตัวพิมพ์เล็ก, ตัวเลข, และขีดกลาง)"}
@@ -591,7 +597,7 @@ export default function AdminCmsPagesPage() {
 
                 {/* Title */}
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-700 mb-1 font-medium text-xs">
                     ชื่อหน้า *
                   </label>
                   <input
@@ -602,16 +608,16 @@ export default function AdminCmsPagesPage() {
                     }
                     placeholder="เช่น เงื่อนไขการใช้งาน, นโยบายความเป็นส่วนตัว"
                     required
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                    className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors text-xs"
                   />
                 </div>
 
                 {/* AI Generate Section */}
-                <div className="bg-brutal-pink/10 border-[2px] border-brutal-pink p-4">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="bg-brutal-pink/10 border-[1px] border-brutal-pink p-2">
+                  <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center">
-                      <Sparkles className="w-5 h-5 text-brutal-pink mr-2" />
-                      <span className="font-medium text-black">
+                      <Sparkles className="w-3 h-3 text-brutal-pink mr-1.5" />
+                      <span className="font-medium text-black text-xs">
                         สร้างด้วย AI
                       </span>
                     </div>
@@ -619,10 +625,10 @@ export default function AdminCmsPagesPage() {
                       <button
                         type="button"
                         onClick={() => setShowAIGenerate(true)}
-                        className="text-sm bg-brutal-pink text-white px-3 py-1.5 border-[2px] border-black hover:bg-brutal-pink/80 transition-colors"
-                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                        className="text-[10px] bg-brutal-pink text-white px-1.5 py-0.5 border-[1px] border-black hover:bg-brutal-pink/80 transition-colors"
+                        style={{ boxShadow: "1px 1px 0 0 #000000" }}
                       >
-                        <Wand2 className="w-4 h-4 inline mr-1" />
+                        <Wand2 className="w-2.5 h-2.5 inline mr-1" />
                         เปิดใช้งาน
                       </button>
                     )}
@@ -634,10 +640,10 @@ export default function AdminCmsPagesPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="space-y-3"
+                        className="space-y-1.5"
                       >
                         <div>
-                          <label className="block text-gray-700 mb-1 text-sm">
+                          <label className="block text-gray-700 mb-0.5 text-[10px]">
                             หัวข้อที่ต้องการให้ AI เขียน
                           </label>
                           <input
@@ -645,25 +651,25 @@ export default function AdminCmsPagesPage() {
                             value={aiTopic}
                             onChange={(e) => setAiTopic(e.target.value)}
                             placeholder="เช่น นโยบายความเป็นส่วนตัว, เงื่อนไขการใช้งาน"
-                            className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm placeholder-gray-500 focus:outline-none focus:border-black"
+                            className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black text-xs placeholder-gray-500 focus:outline-none focus:border-black"
                           />
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5">
                           <button
                             type="button"
                             onClick={handleGenerateAIContent}
                             disabled={isGeneratingAI || !aiTopic.trim()}
-                            className="flex-1 bg-brutal-pink text-white border-[2px] border-black py-2 font-medium flex items-center justify-center disabled:opacity-50 transition-colors"
-                            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                            className="flex-1 bg-brutal-pink text-white border-[1px] border-black py-1 text-xs font-medium flex items-center justify-center disabled:opacity-50 transition-colors"
+                            style={{ boxShadow: "1px 1px 0 0 #000000" }}
                           >
                             {isGeneratingAI ? (
                               <>
-                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                <Loader2 className="w-2.5 h-2.5 animate-spin mr-1.5" />
                                 กำลังสร้าง...
                               </>
                             ) : (
                               <>
-                                <Wand2 className="w-4 h-4 mr-2" />
+                                <Wand2 className="w-2.5 h-2.5 mr-1.5" />
                                 สร้างเนื้อหา
                               </>
                             )}
@@ -674,9 +680,9 @@ export default function AdminCmsPagesPage() {
                               setShowAIGenerate(false);
                               setAiTopic("");
                             }}
-                            className="px-3 py-2 border-[2px] border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="px-1.5 py-1 border-[1px] border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       </motion.div>
@@ -684,7 +690,7 @@ export default function AdminCmsPagesPage() {
                   </AnimatePresence>
 
                   {!aiService.isConfigured() && showAIGenerate && (
-                    <div className="mt-3 p-2 bg-red-50 border-[1px] border-red-300 text-red-700 text-xs">
+                    <div className="mt-1.5 p-1.5 bg-red-50 border-[1px] border-red-300 text-red-700 text-[10px]">
                       กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
                       ก่อนใช้งาน AI
                     </div>
@@ -693,7 +699,7 @@ export default function AdminCmsPagesPage() {
 
                 {/* Content */}
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-700 mb-1 font-medium text-xs">
                     เนื้อหา *
                   </label>
                   <textarea
@@ -703,15 +709,15 @@ export default function AdminCmsPagesPage() {
                     }
                     placeholder="เนื้อหาของหน้า (รองรับ HTML)"
                     required
-                    rows={10}
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none font-mono text-sm"
+                    rows={8}
+                    className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none font-mono text-xs"
                   />
                 </div>
 
                 {/* SEO */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
+                    <label className="block text-gray-700 mb-1 font-medium text-xs">
                       Meta Title
                     </label>
                     <input
@@ -721,11 +727,11 @@ export default function AdminCmsPagesPage() {
                         setFormData({ ...formData, metaTitle: e.target.value })
                       }
                       placeholder="Title สำหรับ SEO"
-                      className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                      className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors text-xs"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
+                    <label className="block text-gray-700 mb-1 font-medium text-xs">
                       Meta Description
                     </label>
                     <input
@@ -738,7 +744,7 @@ export default function AdminCmsPagesPage() {
                         })
                       }
                       placeholder="Description สำหรับ SEO"
-                      className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                      className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors text-xs"
                     />
                   </div>
                 </div>
@@ -755,14 +761,14 @@ export default function AdminCmsPagesPage() {
                           isPublished: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 mr-2"
+                      className="w-3 h-3 mr-1.5"
                     />
-                    <span className="text-gray-700">เผยแพร่หน้านี้</span>
+                    <span className="text-gray-700 text-xs">เผยแพร่หน้านี้</span>
                   </label>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 pt-4 border-t-[2px] border-gray-200">
+                <div className="flex gap-2 pt-2 border-t-[1px] border-gray-200">
                   <button
                     type="button"
                     onClick={() => {
@@ -770,7 +776,7 @@ export default function AdminCmsPagesPage() {
                       setEditingPage(null);
                       resetForm();
                     }}
-                    className="flex-1 py-2.5 px-4 border-[3px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
+                    className="flex-1 py-1.5 px-2 border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium text-xs"
                   >
                     ยกเลิก
                   </button>
@@ -781,17 +787,17 @@ export default function AdminCmsPagesPage() {
                       !formData.title?.trim() ||
                       !formData.content?.trim()
                     }
-                    className="flex-1 py-2.5 px-4 bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors"
-                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                    className="flex-1 py-1.5 px-2 bg-black text-white border-[2px] border-black disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-xs"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
-                        <Loader2 size={18} className="animate-spin mr-2" />
+                        <Loader2 size={14} className="animate-spin mr-1.5" />
                         กำลังบันทึก...
                       </span>
                     ) : (
                       <span className="flex items-center justify-center">
-                        <Save size={18} className="mr-2" />
+                        <Save size={14} className="mr-1.5" />
                         บันทึก
                       </span>
                     )}

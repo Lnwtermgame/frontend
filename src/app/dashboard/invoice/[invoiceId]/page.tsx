@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import { invoiceApi, type Invoice } from "@/lib/services/invoice-api";
@@ -25,12 +26,14 @@ import {
 export default function InvoiceDetailPage() {
   const router = useRouter();
   const { user, isInitialized } = useAuth();
+  const { settings: publicSettings } = usePublicSettings();
   const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const invoiceContentRef = useRef<HTMLDivElement>(null);
+  const siteName = publicSettings?.general.siteName || "Lnwtermgame";
 
   // Copy invoice ID to clipboard
   const copyInvoiceId = () => {
@@ -115,7 +118,7 @@ export default function InvoiceDetailPage() {
       </head>
       <body>
         <div class="header">
-          <div class="logo">Game<span>Topup</span></div>
+          <div class="logo">${siteName}</div>
           <div class="invoice-title">
             <h1>ใบแจ้งหนี้</h1>
             <div class="inv-number">${invoice.invoiceNumber}</div>
@@ -171,12 +174,12 @@ export default function InvoiceDetailPage() {
 
         <div class="footer">
           <p>ขอบคุณสำหรับการสั่งซื้อ! ใบแจ้งหนี้ฉบับนี้เป็นเอกสารทางการค้าที่ออกโดยระบบอัตโนมัติ</p>
-          <p style="margin-top:4px;">Lnwtermgame — ${issuedDate}</p>
+          <p style="margin-top:4px;">${siteName} — ${issuedDate}</p>
         </div>
       </body>
       </html>
     `;
-  }, [invoice, user]);
+  }, [invoice, user, siteName]);
 
   // Print invoice
   const handlePrint = () => {
@@ -381,54 +384,54 @@ export default function InvoiceDetailPage() {
   return (
     <div className="page-container">
       {/* Page Header */}
-      <div className="relative mb-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-start mb-6 gap-4">
+      <div className="relative mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-start mb-4 gap-4">
           <div>
             <Link
               href="/dashboard/invoice"
-              className="text-black hover:text-gray-700 inline-flex items-center text-sm mb-3 thai-font font-medium"
+              className="text-black hover:text-gray-700 inline-flex items-center text-xs mb-2 thai-font font-medium"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="mr-2 h-3 w-3" />
               กลับไปหน้าใบแจ้งหนี้
             </Link>
           </div>
 
           <div className="flex gap-2">
             <motion.button
-              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
+              className="p-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={copyInvoiceId}
             >
               {copied ? (
-                <Check className="h-4 w-4" />
+                <Check className="h-3.5 w-3.5" />
               ) : (
-                <Copy className="h-4 w-4" />
+                <Copy className="h-3.5 w-3.5" />
               )}
             </motion.button>
 
             <motion.button
-              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
+              className="p-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handlePrint}
               title="พิมพ์ใบแจ้งหนี้"
             >
-              <Printer className="h-4 w-4" />
+              <Printer className="h-3.5 w-3.5" />
             </motion.button>
 
             <motion.button
-              className="p-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
+              className="p-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors inline-flex items-center text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleDownloadCsv}
               title="ดาวน์โหลด CSV"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-3.5 w-3.5" />
             </motion.button>
 
             <motion.button
-              className="px-5 py-2 border-[3px] border-black bg-black text-white font-bold inline-flex items-center hover:bg-gray-800 thai-font"
+              className="px-4 py-1.5 border-[2px] border-black bg-black text-white font-bold inline-flex items-center hover:bg-gray-800 thai-font text-xs"
               style={{ boxShadow: "3px 3px 0 0 #000000" }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -440,14 +443,14 @@ export default function InvoiceDetailPage() {
         </div>
 
         <div>
-          <h1 className="text-3xl font-bold text-black relative flex items-center thai-font">
-            <span className="w-1.5 h-8 bg-brutal-green mr-3"></span>
+          <h1 className="text-xl font-bold text-black relative flex items-center thai-font">
+            <span className="w-1.5 h-5 bg-brutal-green mr-3"></span>
             ใบแจ้งหนี้ #{invoice.invoiceNumber}
           </h1>
           <div className="flex items-center gap-2 mt-2">
-            <p className="text-gray-600">{issuedDate}</p>
+            <p className="text-gray-600 text-xs">{issuedDate}</p>
             <span
-              className={`px-3 py-1 border-[2px] border-black text-xs font-bold ${getStatusStyle(invoice.status)}`}
+              className={`px-2 py-0.5 border-[2px] border-black text-[10px] font-bold ${getStatusStyle(invoice.status)}`}
             >
               {getStatusLabel(invoice.status)}
             </span>
@@ -456,7 +459,7 @@ export default function InvoiceDetailPage() {
       </div>
 
       {/* Invoice Content */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Invoice Summary Card */}
         <motion.div
           className="bg-white border-[3px] border-black overflow-hidden"
@@ -466,32 +469,32 @@ export default function InvoiceDetailPage() {
           transition={{ duration: 0.3, delay: 0.2 }}
           whileHover={{ y: -2 }}
         >
-          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Customer Info */}
             <div>
-              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">
+              <h3 className="text-xs font-bold text-gray-600 uppercase mb-2 thai-font">
                 ลูกค้า
               </h3>
-              <p className="text-black font-bold">
+              <p className="text-black font-bold text-sm">
                 {user?.username || "ผู้ใช้"}
               </p>
-              <p className="text-gray-600 text-sm">{user?.email || ""}</p>
+              <p className="text-gray-600 text-xs">{user?.email || ""}</p>
             </div>
 
             {/* Payment Info */}
             <div>
-              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">
+              <h3 className="text-xs font-bold text-gray-600 uppercase mb-2 thai-font">
                 รายละเอียดการชำระเงิน
               </h3>
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-brutal-blue border-[2px] border-black mt-0.5">
-                  <CreditCard className="h-4 w-4 text-black" />
+                <div className="p-1.5 bg-brutal-blue border-[2px] border-black mt-0.5">
+                  <CreditCard className="h-3.5 w-3.5 text-black" />
                 </div>
                 <div>
-                  <p className="text-black font-bold">
+                  <p className="text-black font-bold text-sm">
                     {getStatusLabel(invoice.status)}
                   </p>
-                  <p className="text-gray-600 text-sm mt-1">
+                  <p className="text-gray-600 text-xs mt-1">
                     {issuedDate} เวลา {issuedTime}
                   </p>
                 </div>
@@ -500,38 +503,38 @@ export default function InvoiceDetailPage() {
 
             {/* Order Info */}
             <div>
-              <h3 className="text-sm font-bold text-gray-600 uppercase mb-3 thai-font">
+              <h3 className="text-xs font-bold text-gray-600 uppercase mb-2 thai-font">
                 ข้อมูลคำสั่งซื้อ
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm thai-font">
+                  <span className="text-gray-600 text-xs thai-font">
                     อ้างอิงคำสั่งซื้อ:
                   </span>
                   <Link
                     href={`/dashboard/orders/${invoice.orderId}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-black hover:underline font-medium flex items-center text-sm"
+                    className="text-black hover:underline font-medium flex items-center text-xs"
                   >
                     {invoice.orderNumber}
-                    <ExternalLink className="ml-1.5 h-3 w-3" />
+                    <ExternalLink className="ml-1 h-3 w-3" />
                   </Link>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm thai-font">
+                  <span className="text-gray-600 text-xs thai-font">
                     เลขที่ใบแจ้งหนี้:
                   </span>
-                  <span className="text-black text-sm font-mono">
+                  <span className="text-black text-xs font-mono">
                     {invoice.invoiceNumber}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm thai-font">
+                  <span className="text-gray-600 text-xs thai-font">
                     สถานะ:
                   </span>
-                  <span className="text-brutal-green font-bold text-sm flex items-center thai-font">
-                    <CheckCircle className="h-3.5 w-3.5 mr-1.5" />{" "}
+                  <span className="text-brutal-green font-bold text-xs flex items-center thai-font">
+                    <CheckCircle className="h-3 w-3 mr-1" />{" "}
                     {getStatusLabel(invoice.status)}
                   </span>
                 </div>
@@ -549,9 +552,9 @@ export default function InvoiceDetailPage() {
           transition={{ duration: 0.3, delay: 0.3 }}
           whileHover={{ y: -2 }}
         >
-          <div className="p-6">
-            <h3 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
-              <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+          <div className="p-4">
+            <h3 className="text-base font-bold text-black mb-3 flex items-center thai-font">
+              <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
               รายการในใบแจ้งหนี้
             </h3>
 
@@ -559,16 +562,16 @@ export default function InvoiceDetailPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b-[2px] border-black">
-                    <th className="text-left text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                    <th className="text-left text-[10px] uppercase text-gray-600 font-bold pb-3 thai-font">
                       รายการ
                     </th>
-                    <th className="text-center text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                    <th className="text-center text-[10px] uppercase text-gray-600 font-bold pb-3 thai-font">
                       จำนวน
                     </th>
-                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                    <th className="text-right text-[10px] uppercase text-gray-600 font-bold pb-3 thai-font">
                       ราคาต่อหน่วย
                     </th>
-                    <th className="text-right text-xs uppercase text-gray-600 font-bold pb-4 thai-font">
+                    <th className="text-right text-[10px] uppercase text-gray-600 font-bold pb-3 thai-font">
                       จำนวนเงิน
                     </th>
                   </tr>
@@ -576,9 +579,9 @@ export default function InvoiceDetailPage() {
                 <tbody>
                   {invoice.items.map((item) => (
                     <tr key={item.id} className="border-b border-gray-200">
-                      <td className="py-4">
+                      <td className="py-3">
                         <div className="flex items-center">
-                          <div className="h-12 w-12 bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-4 overflow-hidden relative">
+                          <div className="h-10 w-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-3 overflow-hidden relative">
                             {getSafeImageUrl(item.imageUrl) ? (
                               <img
                                 src={getSafeImageUrl(item.imageUrl)!}
@@ -586,26 +589,26 @@ export default function InvoiceDetailPage() {
                                 className="h-full w-full object-cover"
                               />
                             ) : (
-                              <Package className="h-5 w-5 text-gray-600" />
+                              <Package className="h-4 w-4 text-gray-600" />
                             )}
                           </div>
                           <div>
-                            <div className="text-black font-bold">
+                            <div className="text-black font-bold text-sm">
                               {item.productName}
                             </div>
-                            <div className="text-gray-600 text-sm font-mono">
+                            <div className="text-gray-600 text-xs font-mono">
                               {item.id.slice(0, 8)}...
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 text-center text-gray-600">
+                      <td className="py-3 text-center text-gray-600 text-xs">
                         {item.quantity}
                       </td>
-                      <td className="py-4 text-right text-gray-600">
+                      <td className="py-3 text-right text-gray-600 text-xs">
                         ฿{item.unitPrice.toFixed(2)}
                       </td>
-                      <td className="py-4 text-right text-black font-bold">
+                      <td className="py-3 text-right text-black font-bold text-sm">
                         ฿{item.total.toFixed(2)}
                       </td>
                     </tr>
@@ -615,18 +618,18 @@ export default function InvoiceDetailPage() {
             </div>
 
             {/* Invoice Summary */}
-            <div className="mt-6 border-t-[2px] border-black pt-4">
+            <div className="mt-4 border-t-[2px] border-black pt-3">
               <div className="flex flex-col items-end">
-                <div className="w-full max-w-xs space-y-2">
-                  <div className="flex justify-between text-gray-600">
+                <div className="w-full max-w-xs space-y-1.5">
+                  <div className="flex justify-between text-gray-600 text-xs">
                     <span className="thai-font">ยอดรวมย่อย:</span>
                     <span>฿{invoice.amount.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-gray-600 text-xs">
                     <span className="thai-font">ภาษีมูลค่าเพิ่ม (7%):</span>
                     <span>฿{invoice.taxAmount.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-black font-bold border-t-[2px] border-black pt-2 mt-2">
+                  <div className="flex justify-between text-black font-bold border-t-[2px] border-black pt-2 mt-2 text-sm">
                     <span className="thai-font">ยอดรวมทั้งหมด:</span>
                     <span>฿{invoice.totalAmount.toFixed(2)}</span>
                   </div>
@@ -645,21 +648,21 @@ export default function InvoiceDetailPage() {
           transition={{ duration: 0.3, delay: 0.4 }}
           whileHover={{ y: -2 }}
         >
-          <div className="p-6">
-            <h3 className="text-lg font-bold text-black mb-4 flex items-center thai-font">
-              <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
+          <div className="p-4">
+            <h3 className="text-base font-bold text-black mb-3 flex items-center thai-font">
+              <span className="w-1.5 h-4 bg-brutal-yellow mr-2"></span>
               หมายเหตุ
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-xs">
               ขอบคุณสำหรับการสั่งซื้อ!
               ใบแจ้งหนี้ฉบับนี้เป็นเอกสารทางการค้าที่ออกโดยระบบอัตโนมัติ
               หากมีคำถามหรือต้องการความช่วยเหลือ กรุณาติดต่อฝ่ายสนับสนุนลูกค้า
             </p>
 
-            <div className="mt-6 border-t-[2px] border-black pt-6">
+            <div className="mt-4 border-t-[2px] border-black pt-4">
               <div className="flex items-center gap-2 text-gray-600">
-                <Clock className="h-4 w-4" />
-                <span className="text-sm thai-font">
+                <Clock className="h-3.5 w-3.5" />
+                <span className="text-xs thai-font">
                   ใบแจ้งหนี้สร้างเมื่อ {issuedDate} เวลา {issuedTime}
                 </span>
               </div>
@@ -670,21 +673,21 @@ export default function InvoiceDetailPage() {
 
       {/* Footer Actions */}
       <motion.div
-        className="mt-8 flex flex-col sm:flex-row justify-between items-center"
+        className="mt-6 flex flex-col sm:flex-row justify-between items-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.5 }}
       >
-        <div className="text-center sm:text-left mb-4 sm:mb-0">
+        <div className="text-center sm:text-left mb-3 sm:mb-0">
           <Link
             href="/dashboard/invoice"
-            className="inline-flex items-center px-4 py-2 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors text-black thai-font"
+            className="inline-flex items-center px-3 py-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 transition-colors text-black thai-font text-xs"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="mr-2 h-3 w-3" />
             กลับไปหน้าใบแจ้งหนี้
           </Link>
         </div>
-        <p className="text-gray-600 text-sm thai-font">
+        <p className="text-gray-600 text-xs thai-font">
           หากคุณมีคำถามใดๆ โปรดติดต่อทีมสนับสนุนของเรา
         </p>
       </motion.div>

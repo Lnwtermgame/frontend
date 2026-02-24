@@ -35,7 +35,6 @@ export default function SecurityPage() {
     verifyTwoFactorCode,
     disableTwoFactor,
     logoutAllDevices,
-    removeDevice,
     resolveActivity,
     isLoadingSettings,
     is2FAVerified,
@@ -489,15 +488,7 @@ export default function SecurityPage() {
                           <span className="text-[10px] bg-brutal-green border-[1px] border-black text-black px-1.5 py-0.5 font-bold thai-font">
                             ปัจจุบัน
                           </span>
-                        ) : (
-                          <button
-                            onClick={() => removeDevice(device.id)}
-                            disabled={isLoadingSettings}
-                            className="text-gray-400 hover:text-red-600"
-                          >
-                            <X size={14} />
-                          </button>
-                        )}
+                        ) : null}
                       </div>
                       <div className="text-xs text-gray-600 flex flex-wrap items-center gap-x-2 gap-y-1 mt-0.5">
                         <span>{device.browser}</span>

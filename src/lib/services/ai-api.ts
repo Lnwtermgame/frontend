@@ -312,7 +312,6 @@ class AiService {
     /cover/i,
     /hero/i,
     /splash/i,
-    /promo/i,
     /official/i,
     /4k/i,
     /1920/i,
@@ -320,6 +319,90 @@ class AiService {
     /2560/i,
     /3840/i,
   ];
+
+  /**
+   * Keywords that indicate store/commercial content (exclude these)
+   */
+  private static readonly STORE_KEYWORDS = [
+    "เติมเกม",
+    "รับเติม",
+    "เติมเงิน",
+    "ร้าน",
+    "ราคาถูก",
+    "ส่วนลด",
+    "โปรโมชั่น",
+    "฿",
+    "THB",
+    "บาท",
+    "topup",
+    "เติมทรู",
+    "เติมวอลเล็ท",
+    "ร้านค้า",
+    "สินค้า",
+    "ซื้อขาย",
+    "ราคา",
+    "discount",
+    "promotion",
+    "store",
+    "shop",
+    "cheap",
+    "sale",
+  ];
+
+  /**
+   * Keywords that indicate cheating/cheat trainer content (exclude these)
+   */
+  private static readonly CHEAT_KEYWORDS = [
+    "โปร",
+    "โปรแกรมช่วยเล่น",
+    "โปรแกรมโกง",
+    "สอนโกง",
+    "hack",
+    "cheat",
+    "trainer",
+    "mod menu",
+    "aimbot",
+    "wallhack",
+    "esp",
+    "speed hack",
+    "unlimited",
+    "free gems",
+    "free diamonds",
+    "generator",
+    "online hack",
+    "cheat engine",
+    "โกง",
+    "ฮัค",
+    "โปรฟีฟาย",
+    "โปรrov",
+    "โปรml",
+    "โปรเกม",
+    "โปร pubg",
+    "โปร free fire",
+    "cheat",
+    "หลอกลวง",
+    "scam",
+  ];
+
+  /**
+   * Check if image title/content indicates it's from a store/commercial source
+   */
+  private isStoreImage(title: string = "", url: string = ""): boolean {
+    const combined = `${title} ${url}`.toLowerCase();
+    return AiService.STORE_KEYWORDS.some((keyword) =>
+      combined.includes(keyword.toLowerCase()),
+    );
+  }
+
+  /**
+   * Check if video/content indicates cheating/cheat trainer
+   */
+  private isCheatContent(title: string = "", url: string = "", content: string = ""): boolean {
+    const combined = `${title} ${url} ${content}`.toLowerCase();
+    return AiService.CHEAT_KEYWORDS.some((keyword) =>
+      combined.includes(keyword.toLowerCase()),
+    );
+  }
 
   /**
    * Check if a URL is a valid image URL
@@ -495,14 +578,23 @@ class AiService {
         // Skip thumbnail fields - we want full size images
       ].filter(Boolean);
 
+      const imgTitle = img.title || img.content || "";
+
       for (const url of possibleUrls) {
         if (this.isValidImageUrl(url)) {
-          const score = this.scoreImageQuality(url);
+          let score = this.scoreImageQuality(url);
+
+          // Check if this is a store/commercial image - apply heavy penalty
+          if (this.isStoreImage(imgTitle, url)) {
+            console.log(`[Image Validation] Rejected store image: ${imgTitle.substring(0, 50)}`);
+            continue; // Skip this image entirely
+          }
+
           // Only accept images with decent quality score
           if (score >= 40) {
             validImages.push({
               url,
-              title: img.title || img.content || "",
+              title: imgTitle,
               score,
             });
             break; // Only add the first valid URL for this image
@@ -615,8 +707,18 @@ class AiService {
             Accept: "application/json",
           },
         });
-        videoResults = videoResponse.data?.results || [];
+        const rawVideos = videoResponse.data?.results || [];
+        // Filter out cheating/trainer videos
+        videoResults = rawVideos.filter((v: any) => {
+          const isCheat = this.isCheatContent(v.title || "", v.url || "", v.content || "");
+          if (isCheat) {
+            console.log(`[Video Validation] Rejected cheat video: ${v.title?.substring(0, 50)}`);
+          }
+          return !isCheat;
+        });
         console.log("[SEARXNG] Video results:", {
+          raw: rawVideos.length,
+          filtered: videoResults.length,
           videosCount: videoResults.length,
         });
       } catch (videoError) {
@@ -2563,6 +2665,10 @@ ${contentImageUrls || "ไม่พบรูปภาพสำหรับเน
 3. เนื้อหาต้องเป็นข้อเท็จจริง ไม่สร้างข้อมูลเท็จ
 4. ⚠️ รูปปกและรูปในเนื้อหาต้องเป็นคนละรูปกัน
 5. แสดงแหล่งที่มาของข่าวเพื่อความน่าเชื่อถือ
+6. ⚠️ ห้ามใช้รูปภาพจากร้านเติมเกม/ร้านค้าอื่น (ที่มี watermark โลโก้ร้าน หรือข้อความโฆษณา)
+7. ⚠️ ห้ามใช้วิดีโอที่เกี่ยวกับโปรแกรมโกง/โปร/สอนโกง/เทรนเนอร์ (cheat trainer)
+8. ⚠️ เลือกใช้รูปภาพจากแหล่งที่เชื่อถือได้ เช่น Steam, Epic Games, แฟนอาร์ต, หรือสกรีนช็อตเกมจริง
+9. ⚠️ ห้ามใช้รูปภาพที่มีข้อความโฆษณา เช่น "ราคาถูก", "เติมเกม", "ส่วนลด", "โปรโมชั่น"
 
 รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
 TITLE: [พาดหัวข่าวชัดเจน กระชับ ไม่เกิน 100 ตัวอักษร]

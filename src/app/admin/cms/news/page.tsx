@@ -31,6 +31,7 @@ import {
   NewsCategory,
 } from "@/lib/services";
 import { aiService } from "@/lib/services/ai-api";
+import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
 
 // Slugify helper
@@ -57,6 +58,8 @@ const categories: { value: NewsCategory; label: string; color: string }[] = [
 
 export default function AdminCmsNewsPage() {
   const [mounted, setMounted] = useState(false);
+
+  const { isSessionChecked, isAuthenticated, isAdmin } = useAuth();
 
   useEffect(() => {
     setMounted(true);
@@ -194,8 +197,17 @@ export default function AdminCmsNewsPage() {
   };
 
   useEffect(() => {
+    // Wait until auth state is ready to avoid 401 on first load
+    if (!isSessionChecked) return;
+
+    if (!isAuthenticated || !isAdmin) {
+      setIsLoading(false);
+      setError("กรุณาเข้าสู่ระบบแอดมินเพื่อดูข่าว CMS");
+      return;
+    }
+
     loadArticles();
-  }, [searchQuery, categoryFilter, statusFilter]);
+  }, [searchQuery, categoryFilter, statusFilter, isSessionChecked, isAuthenticated, isAdmin]);
 
   // Lock body scroll when modal is open
   useEffect(() => {

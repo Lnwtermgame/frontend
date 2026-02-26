@@ -33,7 +33,7 @@ import {
   FaqArticle,
   FaqArticleListItem,
 } from "@/lib/services";
-import { aiService } from "@/lib/services/ai-api";
+import { aiService, AIModel } from "@/lib/services/ai-api";
 import Link from "next/link";
 
 // Slugify helper: English-only URL-safe, with fallback if text is non-Latin
@@ -154,6 +154,32 @@ export default function AdminFaqPage() {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [showAIGenerate, setShowAIGenerate] = useState(false);
+
+  // AI Model selection states
+  const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>("");
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+
+  // Fetch available models
+  useEffect(() => {
+    const fetchModels = async () => {
+      setIsLoadingModels(true);
+      try {
+        const models = await aiService.fetchModels();
+        setAvailableModels(models);
+        if (models.length > 0 && !selectedModel) {
+          const defaultModel = aiService.getSelectedModel() || models[0].id;
+          setSelectedModel(defaultModel);
+          aiService.setModel(defaultModel);
+        }
+      } catch (error) {
+        console.error("[FaqPage] Failed to fetch models:", error);
+      } finally {
+        setIsLoadingModels(false);
+      }
+    };
+    fetchModels();
+  }, [selectedModel]);
 
   // Load data on mount
   useEffect(() => {
@@ -1153,6 +1179,40 @@ export default function AdminFaqPage() {
                                 className="w-full py-1.5 px-3 bg-white border-[2px] border-gray-300 text-black text-sm placeholder-gray-500 focus:outline-none focus:border-black"
                               />
                             </div>
+
+                            {/* Model Selector */}
+                            <div>
+                              <label className="block text-gray-700 mb-1 text-xs">
+                                เลือก AI Model
+                              </label>
+                              <select
+                                value={selectedModel}
+                                onChange={(e) => {
+                                  setSelectedModel(e.target.value);
+                                  aiService.setModel(e.target.value);
+                                }}
+                                disabled={
+                                  isLoadingModels ||
+                                  availableModels.length === 0
+                                }
+                                className="w-full py-1.5 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                              >
+                                {isLoadingModels ? (
+                                  <option value="">กำลังโหลด models...</option>
+                                ) : availableModels.length === 0 ? (
+                                  <option value="">
+                                    ไม่พบ model ที่ใช้ได้
+                                  </option>
+                                ) : (
+                                  availableModels.map((model) => (
+                                    <option key={model.id} value={model.id}>
+                                      {model.name || model.id}
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+
                             <div className="flex gap-2">
                               <button
                                 type="button"
@@ -1162,6 +1222,12 @@ export default function AdminFaqPage() {
                                     !articleForm.categoryId
                                   )
                                     return;
+
+                                  // Set the selected model before generating
+                                  if (selectedModel) {
+                                    aiService.setModel(selectedModel);
+                                  }
+
                                   setIsGeneratingAI(true);
                                   try {
                                     const categoryName =
@@ -1244,7 +1310,7 @@ export default function AdminFaqPage() {
 
                       {!aiService.isConfigured() && showAIGenerate && (
                         <div className="mt-2 p-2 bg-red-50 border-[1px] border-red-300 text-red-700 text-[10px]">
-                          กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
+                          กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
                           ก่อนใช้งาน AI
                         </div>
                       )}
@@ -1298,7 +1364,9 @@ export default function AdminFaqPage() {
                           }
                           className="mr-2 w-3.5 h-3.5"
                         />
-                        <span className="text-gray-700 text-sm">แสดงบทความ</span>
+                        <span className="text-gray-700 text-sm">
+                          แสดงบทความ
+                        </span>
                       </label>
                       <label className="flex items-center">
                         <input

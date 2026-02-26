@@ -31,8 +31,10 @@ import {
   NewsCategory,
 } from "@/lib/services";
 import { aiService } from "@/lib/services/ai-api";
+import type { PerplexicaProvider } from "@/lib/services/ai-api";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
+import AINewsProgressPanel from "@/components/admin/AINewsProgressPanel";
 
 // Slugify helper
 const slugify = (text: string) => {
@@ -106,6 +108,71 @@ export default function AdminCmsNewsPage() {
     stage: string;
     message: string;
   } | null>(null);
+
+  // Perplexica settings
+  const [perplexicaProviders, setPerplexicaProviders] = useState<
+    PerplexicaProvider[]
+  >([]);
+  const [selectedPerplexicaChatModel, setSelectedPerplexicaChatModel] =
+    useState<string>("");
+  const [
+    selectedPerplexicaEmbeddingModel,
+    setSelectedPerplexicaEmbeddingModel,
+  ] = useState<string>("");
+  const [perplexicaOptimizationMode, setPerplexicaOptimizationMode] = useState<
+    "speed" | "balanced" | "quality"
+  >("balanced");
+  const [isLoadingPerplexica, setIsLoadingPerplexica] = useState(false);
+
+  // Fetch Perplexica providers
+  useEffect(() => {
+    const fetchPerplexicaProviders = async () => {
+      setIsLoadingPerplexica(true);
+      try {
+        const providers = await aiService.getPerplexicaProviders();
+        setPerplexicaProviders(providers);
+
+        // Set default models from config
+        const config = aiService.getPerplexicaConfig();
+        setSelectedPerplexicaChatModel(config.chatModel);
+        setSelectedPerplexicaEmbeddingModel(config.embeddingModel);
+
+        console.log(
+          "[NewsPage] Perplexica providers loaded:",
+          providers.length,
+        );
+      } catch (error) {
+        console.error(
+          "[NewsPage] Failed to fetch Perplexica providers:",
+          error,
+        );
+      } finally {
+        setIsLoadingPerplexica(false);
+      }
+    };
+    fetchPerplexicaProviders();
+  }, []);
+
+  // Get available chat models from all providers
+  const availableChatModels = perplexicaProviders.flatMap((p) =>
+    p.chatModels.map((m) => ({ ...m, providerName: p.name, providerId: p.id })),
+  );
+
+  // Get available embedding models from all providers (sorted: mxbai-embed-large-v1 first)
+  const availableEmbeddingModels = perplexicaProviders
+    .flatMap((p) =>
+      p.embeddingModels.map((m) => ({
+        ...m,
+        providerName: p.name,
+        providerId: p.id,
+      })),
+    )
+    .sort((a, b) => {
+      // Prioritize mxbai-embed-large-v1
+      if (a.key.includes("mxbai-embed-large-v1")) return -1;
+      if (b.key.includes("mxbai-embed-large-v1")) return 1;
+      return a.key.localeCompare(b.key);
+    });
 
   const aiStageOrder = [
     "preparing",
@@ -207,7 +274,14 @@ export default function AdminCmsNewsPage() {
     }
 
     loadArticles();
-  }, [searchQuery, categoryFilter, statusFilter, isSessionChecked, isAuthenticated, isAdmin]);
+  }, [
+    searchQuery,
+    categoryFilter,
+    statusFilter,
+    isSessionChecked,
+    isAuthenticated,
+    isAdmin,
+  ]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -235,6 +309,11 @@ export default function AdminCmsNewsPage() {
       const data: CreateNewsArticleData = {
         ...formData,
         slug: formData.slug?.trim() || slugify(formData.title),
+        // Only include coverImage if it's a valid URL
+        ...(formData.coverImage?.trim() &&
+        formData.coverImage.startsWith("http")
+          ? { coverImage: formData.coverImage.trim() }
+          : {}),
       };
       const response = await cmsApi.createNewsArticle(data);
       if (response.success) {
@@ -261,7 +340,11 @@ export default function AdminCmsNewsPage() {
         title: formData.title,
         excerpt: formData.excerpt,
         content: formData.content,
-        coverImage: formData.coverImage,
+        // Only include coverImage if it's a valid URL
+        ...(formData.coverImage?.trim() &&
+        formData.coverImage.startsWith("http")
+          ? { coverImage: formData.coverImage.trim() }
+          : {}),
         category: formData.category,
         tags: formData.tags,
         sources: formData.sources,
@@ -342,6 +425,7 @@ export default function AdminCmsNewsPage() {
   };
 
   const handleGenerateAIContent = async () => {
+    const startTime = Date.now();
     if (!aiTopic.trim()) return;
 
     setIsGeneratingAI(true);
@@ -351,8 +435,13 @@ export default function AdminCmsNewsPage() {
       message: "กำลังเริ่มต้นการสร้างเนื้อหา...",
     });
 
-    console.log("[Generate AI] Starting generation for topic:", aiTopic);
-    console.log("[Generate AI] Selected variation:", aiVariation);
+    console.log("[Generate AI Page] ========== GENERATION START ==========");
+    console.log("[Generate AI Page] Topic:", aiTopic);
+    console.log("[Generate AI Page] Category:", formData.category);
+    console.log("[Generate AI Page] Variation:", aiVariation);
+    console.log("[Generate AI Page] Chat Model:", selectedPerplexicaChatModel);
+    console.log("[Generate AI Page] Embedding Model:", selectedPerplexicaEmbeddingModel);
+    console.log("[Generate AI Page] Optimization Mode:", perplexicaOptimizationMode);
 
     try {
       const categoryLabel =
@@ -362,26 +451,32 @@ export default function AdminCmsNewsPage() {
       // Get existing article slugs to prevent duplicates
       const existingSlugs = articles.map((article) => article.slug);
 
-      console.log("[Generate AI] Existing slugs count:", existingSlugs.length);
-      console.log("[Generate AI] Calling aiService.generateNewsContent...");
+      console.log("[Generate AI Page] Existing slugs count:", existingSlugs.length);
+      console.log("[Generate AI Page] Calling aiService.generateNewsContent...");
 
       const result = await aiService.generateNewsContent(
         aiTopic,
         categoryLabel,
         (progress) => {
+          console.log(`[Generate AI Page] Progress: ${progress.stage} - ${progress.message}`);
           setAiProgress({
             stage: progress.stage,
             message: progress.message,
           });
         },
-        existingSlugs, // pass existing slugs to prevent duplicates
-        aiVariation !== "random" ? aiVariation : undefined, // pass preferred angle if not random
+        existingSlugs,
+        aiVariation !== "random" ? aiVariation : undefined,
+        perplexicaOptimizationMode,
       );
 
-      console.log("[Generate AI] Result received:", {
+      const elapsed = Date.now() - startTime;
+      console.log(`[Generate AI Page] ========== GENERATION SUCCESS (${elapsed}ms) ==========`);
+      console.log("[Generate AI Page] Result:", {
         title: result.title,
         slug: result.slug,
         contentLength: result.content?.length,
+        sourcesCount: result.sources?.length || 0,
+        tagsCount: result.tags?.length || 0,
       });
 
       // Ensure unique slug
@@ -402,7 +497,7 @@ export default function AdminCmsNewsPage() {
         excerpt: result.excerpt,
         slug: !editingArticle && !prev.slug?.trim() ? aiSlug : prev.slug,
         tags: result.tags && result.tags.length > 0 ? result.tags : prev.tags,
-        coverImage: result.coverImage || prev.coverImage,
+        coverImage: result.coverImage || "",
         sources:
           result.sources && result.sources.length > 0
             ? result.sources
@@ -413,13 +508,24 @@ export default function AdminCmsNewsPage() {
       setAiGeneratedSources(result.sources || []);
       setError(null);
       setAiProgress({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
-    } catch (err) {
+    } catch (err: any) {
+      const elapsed = Date.now() - startTime;
+      console.error(`[Generate AI Page] ========== GENERATION FAILED (${elapsed}ms) ==========`);
+      console.error("[Generate AI Page] Error details:", {
+        message: err?.message,
+        code: err?.code,
+        status: err?.response?.status,
+        statusText: err?.response?.statusText,
+        data: err?.response?.data,
+        stack: err?.stack,
+      });
       setError(cmsApi.getErrorMessage(err));
       setAiProgress({
         stage: "error",
         message: cmsApi.getErrorMessage(err),
       });
     } finally {
+      console.log("[Generate AI Page] Generation finished, isGeneratingAI = false");
       setIsGeneratingAI(false);
     }
   };
@@ -787,10 +893,11 @@ export default function AdminCmsNewsPage() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white border-[3px] border-black w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+                  className="bg-white border-[3px] border-black w-full max-w-3xl max-h-[90vh] flex flex-col"
                   style={{ boxShadow: "6px 6px 0 0 #000000" }}
                 >
-                  <div className="p-4 border-b-[3px] border-black">
+                  {/* Sticky Header */}
+                  <div className="sticky top-0 z-10 p-4 border-b-[3px] border-black bg-white">
                     <div className="flex items-center justify-between">
                       <h2 className="text-lg font-bold text-black">
                         {editingArticle ? "แก้ไขข่าว" : "เพิ่มข่าวใหม่"}
@@ -801,17 +908,19 @@ export default function AdminCmsNewsPage() {
                           setEditingArticle(null);
                           resetForm();
                         }}
-                        className="text-gray-600 hover:text-black"
+                        className="text-gray-600 hover:text-black p-1 hover:bg-gray-100 rounded transition-colors"
                       >
                         <X size={20} />
                       </button>
                     </div>
                   </div>
 
-                  <form
-                    onSubmit={editingArticle ? handleUpdate : handleCreate}
-                    className="p-4 space-y-3"
-                  >
+                  {/* Scrollable Content */}
+                  <div className="overflow-y-auto flex-1">
+                    <form
+                      onSubmit={editingArticle ? handleUpdate : handleCreate}
+                      className="p-4 space-y-3"
+                    >
                     {/* Slug */}
                     <div>
                       <label className="block text-gray-700 mb-1.5 font-medium text-sm">
@@ -903,7 +1012,8 @@ export default function AdminCmsNewsPage() {
                                 className="w-full py-1.5 px-3 bg-white border-[2px] border-gray-300 text-black text-sm placeholder-gray-500 focus:outline-none focus:border-black"
                               />
                               <p className="text-[10px] text-gray-500 mt-1">
-                                AI จะค้นหาข้อมูลจาก SEARXNG พร้อมรูปภาพและวิดีโอ
+                                AI จะค้นหาข้อมูลจาก Perplexica
+                                และสร้างเนื้อหาข่าว
                               </p>
                             </div>
 
@@ -926,6 +1036,109 @@ export default function AdminCmsNewsPage() {
                                   </option>
                                 ))}
                               </select>
+                            </div>
+
+                            {/* Perplexica Chat Model Selector */}
+                            <div>
+                              <label className="block text-gray-700 mb-1 text-xs">
+                                🤖 Perplexica Chat Model
+                              </label>
+                              <select
+                                value={selectedPerplexicaChatModel}
+                                onChange={(e) => {
+                                  setSelectedPerplexicaChatModel(
+                                    e.target.value,
+                                  );
+                                  aiService.setPerplexicaChatModel(
+                                    e.target.value,
+                                  );
+                                }}
+                                disabled={
+                                  isLoadingPerplexica ||
+                                  availableChatModels.length === 0
+                                }
+                                className="w-full py-1.5 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                              >
+                                {isLoadingPerplexica ? (
+                                  <option value="">กำลังโหลด...</option>
+                                ) : availableChatModels.length === 0 ? (
+                                  <option value="">ไม่พบ model</option>
+                                ) : (
+                                  availableChatModels.map((model) => (
+                                    <option key={model.key} value={model.key}>
+                                      {model.name} ({model.providerName})
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+
+                            {/* Perplexica Embedding Model Selector */}
+                            <div>
+                              <label className="block text-gray-700 mb-1 text-xs">
+                                🔍 Perplexica Embedding Model
+                              </label>
+                              <select
+                                value={selectedPerplexicaEmbeddingModel}
+                                onChange={(e) => {
+                                  setSelectedPerplexicaEmbeddingModel(
+                                    e.target.value,
+                                  );
+                                  aiService.setPerplexicaEmbeddingModel(
+                                    e.target.value,
+                                  );
+                                }}
+                                disabled={
+                                  isLoadingPerplexica ||
+                                  availableEmbeddingModels.length === 0
+                                }
+                                className="w-full py-1.5 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                              >
+                                {isLoadingPerplexica ? (
+                                  <option value="">กำลังโหลด...</option>
+                                ) : availableEmbeddingModels.length === 0 ? (
+                                  <option value="">ไม่พบ model</option>
+                                ) : (
+                                  availableEmbeddingModels.map((model) => (
+                                    <option key={model.key} value={model.key}>
+                                      {model.name} ({model.providerName})
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+
+                            {/* Optimization Mode Selector */}
+                            <div>
+                              <label className="block text-gray-700 mb-1 text-xs">
+                                ⚡ Optimization Mode
+                              </label>
+                              <select
+                                value={perplexicaOptimizationMode}
+                                onChange={(e) =>
+                                  setPerplexicaOptimizationMode(
+                                    e.target.value as
+                                      | "speed"
+                                      | "balanced"
+                                      | "quality",
+                                  )
+                                }
+                                className="w-full py-1.5 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black"
+                              >
+                                <option value="speed">
+                                  Speed (เร็วที่สุด)
+                                </option>
+                                <option value="balanced">
+                                  Balanced (สมดุล)
+                                </option>
+                                <option value="quality">
+                                  Quality (คุณภาพสูงสุด)
+                                </option>
+                              </select>
+                              <p className="text-[10px] text-gray-500 mt-1">
+                                Speed: เร็วแต่อาจขาดรายละเอียด | Quality:
+                                ละเอียดแต่ช้า
+                              </p>
                             </div>
 
                             <div className="flex gap-2">
@@ -961,60 +1174,17 @@ export default function AdminCmsNewsPage() {
                               </button>
                             </div>
                             {aiProgress && (
-                              <div className="border-[2px] border-black bg-white p-3">
-                                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                                  <span className="font-medium text-black">
-                                    สถานะ:{" "}
-                                    {aiStageLabels[aiProgress.stage] ||
-                                      "กำลังทำงาน"}
-                                  </span>
-                                  <span>
-                                    {Math.min(
-                                      Math.max(
-                                        aiStageOrder.indexOf(aiProgress.stage),
-                                        0,
-                                      ),
-                                      aiStageOrder.length - 2,
-                                    ) + 1}
-                                    /{aiStageOrder.length - 1}
-                                  </span>
-                                </div>
-                                <div className="w-full h-2 border-[2px] border-black bg-gray-100 mb-2">
-                                  <div
-                                    className={`h-full ${
-                                      aiProgress.stage === "error"
-                                        ? "bg-red-400"
-                                        : aiProgress.stage === "completed"
-                                          ? "bg-brutal-green"
-                                          : "bg-brutal-pink"
-                                    }`}
-                                    style={{
-                                      width: `${
-                                        ((Math.min(
-                                          Math.max(
-                                            aiStageOrder.indexOf(
-                                              aiProgress.stage,
-                                            ),
-                                            0,
-                                          ),
-                                          aiStageOrder.length - 2,
-                                        ) +
-                                          1) /
-                                          (aiStageOrder.length - 1)) *
-                                        100
-                                      }%`,
-                                    }}
-                                  />
-                                </div>
-                                <p
-                                  className={`text-xs ${
-                                    aiProgress.stage === "error"
-                                      ? "text-red-700"
-                                      : "text-gray-700"
-                                  }`}
-                                >
-                                  {aiProgress.message}
-                                </p>
+                              <div className="mt-3">
+                                <AINewsProgressPanel
+                                  progress={aiProgress}
+                                  isGenerating={isGeneratingAI}
+                                  error={error}
+                                  onClose={() => {
+                                    if (!isGeneratingAI) {
+                                      setAiProgress(null);
+                                    }
+                                  }}
+                                />
                               </div>
                             )}
                           </motion.div>
@@ -1023,7 +1193,7 @@ export default function AdminCmsNewsPage() {
 
                       {!aiService.isConfigured() && showAIGenerate && (
                         <div className="mt-3 p-2 bg-red-50 border-[1px] border-red-300 text-red-700 text-xs">
-                          กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
+                          กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
                           ก่อนใช้งาน AI
                         </div>
                       )}
@@ -1341,6 +1511,7 @@ export default function AdminCmsNewsPage() {
                       </button>
                     </div>
                   </form>
+                  </div>
                 </motion.div>
               </motion.div>
             )}

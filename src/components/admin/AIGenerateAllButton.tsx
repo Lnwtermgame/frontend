@@ -29,6 +29,7 @@ import {
   GeneratedContent,
   GenerationProgress,
   AvailableCategory,
+  AIModel,
 } from "@/lib/services/ai-api";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
@@ -143,6 +144,32 @@ export default function AIGenerateAllButton({
   const pauseRef = useRef(false);
   const totalTimerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
+
+  // AI Model selection state
+  const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>("");
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+
+  // Fetch available models on mount
+  useEffect(() => {
+    const fetchModels = async () => {
+      setIsLoadingModels(true);
+      try {
+        const models = await aiService.fetchModels();
+        setAvailableModels(models);
+        if (models.length > 0 && !selectedModel) {
+          const defaultModel = aiService.getSelectedModel() || models[0].id;
+          setSelectedModel(defaultModel);
+          aiService.setModel(defaultModel);
+        }
+      } catch (error) {
+        console.error("[AIGenerateAllButton] Failed to fetch models:", error);
+      } finally {
+        setIsLoadingModels(false);
+      }
+    };
+    fetchModels();
+  }, [selectedModel]);
 
   // Initialize product states when modal opens
   const initializeStates = useCallback(() => {
@@ -294,8 +321,13 @@ export default function AIGenerateAllButton({
   // Start batch generation
   const startGeneration = useCallback(async () => {
     if (!aiService.isConfigured()) {
-      toast.error("กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env");
+      toast.error("กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env");
       return;
+    }
+
+    // Set the selected model before generating
+    if (selectedModel) {
+      aiService.setModel(selectedModel);
     }
 
     setIsRunning(true);
@@ -530,8 +562,13 @@ export default function AIGenerateAllButton({
     if (!state) return;
 
     if (!aiService.isConfigured()) {
-      toast.error("กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env");
+      toast.error("กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env");
       return;
+    }
+
+    // Set the selected model before generating
+    if (selectedModel) {
+      aiService.setModel(selectedModel);
     }
 
     const productStartTime = Date.now();
@@ -817,6 +854,38 @@ export default function AIGenerateAllButton({
 
               {/* Stats Bar */}
               <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-gray-50 shrink-0">
+                {/* Model Selector */}
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    เลือก AI Model
+                  </label>
+                  <select
+                    value={selectedModel}
+                    onChange={(e) => {
+                      setSelectedModel(e.target.value);
+                      aiService.setModel(e.target.value);
+                    }}
+                    disabled={
+                      isLoadingModels ||
+                      availableModels.length === 0 ||
+                      isRunning
+                    }
+                    className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                  >
+                    {isLoadingModels ? (
+                      <option value="">กำลังโหลด models...</option>
+                    ) : availableModels.length === 0 ? (
+                      <option value="">ไม่พบ model ที่ใช้ได้</option>
+                    ) : (
+                      availableModels.map((model) => (
+                        <option key={model.id} value={model.id}>
+                          {model.name || model.id}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
                 {/* Skip complete checkbox + completeness summary */}
                 <div className="flex items-center justify-between mb-3">
                   <label className="flex items-center gap-2 cursor-pointer select-none group">

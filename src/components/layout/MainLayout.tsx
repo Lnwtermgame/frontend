@@ -621,6 +621,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
                         <Link
                           href="/dashboard/notifications"
+                          onClick={() => setIsNotificationOpen(false)}
                           className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors"
                         >
                           ดูทั้งหมด
@@ -723,7 +724,11 @@ export function MainLayout({ children }: MainLayoutProps) {
 
                         <div className="p-2">
                           {accountMenuItems.slice(0, 4).map((item) => (
-                            <Link key={item.href} href={item.href}>
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setIsUserMenuOpen(false)}
+                            >
                               <div className="px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-3 transition-colors font-medium">
                                 <span className="opacity:70">{item.icon}</span>
                                 <span>{item.label}</span>

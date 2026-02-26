@@ -1,5 +1,16 @@
 import axios from "axios";
 
+// DuckDuckGo image search result type (from /api/image-search)
+interface DDGImageResult {
+  image: string;
+  title: string;
+  height: number;
+  width: number;
+  thumbnail: string;
+  url: string;
+  source: string;
+}
+
 // Local slugify helper for URL-safe English slugs with fallback
 const slugify = (text: string) => {
   const base = text
@@ -17,9 +28,43 @@ const slugify = (text: string) => {
   return `content-${Math.random().toString(36).slice(2, 8)}`;
 };
 
-// Z.ai API configuration - using Coding endpoint as requested
-const ZAI_API_BASE_URL = "https://api.z.ai/api/coding/paas/v4";
-const ZAI_API_KEY = process.env.NEXT_PUBLIC_ZAI_API_KEY || "";
+// LiteLLM API configuration
+const LITELLM_API_BASE_URL =
+  process.env.NEXT_PUBLIC_LITELLM_API_URL ||
+  "http://litellm-l8k0ggssggs8k8k44kko0404.89.38.101.12.sslip.io";
+const LITELLM_API_KEY = process.env.NEXT_PUBLIC_LITELLM_API_KEY || "";
+
+// Perplexica model configuration (API calls go through /api/perplexica proxy)
+let perplexicaChatModel =
+  process.env.NEXT_PUBLIC_PERPLEXICA_CHAT_MODEL || "z-ai/glm4.7";
+let perplexicaEmbeddingModel =
+  process.env.NEXT_PUBLIC_PERPLEXICA_EMBEDDING_MODEL ||
+  "mxbai-embed-large-v1";
+
+// AI Model interface
+export interface AIModel {
+  id: string;
+  name?: string;
+  object?: string;
+  created?: number;
+  owned_by?: string;
+}
+
+// Cached models
+let cachedModels: AIModel[] = [];
+let modelsCacheTime = 0;
+const MODELS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Perplexica provider cache
+export interface PerplexicaProvider {
+  id: string;
+  name: string;
+  chatModels: { name: string; key: string }[];
+  embeddingModels: { name: string; key: string }[];
+}
+let cachedPerplexicaProviders: PerplexicaProvider[] = [];
+let perplexicaProvidersCacheTime = 0;
+const PERPLEXICA_PROVIDERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 // Debug log interface
 export interface DebugLog {
@@ -93,7 +138,7 @@ type ContentGenerationProgressCallback = (progress: {
   message: string;
 }) => void;
 
-// Z.ai API request types
+// LiteLLM API request types
 interface ZaiMessage {
   role: "system" | "user";
   content: string;
@@ -141,13 +186,15 @@ interface ZaiChatCompletionResponse {
 // AI Service class with debug capabilities
 class AiService {
   private client = axios.create({
-    baseURL: ZAI_API_BASE_URL,
+    baseURL: LITELLM_API_BASE_URL,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${ZAI_API_KEY}`,
+      Authorization: `Bearer ${LITELLM_API_KEY}`,
     },
     timeout: 120000, // 120 seconds timeout
   });
+
+  private selectedModel: string = ""; // Selected model, empty means use default
 
   private generateId(): string {
     return Math.random().toString(36).substring(2, 9);
@@ -170,10 +217,58 @@ class AiService {
   // Check if API key is configured
   isConfigured(): boolean {
     return (
-      !!ZAI_API_KEY &&
-      ZAI_API_KEY.length > 0 &&
-      ZAI_API_KEY !== "your_api_key_here"
+      !!LITELLM_API_KEY &&
+      LITELLM_API_KEY.length > 0 &&
+      LITELLM_API_KEY !== "your_api_key_here"
     );
+  }
+
+  // Get available models from LiteLLM
+  async fetchModels(): Promise<AIModel[]> {
+    const now = Date.now();
+    if (cachedModels.length > 0 && now - modelsCacheTime < MODELS_CACHE_TTL) {
+      return cachedModels;
+    }
+
+    try {
+      const response = await this.client.get("/v1/models");
+      const models = response.data?.data || [];
+      cachedModels = models.map((m: any) => ({
+        id: m.id,
+        name: m.id,
+        object: m.object,
+        created: m.created,
+        owned_by: m.owned_by,
+      }));
+      modelsCacheTime = now;
+      console.log("[LiteLLM] Fetched models:", cachedModels.length);
+      return cachedModels;
+    } catch (error) {
+      console.error("[LiteLLM] Failed to fetch models:", error);
+      return [];
+    }
+  }
+
+  // Get cached models (synchronous)
+  getCachedModels(): AIModel[] {
+    return cachedModels;
+  }
+
+  // Set selected model
+  setModel(modelId: string): void {
+    this.selectedModel = modelId;
+    console.log("[LiteLLM] Model set to:", modelId);
+  }
+
+  // Get selected model
+  getSelectedModel(): string {
+    return this.selectedModel;
+  }
+
+  // Get default model (first available or empty string)
+  async getDefaultModel(): Promise<string> {
+    const models = await this.fetchModels();
+    return models.length > 0 ? models[0].id : "";
   }
 
   // ============ Image URL Validation & Quality Scoring ============
@@ -267,6 +362,20 @@ class AiService {
     // Generic CDNs that serve thumbnails
     "thumb",
     "avatar",
+    // Non-gaming Thai sites that pollute results
+    "sasimasuk.com",
+    "bitkub.com",
+    "pantip.com",
+    "sanook.com",
+    "kapook.com",
+    "mthai.com",
+    "thairath.co.th",
+    "dailynews.co.th",
+    "matichon.co.th",
+    "bangkokpost.com",
+    "manager.co.th",
+    "pptvhd36.com",
+    "amarintv.com",
   ];
 
   /**
@@ -397,7 +506,11 @@ class AiService {
   /**
    * Check if video/content indicates cheating/cheat trainer
    */
-  private isCheatContent(title: string = "", url: string = "", content: string = ""): boolean {
+  private isCheatContent(
+    title: string = "",
+    url: string = "",
+    content: string = "",
+  ): boolean {
     const combined = `${title} ${url} ${content}`.toLowerCase();
     return AiService.CHEAT_KEYWORDS.some((keyword) =>
       combined.includes(keyword.toLowerCase()),
@@ -559,194 +672,475 @@ class AiService {
     }
   }
 
-  /**
-   * Filter and validate image URLs from SEARXNG results
-   * Returns only URLs that are likely to be actual HIGH QUALITY images
-   * Sorted by quality score (best first)
-   */
-  private filterValidImageUrls(
-    images: any[],
-  ): { url: string; title?: string; score: number }[] {
-    const validImages: { url: string; title?: string; score: number }[] = [];
-
-    for (const img of images) {
-      // Try different URL fields from SEARXNG - prioritize img_src over thumbnail
-      const possibleUrls = [
-        img.img_src, // Often the full size image
-        img.url, // Sometimes the source page
-        img.image, // Alternative field
-        // Skip thumbnail fields - we want full size images
-      ].filter(Boolean);
-
-      const imgTitle = img.title || img.content || "";
-
-      for (const url of possibleUrls) {
-        if (this.isValidImageUrl(url)) {
-          let score = this.scoreImageQuality(url);
-
-          // Check if this is a store/commercial image - apply heavy penalty
-          if (this.isStoreImage(imgTitle, url)) {
-            console.log(`[Image Validation] Rejected store image: ${imgTitle.substring(0, 50)}`);
-            continue; // Skip this image entirely
-          }
-
-          // Only accept images with decent quality score
-          if (score >= 40) {
-            validImages.push({
-              url,
-              title: imgTitle,
-              score,
-            });
-            break; // Only add the first valid URL for this image
-          }
-        }
-      }
+  // Get API configuration status for debugging
+  private async fetchPerplexicaProviders(): Promise<PerplexicaProvider[]> {
+    const now = Date.now();
+    const cacheAge = now - perplexicaProvidersCacheTime;
+    if (
+      cachedPerplexicaProviders.length > 0 &&
+      cacheAge < PERPLEXICA_PROVIDERS_CACHE_TTL
+    ) {
+      console.log("[Perplexica Providers] Using cached providers:", {
+        count: cachedPerplexicaProviders.length,
+        cacheAgeMs: cacheAge,
+        cacheTtlMs: PERPLEXICA_PROVIDERS_CACHE_TTL,
+      });
+      return cachedPerplexicaProviders;
     }
 
-    // Sort by score (highest first)
-    validImages.sort((a, b) => b.score - a.score);
-
-    console.log(
-      `[Image Validation] Filtered ${validImages.length}/${images.length} high quality images`,
-    );
-
-    if (validImages.length > 0) {
+    console.log("[Perplexica Providers] Cache miss or expired, fetching from API...");
+    try {
+      const response = await axios.get("/api/perplexica", {
+        timeout: 0, // No timeout
+      });
+      cachedPerplexicaProviders = response.data?.providers || [];
+      perplexicaProvidersCacheTime = now;
       console.log(
-        `[Image Validation] Top 3 scores:`,
-        validImages.slice(0, 3).map((i) => ({
-          score: i.score,
-          domain: new URL(i.url).hostname,
-        })),
+        "[Perplexica Providers] Fetched providers successfully:",
+        cachedPerplexicaProviders.length,
+      );
+      // Log each provider for debugging
+      cachedPerplexicaProviders.forEach((p, i) => {
+        console.log(`[Perplexica Providers] Provider ${i + 1}:`, {
+          id: p.id,
+          name: p.name,
+          chatModelsCount: p.chatModels?.length || 0,
+          embeddingModelsCount: p.embeddingModels?.length || 0,
+        });
+      });
+      return cachedPerplexicaProviders;
+    } catch (error: any) {
+      console.error("[Perplexica Providers] Failed to fetch providers:", {
+        message: error?.message,
+        code: error?.code,
+        status: error?.response?.status,
+      });
+      return [];
+    }
+  }
+
+  // Find provider ID by model key prefix (e.g., "z-ai" for "z-ai/glm4.7")
+  private findPerplexicaProvider(
+    providers: PerplexicaProvider[],
+    modelKey: string,
+  ): { providerId: string; key: string } | null {
+    const modelPrefix = modelKey.split("/")[0];
+
+    for (const provider of providers) {
+      const chatModel = provider.chatModels.find(
+        (m) => m.key === modelKey || m.key.startsWith(modelPrefix),
+      );
+      if (chatModel) {
+        return { providerId: provider.id, key: chatModel.key };
+      }
+    }
+    return null;
+  }
+
+  // Find embedding provider separately (embedding models are often in different providers)
+  private findPerplexicaEmbeddingProvider(
+    providers: PerplexicaProvider[],
+    modelKey: string,
+  ): { providerId: string; key: string } | null {
+    for (const provider of providers) {
+      const embeddingModel = provider.embeddingModels.find(
+        (m) => m.key === modelKey || m.key.includes(modelKey.split("/")[0]),
+      );
+      if (embeddingModel) {
+        return { providerId: provider.id, key: embeddingModel.key };
+      }
+    }
+    // Fallback to first available embedding model
+    for (const provider of providers) {
+      if (provider.embeddingModels.length > 0) {
+        return {
+          providerId: provider.id,
+          key: provider.embeddingModels[0].key,
+        };
+      }
+    }
+    return null;
+  }
+
+  // Call Perplexica Search API
+  private async callPerplexicaSearch(
+    query: string,
+    systemInstructions?: string,
+    optimizationMode: "speed" | "balanced" | "quality" = "balanced",
+  ): Promise<{
+    message: string;
+    sources: { content: string; metadata: { title: string; url: string } }[];
+  }> {
+    const startTime = Date.now();
+    console.log("[Perplexica Search] ========== CALL START ==========");
+
+    console.log("[Perplexica Search] Fetching providers...");
+    const providers = await this.fetchPerplexicaProviders();
+    console.log("[Perplexica Search] Providers fetched:", providers.length);
+
+    if (providers.length === 0) {
+      throw new Error("No Perplexica providers available");
+    }
+
+    // Find chat model provider
+    console.log("[Perplexica Search] Finding chat model provider for:", perplexicaChatModel);
+    const chatProvider = this.findPerplexicaProvider(
+      providers,
+      perplexicaChatModel,
+    );
+    if (!chatProvider) {
+      console.warn(
+        `[Perplexica Search] Chat model ${perplexicaChatModel} not found, using first available`,
       );
     }
 
-    return validImages;
-  }
-
-  // Search using SEARXNG via proxy API route
-  private async searchWithSearxng(
-    query: string,
-    categories?: string[],
-    lang: string = "th",
-  ): Promise<{
-    results: any[];
-    images: { url: string; title?: string; score: number }[];
-    videos: any[];
-  }> {
-    try {
-      console.log("[SEARXNG] Searching for:", query);
-
-      // Search for text content via proxy
-      const searchParams = new URLSearchParams({
-        q: query,
-        language: lang,
-        time_range: "week",
-      });
-
-      if (categories && categories.length > 0) {
-        searchParams.append("category", categories.join(","));
-      }
-
-      const proxyUrl = `/api/searxng?${searchParams.toString()}`;
-
-      const response = await axios.get(proxyUrl, {
-        timeout: 30000,
-        headers: {
-          Accept: "application/json",
-        },
-      });
-
-      console.log("[SEARXNG] Search results:", {
-        resultsCount: response.data?.results?.length || 0,
-      });
-
-      // Search for images via proxy
-      const imageParams = new URLSearchParams({
-        q: query,
-        category: "images",
-        time_range: "month",
-      });
-
-      const imageProxyUrl = `/api/searxng?${imageParams.toString()}`;
-
-      let validImages: { url: string; title?: string; score: number }[] = [];
-      try {
-        const imageResponse = await axios.get(imageProxyUrl, {
-          timeout: 30000,
-          headers: {
-            Accept: "application/json",
-          },
-        });
-        const imageResults = imageResponse.data?.results || [];
-
-        // Filter valid image URLs
-        validImages = this.filterValidImageUrls(imageResults);
-
-        console.log("[SEARXNG] Image results:", {
-          raw: imageResults.length,
-          valid: validImages.length,
-        });
-      } catch (imageError) {
-        console.log("[SEARXNG] Image search failed:", imageError);
-      }
-
-      // Search for videos via proxy
-      const videoParams = new URLSearchParams({
-        q: `${query} official trailer gameplay`,
-        category: "videos",
-        time_range: "month",
-      });
-
-      const videoProxyUrl = `/api/searxng?${videoParams.toString()}`;
-
-      let videoResults: any[] = [];
-      try {
-        const videoResponse = await axios.get(videoProxyUrl, {
-          timeout: 30000,
-          headers: {
-            Accept: "application/json",
-          },
-        });
-        const rawVideos = videoResponse.data?.results || [];
-        // Filter out cheating/trainer videos
-        videoResults = rawVideos.filter((v: any) => {
-          const isCheat = this.isCheatContent(v.title || "", v.url || "", v.content || "");
-          if (isCheat) {
-            console.log(`[Video Validation] Rejected cheat video: ${v.title?.substring(0, 50)}`);
-          }
-          return !isCheat;
-        });
-        console.log("[SEARXNG] Video results:", {
-          raw: rawVideos.length,
-          filtered: videoResults.length,
-          videosCount: videoResults.length,
-        });
-      } catch (videoError) {
-        console.log("[SEARXNG] Video search failed:", videoError);
-      }
-
-      return {
-        results: response.data?.results || [],
-        images: validImages, // Return validated images with scores
-        videos: videoResults,
-      };
-    } catch (error) {
-      console.error("[SEARXNG] Search error:", error);
-      // Return empty results on error so AI can still generate content
-      return { results: [], images: [], videos: [] } as {
-        results: any[];
-        images: { url: string; title?: string; score: number }[];
-        videos: any[];
-      };
+    // Find embedding model provider (separate from chat model - often different providers)
+    console.log("[Perplexica Search] Finding embedding model provider for:", perplexicaEmbeddingModel);
+    const embeddingProvider = this.findPerplexicaEmbeddingProvider(
+      providers,
+      perplexicaEmbeddingModel,
+    );
+    if (!embeddingProvider) {
+      console.warn(
+        `[Perplexica Search] Embedding model ${perplexicaEmbeddingModel} not found, using first available`,
+      );
     }
+
+    // Build chat model config
+    const chatModelConfig = chatProvider || {
+      providerId: providers.find((p) => p.chatModels.length > 0)?.id || "",
+      key:
+        providers.find((p) => p.chatModels.length > 0)?.chatModels[0]?.key ||
+        "",
+    };
+
+    // Build embedding model config
+    const embeddingModelConfig = embeddingProvider || {
+      providerId: providers.find((p) => p.embeddingModels.length > 0)?.id || "",
+      key:
+        providers.find((p) => p.embeddingModels.length > 0)?.embeddingModels[0]
+          ?.key || "",
+    };
+
+    console.log("[Perplexica Search] Selected models:", {
+      chatModel: chatModelConfig.key,
+      chatProvider: chatModelConfig.providerId,
+      embeddingModel: embeddingModelConfig.key,
+      embeddingProvider: embeddingModelConfig.providerId,
+    });
+
+    const requestBody = {
+      chatModel: chatModelConfig,
+      embeddingModel: embeddingModelConfig,
+      optimizationMode,
+      sources: ["web"],
+      query,
+      history: [], // Clear history to avoid previous image uploads
+      stream: false,
+    };
+
+    if (systemInstructions) {
+      (requestBody as any).systemInstructions = systemInstructions;
+      console.log("[Perplexica Search] System instructions added, length:", systemInstructions.length);
+    }
+
+    console.log("[Perplexica Search] Request body prepared, calling /api/perplexica...");
+    console.log("[Perplexica Search] Request details:", {
+      query: query.substring(0, 100) + (query.length > 100 ? "..." : ""),
+      queryLength: query.length,
+      chatModel: requestBody.chatModel.key,
+      embeddingModel: requestBody.embeddingModel.key,
+      optimizationMode: requestBody.optimizationMode,
+      sources: requestBody.sources,
+      historyLength: requestBody.history?.length || 0,
+      hasSystemInstructions: !!systemInstructions,
+    });
+
+    const response = await axios.post("/api/perplexica", requestBody, {
+      timeout: 0, // No timeout - AI operations can take a long time
+    });
+
+    const elapsed = Date.now() - startTime;
+    console.log(`[Perplexica Search] ========== CALL SUCCESS (${elapsed}ms) ==========`);
+    console.log("[Perplexica Search] Response received:", {
+      hasMessage: !!response.data?.message,
+      messageLength: response.data?.message?.length || 0,
+      sourcesCount: response.data?.sources?.length || 0,
+      hasError: !!response.data?.error,
+    });
+
+    return {
+      message: response.data?.message || "",
+      sources: response.data?.sources || [],
+    };
   }
 
   // Get API configuration status for debugging
-  getConfigStatus(): { hasKey: boolean; keyLength: number; baseUrl: string } {
+  getConfigStatus(): {
+    hasKey: boolean;
+    keyLength: number;
+    baseUrl: string;
+    model: string;
+  } {
     return {
-      hasKey: !!ZAI_API_KEY && ZAI_API_KEY.length > 0,
-      keyLength: ZAI_API_KEY?.length || 0,
-      baseUrl: ZAI_API_BASE_URL,
+      hasKey: !!LITELLM_API_KEY && LITELLM_API_KEY.length > 0,
+      keyLength: LITELLM_API_KEY?.length || 0,
+      baseUrl: LITELLM_API_BASE_URL,
+      model: this.selectedModel || "default",
+    };
+  }
+
+  // Get Perplexica configuration
+  getPerplexicaConfig(): {
+    baseUrl: string;
+    chatModel: string;
+    embeddingModel: string;
+  } {
+    return {
+      baseUrl: "/api/perplexica", // Using proxy route
+      chatModel: perplexicaChatModel,
+      embeddingModel: perplexicaEmbeddingModel,
+    };
+  }
+
+  // Set Perplexica models
+  setPerplexicaChatModel(model: string): void {
+    perplexicaChatModel = model;
+    console.log("[Perplexica] Chat model set to:", model);
+  }
+
+  setPerplexicaEmbeddingModel(model: string): void {
+    perplexicaEmbeddingModel = model;
+    console.log("[Perplexica] Embedding model set to:", model);
+  }
+
+  // Fetch Perplexica providers (public method)
+  async getPerplexicaProviders(): Promise<PerplexicaProvider[]> {
+    return this.fetchPerplexicaProviders();
+  }
+
+  // ============ DuckDuckGo Image Search & Content Insertion ============
+
+  /**
+   * Search for game-related images via the /api/image-search proxy route
+   */
+  /**
+   * Check if an image is relevant to the game topic
+   * by looking for topic keywords in the title, URL, or source
+   */
+  private isImageRelevantToTopic(
+    img: DDGImageResult,
+    topic: string,
+  ): boolean {
+    const topicWords = topic
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length > 2);
+    const combined = `${img.title} ${img.url} ${img.source}`.toLowerCase();
+
+    // At least one significant word from the topic must appear
+    return topicWords.some((word) => combined.includes(word));
+  }
+
+  private async searchGameImages(
+    query: string,
+    maxResults: number = 10,
+    topic?: string,
+  ): Promise<DDGImageResult[]> {
+    try {
+      console.log("[Image Search] Searching:", query);
+
+      const response = await axios.post(
+        "/api/image-search",
+        { query, iterations: 1 },
+        { timeout: 30000 },
+      );
+
+      const images: DDGImageResult[] = response.data?.images || [];
+
+      // Filter and score images using existing validation
+      const candidates = images
+        .filter((img) => {
+          if (!this.isValidImageUrl(img.image)) return false;
+          if (this.isStoreImage(img.title, img.image)) return false;
+          if (this.isCheatContent(img.title, img.image)) return false;
+          if (img.width && img.width < 400) return false;
+          // Check relevance to the game topic
+          if (topic && !this.isImageRelevantToTopic(img, topic)) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          const scoreA = this.scoreImageQuality(a.image);
+          const scoreB = this.scoreImageQuality(b.image);
+          return scoreB - scoreA;
+        })
+        .slice(0, maxResults * 2); // Fetch extra to account for dead URLs
+
+      if (candidates.length === 0) return [];
+
+      // Verify URLs are still alive via HEAD requests
+      const verifyResponse = await axios.post(
+        "/api/image-search/verify",
+        { urls: candidates.map((img) => img.image) },
+        { timeout: 30000 },
+      );
+      const aliveUrls = new Set<string>(verifyResponse.data?.alive || []);
+
+      const validImages = candidates
+        .filter((img) => aliveUrls.has(img.image))
+        .slice(0, maxResults);
+
+      console.log(
+        `[Image Search] ${candidates.length} candidates -> ${aliveUrls.size} alive -> ${validImages.length} final`,
+      );
+      return validImages;
+    } catch (error: any) {
+      console.error("[Image Search] Failed:", error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Check if a YouTube video is available via oEmbed API
+   */
+  private async isYoutubeVideoAvailable(videoId: string): Promise<boolean> {
+    try {
+      await axios.get(
+        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+        { timeout: 5000 },
+      );
+      return true;
+    } catch {
+      console.log(`[YouTube] Video unavailable: ${videoId}`);
+      return false;
+    }
+  }
+
+  /**
+   * Search for YouTube videos related to the topic, already verified as available
+   */
+  private async searchYoutubeVideos(
+    topic: string,
+    maxResults: number = 2,
+  ): Promise<{ videoId: string; title: string }[]> {
+    try {
+      console.log("[YouTube Search] Searching:", topic);
+      const response = await axios.post(
+        "/api/youtube-search",
+        { query: `${topic} game`, maxResults },
+        { timeout: 30000 },
+      );
+      const videos = response.data?.videos || [];
+      console.log("[YouTube Search] Found", videos.length, "verified videos");
+      return videos;
+    } catch (error: any) {
+      console.error("[YouTube Search] Failed:", error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Insert images into article content at appropriate positions
+   * like a professional news outlet - after headings/between sections
+   */
+  private async insertImagesIntoContent(
+    content: string,
+    topic: string,
+    maxImages: number = 3,
+  ): Promise<{ content: string; coverImage?: string }> {
+    // Split content into sections by ## headings
+    const sections = content.split(/(?=^## )/m);
+    if (sections.length < 2) {
+      // No sections found, just try to get a cover image
+      const images = await this.searchGameImages(
+        `"${topic}" game official screenshot`,
+        3,
+        topic,
+      );
+      return {
+        content,
+        coverImage: images[0]?.image,
+      };
+    }
+
+    // Extract heading keywords for targeted image searches
+    const headingKeywords: { index: number; heading: string }[] = [];
+    for (let i = 0; i < sections.length; i++) {
+      const headingMatch = sections[i].match(/^## (.+)$/m);
+      if (headingMatch) {
+        headingKeywords.push({ index: i, heading: headingMatch[1] });
+      }
+    }
+
+    // Select sections to insert images (spread evenly, max 3)
+    // Skip first intro paragraph (no heading) and pick every other section
+    const insertTargets: { index: number; heading: string }[] = [];
+    if (headingKeywords.length <= maxImages) {
+      // Few sections - pick first N
+      insertTargets.push(...headingKeywords.slice(0, maxImages));
+    } else {
+      // Spread evenly across sections
+      const step = Math.floor(headingKeywords.length / maxImages);
+      for (let i = 0; i < maxImages; i++) {
+        insertTargets.push(headingKeywords[Math.min(i * step, headingKeywords.length - 1)]);
+      }
+    }
+
+    // Search for cover image first (main topic image)
+    const coverImages = await this.searchGameImages(
+      `"${topic}" game official screenshot`,
+      5,
+      topic,
+    );
+    const coverImage = coverImages[0]?.image;
+
+    // Track used image URLs to avoid duplicates
+    const usedUrls = new Set<string>();
+    if (coverImage) usedUrls.add(coverImage);
+
+    // Search for images per section and insert them
+    for (const target of insertTargets) {
+      // Use topic as primary keyword, heading is secondary context only
+      const searchQuery = `"${topic}" game screenshot gameplay`;
+      const images = await this.searchGameImages(searchQuery, 5, topic);
+
+      // Find best unused image
+      const bestImage = images.find((img) => !usedUrls.has(img.image));
+      if (!bestImage) continue;
+      usedUrls.add(bestImage.image);
+
+      // Insert image after the heading line (after the first line break)
+      const section = sections[target.index];
+      const headingEnd = section.indexOf("\n");
+      if (headingEnd === -1) continue;
+
+      // Find the end of the first paragraph after the heading
+      const afterHeading = section.substring(headingEnd + 1);
+      const firstParaEnd = afterHeading.indexOf("\n\n");
+
+      let insertPos: number;
+      if (firstParaEnd !== -1 && firstParaEnd < 500) {
+        // Insert after the first paragraph of this section
+        insertPos = headingEnd + 1 + firstParaEnd;
+      } else {
+        // Insert right after the heading
+        insertPos = headingEnd;
+      }
+
+      const altText = bestImage.title
+        ? bestImage.title.replace(/[[\]]/g, "")
+        : topic;
+      const imageMarkdown = `\n\n![${altText}](${bestImage.image})\n`;
+
+      sections[target.index] =
+        section.substring(0, insertPos) +
+        imageMarkdown +
+        section.substring(insertPos);
+    }
+
+    return {
+      content: sections.join(""),
+      coverImage,
     };
   }
 
@@ -775,7 +1169,7 @@ class AiService {
 
     if (!this.isConfigured()) {
       const error =
-        "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env file.";
+        "LiteLLM API key not configured. Please set NEXT_PUBLIC_LITELLM_API_KEY in your .env file.";
       logs.push(this.createLog("error", error, { configStatus }));
       progress = {
         ...progress,
@@ -790,8 +1184,9 @@ class AiService {
 
     logs.push(
       this.createLog("info", "API configuration verified", {
-        keyLength: ZAI_API_KEY.length,
-        baseUrl: ZAI_API_BASE_URL,
+        keyLength: LITELLM_API_KEY.length,
+        baseUrl: LITELLM_API_BASE_URL,
+        model: this.selectedModel || "default",
       }),
     );
     logs.push(
@@ -827,7 +1222,7 @@ class AiService {
             "api_call",
             "Classifying product (category, featured, bestseller)...",
             {
-              model: "glm-4.7",
+              model: this.selectedModel || "default",
               categoriesCount: availableCategories.length,
             },
           ),
@@ -840,7 +1235,7 @@ class AiService {
           availableCategories,
         );
         const classificationResponse =
-          await this.callZaiApi(classificationPrompt);
+          await this.callLiteLLMApi(classificationPrompt);
         const classificationChoice = classificationResponse.choices[0];
         let classificationText =
           classificationChoice.message.content?.trim() || "";
@@ -899,7 +1294,7 @@ class AiService {
       };
       logs.push(
         this.createLog("api_call", "Generating full description...", {
-          model: "glm-4.7",
+          model: this.selectedModel || "default",
         }),
       );
       onProgress?.({ ...progress, logs: [...logs] });
@@ -909,7 +1304,7 @@ class AiService {
         productType,
         categoryName,
       );
-      const descriptionResponse = await this.callZaiApi(descriptionPrompt);
+      const descriptionResponse = await this.callLiteLLMApi(descriptionPrompt);
       const choice = descriptionResponse.choices[0];
       let description = choice.message.content?.trim() || "";
 
@@ -1043,7 +1438,11 @@ class AiService {
         stage: "generating_short_description",
         currentField: "Short Description",
       };
-      logs.push(this.createLog("api_call", "Generating short description..."));
+      logs.push(
+        this.createLog("api_call", "Generating short description...", {
+          model: this.selectedModel || "default",
+        }),
+      );
       onProgress?.({ ...progress, logs: [...logs] });
 
       const shortDescPrompt = this.buildShortDescriptionPrompt(
@@ -1052,7 +1451,7 @@ class AiService {
         categoryName,
         description,
       );
-      const shortDescResponse = await this.callZaiApi(shortDescPrompt);
+      const shortDescResponse = await this.callLiteLLMApi(shortDescPrompt);
       const shortDescChoice = shortDescResponse.choices[0];
       let shortDescription = (
         shortDescChoice.message.content?.trim() || ""
@@ -1091,7 +1490,11 @@ class AiService {
         stage: "generating_meta",
         currentField: "Meta Tags",
       };
-      logs.push(this.createLog("api_call", "Generating SEO meta content..."));
+      logs.push(
+        this.createLog("api_call", "Generating SEO meta content...", {
+          model: this.selectedModel || "default",
+        }),
+      );
       onProgress?.({ ...progress, logs: [...logs] });
 
       const metaPrompt = this.buildMetaPrompt(
@@ -1100,7 +1503,7 @@ class AiService {
         categoryName,
         description,
       );
-      const metaResponse = await this.callZaiApi(metaPrompt);
+      const metaResponse = await this.callLiteLLMApi(metaPrompt);
       const metaChoice = metaResponse.choices[0];
       let metaText = metaChoice.message.content?.trim() || "";
 
@@ -1136,7 +1539,11 @@ class AiService {
         stage: "generating_game_details",
         currentField: "Game Details",
       };
-      logs.push(this.createLog("api_call", "Generating game details..."));
+      logs.push(
+        this.createLog("api_call", "Generating game details...", {
+          model: this.selectedModel || "default",
+        }),
+      );
       onProgress?.({ ...progress, logs: [...logs] });
 
       const gameDetailsPrompt = this.buildGameDetailsPrompt(
@@ -1145,7 +1552,7 @@ class AiService {
         categoryName,
         description,
       );
-      const gameDetailsResponse = await this.callZaiApi(gameDetailsPrompt);
+      const gameDetailsResponse = await this.callLiteLLMApi(gameDetailsPrompt);
       const gameDetailsChoice = gameDetailsResponse.choices[0];
       let gameDetailsText = gameDetailsChoice.message.content?.trim() || "";
 
@@ -1256,13 +1663,15 @@ class AiService {
     }
   }
 
-  // Call Z.ai API with retry logic
-  private async callZaiApi(
+  // Call LiteLLM API with retry logic
+  private async callLiteLLMApi(
     prompt: string,
-    retries = 3, // เพิ่มเป็น 3 ครั้ง
+    retries = 3,
   ): Promise<ZaiChatCompletionResponse> {
+    const modelToUse = this.selectedModel || (await this.getDefaultModel());
+
     const request: ZaiChatCompletionRequest = {
-      model: "glm-4.7",
+      model: modelToUse,
       messages: [
         {
           role: "system",
@@ -1284,21 +1693,21 @@ class AiService {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         if (attempt > 0) {
-          console.log(`[Z.ai API] Retry attempt ${attempt}/${retries}...`);
+          console.log(`[LiteLLM API] Retry attempt ${attempt}/${retries}...`);
         }
 
-        console.log("[Z.ai API] Sending request:", {
-          url: "/chat/completions",
+        console.log("[LiteLLM API] Sending request:", {
+          url: "/v1/chat/completions",
           model: request.model,
           attempt: attempt + 1,
         });
 
         const response = await this.client.post<ZaiChatCompletionResponse>(
-          "/chat/completions",
+          "/v1/chat/completions",
           request,
         );
 
-        console.log("[Z.ai API] Response received:", {
+        console.log("[LiteLLM API] Response received:", {
           status: response.status,
           hasContent: !!response.data?.choices?.[0]?.message?.content,
           hasReasoning: !!(response.data?.choices?.[0]?.message as any)
@@ -1315,15 +1724,15 @@ class AiService {
           // Don't retry on 401 (auth error)
           if (status === 401) {
             throw new Error(
-              "Invalid API key. Please check your Z.ai API key configuration.",
+              "Invalid API key. Please check your LiteLLM API key configuration.",
             );
           }
 
           // Retry on timeout or server errors
           if (attempt < retries) {
-            const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
+            const delay = Math.min(1000 * Math.pow(2, attempt), 5000);
             console.log(
-              `[Z.ai API] Request failed, retrying in ${delay}ms...`,
+              `[LiteLLM API] Request failed, retrying in ${delay}ms...`,
               error.message,
             );
             await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1341,13 +1750,15 @@ class AiService {
     throw this.formatApiError(finalError);
   }
 
-  // Call Z.ai API with web search tool enabled
-  private async callZaiApiWithWebSearch(
+  // Call LiteLLM API with web search tool enabled
+  private async callLiteLLMApiWithWebSearch(
     prompt: string,
     retries = 2,
   ): Promise<ZaiChatCompletionResponse> {
+    const modelToUse = this.selectedModel || (await this.getDefaultModel());
+
     const request: ZaiChatCompletionRequest = {
-      model: "glm-4.7",
+      model: modelToUse,
       messages: [
         {
           role: "system",
@@ -1378,25 +1789,25 @@ class AiService {
       try {
         if (attempt > 0) {
           console.log(
-            `[Z.ai Web Search] Retry attempt ${attempt}/${retries}...`,
+            `[LiteLLM Web Search] Retry attempt ${attempt}/${retries}...`,
           );
         }
 
         console.log(
-          "[Z.ai Web Search] Sending request with web search enabled:",
+          "[LiteLLM Web Search] Sending request with web search enabled:",
           {
-            url: "/chat/completions",
+            url: "/v1/chat/completions",
             model: request.model,
             attempt: attempt + 1,
           },
         );
 
         const response = await this.client.post<ZaiChatCompletionResponse>(
-          "/chat/completions",
+          "/v1/chat/completions",
           request,
         );
 
-        console.log("[Z.ai Web Search] Response received:", {
+        console.log("[LiteLLM Web Search] Response received:", {
           status: response.status,
           hasContent: !!response.data?.choices?.[0]?.message?.content,
           hasToolCalls: !!(response.data?.choices?.[0]?.message as any)
@@ -1413,7 +1824,7 @@ class AiService {
           // Don't retry on 401 (auth error)
           if (status === 401) {
             throw new Error(
-              "Invalid API key. Please check your Z.ai API key configuration.",
+              "Invalid API key. Please check your LiteLLM API key configuration.",
             );
           }
 
@@ -1421,7 +1832,7 @@ class AiService {
           if (attempt < retries) {
             const delay = Math.min(1000 * Math.pow(2, attempt), 5000);
             console.log(
-              `[Z.ai Web Search] Request failed, retrying in ${delay}ms...`,
+              `[LiteLLM Web Search] Request failed, retrying in ${delay}ms...`,
               error.message,
             );
             await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1446,29 +1857,31 @@ class AiService {
       const errorData = error.response?.data;
 
       // Log detailed error info for debugging
-      console.error("[Z.ai API Error]", {
+      console.error("[LiteLLM API Error]", {
         status,
         errorData,
         message: error.message,
         code: error.code,
         requestUrl: error.config?.url,
-        hasApiKey: !!ZAI_API_KEY && ZAI_API_KEY.length > 0,
+        hasApiKey: !!LITELLM_API_KEY && LITELLM_API_KEY.length > 0,
       });
 
       if (!status) {
         // Network error or no response
         if (error.code === "ECONNREFUSED" || error.code === "ENOTFOUND") {
           return new Error(
-            "Cannot connect to Z.ai API. Please check your network connection.",
+            "Cannot connect to LiteLLM API. Please check your network connection.",
           );
         } else if (
           error.code === "ETIMEDOUT" ||
           error.code === "ECONNABORTED"
         ) {
-          return new Error("Request to Z.ai API timed out. Please try again.");
-        } else if (!ZAI_API_KEY) {
           return new Error(
-            "Z.ai API key is missing. Please set NEXT_PUBLIC_ZAI_API_KEY.",
+            "Request to LiteLLM API timed out. Please try again.",
+          );
+        } else if (!LITELLM_API_KEY) {
+          return new Error(
+            "LiteLLM API key is missing. Please set NEXT_PUBLIC_LITELLM_API_KEY.",
           );
         } else {
           return new Error(
@@ -1479,14 +1892,14 @@ class AiService {
 
       if (status === 401) {
         return new Error(
-          "Invalid API key. Please check your Z.ai API key configuration.",
+          "Invalid API key. Please check your LiteLLM API key configuration.",
         );
       } else if (status === 429) {
         return new Error(
           "Rate limit exceeded. Please wait a moment and try again.",
         );
       } else if (status === 500) {
-        return new Error("Z.ai server error. Please try again later.");
+        return new Error("LiteLLM server error. Please try again later.");
       } else {
         return new Error(
           `API Error (${status}): ${JSON.stringify(errorData) || error.message}`,
@@ -1989,82 +2402,35 @@ PLATFORMS: iOS, Android, PC
   private usedTopicsCache: Map<string, string[]> = new Map();
 
   /**
-   * Generate news article content using AI with SEARXNG search
+   * Generate news article content using AI with Perplexica search
    * Includes anti-duplication logic: random angles, dynamic search, and variation
    */
   async generateNewsContent(
     topic: string,
     categoryName: string,
     onProgress?: ContentGenerationProgressCallback,
-    existingSlugs?: string[], // Pass existing article slugs to avoid duplicates
-    preferredAngle?: string, // Optional: specific angle to use instead of random
+    existingSlugs?: string[],
+    preferredAngle?: string,
+    optimizationMode: "speed" | "balanced" | "quality" = "balanced",
   ): Promise<GeneratedEditorialContent> {
+    const startTime = Date.now();
+    console.log("[AI News] ========== GENERATE NEWS CONTENT START ==========");
+    console.log("[AI News] Parameters:", { topic, categoryName, preferredAngle, optimizationMode, existingSlugsCount: existingSlugs?.length || 0 });
+
     try {
       onProgress?.({
         stage: "preparing",
         message: "กำลังวิเคราะห์และสร้างมุมมองข่าวที่ไม่ซ้ำ...",
       });
-
-      if (!this.isConfigured()) {
-        throw new Error(
-          "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env file.",
-        );
-      }
+      console.log("[AI News] Stage 1: Preparing - Generating content angle...");
 
       onProgress?.({
         stage: "searching",
-        message: "กำลังค้นหาข้อมูลจากแหล่งต่างๆ...",
+        message: "กำลังค้นหาข้อมูลจาก Perplexica...",
       });
+      console.log("[AI News] Stage 2: Searching - Calling Perplexica...");
 
-      // Step 1: Generate unique search strategy with multiple variations
-      const searchVariations = this.generateSearchVariations(
-        topic,
-        categoryName,
-      );
-
-      // Try different search queries and combine results
-      let allResults: {
-        results: any[];
-        images: { url: string; title?: string; score: number }[];
-        videos: any[];
-      } = {
-        results: [],
-        images: [],
-        videos: [],
-      };
-
-      // Search with multiple queries to get diverse results
-      for (const query of searchVariations.slice(0, 3)) {
-        try {
-          const results = await this.searchWithSearxng(query, [
-            "general",
-            "news",
-          ]);
-          allResults.results.push(...results.results);
-          allResults.images.push(...results.images);
-          allResults.videos.push(...results.videos);
-        } catch (e) {
-          console.log("[AI News] Search variation failed:", query);
-        }
-      }
-
-      // Remove duplicates from combined results
-      allResults.results = this.deduplicateResults(allResults.results, "url");
-      allResults.images = this.deduplicateResults(allResults.images, "url");
-      allResults.videos = this.deduplicateResults(allResults.videos, "url");
-
-      console.log("[AI News] Combined search completed:", {
-        textResults: allResults.results.length,
-        imageResults: allResults.images.length,
-        videoResults: allResults.videos.length,
-      });
-
-      onProgress?.({
-        stage: "generating",
-        message: "กำลังสร้างเนื้อหาข่าวที่ไม่ซ้ำ...",
-      });
-
-      // Step 2: Generate unique content angle (or use preferred if provided)
+      // Step 1: Generate unique content angle (or use preferred if provided)
       const newsAngle = this.generateNewsAngle(
         topic,
         categoryName,
@@ -2073,87 +2439,208 @@ PLATFORMS: iOS, Android, PC
 
       console.log("[AI News] Generated angle:", newsAngle);
 
-      // Step 3: Build prompt with search results and unique angle
-      const prompt = this.buildNewsPromptWithSearxng(
+      // Step 2: Build search query for Perplexica - emphasize gaming
+      const searchQuery = `${topic} game gaming ${categoryName} ${newsAngle.angle} news update`;
+      console.log("[AI News] Search query:", searchQuery);
+
+      const systemInstructions = this.buildPerplexicaSystemInstructions(
         topic,
         categoryName,
-        allResults,
         newsAngle,
         existingSlugs,
       );
+      console.log("[AI News] System instructions built, length:", systemInstructions?.length || 0);
 
-      console.log("[AI News] Calling Z.ai API...");
+      // Step 3: Call Perplexica for search and content generation
+      console.log("[AI News] Calling callPerplexicaSearch with optimizationMode:", optimizationMode);
 
-      // Step 3: Generate content with AI
-      const response = await this.callZaiApi(prompt);
+      const perplexicaResult = await this.callPerplexicaSearch(
+        searchQuery,
+        systemInstructions,
+        optimizationMode,
+      );
 
-      console.log("[AI News] Z.ai API response received");
-
-      const choice = response.choices[0];
-      let content = choice.message.content?.trim() || "";
-
-      // Handle reasoning models
-      const reasoning = (choice.message as any).reasoning_content as
-        | string
-        | undefined;
-      if (!content && reasoning) {
-        const contentMatch = reasoning.match(
-          /CONTENT:\s*([\s\S]*?)(?=\n\n|$)/i,
-        );
-        if (contentMatch) {
-          content = contentMatch[1].trim();
-        }
-      }
-
-      if (!content) {
-        throw new Error("AI returned empty response. Please try again.");
-      }
+      console.log("[AI News] Perplexica API response received, message length:", perplexicaResult.message?.length || 0);
+      console.log("[AI News] Sources count:", perplexicaResult.sources?.length || 0);
 
       onProgress?.({ stage: "parsing", message: "กำลังประมวลผลผลลัพธ์..." });
+      console.log("[AI News] Stage 3: Parsing - Processing response...");
 
-      const result = this.parseEditorialContent(content, topic);
+      // Step 4: Parse Perplexica response
+      let content = perplexicaResult.message;
 
-      // Separate cover image from content images
-      // Use first image for cover, rest for content
-      const coverImage =
-        allResults.images.length > 0 ? allResults.images[0] : null;
-      const contentImages = allResults.images.slice(1); // Skip first image for content
-
-      // Set cover image from SEARXNG if not provided by AI
-      if (!result.coverImage && coverImage) {
-        result.coverImage = coverImage.url;
-        console.log(
-          "[AI News] Cover image set:",
-          result.coverImage,
-          `(score: ${coverImage.score})`,
+      if (!content) {
+        throw new Error(
+          "Perplexica returned empty response. Please try again.",
         );
       }
 
-      // Log content images (different from cover)
-      if (contentImages.length > 0) {
-        console.log(
-          "[AI News] Content images available:",
-          contentImages.length,
-          "images (different from cover)",
-        );
-      }
+      // Clean up citation markers like [1], [42], etc.
+      content = content.replace(/\[\d+\]/g, "");
+      console.log("[AI News] Content cleaned, new length:", content.length);
 
-      // Add sources from SEARXNG results
-      if (allResults.results.length > 0) {
-        result.sources = allResults.results
-          .slice(0, 3)
-          .map((r) => r.url)
+      const result = await this.parseEditorialContent(content, topic);
+      console.log("[AI News] Editorial content parsed:", {
+        titleLength: result.title?.length,
+        contentLength: result.content?.length,
+        excerptLength: result.excerpt?.length,
+      });
+
+      // Add sources from Perplexica results
+      if (perplexicaResult.sources.length > 0) {
+        result.sources = perplexicaResult.sources
+          .slice(0, 5)
+          .map((s) => s.metadata.url)
           .filter((url): url is string => !!url);
+        console.log("[AI News] Added", result.sources.length, "sources to result");
       }
+
+      // Step 5: Search and insert images + YouTube videos
+      onProgress?.({
+        stage: "images",
+        message: "กำลังค้นหารูปภาพและวิดีโอ...",
+      });
+      console.log("[AI News] Stage 4: Images/Videos - Searching media...");
+
+      try {
+        // Run image and YouTube searches in parallel
+        console.log("[AI News] Starting parallel searches: images + YouTube...");
+        const [imageResult, youtubeVideos] = await Promise.all([
+          this.insertImagesIntoContent(result.content, topic, 3),
+          this.searchYoutubeVideos(topic, 2),
+        ]);
+        console.log("[AI News] Media searches completed:", {
+          imagesFound: imageResult.coverImage ? "yes" : "no",
+          youtubeVideosFound: youtubeVideos.length,
+        });
+
+        result.content = imageResult.content;
+        if (imageResult.coverImage && !result.coverImage) {
+          result.coverImage = imageResult.coverImage;
+        }
+
+        // Insert YouTube embeds spread across sections (not bunched together)
+        if (youtubeVideos.length > 0) {
+          const makeEmbed = (v: { videoId: string; title: string }) =>
+            `\n<iframe width="100%" height="420" src="https://www.youtube.com/embed/${v.videoId}" title="${v.title.replace(/"/g, "&quot;")}" allowfullscreen></iframe>\n`;
+
+          // Find all ## section positions
+          const sectionPositions: number[] = [];
+          let searchFrom = 0;
+          while (true) {
+            const pos = result.content.indexOf("\n## ", searchFrom);
+            if (pos === -1) break;
+            sectionPositions.push(pos);
+            searchFrom = pos + 4;
+          }
+
+          if (sectionPositions.length >= 2 && youtubeVideos.length >= 2) {
+            // 2+ videos: first before 2nd section, second before last section
+            const lastIdx = sectionPositions[sectionPositions.length - 1];
+            const firstIdx = sectionPositions[0];
+            // Insert last video first (to preserve positions)
+            result.content =
+              result.content.substring(0, lastIdx) +
+              "\n" + makeEmbed(youtubeVideos[1]) +
+              result.content.substring(lastIdx);
+            result.content =
+              result.content.substring(0, firstIdx) +
+              "\n" + makeEmbed(youtubeVideos[0]) +
+              result.content.substring(firstIdx);
+          } else if (sectionPositions.length >= 1) {
+            // 1 video or 1 section: insert before first ## heading
+            result.content =
+              result.content.substring(0, sectionPositions[0]) +
+              "\n" + makeEmbed(youtubeVideos[0]) +
+              result.content.substring(sectionPositions[0]);
+          } else {
+            // No sections, append at end
+            result.content += "\n\n" + makeEmbed(youtubeVideos[0]);
+          }
+          console.log("[AI News] Inserted", youtubeVideos.length, "YouTube videos (spread)");
+        }
+
+        console.log("[AI News] Images inserted successfully");
+      } catch (imgError) {
+        console.warn("[AI News] Image/video insertion failed, continuing:", imgError);
+      }
+
+      const elapsed = Date.now() - startTime;
+      console.log(`[AI News] ========== GENERATION COMPLETE (${elapsed}ms) ==========`);
 
       onProgress?.({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
 
       return result;
-    } catch (error) {
-      console.error("[AI News] Generation failed:", error);
+    } catch (error: any) {
+      const elapsed = Date.now() - startTime;
+      console.error(`[AI News] ========== GENERATION FAILED (${elapsed}ms) ==========`);
+      console.error("[AI News] Error details:", {
+        message: error?.message,
+        code: error?.code,
+        status: error?.response?.status,
+        statusText: error?.response?.statusText,
+        data: error?.response?.data,
+        stack: error?.stack,
+      });
       throw error;
     }
   }
+
+  /**
+   * Build system instructions for Perplexica
+   */
+  private buildPerplexicaSystemInstructions(
+    topic: string,
+    categoryName: string,
+    newsAngle: {
+      angle: string;
+      contentType: string;
+      tone: string;
+      focusKeywords: string[];
+    },
+    existingSlugs?: string[],
+  ): string {
+    const slugHint = `${slugify(topic)}-${newsAngle.contentType}-${Date.now().toString(36).slice(-4)}`;
+
+    return `You are a professional Thai GAMING journalist writing for a game top-up website. Write in-depth, accurate, and well-researched articles based ONLY on factual information.
+
+หัวข้อข่าว: "${topic}"
+หมวดหมู่: ${categoryName}
+มุมมองที่ต้องการนำเสนอ: ${newsAngle.angle}
+ประเภทเนื้อหา: ${newsAngle.contentType}
+โทนการเขียน: ${newsAngle.tone}
+คำสำคัญ: ${newsAngle.focusKeywords.join(", ")}
+
+⚠️ ข้อกำหนดสำคัญสูงสุด (STRICT RULES):
+1. ZERO HALLUCINATION (ห้ามสร้างข่าวปลอม): เนื้อหาทั้งหมดต้องเป็น "ความจริง" ตามแหล่งข้อมูลที่ค้นหามาได้เท่านั้น ห้ามแต่งชื่อกิจกรรม, ตัวละคร, ฟีเจอร์, หรือแพตช์อัปเดตขึ้นมาเองเด็ดขาด หากไม่มีข้อมูลในเรื่องใดให้ข้ามไป
+2. เคารพบริบทและประเภทของเกม (Genre Accuracy): 
+   - ⛔ ห้ามฝืนเขียนข่าวให้เข้ากับ "มุมมอง (Angle)" หากมันขัดแย้งกับตัวเกม (เช่น หากเป็นเกมปลูกผัก/Life Sim ห้ามใช้คำศัพท์แนวสงคราม, Esports, หรือการแข่งขันชิงแชมป์เด็ดขาด) 
+   - ให้ปรับโทนการเขียนให้เข้ากับธรรมชาติของเกมนั้นๆ เสมอ
+3. ห้ามเขียนยืดเยื้อหรือออกทะเล: หากข้อมูลจริงมีน้อย ให้เขียนความยาวตามเนื้อหาจริง (400-1000 คำ) ⛔ ห้ามนำข้อมูลรีวิวฮาร์ดแวร์ (เช่น สเปกจอคอม, สเปกมือถือ) หรือเรื่องที่ไม่เกี่ยวกับตัวเกมมายัดเยียดใส่เพื่อเพิ่มความยาวเด็ดขาด
+
+ข้อกำหนดการเขียน (Formatting & Style):
+1. เขียนเนื้อหาภาษาไทยทั้งหมด สไตล์นักข่าวเกมมืออาชีพ
+2. ใช้หัวข้อย่อย (##) 2-4 หัวข้อ เพื่อแบ่งเนื้อหาให้อ่านง่าย
+3. ห้ามใช้อิโมจิในบทความ
+4. ห้ามทิ้ง citation markers ไว้ในเนื้อหา (เช่น [1], [42]) ให้เขียนผสานข้อมูลไปอย่างลื่นไหล
+5. ใส่ข้อมูลที่เป็นประโยชน์ (ถ้ามีข้อมูลจริง): วันที่วางจำหน่าย, ราคา, ชื่อตัวละคร, รายละเอียดกิจกรรม หรือแพตช์โน้ต
+6. ถ้ามี YouTube video ที่เกี่ยวข้องกับเนื้อหา ให้แทรกเป็น embed code HTML ในตำแหน่งที่เหมาะสม:
+   <iframe width="100%" height="420" src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
+   (เปลี่ยน VIDEO_ID เป็น ID จริงจาก URL วิดีโอ ห้ามพิมพ์ข้อความลอยๆ)
+7. ไม่ต้องใส่รูปภาพ - รูปภาพจะถูกเพิ่มอัตโนมัติจากระบบ
+
+รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้ ห้ามมีข้อความอื่นเจือปน):
+TITLE: [พาดหัวข่าวที่น่าสนใจและเป็นความจริง ไม่เกิน 100 ตัวอักษร]
+CONTENT: [เนื้อหาข่าวฉบับเต็มภาษาไทย มีหัวข้อย่อย แบ่งย่อหน้าชัดเจน]
+EXCERPT: [สรุปข่าวสั้นๆ ไม่เกิน 160 ตัวอักษร]
+SLUG: [slug ภาษาอังกฤษ เช่น ${slugHint}]
+TAGS: [แท็กที่เกี่ยวข้องกับเกม 5-7 คำ คั่นด้วยลูกน้ำ]
+YOUTUBE_VIDEOS: [URL YouTube ที่เกี่ยวข้อง คั่นด้วยลูกน้ำ หรือเว้นว่างหากไม่มี]
+SOURCES: [URL แหล่งข่าวที่ใช้อ้างอิง คั่นด้วยลูกน้ำ]
+
+${existingSlugs && existingSlugs.length > 0 ? `ห้ามใช้ slug เหล่านี้ซ้ำ: ${existingSlugs.slice(0, 10).join(", ")}` : ""}`;
+  }
+
 
   /**
    * Generate CMS page content using AI
@@ -2179,7 +2666,7 @@ PLATFORMS: iOS, Android, PC
 
     if (!this.isConfigured()) {
       throw new Error(
-        "Z.ai API key not configured. Please set NEXT_PUBLIC_ZAI_API_KEY in your .env file.",
+        "LiteLLM API key not configured. Please set NEXT_PUBLIC_LITELLM_API_KEY in your .env file.",
       );
     }
 
@@ -2188,7 +2675,7 @@ PLATFORMS: iOS, Android, PC
       message: "กำลังสร้างเนื้อหาด้วย AI...",
     });
 
-    const response = await this.callZaiApi(prompt);
+    const response = await this.callLiteLLMApi(prompt);
     const choice = response.choices[0];
     let content = choice.message.content?.trim() || "";
 
@@ -2209,7 +2696,7 @@ PLATFORMS: iOS, Android, PC
 
     onProgress?.({ stage: "parsing", message: "กำลังประมวลผลผลลัพธ์..." });
 
-    const result = this.parseEditorialContent(content, topic);
+    const result = await this.parseEditorialContent(content, topic);
 
     onProgress?.({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
 
@@ -2317,84 +2804,6 @@ TAGS: โปรโมชั่น, วันวาเลนไทน์, ลด�
   }
 
   // ============ Anti-Duplication Helper Methods ============
-
-  /**
-   * Generate multiple search query variations for the same topic
-   * This helps find different sources and angles
-   * Includes queries optimized for finding high-quality game images
-   */
-  private generateSearchVariations(
-    topic: string,
-    categoryName: string,
-  ): string[] {
-    const variations: string[] = [];
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
-
-    // Base variations with different focuses
-    const templates = [
-      `${topic} latest news`,
-      `${topic} update ${currentYear}`,
-      `${topic} new features`,
-      `${topic} gameplay changes`,
-      `${topic} event ${currentMonth}`,
-      `${topic} patch notes`,
-      `${topic} community`,
-      `${topic} esports`,
-      `${topic} guide tips`,
-      `${topic} review ${currentYear}`,
-      `${topic} release date`,
-      `${topic} announcement`,
-      `${topic} trailer`,
-      `${topic} beta alpha`,
-      `${topic} season pass`,
-    ];
-
-    // Image-optimized search queries (for finding high quality game images)
-    const imageOptimizedQueries = [
-      `${topic} official screenshot hd`,
-      `${topic} gameplay screenshot`,
-      `${topic} wallpaper hd`,
-      `${topic} official artwork`,
-      `${topic} game cover art`,
-      `${topic} steam store`,
-      `${topic} official website`,
-    ];
-
-    // Shuffle and pick random variations
-    const shuffled = templates.sort(() => Math.random() - 0.5);
-    const shuffledImages = imageOptimizedQueries.sort(
-      () => Math.random() - 0.5,
-    );
-
-    // Always include base topic + category
-    variations.push(`${topic} gaming news ${categoryName}`);
-
-    // Add 3 random content variations
-    variations.push(...shuffled.slice(0, 3));
-
-    // Add 2 image-optimized queries (these help find high quality images)
-    variations.push(...shuffledImages.slice(0, 2));
-
-    return variations;
-  }
-
-  /**
-   * Remove duplicate results based on a key field
-   */
-  private deduplicateResults<T extends Record<string, any>>(
-    results: T[],
-    keyField: string,
-  ): T[] {
-    const seen = new Set<string>();
-    return results.filter((item) => {
-      const key = item[keyField];
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }
 
   /**
    * Generate a random news angle/focus to ensure variety
@@ -2568,131 +2977,6 @@ TAGS: โปรโมชั่น, วันวาเลนไทน์, ลด�
     return guidelines[contentType] || guidelines["breaking-news"];
   }
 
-  private buildNewsPromptWithSearxng(
-    topic: string,
-    categoryName: string,
-    searchResults: {
-      results: any[];
-      images: { url: string; title?: string; score: number }[];
-      videos: any[];
-    },
-    newsAngle?: {
-      angle: string;
-      contentType: string;
-      tone: string;
-      focusKeywords: string[];
-    },
-    existingSlugs?: string[],
-  ): string {
-    // Format search results for the prompt
-    const topResults = searchResults.results
-      .slice(0, 5)
-      .map(
-        (r, i) =>
-          `${i + 1}. ${r.title}\n   ${r.content?.substring(0, 200) || r.title}\n   URL: ${r.url}`,
-      )
-      .join("\n\n");
-
-    // SEPARATE: Cover image (first) vs Content images (rest)
-    // Cover image - use ONLY for COVER_IMAGE field
-    const coverImageUrl = searchResults.images[0]?.url || "";
-    const coverImageTitle = searchResults.images[0]?.title || "";
-
-    // Content images - use INSIDE the article content
-    // Skip the first image since it's used for cover
-    const contentImages = searchResults.images.slice(1, 6);
-    const contentImageUrls = contentImages
-      .map(
-        (img, i) =>
-          `Content Image ${i + 1}: ${img.url}${img.title ? ` (${img.title})` : ""}`,
-      )
-      .join("\n");
-
-    const videoUrls = searchResults.videos
-      .slice(0, 3)
-      .map((v, i) => `Video ${i + 1}: ${v.title} - ${v.url}`)
-      .join("\n");
-
-    const sourceUrls = searchResults.results
-      .slice(0, 3)
-      .map((r) => r.url)
-      .filter((url) => !!url)
-      .join(", ");
-
-    // Generate random angle-specific instructions
-    const angleInstructions = newsAngle
-      ? `
-=== มุมมองและแนวทางการเขียนข่าว ===
-ประเภทข่าว: ${newsAngle.contentType}
-มุมมอง: ${newsAngle.angle}
-โทนการเขียน: ${newsAngle.tone}
-คำสำคัญที่ควรใช้: ${newsAngle.focusKeywords.join(", ")}
-
-คำแนะนำเฉพาะสำหรับมุมมองนี้:
-${this.getAngleSpecificGuidelines(newsAngle.contentType)}
-`
-      : "";
-
-    // Generate unique slug hint based on angle
-    const slugHint = newsAngle
-      ? `${slugify(topic)}-${newsAngle.contentType}-${Date.now()
-          .toString(36)
-          .slice(-4)}`
-      : slugify(topic);
-
-    return `สร้างบทความข่าวสารสำหรับเว็บไซต์เติมเกม โดยใช้ข้อมูลจากการค้นหาด้านล่าง
-
-หัวข้อข่าว: "${topic}"
-หมวดหมู่ข่าว: ${categoryName}
-${angleInstructions}
-=== ข้อมูลจากการค้นหา (SEARXNG) ===
-
-ข่าวและบทความที่เกี่ยวข้อง:
-${topResults || "ไม่พบข้อมูลเฉพาะเจาะจง"}
-
-=== รูปภาพ (แยกชัดเจน) ===
-
-📌 รูปปก (COVER_IMAGE) - ใช้สำหรับหน้าปกเท่านั้น:
-${coverImageUrl ? `${coverImageUrl}${coverImageTitle ? ` (${coverImageTitle})` : ""}` : "ไม่พบรูปปก"}
-
-📸 รูปภาพสำหรับเนื้อหา (Content Images) - ใช้แทรกในเนื้อหาเท่านั้น (ต่างจากรูปปก):
-${contentImageUrls || "ไม่พบรูปภาพสำหรับเนื้อหา"}
-
-
-=== ข้อกำหนดสำคัญ ===
-1. สร้างบทความข่าวที่มีเนื้อหาเป็นเอกลักษณ์ ไม่ซ้ำกับข่าวอื่น
-2. เน้นข้อมูลล่าสุดและเป็นปัจจุบัน
-3. เนื้อหาต้องเป็นข้อเท็จจริง ไม่สร้างข้อมูลเท็จ
-4. ⚠️ รูปปกและรูปในเนื้อหาต้องเป็นคนละรูปกัน
-5. แสดงแหล่งที่มาของข่าวเพื่อความน่าเชื่อถือ
-6. ⚠️ ห้ามใช้รูปภาพจากร้านเติมเกม/ร้านค้าอื่น (ที่มี watermark โลโก้ร้าน หรือข้อความโฆษณา)
-7. ⚠️ ห้ามใช้วิดีโอที่เกี่ยวกับโปรแกรมโกง/โปร/สอนโกง/เทรนเนอร์ (cheat trainer)
-8. ⚠️ เลือกใช้รูปภาพจากแหล่งที่เชื่อถือได้ เช่น Steam, Epic Games, แฟนอาร์ต, หรือสกรีนช็อตเกมจริง
-9. ⚠️ ห้ามใช้รูปภาพที่มีข้อความโฆษณา เช่น "ราคาถูก", "เติมเกม", "ส่วนลด", "โปรโมชั่น"
-
-รูปแบบการตอบ (ตอบเฉพาะรูปแบบนี้เท่านั้น):
-TITLE: [พาดหัวข่าวชัดเจน กระชับ ไม่เกิน 100 ตัวอักษร]
-CONTENT: [เนื้อหาข่าวฉบับเต็มภาษาไทย 800-1500 คำ แทรกรูปภาพจาก "รูปภาพสำหรับเนื้อหา" 2-3 รูป ใช้ Markdown: ![รายละเอียด](URL) และถ้ามีวิดีโอ ใช้ HTML iframe embed]
-EXCERPT: [สรุปข่าวสั้นๆ ไม่เกิน 160 ตัวอักษร]
-SLUG: [slug ภาษาอังกฤษ เช่น ${slugHint}]
-TAGS: [แท็ก 3-7 คำ คั่นด้วยลูกน้ำ]
-COVER_IMAGE: [ใช้ URL จาก "รูปปก" ด้านบน เช่น ${coverImageUrl}]
-SOURCES: [แหล่งข่าว เช่น ${sourceUrls}]
-
-ข้อกำหนดเพิ่มเติม:
-1. เนื้อหาข่าวยาว 800-1500 คำ อย่างน้อย 5-7 ย่อหน้า
-2. ⚠️ แทรกรูปภาพในเนื้อหาจาก "รูปภาพสำหรับเนื้อหา" เท่านั้น (ไม่ใช่รูปปก)
-3. ⚠️ ถ้ามีวิดีโอ YouTube ให้แทรกเป็น EMBED โดยตรงในเนื้อหา ใช้ HTML:
-   <iframe width="100%" height="420" src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
-   (เปลี่ยน VIDEO_ID เป็น ID จริงจาก URL วิดีโอ เช่น ถ้า URL คือ https://www.youtube.com/watch?v=ABC123 ให้ใช้ ABC123)
-4. ใช้หัวข้อย่อย (##) อย่างน้อย 3-4 หัวข้อ
-5. ไม่ใช้อิโมจิ
-6. ⚠️ COVER_IMAGE และรูปใน CONTENT ต้องไม่ซ้ำกัน
-7. ห้ามใช้รูปแบบ [▶️ ดูวิดีโอบน YouTube](URL) - ต้องใช้ iframe embed เท่านั้น
-
-สร้างบทความข่าวสารที่น่าสนใจตอนนี้:`;
-  }
-
   private buildCmsPagePrompt(topic: string, pageType: string): string {
     return `สร้างเนื้อหาหน้าเว็บไซต์แบบ CMS (Static Page) สำหรับเว็บไซต์เติมเกม
 
@@ -2735,10 +3019,10 @@ SLUG: privacy-policy
 สร้างเนื้อหาหน้า CMS ตอนนี้ (ตอบเฉพาะรูปแบบด้านบน):`;
   }
 
-  private parseEditorialContent(
+  private async parseEditorialContent(
     content: string,
     fallbackTopic: string,
-  ): GeneratedEditorialContent {
+  ): Promise<GeneratedEditorialContent> {
     const lines = content.split("\n").map((line) => line.trim());
 
     let title = "";
@@ -2747,6 +3031,7 @@ SLUG: privacy-policy
     let slug = "";
     let tags: string[] = [];
     let coverImage = "";
+    let youtubeVideos: string[] = [];
     let sources: string[] = [];
 
     let currentSection: "title" | "content" | "excerpt" | null = null;
@@ -2781,6 +3066,16 @@ SLUG: privacy-policy
       } else if (line.startsWith("COVER_IMAGE:")) {
         coverImage = line.replace("COVER_IMAGE:", "").trim();
         currentSection = null;
+      } else if (line.startsWith("YOUTUBE_VIDEOS:")) {
+        if (currentSection === "content" && contentBuffer.length > 0) {
+          articleContent = contentBuffer.join("\n").trim();
+        }
+        const ytStr = line.replace("YOUTUBE_VIDEOS:", "").trim();
+        youtubeVideos = ytStr
+          .split(",")
+          .map((url) => url.trim())
+          .filter((url) => url.includes("youtube") || url.includes("youtu.be"));
+        currentSection = null;
       } else if (line.startsWith("SOURCES:")) {
         if (currentSection === "content" && contentBuffer.length > 0) {
           articleContent = contentBuffer.join("\n").trim();
@@ -2801,6 +3096,39 @@ SLUG: privacy-policy
       articleContent = contentBuffer.join("\n").trim();
     }
 
+    // Inject YouTube videos as embeds into content (verify availability first)
+    if (youtubeVideos.length > 0 && articleContent) {
+      const videoIds = youtubeVideos
+        .map((url) => extractYoutubeVideoId(url))
+        .filter((id): id is string => !!id);
+
+      // Check all videos in parallel
+      const availabilityChecks = await Promise.all(
+        videoIds.map(async (id) => ({
+          id,
+          available: await this.isYoutubeVideoAvailable(id),
+        })),
+      );
+
+      const youtubeEmbeds = availabilityChecks
+        .filter((v) => v.available)
+        .map(
+          (v) =>
+            `\n<iframe width="100%" height="420" src="https://www.youtube.com/embed/${v.id}" allowfullscreen></iframe>\n`,
+        );
+
+      // Add videos after the first paragraph or at the end
+      if (youtubeEmbeds.length > 0) {
+        const paragraphs = articleContent.split("\n\n");
+        if (paragraphs.length > 1) {
+          paragraphs.splice(1, 0, ...youtubeEmbeds);
+          articleContent = paragraphs.join("\n\n");
+        } else {
+          articleContent += "\n\n" + youtubeEmbeds.join("\n");
+        }
+      }
+    }
+
     // Fallbacks
     if (!title) {
       title = fallbackTopic;
@@ -2815,9 +3143,11 @@ SLUG: privacy-policy
     // sanitize slug to be URL safe
     const sanitizedSlug = slugify(slug || title || fallbackTopic);
 
-    // Validate URLs
-    const validCoverImage =
-      coverImage && coverImage.startsWith("http") ? coverImage : undefined;
+    // Validate URLs - return undefined for invalid/empty URLs
+    let validCoverImage: string | undefined = undefined;
+    if (coverImage && coverImage.trim() && coverImage.startsWith("http")) {
+      validCoverImage = coverImage.trim();
+    }
 
     return {
       title,

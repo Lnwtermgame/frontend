@@ -24,6 +24,7 @@ import {
   GenerationProgress,
   DebugLog,
   AvailableCategory,
+  AIModel,
 } from "@/lib/services/ai-api";
 
 interface AIGenerateButtonProps {
@@ -114,6 +115,32 @@ export default function AIGenerateButton({
   const logsEndRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // AI Model selection state
+  const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>("");
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+
+  // Fetch available models on mount
+  useEffect(() => {
+    const fetchModels = async () => {
+      setIsLoadingModels(true);
+      try {
+        const models = await aiService.fetchModels();
+        setAvailableModels(models);
+        if (models.length > 0 && !selectedModel) {
+          const defaultModel = aiService.getSelectedModel() || models[0].id;
+          setSelectedModel(defaultModel);
+          aiService.setModel(defaultModel);
+        }
+      } catch (error) {
+        console.error("[AIGenerateButton] Failed to fetch models:", error);
+      } finally {
+        setIsLoadingModels(false);
+      }
+    };
+    fetchModels();
+  }, [selectedModel]);
+
   // Auto-scroll logs to bottom
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -150,10 +177,14 @@ export default function AIGenerateButton({
     [onGenerated],
   );
 
-  // Start generation
-  const handleGenerate = async () => {
+  // Open modal (without starting generation)
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  // Start generation (called from inside modal)
+  const handleStartGeneration = async () => {
     if (!aiService.isConfigured()) {
-      setIsOpen(true);
       setProgress({
         stage: "error",
         currentField: "Configuration Error",
@@ -163,7 +194,7 @@ export default function AIGenerateButton({
             timestamp: new Date(),
             type: "error",
             message:
-              "Z.ai API key not configured. Please add NEXT_PUBLIC_ZAI_API_KEY to your .env file.",
+              "LiteLLM API key not configured. Please add NEXT_PUBLIC_LITELLM_API_KEY to your .env file.",
           },
         ],
         isGenerating: false,
@@ -172,9 +203,21 @@ export default function AIGenerateButton({
       return;
     }
 
-    setIsOpen(true);
+    // Set the selected model before generating
+    if (selectedModel) {
+      aiService.setModel(selectedModel);
+    }
+
     setStartTime(new Date());
     setElapsedTime(0);
+
+    // Reset progress
+    setProgress({
+      stage: "preparing",
+      currentField: "Initializing",
+      logs: [],
+      isGenerating: true,
+    });
 
     try {
       // Build available categories for AI classification
@@ -197,6 +240,19 @@ export default function AIGenerateButton({
     }
   };
 
+  // Close modal
+  const handleCloseModal = () => {
+    if (!progress.isGenerating) {
+      setIsOpen(false);
+      setProgress({
+        stage: "idle",
+        currentField: "",
+        logs: [],
+        isGenerating: false,
+      });
+    }
+  };
+
   // Copy logs to clipboard
   const copyLogs = () => {
     const logText = progress.logs
@@ -216,7 +272,7 @@ export default function AIGenerateButton({
       logs: [],
       isGenerating: false,
     });
-    handleGenerate();
+    handleStartGeneration();
   };
 
   const isConfigError = progress.error?.includes("API key not configured");
@@ -225,7 +281,7 @@ export default function AIGenerateButton({
     <>
       {/* Main Generate Button */}
       <button
-        onClick={handleGenerate}
+        onClick={handleOpenModal}
         disabled={disabled || progress.isGenerating}
         className="group relative inline-flex items-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden hover:-translate-y-0.5"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
@@ -448,7 +504,7 @@ export default function AIGenerateButton({
                           <span>คัดลอก Logs</span>
                         </button>
                         <span className="text-xs text-gray-500">
-                          API Endpoint: api.z.ai/api/coding/paas/v4
+                          LiteLLM API | Model: {selectedModel || "default"}
                         </span>
                       </div>
                     )}
@@ -456,13 +512,41 @@ export default function AIGenerateButton({
                 )}
               </AnimatePresence>
 
+              {/* Model Selector */}
+              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-gray-50">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  เลือก AI Model
+                </label>
+                <select
+                  value={selectedModel}
+                  onChange={(e) => {
+                    setSelectedModel(e.target.value);
+                    aiService.setModel(e.target.value);
+                  }}
+                  disabled={isLoadingModels || availableModels.length === 0}
+                  className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                >
+                  {isLoadingModels ? (
+                    <option value="">กำลังโหลด models...</option>
+                  ) : availableModels.length === 0 ? (
+                    <option value="">ไม่พบ model ที่ใช้ได้</option>
+                  ) : (
+                    availableModels.map((model) => (
+                      <option key={model.id} value={model.id}>
+                        {model.name || model.id}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+
               {/* Footer / Actions */}
               <div className="p-5 border-t-[3px] border-black bg-white">
                 {isConfigError ? (
                   <div className="flex flex-col gap-3">
                     <div className="p-3 bg-red-100 border-[3px] border-red-500">
                       <p className="text-sm text-red-600 font-medium">
-                        กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
+                        กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
                       </p>
                     </div>
                     <button
@@ -534,7 +618,7 @@ export default function AIGenerateButton({
                   </button>
                 ) : (
                   <button
-                    onClick={handleGenerate}
+                    onClick={handleStartGeneration}
                     className="w-full py-2.5 bg-brutal-pink hover:bg-brutal-pink/90 text-white border-[3px] border-black font-bold transition-all flex items-center justify-center gap-2"
                     style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   >

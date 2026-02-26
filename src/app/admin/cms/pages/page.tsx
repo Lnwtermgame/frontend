@@ -25,7 +25,7 @@ import {
   CreateCmsPageData,
   UpdateCmsPageData,
 } from "@/lib/services";
-import { aiService } from "@/lib/services/ai-api";
+import { aiService, AIModel } from "@/lib/services/ai-api";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
 
@@ -68,6 +68,32 @@ export default function AdminCmsPagesPage() {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [showAIGenerate, setShowAIGenerate] = useState(false);
+
+  // AI Model selection states
+  const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>("");
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+
+  // Fetch available models
+  useEffect(() => {
+    const fetchModels = async () => {
+      setIsLoadingModels(true);
+      try {
+        const models = await aiService.fetchModels();
+        setAvailableModels(models);
+        if (models.length > 0 && !selectedModel) {
+          const defaultModel = aiService.getSelectedModel() || models[0].id;
+          setSelectedModel(defaultModel);
+          aiService.setModel(defaultModel);
+        }
+      } catch (error) {
+        console.error("[CmsPages] Failed to fetch models:", error);
+      } finally {
+        setIsLoadingModels(false);
+      }
+    };
+    fetchModels();
+  }, [selectedModel]);
 
   const loadPages = async () => {
     if (!isInitialized || !isSessionChecked || !isAdmin) {
@@ -206,6 +232,11 @@ export default function AdminCmsPagesPage() {
 
   const handleGenerateAIContent = async () => {
     if (!aiTopic.trim()) return;
+
+    // Set the selected model before generating
+    if (selectedModel) {
+      aiService.setModel(selectedModel);
+    }
 
     setIsGeneratingAI(true);
     try {
@@ -654,6 +685,37 @@ export default function AdminCmsPagesPage() {
                             className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black text-xs placeholder-gray-500 focus:outline-none focus:border-black"
                           />
                         </div>
+
+                        {/* Model Selector */}
+                        <div>
+                          <label className="block text-gray-700 mb-0.5 text-[10px]">
+                            เลือก AI Model
+                          </label>
+                          <select
+                            value={selectedModel}
+                            onChange={(e) => {
+                              setSelectedModel(e.target.value);
+                              aiService.setModel(e.target.value);
+                            }}
+                            disabled={
+                              isLoadingModels || availableModels.length === 0
+                            }
+                            className="w-full py-1 px-2 bg-white border-[1px] border-gray-300 text-black text-xs focus:outline-none focus:border-black disabled:opacity-50"
+                          >
+                            {isLoadingModels ? (
+                              <option value="">กำลังโหลด models...</option>
+                            ) : availableModels.length === 0 ? (
+                              <option value="">ไม่พบ model ที่ใช้ได้</option>
+                            ) : (
+                              availableModels.map((model) => (
+                                <option key={model.id} value={model.id}>
+                                  {model.name || model.id}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                        </div>
+
                         <div className="flex gap-1.5">
                           <button
                             type="button"
@@ -691,7 +753,7 @@ export default function AdminCmsPagesPage() {
 
                   {!aiService.isConfigured() && showAIGenerate && (
                     <div className="mt-1.5 p-1.5 bg-red-50 border-[1px] border-red-300 text-red-700 text-[10px]">
-                      กรุณาตั้งค่า NEXT_PUBLIC_ZAI_API_KEY ในไฟล์ .env
+                      กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
                       ก่อนใช้งาน AI
                     </div>
                   )}
@@ -763,7 +825,9 @@ export default function AdminCmsPagesPage() {
                       }
                       className="w-3 h-3 mr-1.5"
                     />
-                    <span className="text-gray-700 text-xs">เผยแพร่หน้านี้</span>
+                    <span className="text-gray-700 text-xs">
+                      เผยแพร่หน้านี้
+                    </span>
                   </label>
                 </div>
 

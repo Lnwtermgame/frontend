@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fontsource/noto-sans-thai": "^5.2.5",
+    "@mudbill/duckduckgo-images-api": "^2.0.1",
     "@radix-ui/react-scroll-area": "^1.2.8",
     "@radix-ui/react-tabs": "^1.1.11",
     "appwrite": "^22.0.0",
@@ -17,6 +18,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "ddgs": "^1.0.4",
+    "duck-duck-scrape": "^2.2.7",
     "flag-icons": "^7.5.0",
     "framer-motion": "^12.10.5",
     "lucide-react": "^0.509.0",

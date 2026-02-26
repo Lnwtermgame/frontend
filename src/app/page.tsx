@@ -475,8 +475,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-8">
       {/* Hero Slider */}
-      <section className="relative w-full overflow-hidden border-b-[3px] border-black">
-        <div className="relative aspect-[9/16] sm:aspect-[16/9] lg:aspect-[21/9] w-full overflow-hidden bg-gray-900">
+      <section className="relative w-full overflow-hidden border-b-[4px] border-black">
+        <div className="relative aspect-[24/9] sm:aspect-[28/9] lg:aspect-[32/9] w-full max-w-5xl mx-auto overflow-hidden bg-brutal-gray border-[4px] border-black">
           <AnimatePresence mode="wait">
             {heroSlides.map(
               (slide, index) =>
@@ -494,44 +494,45 @@ export default function HomePage() {
                       alt={slide.title}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent sm:bg-gradient-to-r sm:from-black/60 sm:to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent sm:bg-gradient-to-r sm:from-black/70 sm:to-transparent" />
 
                     <div className="absolute inset-0 flex items-end sm:items-center">
-                      <div className="w-full p-4 sm:p-8 lg:p-12">
+                      <div className="w-full p-3 sm:p-4 lg:p-5 pl-20 sm:pl-28 lg:pl-36">
                         <motion.div
-                          initial={{ opacity: 0, y: 20 }}
+                          initial={{ opacity: 0, y: 12 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.2 }}
-                          className="max-w-xl"
+                          className="max-w-lg"
                         >
                           <div
-                            className={`inline-block px-3 py-1 text-xs font-bold mb-3 border-[2px] border-black ${
+                            className={`inline-block px-2.5 py-1 text-[11px] font-black mb-2.5 border-[3px] border-black ${
                               slide.color === "pink"
                                 ? "bg-brutal-pink text-white"
                                 : "bg-brutal-yellow text-black"
                             }`}
-                            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                            style={{ boxShadow: "4px 4px 0 0 #000000" }}
                           >
-                            <Zap size={12} className="inline mr-1" />
+                            <Zap size={11} className="inline mr-1" />
                             {slide.badgeText || "Promotion"}
                           </div>
-                          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white mb-2 drop-shadow-[2px_2px_0_#000]">
+                          <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-white mb-1.5 drop-shadow-[4px_4px_0_#000]">
                             {slide.title}
                           </h2>
-                          <p className="text-white/90 text-sm sm:text-lg mb-4 font-medium">
+                          <p className="text-white/95 text-xs sm:text-sm mb-3 font-bold">
                             {slide.subtitle}
                           </p>
                           <Link href={slide.link || "/promotions"}>
                             <Button
                               size="lg"
-                              className={`font-black text-sm sm:text-base ${
+                              className={`font-black text-xs sm:text-sm px-5 py-2.5 h-auto border-[3px] border-black ${
                                 slide.color === "pink"
                                   ? "bg-white text-black hover:bg-gray-100"
                                   : "bg-brutal-yellow text-black hover:bg-yellow-400"
                               }`}
+                              style={{ boxShadow: "4px 4px 0 0 #000000" }}
                             >
                               {sectionLabels.heroButtonText}
-                              <ChevronRight size={16} className="ml-1" />
+                              <ChevronRight size={15} className="ml-2" />
                             </Button>
                           </Link>
                         </motion.div>
@@ -544,17 +545,23 @@ export default function HomePage() {
 
           <button
             onClick={prevSlide}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 border-[2px] border-black flex items-center justify-center hover:bg-brutal-yellow transition-colors hidden sm:flex"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+            className="absolute left-3 sm:left-4 lg:left-5 top-1/2 -translate-y-1/2 w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7 bg-brutal-yellow border-[3px] border-black flex items-center justify-center hover:bg-yellow-400 transition-colors hidden sm:flex z-20"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            aria-label="Previous slide"
           >
-            <ChevronLeft size={20} className="text-black" />
+            <ChevronLeft size={13} className="text-black sm:hidden" />
+            <ChevronLeft size={15} className="text-black hidden sm:block lg:hidden" />
+            <ChevronLeft size={17} className="text-black hidden lg:block" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 border-[2px] border-black flex items-center justify-center hover:bg-brutal-yellow transition-colors hidden sm:flex"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+            className="absolute right-3 sm:right-4 lg:right-5 top-1/2 -translate-y-1/2 w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7 bg-brutal-yellow border-[3px] border-black flex items-center justify-center hover:bg-yellow-400 transition-colors hidden sm:flex z-20"
+            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            aria-label="Next slide"
           >
-            <ChevronRight size={20} className="text-black" />
+            <ChevronRight size={13} className="text-black sm:hidden" />
+            <ChevronRight size={15} className="text-black hidden sm:block lg:hidden" />
+            <ChevronRight size={17} className="text-black hidden lg:block" />
           </button>
         </div>
 
@@ -563,14 +570,14 @@ export default function HomePage() {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full border-[2px] border-black transition-all ${
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full border-[3px] border-black transition-all ${
                 index === currentSlide
                   ? "bg-brutal-yellow scale-125"
-                  : "bg-white/60 hover:bg-white"
+                  : "bg-white/70 hover:bg-white"
               }`}
               style={
                 index === currentSlide
-                  ? { boxShadow: "1px 1px 0 0 #000000" }
+                  ? { boxShadow: "2px 2px 0 0 #000000" }
                   : undefined
               }
             />
@@ -621,7 +628,7 @@ export default function HomePage() {
 
         {/* Featured Promotion Cards */}
         {promotionsEnabled && (
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {promoCards.slice(0, 3).map((card, index) => {
               const isPrimary = index === 0;
               const cardClass =
@@ -635,33 +642,33 @@ export default function HomePage() {
               return (
                 <motion.div
                   key={card.id}
-                  className={`${isPrimary ? "sm:col-span-2 lg:col-span-2" : ""} ${cardClass} border-[3px] border-black p-4 sm:p-6 relative overflow-hidden`}
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                  whileHover={{ y: -2 }}
+                  className={`${isPrimary ? "sm:col-span-2 lg:col-span-2" : ""} ${cardClass} border-[2px] border-black p-3 sm:p-4 relative overflow-hidden`}
+                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                  whileHover={{ y: -1 }}
                 >
                   <div className="relative z-10 h-full flex flex-col">
                     {card.badge && (
-                      <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-xs px-2 py-1 font-bold border-[2px] border-black mb-2 self-start">
-                        <Sparkles size={12} />
+                      <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-[10px] px-1.5 py-0.5 font-bold border-[2px] border-black mb-1.5 self-start">
+                        <Sparkles size={10} />
                         {card.badge}
                       </div>
                     )}
-                    <h3 className="font-black text-black text-xl sm:text-2xl mb-2">
+                    <h3 className="font-black text-black text-base sm:text-lg mb-1.5">
                       {card.title}
                     </h3>
                     {card.description && (
-                      <p className="text-black/80 text-sm mb-4 max-w-md">
+                      <p className="text-black/80 text-xs mb-3 max-w-md">
                         {card.description}
                       </p>
                     )}
                     <Link href={card.href || "/promotions"} className="mt-auto">
-                      <Button className="bg-black text-white hover:bg-gray-800 border-black text-sm">
+                      <Button className="bg-black text-white hover:bg-gray-800 border-black text-xs px-3 py-1.5 h-auto">
                         {card.ctaText || "ดูรายละเอียด"}
                       </Button>
                     </Link>
                   </div>
-                  <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
-                    <Gamepad2 size={140} />
+                  <div className="absolute right-[-12px] bottom-[-12px] opacity-10">
+                    <Gamepad2 size={84} />
                   </div>
                 </motion.div>
               );

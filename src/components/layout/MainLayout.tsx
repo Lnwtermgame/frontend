@@ -61,7 +61,7 @@ const HeaderNavItem = memo(function HeaderNavItem({
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 px-4 py-3 text-sm font-bold transition-all relative",
+        "flex items-center gap-2 px-4 py-3 text-sm font-bold relative",
         isActive
           ? "bg-brutal-yellow text-black border-l-[3px] border-r-[3px] border-black"
           : "text-gray-700 hover:bg-gray-100 hover:text-black",

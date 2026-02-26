@@ -19,10 +19,10 @@ import {
   LogOut,
   ChevronDown,
   Search,
-  Zap,
   Star,
   Smartphone,
   Loader2,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
@@ -46,7 +46,7 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-const NavItem = memo(function NavItem({
+const HeaderNavItem = memo(function HeaderNavItem({
   href,
   label,
   icon,
@@ -61,39 +61,15 @@ const NavItem = memo(function NavItem({
     <Link
       href={href}
       className={cn(
-        "group flex items-center gap-3 px-3 py-2.5 transition-all relative overflow-hidden",
+        "flex items-center gap-2 px-4 py-3 text-sm font-bold transition-all relative",
         isActive
-          ? "bg-brutal-yellow text-black font-bold border-[3px] border-black"
-          : "hover:bg-gray-100 text-gray-600 hover:text-gray-900",
+          ? "bg-brutal-yellow text-black border-l-[3px] border-r-[3px] border-black"
+          : "text-gray-700 hover:bg-gray-100 hover:text-black",
       )}
       prefetch={false}
     >
-      {isActive && (
-        <motion.div
-          layoutId="active-nav-indicator"
-          className="absolute left-0 top-0 bottom-0 w-1 bg-black"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        />
-      )}
-      <span
-        className={cn(
-          "flex items-center justify-center text-inherit relative z-10",
-          isActive ? "text-black" : "text-gray-500 group-hover:text-gray-900",
-        )}
-      >
-        {icon}
-      </span>
-      <span className="text-sm font-medium relative z-10">{label}</span>
-
-      {isActive && (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-        />
-      )}
+      <span className="flex items-center justify-center">{icon}</span>
+      <span>{label}</span>
     </Link>
   );
 });
@@ -253,6 +229,11 @@ export function MainLayout({ children }: MainLayoutProps) {
         icon: <Smartphone size={20} />,
       },
       {
+        href: "/news",
+        label: "ข่าวสาร",
+        icon: <Newspaper size={20} />,
+      },
+      {
         href: "/dashboard/favorite",
         label: "รายการโปรด",
         icon: <Heart size={20} />,
@@ -276,11 +257,11 @@ export function MainLayout({ children }: MainLayoutProps) {
   const mobileNavItems = useMemo(
     () => [
       { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
-      { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
+      { href: "/games", label: "เกม", icon: <Gamepad2 size={20} /> },
       {
-        href: "/mobile-recharge",
-        label: "เติมเงิน",
-        icon: <DollarSign size={20} />,
+        href: "/news",
+        label: "ข่าว",
+        icon: <Newspaper size={20} />,
       },
       {
         href: "/dashboard/orders",
@@ -379,7 +360,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <span
             className={cn(
               "font-bold text-black",
-              compact ? "text-lg" : "text-2xl",
+              compact ? "text-lg" : "text-xl",
             )}
           >
             {siteName}
@@ -392,7 +373,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div
         className={cn(
           "font-bold flex items-center",
-          compact ? "text-xl" : "text-2xl",
+          compact ? "text-lg" : "text-xl",
         )}
       >
         <span className="text-brutal-pink">
@@ -437,83 +418,35 @@ export function MainLayout({ children }: MainLayoutProps) {
       className="flex min-h-screen bg-brutal-gray thai-font w-full max-w-full overflow-x-clip"
       style={dynamicThemeStyle}
     >
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white z-30 hidden lg:flex flex-col border-r-[3px] border-black">
-        {/* Logo */}
-        <div className="h-16 border-b-[3px] border-black flex items-center px-6">
-          <Link href="/">{renderBrand(false)}</Link>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 pt-4 px-3 space-y-1 overflow-y-auto">
-          {visibleMainNavItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href));
-
-            return (
-              <NavItem
-                key={item.href}
-                href={item.href}
-                label={item.label}
-                icon={item.icon}
-                isActive={isActive}
-              />
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* Mobile navbar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-black lg:hidden safe-bottom h-16"
-        style={{ boxShadow: "0 -4px 0 0 rgba(0,0,0,0.1)" }}
-      >
-        <div className="flex justify-around items-center h-full">
-          {mobileNavItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href));
-
-            return (
-              <MobileNavItem
-                key={item.href}
-                href={item.href}
-                label={item.label}
-                icon={item.icon}
-                isActive={isActive}
-              />
-            );
-          })}
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen transition-all duration-300 w-full max-w-full min-w-0 overflow-x-clip pb-20 lg:pb-0">
+      {/* Main Content - Full width */}
+      <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 w-full max-w-full min-w-0 overflow-x-clip pb-20 lg:pb-0">
         {/* Header */}
         <header
-          className="sticky top-0 z-20 bg-white border-b-[3px] border-black h-16 flex items-center"
+          className="sticky top-0 z-30 bg-white border-b-[3px] border-black"
           style={{ boxShadow: "0 4px 0 0 rgba(0,0,0,0.05)" }}
         >
-          <div className="w-full h-full px-4 flex items-center justify-between min-w-0">
-            {/* Mobile Logo and Menu */}
-            <div className="flex items-center space-x-4 lg:hidden">
+          {/* Top row: Logo, Search, User */}
+          <div className="h-16 flex items-center justify-between px-4 min-w-0">
+            {/* Mobile Menu Button + Logo */}
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-gray-700 focus:outline-none"
+                className="lg:hidden text-gray-700 focus:outline-none p-1"
               >
                 <Menu size={24} />
               </button>
-              <Link href="/">{renderBrand(true)}</Link>
+              <Link href="/" className="shrink-0">
+                {renderBrand(true)}
+              </Link>
             </div>
 
-            {/* Search */}
-            <div className="hidden md:block flex-1 max-w-md mx-auto">
+            {/* Search - Desktop */}
+            <div className="hidden md:block flex-1 max-w-md mx-4">
               <SearchBar variant="header" placeholder="ค้นหาเกม" />
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               {/* Notification Dropdown - Show only when authenticated */}
               {isAuthenticated && (
                 <div className="relative" ref={notificationRef}>
@@ -536,7 +469,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed top-16 left-2 right-2 w-auto bg-white border-[3px] border-black overflow-hidden z-50 origin-top sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-80 sm:max-w-[calc(100vw-1rem)] sm:origin-top-right"
+                        className="fixed top-20 left-2 right-2 w-auto bg-white border-[3px] border-black overflow-hidden z-50 origin-top sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-80 sm:max-w-[calc(100vw-1rem)] sm:origin-top-right"
                         style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
                         <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
@@ -634,21 +567,21 @@ export function MainLayout({ children }: MainLayoutProps) {
 
               {/* Show divider only when authenticated */}
               {isAuthenticated && (
-                <div className="h-8 w-[2px] bg-gray-200 mx-1"></div>
+                <div className="h-8 w-[2px] bg-gray-200 mx-1 hidden md:block"></div>
               )}
 
               {!isInitialized ? (
                 <div className="flex items-center space-x-2 border-[2px] border-gray-300 px-3 py-2 text-sm text-gray-500">
                   <Loader2 size={16} className="animate-spin" />
-                  <span>กำลังโหลด</span>
+                  <span className="hidden sm:inline">กำลังโหลด</span>
                 </div>
               ) : isAuthenticated ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={toggleUserMenu}
-                    className="flex items-center md:space-x-3 text-gray-900 pl-1 pr-2 py-1 hover:bg-gray-100 transition-all border-[2px] border-transparent hover:border-black"
+                    className="flex items-center gap-2 text-gray-900 pl-1 pr-2 py-1 hover:bg-gray-100 transition-all border-[2px] border-transparent hover:border-black"
                   >
-                    <div className="w-9 h-9 bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black">
+                    <div className="w-9 h-9 bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black shrink-0">
                       <img
                         src={
                           user?.avatar ||
@@ -664,7 +597,10 @@ export function MainLayout({ children }: MainLayoutProps) {
                       </span>
                       <span className="text-[10px] text-gray-500">Member</span>
                     </div>
-                    <ChevronDown size={14} className="text-gray-500 ml-1" />
+                    <ChevronDown
+                      size={14}
+                      className="text-gray-500 hidden md:block"
+                    />
                   </button>
 
                   <AnimatePresence>
@@ -674,7 +610,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed top-16 left-2 right-2 w-auto bg-white border-[3px] border-black overflow-hidden z-50 origin-top sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-64 sm:max-w-[calc(100vw-1rem)] sm:origin-top-right"
+                        className="fixed top-20 left-2 right-2 w-auto bg-white border-[3px] border-black overflow-hidden z-50 origin-top sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-64 sm:max-w-[calc(100vw-1rem)] sm:origin-top-right"
                         style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
                         <div className="p-4 border-b-[2px] border-black bg-gray-50">
@@ -753,15 +689,34 @@ export function MainLayout({ children }: MainLayoutProps) {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-4 py-2 text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
+                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-3 py-2 text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5 shrink-0"
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <User size={16} />
-                  <span>เข้าสู่ระบบ</span>
+                  <span className="hidden sm:inline">เข้าสู่ระบบ</span>
                 </Link>
               )}
             </div>
           </div>
+
+          {/* Bottom row: Navigation - Desktop only */}
+          <nav className="hidden lg:flex items-center justify-center border-t-[3px] border-black bg-white">
+            {visibleMainNavItems.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(item.href));
+
+              return (
+                <HeaderNavItem
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  icon={item.icon}
+                  isActive={isActive}
+                />
+              );
+            })}
+          </nav>
         </header>
 
         {/* Main content */}
@@ -791,6 +746,30 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Footer */}
         <Footer />
       </div>
+
+      {/* Mobile navbar - Bottom */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-black lg:hidden safe-bottom h-16"
+        style={{ boxShadow: "0 -4px 0 0 rgba(0,0,0,0.1)" }}
+      >
+        <div className="flex justify-around items-center h-full">
+          {mobileNavItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href));
+
+            return (
+              <MobileNavItem
+                key={item.href}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                isActive={isActive}
+              />
+            );
+          })}
+        </div>
+      </nav>
 
       <MobileNav
         isOpen={isMobileMenuOpen}

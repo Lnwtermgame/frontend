@@ -23,6 +23,7 @@ import {
   FileText,
   Newspaper,
   Mail,
+  Key,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -105,6 +106,11 @@ const adminNavItems = [
     title: "ตั้งค่า",
     href: "/admin/settings",
     icon: <Settings className="w-5 h-5" />,
+  },
+  {
+    title: "OAuth",
+    href: "/admin/oauth",
+    icon: <Key className="w-5 h-5" />,
   },
 ];
 

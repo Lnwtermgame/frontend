@@ -2,7 +2,6 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Check } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
 
 const selectTriggerVariants = cva(
   "flex w-full items-center justify-between bg-white border-[2px] border-gray-300 px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:outline-none focus:border-black disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
@@ -120,35 +119,29 @@ export function Select({
           />
         </button>
 
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15 }}
-              className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto bg-white border-[2px] border-black shadow-lg"
-            >
-              {options.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => handleSelect(option.value)}
-                  className={cn(
-                    "w-full flex items-center justify-between px-3 py-2.5 text-left text-base hover:bg-gray-100 transition-colors",
-                    String(option.value) === String(value) &&
-                      "bg-brutal-yellow/20 font-bold",
-                  )}
-                >
-                  <span className="truncate mr-2">{option.label}</span>
-                  {String(option.value) === String(value) && (
-                    <Check size={16} className="text-black flex-shrink-0" />
-                  )}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isOpen && (
+          <div
+            className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto bg-white border-[2px] border-black shadow-lg transition-opacity duration-150"
+          >
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleSelect(option.value)}
+                className={cn(
+                  "w-full flex items-center justify-between px-3 py-2.5 text-left text-base hover:bg-gray-100 transition-colors",
+                  String(option.value) === String(value) &&
+                    "bg-brutal-yellow/20 font-bold",
+                )}
+              >
+                <span className="truncate mr-2">{option.label}</span>
+                {String(option.value) === String(value) && (
+                  <Check size={16} className="text-black flex-shrink-0" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       {errorText && (
         <p className="text-sm text-red-500 font-medium thai-font mt-1">

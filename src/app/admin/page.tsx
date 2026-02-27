@@ -297,7 +297,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-3 py-2">
                           <span
-                            className={`px-1.5 py-0.5 rounded text-[9px] border-[1px] font-medium ${getStatusStyle(order.status)}`}
+                            className={`px-2 py-1 rounded text-xs border-[1px] font-medium whitespace-nowrap ${getStatusStyle(order.status)}`}
                           >
                             {getStatusText(order.status)}
                           </span>

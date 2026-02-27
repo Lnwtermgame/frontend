@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-const GATEWAY_URL =
+export const GATEWAY_URL =
   process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:3000";
 
 let inMemoryAccessToken: string | null = null;
@@ -40,6 +40,26 @@ export interface RefreshResult {
 }
 
 export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
+  // Don't attempt refresh if user was never logged in (no stored user data)
+  const hasStoredUser =
+    typeof window !== "undefined" && localStorage.getItem("mali-gamepass-user");
+
+  if (!hasStoredUser) {
+    console.log("[RefreshToken] No stored user, skipping refresh attempt");
+    return null;
+  }
+
+  // Get refresh token from localStorage (fallback to cookie)
+  const refreshToken =
+    typeof window !== "undefined"
+      ? localStorage.getItem("auth_refresh_token")
+      : null;
+
+  if (!refreshToken) {
+    console.log("[RefreshToken] No refresh token available");
+    return null;
+  }
+
   if (isRefreshing) {
     return new Promise((resolve, reject) => {
       failedQueue.push({
@@ -54,13 +74,21 @@ export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
   try {
     const response = await axios.post(
       `${GATEWAY_URL}/api/auth/refresh-token`,
-      {},
+      { refreshToken },
       { withCredentials: true },
     );
 
     if (response.data?.success) {
-      const { accessToken, expiresIn } = response.data.data;
+      const {
+        accessToken,
+        refreshToken: newRefreshToken,
+        expiresIn,
+      } = response.data.data;
       setAccessToken(accessToken);
+      // Update refresh token in localStorage if a new one is provided
+      if (newRefreshToken && typeof window !== "undefined") {
+        localStorage.setItem("auth_refresh_token", newRefreshToken);
+      }
       processQueue(null, accessToken);
       return { accessToken, expiresIn: expiresIn || 900 };
     }
@@ -128,7 +156,7 @@ const createServiceClient = (service: string): AxiosInstance => {
     { expiresAt: number; response: AxiosResponse }
   >();
 
-  // Request interceptor to add JWT token
+  // Request interceptor to add JWT token and wait for auth readiness
   client.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
       // Any write operation invalidates cached GET responses for this service.

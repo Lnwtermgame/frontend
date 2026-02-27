@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { motion } from "@/lib/framer-exports";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -48,26 +48,18 @@ export function Sheet({
   if (!mounted) return null;
 
   return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm"
-          />
+    isOpen && (
+      <>
+        {/* Backdrop */}
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm"
+        />
 
-          {/* Sheet */}
-          <motion.div
-            initial={variants[side]}
-            animate={active}
-            exit={variants[side]}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className={cn(
-              "fixed bg-white z-[70] border-black shadow-2xl flex flex-col",
+        {/* Sheet */}
+        <div
+          className={cn(
+            "fixed bg-white z-[70] border-black shadow-2xl flex flex-col transition-transform duration-300",
               sideClasses[side],
               className,
             )}
@@ -97,10 +89,9 @@ export function Sheet({
             <div className="flex-1 overflow-y-auto p-4 safe-area-bottom">
               {children}
             </div>
-          </motion.div>
+          </div>
         </>
-      )}
-    </AnimatePresence>,
+      ),
     document.body,
   );
 }

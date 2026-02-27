@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
 import { useSecurity } from "@/lib/context/security-context";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { authApi } from "@/lib/services/auth-api";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import {
@@ -69,6 +70,110 @@ export default function SecurityPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  // Password setup with OTP for OAuth users
+  const [showPasswordSetup, setShowPasswordSetup] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [setupPassword, setSetupPassword] = useState("");
+  const [setupConfirmPassword, setSetupConfirmPassword] = useState("");
+  const [isRequestingOTP, setIsRequestingOTP] = useState(false);
+  const [isSettingPassword, setIsSettingPassword] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCooldown, setOtpCooldown] = useState(0);
+
+  // Handle requesting OTP for password setup
+  const handleRequestOTP = async () => {
+    if (!user?.email) {
+      toast.error("ไม่พบอีเมลของคุณ");
+      return;
+    }
+
+    setIsRequestingOTP(true);
+    try {
+      const response = await authApi.requestPasswordSetupOTP(user.email);
+      if (response.success) {
+        toast.success("ส่ง OTP ไปยังอีเมลของคุณแล้ว");
+        setOtpSent(true);
+        setOtpCooldown(60); // 60 seconds cooldown
+
+        // Start cooldown timer
+        const timer = setInterval(() => {
+          setOtpCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.error?.message || "ไม่สามารถส่ง OTP ได้",
+      );
+    } finally {
+      setIsRequestingOTP(false);
+    }
+  };
+
+  // Handle verifying OTP and setting password
+  const handleVerifyOTPAndSetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user?.email) {
+      toast.error("ไม่พบอีเมลของคุณ");
+      return;
+    }
+
+    if (setupPassword !== setupConfirmPassword) {
+      toast.error("รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน");
+      return;
+    }
+
+    if (setupPassword.length < 8) {
+      toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+      return;
+    }
+
+    if (otp.length !== 6) {
+      toast.error("กรุณากรอก OTP 6 หลัก");
+      return;
+    }
+
+    setIsSettingPassword(true);
+    try {
+      const response = await authApi.verifyPasswordSetupOTP(
+        user.email,
+        otp,
+        setupPassword,
+      );
+
+      if (response.success) {
+        toast.success(
+          "ตั้งรหัสผ่านสำเร็จ! ตอนนี้คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านได้",
+        );
+        setShowPasswordSetup(false);
+        setOtp("");
+        setSetupPassword("");
+        setSetupConfirmPassword("");
+        setOtpSent(false);
+
+        // Refresh user data to get updated authProvider
+        window.location.reload();
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.error?.message || "ไม่สามารถตั้งรหัสผ่านได้",
+      );
+    } finally {
+      setIsSettingPassword(false);
+    }
+  };
+
+  // Check if user is OAuth-only (no password)
+  const isOAuthOnly =
+    user?.authProvider === "google" || user?.authProvider === "discord";
+  const isHybrid = user?.authProvider === "hybrid";
 
   // Handle setting up 2FA
   const handleSetup2FA = async () => {
@@ -176,12 +281,186 @@ export default function SecurityPage() {
           >
             <div className="p-3 bg-brutal-yellow border-b-[3px] border-black">
               <h2 className="text-base font-bold text-black thai-font">
-                เปลี่ยนรหัสผ่าน
+                {isOAuthOnly ? "ตั้งรหัสผ่าน" : "เปลี่ยนรหัสผ่าน"}
               </h2>
             </div>
 
             <div className="p-4">
-              {showChangePassword ? (
+              {/* OAuth-only user: Show password setup with OTP */}
+              {isOAuthOnly ? (
+                showPasswordSetup ? (
+                  <form
+                    onSubmit={handleVerifyOTPAndSetPassword}
+                    className="space-y-3"
+                  >
+                    {!otpSent ? (
+                      <div className="text-center py-4">
+                        <p className="text-sm text-gray-600 mb-4 thai-font">
+                          คุณกำลังใช้การเข้าสู่ระบบผ่าน{" "}
+                          {user?.authProvider === "google"
+                            ? "Google"
+                            : "Discord"}
+                          <br />
+                          กดปุ่มด้านล่างเพื่อขอรับ OTP ไปยังอีเมล {user?.email}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleRequestOTP}
+                          disabled={isRequestingOTP || otpCooldown > 0}
+                          className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font text-xs"
+                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                        >
+                          {isRequestingOTP ? (
+                            <>
+                              <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                              กำลังส่ง...
+                            </>
+                          ) : otpCooldown > 0 ? (
+                            `ส่งอีกครั้งใน ${otpCooldown} วินาที`
+                          ) : (
+                            "ขอรับ OTP"
+                          )}
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="bg-green-50 border-[2px] border-green-500 p-3 mb-4">
+                          <p className="text-sm text-green-700 thai-font">
+                            ✅ ส่ง OTP ไปยัง {user?.email} แล้ว
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1.5 thai-font">
+                            OTP (6 หลัก)
+                          </label>
+                          <input
+                            type="text"
+                            value={otp}
+                            onChange={(e) =>
+                              setOtp(
+                                e.target.value.replace(/\D/g, "").slice(0, 6),
+                              )
+                            }
+                            placeholder="123456"
+                            className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm text-center tracking-widest"
+                            required
+                            maxLength={6}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1.5 thai-font">
+                            รหัสผ่านใหม่
+                          </label>
+                          <input
+                            type="password"
+                            value={setupPassword}
+                            onChange={(e) => setSetupPassword(e.target.value)}
+                            placeholder="••••••••"
+                            className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                            required
+                            minLength={8}
+                          />
+                          <p className="text-[10px] text-gray-500 mt-1 thai-font">
+                            รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1.5 thai-font">
+                            ยืนยันรหัสผ่าน
+                          </label>
+                          <input
+                            type="password"
+                            value={setupConfirmPassword}
+                            onChange={(e) =>
+                              setSetupConfirmPassword(e.target.value)
+                            }
+                            placeholder="••••••••"
+                            className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                            required
+                          />
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-2 pt-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowPasswordSetup(false);
+                              setOtp("");
+                              setSetupPassword("");
+                              setSetupConfirmPassword("");
+                              setOtpSent(false);
+                            }}
+                            className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors thai-font order-2 md:order-1 text-xs font-bold"
+                          >
+                            ยกเลิก
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={
+                              isSettingPassword ||
+                              otp.length !== 6 ||
+                              !setupPassword ||
+                              !setupConfirmPassword
+                            }
+                            className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
+                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                          >
+                            {isSettingPassword ? (
+                              <>
+                                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                กำลังบันทึก...
+                              </>
+                            ) : (
+                              "ตั้งรหัสผ่าน"
+                            )}
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleRequestOTP}
+                          disabled={isRequestingOTP || otpCooldown > 0}
+                          className="w-full py-2 text-xs text-gray-600 hover:text-gray-800 disabled:opacity-50"
+                        >
+                          {otpCooldown > 0
+                            ? `ส่ง OTP อีกครั้งใน ${otpCooldown} วินาที`
+                            : "ส่ง OTP อีกครั้ง"}
+                        </button>
+                      </>
+                    )}
+                  </form>
+                ) : (
+                  <div>
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center">
+                        <KeyRound className="text-white" size={16} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-black mb-0.5 thai-font text-sm">
+                          ตั้งรหัสผ่านสำรอง
+                        </h3>
+                        <p className="text-xs text-gray-600 thai-font">
+                          คุณกำลังใช้การเข้าสู่ระบบผ่าน{" "}
+                          {user?.authProvider === "google"
+                            ? "Google"
+                            : "Discord"}
+                          ตั้งรหัสผ่านเพื่อเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowPasswordSetup(true)}
+                      className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform thai-font text-xs"
+                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                    >
+                      ตั้งรหัสผ่าน
+                    </button>
+                  </div>
+                )
+              ) : showChangePassword ? (
                 <form onSubmit={handleChangePassword} className="space-y-3">
                   <div>
                     <label className="block text-xs text-gray-600 mb-1.5 thai-font">
@@ -468,10 +747,7 @@ export default function SecurityPage() {
 
             <div className="divide-y divide-gray-200 max-h-[300px] overflow-y-auto">
               {securitySettings.recentDevices.map((device) => (
-                <div
-                  key={device.id}
-                  className="p-3 flex flex-col gap-2"
-                >
+                <div key={device.id} className="p-3 flex flex-col gap-2">
                   <div className="flex gap-2 w-full">
                     <div className="flex-shrink-0">
                       {device.os.toLowerCase().includes("windows") && (
@@ -483,7 +759,9 @@ export default function SecurityPage() {
                     </div>
                     <div className="w-full">
                       <div className="flex justify-between items-start">
-                        <h3 className="font-bold text-black text-sm">{device.name}</h3>
+                        <h3 className="font-bold text-black text-sm">
+                          {device.name}
+                        </h3>
                         {device.isCurrent ? (
                           <span className="text-[10px] bg-brutal-green border-[1px] border-black text-black px-1.5 py-0.5 font-bold thai-font">
                             ปัจจุบัน

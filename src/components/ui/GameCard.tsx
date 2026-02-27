@@ -36,9 +36,7 @@ export function GameCard({
   className,
 }: GameCardProps) {
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
+    <div
       className={cn("h-full", className)}
     >
       <Link href={`/games/${slug}`} className="block h-full">
@@ -120,6 +118,6 @@ export function GameCard({
           </CardFooter>
         </Card>
       </Link>
-    </motion.div>
+    </div>
   );
 }

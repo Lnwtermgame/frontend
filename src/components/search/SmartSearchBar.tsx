@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Search, X, Loader2, Gamepad2, Tag, Clock } from "lucide-react";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
@@ -289,16 +289,11 @@ export function SmartSearchBar({
       </form>
 
       {/* Dropdown Results */}
-      <AnimatePresence>
-        {isDropdownOpen && (query.trim() || recentSearches.length > 0) && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute mt-2 w-full bg-white border-[3px] border-black rounded-xl z-50 overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
+      {isDropdownOpen && (query.trim() || recentSearches.length > 0) && (
+        <div
+          className="absolute mt-2 w-full bg-white border-[3px] border-black rounded-xl z-50 overflow-hidden transition-opacity duration-200"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        >
             <div className="p-1 max-h-80 overflow-y-auto">
               {/* Loading state */}
               {isLoading && query.trim() && (
@@ -447,9 +442,8 @@ export function SmartSearchBar({
                 </button>
               </div>
             )}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

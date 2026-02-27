@@ -61,11 +61,8 @@ export function SeasonalEventsGrid({
   return (
     <div className={`space-y-6 ${className}`}>
       {title && (
-        <motion.div
+        <div
           className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-4 gap-4"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
         >
           <div className="flex items-center gap-2">
             <div
@@ -93,24 +90,22 @@ export function SeasonalEventsGrid({
               <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           )}
-        </motion.div>
+        </div>
       )}
 
       <div
         className={`grid grid-cols-1 ${featuredLayout ? "gap-6" : "md:grid-cols-2 gap-4"}`}
       >
         {displayEvents.map((event, index) => (
-          <motion.div
+          <div
             key={event.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
+            className="transition-transform duration-200 hover:-translate-y-1"
           >
             <SeasonalEventCard
               {...event}
               featured={index === 0 && featuredLayout}
             />
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { motion } from "@/lib/framer-exports";
 import {
   Gamepad2,
   Search,
@@ -477,71 +477,60 @@ export default function HomePage() {
       {/* Hero Slider */}
       <section className="relative w-full overflow-hidden border-b-[4px] border-black">
         <div className="relative aspect-[24/9] sm:aspect-[28/9] lg:aspect-[32/9] w-full max-w-5xl mx-auto overflow-hidden bg-brutal-gray border-[4px] border-black">
-          <AnimatePresence mode="wait">
-            {heroSlides.map(
-              (slide, index) =>
-                index === currentSlide && (
-                  <motion.div
-                    key={slide.id}
-                    className="absolute inset-0"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent sm:bg-gradient-to-r sm:from-black/70 sm:to-transparent" />
+          {heroSlides.map(
+            (slide, index) =>
+              index === currentSlide && (
+                <div
+                  key={slide.id}
+                  className="absolute inset-0"
+                >
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent sm:bg-gradient-to-r sm:from-black/70 sm:to-transparent" />
 
-                    <div className="absolute inset-0 flex items-end sm:items-center">
-                      <div className="w-full p-3 sm:p-4 lg:p-5 pl-20 sm:pl-28 lg:pl-36">
-                        <motion.div
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                          className="max-w-lg"
+                  <div className="absolute inset-0 flex items-end sm:items-center">
+                    <div className="w-full p-3 sm:p-4 lg:p-5 pl-20 sm:pl-28 lg:pl-36">
+                      <div className="max-w-lg">
+                        <div
+                          className={`inline-block px-2.5 py-1 text-[11px] font-black mb-2.5 border-[3px] border-black ${
+                            slide.color === "pink"
+                              ? "bg-brutal-pink text-white"
+                              : "bg-brutal-yellow text-black"
+                          }`}
+                          style={{ boxShadow: "4px 4px 0 0 #000000" }}
                         >
-                          <div
-                            className={`inline-block px-2.5 py-1 text-[11px] font-black mb-2.5 border-[3px] border-black ${
+                          <Zap size={11} className="inline mr-1" />
+                          {slide.badgeText || "Promotion"}
+                        </div>
+                        <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-white mb-1.5 drop-shadow-[4px_4px_0_#000]">
+                          {slide.title}
+                        </h2>
+                        <p className="text-white/95 text-xs sm:text-sm mb-3 font-bold">
+                          {slide.subtitle}
+                        </p>
+                        <Link href={slide.link || "/promotions"}>
+                          <Button
+                            size="lg"
+                            className={`font-black text-xs sm:text-sm px-5 py-2.5 h-auto border-[3px] border-black ${
                               slide.color === "pink"
-                                ? "bg-brutal-pink text-white"
-                                : "bg-brutal-yellow text-black"
+                                ? "bg-white text-black hover:bg-gray-100"
+                                : "bg-brutal-yellow text-black hover:bg-yellow-400"
                             }`}
                             style={{ boxShadow: "4px 4px 0 0 #000000" }}
                           >
-                            <Zap size={11} className="inline mr-1" />
-                            {slide.badgeText || "Promotion"}
-                          </div>
-                          <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-white mb-1.5 drop-shadow-[4px_4px_0_#000]">
-                            {slide.title}
-                          </h2>
-                          <p className="text-white/95 text-xs sm:text-sm mb-3 font-bold">
-                            {slide.subtitle}
-                          </p>
-                          <Link href={slide.link || "/promotions"}>
-                            <Button
-                              size="lg"
-                              className={`font-black text-xs sm:text-sm px-5 py-2.5 h-auto border-[3px] border-black ${
-                                slide.color === "pink"
-                                  ? "bg-white text-black hover:bg-gray-100"
-                                  : "bg-brutal-yellow text-black hover:bg-yellow-400"
-                              }`}
-                              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                            >
-                              {sectionLabels.heroButtonText}
-                              <ChevronRight size={15} className="ml-2" />
-                            </Button>
-                          </Link>
-                        </motion.div>
+                            {sectionLabels.heroButtonText}
+                            <ChevronRight size={15} className="ml-2" />
+                          </Button>
+                        </Link>
                       </div>
                     </div>
-                  </motion.div>
-                ),
-            )}
-          </AnimatePresence>
+                  </div>
+                </div>
+              ),
+          )}
 
           <button
             onClick={prevSlide}

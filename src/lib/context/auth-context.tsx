@@ -10,6 +10,7 @@ import {
   useRef,
 } from "react";
 import toast from "react-hot-toast";
+import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { authApi, User } from "../services/auth-api";
 import {
   setAccessToken,
@@ -165,6 +166,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user, isAdmin, isInitialized]);
 
+  // ============================================
+  // NextAuth Session Sync
+  // Sync NextAuth session with our auth context
+  // ============================================
+  const { data: nextAuthSession, status: nextAuthStatus } = useSession();
+  const hasSyncedNextAuthRef = useRef(false);
+
   // Clear all auth data
   const clearAuth = useCallback(() => {
     setToken(null);
@@ -174,7 +182,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshTimeoutRef.current = null;
     }
     setAccessToken(null);
-  }, [setToken, setUser]);
+    localStorage.removeItem("auth_refresh_token");
+    // Reset session checked so next auth check will wait properly
+    setIsSessionChecked(false);
+  }, [setToken, setUser, setIsSessionChecked]);
 
   // Schedule token refresh
   const scheduleTokenRefresh = useCallback((expiresIn: number) => {
@@ -194,6 +205,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Perform token refresh
   const performTokenRefresh = useCallback(async () => {
+    // Don't attempt refresh if no stored user (user was never logged in)
+    const hasStoredUser = localStorage.getItem("mali-gamepass-user");
+    if (!hasStoredUser) {
+      console.log("[Auth] No stored user, skipping token refresh");
+      return;
+    }
+
     console.log("[Auth] Performing token refresh...");
 
     try {
@@ -267,6 +285,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      // Only attempt cookie-based refresh if there's a stored user (indicating previous login)
+      const hasStoredUser = localStorage.getItem("mali-gamepass-user");
+      if (!hasStoredUser) {
+        console.log(
+          "[Auth] No stored user data, skipping refresh cookie check",
+        );
+        setIsSessionChecked(true);
+        return;
+      }
+
       isCheckingSessionRef.current = true;
       console.log("[Auth] Restoring session from refresh cookie...");
       try {
@@ -298,6 +326,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
   }, [isHydrated, isInitialized]); // Only run on hydration and initialization
+
+  // ============================================
+  // NextAuth Session Sync Effect
+  // Sync NextAuth session with auth context after functions are defined
+  // ============================================
+  useEffect(() => {
+    // Sync NextAuth session with auth context
+    if (nextAuthStatus === "authenticated" && nextAuthSession) {
+      const backendTokens = (nextAuthSession as any).backendTokens;
+      const backendUser = (nextAuthSession as any).backendUser;
+
+      if (backendTokens && backendUser) {
+        // Only sync if tokens are different or user is different
+        const shouldSync =
+          token !== backendTokens.accessToken ||
+          user?.id !== backendUser.id ||
+          !hasSyncedNextAuthRef.current;
+
+        if (shouldSync) {
+          console.log("[Auth] Syncing NextAuth session to auth context");
+          setToken(backendTokens.accessToken);
+          setAccessToken(backendTokens.accessToken);
+          setUser({
+            id: backendUser.id,
+            username: backendUser.username,
+            email: backendUser.email,
+            role: backendUser.role as "USER" | "ADMIN",
+            isActive: backendUser.isActive,
+            emailVerified: backendUser.emailVerified,
+            createdAt: new Date().toISOString(), // fallback
+          });
+          scheduleTokenRefresh(backendTokens.expiresIn);
+          hasSyncedNextAuthRef.current = true;
+          toast.success("เข้าสู่ระบบสำเร็จ!");
+        }
+      }
+    } else if (
+      nextAuthStatus === "unauthenticated" &&
+      hasSyncedNextAuthRef.current
+    ) {
+      // User logged out from NextAuth
+      console.log("[Auth] NextAuth session ended, clearing auth context");
+      clearAuth();
+      hasSyncedNextAuthRef.current = false;
+    }
+  }, [
+    nextAuthSession,
+    nextAuthStatus,
+    token,
+    user,
+    clearAuth,
+    scheduleTokenRefresh,
+  ]);
 
   // Track if login is in progress
   const isLoggingInRef = useRef(false);
@@ -332,6 +413,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(response.data.tokens.accessToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
+        // Store refresh token in localStorage for cookie-less refresh
+        if (response.data.tokens.refreshToken) {
+          localStorage.setItem(
+            "auth_refresh_token",
+            response.data.tokens.refreshToken,
+          );
+        }
         toast.success("เข้าสู่ระบบสำเร็จ!");
         return true;
       } else {
@@ -375,6 +463,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(response.data.tokens.accessToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
+        // Store refresh token in localStorage for cookie-less refresh
+        if (response.data.tokens.refreshToken) {
+          localStorage.setItem(
+            "auth_refresh_token",
+            response.data.tokens.refreshToken,
+          );
+        }
         toast.success("สร้างบัญชีสำเร็จ!");
         return true;
       } else {
@@ -399,7 +494,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignore logout errors
     } finally {
+      // Sign out from NextAuth as well
+      if (nextAuthStatus === "authenticated") {
+        await nextAuthSignOut({ redirect: false });
+      }
       clearAuth();
+      hasSyncedNextAuthRef.current = false;
       toast.success("ออกจากระบบสำเร็จ");
     }
   };
@@ -457,7 +557,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // OAuth login with Google or Discord
+  /**
+   * @deprecated Use NextAuth signIn() instead. Legacy OAuth flow is deprecated.
+   */
   const oauthLogin = async (
     code: string,
     provider: "google" | "discord",

@@ -5,12 +5,7 @@ export interface OAuthProvider {
   name: string;
   displayName: string;
   isEnabled: boolean;
-  clientId: string | null;
-  clientSecret: string | null;
-  authorizationUrl: string | null;
-  tokenUrl: string | null;
-  userInfoUrl: string | null;
-  scope: string | null;
+  // Credentials moved to .env - these fields are no longer stored
   iconUrl: string | null;
   sortOrder: number;
   createdAt: string;
@@ -21,12 +16,7 @@ export interface CreateOAuthProviderData {
   name: string;
   displayName: string;
   isEnabled?: boolean;
-  clientId?: string;
-  clientSecret?: string;
-  authorizationUrl?: string;
-  tokenUrl?: string;
-  userInfoUrl?: string;
-  scope?: string;
+  // Credentials moved to .env - no longer sent in API
   iconUrl?: string;
   sortOrder?: number;
 }
@@ -35,12 +25,7 @@ export interface UpdateOAuthProviderData {
   name?: string;
   displayName?: string;
   isEnabled?: boolean;
-  clientId?: string;
-  clientSecret?: string;
-  authorizationUrl?: string;
-  tokenUrl?: string;
-  userInfoUrl?: string;
-  scope?: string;
+  // Credentials moved to .env - no longer sent in API
   iconUrl?: string;
   sortOrder?: number;
 }
@@ -55,33 +40,21 @@ export interface OAuthProviderListResponse {
   };
 }
 
-// Default OAuth provider configurations
+// Default OAuth provider configurations (display only - credentials in .env)
 export const DEFAULT_OAUTH_CONFIGS: Record<string, Partial<OAuthProvider>> = {
   google: {
     name: "google",
     displayName: "Google",
-    authorizationUrl: "https://accounts.google.com/o/oauth2/v2/auth",
-    tokenUrl: "https://oauth2.googleapis.com/token",
-    userInfoUrl: "https://www.googleapis.com/oauth2/v2/userinfo",
-    scope: "openid email profile",
     iconUrl: "/brand-icons/google.svg",
   },
   discord: {
     name: "discord",
     displayName: "Discord",
-    authorizationUrl: "https://discord.com/api/oauth2/authorize",
-    tokenUrl: "https://discord.com/api/oauth2/token",
-    userInfoUrl: "https://discord.com/api/users/@me",
-    scope: "identify email",
     iconUrl: "/brand-icons/discord.svg",
   },
   facebook: {
     name: "facebook",
     displayName: "Facebook",
-    authorizationUrl: "https://www.facebook.com/v18.0/dialog/oauth",
-    tokenUrl: "https://graph.facebook.com/v18.0/oauth/access_token",
-    userInfoUrl: "https://graph.facebook.com/me?fields=id,name,email",
-    scope: "email public_profile",
     iconUrl: "/brand-icons/facebook.svg",
   },
 };
@@ -103,7 +76,7 @@ class OAuthProviderApiService {
 
   // Get enabled OAuth providers (public)
   async getEnabledProviders(): Promise<OAuthProviderListResponse> {
-    const response = await authClient.get("/auth/oauth-providers");
+    const response = await authClient.get("/api/auth/oauth-providers");
     return response.data;
   }
 
@@ -156,6 +129,7 @@ class OAuthProviderApiService {
   }
 
   // Create default providers (Google, Discord, Facebook)
+  // Credentials are configured in .env, this just creates the database entries
   async createDefaultProviders(): Promise<void> {
     for (const [name, config] of Object.entries(DEFAULT_OAUTH_CONFIGS)) {
       try {
@@ -163,10 +137,6 @@ class OAuthProviderApiService {
           name,
           displayName: config.displayName || name,
           isEnabled: false,
-          authorizationUrl: config.authorizationUrl ?? undefined,
-          tokenUrl: config.tokenUrl ?? undefined,
-          userInfoUrl: config.userInfoUrl ?? undefined,
-          scope: config.scope ?? undefined,
           iconUrl: config.iconUrl ?? undefined,
         });
       } catch (error) {

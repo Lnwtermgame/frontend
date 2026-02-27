@@ -13,6 +13,7 @@ import { DeliveryProvider } from "@/lib/context/delivery-context";
 import { PromotionProvider } from "@/lib/context/promotion-context";
 import { CartProvider } from "@/lib/context/cart-context";
 import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
+import { NextAuthProvider } from "@/components/providers/nextauth-provider";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { TawkTo } from "@/components/tawk-to";
@@ -137,54 +138,56 @@ export default function RootLayout({
       </head>
       <body className={cn("min-h-screen bg-brutal-gray font-sans antialiased")}>
         <ReactGrabInit />
-        <AuthProvider>
-          <NotificationProvider>
-            <SecurityProvider>
-              <PaymentProvider>
-                <SupportProvider>
-                  <DeliveryProvider>
-                    <PromotionProvider>
-                      <CartProvider>
-                        <PublicSettingsProvider>
-                          <MainLayout>{children}</MainLayout>
-                        </PublicSettingsProvider>
-                      </CartProvider>
-                      <Toaster
-                        position="bottom-right"
-                        containerStyle={{
-                          zIndex: 50,
-                        }}
-                        toastOptions={{
-                          duration: 4000,
-                          style: {
-                            background: "#FFFFFF",
-                            color: "#1f2937",
-                            border: "3px solid #000000",
-                            boxShadow: "4px 4px 0 0 #000000",
-                            borderRadius: "8px",
-                            padding: "12px 16px",
-                          },
-                          success: {
-                            iconTheme: {
-                              primary: "#95E1D3",
-                              secondary: "#000000",
+        <NextAuthProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <SecurityProvider>
+                <PaymentProvider>
+                  <SupportProvider>
+                    <DeliveryProvider>
+                      <PromotionProvider>
+                        <CartProvider>
+                          <PublicSettingsProvider>
+                            <MainLayout>{children}</MainLayout>
+                          </PublicSettingsProvider>
+                        </CartProvider>
+                        <Toaster
+                          position="bottom-right"
+                          containerStyle={{
+                            zIndex: 50,
+                          }}
+                          toastOptions={{
+                            duration: 4000,
+                            style: {
+                              background: "#FFFFFF",
+                              color: "#1f2937",
+                              border: "3px solid #000000",
+                              boxShadow: "4px 4px 0 0 #000000",
+                              borderRadius: "8px",
+                              padding: "12px 16px",
                             },
-                          },
-                          error: {
-                            iconTheme: {
-                              primary: "#FF6B9D",
-                              secondary: "#FFFFFF",
+                            success: {
+                              iconTheme: {
+                                primary: "#95E1D3",
+                                secondary: "#000000",
+                              },
                             },
-                          },
-                        }}
-                      />
-                    </PromotionProvider>
-                  </DeliveryProvider>
-                </SupportProvider>
-              </PaymentProvider>
-            </SecurityProvider>
-          </NotificationProvider>
-        </AuthProvider>
+                            error: {
+                              iconTheme: {
+                                primary: "#FF6B9D",
+                                secondary: "#FFFFFF",
+                              },
+                            },
+                          }}
+                        />
+                      </PromotionProvider>
+                    </DeliveryProvider>
+                  </SupportProvider>
+                </PaymentProvider>
+              </SecurityProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </NextAuthProvider>
         {/* <TawkTo /> */}
       </body>
     </html>

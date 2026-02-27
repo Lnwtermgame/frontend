@@ -8,6 +8,7 @@ export interface User {
   role: "USER" | "ADMIN";
   isActive: boolean;
   emailVerified?: boolean; // Email verification status from backend
+  authProvider?: "local" | "google" | "discord" | "hybrid"; // Authentication provider
   createdAt: string;
   // Optional frontend-only fields (not provided by backend yet)
   name?: string; // Alias for username (backward compatibility)
@@ -135,6 +136,9 @@ class AuthApiService {
     return response.data;
   }
 
+  /**
+   * @deprecated Use NextAuth signIn() instead. This legacy OAuth flow is deprecated.
+   */
   async oauthLogin(data: OAuthLoginData): Promise<OAuthResponse> {
     const response = await authClient.post<OAuthResponse>(
       "/api/auth/oauth",
@@ -188,6 +192,34 @@ class AuthApiService {
       token,
       newPassword,
     });
+    return response.data;
+  }
+
+  // Request OTP for password setup (OAuth users)
+  async requestPasswordSetupOTP(
+    email: string,
+  ): Promise<{ success: boolean; message?: string }> {
+    const response = await authClient.post(
+      "/api/auth/request-password-setup-otp",
+      { email },
+    );
+    return response.data;
+  }
+
+  // Verify OTP and set password (OAuth users)
+  async verifyPasswordSetupOTP(
+    email: string,
+    otp: string,
+    newPassword: string,
+  ): Promise<{
+    success: boolean;
+    data: { message: string; authProvider: string };
+    message?: string;
+  }> {
+    const response = await authClient.post(
+      "/api/auth/verify-password-setup-otp",
+      { email, otp, newPassword },
+    );
     return response.data;
   }
 

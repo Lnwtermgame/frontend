@@ -72,10 +72,14 @@ export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
 
   isRefreshing = true;
   try {
+    const csrf = csrfToken || (await fetchCsrfToken().catch(() => ""));
     const response = await axios.post(
       `${GATEWAY_URL}/api/auth/refresh-token`,
       { refreshToken },
-      { withCredentials: true },
+      {
+        withCredentials: true,
+        headers: csrf ? { "X-CSRF-Token": csrf } : {},
+      },
     );
 
     if (response.data?.success) {
@@ -139,6 +143,35 @@ const buildGetRequestKey = (
   return [service, url, paramsKey, token].join("::");
 };
 
+// ─── CSRF Token Management ───
+let csrfToken: string | null = null;
+let csrfFetchPromise: Promise<string> | null = null;
+
+const fetchCsrfToken = async (): Promise<string> => {
+  if (csrfFetchPromise) return csrfFetchPromise;
+  csrfFetchPromise = axios
+    .get(`${GATEWAY_URL}/api/csrf-token`, { withCredentials: true })
+    .then((res) => {
+      const token = res.data?.data?.csrfToken;
+      csrfToken = token;
+      return token;
+    })
+    .finally(() => {
+      csrfFetchPromise = null;
+    });
+  return csrfFetchPromise;
+};
+
+const ensureCsrfToken = async (): Promise<string> => {
+  if (csrfToken) return csrfToken;
+  return fetchCsrfToken();
+};
+
+// Reset cached CSRF token (called on 403 CSRF_INVALID to force re-fetch)
+const resetCsrfToken = () => {
+  csrfToken = null;
+};
+
 const createServiceClient = (service: string): AxiosInstance => {
   const client = axios.create({
     baseURL: GATEWAY_URL,
@@ -156,12 +189,21 @@ const createServiceClient = (service: string): AxiosInstance => {
     { expiresAt: number; response: AxiosResponse }
   >();
 
-  // Request interceptor to add JWT token and wait for auth readiness
+  // Request interceptor to add JWT token and CSRF token
   client.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
       // Any write operation invalidates cached GET responses for this service.
       if (config.method && config.method.toLowerCase() !== "get") {
         getResponseCache.clear();
+        // Attach CSRF token for non-GET requests
+        try {
+          const token = await ensureCsrfToken();
+          if (token && config.headers) {
+            config.headers["X-CSRF-Token"] = token;
+          }
+        } catch {
+          // If CSRF fetch fails, proceed without it (server may reject)
+        }
       }
 
       const token = getAccessToken();
@@ -180,7 +222,23 @@ const createServiceClient = (service: string): AxiosInstance => {
       const originalRequest = error.config as InternalAxiosRequestConfig & {
         _retry?: boolean;
         _retryCount?: number;
+        _csrfRetry?: boolean;
       };
+
+      // Handle 403 CSRF_INVALID - reset token and retry once
+      if (
+        error.response?.status === 403 &&
+        !originalRequest._csrfRetry &&
+        (error.response?.data as any)?.error?.code === "CSRF_INVALID"
+      ) {
+        originalRequest._csrfRetry = true;
+        resetCsrfToken();
+        const newToken = await fetchCsrfToken();
+        if (newToken && originalRequest.headers) {
+          originalRequest.headers["X-CSRF-Token"] = newToken;
+        }
+        return client(originalRequest);
+      }
 
       // Handle 429 (Rate Limit) with exponential backoff retry
       if (error.response?.status === 429) {

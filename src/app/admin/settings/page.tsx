@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import AdminLayout from "@/components/layout/AdminLayout";
+import { useAuth } from "@/lib/hooks/use-auth";
 import {
   AdminSettingsAuditLog,
   AdminSettingsPermissionRow,
@@ -171,6 +172,7 @@ function toCsv(values: string[]): string {
 }
 
 export default function AdminSettingsPage() {
+  const { isAdmin, isInitialized, isSessionChecked } = useAuth();
   const [settings, setSettings] = useState<AdminSiteSettings>(EMPTY_SETTINGS);
   const [liveSettings, setLiveSettings] =
     useState<AdminSiteSettings>(EMPTY_SETTINGS);
@@ -261,10 +263,11 @@ export default function AdminSettingsPage() {
   };
 
   useEffect(() => {
+    if (!isInitialized || !isSessionChecked) return;
     loadSettings();
     loadPermissions();
     loadAuditLogs(1);
-  }, []);
+  }, [isInitialized, isSessionChecked]);
 
   const updatePermission = async (
     adminId: string,

@@ -17,6 +17,18 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/storage",
+        destination: "http://localhost:3000/api/storage",
+      },
+      {
+        source: "/api/storage/:path*",
+        destination: "http://localhost:3000/api/storage/:path*",
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

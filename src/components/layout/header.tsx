@@ -50,10 +50,10 @@ export function Header() {
     };
   }, [isMounted]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setShowUserMenu(false);
-    router.push("/");
+    router.push("/login");
   };
 
   // Animation variants

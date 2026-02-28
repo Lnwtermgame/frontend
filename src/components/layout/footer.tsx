@@ -18,14 +18,16 @@ import {
   Smartphone,
   HelpCircle,
   Zap,
+  Newspaper,
 } from "lucide-react";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 const quickLinks = [
+  { label: "หน้าแรก", href: "/", icon: Zap },
   { label: "เกมทั้งหมด", href: "/games", icon: Gamepad2 },
+  { label: "ข่าวสาร", href: "/news", icon: Newspaper },
   { label: "บัตรเกม", href: "/card", icon: CardIcon },
   { label: "เติมเงินมือถือ", href: "/mobile-recharge", icon: Smartphone },
-  { label: "โปรโมชั่น", href: "/?promo=true", icon: Zap },
   { label: "คำถามที่พบบ่อย", href: "/support/faq", icon: HelpCircle },
 ];
 

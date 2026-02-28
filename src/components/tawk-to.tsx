@@ -14,11 +14,32 @@ export function TawkTo() {
   const tawkToUrl = `https://embed.tawk.to/${TAWK_TO_PROPERTY_ID}/${TAWK_TO_WIDGET_ID}`;
 
   return (
-    <Script
-      id="tawk-to"
-      strategy="lazyOnload"
-      src={tawkToUrl}
-      crossOrigin="anonymous"
-    />
+    <>
+      <Script id="tawk-to-config" strategy="lazyOnload">
+        {`
+          window.Tawk_API = window.Tawk_API || {};
+          window.Tawk_API.customStyle = {
+            visibility: {
+              desktop: {
+                position: 'br',
+                xOffset: '20px',
+                yOffset: '20px'
+              },
+              mobile: {
+                position: 'bl',
+                xOffset: '16px',
+                yOffset: '80px'
+              }
+            }
+          };
+        `}
+      </Script>
+      <Script
+        id="tawk-to"
+        strategy="lazyOnload"
+        src={tawkToUrl}
+        crossOrigin="anonymous"
+      />
+    </>
   );
 }

@@ -13,12 +13,13 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { buttonVariants } from "@/components/ui/Button";
 import { paymentApi } from "@/lib/services/payment-api";
 
 type PaymentStatus = "loading" | "success" | "processing" | "failed";
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessPageContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") || "";
   const sessionId = searchParams.get("session_id") || "";
@@ -246,5 +247,22 @@ export default function PaymentSuccessPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+// Wrapper with Suspense boundary
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<PaymentLoadingFallback />}>
+      <PaymentSuccessPageContent />
+    </Suspense>
+  );
+}
+
+function PaymentLoadingFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-brutal-gray">
+      <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+    </div>
   );
 }

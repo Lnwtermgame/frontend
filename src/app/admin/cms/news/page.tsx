@@ -1178,7 +1178,7 @@ export default function AdminCmsNewsPage() {
                                 <AINewsProgressPanel
                                   progress={aiProgress}
                                   isGenerating={isGeneratingAI}
-                                  error={error}
+                                  error={error ?? undefined}
                                   onClose={() => {
                                     if (!isGeneratingAI) {
                                       setAiProgress(null);

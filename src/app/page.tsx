@@ -288,29 +288,15 @@ export default function HomePage() {
   );
 
   const heroSlides = useMemo(() => {
-    if (publicSettings?.homepage.heroSlides?.length) {
+    if (publicSettings?.homepage?.heroSlides?.length) {
       return publicSettings.homepage.heroSlides;
     }
-
-    const base = [...DEFAULT_HERO_SLIDES];
-    const configuredTitle = publicSettings?.homepage.heroTitle?.trim() || "";
-    const configuredSubtitle =
-      publicSettings?.homepage.heroSubtitle?.trim() || "";
-
-    if (base[0]) {
-      base[0] = {
-        ...base[0],
-        title: configuredTitle || base[0].title,
-        subtitle: configuredSubtitle || base[0].subtitle,
-      };
-    }
-
-    return base;
+    return DEFAULT_HERO_SLIDES;
   }, [publicSettings]);
 
   const categoryTabs = useMemo(
     () =>
-      publicSettings?.homepage.categoryTabs?.length
+      publicSettings?.homepage?.categoryTabs?.length
         ? publicSettings.homepage.categoryTabs
         : DEFAULT_CATEGORY_TABS,
     [publicSettings],
@@ -318,7 +304,7 @@ export default function HomePage() {
 
   const quickActions = useMemo(
     () =>
-      publicSettings?.homepage.quickActions?.length
+      publicSettings?.homepage?.quickActions?.length
         ? publicSettings.homepage.quickActions
         : DEFAULT_QUICK_ACTIONS,
     [publicSettings],
@@ -326,7 +312,7 @@ export default function HomePage() {
 
   const trustBadges = useMemo(
     () =>
-      publicSettings?.homepage.trustBadges?.length
+      publicSettings?.homepage?.trustBadges?.length
         ? publicSettings.homepage.trustBadges
         : DEFAULT_TRUST_BADGES,
     [publicSettings],
@@ -334,21 +320,21 @@ export default function HomePage() {
 
   const promoCards = useMemo(
     () =>
-      publicSettings?.homepage.promoCards?.length
+      publicSettings?.homepage?.promoCards?.length
         ? publicSettings.homepage.promoCards
         : DEFAULT_PROMO_CARDS,
     [publicSettings],
   );
   const newsItems = useMemo(
     () =>
-      publicSettings?.homepage.newsItems?.length
+      publicSettings?.homepage?.newsItems?.length
         ? publicSettings.homepage.newsItems
         : DEFAULT_NEWS_ITEMS,
     [publicSettings],
   );
   const seasonalEvents = useMemo<SeasonalEventProps[]>(
     () =>
-      publicSettings?.homepage.seasonalEvents?.length
+      publicSettings?.homepage?.seasonalEvents?.length
         ? publicSettings.homepage.seasonalEvents
         : DEFAULT_SEASONAL_EVENTS,
     [publicSettings],
@@ -475,108 +461,108 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-8">
       {/* Hero Slider */}
-      <section className="relative w-full overflow-hidden border-b-[4px] border-black">
-        <div className="relative aspect-[24/9] sm:aspect-[28/9] lg:aspect-[32/9] w-full max-w-5xl mx-auto overflow-hidden bg-brutal-gray border-[4px] border-black">
+      <section className="relative w-full overflow-hidden">
+        <div className="relative aspect-[16/9] md:aspect-[24/8] lg:aspect-[32/10] w-full max-w-7xl mx-auto overflow-hidden md:border-[4px] border-black bg-zinc-100 md:shadow-[8px_8px_0_0_#000]">
           {heroSlides.map(
             (slide, index) =>
               index === currentSlide && (
-                <div
+                <motion.div
                   key={slide.id}
                   className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
                 >
                   <img
                     src={slide.image}
                     alt={slide.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent sm:bg-gradient-to-r sm:from-black/70 sm:to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/40 md:to-transparent" />
 
-                  <div className="absolute inset-0 flex items-end sm:items-center">
-                    <div className="w-full p-3 sm:p-4 lg:p-5 pl-20 sm:pl-28 lg:pl-36">
-                      <div className="max-w-lg">
-                        <div
-                          className={`inline-block px-2.5 py-1 text-[11px] font-black mb-2.5 border-[3px] border-black ${
+                  <div className="absolute inset-0 flex items-end md:items-center">
+                    <div className="w-full p-5 md:p-12 lg:p-16">
+                      <div className="max-w-xl">
+                        <motion.div
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.2 }}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] md:text-xs font-black mb-3 border-[2px] border-black uppercase tracking-wider ${
                             slide.color === "pink"
                               ? "bg-brutal-pink text-white"
                               : "bg-brutal-yellow text-black"
                           }`}
-                          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
-                          <Zap size={11} className="inline mr-1" />
+                          <Zap size={12} className="fill-current" />
                           {slide.badgeText || "Promotion"}
-                        </div>
-                        <h2 className="text-lg sm:text-xl lg:text-3xl font-black text-white mb-1.5 drop-shadow-[4px_4px_0_#000]">
+                        </motion.div>
+
+                        <motion.h2
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-white mb-1.5 leading-tight drop-shadow-[3px_3px_0_rgba(0,0,0,0.8)]"
+                        >
                           {slide.title}
-                        </h2>
-                        <p className="text-white/95 text-xs sm:text-sm mb-3 font-bold">
+                        </motion.h2>
+
+                        <motion.p
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.4 }}
+                          className="text-white/90 text-xs md:text-base lg:text-lg mb-4 font-bold max-w-md line-clamp-2 md:line-clamp-none"
+                        >
                           {slide.subtitle}
-                        </p>
-                        <Link href={slide.link || "/promotions"}>
-                          <Button
-                            size="lg"
-                            className={`font-black text-xs sm:text-sm px-5 py-2.5 h-auto border-[3px] border-black ${
-                              slide.color === "pink"
-                                ? "bg-white text-black hover:bg-gray-100"
-                                : "bg-brutal-yellow text-black hover:bg-yellow-400"
-                            }`}
-                            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                          >
-                            {sectionLabels.heroButtonText}
-                            <ChevronRight size={15} className="ml-2" />
-                          </Button>
-                        </Link>
+                        </motion.p>
+
+                        <motion.div
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.5 }}
+                        >
+                          <Link href={slide.link || "/promotions"}>
+                            <Button
+                              size="sm"
+                              className={`font-black text-xs md:text-base px-5 py-2.5 h-auto border-[3px] border-black group/hero transition-all ${
+                                slide.color === "pink"
+                                  ? "bg-white text-black hover:bg-zinc-100"
+                                  : "bg-brutal-yellow text-black hover:bg-yellow-400"
+                              }`}
+                              style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                            >
+                              {sectionLabels.heroButtonText}
+                              <ChevronRight size={16} className="ml-1.5 group-hover/hero:translate-x-1 transition-transform" />
+                            </Button>
+                          </Link>
+                        </motion.div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ),
           )}
 
-          <button
-            onClick={prevSlide}
-            className="absolute left-3 sm:left-4 lg:left-5 top-1/2 -translate-y-1/2 w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7 bg-brutal-yellow border-[3px] border-black flex items-center justify-center hover:bg-yellow-400 transition-colors hidden sm:flex z-20"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            aria-label="Previous slide"
-          >
-            <ChevronLeft size={13} className="text-black sm:hidden" />
-            <ChevronLeft size={15} className="text-black hidden sm:block lg:hidden" />
-            <ChevronLeft size={17} className="text-black hidden lg:block" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-3 sm:right-4 lg:right-5 top-1/2 -translate-y-1/2 w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7 bg-brutal-yellow border-[3px] border-black flex items-center justify-center hover:bg-yellow-400 transition-colors hidden sm:flex z-20"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            aria-label="Next slide"
-          >
-            <ChevronRight size={13} className="text-black sm:hidden" />
-            <ChevronRight size={15} className="text-black hidden sm:block lg:hidden" />
-            <ChevronRight size={17} className="text-black hidden lg:block" />
-          </button>
-        </div>
-
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full border-[3px] border-black transition-all ${
-                index === currentSlide
-                  ? "bg-brutal-yellow scale-125"
-                  : "bg-white/70 hover:bg-white"
-              }`}
-              style={
-                index === currentSlide
-                  ? { boxShadow: "2px 2px 0 0 #000000" }
-                  : undefined
-              }
-            />
-          ))}
+          {/* Slider Pagination */}
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-3 z-10 md:left-auto md:right-8 md:bottom-8 md:translate-x-0">
+            {heroSlides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-3 h-3 border-[2px] border-black transition-all ${
+                  index === currentSlide
+                    ? "bg-brutal-yellow scale-125 rotate-45"
+                    : "bg-white/50 hover:bg-white"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Quick Actions - Mobile */}
-      <section className="px-4 py-4 sm:hidden">
-        <div className="grid grid-cols-4 gap-2">
+      <section className="px-4 pt-6 pb-2 md:hidden">
+        <div className="grid grid-cols-4 gap-3">
           {visibleQuickActions.map((action) => {
             const ActionIcon =
               QUICK_ACTION_ICON_MAP[action.icon] ||
@@ -587,12 +573,12 @@ export default function HomePage() {
             return (
               <Link key={action.id || action.label} href={action.href}>
                 <motion.div
-                  className={`flex flex-col items-center p-3 ${actionColor} border-[2px] border-black`}
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                  whileTap={{ scale: 0.95 }}
+                  className={`flex flex-col items-center justify-center aspect-square ${actionColor} border-[3px] border-black rounded-none`}
+                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  whileTap={{ scale: 0.95, x: 2, y: 2, boxShadow: "0px 0px 0 0 #000" }}
                 >
-                  <ActionIcon size={20} className="text-black mb-1" />
-                  <span className="text-[10px] font-bold text-black text-center">
+                  <ActionIcon size={24} className="text-black mb-1.5" />
+                  <span className="text-[11px] font-black text-black text-center leading-tight">
                     {action.label}
                   </span>
                 </motion.div>
@@ -602,62 +588,104 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 space-y-6 md:space-y-8 mt-4 md:mt-8">
+      <div className="container mx-auto px-4 space-y-8 md:space-y-12 mt-4 md:mt-10">
         {/* Search Bar - Mobile */}
-        <section className="sm:hidden">
-          <div className="relative">
+        <section className="md:hidden">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition-transform group-focus-within:translate-x-1.5 group-focus-within:translate-y-1.5" />
             <Input
-              placeholder="ค้นหาเกม..."
-              icon={<Search size={18} />}
-              className="bg-white border-[3px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
+              placeholder="ค้นหาเกมที่คุณต้องการ..."
+              icon={<Search size={20} className="text-black" />}
+              className="relative bg-white border-[3px] border-black rounded-none h-14 text-base font-bold placeholder:text-zinc-500 focus-visible:ring-0 focus-visible:border-brutal-pink transition-colors"
             />
           </div>
         </section>
 
         {/* Featured Promotion Cards */}
         {promotionsEnabled && (
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
             {promoCards.slice(0, 3).map((card, index) => {
               const isPrimary = index === 0;
               const cardClass =
                 card.theme === "pink"
-                  ? "bg-brutal-pink"
+                  ? "bg-brutal-pink text-white"
                   : card.theme === "yellow"
-                    ? "bg-brutal-yellow"
+                    ? "bg-brutal-yellow text-black"
                     : card.theme === "green"
-                      ? "bg-brutal-green"
-                      : "bg-brutal-blue";
+                      ? "bg-brutal-green text-black"
+                      : "bg-brutal-blue text-white";
+
+              const badgeClass =
+                card.theme === "yellow" || card.theme === "green"
+                  ? "bg-black text-white"
+                  : "bg-white text-black";
+
+              const btnClass =
+                card.theme === "yellow" || card.theme === "green"
+                  ? "bg-black text-white hover:bg-zinc-800"
+                  : "bg-white text-black hover:bg-zinc-100";
+
               return (
                 <motion.div
                   key={card.id}
-                  className={`${isPrimary ? "sm:col-span-2 lg:col-span-2" : ""} ${cardClass} border-[2px] border-black p-3 sm:p-4 relative overflow-hidden`}
-                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                  whileHover={{ y: -1 }}
+                  className={`${
+                    isPrimary ? "md:col-span-7 lg:col-span-8" : "md:col-span-5 lg:col-span-4"
+                  } ${cardClass} border-[3px] border-black p-6 sm:p-8 relative overflow-hidden group min-h-[220px] md:min-h-[260px] flex flex-col justify-between`}
+                  style={{ boxShadow: "8px 8px 0 0 #000000" }}
+                  whileHover={{ y: -4, x: -2, boxShadow: "10px 10px 0 0 #000000" }}
                 >
-                  <div className="relative z-10 h-full flex flex-col">
+                  <div className="relative z-10">
                     {card.badge && (
-                      <div className="inline-flex items-center gap-1 bg-brutal-yellow text-black text-[10px] px-1.5 py-0.5 font-bold border-[2px] border-black mb-1.5 self-start">
-                        <Sparkles size={10} />
+                      <div
+                        className={`inline-flex items-center gap-1.5 ${badgeClass} text-[10px] md:text-xs uppercase tracking-widest px-2.5 py-1 font-black border-[2px] border-black mb-4 self-start shadow-[2px_2px_0_0_#000]`}
+                      >
+                        <Sparkles size={14} />
                         {card.badge}
                       </div>
                     )}
-                    <h3 className="font-black text-black text-base sm:text-lg mb-1.5">
+                    <h3
+                      className={`font-black text-2xl sm:text-3xl md:text-4xl mb-3 leading-[1.1] ${
+                        card.theme === "yellow" || card.theme === "green"
+                          ? "text-black"
+                          : "text-white"
+                      } drop-shadow-[2px_2px_0_rgba(0,0,0,0.3)]`}
+                    >
                       {card.title}
                     </h3>
                     {card.description && (
-                      <p className="text-black/80 text-xs mb-3 max-w-md">
+                      <p
+                        className={`text-sm md:text-base mb-6 max-w-md font-bold leading-relaxed ${
+                          card.theme === "yellow" || card.theme === "green"
+                            ? "text-black/80"
+                            : "text-white/90"
+                        }`}
+                      >
                         {card.description}
                       </p>
                     )}
-                    <Link href={card.href || "/promotions"} className="mt-auto">
-                      <Button className="bg-black text-white hover:bg-gray-800 border-black text-xs px-3 py-1.5 h-auto">
+                  </div>
+
+                  <div className="relative z-10 flex items-center justify-between mt-auto">
+                    <Link href={card.href || "/promotions"}>
+                      <Button
+                        className={`${btnClass} border-[3px] border-black font-black text-sm md:text-base px-6 py-3 h-auto flex items-center gap-2 group/btn transition-all`}
+                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                      >
                         {card.ctaText || "ดูรายละเอียด"}
+                        <ChevronRight
+                          size={18}
+                          className="group-hover/btn:translate-x-1 transition-transform"
+                        />
                       </Button>
                     </Link>
                   </div>
-                  <div className="absolute right-[-12px] bottom-[-12px] opacity-10">
-                    <Gamepad2 size={84} />
+
+                  {/* Decorative Elements */}
+                  <div className="absolute right-[-30px] bottom-[-30px] opacity-10 group-hover:opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 ease-out">
+                    <Gamepad2 size={isPrimary ? 240 : 180} />
+                  </div>
+                  <div className="absolute top-6 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <Zap size={60} />
                   </div>
                 </motion.div>
               );
@@ -872,24 +900,16 @@ export default function HomePage() {
             </h2>
             <Link
               href="/promotions"
-              className="text-sm font-bold hover:underline flex items-center"
+              className="text-brutal-pink text-sm font-bold hover:underline flex items-center"
             >
               {sectionLabels.viewAllText}
               <ChevronRight size={16} />
             </Link>
           </div>
-          <SeasonalEventsGrid
-            title=""
-            description=""
-            events={seasonalEvents}
-            viewAllUrl="/promotions"
-            viewAllText={sectionLabels.viewAllText}
-            featuredLayout={true}
-            maxItems={1}
-          />
+          <SeasonalEventsGrid events={seasonalEvents} />
         </section>
 
-        {/* News */}
+        {/* News Section */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
@@ -898,109 +918,65 @@ export default function HomePage() {
             </h2>
             <Link
               href="/news"
-              className="text-sm font-bold hover:underline flex items-center"
+              className="text-brutal-pink text-sm font-bold hover:underline flex items-center"
             >
               {sectionLabels.viewAllText}
               <ChevronRight size={16} />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {newsArticles.length > 0
               ? newsArticles.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/news/${item.slug}`}
-                    className="block"
-                  >
+                  <Link key={item.id} href={`/news/${item.slug}`}>
                     <motion.div
-                      className="bg-white border-[2px] border-black overflow-hidden h-full"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                      whileHover={{ y: -2 }}
+                      className="bg-white border-[3px] border-black overflow-hidden hover:-translate-y-1 transition-all h-full"
+                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                      whileHover={{ scale: 1.01 }}
                     >
-                      <div className="aspect-video relative">
+                      <div className="relative aspect-video">
                         <img
-                          src={
-                            item.coverImage ||
-                            `https://placehold.co/400x250?text=${encodeURIComponent(item.title)}`
-                          }
+                          src={(item as any).featuredImage || (item as any).imageUrl || (item as any).coverImage || "https://placehold.co/600x400?text=News"}
                           alt={item.title}
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute top-2 left-2 bg-brutal-green text-black text-[10px] sm:text-xs font-bold px-2 py-0.5 border-[2px] border-black">
-                          {item.category === "general" && "ทั่วไป"}
-                          {item.category === "promotion" && "โปรโมชั่น"}
-                          {item.category === "update" && "อัปเดต"}
-                          {item.category === "event" && "กิจกรรม"}
+                        <div className="absolute top-2 left-2 bg-brutal-blue text-white text-[10px] font-bold px-2 py-1 border-[2px] border-black">
+                          {(item.category as any)?.name || (item.category as any) || "ข่าวสาร"}
                         </div>
                       </div>
-                      <div className="p-3">
-                        <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">
+                      <div className="p-3 sm:p-4">
+                        <p className="text-[10px] text-gray-500 mb-1 font-bold">
+                          {new Date(item.createdAt).toLocaleDateString("th-TH")}
+                        </p>
+                        <h3 className="text-sm sm:text-base font-black text-black line-clamp-2 leading-snug">
                           {item.title}
                         </h3>
-                        <div className="flex items-center text-gray-500 text-[10px] sm:text-xs font-medium">
-                          <Clock size={12} className="mr-1" />
-                          <span>
-                            {item.publishedAt
-                              ? new Date(item.publishedAt).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  },
-                                )
-                              : new Date(item.createdAt).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  },
-                                )}
-                          </span>
-                        </div>
                       </div>
                     </motion.div>
                   </Link>
                 ))
-              : // Fallback to newsItems from publicSettings if no API data
-                newsItems.map((item) => (
-                  <Link
+              : newsItems.map((item) => (
+                  <div
                     key={item.id}
-                    href={
-                      "href" in item && item.href
-                        ? item.href
-                        : `/news/${item.id}`
-                    }
-                    className="block"
+                    className="bg-white border-[3px] border-black overflow-hidden"
+                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   >
-                    <motion.div
-                      className="bg-white border-[2px] border-black overflow-hidden h-full"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                      whileHover={{ y: -2 }}
-                    >
-                      <div className="aspect-video relative">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-2 left-2 bg-brutal-green text-black text-[10px] sm:text-xs font-bold px-2 py-0.5 border-[2px] border-black">
-                          {item.category}
-                        </div>
-                      </div>
-                      <div className="p-3">
-                        <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">
-                          {item.title}
-                        </h3>
-                        <div className="flex items-center text-gray-500 text-[10px] sm:text-xs font-medium">
-                          <Clock size={12} className="mr-1" />
-                          <span>{item.date}</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </Link>
+                    <div className="relative aspect-video">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-3 sm:p-4">
+                      <p className="text-[10px] text-gray-500 mb-1">
+                        {item.date}
+                      </p>
+                      <h3 className="text-sm sm:text-base font-black text-black">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </div>
                 ))}
           </div>
         </section>

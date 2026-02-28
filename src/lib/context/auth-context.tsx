@@ -54,8 +54,8 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 // Token expiration buffer (refresh 1 minute before expiry)
 const TOKEN_REFRESH_BUFFER = 60 * 1000; // 1 minute in milliseconds
 
-// Default token lifetime in seconds (15 minutes)
-const DEFAULT_TOKEN_LIFETIME = 15 * 60;
+// Default token lifetime in seconds (1 day)
+const DEFAULT_TOKEN_LIFETIME = 24 * 60 * 60;
 
 /**
  * Decode JWT token to get expiration time
@@ -183,8 +183,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setAccessToken(null);
     localStorage.removeItem("auth_refresh_token");
-    // Reset session checked so next auth check will wait properly
-    setIsSessionChecked(false);
+    // Keep isSessionChecked = true so the UI shows the logged-out state
+    // (login button) instead of being stuck on a loading spinner.
+    setIsSessionChecked(true);
   }, [setToken, setUser, setIsSessionChecked]);
 
   // Schedule token refresh
@@ -223,13 +224,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         scheduleTokenRefresh(result.expiresIn);
       } else {
         console.log("[Auth] Token refresh failed");
-        toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
         clearAuth();
+        // Redirect to login so user isn't stuck on a broken page
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+          toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
+          sessionStorage.setItem("session_expired", "true");
+          window.location.href = "/login?session_expired=true";
+        }
       }
     } catch (err) {
       console.log("[Auth] Token refresh error:", err);
-      toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
       clearAuth();
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+        toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
+        sessionStorage.setItem("session_expired", "true");
+        window.location.href = "/login?session_expired=true";
+      }
     }
   }, [setToken, clearAuth, scheduleTokenRefresh]);
 
@@ -338,6 +348,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const backendUser = (nextAuthSession as any).backendUser;
 
       if (backendTokens && backendUser) {
+        // Don't sync if the backend access token is already expired
+        const remainingTime = getTokenRemainingTime(backendTokens.accessToken);
+        if (remainingTime <= 0) {
+          console.log("[Auth] NextAuth backend token is expired, skipping sync");
+          return;
+        }
+
         // Only sync if tokens are different or user is different
         const shouldSync =
           token !== backendTokens.accessToken ||
@@ -357,7 +374,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             emailVerified: backendUser.emailVerified,
             createdAt: new Date().toISOString(), // fallback
           });
-          scheduleTokenRefresh(backendTokens.expiresIn);
+          scheduleTokenRefresh(remainingTime);
           hasSyncedNextAuthRef.current = true;
           toast.success("เข้าสู่ระบบสำเร็จ!");
         }
@@ -500,7 +517,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       clearAuth();
       hasSyncedNextAuthRef.current = false;
+      // Mark session as checked so UI doesn't get stuck in loading state
+      setIsSessionChecked(true);
       toast.success("ออกจากระบบสำเร็จ");
+      // Redirect to login page after logout
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
   };
 

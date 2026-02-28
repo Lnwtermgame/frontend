@@ -265,7 +265,11 @@ const createServiceClient = (service: string): AxiosInstance => {
           if (typeof window !== "undefined") {
             setAccessToken(null);
             localStorage.removeItem("mali-gamepass-user");
-            window.location.href = "/login?session_expired=true";
+            // Only redirect if not already on the login page to prevent redirect loops
+            if (!window.location.pathname.startsWith("/login")) {
+              sessionStorage.setItem("session_expired", "true");
+              window.location.href = "/login?session_expired=true";
+            }
           }
           return Promise.reject(error);
         }

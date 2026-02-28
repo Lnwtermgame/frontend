@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
 import {
   Home,
   ShoppingCart,
@@ -44,6 +45,46 @@ import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 interface MainLayoutProps {
   children: React.ReactNode;
+}
+
+// Component that reads search params
+function SearchParamsReader({
+  children,
+}: {
+  children: (isTicketMonitorMode: boolean) => React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isTicketMonitorMode =
+    pathname.startsWith("/admin/tickets") &&
+    searchParams?.get("monitor") === "1";
+
+  return <>{children(isTicketMonitorMode)}</>;
+}
+
+// Main layout wrapper with Suspense only around search params
+function MainLayoutWrapper({ children }: MainLayoutProps) {
+  return (
+    <Suspense
+      fallback={
+        <MainLayoutContent isTicketMonitorMode={false}>
+          {children}
+        </MainLayoutContent>
+      }
+    >
+      <SearchParamsReader>
+        {(isTicketMonitorMode) => (
+          <MainLayoutContent isTicketMonitorMode={isTicketMonitorMode}>
+            {children}
+          </MainLayoutContent>
+        )}
+      </SearchParamsReader>
+    </Suspense>
+  );
+}
+
+interface MainLayoutContentProps extends MainLayoutProps {
+  isTicketMonitorMode: boolean;
 }
 
 const HeaderNavItem = memo(function HeaderNavItem({
@@ -120,13 +161,13 @@ const MobileNavItem = memo(function MobileNavItem({
   );
 });
 
-export function MainLayout({ children }: MainLayoutProps) {
+function MainLayoutContent({
+  children,
+  isTicketMonitorMode,
+}: MainLayoutContentProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const router = useRouter();
   const isFullBleedPage = pathname.startsWith("/payments/success");
-  const isTicketMonitorMode =
-    pathname.startsWith("/admin/tickets") &&
-    searchParams.get("monitor") === "1";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { settings: publicSettings } = usePublicSettings();
@@ -137,9 +178,11 @@ export function MainLayout({ children }: MainLayoutProps) {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setIsUserMenuOpen(false);
+    // Redirect to login page after logout
+    router.push("/login");
   };
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -259,9 +302,9 @@ export function MainLayout({ children }: MainLayoutProps) {
       { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
       { href: "/games", label: "เกม", icon: <Gamepad2 size={20} /> },
       {
-        href: "/news",
-        label: "ข่าว",
-        icon: <Newspaper size={20} />,
+        href: "/mobile-recharge",
+        label: "เติมเงิน",
+        icon: <Smartphone size={20} />,
       },
       {
         href: "/dashboard/orders",
@@ -804,3 +847,6 @@ export function MainLayout({ children }: MainLayoutProps) {
     </div>
   );
 }
+
+// Export wrapper with Suspense
+export { MainLayoutWrapper as MainLayout };

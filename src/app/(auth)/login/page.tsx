@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { motion } from "@/lib/framer-exports";
 import {
-  User,
   Lock,
   ArrowRight,
   Info,
@@ -14,6 +13,7 @@ import {
   Shield,
   Sparkles,
   Loader2,
+  Mail,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
@@ -49,7 +49,12 @@ function LoginContent() {
     } else if (error === "Callback") {
       toast.error("การ callback จาก OAuth ล้มเหลว");
     }
-  }, [error]);
+
+    // Clear session_expired flag if user visits login page directly (not from session expiry)
+    if (!sessionExpired && typeof window !== "undefined") {
+      sessionStorage.removeItem("session_expired");
+    }
+  }, [error, sessionExpired]);
 
   // Fetch OAuth providers
   useEffect(() => {
@@ -68,8 +73,17 @@ function LoginContent() {
     fetchOAuthProviders();
   }, []);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated (but NOT if coming from session_expired)
   useEffect(() => {
+    // Don't redirect if session expired - user needs to log in again
+    // Check both URL param and sessionStorage flag
+    const hasSessionExpiredFlag = sessionExpired ||
+      (typeof window !== "undefined" && sessionStorage.getItem("session_expired") === "true");
+
+    if (hasSessionExpiredFlag) {
+      return;
+    }
+
     if (isAuthenticated) {
       if (redirect) {
         router.push(redirect);
@@ -77,7 +91,7 @@ function LoginContent() {
         router.push("/dashboard/account");
       }
     }
-  }, [isAuthenticated, redirect, router]);
+  }, [isAuthenticated, redirect, router, sessionExpired]);
 
   // Handle OAuth login with NextAuth
   const handleOAuthLogin = async (provider: OAuthProvider) => {
@@ -89,6 +103,11 @@ function LoginContent() {
 
     try {
       console.log(`[Login] Starting OAuth sign in with ${provider.name}`);
+
+      // Clear session expired flag before OAuth login
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("session_expired");
+      }
 
       // Use NextAuth's signIn function
       await signIn(provider.name as "discord" | "google", {
@@ -121,6 +140,10 @@ function LoginContent() {
     try {
       const success = await login(email, password);
       if (success) {
+        // Clear session expired flag on successful login
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("session_expired");
+        }
         if (redirect) {
           router.push(redirect);
         } else {
@@ -229,58 +252,62 @@ function LoginContent() {
               </div>
             )}
 
-            <h2 className="text-3xl font-black text-black mb-2 thai-font">
-              เข้าสู่ระบบ
-            </h2>
-            <p className="text-gray-600 mb-8 thai-font">
-              ยังไม่มีบัญชี?{" "}
-              <Link
-                href="/register"
-                className="text-brutal-blue font-bold hover:underline"
-              >
-                สมัครสมาชิก
-              </Link>
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-black mb-2 thai-font">
-                  อีเมล
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    placeholder="your@email.com"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex items-center justify-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
+                <Zap className="w-5 h-5 text-black" fill="currentColor" />
               </div>
+              <span className="text-xl font-black text-black thai-font">
+                {siteName}
+              </span>
+            </div>
 
-              <div>
-                <label className="block text-sm font-bold text-black mb-2 thai-font">
-                  รหัสผ่าน
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
-                    placeholder="••••••••"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="flex justify-end mt-2">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-black text-black mb-2 thai-font">
+                เข้าสู่ระบบ
+              </h2>
+              <p className="text-gray-500 thai-font">
+                ยังไม่มีบัญชี?{" "}
+                <Link
+                  href="/register"
+                  className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
+                >
+                  สมัครสมาชิก
+                </Link>
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                id="email"
+                label="อีเมล"
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+                icon={<Mail className="h-5 w-5" />}
+                autoComplete="email"
+              />
+
+              <div className="space-y-1.5">
+                <Input
+                  id="password"
+                  label="รหัสผ่าน"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  icon={<Lock className="h-5 w-5" />}
+                  autoComplete="current-password"
+                />
+                <div className="flex justify-end">
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-brutal-blue font-bold hover:underline thai-font"
+                    className="text-sm text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors thai-font"
                   >
                     ลืมรหัสผ่าน?
                   </Link>
@@ -289,14 +316,14 @@ function LoginContent() {
 
               <Button
                 type="submit"
-                className="w-full"
+                variant="default"
                 disabled={isLoading}
                 isLoading={isLoading}
+                size="full"
               >
                 {!isLoading && (
                   <>
-                    เข้าสู่ระบบ
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    เข้าสู่ระบบ <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
               </Button>
@@ -305,12 +332,12 @@ function LoginContent() {
             {/* OAuth Section */}
             {oauthProviders.length > 0 && (
               <>
-                <div className="relative my-8">
+                <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
+                    <div className="w-full border-t border-gray-200"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500 thai-font">
+                    <span className="px-3 bg-white text-gray-500 thai-font">
                       หรือเข้าสู่ระบบด้วย
                     </span>
                   </div>
@@ -327,7 +354,8 @@ function LoginContent() {
                         key={provider.id}
                         type="button"
                         variant="outline"
-                        className="w-full"
+                        size="md"
+                        className="max-w-[40%] mx-auto"
                         onClick={() => handleOAuthLogin(provider)}
                       >
                         {provider.iconUrl && (

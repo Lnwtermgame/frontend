@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import {
   AlertCircle,
   CheckCheck,
@@ -78,7 +79,7 @@ function toCsvCell(value: string | number | null | undefined): string {
   return text;
 }
 
-export default function AdminTicketsPage() {
+function AdminTicketsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAdmin, isInitialized } = useAuth();
@@ -1156,5 +1157,24 @@ export default function AdminTicketsPage() {
     <div className="min-h-screen bg-gray-50">{content}</div>
   ) : (
     <AdminLayout title="ตั๋วซัพพอร์ต">{content}</AdminLayout>
+  );
+}
+
+// Wrapper with Suspense boundary
+export default function AdminTicketsPage() {
+  return (
+    <Suspense fallback={<AdminTicketsLoadingFallback />}>
+      <AdminTicketsPageContent />
+    </Suspense>
+  );
+}
+
+function AdminTicketsLoadingFallback() {
+  return (
+    <AdminLayout title="ตั๋วซัพพอร์ต">
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+      </div>
+    </AdminLayout>
   );
 }

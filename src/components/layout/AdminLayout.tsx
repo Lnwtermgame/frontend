@@ -44,7 +44,7 @@ const adminNavCategories = [
         href: "/admin/analytics",
         icon: <TrendingUp className="w-4 h-4" />,
       },
-    ]
+    ],
   },
   {
     title: "สินค้า & การขาย",
@@ -74,7 +74,7 @@ const adminNavCategories = [
         href: "/admin/promotions",
         icon: <Tag className="w-4 h-4" />,
       },
-    ]
+    ],
   },
   {
     title: "เนื้อหา",
@@ -94,7 +94,7 @@ const adminNavCategories = [
         href: "/admin/faq",
         icon: <HelpCircle className="w-4 h-4" />,
       },
-    ]
+    ],
   },
   {
     title: "ผู้ใช้ & การสื่อสาร",
@@ -119,7 +119,7 @@ const adminNavCategories = [
         href: "/admin/email",
         icon: <Mail className="w-4 h-4" />,
       },
-    ]
+    ],
   },
   {
     title: "ระบบ",
@@ -134,12 +134,12 @@ const adminNavCategories = [
         href: "/admin/oauth",
         icon: <Key className="w-4 h-4" />,
       },
-    ]
+    ],
   },
 ];
 
 // Flatten for mobile menu
-const allNavItems = adminNavCategories.flatMap(category => category.items);
+const allNavItems = adminNavCategories.flatMap((category) => category.items);
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -267,7 +267,10 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               ))}
               <hr className="border-gray-200 my-4" />
               <button
-                onClick={() => logout()}
+                onClick={async () => {
+                  await logout();
+                  router.push("/login");
+                }}
                 className="flex items-center w-full py-2 px-3 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors thai-font font-medium text-sm"
               >
                 <LogOut className="w-4 h-4 mr-2" />
@@ -317,7 +320,9 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                               : undefined
                           }
                         >
-                          <span className="text-gray-500 mr-2">{item.icon}</span>
+                          <span className="text-gray-500 mr-2">
+                            {item.icon}
+                          </span>
                           {item.title}
                         </div>
                       </Link>
@@ -344,7 +349,10 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                   </div>
                 </div>
                 <button
-                  onClick={() => logout()}
+                  onClick={async () => {
+                    await logout();
+                    router.push("/login");
+                  }}
                   className="flex items-center justify-center w-full py-1.5 px-3 text-brutal-pink hover:bg-brutal-pink/10 transition-colors text-xs font-bold thai-font border-[2px] border-transparent hover:border-brutal-pink"
                 >
                   <LogOut className="w-3 h-3 mr-1" />

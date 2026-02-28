@@ -188,7 +188,7 @@ export default function RootLayout({
             </NotificationProvider>
           </AuthProvider>
         </NextAuthProvider>
-        {/* <TawkTo /> */}
+        <TawkTo />
       </body>
     </html>
   );

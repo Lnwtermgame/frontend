@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { cn } from "@/lib/utils";
 import {
@@ -16,6 +16,7 @@ import {
   LogOut,
   ChevronRight,
   Star,
+  Newspaper,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/auth-context";
 
@@ -26,7 +27,14 @@ interface MobileNavProps {
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    onClose();
+    router.push("/login");
+  };
 
   const mainNavItems = [
     { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
@@ -36,6 +44,11 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       href: "/mobile-recharge",
       label: "เติมเงินมือถือ",
       icon: <Smartphone size={20} />,
+    },
+    {
+      href: "/news",
+      label: "ข่าวสาร",
+      icon: <Newspaper size={20} />,
     },
     {
       href: "/dashboard/favorite",
@@ -64,12 +77,12 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
           {/* Drawer */}
           <motion.div
-            initial={{ x: "100%" }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 bottom-0 right-0 w-[80%] max-w-sm bg-white z-50 border-l-[3px] border-black flex flex-col lg:hidden"
-            style={{ boxShadow: "-4px 0 0 0 rgba(0,0,0,0.1)" }}
+            className="fixed top-0 bottom-0 left-0 w-[80%] max-w-sm bg-white z-50 border-r-[3px] border-black flex flex-col lg:hidden"
+            style={{ boxShadow: "4px 0 0 0 rgba(0,0,0,0.1)" }}
           >
             {/* Header */}
             <div className="h-16 flex items-center justify-between px-4 border-b-[3px] border-black bg-brutal-yellow">
@@ -182,10 +195,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             {isAuthenticated && (
               <div className="p-4 border-t-[3px] border-black bg-gray-50">
                 <button
-                  onClick={() => {
-                    logout();
-                    onClose();
-                  }}
+                  onClick={handleLogout}
                   className="flex items-center justify-center w-full py-3 text-red-500 font-bold border-[2px] border-red-500 hover:bg-red-50 transition-colors"
                 >
                   <LogOut size={20} className="mr-2" />

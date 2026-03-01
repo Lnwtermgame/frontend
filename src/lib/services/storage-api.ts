@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { getAccessToken } from "@/lib/client/gateway";
+import { getAccessToken, GATEWAY_URL } from "@/lib/client/gateway";
 
 /**
  * Check if URL is from Appwrite Storage
@@ -32,7 +32,7 @@ export async function deleteImageFromStorage(fileId: string): Promise<boolean> {
   try {
     console.log("[Storage] Deleting old file:", fileId);
     const token = getAccessToken();
-    const response = await fetch(`/api/storage?fileId=${fileId}`, {
+    const response = await fetch(`${GATEWAY_URL}/api/storage/${fileId}`, {
       method: "DELETE",
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
@@ -81,7 +81,7 @@ export async function processImageUrl(
     formData.append("folder", folder);
     const token = getAccessToken();
 
-    const response = await fetch("/api/storage", {
+    const response = await fetch(`${GATEWAY_URL}/api/storage`, {
       method: "POST",
       body: formData,
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
@@ -133,7 +133,7 @@ export async function uploadImageToStorage(
     formData.append("folder", folder);
     const token = getAccessToken();
 
-    const response = await fetch("/api/storage", {
+    const response = await fetch(`${GATEWAY_URL}/api/storage`, {
       method: "POST",
       body: formData,
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,

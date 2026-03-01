@@ -67,5 +67,4 @@ export {
   supportClient,
   publicClient,
   cartClient, // Alias for orderClient (backward compat)
-  creditClient, // Alias for paymentClient (backward compat)
 } from "@/lib/client/gateway";

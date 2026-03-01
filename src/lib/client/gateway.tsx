@@ -428,5 +428,3 @@ export const notificationClient = createServiceClient("notification");
 // Legacy exports (kept for backward compatibility, map to same clients)
 // Cart API now uses orderClient - cart merged into order service
 export const cartClient = orderClient;
-// Credit API now uses paymentClient - credit merged into payment service
-export const creditClient = paymentClient;

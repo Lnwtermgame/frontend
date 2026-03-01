@@ -218,6 +218,7 @@ export default function GameDetailsPage() {
   const [similarGames, setSimilarGames] = useState<Product[]>([]);
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const backHref = "/games";
   const backLabel = "ย้อนกลับ";
@@ -378,6 +379,7 @@ export default function GameDetailsPage() {
     }
 
     setShowConfirmModal(true);
+    setTermsAccepted(false); // Reset acceptance state when opening
     setVerificationStatus({
       supported: true,
       productName: game?.title || product?.name || "",
@@ -908,11 +910,10 @@ export default function GameDetailsPage() {
                             <motion.div
                               key={option.id}
                               onClick={() => setSelectedOption(option.id)}
-                              className={`relative border-[3px] p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] ${
-                                selectedOption === option.id
+                              className={`relative border-[3px] p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] ${selectedOption === option.id
                                   ? "bg-brutal-yellow border-black"
                                   : "bg-white border-black hover:bg-gray-100"
-                              }`}
+                                }`}
                               style={{
                                 boxShadow:
                                   selectedOption === option.id
@@ -980,11 +981,10 @@ export default function GameDetailsPage() {
                                 setSelectedOption(option.id);
                                 setIsOptionsModalOpen(false);
                               }}
-                              className={`relative border-[3px] p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] ${
-                                selectedOption === option.id
+                              className={`relative border-[3px] p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] ${selectedOption === option.id
                                   ? "bg-brutal-yellow border-black"
                                   : "bg-white border-black hover:bg-gray-100"
-                              }`}
+                                }`}
                               style={{
                                 boxShadow:
                                   selectedOption === option.id
@@ -1623,8 +1623,8 @@ export default function GameDetailsPage() {
                             ฿
                             {Number(
                               priceSummary.base ||
-                                verificationStatus.price ||
-                                0,
+                              verificationStatus.price ||
+                              0,
                             ).toFixed(2)}
                           </span>
                         </div>
@@ -1643,8 +1643,8 @@ export default function GameDetailsPage() {
                               ฿
                               {Number(
                                 priceSummary.total ||
-                                  verificationStatus.price ||
-                                  0,
+                                verificationStatus.price ||
+                                0,
                               ).toFixed(2)}
                             </span>
                           </div>
@@ -1660,13 +1660,31 @@ export default function GameDetailsPage() {
 
                     {/* Action Buttons - Side by Side Layout */}
                     <div className="pt-4 border-t border-gray-200">
+                      {/* Terms and Conditions Checkbox */}
+                      <div className="mb-4">
+                        <label className="flex items-start gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={termsAccepted}
+                            onChange={(e) => setTermsAccepted(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 accent-black flex-shrink-0 cursor-pointer"
+                          />
+                          <span className="text-xs text-gray-600 leading-tight">
+                            ฉันได้อ่านและยอมรับ{" "}
+                            <Link href="/terms" target="_blank" className="text-brutal-pink hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>เงื่อนไขการให้บริการ</Link>,{" "}
+                            <Link href="/privacy" target="_blank" className="text-brutal-pink hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>นโยบายความเป็นส่วนตัว</Link> และ{" "}
+                            <Link href="/refund-policy" target="_blank" className="text-brutal-pink hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>นโยบายการคืนเงิน</Link>
+                          </span>
+                        </label>
+                      </div>
+
                       <div className="flex flex-col sm:flex-row gap-3">
                         {/* Primary Action - Confirm */}
                         <Button
                           onClick={createOrder}
-                          disabled={isBuying}
+                          disabled={isBuying || !termsAccepted}
                           isLoading={isBuying}
-                          className="flex-1 bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-base sm:text-lg font-bold shadow-[3px_3px_0_0_#000] border-[2px] border-black"
+                          className="flex-1 bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-base sm:text-lg font-bold shadow-[3px_3px_0_0_#000] border-[2px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {!isBuying && <Check size={20} className="mr-2" />}
                           ยืนยันการสั่งซื้อ
@@ -1741,9 +1759,8 @@ export default function GameDetailsPage() {
                     return (
                       <label
                         key={opt.code}
-                        className={`border-[2px] border-black p-4 flex flex-col gap-3 cursor-pointer transition-all ${
-                          isActive ? "bg-brutal-yellow" : "bg-white"
-                        }`}
+                        className={`border-[2px] border-black p-4 flex flex-col gap-3 cursor-pointer transition-all ${isActive ? "bg-brutal-yellow" : "bg-white"
+                          }`}
                         style={{ boxShadow: "2px 2px 0 0 #000" }}
                       >
                         <div className="flex items-start justify-between gap-3">

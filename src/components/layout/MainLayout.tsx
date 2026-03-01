@@ -289,12 +289,12 @@ function MainLayoutContent({
       },
       ...(isAdmin
         ? [
-            {
-              href: "/admin",
-              label: "แอดมิน",
-              icon: <Shield size={20} />,
-            },
-          ]
+          {
+            href: "/admin",
+            label: "แอดมิน",
+            icon: <Shield size={20} />,
+          },
+        ]
         : []),
     ],
     [isAdmin],
@@ -648,7 +648,7 @@ function MainLayoutContent({
                       <span className="text-sm font-bold w-[100px] truncate text-left leading-tight">
                         {user?.username}
                       </span>
-                      <span className="text-[10px] text-gray-500">Member</span>
+                      <span className="text-[10px] text-gray-500">{isAdmin ? "Admin" : "Member"}</span>
                     </div>
                     <ChevronDown
                       size={14}

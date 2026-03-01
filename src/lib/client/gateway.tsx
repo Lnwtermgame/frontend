@@ -162,7 +162,7 @@ const fetchCsrfToken = async (): Promise<string> => {
   return csrfFetchPromise;
 };
 
-const ensureCsrfToken = async (): Promise<string> => {
+export const ensureCsrfToken = async (): Promise<string> => {
   if (csrfToken) return csrfToken;
   return fetchCsrfToken();
 };

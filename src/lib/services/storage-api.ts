@@ -1,5 +1,17 @@
 import toast from "react-hot-toast";
-import { getAccessToken, GATEWAY_URL } from "@/lib/client/gateway";
+import { getAccessToken, GATEWAY_URL, ensureCsrfToken } from "@/lib/client/gateway";
+
+async function getStorageHeaders(includeContentType?: boolean): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {};
+  const token = getAccessToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  try {
+    const csrf = await ensureCsrfToken();
+    if (csrf) headers["X-CSRF-Token"] = csrf;
+  } catch { /* proceed without CSRF */ }
+  if (includeContentType) headers["Content-Type"] = "application/json";
+  return headers;
+}
 
 /**
  * Check if URL is from Appwrite Storage
@@ -31,10 +43,11 @@ export function extractFileIdFromUrl(url: string): string | null {
 export async function deleteImageFromStorage(fileId: string): Promise<boolean> {
   try {
     console.log("[Storage] Deleting old file:", fileId);
-    const token = getAccessToken();
+    const headers = await getStorageHeaders();
     const response = await fetch(`${GATEWAY_URL}/api/storage/${fileId}`, {
       method: "DELETE",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      headers,
+      credentials: "include",
     });
 
     const result = await response.json();
@@ -79,12 +92,13 @@ export async function processImageUrl(
     const formData = new FormData();
     formData.append("imageUrl", imageUrl);
     formData.append("folder", folder);
-    const token = getAccessToken();
+    const headers = await getStorageHeaders();
 
     const response = await fetch(`${GATEWAY_URL}/api/storage`, {
       method: "POST",
       body: formData,
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      headers,
+      credentials: "include",
     });
 
     const result = await response.json();
@@ -131,12 +145,13 @@ export async function uploadImageToStorage(
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
-    const token = getAccessToken();
+    const headers = await getStorageHeaders();
 
     const response = await fetch(`${GATEWAY_URL}/api/storage`, {
       method: "POST",
       body: formData,
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      headers,
+      credentials: "include",
     });
 
     const result = await response.json();

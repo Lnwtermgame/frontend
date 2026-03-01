@@ -110,19 +110,19 @@ export interface PaymentAuditLogItem {
   source: string;
   severity: "INFO" | "WARN" | "ALERT";
   previousStatus?:
-    | "PENDING"
-    | "PROCESSING"
-    | "COMPLETED"
-    | "FAILED"
-    | "REFUNDED"
-    | null;
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED"
+  | "REFUNDED"
+  | null;
   newStatus?:
-    | "PENDING"
-    | "PROCESSING"
-    | "COMPLETED"
-    | "FAILED"
-    | "REFUNDED"
-    | null;
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED"
+  | "REFUNDED"
+  | null;
   message: string;
   metadata?: Record<string, unknown> | null;
   createdAt: string;
@@ -165,6 +165,17 @@ class PaymentApiService {
     orderId: string,
   ): Promise<{ success: boolean; data: PaymentStatusResponse }> {
     const response = await paymentClient.get(`/api/payments/${orderId}`);
+    return response.data;
+  }
+
+  async verifyPublic(
+    orderId: string,
+    sessionId: string,
+  ): Promise<{ success: boolean; data: PaymentStatusResponse }> {
+    const response = await paymentClient.get(
+      `/api/payments/${orderId}/verify`,
+      { params: { session_id: sessionId } },
+    );
     return response.data;
   }
 

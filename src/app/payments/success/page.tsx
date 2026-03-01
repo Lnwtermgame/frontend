@@ -38,7 +38,11 @@ function PaymentSuccessPageContent() {
       }
 
       try {
-        const res = await paymentApi.getStatus(orderId);
+        // Use public verify endpoint with session_id (no auth needed)
+        // Falls back to authenticated endpoint if session_id is not available
+        const res = sessionId
+          ? await paymentApi.verifyPublic(orderId, sessionId)
+          : await paymentApi.getStatus(orderId);
 
         if (!res.success) {
           setStatus("failed");
@@ -95,7 +99,7 @@ function PaymentSuccessPageContent() {
         clearInterval(timer);
       }
     };
-  }, [orderId]);
+  }, [orderId, sessionId]);
 
   const statusConfig = {
     success: {

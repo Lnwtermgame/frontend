@@ -19,8 +19,6 @@ import {
   Flame,
   Loader2,
 } from "lucide-react";
-import { SeasonalEventsGrid } from "@/components/promotion/SeasonalEventsGrid";
-import { SeasonalEventProps } from "@/components/promotion/SeasonalEventCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { productApi, Product } from "@/lib/services/product-api";
@@ -179,20 +177,7 @@ const DEFAULT_NEWS_ITEMS = [
     category: "Update",
   },
 ];
-const DEFAULT_SEASONAL_EVENTS: SeasonalEventProps[] = [
-  {
-    id: "event-1",
-    title: "Top up and get 10% bonus credits",
-    description: "Receive 10% cashback via selected payment channels",
-    image: "https://placehold.co/1200x400/FFD93D/000000?text=PromotionBanner",
-    startDate: "2025-03-01",
-    endDate: "2025-04-30",
-    type: "cashback",
-    discount: "10%",
-    discountColor: "blue",
-    games: ["Mobile Legends", "PUBG Mobile", "Free Fire", "Valorant"],
-  },
-];
+
 const DEFAULT_QUICK_ACTIONS = [
   {
     id: "qa-default-1",
@@ -332,13 +317,7 @@ export default function HomePage() {
         : DEFAULT_NEWS_ITEMS,
     [publicSettings],
   );
-  const seasonalEvents = useMemo<SeasonalEventProps[]>(
-    () =>
-      publicSettings?.homepage?.seasonalEvents?.length
-        ? publicSettings.homepage.seasonalEvents
-        : DEFAULT_SEASONAL_EVENTS,
-    [publicSettings],
-  );
+
   const promotionsEnabled = publicSettings?.features.enablePromotions ?? true;
   const supportTicketsEnabled =
     publicSettings?.features.enableSupportTickets ?? true;
@@ -532,7 +511,10 @@ export default function HomePage() {
                               style={{ boxShadow: "3px 3px 0 0 #000000" }}
                             >
                               {sectionLabels.heroButtonText}
-                              <ChevronRight size={16} className="ml-1.5 group-hover/hero:translate-x-1 transition-transform" />
+                              <ChevronRight
+                                size={16}
+                                className="ml-1.5 group-hover/hero:translate-x-1 transition-transform"
+                              />
                             </Button>
                           </Link>
                         </motion.div>
@@ -575,7 +557,12 @@ export default function HomePage() {
                 <motion.div
                   className={`flex flex-col items-center justify-center aspect-square ${actionColor} border-[3px] border-black rounded-none`}
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                  whileTap={{ scale: 0.95, x: 2, y: 2, boxShadow: "0px 0px 0 0 #000" }}
+                  whileTap={{
+                    scale: 0.95,
+                    x: 2,
+                    y: 2,
+                    boxShadow: "0px 0px 0 0 #000",
+                  }}
                 >
                   <ActionIcon size={24} className="text-black mb-1.5" />
                   <span className="text-[11px] font-black text-black text-center leading-tight">
@@ -629,10 +616,16 @@ export default function HomePage() {
                 <motion.div
                   key={card.id}
                   className={`${
-                    isPrimary ? "md:col-span-7 lg:col-span-8" : "md:col-span-5 lg:col-span-4"
+                    isPrimary
+                      ? "md:col-span-7 lg:col-span-8"
+                      : "md:col-span-5 lg:col-span-4"
                   } ${cardClass} border-[3px] border-black p-6 sm:p-8 relative overflow-hidden group min-h-[220px] md:min-h-[260px] flex flex-col justify-between`}
                   style={{ boxShadow: "8px 8px 0 0 #000000" }}
-                  whileHover={{ y: -4, x: -2, boxShadow: "10px 10px 0 0 #000000" }}
+                  whileHover={{
+                    y: -4,
+                    x: -2,
+                    boxShadow: "10px 10px 0 0 #000000",
+                  }}
                 >
                   <div className="relative z-10">
                     {card.badge && (
@@ -891,24 +884,6 @@ export default function HomePage() {
           })}
         </section>
 
-        {/* Special Events */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
-              <span className="w-1.5 h-5 sm:h-6 bg-brutal-yellow mr-2"></span>
-              {sectionLabels.specialsTitle}
-            </h2>
-            <Link
-              href="/promotions"
-              className="text-brutal-pink text-sm font-bold hover:underline flex items-center"
-            >
-              {sectionLabels.viewAllText}
-              <ChevronRight size={16} />
-            </Link>
-          </div>
-          <SeasonalEventsGrid events={seasonalEvents} />
-        </section>
-
         {/* News Section */}
         <section>
           <div className="flex items-center justify-between mb-4">
@@ -936,12 +911,19 @@ export default function HomePage() {
                     >
                       <div className="relative aspect-video">
                         <img
-                          src={(item as any).featuredImage || (item as any).imageUrl || (item as any).coverImage || "https://placehold.co/600x400?text=News"}
+                          src={
+                            (item as any).featuredImage ||
+                            (item as any).imageUrl ||
+                            (item as any).coverImage ||
+                            "https://placehold.co/600x400?text=News"
+                          }
                           alt={item.title}
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute top-2 left-2 bg-brutal-blue text-white text-[10px] font-bold px-2 py-1 border-[2px] border-black">
-                          {(item.category as any)?.name || (item.category as any) || "ข่าวสาร"}
+                          {(item.category as any)?.name ||
+                            (item.category as any) ||
+                            "ข่าวสาร"}
                         </div>
                       </div>
                       <div className="p-3 sm:p-4">

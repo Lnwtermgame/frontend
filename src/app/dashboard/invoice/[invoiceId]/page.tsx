@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { motion } from "@/lib/framer-exports";
@@ -25,6 +25,7 @@ import {
 
 export default function InvoiceDetailPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
   const { settings: publicSettings } = usePublicSettings();
   const { invoiceId } = useParams();
@@ -250,7 +251,7 @@ export default function InvoiceDetailPage() {
     if (!isInitialized) return;
 
     if (!user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 

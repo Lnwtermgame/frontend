@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { invoiceApi } from "@/lib/services/invoice-api";
 import {
@@ -33,6 +33,7 @@ interface Invoice {
 
 export default function InvoicePage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,9 +83,9 @@ export default function InvoicePage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   // Filter invoices
   useEffect(() => {

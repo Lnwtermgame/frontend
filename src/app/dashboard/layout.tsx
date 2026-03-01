@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/lib/hooks/use-auth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import UserSidebar, { DashboardLayout } from "@/components/account/UserSidebar";
 
@@ -11,13 +11,14 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isSessionChecked } = useAuth();
 
   useEffect(() => {
     if (isSessionChecked && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isSessionChecked]);
+  }, [user, router, isSessionChecked, pathname]);
 
   if (!isSessionChecked) {
     return null;

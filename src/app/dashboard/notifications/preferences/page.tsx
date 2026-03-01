@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useNotifications } from "@/lib/context/notification-context";
 import {
@@ -25,6 +25,7 @@ import toast from "react-hot-toast";
 
 export default function NotificationPreferencesPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
   const { isPushSupported, isPushSubscribed, subscribePush, unsubscribePush } =
     useNotifications();
@@ -79,9 +80,9 @@ export default function NotificationPreferencesPage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   // Handle saving preferences
   const savePreferences = async () => {

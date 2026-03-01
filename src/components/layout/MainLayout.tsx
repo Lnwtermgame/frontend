@@ -24,6 +24,7 @@ import {
   Smartphone,
   Loader2,
   Newspaper,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
@@ -171,7 +172,7 @@ function MainLayoutContent({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { settings: publicSettings } = usePublicSettings();
-  const { user, isAuthenticated, isInitialized, logout } = useAuth();
+  const { user, isAuthenticated, isInitialized, logout, isAdmin } = useAuth();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const toggleUserMenu = () => {
@@ -182,7 +183,7 @@ function MainLayoutContent({
     await logout();
     setIsUserMenuOpen(false);
     // Redirect to login page after logout
-    router.push("/login");
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
   };
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -286,8 +287,17 @@ function MainLayoutContent({
         label: "ช่วยเหลือ",
         icon: <MessageCircle size={20} />,
       },
+      ...(isAdmin
+        ? [
+            {
+              href: "/admin",
+              label: "แอดมิน",
+              icon: <Shield size={20} />,
+            },
+          ]
+        : []),
     ],
-    [],
+    [isAdmin],
   );
   const visibleMainNavItems = useMemo(
     () =>
@@ -696,7 +706,7 @@ function MainLayoutContent({
                               คะแนนสะสม
                             </span>
                             <span className="text-black font-bold font-mono">
-                              {user?.credits?.toLocaleString()}
+                              เร็วๆนี้
                             </span>
                           </div>
                         </div>

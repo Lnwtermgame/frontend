@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useCart } from "@/lib/hooks/use-cart";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 
 export function Header() {
@@ -23,6 +23,7 @@ export function Header() {
   const { getTotalItems } = useCart();
   const cartItemCount = getTotalItems();
   const router = useRouter();
+  const pathname = usePathname();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -53,7 +54,7 @@ export function Header() {
   const handleLogout = async () => {
     await logout();
     setShowUserMenu(false);
-    router.push("/login");
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
   };
 
   // Animation variants
@@ -377,7 +378,9 @@ export function Header() {
                 whileTap={{ scale: 0.95 }}
                 className="bg-black text-white text-sm px-5 py-2.5 border-[3px] border-black font-bold thai-font"
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                onClick={() => router.push("/login")}
+                onClick={() =>
+                  router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
+                }
               >
                 เข้าสู่ระบบ
               </motion.button>

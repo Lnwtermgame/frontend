@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { creditApi, CreditTransaction } from "@/lib/services/credit-api";
 import {
@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 
 export default function CreditsPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
 
   const [balance, setBalance] = useState(0);
@@ -79,9 +80,9 @@ export default function CreditsPage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   // Filter transactions based on selected period
   useEffect(() => {

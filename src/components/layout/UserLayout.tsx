@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/lib/hooks/use-auth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import UserSidebar, { DashboardLayout } from "@/components/account/UserSidebar";
 import { motion } from "@/lib/framer-exports";
@@ -13,13 +13,14 @@ interface UserLayoutProps {
 
 export default function UserLayout({ children, title }: UserLayoutProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
 
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   if (!isInitialized || !user) {
     return (

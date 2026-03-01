@@ -33,7 +33,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const handleLogout = async () => {
     await logout();
     onClose();
-    router.push("/login");
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
   };
 
   const mainNavItems = [

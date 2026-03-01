@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { couponApi, UserCoupon } from "@/lib/services/coupon-api";
 import {
@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 
 export default function CouponsPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isSessionChecked } = useAuth();
   const [coupons, setCoupons] = useState<UserCoupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,9 +75,9 @@ export default function CouponsPage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isSessionChecked && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isSessionChecked]);
+  }, [user, router, isSessionChecked, pathname]);
 
   // Filter coupons based on search term and status
   useEffect(() => {
@@ -512,7 +513,9 @@ export default function CouponsPage() {
             transition={{ delay: 0.3 }}
             whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-3 thai-font text-sm">วิธีใช้งาน</h2>
+            <h2 className="text-black font-bold mb-3 thai-font text-sm">
+              วิธีใช้งาน
+            </h2>
             <div className="space-y-3">
               <div className="flex">
                 <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   ArrowLeft,
@@ -34,6 +34,7 @@ import toast from "react-hot-toast";
 export default function OrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
   const [order, setOrder] = useState<Order | null>(null);
   const [deliveryStatus, setDeliveryStatus] =
@@ -48,9 +49,9 @@ export default function OrderDetailsPage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   // Fetch order data
   useEffect(() => {
@@ -635,7 +636,9 @@ export default function OrderDetailsPage() {
                 </div>
               )}
               <div className="border-t-[2px] border-black my-2 pt-2 flex justify-between items-center">
-                <span className="font-bold text-black text-sm">ยอดรวมทั้งสิ้น</span>
+                <span className="font-bold text-black text-sm">
+                  ยอดรวมทั้งสิ้น
+                </span>
                 <span className="font-bold text-lg text-black">
                   {formatPrice(order.finalAmount)}
                 </span>

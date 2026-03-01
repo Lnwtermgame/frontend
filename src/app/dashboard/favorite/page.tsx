@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { favoriteApi, Favorite } from "@/lib/services/favorite-api";
 import { getMinPrice, formatPrice } from "@/lib/utils";
@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 
 export default function FavoritePage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
 
   const [favorites, setFavorites] = useState<Favorite[]>([]);
@@ -68,9 +69,9 @@ export default function FavoritePage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   // Filter favorites based on search term
   useEffect(() => {

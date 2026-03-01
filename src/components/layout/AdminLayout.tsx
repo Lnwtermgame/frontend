@@ -269,7 +269,9 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <button
                 onClick={async () => {
                   await logout();
-                  router.push("/login");
+                  router.push(
+                    `/login?redirect=${encodeURIComponent(pathname)}`,
+                  );
                 }}
                 className="flex items-center w-full py-2 px-3 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors thai-font font-medium text-sm"
               >
@@ -351,7 +353,9 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 <button
                   onClick={async () => {
                     await logout();
-                    router.push("/login");
+                    router.push(
+                      `/login?redirect=${encodeURIComponent(pathname)}`,
+                    );
                   }}
                   className="flex items-center justify-center w-full py-1.5 px-3 text-brutal-pink hover:bg-brutal-pink/10 transition-colors text-xs font-bold thai-font border-[2px] border-transparent hover:border-brutal-pink"
                 >

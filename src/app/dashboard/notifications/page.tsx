@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useNotifications } from "@/lib/context/notification-context";
 import { notificationApi, Notification } from "@/lib/services/notification-api";
@@ -27,6 +27,7 @@ import Link from "next/link";
 
 export default function NotificationsPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isInitialized } = useAuth();
   const { isWebSocketConnected } = useNotifications();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -81,9 +82,9 @@ export default function NotificationsPage() {
   // If not logged in, redirect to login page
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [user, router, isInitialized]);
+  }, [user, router, isInitialized, pathname]);
 
   // Mark all as read
   const markAllAsRead = async () => {

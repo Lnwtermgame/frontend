@@ -133,7 +133,7 @@ const MobileNavItem = memo(function MobileNavItem({
     <Link
       href={href}
       className={cn(
-        "flex items-center justify-center flex-col gap-1 py-2 w-full transition-all",
+        "flex items-center justify-center flex-col gap-1 py-1 w-full transition-all group",
         isActive ? "text-brutal-pink" : "text-gray-500",
       )}
       onClick={onClick}
@@ -141,23 +141,23 @@ const MobileNavItem = memo(function MobileNavItem({
     >
       <div
         className={cn(
-          "flex items-center justify-center w-10 h-10 transition-all",
+          "flex items-center justify-center w-10 h-10 transition-all group-active:translate-y-[2px] group-active:translate-x-[2px]",
           isActive
             ? "bg-brutal-yellow border-[3px] border-black"
-            : "transparent",
+            : "transparent border-[2px] border-transparent",
         )}
         style={isActive ? { boxShadow: "3px 3px 0 0 #000000" } : undefined}
       >
         <span
           className={cn(
             "flex items-center justify-center",
-            isActive ? "text-black" : "text-gray-500",
+            isActive ? "text-black" : "text-gray-500 group-hover:text-black",
           )}
         >
           {icon}
         </span>
       </div>
-      <span className="text-xs font-medium">{label}</span>
+      <span className="text-[10px] font-bold mt-0.5">{label}</span>
     </Link>
   );
 });
@@ -444,7 +444,7 @@ function MainLayoutContent({
   if (shouldShowMaintenanceScreen) {
     return (
       <div
-        className="flex min-h-screen items-center justify-center bg-brutal-gray p-6"
+        className="flex min-h-screen items-center justify-center bg-brutal-grid bg-fixed p-6"
         style={dynamicThemeStyle}
       >
         <div
@@ -468,7 +468,7 @@ function MainLayoutContent({
 
   return (
     <div
-      className="flex min-h-screen bg-brutal-gray thai-font w-full max-w-full overflow-x-clip"
+      className="flex min-h-screen bg-brutal-grid bg-fixed thai-font w-full max-w-full overflow-x-clip"
       style={dynamicThemeStyle}
     >
       {/* Main Content - Full width */}
@@ -476,7 +476,7 @@ function MainLayoutContent({
         {/* Header */}
         <header
           className="sticky top-0 z-30 bg-white border-b-[3px] border-black"
-          style={{ boxShadow: "0 4px 0 0 rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "0 4px 0 0 #000000" }}
         >
           {/* Top row: Logo, Search, User */}
           <div className="h-16 flex items-center justify-between px-4 min-w-0">
@@ -505,7 +505,7 @@ function MainLayoutContent({
                 <div className="relative" ref={notificationRef}>
                   <button
                     onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all relative border-[2px] border-transparent hover:border-black"
+                    className="w-10 h-10 flex items-center justify-center text-gray-900 bg-white hover:bg-brutal-yellow transition-all relative border-[3px] border-transparent hover:border-black active:translate-y-[2px] active:translate-x-[2px]"
                   >
                     <Bell size={20} />
                     {unreadCount > 0 && (
@@ -632,7 +632,7 @@ function MainLayoutContent({
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={toggleUserMenu}
-                    className="flex items-center gap-2 text-gray-900 pl-1 pr-2 py-1 hover:bg-gray-100 transition-all border-[2px] border-transparent hover:border-black"
+                    className="flex items-center gap-2 text-gray-900 pl-1 pr-2 py-1 bg-white hover:bg-brutal-yellow transition-all border-[3px] border-transparent hover:border-black active:translate-y-[2px] active:translate-x-[2px]"
                   >
                     <div className="w-9 h-9 bg-brutal-yellow flex items-center justify-center overflow-hidden border-[2px] border-black shrink-0">
                       <img
@@ -742,7 +742,7 @@ function MainLayoutContent({
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-3 py-2 text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5 shrink-0"
+                  className="flex items-center space-x-1 text-black bg-brutal-yellow px-3 py-2 text-sm font-bold border-[3px] border-black transition-all hover:-translate-y-0.5 active:translate-y-[2px] active:translate-x-[2px] shrink-0"
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <User size={16} />
@@ -802,8 +802,8 @@ function MainLayoutContent({
 
       {/* Mobile navbar - Bottom */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-black lg:hidden safe-bottom h-16"
-        style={{ boxShadow: "0 -4px 0 0 rgba(0,0,0,0.1)" }}
+        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[3px] border-black lg:hidden safe-bottom h-16"
+        style={{ boxShadow: "0 -4px 0 0 #000000" }}
       >
         <div className="flex justify-around items-center h-full">
           {mobileNavItems.map((item) => {

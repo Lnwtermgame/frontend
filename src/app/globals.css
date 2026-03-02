@@ -570,4 +570,13 @@
   .hover-lift:hover {
     transform: translate(-2px, -2px);
   }
+
+  /* Neo-brutalism grid background */
+  .bg-brutal-grid {
+    background-color: var(--brutal-gray);
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
 }

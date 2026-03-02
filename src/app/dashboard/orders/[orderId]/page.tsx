@@ -11,7 +11,6 @@ import {
   Package,
   Copy,
   Check,
-  Printer,
   Download,
   CreditCard,
   Calendar,
@@ -819,13 +818,6 @@ export default function OrderDetailsPage() {
               <h3 className="font-bold text-black text-sm">การดำเนินการ</h3>
             </div>
             <div className="p-2 space-y-2">
-              <button
-                onClick={() => window.print()}
-                className="w-full flex items-center gap-2 p-2 border-[2px] border-black hover:bg-gray-100 text-black transition-colors text-xs font-medium"
-              >
-                <Printer size={16} />
-                พิมพ์ใบเสร็จ
-              </button>
               <Link
                 href="/support"
                 className="w-full flex items-center gap-2 p-2 border-[2px] border-black hover:bg-gray-100 text-black transition-colors text-xs font-medium"

@@ -20,7 +20,7 @@ export interface User {
 // Auth tokens from backend
 export interface AuthTokens {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
   expiresIn: number;
 }
 

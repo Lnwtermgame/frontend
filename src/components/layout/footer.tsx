@@ -39,13 +39,38 @@ const supportLinks = [
   { label: "เงื่อนไขการใช้บริการ", href: "/terms" },
 ];
 
+// Thai bank logos from https://github.com/casperstack/thai-banks-logo
 const paymentMethods = [
-  { name: "Visa / Mastercard", icon: "/payment-icons/visa-mastercard.svg" },
-  { name: "KBANK", icon: "/payment-icons/kbank.svg" },
-  { name: "PromptPay", icon: "/payment-icons/promptpay.svg" },
-  { name: "TrueMoney", icon: "/payment-icons/truemoney.svg" },
-  { name: "ShopeePay", icon: "/payment-icons/shopeepay.svg" },
-  { name: "Krungthai Bank", icon: "/payment-icons/krungthai.svg" },
+  {
+    name: "กสิกรไทย",
+    symbol: "KBANK",
+    icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/KBANK.png",
+  },
+  {
+    name: "กรุงไทย",
+    symbol: "KTB",
+    icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/KTB.png",
+  },
+  {
+    name: "กรุงเทพ",
+    symbol: "BBL",
+    icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/BBL.png",
+  },
+  {
+    name: "ไทยพาณิชย์",
+    symbol: "SCB",
+    icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/SCB.png",
+  },
+  {
+    name: "พร้อมเพย์",
+    symbol: "PromptPay",
+    icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/PromptPay.png",
+  },
+  {
+    name: "ทรูมันนี่",
+    symbol: "TrueMoney",
+    icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/TrueMoney.png",
+  },
 ];
 
 const features = [

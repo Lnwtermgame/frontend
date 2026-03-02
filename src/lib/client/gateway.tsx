@@ -49,17 +49,6 @@ export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
     return null;
   }
 
-  // Get refresh token from localStorage (fallback to cookie)
-  const refreshToken =
-    typeof window !== "undefined"
-      ? localStorage.getItem("auth_refresh_token")
-      : null;
-
-  if (!refreshToken) {
-    console.log("[RefreshToken] No refresh token available");
-    return null;
-  }
-
   if (isRefreshing) {
     return new Promise((resolve, reject) => {
       failedQueue.push({
@@ -75,7 +64,7 @@ export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
     const csrf = csrfToken || (await fetchCsrfToken().catch(() => ""));
     const response = await axios.post(
       `${GATEWAY_URL}/api/auth/refresh-token`,
-      { refreshToken },
+      {},
       {
         withCredentials: true,
         headers: csrf ? { "X-CSRF-Token": csrf } : {},
@@ -83,16 +72,8 @@ export const refreshAccessToken = async (): Promise<RefreshResult | null> => {
     );
 
     if (response.data?.success) {
-      const {
-        accessToken,
-        refreshToken: newRefreshToken,
-        expiresIn,
-      } = response.data.data;
+      const { accessToken, expiresIn } = response.data.data;
       setAccessToken(accessToken);
-      // Update refresh token in localStorage if a new one is provided
-      if (newRefreshToken && typeof window !== "undefined") {
-        localStorage.setItem("auth_refresh_token", newRefreshToken);
-      }
       processQueue(null, accessToken);
       return { accessToken, expiresIn: expiresIn || 900 };
     }

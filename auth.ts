@@ -6,7 +6,6 @@ import { authConfig } from "./auth.config";
 interface CustomToken extends JWT {
   backendTokens?: {
     accessToken: string;
-    refreshToken: string;
     expiresIn: number;
   };
   backendUser?: {
@@ -44,6 +43,12 @@ export const {
       }
 
       try {
+        const internalApiKey = process.env.INTERNAL_API_KEY;
+        if (!internalApiKey) {
+          console.error("[NextAuth] INTERNAL_API_KEY is not configured");
+          return false;
+        }
+
         // Exchange OAuth tokens with our backend
         const oauthData = {
           provider: account.provider as "google" | "discord",
@@ -61,7 +66,10 @@ export const {
           `${process.env.NEXT_PUBLIC_GATEWAY_URL}/api/auth/oauth/callback`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "x-internal-api-key": internalApiKey,
+            },
             body: JSON.stringify(oauthData),
           },
         );
@@ -75,7 +83,10 @@ export const {
         const data = await response.json();
 
         // Store our backend tokens in the user object for the session
-        (user as any).backendTokens = data.data.tokens;
+        (user as any).backendTokens = {
+          accessToken: data.data.tokens.accessToken,
+          expiresIn: data.data.tokens.expiresIn,
+        };
         (user as any).backendUser = data.data.user;
 
         return true;

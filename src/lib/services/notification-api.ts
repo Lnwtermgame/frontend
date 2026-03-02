@@ -241,12 +241,8 @@ export class NotificationWebSocket {
     this.isConnecting = true;
 
     try {
-      const wsUrl = `${WS_URL}?token=${this.token}`;
-      console.log(
-        "[WebSocket] Connecting to:",
-        wsUrl.replace(/token=[^&]+/, "token=***"),
-      );
-      this.ws = new WebSocket(wsUrl);
+      console.log("[WebSocket] Connecting to:", WS_URL);
+      this.ws = new WebSocket(WS_URL, ["bearer", this.token]);
 
       this.ws.onopen = () => {
         console.log("[WebSocket] Connected to notification server");

@@ -670,9 +670,11 @@ export default function EmailTemplateEditorPage() {
               </button>
             </div>
             <div className="p-3 overflow-auto max-h-[calc(90vh-60px)]">
-              <div
-                className="border border-gray-200"
-                dangerouslySetInnerHTML={{ __html: previewHtml }}
+              <iframe
+                title="Email Preview"
+                className="w-full min-h-[500px] border border-gray-200 bg-white"
+                sandbox=""
+                srcDoc={previewHtml}
               />
             </div>
           </motion.div>

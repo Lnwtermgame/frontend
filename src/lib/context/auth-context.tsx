@@ -150,7 +150,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth_token");
-        localStorage.removeItem("auth_refresh_token");
       }
       setStorageVersion(AUTH_STORAGE_VERSION);
     }
@@ -182,7 +181,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshTimeoutRef.current = null;
     }
     setAccessToken(null);
-    localStorage.removeItem("auth_refresh_token");
     // Keep isSessionChecked = true so the UI shows the logged-out state
     // (login button) instead of being stuck on a loading spinner.
     setIsSessionChecked(true);
@@ -430,13 +428,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(response.data.tokens.accessToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
-        // Store refresh token in localStorage for cookie-less refresh
-        if (response.data.tokens.refreshToken) {
-          localStorage.setItem(
-            "auth_refresh_token",
-            response.data.tokens.refreshToken,
-          );
-        }
         toast.success("เข้าสู่ระบบสำเร็จ!");
         return true;
       } else {
@@ -480,13 +471,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(response.data.tokens.accessToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
-        // Store refresh token in localStorage for cookie-less refresh
-        if (response.data.tokens.refreshToken) {
-          localStorage.setItem(
-            "auth_refresh_token",
-            response.data.tokens.refreshToken,
-          );
-        }
         toast.success("สร้างบัญชีสำเร็จ!");
         return true;
       } else {
@@ -659,3 +643,4 @@ export function useAuth() {
 
 // Re-export User type for convenience
 export type { User } from "../services/auth-api";
+

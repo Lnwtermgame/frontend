@@ -6,7 +6,6 @@ declare module "next-auth" {
   interface User {
     backendTokens?: {
       accessToken: string;
-      refreshToken: string;
       expiresIn: number;
     };
     backendUser?: {
@@ -22,7 +21,6 @@ declare module "next-auth" {
   interface Session {
     backendTokens?: {
       accessToken: string;
-      refreshToken: string;
       expiresIn: number;
     };
     backendUser?: {
@@ -39,7 +37,6 @@ declare module "next-auth" {
   interface JWT {
     backendTokens?: {
       accessToken: string;
-      refreshToken: string;
       expiresIn: number;
     };
     backendUser?: {
@@ -58,7 +55,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     backendTokens?: {
       accessToken: string;
-      refreshToken: string;
       expiresIn: number;
     };
     backendUser?: {

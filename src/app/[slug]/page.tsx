@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 const API_BASE_URL = (
   process.env.NEXT_PUBLIC_API_URL ||
@@ -14,9 +16,6 @@ export const dynamic = "force-dynamic";
 type CmsRouteParams = {
   slug: string;
 };
-
-const containsHtmlTag = (content: string): boolean =>
-  /<\/?[a-z][\s\S]*>/i.test(content);
 
 // This generates static params for known CMS pages
 export async function generateStaticParams() {
@@ -93,8 +92,6 @@ export default async function CmsPage({ params }: CmsPageProps) {
     notFound();
   }
 
-  const hasHtmlContent = containsHtmlTag(page.content);
-
   return (
     <div className="page-container">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10">
@@ -107,55 +104,49 @@ export default async function CmsPage({ params }: CmsPageProps) {
         </div>
 
         {/* Content */}
-        {hasHtmlContent ? (
-          <article
-            className="prose prose-lg max-w-none
-              prose-headings:text-black prose-headings:font-bold prose-headings:thai-font
-              prose-p:text-gray-700 prose-p:thai-font
-              prose-a:text-brutal-blue prose-a:no-underline hover:prose-a:underline
-              prose-strong:text-black
-              prose-ul:text-gray-700 prose-ol:text-gray-700
-              prose-li:marker:text-brutal-pink
-              prose-blockquote:border-l-4 prose-blockquote:border-brutal-pink prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4
-              prose-table:border-[3px] prose-table:border-black
-              prose-th:bg-gray-100 prose-th:border-[2px] prose-th:border-black prose-th:p-3
-              prose-td:border-[2px] prose-td:border-black prose-td:p-3"
-            dangerouslySetInnerHTML={{ __html: page.content }}
-          />
-        ) : (
-          <article className="prose prose-lg max-w-none text-gray-700 thai-font">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                p: ({ children }) => (
-                  <p className="mb-4 leading-relaxed whitespace-pre-wrap">
-                    {children}
-                  </p>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-disc pl-6 mb-4 space-y-1">{children}</ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className="list-decimal pl-6 mb-4 space-y-1">
-                    {children}
-                  </ol>
-                ),
-                h2: ({ children }) => (
-                  <h2 className="text-2xl font-bold text-black mt-8 mb-3 thai-font">
-                    {children}
-                  </h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="text-xl font-bold text-black mt-6 mb-2 thai-font">
-                    {children}
-                  </h3>
-                ),
-              }}
-            >
-              {page.content}
-            </ReactMarkdown>
-          </article>
-        )}
+        <article
+          className="prose prose-lg max-w-none
+            prose-headings:text-black prose-headings:font-bold prose-headings:thai-font
+            prose-p:text-gray-700 prose-p:thai-font
+            prose-a:text-brutal-blue prose-a:no-underline hover:prose-a:underline
+            prose-strong:text-black
+            prose-ul:text-gray-700 prose-ol:text-gray-700
+            prose-li:marker:text-brutal-pink
+            prose-blockquote:border-l-4 prose-blockquote:border-brutal-pink prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4
+            prose-table:border-[3px] prose-table:border-black
+            prose-th:bg-gray-100 prose-th:border-[2px] prose-th:border-black prose-th:p-3
+            prose-td:border-[2px] prose-td:border-black prose-td:p-3"
+        >
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypeSanitize]}
+            components={{
+              p: ({ children }) => (
+                <p className="mb-4 leading-relaxed whitespace-pre-wrap">
+                  {children}
+                </p>
+              ),
+              ul: ({ children }) => (
+                <ul className="list-disc pl-6 mb-4 space-y-1">{children}</ul>
+              ),
+              ol: ({ children }) => (
+                <ol className="list-decimal pl-6 mb-4 space-y-1">{children}</ol>
+              ),
+              h2: ({ children }) => (
+                <h2 className="text-2xl font-bold text-black mt-8 mb-3 thai-font">
+                  {children}
+                </h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-xl font-bold text-black mt-6 mb-2 thai-font">
+                  {children}
+                </h3>
+              ),
+            }}
+          >
+            {page.content}
+          </ReactMarkdown>
+        </article>
 
         {/* Last Updated */}
         <div className="mt-12 pt-6 border-t-[2px] border-gray-200">

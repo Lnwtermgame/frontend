@@ -1,0 +1,113 @@
+{
+    "Navigation": {
+        "login": "Login",
+        "register": "Register",
+        "home": "Home",
+        "games": "All Games",
+        "card": "Cards",
+        "mobile_recharge": "Mobile Recharge",
+        "news": "News",
+        "favorite": "Favorites",
+        "support": "Support",
+        "admin": "Admin",
+        "games_short": "Games",
+        "recharge_short": "Topup",
+        "orders": "Orders",
+        "account": "Account"
+    },
+    "UserMenu": {
+        "my_account": "My Account",
+        "direct_topup": "Direct Topup",
+        "card": "Cards",
+        "invoice": "Invoices",
+        "credits": "Credits",
+        "coupons": "Coupons",
+        "favorite": "Favorites",
+        "notifications": "Notifications",
+        "logout": "Logout",
+        "points": "Reward Points",
+        "coming_soon": "Coming Soon",
+        "premium_member": "Premium Member"
+    },
+    "Notification": {
+        "title": "Notifications",
+        "read_all": "Read All",
+        "empty": "No new notifications",
+        "view_all": "View All"
+    },
+    "Search": {
+        "placeholder": "Search games",
+        "help_text": "Type a game or product name and select from the results"
+    },
+    "Maintenance": {
+        "title": "System Under Maintenance",
+        "message": "Sorry for the inconvenience. Our team is currently performing maintenance and will be back shortly.",
+        "banner": "System is partially under maintenance"
+    },
+    "Common": {
+        "loading": "Loading...",
+        "member": "Member"
+    },
+    "Products": {
+        "featured": "Featured Products",
+        "recommended": "Recommended",
+        "new_arrivals": "New Arrivals",
+        "new": "New",
+        "bestsellers": "Bestsellers",
+        "sold": "Sold {count}"
+    },
+    "Admin": {
+        "dashboard": "Dashboard",
+        "analytics": "Analytics",
+        "products": "Products",
+        "categories": "Categories",
+        "orders": "Orders",
+        "payments": "Payments",
+        "promotions": "Promotions",
+        "cms_pages": "Web Pages (CMS)",
+        "news": "News",
+        "manage_faq": "Manage FAQ",
+        "manage_users": "Manage Users",
+        "support_tickets": "Support Tickets",
+        "notifications": "Notifications",
+        "email": "Email",
+        "settings": "Settings",
+        "oauth": "OAuth",
+        "admin_cp": "Admin Control Panel",
+        "admin": "Admin",
+        "logout": "Logout",
+        "nav": {
+            "main": "Main",
+            "products_sales": "Products & Sales",
+            "content": "Content",
+            "users_communication": "Users & Communication",
+            "system": "System"
+        }
+    },
+    "Footer": {
+        "tagline": "Fast, secure, and best-priced game top-up, prepaid cards, and other digital services in the market.",
+        "contact_us": "Contact Us",
+        "live_chat": "24/7 Live Chat",
+        "quick_links": "Quick Links",
+        "support": "Support",
+        "payment_channels": "Payment Channels",
+        "supported_payments": "Supports all types of Credit/Debit cards and e-Wallets",
+        "copyright": "All rights reserved",
+        "privacy_policy": "Privacy Policy",
+        "terms_of_service": "Terms of Service",
+        "refund_policy": "Refund Policy",
+        "faq": "FAQ",
+        "support_center": "Help Center",
+        "create_ticket": "Create Ticket",
+        "features": {
+            "payment": "Multiple Payments",
+            "payment_desc": "All channels supported",
+            "security": "100% Secure",
+            "security_desc": "High security system",
+            "price": "Best Value",
+            "price_desc": "Discounts & Promos",
+            "support": "24/7 Support",
+            "support_desc": "Ready to help"
+        }
+    }
+}

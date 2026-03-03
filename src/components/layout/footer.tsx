@@ -22,22 +22,9 @@ import {
 } from "lucide-react";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 
-const quickLinks = [
-  { label: "หน้าแรก", href: "/", icon: Zap },
-  { label: "เกมทั้งหมด", href: "/games", icon: Gamepad2 },
-  { label: "ข่าวสาร", href: "/news", icon: Newspaper },
-  { label: "บัตรเกม", href: "/card", icon: CardIcon },
-  { label: "เติมเงินมือถือ", href: "/mobile-recharge", icon: Smartphone },
-  { label: "คำถามที่พบบ่อย", href: "/support/faq", icon: HelpCircle },
-];
+import { useTranslations } from "next-intl";
 
-const supportLinks = [
-  { label: "ศูนย์ช่วยเหลือ", href: "/support" },
-  { label: "ติดต่อเรา", href: "/support/contact" },
-  { label: "สร้างตั๋ว", href: "/support/tickets" },
-  { label: "นโยบายความเป็นส่วนตัว", href: "/privacy" },
-  { label: "เงื่อนไขการใช้บริการ", href: "/terms" },
-];
+// Thai bank logos from https://github.com/casperstack/thai-banks-logo
 
 // Thai bank logos from https://github.com/casperstack/thai-banks-logo
 const paymentMethods = [
@@ -73,47 +60,63 @@ const paymentMethods = [
   },
 ];
 
-const features = [
-  {
-    icon: CreditCard,
-    title: "ชำระเงินหลากหลาย",
-    desc: "รองรับทุกช่องทาง",
-    color: "bg-brutal-yellow",
-  },
-  {
-    icon: ShieldCheck,
-    title: "ปลอดภัย 100%",
-    desc: "ระบบความปลอดภัยสูง",
-    color: "bg-brutal-green",
-  },
-  {
-    icon: DollarSign,
-    title: "ราคาคุ้มค่า",
-    desc: "ส่วนลดและโปรพิเศษ",
-    color: "bg-brutal-pink",
-  },
-  {
-    icon: Headphones,
-    title: "ดูแล 24 ชม.",
-    desc: "ทีมงานพร้อมช่วย",
-    color: "bg-brutal-blue",
-  },
-];
-
 export function Footer() {
   const { settings } = usePublicSettings();
+  const tNav = useTranslations("Navigation");
+  const tFooter = useTranslations("Footer");
   const year = new Date().getFullYear();
 
   const siteName = settings?.general.siteName || "Lnwtermgame";
   const logoUrl = settings?.branding.logoUrl || "";
-  const siteTagline =
-    settings?.general.siteTagline ||
-    "บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว ปลอดภัย และราคาดีที่สุดในตลาด";
-  const supportEmail =
-    settings?.general.supportEmail || "support@lnwtermgame.com";
-  const supportPhone = settings?.general.supportPhone || "";
+  const quickLinks = [
+    { label: tNav("home"), href: "/", icon: Zap },
+    { label: tNav("games"), href: "/games", icon: Gamepad2 },
+    { label: tNav("news"), href: "/news", icon: Newspaper },
+    { label: tNav("card"), href: "/card", icon: CardIcon },
+    { label: tNav("mobile_recharge"), href: "/mobile-recharge", icon: Smartphone },
+    { label: tFooter("faq"), href: "/support/faq", icon: HelpCircle },
+  ];
+
+  const supportLinks = [
+    { label: tFooter("support_center"), href: "/support" },
+    { label: tFooter("contact_us"), href: "/support/contact" },
+    { label: tFooter("create_ticket"), href: "/support/tickets" },
+    { label: tFooter("privacy_policy"), href: "/privacy" },
+    { label: tFooter("terms_of_service"), href: "/terms" },
+  ];
+
+  const features = [
+    {
+      icon: CreditCard,
+      title: tFooter("features.payment"),
+      desc: tFooter("features.payment_desc"),
+      color: "bg-brutal-yellow",
+    },
+    {
+      icon: ShieldCheck,
+      title: tFooter("features.security"),
+      desc: tFooter("features.security_desc"),
+      color: "bg-brutal-green",
+    },
+    {
+      icon: DollarSign,
+      title: tFooter("features.price"),
+      desc: tFooter("features.price_desc"),
+      color: "bg-brutal-pink",
+    },
+    {
+      icon: Headphones,
+      title: tFooter("features.support"),
+      desc: tFooter("features.support_desc"),
+      color: "bg-brutal-blue",
+    },
+  ];
+
   const promotionsEnabled = settings?.features.enablePromotions ?? true;
   const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
+  const supportEmail = settings?.general.supportEmail || "support@lnwtermgame.com";
+  const supportPhone = settings?.general.supportPhone || "";
+
   const visibleQuickLinks = quickLinks.filter((item) => {
     if (!promotionsEnabled && item.href.includes("promo")) return false;
     return true;
@@ -173,13 +176,13 @@ export function Footer() {
             </Link>
 
             <p className="text-gray-600 text-xs leading-relaxed max-w-sm">
-              {siteTagline}
+              {settings?.general.siteTagline || tFooter("tagline")}
             </p>
 
             <div className="space-y-2">
               <p className="text-[10px] font-bold text-black flex items-center">
                 <span className="w-1 h-3 bg-brutal-blue mr-2 rounded-sm"></span>
-                ติดต่อเรา
+                {tFooter("contact_us")}
               </p>
               <div className="flex flex-col gap-2">
                 <a
@@ -225,7 +228,7 @@ export function Footer() {
                       <MessageCircle size={12} className="text-black" />
                     </div>
                     <span className="text-xs font-medium">
-                      แชทสดตลอด 24 ชั่วโมง
+                      {tFooter("live_chat")}
                     </span>
                   </Link>
                 )}
@@ -256,7 +259,7 @@ export function Footer() {
           <div className="lg:col-span-2 hidden md:block">
             <h3 className="text-black font-bold mb-3 text-xs flex items-center">
               <span className="w-1.5 h-3 bg-brutal-pink mr-2 rounded-sm"></span>
-              ลิงก์ด่วน
+              {tFooter("quick_links")}
             </h3>
             <ul className="space-y-1.5">
               {visibleQuickLinks.map((item) => (
@@ -279,7 +282,7 @@ export function Footer() {
           <div className="lg:col-span-2 hidden md:block">
             <h3 className="text-black font-bold mb-3 text-xs flex items-center">
               <span className="w-1.5 h-3 bg-brutal-blue mr-2 rounded-sm"></span>
-              ช่วยเหลือ
+              {tFooter("support")}
             </h3>
             <ul className="space-y-1.5">
               {visibleSupportLinks.map((item) => (
@@ -298,7 +301,7 @@ export function Footer() {
           <div className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
             <h3 className="text-black font-bold mb-3 text-xs flex items-center">
               <span className="w-1.5 h-3 bg-brutal-yellow mr-2 rounded-sm"></span>
-              ช่องทางชำระเงิน
+              {tFooter("payment_channels")}
             </h3>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {paymentMethods.map((method) => (
@@ -316,7 +319,7 @@ export function Footer() {
               ))}
             </div>
             <p className="text-[10px] text-gray-500 mt-2">
-              รองรับการชำระเงินผ่านบัตรเครดิต/เดบิต และ e-Wallet ทุกประเภท
+              {tFooter("supported_payments")}
             </p>
           </div>
         </div>
@@ -349,26 +352,26 @@ export function Footer() {
 
         <div className="pt-4 flex flex-col md:flex-row justify-between items-center gap-3">
           <div className="text-[10px] text-gray-500 font-medium text-center md:text-left">
-            &copy; {year} {siteName} สงวนลิขสิทธิ์
+            &copy; {year} {siteName} {tFooter("copyright")}
           </div>
           <div className="flex flex-wrap justify-center gap-3 text-[10px] text-gray-500">
             <Link
               href="/privacy"
               className="hover:text-black font-medium transition-colors"
             >
-              นโยบายความเป็นส่วนตัว
+              {tFooter("privacy_policy")}
             </Link>
             <Link
               href="/terms"
               className="hover:text-black font-medium transition-colors"
             >
-              เงื่อนไขการใช้บริการ
+              {tFooter("terms_of_service")}
             </Link>
             <Link
               href="/refund"
               className="hover:text-black font-medium transition-colors"
             >
-              นโยบายคืนเงิน
+              {tFooter("refund_policy")}
             </Link>
           </div>
         </div>

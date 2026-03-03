@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Star, ShoppingCart } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { Button } from "./Button";
@@ -35,6 +36,7 @@ export function GameCard({
   isFeatured,
   className,
 }: GameCardProps) {
+  const tProducts = useTranslations("Products");
   return (
     <div
       className={cn("h-full", className)}
@@ -57,10 +59,9 @@ export function GameCard({
               </div>
             )}
 
-            {/* Featured Badge */}
             {isFeatured && (
               <div className="absolute left-2 top-2 bg-brutal-yellow border-2 border-black px-2 py-0.5 text-xs font-bold shadow-[2px_2px_0_0_#000]">
-                แนะนำ
+                {tProducts("recommended")}
               </div>
             )}
 

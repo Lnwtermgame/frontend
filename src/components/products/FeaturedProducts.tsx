@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Product, productApi } from "@/lib/services/product-api";
 import { cn, getMinPrice, formatPrice } from "@/lib/utils";
 import { Star, Sparkles } from "lucide-react";
@@ -20,6 +21,7 @@ export function FeaturedProducts({
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const tProducts = useTranslations("Products");
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -64,7 +66,7 @@ export function FeaturedProducts({
         >
           <Sparkles className="w-4 h-4 text-black" />
         </div>
-        <h2 className="text-xl font-black text-black thai-font">สินค้าแนะนำ</h2>
+        <h2 className="text-xl font-black text-black thai-font">{tProducts("featured")}</h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -97,7 +99,7 @@ export function FeaturedProducts({
                     className="absolute top-2 left-2 px-2 py-1 bg-brutal-yellow text-black text-xs font-bold border-[2px] border-black"
                     style={{ boxShadow: "2px 2px 0 0 #000000" }}
                   >
-                    แนะนำ
+                    {tProducts("recommended")}
                   </span>
                 )}
               </div>

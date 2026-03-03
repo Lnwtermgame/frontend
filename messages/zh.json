@@ -1,0 +1,113 @@
+{
+    "Navigation": {
+        "login": "登录",
+        "register": "注册",
+        "home": "首页",
+        "games": "所有游戏",
+        "card": "点卡",
+        "mobile_recharge": "手机充值",
+        "news": "新闻",
+        "favorite": "收藏夹",
+        "support": "帮助支持",
+        "admin": "管理员",
+        "games_short": "游戏",
+        "recharge_short": "充值",
+        "orders": "订单",
+        "account": "账户"
+    },
+    "UserMenu": {
+        "my_account": "我的账户",
+        "direct_topup": "直接充值",
+        "card": "点卡",
+        "invoice": "发票",
+        "credits": "余额",
+        "coupons": "优惠券",
+        "favorite": "收藏",
+        "notifications": "通知",
+        "logout": "退出登录",
+        "points": "积分",
+        "coming_soon": "敬请期待",
+        "premium_member": "高级会员"
+    },
+    "Notification": {
+        "title": "通知",
+        "read_all": "全部已读",
+        "empty": "没有新通知",
+        "view_all": "查看全部"
+    },
+    "Search": {
+        "placeholder": "搜索游戏",
+        "help_text": "输入游戏或产品名称并从结果中选择"
+    },
+    "Maintenance": {
+        "title": "系统维护中",
+        "message": "抱歉给您带来不便。我们的团队正在进行系统维护，将尽快恢复服务。",
+        "banner": "系统部分正在进行维护"
+    },
+    "Common": {
+        "loading": "加载中",
+        "member": "普通会员"
+    },
+    "Products": {
+        "featured": "推荐产品",
+        "recommended": "推荐",
+        "new_arrivals": "新品上市",
+        "new": "新",
+        "bestsellers": "畅销产品",
+        "sold": "已售出 {count}"
+    },
+    "Admin": {
+        "dashboard": "仪表板",
+        "analytics": "分析",
+        "products": "产品",
+        "categories": "分类",
+        "orders": "订单",
+        "payments": "支付",
+        "promotions": "促销",
+        "cms_pages": "网页页面 (CMS)",
+        "news": "新闻",
+        "manage_faq": "管理常见问题",
+        "manage_users": "管理用户",
+        "support_tickets": "支持工单",
+        "notifications": "通知",
+        "email": "邮件",
+        "settings": "设置",
+        "oauth": "授权登录",
+        "admin_cp": "管理员控制面板",
+        "admin": "管理员",
+        "logout": "退出登录",
+        "nav": {
+            "main": "主要",
+            "products_sales": "产品与销售",
+            "content": "内容",
+            "users_communication": "用户与通信",
+            "system": "系统"
+        }
+    },
+    "Footer": {
+        "tagline": "市场中最快，最安全和价格最佳的游戏充值，预付卡和其他数字服务。",
+        "contact_us": "联系我们",
+        "live_chat": "24/7 在线客服",
+        "quick_links": "快速链接",
+        "support": "帮助支持",
+        "payment_channels": "支付渠道",
+        "supported_payments": "支持所有类型的信用卡/借记卡和电子钱包",
+        "copyright": "版权所有",
+        "privacy_policy": "隐私政策",
+        "terms_of_service": "服务条款",
+        "refund_policy": "退款政策",
+        "faq": "常见问题",
+        "support_center": "帮助中心",
+        "create_ticket": "提交工单",
+        "features": {
+            "payment": "多种支付方式",
+            "payment_desc": "支持所有渠道",
+            "security": "100% 安全",
+            "security_desc": "高安全性系统",
+            "price": "超值价格",
+            "price_desc": "折扣和特价优惠",
+            "support": "全天候客服",
+            "support_desc": "随叫随到"
+        }
+    }
+}

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { Link } from '@/i18n/routing';
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from '@/i18n/routing';
 import { Suspense } from "react";
 import {
   Home,
@@ -43,6 +44,7 @@ import SearchBar from "@/components/layout/SearchBar";
 import { MobileNav } from "./MobileNav";
 import { Sheet } from "@/components/ui/Sheet";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
+import { useTranslations } from "next-intl";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -174,6 +176,13 @@ function MainLayoutContent({
   const { settings: publicSettings } = usePublicSettings();
   const { user, isAuthenticated, isInitialized, logout, isAdmin } = useAuth();
 
+  const tNav = useTranslations("Navigation");
+  const tUserMenu = useTranslations("UserMenu");
+  const tNotif = useTranslations("Notification");
+  const tSearch = useTranslations("Search");
+  const tMaintenance = useTranslations("Maintenance");
+  const tCommon = useTranslations("Common");
+
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
@@ -264,40 +273,40 @@ function MainLayoutContent({
 
   const mainNavItems = useMemo(
     () => [
-      { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
-      { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
-      { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
+      { href: "/", label: tNav("home"), icon: <Home size={20} /> },
+      { href: "/games", label: tNav("games"), icon: <Gamepad2 size={20} /> },
+      { href: "/card", label: tNav("card"), icon: <CreditCard size={20} /> },
       {
         href: "/mobile-recharge",
-        label: "เติมเงินมือถือ",
+        label: tNav("mobile_recharge"),
         icon: <Smartphone size={20} />,
       },
       {
         href: "/news",
-        label: "ข่าวสาร",
+        label: tNav("news"),
         icon: <Newspaper size={20} />,
       },
       {
         href: "/dashboard/favorite",
-        label: "รายการโปรด",
+        label: tNav("favorite"),
         icon: <Heart size={20} />,
       },
       {
         href: "/support",
-        label: "ช่วยเหลือ",
+        label: tNav("support"),
         icon: <MessageCircle size={20} />,
       },
       ...(isAdmin
         ? [
           {
             href: "/admin",
-            label: "แอดมิน",
+            label: tNav("admin"),
             icon: <Shield size={20} />,
           },
         ]
         : []),
     ],
-    [isAdmin],
+    [isAdmin, tNav],
   );
   const visibleMainNavItems = useMemo(
     () =>
@@ -309,63 +318,63 @@ function MainLayoutContent({
 
   const mobileNavItems = useMemo(
     () => [
-      { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
-      { href: "/games", label: "เกม", icon: <Gamepad2 size={20} /> },
+      { href: "/", label: tNav("home"), icon: <Home size={20} /> },
+      { href: "/games", label: tNav("games_short"), icon: <Gamepad2 size={20} /> },
       {
         href: "/mobile-recharge",
-        label: "เติมเงิน",
+        label: tNav("recharge_short"),
         icon: <Smartphone size={20} />,
       },
       {
         href: "/dashboard/orders",
-        label: "คำสั่งซื้อ",
+        label: tNav("orders"),
         icon: <ShoppingCart size={20} />,
       },
-      { href: "/dashboard/account", label: "บัญชี", icon: <User size={20} /> },
+      { href: "/dashboard/account", label: tNav("account"), icon: <User size={20} /> },
     ],
-    [],
+    [tNav],
   );
 
   const accountMenuItems = useMemo(
     () => [
       {
         href: "/dashboard/account",
-        label: "บัญชีของฉัน",
+        label: tUserMenu("my_account"),
         icon: <User size={18} />,
       },
       {
         href: "/games",
-        label: "เติมเงินโดยตรง",
+        label: tUserMenu("direct_topup"),
         icon: <Gamepad2 size={18} />,
       },
-      { href: "/card", label: "บัตร", icon: <CreditCard size={18} /> },
+      { href: "/card", label: tUserMenu("card"), icon: <CreditCard size={18} /> },
       {
         href: "/dashboard/invoice",
-        label: "ใบแจ้งหนี้",
+        label: tUserMenu("invoice"),
         icon: <FileText size={18} />,
       },
       {
         href: "/dashboard/credits",
-        label: "เครดิต",
+        label: tUserMenu("credits"),
         icon: <Coins size={18} />,
       },
       {
         href: "/dashboard/coupons",
-        label: "คูปอง",
+        label: tUserMenu("coupons"),
         icon: <Ticket size={18} />,
       },
       {
         href: "/dashboard/favorite",
-        label: "รายการโปรด",
+        label: tUserMenu("favorite"),
         icon: <Heart size={18} />,
       },
       {
         href: "/dashboard/notifications",
-        label: "การแจ้งเตือน",
+        label: tUserMenu("notifications"),
         icon: <Bell size={18} />,
       },
     ],
-    [],
+    [tUserMenu],
   );
 
   useEffect(() => {
@@ -455,11 +464,11 @@ function MainLayoutContent({
             {publicSettings?.general.siteName || "Lnwtermgame"}
           </h1>
           <p className="text-lg font-bold text-black">
-            ระบบอยู่ระหว่างปรับปรุง
+            {tMaintenance("title")}
           </p>
           <p className="mt-3 text-sm text-gray-700">
             {publicSettings?.features.maintenanceMessage ||
-              "ขออภัยในความไม่สะดวก ทีมงานกำลังปรับปรุงระบบและจะกลับมาให้บริการเร็วที่สุด"}
+              tMaintenance("message")}
           </p>
         </div>
       </div>
@@ -495,7 +504,7 @@ function MainLayoutContent({
 
             {/* Search - Desktop */}
             <div className="hidden md:block flex-1 max-w-md mx-4">
-              <SearchBar variant="header" placeholder="ค้นหาเกม" />
+              <SearchBar variant="header" placeholder={tSearch("placeholder")} />
             </div>
 
             {/* Right Section */}
@@ -527,14 +536,14 @@ function MainLayoutContent({
                       >
                         <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
                           <h3 className="text-gray-900 font-bold text-sm">
-                            การแจ้งเตือน
+                            {tNotif("title")}
                           </h3>
                           {unreadCount > 0 && (
                             <button
                               onClick={markAllAsRead}
                               className="text-xs text-brutal-pink hover:text-brutal-pink/80 font-semibold transition-colors"
                             >
-                              อ่านทั้งหมด
+                              {tNotif("read_all")}
                             </button>
                           )}
                         </div>
@@ -600,7 +609,7 @@ function MainLayoutContent({
                           ) : (
                             <div className="p-8 text-center text-gray-500 flex flex-col items-center">
                               <Bell size={24} className="mb-2 opacity-30" />
-                              <p className="text-sm">ไม่มีการแจ้งเตือนใหม่</p>
+                              <p className="text-sm">{tNotif("empty")}</p>
                             </div>
                           )}
                         </div>
@@ -610,7 +619,7 @@ function MainLayoutContent({
                           onClick={() => setIsNotificationOpen(false)}
                           className="block p-2 text-center text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100 font-medium transition-colors"
                         >
-                          ดูทั้งหมด
+                          {tNotif("view_all")}
                         </Link>
                       </motion.div>
                     )}
@@ -626,7 +635,7 @@ function MainLayoutContent({
               {!isInitialized ? (
                 <div className="flex items-center space-x-2 border-[2px] border-gray-300 px-3 py-2 text-sm text-gray-500">
                   <Loader2 size={16} className="animate-spin" />
-                  <span className="hidden sm:inline">กำลังโหลด</span>
+                  <span className="hidden sm:inline">{tCommon("loading")}</span>
                 </div>
               ) : isAuthenticated ? (
                 <div className="relative" ref={userMenuRef}>
@@ -648,7 +657,7 @@ function MainLayoutContent({
                       <span className="text-sm font-bold w-[100px] truncate text-left leading-tight">
                         {user?.username}
                       </span>
-                      <span className="text-[10px] text-gray-500">{isAdmin ? "Admin" : "Member"}</span>
+                      <span className="text-[10px] text-gray-500">{isAdmin ? tNav("admin") : tCommon("member")}</span>
                     </div>
                     <ChevronDown
                       size={14}
@@ -694,7 +703,7 @@ function MainLayoutContent({
                               style={{ boxShadow: "2px 2px 0 0 #000000" }}
                             >
                               <Star size={12} className="mr-1 fill-black" />{" "}
-                              สมาชิกพรีเมียม
+                              {tUserMenu("premium_member")}
                             </div>
                           )}
 
@@ -703,10 +712,10 @@ function MainLayoutContent({
                             style={{ boxShadow: "2px 2px 0 0 #000000" }}
                           >
                             <span className="text-gray-600 text-xs">
-                              คะแนนสะสม
+                              {tUserMenu("points")}
                             </span>
                             <span className="text-black font-bold font-mono">
-                              เร็วๆนี้
+                              {tUserMenu("coming_soon")}
                             </span>
                           </div>
                         </div>
@@ -732,7 +741,7 @@ function MainLayoutContent({
                             className="w-full px-3 py-2.5 text-sm text-brutal-pink hover:bg-brutal-pink/10 flex items-center space-x-3 transition-colors font-medium"
                           >
                             <LogOut size={18} className="opacity:70" />
-                            <span>ออกจากระบบ</span>
+                            <span>{tUserMenu("logout")}</span>
                           </button>
                         </div>
                       </motion.div>
@@ -746,7 +755,7 @@ function MainLayoutContent({
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <User size={16} />
-                  <span className="hidden sm:inline">เข้าสู่ระบบ</span>
+                  <span className="hidden sm:inline">{tNav("login")}</span>
                 </Link>
               )}
             </div>
@@ -776,7 +785,7 @@ function MainLayoutContent({
         {publicSettings?.features.enableMaintenanceMode && (
           <div className="border-b-[3px] border-black bg-red-100 px-4 py-2 text-sm text-red-900">
             {publicSettings.features.maintenanceMessage ||
-              "ระบบอยู่ระหว่างปรับปรุงบางส่วน"}
+              tMaintenance("banner")}
           </div>
         )}
         {publicSettings?.homepage.announcementEnabled &&

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { Link } from '@/i18n/routing';
+import { usePathname } from "next/navigation";
+import { useRouter } from '@/i18n/routing';
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { cn } from "@/lib/utils";
 import {
@@ -19,6 +20,7 @@ import {
   Newspaper,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/auth-context";
+import { useTranslations } from "next-intl";
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -29,6 +31,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
+  const tNav = useTranslations("Navigation");
+  const tUserMenu = useTranslations("UserMenu");
 
   const handleLogout = async () => {
     await logout();
@@ -37,27 +41,27 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   };
 
   const mainNavItems = [
-    { href: "/", label: "หน้าแรก", icon: <Home size={20} /> },
-    { href: "/games", label: "เกมทั้งหมด", icon: <Gamepad2 size={20} /> },
-    { href: "/card", label: "บัตร", icon: <CreditCard size={20} /> },
+    { href: "/", label: tNav("home"), icon: <Home size={20} /> },
+    { href: "/games", label: tNav("games"), icon: <Gamepad2 size={20} /> },
+    { href: "/card", label: tNav("card"), icon: <CreditCard size={20} /> },
     {
       href: "/mobile-recharge",
-      label: "เติมเงินมือถือ",
+      label: tNav("mobile_recharge"),
       icon: <Smartphone size={20} />,
     },
     {
       href: "/news",
-      label: "ข่าวสาร",
+      label: tNav("news"),
       icon: <Newspaper size={20} />,
     },
     {
       href: "/dashboard/favorite",
-      label: "รายการโปรด",
+      label: tNav("favorite"),
       icon: <Heart size={20} />,
     },
     {
       href: "/support",
-      label: "ช่วยเหลือ",
+      label: tNav("support"),
       icon: <MessageCircle size={20} />,
     },
   ];
@@ -135,14 +139,14 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       onClick={onClose}
                       className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50"
                     >
-                      บัญชี
+                      {tNav("account")}
                     </Link>
                     <Link
                       href="/dashboard/orders"
                       onClick={onClose}
                       className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50"
                     >
-                      คำสั่งซื้อ
+                      {tNav("orders")}
                     </Link>
                   </div>
                 </div>
@@ -153,7 +157,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   className="flex items-center justify-center w-full bg-brutal-pink text-white font-bold py-3 border-[3px] border-black shadow-brutal-mobile active:translate-y-[2px] active:shadow-none transition-all"
                 >
                   <User size={20} className="mr-2" />
-                  เข้าสู่ระบบ / สมัครสมาชิก
+                  {tNav("login")} / {tNav("register")}
                 </Link>
               )}
 
@@ -199,7 +203,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   className="flex items-center justify-center w-full py-3 text-red-500 font-bold border-[2px] border-red-500 hover:bg-red-50 transition-colors"
                 >
                   <LogOut size={20} className="mr-2" />
-                  ออกจากระบบ
+                  {tUserMenu("logout")}
                 </button>
               </div>
             )}

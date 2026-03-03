@@ -1,0 +1,113 @@
+{
+    "Navigation": {
+        "login": "เข้าสู่ระบบ",
+        "register": "สมัครสมาชิก",
+        "home": "หน้าแรก",
+        "games": "เกมทั้งหมด",
+        "card": "บัตร",
+        "mobile_recharge": "เติมเงินมือถือ",
+        "news": "ข่าวสาร",
+        "favorite": "รายการโปรด",
+        "support": "ช่วยเหลือ",
+        "admin": "แอดมิน",
+        "games_short": "เกม",
+        "recharge_short": "เติมเงิน",
+        "orders": "คำสั่งซื้อ",
+        "account": "บัญชี"
+    },
+    "UserMenu": {
+        "my_account": "บัญชีของฉัน",
+        "direct_topup": "เติมเงินโดยตรง",
+        "card": "บัตร",
+        "invoice": "ใบแจ้งหนี้",
+        "credits": "เครดิต",
+        "coupons": "คูปอง",
+        "favorite": "รายการโปรด",
+        "notifications": "การแจ้งเตือน",
+        "logout": "ออกจากระบบ",
+        "points": "คะแนนสะสม",
+        "coming_soon": "เร็วๆนี้",
+        "premium_member": "สมาชิกพรีเมียม"
+    },
+    "Notification": {
+        "title": "การแจ้งเตือน",
+        "read_all": "อ่านทั้งหมด",
+        "empty": "ไม่มีการแจ้งเตือนใหม่",
+        "view_all": "ดูทั้งหมด"
+    },
+    "Search": {
+        "placeholder": "ค้นหาเกม",
+        "help_text": "พิมพ์ชื่อเกมหรือสินค้าที่ต้องการ แล้วเลือกรายการจากผลลัพธ์"
+    },
+    "Maintenance": {
+        "title": "ระบบอยู่ระหว่างปรับปรุง",
+        "message": "ขออภัยในความไม่สะดวก ทีมงานกำลังปรับปรุงระบบและจะกลับมาให้บริการเร็วที่สุด",
+        "banner": "ระบบอยู่ระหว่างปรับปรุงบางส่วน"
+    },
+    "Common": {
+        "loading": "กำลังโหลด",
+        "member": "Member"
+    },
+    "Products": {
+        "featured": "สินค้าแนะนำ",
+        "recommended": "แนะนำ",
+        "new_arrivals": "สินค้าใหม่",
+        "new": "ใหม่",
+        "bestsellers": "สินค้าขายดี",
+        "sold": "ขายแล้ว {count}"
+    },
+    "Admin": {
+        "dashboard": "แดชบอร์ด",
+        "analytics": "Analytics",
+        "products": "สินค้า",
+        "categories": "หมวดหมู่",
+        "orders": "คำสั่งซื้อ",
+        "payments": "การชำระเงิน",
+        "promotions": "โปรโมชั่น",
+        "cms_pages": "หน้าเว็บ (CMS)",
+        "news": "ข่าวสาร",
+        "manage_faq": "จัดการ FAQ",
+        "manage_users": "จัดการผู้ใช้",
+        "support_tickets": "ตั๋วสนับสนุน",
+        "notifications": "การแจ้งเตือน",
+        "email": "อีเมล",
+        "settings": "ตั้งค่า",
+        "oauth": "OAuth",
+        "admin_cp": "แผงควบคุมผู้ดูแลระบบ",
+        "admin": "ผู้ดูแลระบบ",
+        "logout": "ออกจากระบบ",
+        "nav": {
+            "main": "หลัก",
+            "products_sales": "สินค้า & การขาย",
+            "content": "เนื้อหา",
+            "users_communication": "ผู้ใช้ & การสื่อสาร",
+            "system": "ระบบ"
+        }
+    },
+    "Footer": {
+        "tagline": "บริการเติมเกม ซื้อบัตรเติมเงิน และบริการดิจิทัลอื่นๆ ที่รวดเร็ว ปลอดภัย และราคาดีที่สุดในตลาด",
+        "contact_us": "ติดต่อเรา",
+        "live_chat": "แชทสดตลอด 24 ชั่วโมง",
+        "quick_links": "ลิงก์ด่วน",
+        "support": "ช่วยเหลือ",
+        "payment_channels": "ช่องทางชำระเงิน",
+        "supported_payments": "รองรับการชำระเงินผ่านบัตรเครดิต/เดบิต และ e-Wallet ทุกประเภท",
+        "copyright": "สงวนลิขสิทธิ์",
+        "privacy_policy": "นโยบายความเป็นส่วนตัว",
+        "terms_of_service": "เงื่อนไขการใช้บริการ",
+        "refund_policy": "นโยบายคืนเงิน",
+        "faq": "คำถามที่พบบ่อย",
+        "support_center": "ศูนย์ช่วยเหลือ",
+        "create_ticket": "สร้างตั๋ว",
+        "features": {
+            "payment": "ชำระเงินหลากหลาย",
+            "payment_desc": "รองรับทุกช่องทาง",
+            "security": "ปลอดภัย 100%",
+            "security_desc": "ระบบความปลอดภัยสูง",
+            "price": "ราคาคุ้มค่า",
+            "price_desc": "ส่วนลดและโปรพิเศษ",
+            "support": "ดูแล 24 ชม.",
+            "support_desc": "ทีมงานพร้อมช่วย"
+        }
+    }
+}

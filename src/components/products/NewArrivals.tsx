@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Product, productApi } from "@/lib/services/product-api";
 import { cn, getMinPrice, formatPrice } from "@/lib/utils";
 import { Star, Clock } from "lucide-react";
@@ -17,6 +18,7 @@ export function NewArrivals({ limit = 8, className }: NewArrivalsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const tProducts = useTranslations("Products");
 
   useEffect(() => {
     const fetchNewArrivals = async () => {
@@ -61,7 +63,7 @@ export function NewArrivals({ limit = 8, className }: NewArrivalsProps) {
         >
           <Clock className="w-4 h-4 text-black" />
         </div>
-        <h2 className="text-xl font-black text-black thai-font">สินค้าใหม่</h2>
+        <h2 className="text-xl font-black text-black thai-font">{tProducts("new_arrivals")}</h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -93,7 +95,7 @@ export function NewArrivals({ limit = 8, className }: NewArrivalsProps) {
                   className="absolute top-2 left-2 px-2 py-1 bg-brutal-green text-black text-xs font-bold border-[2px] border-black"
                   style={{ boxShadow: "2px 2px 0 0 #000000" }}
                 >
-                  ใหม่
+                  {tProducts("new")}
                 </span>
               </div>
               <div className="p-3">

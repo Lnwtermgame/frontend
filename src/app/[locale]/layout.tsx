@@ -1,8 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { routing } from '@/i18n/routing';
 import Script from "next/script";
 import { ReactGrabInit } from "@/components/ReactGrabInit";
 import { Toaster } from "react-hot-toast";
-import "./globals.css";
+import "../globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { AuthProvider } from "@/lib/context/auth-context";
 import { NotificationProvider } from "@/lib/context/notification-context";
@@ -119,13 +123,23 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+export default async function RootLayout(props: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const params = await props.params;
+  const { locale } = params;
+
+  // Ensure that the incoming `locale` is valid
+  if (!routing.locales.includes(locale as any)) {
+    notFound();
+  }
+
+  // Providing all messages to the client
+  // side is the easiest way to get started
+  const messages = await getMessages();
   return (
-    <html lang="th" style={{ colorScheme: "light" }}>
+    <html lang={locale} style={{ colorScheme: "light" }}>
       <head>
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (
@@ -138,56 +152,58 @@ export default function RootLayout({
       </head>
       <body className={cn("min-h-screen bg-brutal-gray font-sans antialiased")}>
         <ReactGrabInit />
-        <NextAuthProvider>
-          <AuthProvider>
-            <NotificationProvider>
-              <SecurityProvider>
-                <PaymentProvider>
-                  <SupportProvider>
-                    <DeliveryProvider>
-                      <PromotionProvider>
-                        <CartProvider>
-                          <PublicSettingsProvider>
-                            <MainLayout>{children}</MainLayout>
-                          </PublicSettingsProvider>
-                        </CartProvider>
-                        <Toaster
-                          position="bottom-right"
-                          containerStyle={{
-                            zIndex: 50,
-                          }}
-                          toastOptions={{
-                            duration: 4000,
-                            style: {
-                              background: "#FFFFFF",
-                              color: "#1f2937",
-                              border: "3px solid #000000",
-                              boxShadow: "4px 4px 0 0 #000000",
-                              borderRadius: "8px",
-                              padding: "12px 16px",
-                            },
-                            success: {
-                              iconTheme: {
-                                primary: "#95E1D3",
-                                secondary: "#000000",
+        <NextIntlClientProvider messages={messages}>
+          <NextAuthProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                <SecurityProvider>
+                  <PaymentProvider>
+                    <SupportProvider>
+                      <DeliveryProvider>
+                        <PromotionProvider>
+                          <CartProvider>
+                            <PublicSettingsProvider>
+                              <MainLayout>{props.children}</MainLayout>
+                            </PublicSettingsProvider>
+                          </CartProvider>
+                          <Toaster
+                            position="bottom-right"
+                            containerStyle={{
+                              zIndex: 50,
+                            }}
+                            toastOptions={{
+                              duration: 4000,
+                              style: {
+                                background: "#FFFFFF",
+                                color: "#1f2937",
+                                border: "3px solid #000000",
+                                boxShadow: "4px 4px 0 0 #000000",
+                                borderRadius: "8px",
+                                padding: "12px 16px",
                               },
-                            },
-                            error: {
-                              iconTheme: {
-                                primary: "#FF6B9D",
-                                secondary: "#FFFFFF",
+                              success: {
+                                iconTheme: {
+                                  primary: "#95E1D3",
+                                  secondary: "#000000",
+                                },
                               },
-                            },
-                          }}
-                        />
-                      </PromotionProvider>
-                    </DeliveryProvider>
-                  </SupportProvider>
-                </PaymentProvider>
-              </SecurityProvider>
-            </NotificationProvider>
-          </AuthProvider>
-        </NextAuthProvider>
+                              error: {
+                                iconTheme: {
+                                  primary: "#FF6B9D",
+                                  secondary: "#FFFFFF",
+                                },
+                              },
+                            }}
+                          />
+                        </PromotionProvider>
+                      </DeliveryProvider>
+                    </SupportProvider>
+                  </PaymentProvider>
+                </SecurityProvider>
+              </NotificationProvider>
+            </AuthProvider>
+          </NextAuthProvider>
+        </NextIntlClientProvider>
         <TawkTo />
       </body>
     </html>

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Product, productApi } from "@/lib/services/product-api";
 import { cn, getMinPrice, formatPrice } from "@/lib/utils";
 import { Star, TrendingUp } from "lucide-react";
@@ -20,6 +21,7 @@ export function BestsellerProducts({
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const tProducts = useTranslations("Products");
 
   useEffect(() => {
     const fetchBestsellers = async () => {
@@ -64,7 +66,7 @@ export function BestsellerProducts({
         >
           <TrendingUp className="w-4 h-4 text-white" />
         </div>
-        <h2 className="text-xl font-black text-black thai-font">สินค้าขายดี</h2>
+        <h2 className="text-xl font-black text-black thai-font">{tProducts("bestsellers")}</h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -128,7 +130,7 @@ export function BestsellerProducts({
                   </p>
                   {product.salesCount && (
                     <span className="text-xs text-gray-500 font-medium">
-                      ขายแล้ว {product.salesCount}
+                      {tProducts("sold", { count: product.salesCount })}
                     </span>
                   )}
                 </div>

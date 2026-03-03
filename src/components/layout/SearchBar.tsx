@@ -1,7 +1,8 @@
 "use client";
 
 import { SmartSearchBar } from "@/components/search/SmartSearchBar";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 interface SearchBarProps {
   variant?: "header" | "sidebar" | "full";
@@ -10,9 +11,11 @@ interface SearchBarProps {
 
 export default function SearchBar({
   variant = "header",
-  placeholder = "ค้นหาเกม...",
+  placeholder,
 }: SearchBarProps) {
   const router = useRouter();
+  const tSearch = useTranslations("Search");
+  const actualPlaceholder = placeholder || tSearch("placeholder");
 
   const handleSearch = (query: string) => {
     router.push(`/games?search=${encodeURIComponent(query)}`);
@@ -28,7 +31,7 @@ export default function SearchBar({
 
   return (
     <SmartSearchBar
-      placeholder={placeholder}
+      placeholder={actualPlaceholder}
       className={className}
       onSearch={handleSearch}
       maxResults={5}

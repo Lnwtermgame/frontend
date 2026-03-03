@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/routing";
 import {
   Package,
   Tag,
@@ -26,120 +26,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-
-// Hardcoded Thai navigation items - organized by category
-const adminNavCategories = [
-  {
-    title: "หลัก",
-    items: [
-      {
-        title: "แดชบอร์ด",
-        href: "/admin",
-        icon: <Home className="w-4 h-4" />,
-      },
-      {
-        title: "Analytics",
-        href: "/admin/analytics",
-        icon: <TrendingUp className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    title: "สินค้า & การขาย",
-    items: [
-      {
-        title: "สินค้า",
-        href: "/admin/products",
-        icon: <Package className="w-4 h-4" />,
-      },
-      {
-        title: "หมวดหมู่",
-        href: "/admin/categories",
-        icon: <Layers className="w-4 h-4" />,
-      },
-      {
-        title: "คำสั่งซื้อ",
-        href: "/admin/orders",
-        icon: <ShoppingCart className="w-4 h-4" />,
-      },
-      {
-        title: "การชำระเงิน",
-        href: "/admin/payments",
-        icon: <CreditCard className="w-4 h-4" />,
-      },
-      {
-        title: "โปรโมชั่น",
-        href: "/admin/promotions",
-        icon: <Tag className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    title: "เนื้อหา",
-    items: [
-      {
-        title: "หน้าเว็บ (CMS)",
-        href: "/admin/cms/pages",
-        icon: <FileText className="w-4 h-4" />,
-      },
-      {
-        title: "ข่าวสาร",
-        href: "/admin/cms/news",
-        icon: <Newspaper className="w-4 h-4" />,
-      },
-      {
-        title: "จัดการ FAQ",
-        href: "/admin/faq",
-        icon: <HelpCircle className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    title: "ผู้ใช้ & การสื่อสาร",
-    items: [
-      {
-        title: "จัดการผู้ใช้",
-        href: "/admin/users",
-        icon: <Users className="w-4 h-4" />,
-      },
-      {
-        title: "ตั๋วสนับสนุน",
-        href: "/admin/tickets",
-        icon: <MessageSquare className="w-4 h-4" />,
-      },
-      {
-        title: "การแจ้งเตือน",
-        href: "/admin/notification",
-        icon: <Bell className="w-4 h-4" />,
-      },
-      {
-        title: "อีเมล",
-        href: "/admin/email",
-        icon: <Mail className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    title: "ระบบ",
-    items: [
-      {
-        title: "ตั้งค่า",
-        href: "/admin/settings",
-        icon: <Settings className="w-4 h-4" />,
-      },
-      {
-        title: "OAuth",
-        href: "/admin/oauth",
-        icon: <Key className="w-4 h-4" />,
-      },
-    ],
-  },
-];
-
-// Flatten for mobile menu
-const allNavItems = adminNavCategories.flatMap((category) => category.items);
+import { useTranslations } from "next-intl";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -149,6 +37,119 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const tAdmin = useTranslations("Admin");
+
+  // Hardcoded Thai navigation items - organized by category
+  const adminNavCategories = [
+    {
+      title: tAdmin("nav.main"),
+      items: [
+        {
+          title: tAdmin("dashboard"),
+          href: "/admin",
+          icon: <Home className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("analytics"),
+          href: "/admin/analytics",
+          icon: <TrendingUp className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
+      title: tAdmin("nav.products_sales"),
+      items: [
+        {
+          title: tAdmin("products"),
+          href: "/admin/products",
+          icon: <Package className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("categories"),
+          href: "/admin/categories",
+          icon: <Layers className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("orders"),
+          href: "/admin/orders",
+          icon: <ShoppingCart className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("payments"),
+          href: "/admin/payments",
+          icon: <CreditCard className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("promotions"),
+          href: "/admin/promotions",
+          icon: <Tag className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
+      title: tAdmin("nav.content"),
+      items: [
+        {
+          title: tAdmin("cms_pages"),
+          href: "/admin/cms/pages",
+          icon: <FileText className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("news"),
+          href: "/admin/cms/news",
+          icon: <Newspaper className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("manage_faq"),
+          href: "/admin/faq",
+          icon: <HelpCircle className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
+      title: tAdmin("nav.users_communication"),
+      items: [
+        {
+          title: tAdmin("manage_users"),
+          href: "/admin/users",
+          icon: <Users className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("support_tickets"),
+          href: "/admin/tickets",
+          icon: <MessageSquare className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("notifications"),
+          href: "/admin/notification",
+          icon: <Bell className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("email"),
+          href: "/admin/email",
+          icon: <Mail className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
+      title: tAdmin("nav.system"),
+      items: [
+        {
+          title: tAdmin("settings"),
+          href: "/admin/settings",
+          icon: <Settings className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("oauth"),
+          href: "/admin/oauth",
+          icon: <Key className="w-4 h-4" />,
+        },
+      ],
+    },
+  ];
+
+  // Flatten for mobile menu
+  const allNavItems = adminNavCategories.flatMap((category) => category.items);
   const { user, isAdmin, logout, isInitialized, isSessionChecked } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -190,7 +191,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       >
         <h1 className="text-lg font-black text-black thai-font flex items-center">
           <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-          {title || "แผงควบคุมผู้ดูแลระบบ"}
+          {title || tAdmin("admin_cp")}
         </h1>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -223,7 +224,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-black text-xl text-black thai-font flex items-center">
                 <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-                ผู้ดูแลระบบ
+                {tAdmin("admin")}
               </h2>
               <button
                 onClick={() => setIsMenuOpen(false)}
@@ -251,7 +252,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                     className={cn(
                       "flex items-center py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium text-sm",
                       pathname === item.href &&
-                        "bg-brutal-yellow text-black font-bold border-[2px] border-black",
+                      "bg-brutal-yellow text-black font-bold border-[2px] border-black",
                     )}
                     style={
                       pathname === item.href
@@ -276,7 +277,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 className="flex items-center w-full py-2 px-3 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors thai-font font-medium text-sm"
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                ออกจากระบบ
+                {tAdmin("logout")}
               </button>
             </nav>
           </div>
@@ -298,7 +299,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 >
                   <DollarSign className="w-3 h-3 text-white" />
                 </div>
-                แผงควบคุม
+                {tAdmin("admin_cp")}
               </h2>
             </div>
             <nav className="p-3 space-y-3">
@@ -314,7 +315,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                           className={cn(
                             "flex items-center py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-black transition-colors thai-font font-medium text-sm rounded",
                             pathname === item.href &&
-                              "bg-brutal-yellow text-black font-bold border-[2px] border-black",
+                            "bg-brutal-yellow text-black font-bold border-[2px] border-black",
                           )}
                           style={
                             pathname === item.href
@@ -346,7 +347,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                       {user?.username || user?.email}
                     </div>
                     <div className="text-xs text-gray-500 thai-font">
-                      ผู้ดูแลระบบ
+                      {tAdmin("admin")}
                     </div>
                   </div>
                 </div>
@@ -360,7 +361,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                   className="flex items-center justify-center w-full py-1.5 px-3 text-brutal-pink hover:bg-brutal-pink/10 transition-colors text-xs font-bold thai-font border-[2px] border-transparent hover:border-brutal-pink"
                 >
                   <LogOut className="w-3 h-3 mr-1" />
-                  ออกจากระบบ
+                  {tAdmin("logout")}
                 </button>
               </div>
             </nav>

@@ -7,8 +7,9 @@ import {
   CreateReviewDTO,
 } from "@/lib/services/product-api";
 import { cn } from "@/lib/utils";
-import { Star, ThumbsUp, ThumbsDown, User, CheckCircle } from "lucide-react";
+import { Star, ThumbsUp, ThumbsDown, User, CheckCircle, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 
 interface ProductReviewsProps {
   reviews: Review[];
@@ -57,6 +58,7 @@ export function ProductReviews({
   onMarkHelpful,
   className,
 }: ProductReviewsProps) {
+  const t = useTranslations("Reviews");
   const [showForm, setShowForm] = useState(false);
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState("");
@@ -68,7 +70,7 @@ export function ProductReviews({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) {
-      setError("Please select a rating");
+      setError(t("select_rating"));
       return;
     }
 
@@ -81,7 +83,7 @@ export function ProductReviews({
       setTitle("");
       setContent("");
     } catch (err) {
-      setError("Failed to submit review. Please try again.");
+      setError(t("submit_failed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -97,7 +99,7 @@ export function ProductReviews({
           <Star className="w-4 h-4 text-black" />
         </div>
         <h3 className="text-lg font-bold text-black thai-font">
-          รีวิวจากลูกค้า
+          {t("title")}
         </h3>
       </div>
 
@@ -113,7 +115,7 @@ export function ProductReviews({
           <div>
             <StarRating rating={Math.round(summary.averageRating)} size="md" />
             <p className="text-sm text-gray-500 mt-1 font-medium">
-              จาก {reviews.length} รีวิว
+              {t("from_reviews", { count: reviews.length })}
             </p>
           </div>
         </div>
@@ -148,7 +150,7 @@ export function ProductReviews({
         className="w-full py-3 px-4 border-[3px] border-black rounded-xl font-bold hover:bg-brutal-yellow transition-colors thai-font bg-white"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
-        {showForm ? "ยกเลิก" : "เขียนรีวิว"}
+        {showForm ? t("cancel") : t("write_review")}
       </button>
 
       {/* Review Form */}
@@ -166,7 +168,7 @@ export function ProductReviews({
 
           <div>
             <label className="block text-sm font-bold text-black mb-2 thai-font">
-              ให้คะแนน
+              {t("rate")}
             </label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -195,28 +197,28 @@ export function ProductReviews({
 
           <div>
             <label className="block text-sm font-bold text-black mb-1 thai-font">
-              หัวข้อ (ไม่บังคับ)
+              {t("title_optional")}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="สรุปประสบการณ์ของคุณ"
+              placeholder={t("title_placeholder")}
               className="w-full px-4 py-3 border-[2px] border-gray-300 rounded-xl focus:border-black focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label className="block text-sm font-bold text-black mb-1 thai-font">
-              รีวิวของคุณ
+              {t("your_review")}
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="แชร์ประสบการณ์ของคุณกับสินค้านี้..."
+              placeholder={t("review_placeholder")}
               rows={4}
               required
-              aria-label="Your review"
+              aria-label={t("your_review")}
               className="w-full px-4 py-3 border-[2px] border-gray-300 rounded-xl focus:border-black focus:outline-none transition-all resize-none"
             />
           </div>
@@ -224,10 +226,13 @@ export function ProductReviews({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-[3px] border-black thai-font"
+            className="w-full py-3 px-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 disabled:opacity-50 transition-all thai-font flex items-center justify-center gap-2"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
-            {isSubmitting ? "กำลังส่ง..." : "ส่งรีวิว"}
+            {isSubmitting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : null}
+            {t("submit_review")}
           </button>
         </form>
       )}
@@ -236,7 +241,7 @@ export function ProductReviews({
       <div className="space-y-4">
         {reviews.length === 0 ? (
           <p className="text-gray-500 text-center py-8 thai-font font-medium">
-            ยังไม่มีรีวิว เป็นคนแรกที่รีวิวสินค้านี้!
+            {t("no_reviews")}
           </p>
         ) : (
           reviews.map((review) => (
@@ -264,7 +269,7 @@ export function ProductReviews({
                 {review.isVerified && (
                   <span className="flex items-center gap-1 text-xs text-brutal-green font-bold thai-font">
                     <CheckCircle className="w-3 h-3" />
-                    ซื้อแล้ว
+                    {t("purchased")}
                   </span>
                 )}
               </div>
@@ -280,7 +285,7 @@ export function ProductReviews({
               {/* Helpful buttons */}
               <div className="flex items-center gap-4 mt-3">
                 <span className="text-sm text-gray-500 font-bold thai-font">
-                  มีประโยชน์?
+                  {t("helpful_question")}
                 </span>
                 <button
                   type="button"
@@ -289,7 +294,7 @@ export function ProductReviews({
                   className="flex items-center gap-1 text-sm text-gray-600 hover:text-brutal-pink font-bold transition-colors"
                 >
                   <ThumbsUp className="w-4 h-4" aria-hidden="true" />
-                  ใช่ ({review.helpfulCount})
+                  {t("yes")} ({review.helpfulCount})
                 </button>
                 <button
                   type="button"
@@ -298,7 +303,7 @@ export function ProductReviews({
                   className="flex items-center gap-1 text-sm text-gray-600 hover:text-brutal-pink font-bold transition-colors"
                 >
                   <ThumbsDown className="w-4 h-4" aria-hidden="true" />
-                  ไม่
+                  {t("no")}
                 </button>
               </div>
             </div>

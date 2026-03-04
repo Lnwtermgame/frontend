@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/context/auth-context";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -160,6 +161,9 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   {tNav("login")} / {tNav("register")}
                 </Link>
               )}
+
+              {/* Language Switcher */}
+              <LanguageSwitcher variant="mobile" />
 
               {/* Navigation Links */}
               <nav className="space-y-2">

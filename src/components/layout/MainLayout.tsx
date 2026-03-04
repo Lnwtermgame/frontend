@@ -42,6 +42,7 @@ import { useAuth } from "@/lib/context/auth-context";
 import { useNotifications } from "@/lib/context/notification-context";
 import SearchBar from "@/components/layout/SearchBar";
 import { MobileNav } from "./MobileNav";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Sheet } from "@/components/ui/Sheet";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { useTranslations } from "next-intl";
@@ -509,6 +510,8 @@ function MainLayoutContent({
 
             {/* Right Section */}
             <div className="flex items-center gap-2 min-w-0">
+              <LanguageSwitcher className="hidden md:block" />
+              
               {/* Notification Dropdown - Show only when authenticated */}
               {isAuthenticated && (
                 <div className="relative" ref={notificationRef}>

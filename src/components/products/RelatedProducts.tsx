@@ -7,6 +7,7 @@ import { Product, productApi } from "@/lib/services/product-api";
 import { cn, getMinPrice, formatPrice } from "@/lib/utils";
 import { Star, Link2 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
+import { useTranslations } from "next-intl";
 
 interface RelatedProductsProps {
   productId: string;
@@ -19,6 +20,7 @@ export function RelatedProducts({
   limit = 4,
   className,
 }: RelatedProductsProps) {
+  const t = useTranslations("Products");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +71,7 @@ export function RelatedProducts({
           <Link2 className="w-4 h-4 text-black" />
         </div>
         <h2 className="text-xl font-black text-black thai-font">
-          สินค้าที่คุณอาจชอบ
+          {t("you_might_also_like")}
         </h2>
       </div>
 

@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, X, Loader2, Gamepad2, Tag, Clock } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
 import { productApi, Product } from "@/lib/services/product-api";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 // Types
 export interface SearchResult {
@@ -92,11 +92,14 @@ const getRecentSearches = (): string[] => {
 };
 
 export function SmartSearchBar({
-  placeholder = "ค้นหาเกม บัตรเติมเงิน และอื่นๆ…",
+  placeholder,
   className = "",
   onSearch,
   maxResults = 5,
 }: SmartSearchProps) {
+  const t = useTranslations("Search");
+  const actualPlaceholder = placeholder || t("placeholder_advanced");
+
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -249,9 +252,9 @@ export function SmartSearchBar({
           <input
             ref={inputRef}
             type="text"
-            placeholder={placeholder}
+            placeholder={actualPlaceholder}
             autoComplete="off"
-            aria-label="ค้นหาเกม"
+            aria-label={t("aria_label_search")}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -277,7 +280,7 @@ export function SmartSearchBar({
               type="button"
               onClick={clearSearch}
               className="absolute inset-y-0 right-0 pr-4 flex items-center"
-              aria-label="ล้างการค้นหา"
+              aria-label={t("aria_label_clear")}
             >
               <X
                 size={18}
@@ -294,156 +297,156 @@ export function SmartSearchBar({
           className="absolute mt-2 w-full bg-white border-[3px] border-black rounded-xl z-50 overflow-hidden transition-opacity duration-200"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
-            <div className="p-1 max-h-80 overflow-y-auto">
-              {/* Loading state */}
-              {isLoading && query.trim() && (
-                <div className="p-4 flex items-center justify-center">
-                  <Loader2
-                    size={24}
-                    className="text-brutal-pink animate-spin"
-                  />
-                </div>
-              )}
+          <div className="p-1 max-h-80 overflow-y-auto">
+            {/* Loading state */}
+            {isLoading && query.trim() && (
+              <div className="p-4 flex items-center justify-center">
+                <Loader2
+                  size={24}
+                  className="text-brutal-pink animate-spin"
+                />
+              </div>
+            )}
 
-              {/* No results state */}
-              {!isLoading && query.trim() && results.length === 0 && (
-                <div className="p-4 text-center">
-                  <p className="text-gray-500 text-sm thai-font">
-                    ไม่พบผลลัพธ์สำหรับ "{query}"
-                  </p>
-                </div>
-              )}
+            {/* No results state */}
+            {!isLoading && query.trim() && results.length === 0 && (
+              <div className="p-4 text-center">
+                <p className="text-gray-500 text-sm thai-font">
+                  {t("no_results_for", { query })}
+                </p>
+              </div>
+            )}
 
-              {/* Search Results */}
-              {!isLoading && results.length > 0 && (
-                <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">
-                    ผลการค้นหา
-                  </div>
-                  {results.map((result, index) => (
-                    <Link
-                      key={result.id}
-                      href={result.url}
-                      onClick={() => {
-                        saveRecentSearch(query);
-                        setRecentSearches(getRecentSearches());
-                        setIsDropdownOpen(false);
-                      }}
-                    >
-                      <div
-                        className={cn(
-                          "px-3 py-2 flex items-center hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors",
-                          index === selectedResultIndex &&
-                            "bg-brutal-yellow/30",
-                        )}
-                      >
-                        {result.image ? (
-                          <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-gray-100 flex-shrink-0 border-[2px] border-black">
-                            <img
-                              src={result.image}
-                              alt={result.title}
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div
-                            className="h-10 w-10 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
-                            aria-hidden="true"
-                          >
-                            {getIconForResult(result.type)}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm text-black font-bold truncate thai-font">
-                            {result.title}
-                          </div>
-                          {result.subtitle && (
-                            <div className="text-xs text-gray-500 truncate">
-                              {result.subtitle}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
+            {/* Search Results */}
+            {!isLoading && results.length > 0 && (
+              <div className="py-1">
+                <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">
+                  {t("search_results")}
                 </div>
-              )}
-
-              {/* Recent Searches */}
-              {!query.trim() && recentSearches.length > 0 && (
-                <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">
-                    ค้นหาล่าสุด
-                  </div>
-                  {recentSearches.map((search, index) => (
+                {results.map((result, index) => (
+                  <Link
+                    key={result.id}
+                    href={result.url}
+                    onClick={() => {
+                      saveRecentSearch(query);
+                      setRecentSearches(getRecentSearches());
+                      setIsDropdownOpen(false);
+                    }}
+                  >
                     <div
-                      key={`recent-${index}`}
-                      className="px-3 py-2 hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors flex items-center justify-between"
-                      onClick={() => {
-                        setQuery(search);
-                        performSearch(search);
-                      }}
+                      className={cn(
+                        "px-3 py-2 flex items-center hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors",
+                        index === selectedResultIndex &&
+                        "bg-brutal-yellow/30",
+                      )}
                     >
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-2">
-                          <Clock
-                            size={14}
-                            className="text-gray-500"
-                            aria-hidden="true"
+                      {result.image ? (
+                        <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-gray-100 flex-shrink-0 border-[2px] border-black">
+                          <img
+                            src={result.image}
+                            alt={result.title}
+                            className="h-full w-full object-cover"
                           />
                         </div>
-                        <span className="text-sm text-black font-medium">
-                          {search}
-                        </span>
+                      ) : (
+                        <div
+                          className="h-10 w-10 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
+                          aria-hidden="true"
+                        >
+                          {getIconForResult(result.type)}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-black font-bold truncate thai-font">
+                          {result.title}
+                        </div>
+                        {result.subtitle && (
+                          <div className="text-xs text-gray-500 truncate">
+                            {result.subtitle}
+                          </div>
+                        )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newRecentSearches = recentSearches.filter(
-                            (_, i) => i !== index,
-                          );
-                          setRecentSearches(newRecentSearches);
-                          if (
-                            typeof window !== "undefined" &&
-                            window.localStorage
-                          ) {
-                            window.localStorage.setItem(
-                              "recentSearches",
-                              JSON.stringify(newRecentSearches),
-                            );
-                          }
-                        }}
-                        className="text-gray-400 hover:text-brutal-pink transition-colors"
-                        aria-label="ลบออกจากประวัติการค้นหา"
-                      >
-                        <X size={14} aria-hidden="true" />
-                      </button>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
-            {/* Show all results action */}
-            {query.trim() && results.length > 0 && (
-              <div className="px-3 py-2 border-t-[2px] border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => {
-                    saveRecentSearch(query);
-                    setRecentSearches(getRecentSearches());
-                    router.push(`/games?search=${encodeURIComponent(query)}`);
-                    setIsDropdownOpen(false);
-                  }}
-                  className="text-sm text-black hover:text-brutal-pink font-bold w-full text-center thai-font transition-colors"
-                >
-                  ดูผลลัพธ์ทั้งหมดสำหรับ "{query}"
-                </button>
+            {/* Recent Searches */}
+            {!query.trim() && recentSearches.length > 0 && (
+              <div className="py-1">
+                <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">
+                  {t("recent_searches")}
+                </div>
+                {recentSearches.map((search, index) => (
+                  <div
+                    key={`recent-${index}`}
+                    className="px-3 py-2 hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors flex items-center justify-between"
+                    onClick={() => {
+                      setQuery(search);
+                      performSearch(search);
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-2">
+                        <Clock
+                          size={14}
+                          className="text-gray-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <span className="text-sm text-black font-medium">
+                        {search}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newRecentSearches = recentSearches.filter(
+                          (_, i) => i !== index,
+                        );
+                        setRecentSearches(newRecentSearches);
+                        if (
+                          typeof window !== "undefined" &&
+                          window.localStorage
+                        ) {
+                          window.localStorage.setItem(
+                            "recentSearches",
+                            JSON.stringify(newRecentSearches),
+                          );
+                        }
+                      }}
+                      className="text-gray-400 hover:text-brutal-pink transition-colors"
+                      aria-label={t("aria_label_remove_history")}
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-        )}
+
+          {/* Show all results action */}
+          {query.trim() && results.length > 0 && (
+            <div className="px-3 py-2 border-t-[2px] border-gray-200">
+              <button
+                type="button"
+                onClick={() => {
+                  saveRecentSearch(query);
+                  setRecentSearches(getRecentSearches());
+                  router.push(`/games?search=${encodeURIComponent(query)}`);
+                  setIsDropdownOpen(false);
+                }}
+                className="text-sm text-black hover:text-brutal-pink font-bold w-full text-center thai-font transition-colors"
+              >
+                {t("view_all_results_for", { query })}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

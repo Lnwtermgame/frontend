@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useMemo, memo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { useTranslations } from "next-intl";
 
 const NavItem = memo(function NavItem({
   href,
@@ -86,53 +87,54 @@ const UserSidebar = memo(function UserSidebar({
   onClose?: () => void;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("UserMenu");
 
   const navItems = useMemo(
     () => [
       {
         href: "/dashboard/account",
-        label: "บัญชีของฉัน",
+        label: t("my_account"),
         icon: <User className="w-4 h-4" />,
         color: "text-brutal-blue",
       },
       {
         href: "/dashboard/orders",
-        label: "คำสั่งซื้อของฉัน",
+        label: t("my_orders"),
         icon: <ShoppingCart className="w-4 h-4" />,
         color: "text-brutal-pink",
       },
       {
         href: "/dashboard/invoice",
-        label: "ใบแจ้งหนี้ของฉัน",
+        label: t("my_invoices"),
         icon: <FileText className="w-4 h-4" />,
         color: "text-brutal-green",
       },
       {
         href: "/dashboard/coupons",
-        label: "คูปองของฉัน",
+        label: t("my_coupons"),
         icon: <Ticket className="w-4 h-4" />,
         color: "text-brutal-yellow",
       },
       {
         href: "/dashboard/favorite",
-        label: "รายการโปรด",
+        label: t("favorite"),
         icon: <Heart className="w-4 h-4" />,
         color: "text-brutal-pink",
       },
       {
         href: "/dashboard/credits",
-        label: "เครดิต",
+        label: t("credits"),
         icon: <DollarSign className="w-4 h-4" />,
         color: "text-brutal-green",
       },
       {
         href: "/dashboard/notifications",
-        label: "การแจ้งเตือน",
+        label: t("notifications"),
         icon: <Bell className="w-4 h-4" />,
         color: "text-brutal-blue",
       },
     ],
-    [],
+    [t],
   );
 
   const renderSidebarContent = (className?: string) => (
@@ -145,7 +147,7 @@ const UserSidebar = memo(function UserSidebar({
           >
             <LayoutGrid className="w-3.5 h-3.5 text-black" />
           </div>
-          เมนู
+          {t("menu")}
         </h3>
         {onClose && (
           <button
@@ -222,6 +224,7 @@ const UserSidebar = memo(function UserSidebar({
 export default UserSidebar;
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("UserMenu");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
 
@@ -265,13 +268,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               >
                 <LayoutGrid className="w-4 h-4 text-black" />
               </div>
-              <span className="font-bold text-black text-sm">เมนูบัญชี</span>
+              <span className="font-bold text-black text-sm">
+                {t("account_menu")}
+              </span>
             </div>
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="px-3 py-1.5 bg-black text-white font-bold border-[2px] border-black text-xs"
             >
-              เปิดเมนู
+              {t("open_menu")}
             </button>
           </div>
         </div>

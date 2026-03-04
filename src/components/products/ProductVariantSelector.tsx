@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ProductVariant } from "@/lib/services/product-api";
 import { cn } from "@/lib/utils";
 import { motion } from "@/lib/framer-exports";
+import { useTranslations } from "next-intl";
 
 interface ProductVariantSelectorProps {
   variants: ProductVariant[];
@@ -18,6 +19,7 @@ export function ProductVariantSelector({
   selectedVariantId,
   className,
 }: ProductVariantSelectorProps) {
+  const t = useTranslations("Products");
   const [selected, setSelected] = useState<string | undefined>(
     selectedVariantId,
   );
@@ -47,7 +49,7 @@ export function ProductVariantSelector({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <h3 className="font-bold text-black thai-font">เลือกตัวเลือก</h3>
+      <h3 className="font-bold text-black thai-font">{t("select_options")}</h3>
 
       {/* If variants have options, group them */}
       {Object.keys(groupedOptions).length > 0 ? (
@@ -87,7 +89,7 @@ export function ProductVariantSelector({
                         ? "border-black bg-brutal-yellow text-black"
                         : "border-gray-200 bg-white hover:border-gray-400",
                       isOutOfStock &&
-                        "opacity-50 cursor-not-allowed line-through",
+                      "opacity-50 cursor-not-allowed line-through",
                     )}
                     style={
                       isSelected ? { boxShadow: "3px 3px 0 0 #000000" } : {}
@@ -154,7 +156,7 @@ export function ProductVariantSelector({
             return (
               <div className="text-sm">
                 <span className="font-bold text-black thai-font">
-                  ที่เลือก:
+                  {t("selected")}
                 </span>{" "}
                 <span className="text-black font-medium">{variant.name}</span>
                 {variant.sku && (
@@ -163,7 +165,7 @@ export function ProductVariantSelector({
                   </span>
                 )}
                 <div className="mt-1 text-gray-600 font-medium">
-                  สต็อก: {variant.stockQuantity} ชิ้น
+                  {t("stock_count", { quantity: variant.stockQuantity })}
                 </div>
               </div>
             );

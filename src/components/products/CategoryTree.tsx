@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Category } from "@/lib/services/product-api";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown, Folder, FolderOpen } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface CategoryTreeProps {
   categories: Category[];
@@ -116,10 +117,12 @@ export function CategoryTree({
   activeSlug,
   maxDepth = 10,
 }: CategoryTreeProps) {
+  const t = useTranslations("Products");
+
   if (!categories || categories.length === 0) {
     return (
       <div className={cn("p-4 text-gray-500 text-center thai-font", className)}>
-        ไม่มีหมวดหมู่
+        {t("no_categories")}
       </div>
     );
   }
@@ -128,7 +131,7 @@ export function CategoryTree({
     <div className={cn("space-y-1", className)}>
       <div className="flex items-center gap-2 mb-3 px-2">
         <span className="w-1.5 h-4 bg-brutal-pink"></span>
-        <h3 className="font-bold text-black thai-font">หมวดหมู่</h3>
+        <h3 className="font-bold text-black thai-font">{t("categories")}</h3>
       </div>
       {categories.map((category) => (
         <CategoryNode

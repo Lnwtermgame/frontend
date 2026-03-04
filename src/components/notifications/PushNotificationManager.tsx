@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Bell, AlertCircle, RefreshCw } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
+import { useTranslations } from "next-intl";
 
 interface PushNotificationManagerProps {
   className?: string;
@@ -12,6 +13,7 @@ interface PushNotificationManagerProps {
 export function PushNotificationManager({
   className,
 }: PushNotificationManagerProps) {
+  const t = useTranslations("PushNotifications");
   const {
     isSupported,
     isSubscribed,
@@ -45,10 +47,9 @@ export function PushNotificationManager({
             <AlertCircle size={18} />
           </div>
           <div>
-            <h3 className="text-black font-bold">การแจ้งเตือนผ่านบราวเซอร์</h3>
+            <h3 className="text-black font-bold">{t("title")}</h3>
             <p className="text-gray-600 text-sm">
-              บราวเซอร์ของคุณไม่สนับสนุนการแจ้งเตือนแบบพุช
-              โปรดใช้บราวเซอร์รุ่นใหม่หรือแอพพลิเคชั่น
+              {t("not_supported")}
             </p>
           </div>
         </div>
@@ -68,10 +69,9 @@ export function PushNotificationManager({
             <AlertCircle size={18} />
           </div>
           <div>
-            <h3 className="text-black font-bold">การแจ้งเตือนถูกบล็อก</h3>
+            <h3 className="text-black font-bold">{t("blocked")}</h3>
             <p className="text-gray-600 text-sm">
-              คุณได้บล็อกการแจ้งเตือนจากเว็บไซต์นี้
-              โปรดเปิดการอนุญาตในการตั้งค่าบราวเซอร์ของคุณ
+              {t("blocked_desc")}
             </p>
           </div>
         </div>
@@ -106,12 +106,12 @@ export function PushNotificationManager({
             </div>
             <div>
               <h3 className="text-black font-bold">
-                การแจ้งเตือนผ่านบราวเซอร์
+                {t("title")}
               </h3>
               <p className="text-gray-600 text-sm">
                 {isSubscribed
-                  ? "คุณได้เปิดการรับการแจ้งเตือนผ่านบราวเซอร์"
-                  : "รับการแจ้งเตือนเมื่อมีการอัปเดตสำคัญ แม้เมื่อคุณไม่ได้เปิดเว็บไซต์"}
+                  ? t("enabled")
+                  : t("disabled_desc")}
               </p>
             </div>
           </div>
@@ -129,10 +129,10 @@ export function PushNotificationManager({
                 {isUnsubscribing ? (
                   <>
                     <RefreshCw size={16} className="mr-2 animate-spin inline" />
-                    กำลังยกเลิก...
+                    {t("unsubscribing")}
                   </>
                 ) : (
-                  "ยกเลิกการแจ้งเตือน"
+                  t("unsubscribe")
                 )}
               </button>
             ) : (
@@ -147,12 +147,12 @@ export function PushNotificationManager({
                 {isSubscribing ? (
                   <>
                     <RefreshCw size={16} className="mr-2 animate-spin inline" />
-                    กำลังเปิดใช้งาน...
+                    {t("enabling")}
                   </>
                 ) : (
                   <>
                     <Bell size={16} className="mr-2 inline" />
-                    เปิดใช้งานการแจ้งเตือน
+                    {t("enable")}
                   </>
                 )}
               </button>

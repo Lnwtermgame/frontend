@@ -24,8 +24,10 @@ import {
   OAuthProvider,
 } from "@/lib/services/oauth-provider-api";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 function LoginContent() {
+  const t = useTranslations("Auth.login");
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionExpired = searchParams.get("session_expired") === "true";
@@ -43,18 +45,18 @@ function LoginContent() {
   // Handle OAuth errors from URL
   useEffect(() => {
     if (error === "OAuthCallback") {
-      toast.error("การเข้าสู่ระบบด้วย OAuth ล้มเหลว กรุณาลองใหม่อีกครั้ง");
+      toast.error(t("oauth_failed"));
     } else if (error === "OAuthSignin") {
-      toast.error("ไม่สามารถเริ่มการเข้าสู่ระบบด้วย OAuth ได้");
+      toast.error(t("oauth_init_failed"));
     } else if (error === "Callback") {
-      toast.error("การ callback จาก OAuth ล้มเหลว");
+      toast.error(t("oauth_callback_failed"));
     }
 
     // Clear session_expired flag if user visits login page directly (not from session expiry)
     if (!sessionExpired && typeof window !== "undefined") {
       sessionStorage.removeItem("session_expired");
     }
-  }, [error, sessionExpired]);
+  }, [error, sessionExpired, t]);
 
   // Fetch OAuth providers
   useEffect(() => {
@@ -97,7 +99,7 @@ function LoginContent() {
   const handleOAuthLogin = async (provider: OAuthProvider) => {
     // Check if provider is enabled
     if (!provider.isEnabled) {
-      toast.error(`${provider.displayName} ยังไม่ได้เปิดใช้งาน`);
+      toast.error(t("provider_not_enabled", { provider: provider.displayName }));
       return;
     }
 
@@ -116,7 +118,7 @@ function LoginContent() {
       });
     } catch (error) {
       console.error("[Login] OAuth sign in exception:", error);
-      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      toast.error(t("error_occurred"));
     }
   };
 
@@ -169,19 +171,19 @@ function LoginContent() {
             <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_0_#000]">
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
             </div>
-            <span className="text-2xl font-black text-black thai-font">
+            <span className="text-2xl font-black text-black">
               {siteName}
             </span>
           </div>
 
-          <h1 className="text-4xl font-black text-black leading-tight thai-font">
-            เติมเกม <span className="text-brutal-pink">รวดเร็ว</span>
+          <h1 className="text-4xl font-black text-black leading-tight">
+            {t("hero_title_1")} <span className="text-brutal-pink">{t("hero_title_2")}</span>
             <br />
-            ปลอดภัย <span className="text-brutal-blue">ราคาคุ้ม</span>
+            {t("hero_title_3")} <span className="text-brutal-blue">{t("hero_title_4")}</span>
           </h1>
 
-          <p className="text-gray-600 text-lg thai-font">
-            เข้าสู่ระบบเพื่อเข้าถึงบัญชีของคุณและเริ่มเติมเงินเกมได้ทันที
+          <p className="text-gray-600 text-lg">
+            {t("subtitle")}
           </p>
 
           {/* Feature Highlights */}
@@ -200,9 +202,9 @@ function LoginContent() {
                 <Sparkles className="w-5 h-5 text-black" />
               </div>
               <div>
-                <h3 className="text-black font-bold thai-font">สะสมแต้ม VIP</h3>
+                <h3 className="text-black font-bold">{t("vip_points")}</h3>
                 <p className="text-gray-500 text-sm">
-                  รับสิทธิพิเศษและส่วนลดเพิ่ม
+                  {t("vip_points_desc")}
                 </p>
               </div>
             </motion.div>
@@ -221,9 +223,9 @@ function LoginContent() {
                 <Shield className="w-5 h-5 text-black" />
               </div>
               <div>
-                <h3 className="text-black font-bold thai-font">ปลอดภัย 100%</h3>
+                <h3 className="text-black font-bold">{t("secure_100")}</h3>
                 <p className="text-gray-500 text-sm">
-                  ระบบความปลอดภัยมาตรฐานสากล
+                  {t("secure_100_desc")}
                 </p>
               </div>
             </motion.div>
@@ -242,12 +244,12 @@ function LoginContent() {
               <div className="mb-6 p-4 bg-yellow-100 border-[2px] border-yellow-500">
                 <div className="flex items-center space-x-2">
                   <Info className="w-5 h-5 text-yellow-700" />
-                  <span className="text-yellow-800 font-bold thai-font">
-                    เซสชันหมดอายุ
+                  <span className="text-yellow-800 font-bold">
+                    {t("session_expired")}
                   </span>
                 </div>
-                <p className="text-yellow-700 text-sm mt-1 thai-font">
-                  กรุณาเข้าสู่ระบบอีกครั้งเพื่อดำเนินการต่อ
+                <p className="text-yellow-700 text-sm mt-1">
+                  {t("session_expired_desc")}
                 </p>
               </div>
             )}
@@ -257,22 +259,22 @@ function LoginContent() {
               <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
               </div>
-              <span className="text-xl font-black text-black thai-font">
+              <span className="text-xl font-black text-black">
                 {siteName}
               </span>
             </div>
 
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-black mb-2 thai-font">
-                เข้าสู่ระบบ
+              <h2 className="text-2xl font-black text-black mb-2">
+                {t("title")}
               </h2>
-              <p className="text-gray-500 thai-font">
-                ยังไม่มีบัญชี?{" "}
+              <p className="text-gray-500">
+                {t("no_account")}{" "}
                 <Link
                   href="/register"
                   className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
                 >
-                  สมัครสมาชิก
+                  {t("register_now")}
                 </Link>
               </p>
             </div>
@@ -280,7 +282,7 @@ function LoginContent() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <Input
                 id="email"
-                label="อีเมล"
+                label={t("email")}
                 type="email"
                 placeholder="your@email.com"
                 value={email}
@@ -294,7 +296,7 @@ function LoginContent() {
               <div className="space-y-1.5">
                 <Input
                   id="password"
-                  label="รหัสผ่าน"
+                  label={t("password")}
                   type="password"
                   placeholder="••••••••"
                   value={password}
@@ -307,9 +309,9 @@ function LoginContent() {
                 <div className="flex justify-end">
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors thai-font"
+                    className="text-sm text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
                   >
-                    ลืมรหัสผ่าน?
+                    {t("forgot_password")}
                   </Link>
                 </div>
               </div>
@@ -323,7 +325,7 @@ function LoginContent() {
               >
                 {!isLoading && (
                   <>
-                    เข้าสู่ระบบ <ArrowRight className="ml-2 h-5 w-5" />
+                    {t("login_button")} <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
               </Button>
@@ -337,8 +339,8 @@ function LoginContent() {
                     <div className="w-full border-t border-gray-200"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-3 bg-white text-gray-500 thai-font">
-                      หรือเข้าสู่ระบบด้วย
+                    <span className="px-3 bg-white text-gray-500">
+                      {t("or_login_with")}
                     </span>
                   </div>
                 </div>

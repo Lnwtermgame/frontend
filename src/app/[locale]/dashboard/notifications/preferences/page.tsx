@@ -19,11 +19,16 @@ import {
   Check,
   Smartphone,
   X,
+  Megaphone,
+  Info,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function NotificationPreferencesPage() {
+  const t = useTranslations("NotificationPreferences");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const { user, isInitialized } = useAuth();
@@ -68,7 +73,7 @@ export default function NotificationPreferencesPage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดการตั้งค่าได้");
+        toast.error(tCommon("error_occurred") || "Could not load preferences");
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -90,10 +95,10 @@ export default function NotificationPreferencesPage() {
     try {
       const response = await notificationApi.updatePreferences(preferences);
       if (response.success) {
-        toast.success("บันทึกการตั้งค่าเรียบร้อยแล้ว");
+        toast.success(t("save_success"));
       }
     } catch (error) {
-      toast.error("ไม่สามารถบันทึกการตั้งค่าได้");
+      toast.error(tCommon("error_occurred") || "Could not save preferences");
     } finally {
       setIsSaving(false);
     }
@@ -105,12 +110,12 @@ export default function NotificationPreferencesPage() {
     try {
       const success = await subscribePush();
       if (success) {
-        toast.success("เปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว");
+        toast.success("Push notifications enabled successfully");
       } else {
-        toast.error("ไม่สามารถเปิดใช้งานการแจ้งเตือน Push ได้");
+        toast.error("Could not enable push notifications");
       }
     } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการเปิดใช้งานการแจ้งเตือน Push");
+      toast.error("Error occurred while enabling push notifications");
     } finally {
       setIsSubscribing(false);
     }
@@ -121,9 +126,9 @@ export default function NotificationPreferencesPage() {
     setIsSubscribing(true);
     try {
       await unsubscribePush();
-      toast.success("ปิดใช้งานการแจ้งเตือน Push เรียบร้อยแล้ว");
+      toast.success("Push notifications disabled successfully");
     } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการปิดใช้งานการแจ้งเตือน Push");
+      toast.error("Error occurred while disabling push notifications");
     } finally {
       setIsSubscribing(false);
     }
@@ -141,29 +146,29 @@ export default function NotificationPreferencesPage() {
   const preferenceItems = [
     {
       key: "emailNotifications" as const,
-      title: "การแจ้งเตือนทางอีเมล",
-      description: "รับการแจ้งเตือนสำคัญทางอีเมล",
+      title: t("channels.email"),
+      description: t("channels.email_desc"),
       icon: <Mail className="h-4 w-4" />,
       accent: "bg-brutal-blue",
     },
     {
       key: "pushNotifications" as const,
-      title: "การแจ้งเตือนแบบ Push",
-      description: "รับการแจ้งเตือนบนเบราว์เซอร์ของคุณ",
+      title: t("channels.web"),
+      description: t("channels.web_desc"),
       icon: <Bell className="h-4 w-4" />,
       accent: "bg-brutal-pink",
     },
     {
       key: "orderUpdates" as const,
-      title: "อัปเดตคำสั่งซื้อ",
-      description: "รับการแจ้งเตือนเมื่อสถานะคำสั่งซื้อเปลี่ยนแปลง",
+      title: t("types.orders"),
+      description: t("types.orders_desc"),
       icon: <Globe className="h-4 w-4" />,
       accent: "bg-brutal-green",
     },
     {
       key: "promotions" as const,
-      title: "โปรโมชั่นและข้อเสนอ",
-      description: "รับข้อมูลโปรโมชั่นและส่วนลดพิเศษ",
+      title: t("types.promotions"),
+      description: t("types.promotions_desc"),
       icon: <Check className="h-4 w-4" />,
       accent: "bg-brutal-yellow",
     },
@@ -175,7 +180,7 @@ export default function NotificationPreferencesPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -187,21 +192,21 @@ export default function NotificationPreferencesPage() {
       <div className="flex items-center mb-4">
         <Link
           href="/dashboard/notifications"
-          className="mr-3 text-gray-600 hover:text-black transition-colors border-[2px] border-gray-300 hover:border-black p-1"
+          className="mr-3 text-gray-600 hover:text-black transition-colors border-[2px] border-gray-300 hover:border-black p-1 shadow-[2px_2px_0_0_#000]"
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <motion.h2
-            className="text-lg font-bold text-gray-900 thai-font flex items-center"
+            className="text-lg font-bold text-gray-900 flex items-center"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
           >
             <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
-            ตั้งค่าการแจ้งเตือน
+            {t("title")}
           </motion.h2>
-          <p className="text-gray-600 text-xs">
-            จัดการการตั้งค่าการแจ้งเตือนของคุณ
+          <p className="text-gray-600 text-xs font-bold">
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -218,9 +223,9 @@ export default function NotificationPreferencesPage() {
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="p-4 border-b-[3px] border-black bg-gray-50">
-            <h3 className="text-base font-bold text-black flex items-center thai-font">
+            <h3 className="text-base font-bold text-black flex items-center">
               <Bell size={16} className="text-brutal-blue mr-2" />
-              การตั้งค่าการแจ้งเตือน
+              {t("title")}
             </h3>
           </div>
 
@@ -238,19 +243,19 @@ export default function NotificationPreferencesPage() {
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                      <h4 className="text-black font-bold thai-font text-sm">
-                        การแจ้งเตือนแบบ Push
+                      <h4 className="text-black font-bold text-sm">
+                        {t("channels.web")}
                       </h4>
                       {isPushSubscribed && (
-                        <span className="text-[10px] bg-brutal-green text-white px-1.5 py-0.5 border border-black font-bold">
-                          เปิดใช้งาน
+                        <span className="text-[10px] bg-brutal-green text-white px-1.5 py-0.5 border border-black font-bold uppercase">
+                          Enabled
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-600 text-xs">
+                    <p className="text-gray-600 text-xs font-bold">
                       {isPushSubscribed
-                        ? "คุณกำลังรับการแจ้งเตือนแบบ Push อยู่"
-                        : "เปิดใช้งานการแจ้งเตือนแบบ Push เพื่อรับการแจ้งเตือนบนอุปกรณ์ของคุณ"}
+                        ? "Push notifications are currently enabled"
+                        : "Enable push notifications to receive updates on your device"}
                     </p>
                   </div>
                 </div>
@@ -259,30 +264,28 @@ export default function NotificationPreferencesPage() {
                     onClick={handleUnsubscribePush}
                     disabled={isSubscribing}
                     whileHover={{ y: -2 }}
-                    className="flex items-center justify-center bg-brutal-pink hover:bg-red-600 text-white px-3 py-1.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 text-xs w-full md:w-auto"
-                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    className="flex items-center justify-center bg-brutal-pink hover:bg-red-600 text-white px-3 py-1.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-[2px_2px_0_0_#000]"
                   >
                     {isSubscribing ? (
                       <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
                       <X className="h-3 w-3 mr-2" />
                     )}
-                    ปิดใช้งาน
+                    Disable
                   </motion.button>
                 ) : (
                   <motion.button
                     onClick={handleSubscribePush}
                     disabled={isSubscribing}
                     whileHover={{ y: -2 }}
-                    className="flex items-center justify-center bg-brutal-green hover:bg-green-600 text-white px-3 py-1.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 text-xs w-full md:w-auto"
-                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    className="flex items-center justify-center bg-brutal-green hover:bg-green-600 text-white px-3 py-1.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-[2px_2px_0_0_#000]"
                   >
                     {isSubscribing ? (
                       <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
                       <Bell className="h-3 w-3 mr-2" />
                     )}
-                    เปิดใช้งาน
+                    Enable
                   </motion.button>
                 )}
               </motion.div>
@@ -303,10 +306,10 @@ export default function NotificationPreferencesPage() {
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-black font-bold thai-font mb-0.5 md:mb-0 text-sm">
+                      <h4 className="text-black font-bold mb-0.5 md:mb-0 text-sm">
                         {item.title}
                       </h4>
-                      <p className="text-gray-600 text-xs">
+                      <p className="text-gray-600 text-xs font-bold">
                         {item.description}
                       </p>
                     </div>
@@ -331,18 +334,18 @@ export default function NotificationPreferencesPage() {
                 onClick={savePreferences}
                 disabled={isSaving}
                 whileHover={{ y: -2 }}
-                className="flex items-center bg-black hover:bg-gray-800 text-white px-4 py-2 border-[2px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed thai-font text-xs"
+                className="flex items-center bg-black hover:bg-gray-800 text-white px-4 py-2 border-[2px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase"
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
                 {isSaving ? (
                   <>
                     <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    กำลังบันทึก...
+                    {t("saving")}
                   </>
                 ) : (
                   <>
                     <Save className="h-3 w-3 mr-2" />
-                    บันทึกการตั้งค่า
+                    {t("save_button")}
                   </>
                 )}
               </motion.button>

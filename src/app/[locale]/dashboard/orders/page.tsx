@@ -24,8 +24,11 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Sheet } from "@/components/ui/Sheet";
+import { useTranslations } from "next-intl";
 
 export default function OrdersPage() {
+  const t = useTranslations("Orders");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const { user, isInitialized } = useAuth();
 
@@ -72,7 +75,7 @@ export default function OrdersPage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดคำสั่งซื้อได้");
+        toast.error(t("error_loading"));
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -129,11 +132,7 @@ export default function OrdersPage() {
 
   // Format date
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("th-TH", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    return new Date(dateString).toLocaleDateString();
   };
 
   // If the user is not loaded yet or not logged in, show loading
@@ -142,7 +141,7 @@ export default function OrdersPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -153,37 +152,37 @@ export default function OrdersPage() {
     switch (status) {
       case "COMPLETED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
-            <CheckCircle className="w-3 h-3 mr-1" /> สำเร็จ
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-green text-black whitespace-nowrap shadow-[2px_2px_0_0_#000]">
+            <CheckCircle className="w-3 h-3 mr-1" /> {t("status.completed")}
           </span>
         );
       case "PENDING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
-            <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-yellow text-black whitespace-nowrap shadow-[2px_2px_0_0_#000]">
+            <Clock className="w-3 h-3 mr-1" /> {t("status.pending")}
           </span>
         );
       case "PROCESSING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
-            <Clock className="w-3 h-3 mr-1" /> กำลังดำเนินการ
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-brutal-blue text-black whitespace-nowrap shadow-[2px_2px_0_0_#000]">
+            <Clock className="w-3 h-3 mr-1" /> {t("status.processing")}
           </span>
         );
       case "CANCELLED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
-            <XCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-300 text-black whitespace-nowrap shadow-[2px_2px_0_0_#000]">
+            <XCircle className="w-3 h-3 mr-1" /> {t("status.cancelled")}
           </span>
         );
       case "REFUNDED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
-            <AlertCircle className="w-3 h-3 mr-1" /> คืนเงินแล้ว
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-gray-600 whitespace-nowrap shadow-[2px_2px_0_0_#000]">
+            <AlertCircle className="w-3 h-3 mr-1" /> {t("status.refunded")}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black thai-font whitespace-nowrap shadow-[2px_2px_0_0_#000]">
+          <span className="inline-flex items-center px-2.5 py-0.5 border-[2px] border-black text-xs font-bold bg-gray-200 text-black whitespace-nowrap shadow-[2px_2px_0_0_#000]">
             {status}
           </span>
         );
@@ -191,11 +190,11 @@ export default function OrdersPage() {
   };
 
   const STATUS_OPTIONS = [
-    { value: "", label: "ทั้งหมด" },
-    { value: "PENDING", label: "รอดำเนินการ" },
-    { value: "PROCESSING", label: "กำลังดำเนินการ" },
-    { value: "COMPLETED", label: "สำเร็จ" },
-    { value: "CANCELLED", label: "ยกเลิก" },
+    { value: "", label: t("status.all") },
+    { value: "PENDING", label: t("status.pending") },
+    { value: "PROCESSING", label: t("status.processing") },
+    { value: "COMPLETED", label: t("status.completed") },
+    { value: "CANCELLED", label: t("status.cancelled") },
   ];
 
   // Render card view for mobile
@@ -234,26 +233,26 @@ export default function OrdersPage() {
                       ? order.items[0]?.productType?.name
                         ? `${order.items[0].product.name} - ${order.items[0].productType.name}`
                         : order.items[0].product.name
-                      : order.items[0]?.productName || "สินค้า"}
+                      : order.items[0]?.productName || t("table.product")}
                   </h3>
                   <div>{renderStatusBadge(order.status)}</div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <p className="text-gray-600 thai-font">รหัสคำสั่งซื้อ</p>
+                    <p className="text-gray-600 font-bold uppercase text-[10px]">{t("order_id_label")}</p>
                     <p className="text-black font-medium">
                       {order.orderNumber}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600 thai-font">จำนวนเงิน</p>
+                    <p className="text-gray-600 font-bold uppercase text-[10px]">{t("amount_label")}</p>
                     <p className="text-black font-bold">
                       {formatCurrency(order.finalAmount)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600 thai-font">วันที่</p>
+                    <p className="text-gray-600 font-bold uppercase text-[10px]">{t("date_label")}</p>
                     <p className="text-gray-600">
                       {formatDate(order.createdAt)}
                     </p>
@@ -264,7 +263,7 @@ export default function OrdersPage() {
                   <Link href={`/dashboard/orders/${order.id}`}>
                     <Button size="sm" className="text-xs h-7 px-2">
                       <Eye className="h-3 w-3 mr-1" />
-                      ดูรายละเอียด
+                      {t("view_details")}
                     </Button>
                   </Link>
                 </div>
@@ -281,15 +280,15 @@ export default function OrdersPage() {
       {/* Page Header */}
       <div className="relative mb-4">
         <motion.h2
-          className="text-lg font-bold text-black mb-1 relative flex items-center thai-font"
+          className="text-lg font-bold text-black mb-1 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
           <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
-          คำสั่งซื้อของฉัน
+          {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative thai-font">
-          ติดตามและจัดการการสั่งซื้อของคุณ
+        <p className="text-gray-600 text-xs relative">
+          {t("subtitle")}
         </p>
       </div>
 
@@ -302,7 +301,7 @@ export default function OrdersPage() {
       >
         <div className="relative md:w-72">
           <Input
-            placeholder="ค้นหาคำสั่งซื้อ..."
+            placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             icon={<Search size={16} />}
@@ -316,7 +315,7 @@ export default function OrdersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 bg-white border-[2px] border-black text-black text-xs focus:outline-none shadow-[2px_2px_0_0_#000] thai-font h-10"
+              className="px-3 py-1.5 bg-white border-[2px] border-black text-black text-xs focus:outline-none shadow-[2px_2px_0_0_#000] h-10"
             >
               {STATUS_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -332,21 +331,21 @@ export default function OrdersPage() {
             className="md:hidden h-10 text-xs"
             onClick={() => setIsFilterOpen(true)}
           >
-            <Filter size={14} className="mr-2" /> ตัวกรอง
+            <Filter size={14} className="mr-2" /> {t("filter_title")}
           </Button>
 
           <div className="hidden md:flex bg-white border-[2px] border-black p-1 shadow-[2px_2px_0_0_#000]">
             <button
-              className={`px-3 py-1 text-xs font-medium transition-colors thai-font ${viewMode === "table" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+              className={`px-3 py-1 text-xs font-bold transition-colors ${viewMode === "table" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
               onClick={() => setViewMode("table")}
             >
-              ตาราง
+              {t("view_mode.table")}
             </button>
             <button
-              className={`px-3 py-1 text-xs font-medium transition-colors thai-font ${viewMode === "card" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+              className={`px-3 py-1 text-xs font-bold transition-colors ${viewMode === "card" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
               onClick={() => setViewMode("card")}
             >
-              การ์ด
+              {t("view_mode.card")}
             </button>
           </div>
         </div>
@@ -356,12 +355,12 @@ export default function OrdersPage() {
       <Sheet
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        title="ตัวกรองคำสั่งซื้อ"
+        title={t("filter_title")}
       >
         <div className="space-y-6">
           <div>
             <h3 className="font-bold mb-3 flex items-center">
-              <Filter size={18} className="mr-2" /> สถานะคำสั่งซื้อ
+              <Filter size={18} className="mr-2" /> {t("table.status")}
             </h3>
             <div className="space-y-2">
               {STATUS_OPTIONS.map((option) => (
@@ -371,11 +370,10 @@ export default function OrdersPage() {
                     setStatusFilter(option.value);
                     setIsFilterOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
-                    statusFilter === option.value
+                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${statusFilter === option.value
                       ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
                       : "bg-white text-gray-700"
-                  }`}
+                    }`}
                 >
                   <span>{option.label}</span>
                   {statusFilter === option.value && <Check size={18} />}
@@ -385,7 +383,7 @@ export default function OrdersPage() {
           </div>
 
           <Button fullWidth onClick={() => setIsFilterOpen(false)}>
-            ดูผลลัพธ์
+            {t("view_results")}
           </Button>
         </div>
       </Sheet>
@@ -407,20 +405,20 @@ export default function OrdersPage() {
             <table className="w-full text-left">
               <thead className="bg-gray-100 border-b-[3px] border-black">
                 <tr>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
-                    รหัสคำสั่งซื้อ
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    {t("table.order_number")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
-                    สินค้า
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    {t("table.product")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
-                    วันที่
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    {t("table.date")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
-                    จำนวนเงิน
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    {t("table.amount")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 thai-font">
-                    สถานะ
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    {t("table.status")}
                   </th>
                   <th className="px-4 py-3 text-xs font-bold text-gray-700"></th>
                 </tr>
@@ -459,19 +457,19 @@ export default function OrdersPage() {
                               </div>
                             )}
                           </div>
-                          <span className="text-black text-xs line-clamp-1">
+                          <span className="text-black text-xs line-clamp-1 font-medium">
                             {order.items[0]?.product?.name
                               ? order.items[0]?.productType?.name
                                 ? `${order.items[0].product.name} - ${order.items[0].productType.name}`
                                 : order.items[0].product.name
-                              : order.items[0]?.productName || "สินค้า"}
+                              : order.items[0]?.productName || t("table.product")}
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-xs text-gray-600">
+                      <td className="px-4 py-3 text-xs text-gray-600 font-medium">
                         {formatDate(order.createdAt)}
                       </td>
-                      <td className="px-4 py-3 text-xs text-black font-bold">
+                      <td className="px-4 py-3 text-xs text-black font-black">
                         {formatCurrency(order.finalAmount)}
                       </td>
                       <td className="px-4 py-3">
@@ -481,7 +479,7 @@ export default function OrdersPage() {
                         <Link href={`/dashboard/orders/${order.id}`}>
                           <Button size="sm" className="text-xs h-7 px-2">
                             <Eye className="h-3 w-3 mr-1" />
-                            ดู
+                            {t("view_short")}
                           </Button>
                         </Link>
                       </td>
@@ -492,13 +490,13 @@ export default function OrdersPage() {
                     <td colSpan={6} className="px-4 py-8 text-center">
                       <div className="text-gray-600">
                         <ShoppingBag className="h-10 w-10 mx-auto opacity-50 mb-3" />
-                        <p className="text-black text-base font-bold mb-1 thai-font">
-                          ไม่พบคำสั่งซื้อ
+                        <p className="text-black text-base font-bold mb-1">
+                          {t("no_orders")}
                         </p>
-                        <p className="text-xs max-w-md mx-auto thai-font">
+                        <p className="text-xs max-w-md mx-auto">
                           {searchTerm
-                            ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"`
-                            : "คุณยังไม่มีคำสั่งซื้อใดๆ"}
+                            ? t("no_search_results", { query: searchTerm })
+                            : t("no_orders_desc")}
                         </p>
                       </div>
                     </td>

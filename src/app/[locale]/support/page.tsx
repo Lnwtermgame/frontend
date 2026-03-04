@@ -12,28 +12,31 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
-
-// Support category tiles - เก็บเฉพาะ Help Guides และ Ticket System
-const supportCategories = [
-  {
-    icon: <HelpCircle className="h-6 w-6 text-black" />,
-    title: "คำถามที่พบบ่อย (FAQ)",
-    description: "รวมคำถามยอดฮิต วิธีแก้ปัญหา และขั้นตอนต่าง ๆ",
-    link: "/support/faq",
-    isExternal: false,
-  },
-  {
-    icon: <PanelRight className="h-6 w-6 text-black" />,
-    title: "ตั๋วสนับสนุน",
-    description: "ส่งคำขอความช่วยเหลือและติดตามสถานะการดำเนินการ",
-    link: "/support/tickets",
-    isExternal: false,
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function SupportPage() {
+  const t = useTranslations("Support");
   const { settings } = usePublicSettings();
   const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
+
+  // Support category tiles
+  const supportCategories = [
+    {
+      icon: <HelpCircle className="h-6 w-6 text-black" />,
+      title: t("categories.faq.title"),
+      description: t("categories.faq.description"),
+      link: "/support/faq",
+      isExternal: false,
+    },
+    {
+      icon: <PanelRight className="h-6 w-6 text-black" />,
+      title: t("categories.tickets.title"),
+      description: t("categories.tickets.description"),
+      link: "/support/tickets",
+      isExternal: false,
+    },
+  ];
+
   const visibleSupportCategories = supportCategories.filter((category) => {
     if (!supportTicketsEnabled && category.link === "/support/tickets")
       return false;
@@ -61,11 +64,11 @@ export default function SupportPage() {
                 <Headphones className="h-8 w-8 text-black" />
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-black">
-                ศูนย์ช่วยเหลือ
+                {t("title")}
               </h1>
             </div>
             <p className="text-gray-600 mb-6">
-              มีปัญหาในการใช้งานหรือต้องการสอบถามเพิ่มเติม? เราพร้อมช่วยเหลือคุณ
+              {t("subtitle")}
             </p>
           </motion.div>
         </div>
@@ -75,7 +78,7 @@ export default function SupportPage() {
       <section className="mb-12">
         <div className="flex items-center mb-6">
           <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-          <h2 className="text-2xl font-bold text-black">ช่องทางการติดต่อ</h2>
+          <h2 className="text-2xl font-bold text-black">{t("contact_methods")}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {visibleSupportCategories.map((category, index) => (
@@ -99,7 +102,7 @@ export default function SupportPage() {
                     </h3>
                     <p className="text-gray-600 mt-1">{category.description}</p>
                     <div className="flex items-center mt-3 text-black group-hover:text-gray-700 transition-colors">
-                      <span className="text-sm font-medium">เข้าชม</span>
+                      <span className="text-sm font-medium">{t("visit")}</span>
                       <ChevronRight size={16} className="ml-1" />
                     </div>
                   </div>
@@ -119,44 +122,42 @@ export default function SupportPage() {
           >
             <div className="flex items-center mb-4">
               <Clock className="text-black mr-3" />
-              <h2 className="text-xl font-bold text-black">เวลาทำการ</h2>
+              <h2 className="text-xl font-bold text-black">{t("working_hours.title")}</h2>
             </div>
 
             <div className="space-y-4">
               <div>
                 <h3 className="text-gray-600 font-medium mb-2">
-                  จันทร์ - ศุกร์
+                  {t("working_hours.mon_fri")}
                 </h3>
-                <p className="text-black">09:00 - 22:00 น.</p>
+                <p className="text-black">{t("working_hours.time_mon_fri")}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-600 font-medium mb-2">
-                  เสาร์ - อาทิตย์ และวันหยุดนักขัตฤกษ์
+                  {t("working_hours.sat_sun")}
                 </h3>
-                <p className="text-black">10:00 - 20:00 น.</p>
+                <p className="text-black">{t("working_hours.time_sat_sun")}</p>
               </div>
 
-              <p className="text-gray-600 text-sm">(เวลาประเทศไทย GMT+7)</p>
+              <p className="text-gray-600 text-sm">{t("working_hours.timezone")}</p>
             </div>
 
             <div className="mt-6 border-t-2 border-gray-200 pt-6">
               <div className="flex items-center">
                 <AlertCircle size={18} className="text-black mr-2" />
                 <span className="text-black font-medium">
-                  ต้องการความช่วยเหลือด่วน?
+                  {t("urgent_help.title")}
                 </span>
               </div>
               <p className="mt-2 text-gray-600">
-                หากพบปัญหาเร่งด่วนเกี่ยวกับคำสั่งซื้อหรือการชำระเงิน
-                แนะนำให้ส่งตั๋วสนับสนุนในหน้าระบบตั๋ว
-                ทีมงานจะรีบดำเนินการโดยเร็วที่สุด
+                {t("urgent_help.description")}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Quick Help Topics - ปัญหาที่พบบ่อย */}
+        {/* Quick Help Topics */}
         <div className="lg:col-span-2">
           <div
             className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8"
@@ -164,21 +165,21 @@ export default function SupportPage() {
           >
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-              <h2 className="text-xl font-bold text-black">ปัญหาที่พบบ่อย</h2>
+              <h2 className="text-xl font-bold text-black">{t("common_issues.title")}</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Link
                 href="/support/guides/missing-credits"
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
-                <span className="text-black">เติมเกมแล้วไม่ได้รับของ</span>
+                <span className="text-black">{t("common_issues.missing_credits")}</span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
               <Link
                 href="/support/guides/refund-process"
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
-                <span className="text-black">ขอคืนเงินได้อย่างไร</span>
+                <span className="text-black">{t("common_issues.refund_process")}</span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
               <Link
@@ -186,7 +187,7 @@ export default function SupportPage() {
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
                 <span className="text-black">
-                  โดนหักเงินแต่สถานะคำสั่งซื้อไม่สำเร็จ
+                  {t("common_issues.payment_issues")}
                 </span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
@@ -194,21 +195,21 @@ export default function SupportPage() {
                 href="/support/guides/account-settings"
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
-                <span className="text-black">แก้ไขข้อมูลบัญชี</span>
+                <span className="text-black">{t("common_issues.account_settings")}</span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
               <Link
                 href="/support/guides/redeem-code"
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
-                <span className="text-black">วิธีใช้งานโค้ดส่วนลด</span>
+                <span className="text-black">{t("common_issues.redeem_code")}</span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
               <Link
                 href="/support/guides/account-security"
                 className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
               >
-                <span className="text-black">บัญชีถูกล็อกทำอย่างไร</span>
+                <span className="text-black">{t("common_issues.account_security")}</span>
                 <ChevronRight size={18} className="text-gray-600" />
               </Link>
             </div>

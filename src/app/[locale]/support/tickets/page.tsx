@@ -30,39 +30,11 @@ import {
   FileText,
   User,
 } from "lucide-react";
-
-const categoryLabels: Record<TicketCategory, string> = {
-  ORDER_ISSUE: "ปัญหาการสั่งซื้อ",
-  PAYMENT_ISSUE: "ปัญหาการชำระเงิน",
-  PRODUCT_ISSUE: "ปัญหาสินค้า",
-  ACCOUNT_ISSUE: "ปัญหาบัญชี",
-  TECHNICAL_SUPPORT: "ขอความช่วยเหลือด้านเทคนิค",
-  REFUND_REQUEST: "ขอเงินคืน",
-  GENERAL_INQUIRY: "สอบถามทั่วไป",
-};
-
-const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
-  OPEN: { label: "เปิด", color: "bg-brutal-blue border-black text-black" },
-  IN_PROGRESS: {
-    label: "กำลังดำเนินการ",
-    color: "bg-brutal-yellow border-black text-black",
-  },
-  WAITING_USER: {
-    label: "รอข้อมูลจากคุณ",
-    color: "bg-brutal-pink border-black text-black",
-  },
-  WAITING_ADMIN: {
-    label: "รอเจ้าหน้าที่",
-    color: "bg-brutal-blue border-black text-black",
-  },
-  RESOLVED: {
-    label: "แก้ไขแล้ว",
-    color: "bg-brutal-green border-black text-black",
-  },
-  CLOSED: { label: "ปิดแล้ว", color: "bg-gray-300 border-black text-black" },
-};
+import { useTranslations } from "next-intl";
 
 export default function TicketsPage() {
+  const t = useTranslations("SupportTickets");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const { user, isAuthenticated, isInitialized } = useAuth();
   const { settings: publicSettings } = usePublicSettings();
@@ -76,6 +48,43 @@ export default function TicketsPage() {
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<TicketStatus | "ALL">("ALL");
+
+  const categoryLabels: Record<TicketCategory, string> = {
+    ORDER_ISSUE: t("create.categories.order"),
+    PAYMENT_ISSUE: t("create.categories.payment"),
+    PRODUCT_ISSUE: t("create.categories.product"),
+    ACCOUNT_ISSUE: t("create.categories.account"),
+    TECHNICAL_SUPPORT: t("create.categories.technical"),
+    REFUND_REQUEST: t("create.categories.refund"),
+    GENERAL_INQUIRY: t("create.categories.general"),
+  };
+
+  const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
+    OPEN: {
+      label: t("status.open"),
+      color: "bg-brutal-blue border-black text-black",
+    },
+    IN_PROGRESS: {
+      label: t("status.pending"),
+      color: "bg-brutal-yellow border-black text-black",
+    },
+    WAITING_USER: {
+      label: t("status.waiting_user"),
+      color: "bg-brutal-pink border-black text-black",
+    },
+    WAITING_ADMIN: {
+      label: t("status.waiting_admin"),
+      color: "bg-brutal-blue border-black text-black",
+    },
+    RESOLVED: {
+      label: t("status.resolved"),
+      color: "bg-brutal-green border-black text-black",
+    },
+    CLOSED: {
+      label: t("status.closed"),
+      color: "bg-gray-300 border-black text-black",
+    },
+  };
 
   // New ticket form state
   const [showNewTicketModal, setShowNewTicketModal] = useState(false);
@@ -202,18 +211,17 @@ export default function TicketsPage() {
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <h1 className="text-2xl font-black text-black">
-            Ticket support is currently disabled
+            {t("disabled.title")}
           </h1>
           <p className="mt-3 text-sm text-gray-600">
-            Please use the contact page while this channel is temporarily
-            unavailable.
+            {t("disabled.description")}
           </p>
           <div className="mt-6">
             <Link
               href="/support/contact"
               className="inline-flex border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black"
             >
-              Go to contact support
+              {t("disabled.cta")}
             </Link>
           </div>
         </div>
@@ -239,16 +247,16 @@ export default function TicketsPage() {
                 className="text-gray-600 hover:text-black mr-4 flex items-center font-medium"
               >
                 <ArrowLeft size={18} className="mr-1" />
-                กลับ
+                {t("back")}
               </Link>
               <div className="bg-brutal-blue p-2 border-[3px] border-black mr-3">
                 <MessageSquare className="h-6 w-6 text-black" />
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-black">
-                ทิคเก็ตช่วยเหลือของฉัน
+                {t("title")}
               </h1>
             </div>
-            <p className="text-gray-600">ดูและจัดการคำขอซัพพอร์ตของคุณ</p>
+            <p className="text-gray-600">{t("subtitle")}</p>
           </div>
           <button
             onClick={() => setShowNewTicketModal(true)}
@@ -256,7 +264,7 @@ export default function TicketsPage() {
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <Plus size={18} className="mr-2" />
-            สร้างทิคเก็ตใหม่
+            {t("create_new")}
           </button>
         </div>
       </motion.div>
@@ -310,7 +318,7 @@ export default function TicketsPage() {
                     }`}
                   >
                     {status === "ALL"
-                      ? "ทั้งหมด"
+                      ? t("status.all")
                       : statusLabels[status as TicketStatus].label}
                   </button>
                 ))}
@@ -325,17 +333,17 @@ export default function TicketsPage() {
                     className="animate-spin mx-auto text-black mb-3"
                     size={32}
                   />
-                  <p className="text-gray-600">กำลังโหลดทิคเก็ต...</p>
+                  <p className="text-gray-600">{tCommon("loading")}</p>
                 </div>
               ) : filteredTickets.length === 0 ? (
                 <div className="p-8 text-center">
                   <FileText className="mx-auto text-gray-400 mb-3" size={48} />
-                  <p className="text-gray-600 mb-2">ไม่พบทิคเก็ต</p>
+                  <p className="text-gray-600 mb-2">{t("no_tickets")}</p>
                   <button
                     onClick={() => setShowNewTicketModal(true)}
                     className="text-black hover:underline font-medium"
                   >
-                    สร้างทิคเก็ตแรกของคุณ
+                    {t("create_new")}
                   </button>
                 </div>
               ) : (
@@ -415,7 +423,7 @@ export default function TicketsPage() {
                           <button
                             onClick={handleCloseTicket}
                             className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray transition-colors"
-                            title="ปิดทิคเก็ต"
+                            title={t("detail.closed_notice")}
                           >
                             <X size={18} />
                           </button>
@@ -429,8 +437,11 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex items-center">
                         <Clock size={14} className="mr-1.5" />
-                        สร้างเมื่อ{" "}
-                        {new Date(selectedTicket.createdAt).toLocaleString()}
+                        {t("created_at", {
+                          date: new Date(
+                            selectedTicket.createdAt,
+                          ).toLocaleString(),
+                        })}
                       </div>
                       {selectedTicket.orderId && (
                         <Link
@@ -438,7 +449,7 @@ export default function TicketsPage() {
                           className="text-black hover:underline flex items-center font-medium"
                         >
                           <FileText size={14} className="mr-1.5" />
-                          ออร์เดอร์: {selectedTicket.orderId}
+                          {t("order_ref_label", { id: selectedTicket.orderId })}
                         </Link>
                       )}
                     </div>
@@ -454,7 +465,7 @@ export default function TicketsPage() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-black font-medium text-sm">
-                            คุณ
+                            {t("user_you")}
                           </span>
                           <span className="text-xs text-gray-600">
                             {new Date(
@@ -494,10 +505,10 @@ export default function TicketsPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-black font-medium text-sm">
                               {message.sender === "admin"
-                                ? message.senderName || "ทีมซัพพอร์ต"
+                                ? message.senderName || t("support_team")
                                 : message.sender === "system"
-                                  ? "ระบบ"
-                                  : "คุณ"}
+                                  ? t("system")
+                                  : t("user_you")}
                             </span>
                             <span className="text-xs text-gray-600">
                               {new Date(message.createdAt).toLocaleString()}
@@ -527,7 +538,7 @@ export default function TicketsPage() {
                           type="text"
                           value={replyMessage}
                           onChange={(e) => setReplyMessage(e.target.value)}
-                          placeholder="พิมพ์ข้อความตอบกลับ..."
+                          placeholder={t("detail.reply") + "..."}
                           className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                         />
                         <button
@@ -541,7 +552,7 @@ export default function TicketsPage() {
                           ) : (
                             <>
                               <Send size={18} className="mr-2" />
-                              ส่ง
+                              {t("detail.send_reply")}
                             </>
                           )}
                         </button>
@@ -558,10 +569,10 @@ export default function TicketsPage() {
             >
               <MessageSquare className="text-gray-300 mb-4" size={64} />
               <h3 className="text-xl font-bold text-black mb-2">
-                เลือกทิคเก็ต
+                {t("select_ticket")}
               </h3>
               <p className="text-gray-600 max-w-sm">
-                เลือกทิคเก็ตจากรายการเพื่อดูรายละเอียดและสนทนาต่อ
+                {t("select_ticket_desc")}
               </p>
             </div>
           )}
@@ -589,7 +600,7 @@ export default function TicketsPage() {
                   <div className="flex items-center">
                     <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
                     <h2 className="text-xl font-bold text-black">
-                      สร้างทิคเก็ตใหม่
+                      {t("create.title")}
                     </h2>
                   </div>
                   <button
@@ -604,7 +615,7 @@ export default function TicketsPage() {
               <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
                 <div>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    หมวดหมู่
+                    {t("create.category")}
                   </label>
                   <select
                     value={newTicket.category}
@@ -626,7 +637,7 @@ export default function TicketsPage() {
 
                 <div>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    หัวข้อ
+                    {t("create.description")}
                   </label>
                   <input
                     type="text"
@@ -634,7 +645,7 @@ export default function TicketsPage() {
                     onChange={(e) =>
                       setNewTicket({ ...newTicket, subject: e.target.value })
                     }
-                    placeholder="สรุปสั้น ๆ เกี่ยวกับปัญหาของคุณ"
+                    placeholder={t("create.subject_placeholder")}
                     required
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
@@ -642,7 +653,7 @@ export default function TicketsPage() {
 
                 <div>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    รายละเอียด
+                    {t("create.description_label")}
                   </label>
                   <textarea
                     value={newTicket.description}
@@ -652,7 +663,7 @@ export default function TicketsPage() {
                         description: e.target.value,
                       })
                     }
-                    placeholder="โปรดอธิบายปัญหาของคุณอย่างละเอียด..."
+                    placeholder={t("create.description_placeholder")}
                     required
                     rows={5}
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none"
@@ -661,7 +672,7 @@ export default function TicketsPage() {
 
                 <div>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    รหัสคำสั่งซื้อ (ไม่บังคับ)
+                    {t("create.order_ref")}
                   </label>
                   <input
                     type="text"
@@ -672,7 +683,7 @@ export default function TicketsPage() {
                         orderId: e.target.value || undefined,
                       })
                     }
-                    placeholder="หากเกี่ยวข้องกับคำสั่งซื้อใด"
+                    placeholder={t("create.order_ref_placeholder")}
                     className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
@@ -683,7 +694,7 @@ export default function TicketsPage() {
                     onClick={() => setShowNewTicketModal(false)}
                     className="flex-1 py-2.5 px-4 border-[3px] border-black text-black hover:bg-brutal-gray transition-colors font-medium"
                   >
-                    ยกเลิก
+                    {t("create.cancel")}
                   </button>
                   <button
                     type="submit"
@@ -698,10 +709,10 @@ export default function TicketsPage() {
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
                         <Loader2 size={18} className="animate-spin mr-2" />
-                        กำลังสร้าง...
+                        {tCommon("loading")}
                       </span>
                     ) : (
-                      "สร้างทิคเก็ต"
+                      t("create.submit")
                     )}
                   </button>
                 </div>

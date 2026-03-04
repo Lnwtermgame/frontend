@@ -19,8 +19,11 @@ import {
   AlertCircle,
   CheckCircle,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function FaqArticlePage() {
+  const t = useTranslations("SupportFAQDetail");
+  const tNav = useTranslations("Navigation");
   const params = useParams();
   const slug = params.slug as string;
 
@@ -86,7 +89,7 @@ export default function FaqArticlePage() {
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <Loader2 className="animate-spin mx-auto text-black mb-4" size={48} />
-          <p className="text-gray-600">กำลังโหลดบทความ...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         </div>
       </div>
     );
@@ -102,9 +105,9 @@ export default function FaqArticlePage() {
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle className="mx-auto text-black mb-3" size={48} />
-          <h2 className="text-xl font-bold text-black mb-2">ไม่พบบทความ</h2>
+          <h2 className="text-xl font-bold text-black mb-2">{t("error")}</h2>
           <p className="text-gray-800 mb-4">
-            {error || "ไม่พบบทความที่คุณต้องการ"}
+            {error || t("error")}
           </p>
           <Link
             href="/support/faq"
@@ -112,7 +115,7 @@ export default function FaqArticlePage() {
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <ArrowLeft size={18} className="mr-2" />
-            กลับไปหน้าคำถามที่พบบ่อย
+            {t("back_to_faq")}
           </Link>
         </motion.div>
       </div>
@@ -128,14 +131,14 @@ export default function FaqArticlePage() {
             href="/support"
             className="hover:text-black transition-colors font-medium"
           >
-            ศูนย์ช่วยเหลือ
+            {tNav("support")}
           </Link>
           <span className="mx-2">/</span>
           <Link
             href="/support/faq"
             className="hover:text-black transition-colors font-medium"
           >
-            คำถามที่พบบ่อย
+            {tNav("faq")}
           </Link>
           <span className="mx-2">/</span>
           <span className="text-black font-medium">{article.title}</span>
@@ -161,8 +164,8 @@ export default function FaqArticlePage() {
               {article.category.name}
             </Link>
             {article.isPinned && (
-              <span className="text-black ml-2" title="ปักหมุด">
-                📌 ปักหมุด
+              <span className="text-black ml-2" title="Pinned">
+                📌
               </span>
             )}
           </div>
@@ -174,11 +177,11 @@ export default function FaqArticlePage() {
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <div className="flex items-center">
               <Clock size={14} className="mr-1.5" />
-              {new Date(article.createdAt).toLocaleDateString()}
+              {t("last_updated")}: {new Date(article.createdAt).toLocaleDateString()}
             </div>
             <div className="flex items-center">
               <Eye size={14} className="mr-1.5" />
-              {article.viewCount} ครั้ง
+              {article.viewCount} {t("views")}
             </div>
           </div>
         </div>
@@ -224,7 +227,7 @@ export default function FaqArticlePage() {
           {/* Feedback Section */}
           <div className="mt-10 pt-6 border-t-[3px] border-black">
             <h3 className="text-lg font-medium text-black mb-4">
-              บทความนี้มีประโยชน์หรือไม่?
+              {t("helpful")}
             </h3>
 
             {showThankYou ? (
@@ -236,7 +239,7 @@ export default function FaqArticlePage() {
               >
                 <CheckCircle className="text-black mr-3" size={20} />
                 <span className="text-black font-medium">
-                  ขอบคุณสำหรับความคิดเห็น!
+                  {t("thank_you")}
                 </span>
               </motion.div>
             ) : (
@@ -251,7 +254,7 @@ export default function FaqArticlePage() {
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <ThumbsUp size={16} className="mr-2" />
-                  ใช่ ({article.helpfulCount})
+                  {t("yes")} ({article.helpfulCount})
                 </button>
                 <button
                   onClick={() => handleVote(false)}
@@ -263,7 +266,7 @@ export default function FaqArticlePage() {
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <ThumbsDown size={16} className="mr-2" />
-                  ไม่ ({article.unhelpfulCount})
+                  {t("no")} ({article.unhelpfulCount})
                 </button>
               </div>
             )}
@@ -275,10 +278,10 @@ export default function FaqArticlePage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <h4 className="text-black font-medium mb-1">
-                ยังต้องการความช่วยเหลือ?
+                {t("still_need_help")}
               </h4>
               <p className="text-gray-600 text-sm">
-                หากยังไม่พบที่ต้องการ ติดต่อทีมซัพพอร์ตของเราได้เลย
+                {t("contact_support_desc")}
               </p>
             </div>
             <Link
@@ -287,7 +290,7 @@ export default function FaqArticlePage() {
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <MessageSquare size={18} className="mr-2" />
-              ติดต่อทีมซัพพอร์ต
+              {t("contact_support")}
             </Link>
           </div>
         </div>

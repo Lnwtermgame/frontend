@@ -18,11 +18,13 @@ import { motion } from "@/lib/framer-exports";
 import { orderApi, Order } from "@/lib/services/order-api";
 import { securityApi } from "@/lib/services/security-api";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 // Cooldown time in seconds for resend verification email
 const RESEND_COOLDOWN_SECONDS = 60;
 
 export default function AccountPage() {
+  const t = useTranslations("Account");
   const { user, isInitialized } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +65,7 @@ export default function AccountPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [cooldownSeconds > 0]);
+  }, [cooldownSeconds]);
 
   useEffect(() => {
     if (isInitialized && user) {
@@ -108,14 +110,14 @@ export default function AccountPage() {
     try {
       const response = await securityApi.sendVerificationEmail();
       if (response.success) {
-        toast.success("ส่งอีเมลยืนยันแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ");
+        toast.success(t("verification_sent"));
 
         // Set cooldown
         const endTime = Date.now() + RESEND_COOLDOWN_SECONDS * 1000;
         localStorage.setItem("verification_cooldown_end", endTime.toString());
         setCooldownSeconds(RESEND_COOLDOWN_SECONDS);
       } else {
-        toast.error(response.message || "ไม่สามารถส่งอีเมลได้");
+        toast.error(response.message || t("send_failed"));
       }
     } catch (error: any) {
       const message = securityApi.getErrorMessage(error);
@@ -141,8 +143,8 @@ export default function AccountPage() {
       order.items.map((item) => ({
         id: order.id,
         itemId: item.id,
-        name: item.product?.name || item.productName || "สินค้า",
-        amount: item.productType?.name || `${item.quantity} ชิ้น`,
+        name: item.product?.name || item.productName || "Product",
+        amount: item.productType?.name || `${item.quantity} items`,
         image:
           item.product?.imageUrl ||
           "https://placehold.co/60x60/5C3FC9/white?text=Game",
@@ -153,7 +155,7 @@ export default function AccountPage() {
   const accountLinks = [
     {
       icon: <Shield size={18} />,
-      label: "ความปลอดภัย",
+      label: t("security"),
       href: "/dashboard/account/security",
     },
   ];
@@ -171,10 +173,10 @@ export default function AccountPage() {
           animate={{ opacity: 1, x: 0 }}
         >
           <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-          บัญชีของฉัน
+          {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative thai-font">
-          จัดการการตั้งค่าและความชอบของบัญชีของคุณ
+        <p className="text-gray-600 text-xs relative">
+          {t("subtitle")}
         </p>
       </div>
 
@@ -204,22 +206,22 @@ export default function AccountPage() {
                       </h2>
                       <div className="flex flex-col md:flex-row items-center gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-600 text-xs thai-font">
-                            อีเมล:
+                          <span className="text-gray-600 text-xs">
+                            {t("email_label")}
                           </span>
                           <span className="text-gray-900 text-xs font-medium">
                             {user?.email || "user@example.com"}
                           </span>
                         </div>
                         {isEmailVerified ? (
-                          <span className="bg-brutal-green text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
+                          <span className="bg-brutal-green text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black flex items-center gap-1">
                             <CheckCircle size={10} />
-                            ยืนยันแล้ว
+                            {t("verified")}
                           </span>
                         ) : (
-                          <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black thai-font flex items-center gap-1">
+                          <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black flex items-center gap-1">
                             <AlertCircle size={10} />
-                            ยังไม่ยืนยัน
+                            {t("not_verified")}
                           </span>
                         )}
                       </div>
@@ -240,11 +242,11 @@ export default function AccountPage() {
                           <Mail size={14} className="text-black" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-black thai-font">
-                            กรุณายืนยันอีเมลของคุณ
+                          <p className="text-xs font-bold text-black">
+                            {t("verify_email_banner")}
                           </p>
-                          <p className="text-[10px] text-gray-600 thai-font mt-0.5">
-                            ยืนยันอีเมลเพื่อรับการแจ้งเตือนและกู้คืนบัญชี
+                          <p className="text-[10px] text-gray-600 mt-0.5">
+                            {t("verify_email_desc")}
                           </p>
                         </div>
                       </div>
@@ -253,7 +255,7 @@ export default function AccountPage() {
                         disabled={cooldownSeconds > 0 || isSendingVerification}
                         className={`
                           flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border-[2px] border-black
-                          transition-all duration-200 thai-font whitespace-nowrap
+                          transition-all duration-200 whitespace-nowrap
                           ${
                             cooldownSeconds > 0 || isSendingVerification
                               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
@@ -264,24 +266,24 @@ export default function AccountPage() {
                         {isSendingVerification ? (
                           <>
                             <Loader2 size={12} className="animate-spin" />
-                            กำลังส่ง...
+                            {t("sending")}
                           </>
                         ) : cooldownSeconds > 0 ? (
                           <>
                             <RefreshCw size={12} className="opacity-50" />
-                            รอ {cooldownSeconds} วินาที
+                            {t("wait_cooldown", { seconds: cooldownSeconds })}
                           </>
                         ) : (
                           <>
                             <Mail size={12} />
-                            ส่งอีเมลยืนยัน
+                            {t("send_verification")}
                           </>
                         )}
                       </button>
                     </div>
                     {cooldownSeconds > 0 && (
-                      <p className="text-[10px] text-gray-500 thai-font mt-1 text-center md:text-right">
-                        หากไม่ได้รับอีเมล กรุณาตรวจสอบในโฟลเดอร์ Spam
+                      <p className="text-[10px] text-gray-500 mt-1 text-center md:text-right">
+                        {t("spam_hint")}
                       </p>
                     )}
                   </motion.div>
@@ -300,15 +302,15 @@ export default function AccountPage() {
             >
               <div className="p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-base font-bold text-black flex items-center thai-font">
+                  <h2 className="text-base font-bold text-black flex items-center">
                     <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
-                    คำสั่งซื้อของฉัน
+                    {t("my_orders")}
                   </h2>
                   <Link
                     href="/dashboard/orders"
-                    className="text-black text-xs flex items-center hover:underline font-medium thai-font"
+                    className="text-black text-xs flex items-center hover:underline font-medium"
                   >
-                    คำสั่งซื้อทั้งหมด <ChevronRight size={14} />
+                    {t("view_all_orders")} <ChevronRight size={14} />
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
@@ -323,7 +325,7 @@ export default function AccountPage() {
                         orderStats.waitSend
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs thai-font">รอส่ง</div>
+                    <div className="text-gray-600 text-xs">{t("order_status.pending")}</div>
                   </div>
                   <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
                     <div className="bg-brutal-blue w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
@@ -336,8 +338,8 @@ export default function AccountPage() {
                         orderStats.sending
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs thai-font">
-                      กำลังส่ง
+                    <div className="text-gray-600 text-xs">
+                      {t("order_status.processing")}
                     </div>
                   </div>
                   <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
@@ -351,8 +353,8 @@ export default function AccountPage() {
                         orderStats.completed
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs thai-font">
-                      เสร็จสมบูรณ์
+                    <div className="text-gray-600 text-xs">
+                      {t("order_status.completed")}
                     </div>
                   </div>
                   <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
@@ -366,8 +368,8 @@ export default function AccountPage() {
                         orderStats.refunded
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs thai-font">
-                      คืนเงิน
+                    <div className="text-gray-600 text-xs">
+                      {t("order_status.refunded")}
                     </div>
                   </div>
                 </div>
@@ -384,9 +386,9 @@ export default function AccountPage() {
               whileHover={{ y: -2 }}
             >
               <div className="p-4">
-                <h2 className="text-base font-bold text-black mb-3 flex items-center thai-font">
+                <h2 className="text-base font-bold text-black mb-3 flex items-center">
                   <span className="w-1.5 h-4 bg-brutal-green mr-2"></span>
-                  ซื้อล่าสุด
+                  {t("recent_purchases")}
                 </h2>
                 {recentlyPurchased.length > 0 ? (
                   <div className="space-y-2">
@@ -432,7 +434,7 @@ export default function AccountPage() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
                       <History size={20} className="text-black" />
                     </div>
-                    <p className="thai-font text-sm">ไม่พบรายการซื้อล่าสุด</p>
+                    <p className="text-sm">{t("no_recent_purchases")}</p>
                   </div>
                 )}
               </div>
@@ -452,16 +454,16 @@ export default function AccountPage() {
               whileHover={{ y: -2 }}
             >
               <div className="p-4">
-                <h2 className="text-base font-bold text-black mb-3 flex items-center thai-font">
+                <h2 className="text-base font-bold text-black mb-3 flex items-center">
                   <span className="w-1.5 h-4 bg-brutal-yellow mr-2"></span>
-                  ตั้งค่าบัญชี
+                  {t("account_settings")}
                 </h2>
                 <div className="divide-y divide-gray-200">
                   {accountLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="flex items-center py-2.5 text-gray-600 hover:text-black transition-colors thai-font"
+                      className="flex items-center py-2.5 text-gray-600 hover:text-black transition-colors"
                     >
                       <div className="w-7 h-7 bg-brutal-blue border-[2px] border-black flex items-center justify-center text-black mr-3">
                         {link.icon}

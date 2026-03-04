@@ -21,8 +21,9 @@ import { productApi, Product } from "@/lib/services/product-api";
 import { Sheet } from "@/components/ui/Sheet";
 import { BrandIcon } from "@/components/ui/brand-icon";
 import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
+import { useTranslations } from "next-intl";
 
-type CatalogMode = "games" | "mobile-recharge" | "card";
+type CatalogMode = "games" | "mobile-recharge" | "mobile" | "card";
 
 type FilterOption = {
   id: string;
@@ -65,65 +66,9 @@ type ModeCopy = {
   promoDescription: string;
 };
 
-const modeCopy: Record<CatalogMode, ModeCopy> = {
-  games: {
-    title: "เติมเกมโดยตรง",
-    subtitle: "เติมเกมโปรดของคุณได้ทันที",
-    searchPlaceholder: "ค้นหาเกม...",
-    gridTitle: "เกมทั้งหมด",
-    cta: "เติมเกมเลย",
-    primaryTitle: "แพลตฟอร์ม",
-    secondaryTitle: "หมวดหมู่",
-    heroIcon: (
-      <Zap size={24} className="text-brutal-yellow mr-2" fill="currentColor" />
-    ),
-    primaryHeaderClass: "bg-brutal-blue",
-    secondaryHeaderClass: "bg-brutal-yellow",
-    ctaBgClass: "bg-brutal-yellow text-black",
-    hoverNameClass: "group-hover:text-brutal-pink",
-    promoClass: "bg-brutal-green",
-    promoTitle: "โบนัสเติมเกม",
-    promoDescription: "รับโบนัสพิเศษสำหรับการเติมครั้งแรก",
-  },
-  "mobile-recharge": {
-    title: "เติมเงินมือถือ",
-    subtitle: "เติมได้ทุกเครือข่าย รวดเร็วและปลอดภัย",
-    searchPlaceholder: "ค้นหาเครือข่าย...",
-    gridTitle: "เครือข่ายทั้งหมด",
-    cta: "เติมเงิน",
-    primaryTitle: "เครือข่าย",
-    secondaryTitle: "ประเทศ",
-    heroIcon: <Smartphone size={24} className="text-brutal-green mr-2" />,
-    primaryHeaderClass: "bg-brutal-blue",
-    secondaryHeaderClass: "bg-brutal-green",
-    ctaBgClass: "bg-brutal-green text-black",
-    hoverNameClass: "group-hover:text-brutal-green",
-    promoClass: "bg-brutal-yellow",
-    promoTitle: "เติมด่วน",
-    promoDescription: "ระบบเติมเงินอัตโนมัติภายในไม่กี่นาที",
-  },
-  card: {
-    title: "บัตรเติมเงิน & Gift Card",
-    subtitle: "เลือกซื้อบัตรได้ทันที",
-    searchPlaceholder: "ค้นหาบัตร...",
-    gridTitle: "บัตรทั้งหมด",
-    cta: "ซื้อบัตร",
-    primaryTitle: "ประเภทบัตร",
-    secondaryTitle: undefined,
-    heroIcon: <CreditCard size={24} className="text-brutal-pink mr-2" />,
-    primaryHeaderClass: "bg-brutal-yellow",
-    secondaryHeaderClass: "bg-brutal-yellow",
-    ctaBgClass: "bg-brutal-pink text-white",
-    hoverNameClass: "group-hover:text-brutal-pink",
-    promoClass: "bg-brutal-pink",
-    promoTitle: "โปรโมชันบัตร",
-    promoDescription: "ดีลพิเศษสำหรับบัตรเกมและบัตรเติมเงิน",
-  },
-};
-
 function getProductType(mode: CatalogMode): Product["productType"] {
   if (mode === "games") return "DIRECT_TOPUP";
-  if (mode === "mobile-recharge") return "MOBILE_RECHARGE";
+  if (mode === "mobile-recharge" || mode === "mobile") return "MOBILE_RECHARGE";
   return "CARD";
 }
 
@@ -221,226 +166,95 @@ function sortThailandFirst<T extends { id: string; name: string }>(
   return clone;
 }
 
-function createPrimaryOptions(
-  mode: CatalogMode,
-  items: CatalogItem[],
-): FilterOption[] {
-  if (mode === "games") {
-    return [
-      {
-        id: "all",
-        name: "ทุกแพลตฟอร์ม",
-        count: items.length,
-        icon: <Gamepad2 size={16} />,
-      },
-      {
-        id: "mobile",
-        name: "มือถือ",
-        count: items.filter((g) =>
-          g.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p)),
-        ).length,
-        icon: <Smartphone size={16} className="text-brutal-green" />,
-      },
-      {
-        id: "pc",
-        name: "PC",
-        count: items.filter((g) =>
-          g.platforms.some((p) => ["PC", "Mac"].includes(p)),
-        ).length,
-        icon: <Monitor size={16} className="text-brutal-blue" />,
-      },
-      {
-        id: "console",
-        name: "Console",
-        count: items.filter((g) =>
-          g.platforms.some((p) =>
-            ["Console", "PS4", "PS5", "Xbox"].includes(p),
-          ),
-        ).length,
-        icon: <Gamepad2 size={16} className="text-brutal-pink" />,
-      },
-    ];
-  }
-
-  if (mode === "mobile-recharge") {
-    return [
-      {
-        id: "all",
-        name: "ทุกเครือข่าย",
-        count: items.length,
-        icon: <Signal size={16} />,
-      },
-      {
-        id: "ais",
-        name: "AIS",
-        count: items.filter((p) => p.operator.toLowerCase().includes("ais"))
-          .length,
-        icon: <Smartphone size={16} className="text-brutal-blue" />,
-        brandIcon: "ais",
-      },
-      {
-        id: "dtac",
-        name: "DTAC",
-        count: items.filter((p) => p.operator.toLowerCase().includes("dtac"))
-          .length,
-        icon: <Smartphone size={16} className="text-brutal-pink" />,
-        brandIcon: "dtac",
-      },
-      {
-        id: "true",
-        name: "TrueMove",
-        count: items.filter((p) => p.operator.toLowerCase().includes("true"))
-          .length,
-        icon: <Smartphone size={16} className="text-brutal-yellow" />,
-        brandIcon: "true",
-      },
-    ];
-  }
-
-  const categoryCounts = items.reduce(
-    (acc, item) => {
-      acc[item.category] = (acc[item.category] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
-  return [
-    {
-      id: "all",
-      name: "บัตรทั้งหมด",
-      count: items.length,
-      icon: <CreditCard size={16} />,
-    },
-    ...Object.entries(categoryCounts).map(([name, count]) => ({
-      id: name.toLowerCase(),
-      name,
-      count,
-      icon: <CreditCard size={16} className="text-gray-500" />,
-    })),
-  ];
-}
-
-function createSecondaryOptions(
-  mode: CatalogMode,
-  items: CatalogItem[],
-): FilterOption[] {
-  if (mode === "games") {
-    const categoryCounts = items.reduce(
-      (acc, item) => {
-        acc[item.category] = (acc[item.category] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-    return [
-      { id: "all", name: "เกมทั้งหมด", count: items.length },
-      ...Object.entries(categoryCounts).map(([name, count]) => ({
-        id: name.toLowerCase(),
-        name,
-        count,
-      })),
-    ];
-  }
-
-  if (mode === "mobile-recharge") {
-    const countryCounts = items.reduce(
-      (acc, item) => {
-        acc[item.country] = (acc[item.country] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-
-    return sortThailandFirst([
-      { id: "all", name: "ทุกประเทศ", count: items.length },
-      ...Object.entries(countryCounts).map(([name, count]) => ({
-        id: name,
-        name,
-        count,
-      })),
-    ]);
-  }
-
-  return [];
-}
-
-function filterItemByPrimary(
-  mode: CatalogMode,
-  item: CatalogItem,
-  selected: string,
-): boolean {
-  if (selected === "all") return true;
-
-  if (mode === "games") {
-    if (selected === "mobile") {
-      return item.platforms.some((p) =>
-        ["Mobile", "Android", "iOS"].includes(p),
-      );
-    }
-    if (selected === "pc") {
-      return item.platforms.some((p) => ["PC", "Mac"].includes(p));
-    }
-    if (selected === "console") {
-      return item.platforms.some((p) =>
-        ["Console", "PS4", "PS5", "Xbox"].includes(p),
-      );
-    }
-    return true;
-  }
-
-  if (mode === "mobile-recharge") {
-    return item.operator.toLowerCase().includes(selected);
-  }
-
-  return item.category.toLowerCase() === selected.toLowerCase();
-}
-
-function filterItemBySecondary(
-  mode: CatalogMode,
-  item: CatalogItem,
-  selected: string,
-): boolean {
-  if (selected === "all") return true;
-  if (mode === "games")
-    return item.category.toLowerCase() === selected.toLowerCase();
-  if (mode === "mobile-recharge") return item.country === selected;
-  return true;
-}
-
-function renderOptionIcon(
-  option: FilterOption,
-  isActive: boolean,
-  compact = false,
-): React.ReactNode {
-  const brandSize = compact ? 20 : 39;
-
-  if (option.brandIcon) {
-    return (
-      <BrandIcon
-        brand={option.brandIcon}
-        size={brandSize}
-        fallbackIcon={option.icon}
-      />
-    );
-  }
-
-  if (!option.icon) return null;
-  return (
-    <span className={isActive ? "text-black" : "text-gray-500"}>
-      {option.icon}
-    </span>
-  );
-}
-
 function getItemLink(mode: CatalogMode, slug: string): string {
   if (mode === "games") return `/games/${slug}`;
-  if (mode === "mobile-recharge") return `/mobile-recharge/${slug}`;
+  if (mode === "mobile-recharge" || mode === "mobile")
+    return `/mobile-recharge/${slug}`;
   return `/card/${slug}`;
 }
 
 export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
-  const copy = modeCopy[mode];
+  const t = useTranslations("Catalog");
+  const tCommon = useTranslations("Common");
+
+  const modeCopy: Record<string, ModeCopy> = {
+    games: {
+      title: t("games.title"),
+      subtitle: t("games.subtitle"),
+      searchPlaceholder: t("search_placeholder"),
+      gridTitle: t("games.title"),
+      cta: t("cta_topup"),
+      primaryTitle: t("filter_category"),
+      secondaryTitle: t("filter_category"),
+      heroIcon: (
+        <Zap
+          size={24}
+          className="text-brutal-yellow mr-2"
+          fill="currentColor"
+        />
+      ),
+      primaryHeaderClass: "bg-brutal-blue",
+      secondaryHeaderClass: "bg-brutal-yellow",
+      ctaBgClass: "bg-brutal-yellow text-black",
+      hoverNameClass: "group-hover:text-brutal-pink",
+      promoClass: "bg-brutal-green",
+      promoTitle: t("games.title"),
+      promoDescription: t("games.subtitle"),
+    },
+    "mobile-recharge": {
+      title: t("mobile.title"),
+      subtitle: t("mobile.subtitle"),
+      searchPlaceholder: t("search_placeholder"),
+      gridTitle: t("mobile.title"),
+      cta: t("cta_topup"),
+      primaryTitle: t("filter_category"),
+      secondaryTitle: t("filter_category"),
+      heroIcon: <Smartphone size={24} className="text-brutal-green mr-2" />,
+      primaryHeaderClass: "bg-brutal-blue",
+      secondaryHeaderClass: "bg-brutal-green",
+      ctaBgClass: "bg-brutal-green text-black",
+      hoverNameClass: "group-hover:text-brutal-green",
+      promoClass: "bg-brutal-yellow",
+      promoTitle: t("mobile.title"),
+      promoDescription: t("mobile.subtitle"),
+    },
+    mobile: {
+      title: t("mobile.title"),
+      subtitle: t("mobile.subtitle"),
+      searchPlaceholder: t("search_placeholder"),
+      gridTitle: t("mobile.title"),
+      cta: t("cta_topup"),
+      primaryTitle: t("filter_category"),
+      secondaryTitle: t("filter_category"),
+      heroIcon: <Smartphone size={24} className="text-brutal-green mr-2" />,
+      primaryHeaderClass: "bg-brutal-blue",
+      secondaryHeaderClass: "bg-brutal-green",
+      ctaBgClass: "bg-brutal-green text-black",
+      hoverNameClass: "group-hover:text-brutal-green",
+      promoClass: "bg-brutal-yellow",
+      promoTitle: t("mobile.title"),
+      promoDescription: t("mobile.subtitle"),
+    },
+    card: {
+      title: t("card.title"),
+      subtitle: t("card.subtitle"),
+      searchPlaceholder: t("search_placeholder"),
+      gridTitle: t("card.title"),
+      cta: t("cta_buy"),
+      primaryTitle: t("filter_category"),
+      secondaryTitle: undefined,
+      heroIcon: <CreditCard size={24} className="text-brutal-pink mr-2" />,
+      primaryHeaderClass: "bg-brutal-yellow",
+      secondaryHeaderClass: "bg-brutal-yellow",
+      ctaBgClass: "bg-brutal-pink text-white",
+      hoverNameClass: "group-hover:text-brutal-pink",
+      promoClass: "bg-brutal-pink",
+      promoTitle: t("card.title"),
+      promoDescription: t("card.subtitle"),
+    },
+  };
+
+  const copy = modeCopy[mode] || modeCopy["games"];
   const searchParams = useSearchParams();
   const [items, setItems] = useState<CatalogItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -489,14 +303,143 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
     }
   }, [searchParams]);
 
-  const primaryOptions = useMemo(
-    () => createPrimaryOptions(mode, items),
-    [mode, items],
-  );
-  const secondaryOptions = useMemo(
-    () => createSecondaryOptions(mode, items),
-    [mode, items],
-  );
+  const primaryOptions = useMemo(() => {
+    if (mode === "games") {
+      return [
+        {
+          id: "all",
+          name: t("sort.all"),
+          count: items.length,
+          icon: <Gamepad2 size={16} />,
+        },
+        {
+          id: "mobile",
+          name: t("mobile.title"),
+          count: items.filter((g) =>
+            g.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p)),
+          ).length,
+          icon: <Smartphone size={16} className="text-brutal-green" />,
+        },
+        {
+          id: "pc",
+          name: "PC",
+          count: items.filter((g) =>
+            g.platforms.some((p) => ["PC", "Mac"].includes(p)),
+          ).length,
+          icon: <Monitor size={16} className="text-brutal-blue" />,
+        },
+        {
+          id: "console",
+          name: "Console",
+          count: items.filter((g) =>
+            g.platforms.some((p) =>
+              ["Console", "PS4", "PS5", "Xbox"].includes(p),
+            ),
+          ).length,
+          icon: <Gamepad2 size={16} className="text-brutal-pink" />,
+        },
+      ];
+    }
+
+    if (mode === "mobile-recharge" || mode === "mobile") {
+      return [
+        {
+          id: "all",
+          name: t("sort.all"),
+          count: items.length,
+          icon: <Signal size={16} />,
+        },
+        {
+          id: "ais",
+          name: "AIS",
+          count: items.filter((p) => p.operator.toLowerCase().includes("ais"))
+            .length,
+          icon: <Smartphone size={16} className="text-brutal-blue" />,
+          brandIcon: "ais" as const,
+        },
+        {
+          id: "dtac",
+          name: "DTAC",
+          count: items.filter((p) => p.operator.toLowerCase().includes("dtac"))
+            .length,
+          icon: <Smartphone size={16} className="text-brutal-pink" />,
+          brandIcon: "dtac" as const,
+        },
+        {
+          id: "true",
+          name: "TrueMove",
+          count: items.filter((p) => p.operator.toLowerCase().includes("true"))
+            .length,
+          icon: <Smartphone size={16} className="text-brutal-yellow" />,
+          brandIcon: "true" as const,
+        },
+      ];
+    }
+
+    const categoryCounts = items.reduce(
+      (acc, item) => {
+        acc[item.category] = (acc[item.category] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    return [
+      {
+        id: "all",
+        name: t("sort.all"),
+        count: items.length,
+        icon: <CreditCard size={16} />,
+      },
+      ...Object.entries(categoryCounts).map(([name, count]) => ({
+        id: name.toLowerCase(),
+        name,
+        count,
+        icon: <CreditCard size={16} className="text-gray-500" />,
+      })),
+    ];
+  }, [mode, items, t]);
+
+  const secondaryOptions = useMemo(() => {
+    if (mode === "games") {
+      const categoryCounts = items.reduce(
+        (acc, item) => {
+          acc[item.category] = (acc[item.category] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+      return [
+        { id: "all", name: t("sort.all"), count: items.length },
+        ...Object.entries(categoryCounts).map(([name, count]) => ({
+          id: name.toLowerCase(),
+          name,
+          count,
+        })),
+      ];
+    }
+
+    if (mode === "mobile-recharge" || mode === "mobile") {
+      const countryCounts = items.reduce(
+        (acc, item) => {
+          acc[item.country] = (acc[item.country] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+
+      return sortThailandFirst([
+        { id: "all", name: t("sort.all"), count: items.length },
+        ...Object.entries(countryCounts).map(([name, count]) => ({
+          id: name,
+          name,
+          count,
+        })),
+      ]);
+    }
+
+    return [];
+  }, [mode, items, t]);
 
   const filteredItems = useMemo(
     () =>
@@ -504,9 +447,13 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
         const matchesSearch =
           !searchQuery ||
           item.title.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesPrimary = filterItemByPrimary(mode, item, selectedPrimary);
+        const matchesPrimary = filterItemByPrimary(
+          mode as any,
+          item,
+          selectedPrimary,
+        );
         const matchesSecondary = filterItemBySecondary(
-          mode,
+          mode as any,
           item,
           selectedSecondary,
         );
@@ -532,7 +479,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
               className={`p-4 border-b-[3px] border-black ${copy.primaryHeaderClass}`}
             >
               <h3 className="text-black font-black text-base flex items-center">
-                {mode === "mobile-recharge" ? (
+                {mode === "mobile-recharge" || mode === "mobile" ? (
                   <Signal size={18} className="mr-2" />
                 ) : (
                   <Filter size={18} className="mr-2" />
@@ -686,7 +633,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   onClick={() => setIsFilterOpen(true)}
                   className="lg:hidden bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 flex items-center gap-1.5 transition-all font-bold"
                 >
-                  <Filter size={16} /> ตัวกรอง
+                  <Filter size={16} /> {t("filter_category")}
                 </button>
               </div>
             </div>
@@ -725,7 +672,8 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                           : "bg-white text-gray-700"
                       }`}
                     >
-                      {mode === "mobile-recharge" && option.id === "all" ? (
+                      {(mode === "mobile-recharge" || mode === "mobile") &&
+                      option.id === "all" ? (
                         <>
                           <Globe size={14} />
                           {option.name}
@@ -770,7 +718,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
                   className="min-w-0"
                 >
-                  <Link href={getItemLink(mode, item.slug)}>
+                  <Link href={getItemLink(mode as any, item.slug)}>
                     <div
                       className="relative overflow-hidden bg-white border-[2px] sm:border-[3px] border-black transition-all hover:-translate-y-1 group h-full"
                       style={{ boxShadow: "3px 3px 0 0 #000000" }}
@@ -804,14 +752,14 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                         {item.autoDelivery && (
                           <div
                             className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 z-10"
-                            title="จัดส่งอัตโนมัติหลังชำระเงิน"
+                            title={tCommon("loading")}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 512 512"
                               className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
                               role="img"
-                              aria-label="จัดส่งอัตโนมัติหลังชำระเงิน"
+                              aria-label={tCommon("loading")}
                             >
                               <g clipRule="evenodd" fillRule="evenodd">
                                 <circle
@@ -838,7 +786,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                               : "line-clamp-1"
                           } mb-1 transition-colors ${copy.hoverNameClass}`}
                         >
-                          {mode === "mobile-recharge"
+                          {mode === "mobile-recharge" || mode === "mobile"
                             ? item.operator
                             : item.title}
                         </p>
@@ -871,9 +819,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             {filteredItems.length === 0 && !loading && (
               <div className="text-center py-12">
                 <Globe size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500 font-bold">ไม่พบข้อมูลที่ค้นหา</p>
+                <p className="text-gray-500 font-bold">{t("no_results")}</p>
                 <p className="text-gray-400 text-sm mt-1">
-                  ลองค้นหาคำอื่น หรือปรับตัวกรอง
+                  {t("no_results_desc")}
                 </p>
               </div>
             )}
@@ -890,7 +838,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       <Sheet
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        title="ตัวกรอง"
+        title={t("filter_category")}
       >
         <div className="space-y-6">
           <div>
@@ -965,5 +913,74 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
         </div>
       </Sheet>
     </div>
+  );
+}
+
+function filterItemByPrimary(
+  mode: CatalogMode,
+  item: CatalogItem,
+  selected: string,
+): boolean {
+  if (selected === "all") return true;
+
+  if (mode === "games") {
+    if (selected === "mobile") {
+      return item.platforms.some((p) =>
+        ["Mobile", "Android", "iOS"].includes(p),
+      );
+    }
+    if (selected === "pc") {
+      return item.platforms.some((p) => ["PC", "Mac"].includes(p));
+    }
+    if (selected === "console") {
+      return item.platforms.some((p) =>
+        ["Console", "PS4", "PS5", "Xbox"].includes(p),
+      );
+    }
+    return true;
+  }
+
+  if (mode === "mobile-recharge" || mode === "mobile") {
+    return item.operator.toLowerCase().includes(selected);
+  }
+
+  return item.category.toLowerCase() === selected.toLowerCase();
+}
+
+function filterItemBySecondary(
+  mode: CatalogMode,
+  item: CatalogItem,
+  selected: string,
+): boolean {
+  if (selected === "all") return true;
+  if (mode === "games")
+    return item.category.toLowerCase() === selected.toLowerCase();
+  if (mode === "mobile-recharge" || mode === "mobile")
+    return item.country === selected;
+  return true;
+}
+
+function renderOptionIcon(
+  option: FilterOption,
+  isActive: boolean,
+  compact = false,
+): React.ReactNode {
+  const brandSize = compact ? 20 : 39;
+
+  if (option.brandIcon) {
+    return (
+      <BrandIcon
+        brand={option.brandIcon}
+        size={brandSize}
+        fallbackIcon={option.icon}
+      />
+    );
+  }
+
+  if (!option.icon) return null;
+  return (
+    <span className={isActive ? "text-black" : "text-gray-500"}>
+      {option.icon}
+    </span>
   );
 }

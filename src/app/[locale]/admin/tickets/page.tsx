@@ -24,24 +24,25 @@ import {
   TicketStats,
   TicketStatus,
 } from "@/lib/services/support-api";
+import { useTranslations } from "next-intl";
 
-const statusLabels: Record<TicketStatus, string> = {
-  OPEN: "เปิด",
-  IN_PROGRESS: "กำลังดำเนินการ",
-  WAITING_USER: "รอผู้ใช้",
-  WAITING_ADMIN: "รอแอดมิน",
-  RESOLVED: "แก้ไขแล้ว",
-  CLOSED: "ปิด",
+const statusKeyMap: Record<TicketStatus, string> = {
+  OPEN: "open",
+  IN_PROGRESS: "in_progress",
+  WAITING_USER: "waiting_user",
+  WAITING_ADMIN: "waiting_admin",
+  RESOLVED: "resolved",
+  CLOSED: "closed",
 };
 
-const categoryLabels: Record<TicketCategory, string> = {
-  ORDER_ISSUE: "ปัญหาคำสั่งซื้อ",
-  PAYMENT_ISSUE: "ปัญหาการชำระเงิน",
-  PRODUCT_ISSUE: "ปัญหาสินค้า",
-  ACCOUNT_ISSUE: "ปัญหาบัญชี",
-  TECHNICAL_SUPPORT: "สนับสนุนทางเทคนิค",
-  REFUND_REQUEST: "ขอคืนเงิน",
-  GENERAL_INQUIRY: "สอบถามทั่วไป",
+const categoryKeyMap: Record<TicketCategory, string> = {
+  ORDER_ISSUE: "order_issue",
+  PAYMENT_ISSUE: "payment_issue",
+  PRODUCT_ISSUE: "product_issue",
+  ACCOUNT_ISSUE: "account_issue",
+  TECHNICAL_SUPPORT: "technical_support",
+  REFUND_REQUEST: "refund_request",
+  GENERAL_INQUIRY: "general_inquiry",
 };
 
 const EMPTY_STATS: TicketStats = {
@@ -80,6 +81,7 @@ function toCsvCell(value: string | number | null | undefined): string {
 }
 
 function AdminTicketsPageContent() {
+  const t = useTranslations("AdminPage");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAdmin, isInitialized } = useAuth();
@@ -614,11 +616,10 @@ function AdminTicketsPageContent() {
                 setStatus(item.key);
                 setPage(1);
               }}
-              className={`border-[2px] p-2 text-sm ${
-                status === item.key
+              className={`border-[2px] p-2 text-sm ${status === item.key
                   ? "border-black bg-yellow-100"
                   : "border-gray-300 bg-white"
-              }`}
+                }`}
             >
               <div className="font-bold">{item.value}</div>
               <div className="text-xs">{item.label}</div>
@@ -645,8 +646,8 @@ function AdminTicketsPageContent() {
             <option value="ALL">ทุกระดับความสำคัญ</option>
             <option value="LOW">ต่ำ</option>
             <option value="MEDIUM">ปานกลาง</option>
-            <option value="HIGH">สูง</option>
-            <option value="URGENT">เร่งด่วน</option>
+            <option value="HIGH">{t("tickets.priorities.high")}</option>
+            <option value="URGENT">{t("tickets.priorities.urgent")}</option>
           </select>
 
           <select
@@ -657,10 +658,10 @@ function AdminTicketsPageContent() {
             }}
             className="border-[2px] border-gray-300 px-2 py-1.5"
           >
-            <option value="ALL">ทุกหมวดหมู่</option>
-            {Object.entries(categoryLabels).map(([key, value]) => (
+            <option value="ALL">{t("tickets.categories.all")}</option>
+            {Object.entries(categoryKeyMap).map(([key, value]) => (
               <option key={key} value={key}>
-                {value}
+                {t(`tickets.categories.${value}`)}
               </option>
             ))}
           </select>
@@ -673,8 +674,8 @@ function AdminTicketsPageContent() {
             }}
             className="border-[2px] border-gray-300 px-2 py-1.5"
           >
-            <option value="ALL">ผู้รับผิดชอบทั้งหมด</option>
-            <option value="UNASSIGNED">ยังไม่มอบหมาย</option>
+            <option value="ALL">{t("tickets.all_assignees")}</option>
+            <option value="UNASSIGNED">{t("tickets.unassigned")}</option>
             {admins.map((admin) => (
               <option key={admin.id} value={admin.id}>
                 {admin.username}
@@ -687,10 +688,10 @@ function AdminTicketsPageContent() {
             onChange={(event) =>
               setSortBy(
                 event.target.value as
-                  | "updatedAt"
-                  | "createdAt"
-                  | "priority"
-                  | "status",
+                | "updatedAt"
+                | "createdAt"
+                | "priority"
+                | "status",
               )
             }
             className="border-[2px] border-gray-300 px-2 py-1.5"
@@ -934,7 +935,7 @@ function AdminTicketsPageContent() {
                           {ticket.subject}
                         </div>
                         <div className="mt-1 text-xs text-gray-600">
-                          {statusLabels[ticket.status]} | {ticket.priority} |{" "}
+                          {t(`tickets.status.${statusKeyMap[ticket.status]}`)} | {ticket.priority} |{" "}
                           {new Date(ticket.updatedAt).toLocaleString()}
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-xs">
@@ -1014,7 +1015,7 @@ function AdminTicketsPageContent() {
                     {selectedTicket.user?.username ||
                       selectedTicket.user?.email}{" "}
                     |{" "}
-                    {categoryLabels[selectedTicket.category as TicketCategory]}
+                    {t(`tickets.categories.${categoryKeyMap[selectedTicket.category as TicketCategory]}`)}
                   </div>
                   {selectedTicket.orderId && (
                     <div className="text-sm">
@@ -1040,9 +1041,9 @@ function AdminTicketsPageContent() {
                     disabled={updating}
                     className="border-[2px] border-gray-300 px-2 py-1.5"
                   >
-                    {Object.entries(statusLabels).map(([key, value]) => (
+                    {Object.entries(statusKeyMap).map(([key, value]) => (
                       <option key={key} value={key}>
-                        {value}
+                        {t(`tickets.status.${value}`)}
                       </option>
                     ))}
                   </select>
@@ -1096,13 +1097,12 @@ function AdminTicketsPageContent() {
                   {selectedTicket.messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`border-[2px] p-3 ${
-                        message.sender === "admin"
+                      className={`border-[2px] p-3 ${message.sender === "admin"
                           ? "border-green-300 bg-green-50"
                           : message.sender === "system"
                             ? "border-gray-300 bg-gray-50"
                             : "border-gray-300 bg-white"
-                      }`}
+                        }`}
                     >
                       <div className="mb-1 text-xs text-gray-500">
                         {message.senderName || message.sender} |{" "}
@@ -1118,26 +1118,26 @@ function AdminTicketsPageContent() {
                 {!(["CLOSED", "RESOLVED"] as TicketStatus[]).includes(
                   selectedTicket.status,
                 ) && (
-                  <form onSubmit={sendReply} className="flex gap-2">
-                    <input
-                      ref={replyInputRef}
-                      value={reply}
-                      onChange={(event) => setReply(event.target.value)}
-                      className="flex-1 border-[2px] border-gray-300 px-3 py-2"
-                      placeholder="พิมพ์ข้อความตอบกลับลูกค้า"
-                    />
-                    <button
-                      disabled={sending || !reply.trim()}
-                      className="border-[2px] border-black bg-black px-3 py-2 text-white disabled:opacity-50"
-                    >
-                      {sending ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Send size={16} />
-                      )}
-                    </button>
-                  </form>
-                )}
+                    <form onSubmit={sendReply} className="flex gap-2">
+                      <input
+                        ref={replyInputRef}
+                        value={reply}
+                        onChange={(event) => setReply(event.target.value)}
+                        className="flex-1 border-[2px] border-gray-300 px-3 py-2"
+                        placeholder="พิมพ์ข้อความตอบกลับลูกค้า"
+                      />
+                      <button
+                        disabled={sending || !reply.trim()}
+                        className="border-[2px] border-black bg-black px-3 py-2 text-white disabled:opacity-50"
+                      >
+                        {sending ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Send size={16} />
+                        )}
+                      </button>
+                    </form>
+                  )}
 
                 {selectedIds.length > 0 && (
                   <div className="flex items-center gap-2 border-[2px] border-green-300 bg-green-50 p-2 text-sm text-green-900">

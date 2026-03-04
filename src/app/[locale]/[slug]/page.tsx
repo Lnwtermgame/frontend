@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import { getTranslations } from "next-intl/server";
 
 const API_BASE_URL = (
   process.env.NEXT_PUBLIC_API_URL ||
@@ -85,6 +86,7 @@ interface CmsPageProps {
 }
 
 export default async function CmsPage({ params }: CmsPageProps) {
+  const t = await getTranslations("NewsDetail");
   const { slug } = await params;
   const page = await getCmsPage(slug);
 
@@ -97,7 +99,7 @@ export default async function CmsPage({ params }: CmsPageProps) {
       <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black thai-font mb-2">
+          <h1 className="text-3xl font-bold text-black mb-2">
             {page.title}
           </h1>
           <div className="h-1 w-20 bg-brutal-pink"></div>
@@ -106,8 +108,8 @@ export default async function CmsPage({ params }: CmsPageProps) {
         {/* Content */}
         <article
           className="prose prose-lg max-w-none
-            prose-headings:text-black prose-headings:font-bold prose-headings:thai-font
-            prose-p:text-gray-700 prose-p:thai-font
+            prose-headings:text-black prose-headings:font-bold
+            prose-p:text-gray-700
             prose-a:text-brutal-blue prose-a:no-underline hover:prose-a:underline
             prose-strong:text-black
             prose-ul:text-gray-700 prose-ol:text-gray-700
@@ -133,12 +135,12 @@ export default async function CmsPage({ params }: CmsPageProps) {
                 <ol className="list-decimal pl-6 mb-4 space-y-1">{children}</ol>
               ),
               h2: ({ children }) => (
-                <h2 className="text-2xl font-bold text-black mt-8 mb-3 thai-font">
+                <h2 className="text-2xl font-bold text-black mt-8 mb-3">
                   {children}
                 </h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-xl font-bold text-black mt-6 mb-2 thai-font">
+                <h3 className="text-xl font-bold text-black mt-6 mb-2">
                   {children}
                 </h3>
               ),
@@ -151,12 +153,8 @@ export default async function CmsPage({ params }: CmsPageProps) {
         {/* Last Updated */}
         <div className="mt-12 pt-6 border-t-[2px] border-gray-200">
           <p className="text-sm text-gray-500">
-            อัปเดตล่าสุด:{" "}
-            {new Date(page.updatedAt).toLocaleDateString("th-TH", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            {t("last_updated")}:{" "}
+            {new Date(page.updatedAt).toLocaleDateString()}
           </p>
         </div>
       </div>

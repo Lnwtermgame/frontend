@@ -16,8 +16,11 @@ import {
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function FavoritePage() {
+  const t = useTranslations("Favorites");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const { user, isInitialized } = useAuth();
@@ -57,7 +60,7 @@ export default function FavoritePage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดรายการโปรดได้");
+        toast.error(t("error_loading"));
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -94,21 +97,13 @@ export default function FavoritePage() {
     try {
       const response = await favoriteApi.removeFavorite(favoriteId);
       if (response.success) {
-        toast.success("ลบออกจากรายการโปรดแล้ว");
+        toast.success(t("remove_success"));
         setFavorites((prev) => prev.filter((item) => item.id !== favoriteId));
       }
     } catch (error) {
       const message = favoriteApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถลบรายการโปรดได้");
+      toast.error(message || t("remove_failed"));
     }
-  };
-
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("th-TH", {
-      style: "currency",
-      currency: "THB",
-    }).format(amount);
   };
 
   // If the user is not loaded yet or not logged in, show loading
@@ -117,7 +112,7 @@ export default function FavoritePage() {
       <div className="flex items-center justify-center min-h-[40vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-3 text-gray-600 text-sm thai-font">กำลังโหลด...</p>
+          <p className="mt-3 text-gray-600 text-sm">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -129,10 +124,10 @@ export default function FavoritePage() {
       <div className="relative mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-1 relative flex items-center">
           <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-          รายการโปรดของฉัน
+          {t("title")}
         </h2>
-        <p className="text-gray-600 text-xs relative thai-font">
-          จัดการรายการที่คุณบันทึกไว้เพื่อการเข้าถึงที่รวดเร็ว
+        <p className="text-gray-600 text-xs relative">
+          {t("subtitle")}
         </p>
       </div>
 
@@ -140,16 +135,16 @@ export default function FavoritePage() {
         <div className="relative w-full sm:w-64">
           <input
             type="text"
-            placeholder="ค้นหารายการโปรด..."
+            placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white px-3 py-1.5 text-xs text-black border-[2px] border-gray-300 focus:outline-none focus:border-black pl-8 transition-all thai-font"
+            className="w-full bg-white px-3 py-1.5 text-xs text-black border-[2px] border-gray-300 focus:outline-none focus:border-black pl-8 transition-all"
           />
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
         </div>
 
-        <div className="ml-auto text-xs text-gray-600 font-medium thai-font">
-          พบ {filteredFavorites.length} รายการ
+        <div className="ml-auto text-xs text-gray-600 font-bold">
+          {t("found_items", { count: filteredFavorites.length })}
         </div>
       </div>
 
@@ -186,7 +181,7 @@ export default function FavoritePage() {
                       onClick={(e) => removeFavorite(item.id, e)}
                       className="w-7 h-7 bg-white border-[2px] border-black text-black hover:bg-red-500 hover:text-white flex items-center justify-center transition-all"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                      title="ลบออกจากรายการโปรด"
+                      title={t("remove_success")}
                     >
                       <Trash2 size={14} />
                     </button>
@@ -211,28 +206,28 @@ export default function FavoritePage() {
                   </h3>
                   <p className="text-gray-500 text-xs font-bold mb-2 text-right">
                     {item.product.types && item.product.types.length > 0
-                      ? `เริ่มต้น ${formatPrice(getMinPrice(item.product.types))}`
-                      : "เลือกดูราคา"}
+                      ? `${t("starting_at")} ${formatPrice(getMinPrice(item.product.types))}`
+                      : t("view_more")}
                   </p>
 
                   <div className="mt-auto flex gap-2">
                     <Link
                       href={`/games/${item.product.slug}`}
-                      className="flex-1 bg-white hover:bg-gray-50 text-black border-[2px] border-black py-1 flex items-center justify-center text-[10px] font-bold transition-all thai-font"
+                      className="flex-1 bg-white hover:bg-gray-50 text-black border-[2px] border-black py-1 flex items-center justify-center text-[10px] font-bold transition-all"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
                       <ExternalLink size={10} className="mr-1" />
-                      ดูเพิ่ม
+                      {t("view_more")}
                     </Link>
                     <motion.button
-                      onClick={() => toast.success("เพิ่มลงตะกร้าแล้ว")}
+                      onClick={() => toast.success(t("added_to_cart"))}
                       whileHover={{ y: -1 }}
                       whileTap={{ y: 0 }}
-                      className="flex-1 bg-brutal-blue hover:bg-brutal-blue/90 text-white border-[2px] border-black py-1 flex items-center justify-center text-[10px] font-bold transition-all thai-font"
+                      className="flex-1 bg-brutal-blue hover:bg-brutal-blue/90 text-white border-[2px] border-black py-1 flex items-center justify-center text-[10px] font-bold transition-all"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
                       <ShoppingCart size={10} className="mr-1" />
-                      ซื้อ
+                      {t("buy_now")}
                     </motion.button>
                   </div>
                 </div>
@@ -250,20 +245,20 @@ export default function FavoritePage() {
           <div className="w-12 h-12 bg-gray-100 border-[3px] border-black flex items-center justify-center mx-auto mb-3">
             <Heart size={24} className="text-gray-400" />
           </div>
-          <h2 className="text-base font-bold text-black mb-1 thai-font">
-            ไม่พบรายการโปรด
+          <h2 className="text-base font-bold text-black mb-1">
+            {t("no_favorites")}
           </h2>
-          <p className="text-gray-600 text-xs max-w-md mx-auto mb-4 thai-font">
+          <p className="text-gray-600 text-xs max-w-md mx-auto mb-4 font-bold">
             {searchTerm
-              ? `เราไม่พบรายการโปรดที่ตรงกับ "${searchTerm}"`
-              : "คุณยังไม่ได้เพิ่มรายการใดๆ ลงในรายการโปรด เลือกดูสินค้าและคลิกไอคอนหัวใจเพื่อบันทึกไว้ที่นี่"}
+              ? t("no_search_results", { query: searchTerm })
+              : t("no_favorites_desc")}
           </p>
           <Link
             href="/"
-            className="bg-black hover:bg-gray-800 text-white px-4 py-2 border-[3px] border-black text-xs font-bold inline-flex items-center transition-all hover:-translate-y-0.5 thai-font"
+            className="bg-black hover:bg-gray-800 text-white px-4 py-2 border-[3px] border-black text-xs font-bold inline-flex items-center transition-all hover:-translate-y-0.5"
             style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
-            เริ่มช้อปปิ้ง
+            {t("start_shopping")}
           </Link>
         </motion.div>
       )}

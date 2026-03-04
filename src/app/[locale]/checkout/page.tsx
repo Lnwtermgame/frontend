@@ -24,6 +24,7 @@ import { SeagmField } from "@/lib/services/product-api";
 import { orderApi } from "@/lib/services/order-api";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
+import { useTranslations } from "next-intl";
 
 interface ItemWithFields extends CartItem {
   fields: SeagmField[];
@@ -32,6 +33,7 @@ interface ItemWithFields extends CartItem {
 }
 
 export default function CheckoutPage() {
+  const t = useTranslations("Checkout");
   const router = useRouter();
   const {
     items,
@@ -110,7 +112,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!allFieldsValid) {
-      toast.error("กรุณากรอกข้อมูลที่จำเป็นทั้งหมดสำหรับรายการเติมเงินโดยตรง");
+      toast.error(t("error.fill_all_fields"));
       return;
     }
 
@@ -132,7 +134,7 @@ export default function CheckoutPage() {
         clearCart();
         router.push(`/dashboard/orders/${response.data.id}`);
       } else {
-        toast.error("สร้างคำสั่งซื้อไม่สำเร็จ");
+        toast.error(t("error.order_failed"));
       }
     } catch (error: any) {
       console.error("Order creation failed:", error);
@@ -149,16 +151,16 @@ export default function CheckoutPage() {
         errorCode === 20093
       ) {
         toast.error(
-          "User ID หรือ Zone ID ไม่ถูกต้อง กรุณาตรวจสอบข้อมูลบัญชีเกมของคุณ",
+          t("error.player_id_invalid"),
           { duration: 5000 },
         );
       } else if (errorCode === 10406) {
         toast.error(
-          "ข้อมูลสินค้าบางอย่างมีการเปลี่ยนแปลง กรุณารีเฟรชหน้าและลองใหม่อีกครั้ง",
+          t("error.product_changed"),
           { duration: 5000 },
         );
       } else {
-        toast.error(errorMessage || error.message || "สั่งซื้อไม่สำเร็จ", {
+        toast.error(t("error.generic_failed", { message: errorMessage || error.message || t("error.order_failed") }), {
           duration: 5000,
         });
       }
@@ -172,7 +174,7 @@ export default function CheckoutPage() {
       <div className="page-container flex items-center justify-center bg-brutal-gray h-96">
         <div className="flex flex-col items-center">
           <Loader2 className="w-12 h-12 text-brutal-pink animate-spin" />
-          <p className="mt-4 text-gray-600">กำลังโหลดหน้าชำระเงิน...</p>
+          <p className="mt-4 text-gray-600">{t("loading")}</p>
         </div>
       </div>
     );
@@ -187,15 +189,15 @@ export default function CheckoutPage() {
         >
           <ShoppingCart className="mx-auto text-gray-600 w-12 h-12 mb-4" />
           <h2 className="text-2xl font-black text-black mb-2">
-            ตะกร้าของคุณว่างเปล่า
+            {t("empty_cart")}
           </h2>
           <p className="text-gray-600 mb-6">
-            เพิ่มสินค้าลงในตะกร้าเพื่อดำเนินการชำระเงิน
+            {t("empty_cart_desc")}
           </p>
           <Link href="/games">
             <Button>
               <ChevronLeft className="w-5 h-5 mr-2" />
-              เลือกดูสินค้า
+              {t("browse_products")}
             </Button>
           </Link>
         </div>
@@ -210,10 +212,10 @@ export default function CheckoutPage() {
         <div>
           <h1 className="text-2xl font-black text-black flex items-center">
             <span className="w-2 h-6 bg-brutal-pink mr-3"></span>
-            ชำระเงิน
+            {t("title")}
           </h1>
           <p className="text-gray-600 ml-5">
-            ตรวจสอบสินค้าและดำเนินการชำระเงิน
+            {t("subtitle")}
           </p>
         </div>
         <Link
@@ -221,7 +223,7 @@ export default function CheckoutPage() {
           className="text-gray-600 hover:text-black transition-colors flex items-center gap-2 font-medium"
         >
           <ChevronLeft className="w-5 h-5" />
-          เลือกซื้อสินค้าต่อ
+          {t("continue_shopping")}
         </Link>
       </div>
 
@@ -267,12 +269,12 @@ export default function CheckoutPage() {
                         {item.productType === "DIRECT_TOPUP" ? (
                           <>
                             <Zap className="w-4 h-4" />
-                            เติมเงินโดยตรง
+                            {t("direct_topup")}
                           </>
                         ) : (
                           <>
                             <CreditCard className="w-4 h-4" />
-                            บัตรของขวัญ
+                            {t("gift_card")}
                           </>
                         )}
                       </span>
@@ -306,7 +308,7 @@ export default function CheckoutPage() {
               {/* Quantity & Price */}
               <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t-2 border-gray-200 gap-4">
                 <div className="flex items-center gap-4">
-                  <span className="text-gray-600 font-bold">จำนวน:</span>
+                  <span className="text-gray-600 font-bold">{t("quantity")}</span>
                   <div className="flex items-center border-[2px] border-black bg-white">
                     <button
                       type="button"
@@ -336,7 +338,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="text-right w-full sm:w-auto flex justify-between sm:block">
                   <span className="text-gray-600 sm:hidden font-bold">
-                    รวม:
+                    {t("total")}
                   </span>
                   <div>
                     <span className="text-2xl font-black text-black block">
@@ -344,7 +346,7 @@ export default function CheckoutPage() {
                     </span>
                     {item.quantity > 1 && (
                       <p className="text-gray-600 text-sm">
-                        ฿{item.price.toFixed(2)} / ชิ้น
+                        ฿{item.price.toFixed(2)} {t("per_item")}
                       </p>
                     )}
                   </div>
@@ -362,7 +364,7 @@ export default function CheckoutPage() {
           >
             <h2 className="text-xl font-black text-black mb-6 flex items-center">
               <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
-              สรุปคำสั่งซื้อ
+              {t("order_summary")}
             </h2>
 
             <div className="space-y-4 mb-6">
@@ -384,7 +386,7 @@ export default function CheckoutPage() {
             <div className="border-t-2 border-gray-200 pt-4 mb-6">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-bold text-black">
-                  ยอดรวมทั้งสิ้น
+                  {t("grand_total")}
                 </span>
                 <span className="text-2xl font-black text-brutal-pink">
                   ฿{getTotalPrice().toFixed(2)}
@@ -398,7 +400,7 @@ export default function CheckoutPage() {
                 <div className="flex items-start gap-2 text-red-600">
                   <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
                   <span className="text-sm font-bold">
-                    กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน
+                    {t("fill_required_fields")}
                   </span>
                 </div>
               </div>
@@ -408,7 +410,7 @@ export default function CheckoutPage() {
               <div className="mb-4 p-4 bg-green-50 border-[2px] border-green-200">
                 <div className="flex items-center gap-2 text-green-600">
                   <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-sm font-bold">ข้อมูลครบถ้วน</span>
+                  <span className="text-sm font-bold">{t("info_complete")}</span>
                 </div>
               </div>
             )}
@@ -424,16 +426,16 @@ export default function CheckoutPage() {
               {!isSubmitting && (
                 <>
                   <CreditCard className="w-5 h-5 mr-2" />
-                  ยืนยันการสั่งซื้อ
+                  {t("confirm_order")}
                 </>
               )}
             </Button>
 
             <div className="mt-4 text-center">
               <p className="text-gray-500 text-xs">
-                การคลิกยืนยันการสั่งซื้อ แสดงว่าคุณยอมรับ{" "}
+                {t("terms_agreement")}{" "}
                 <Link href="/terms" className="underline hover:text-black">
-                  เงื่อนไขการให้บริการ
+                  {t("terms_of_service")}
                 </Link>
               </p>
             </div>

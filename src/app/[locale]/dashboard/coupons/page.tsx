@@ -18,8 +18,11 @@ import {
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function CouponsPage() {
+  const t = useTranslations("Coupons");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const { user, isSessionChecked } = useAuth();
@@ -63,7 +66,7 @@ export default function CouponsPage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดคูปองได้");
+        toast.error(t("add_failed"));
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -123,18 +126,18 @@ export default function CouponsPage() {
   const copyToClipboard = (code: string, couponId: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(couponId);
-    toast.success("คัดลอกรหัสคูปองแล้ว");
+    toast.success(t("details.copied"));
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
   // Claim coupon
   const handleClaimCoupon = async () => {
     if (!newCouponCode.trim()) {
-      setErrorMessage("กรุณากรอกรหัสคูปอง");
+      setErrorMessage(t("code_label"));
       return;
     }
 
-    setErrorMessage("กำลังตรวจสอบคูปอง...");
+    setErrorMessage(t("validating"));
 
     try {
       // First validate the coupon
@@ -144,7 +147,7 @@ export default function CouponsPage() {
 
       if (!validateResponse.success || !validateResponse.data.valid) {
         setErrorMessage(
-          validateResponse.data?.message || "รหัสคูปองไม่ถูกต้อง",
+          validateResponse.data?.message || t("invalid_code"),
         );
         return;
       }
@@ -152,23 +155,23 @@ export default function CouponsPage() {
       // Then claim it
       const couponId = validateResponse.data.coupon?.id;
       if (!couponId) {
-        setErrorMessage("ไม่พบคูปองนี้");
+        setErrorMessage(t("not_found"));
         return;
       }
 
       const claimResponse = await couponApi.claimCoupon(couponId);
 
       if (claimResponse.success) {
-        toast.success("เพิ่มคูปองสำเร็จ!");
+        toast.success(t("add_success"));
         setErrorMessage("");
         setNewCouponCode("");
         fetchCoupons(); // Refresh the list
       } else {
-        setErrorMessage(claimResponse.message || "ไม่สามารถเพิ่มคูปองได้");
+        setErrorMessage(claimResponse.message || t("add_failed"));
       }
     } catch (error) {
       const message = couponApi.getErrorMessage(error);
-      setErrorMessage(message || "รหัสคูปองไม่ถูกต้อง");
+      setErrorMessage(message || t("invalid_code"));
     }
   };
 
@@ -194,7 +197,7 @@ export default function CouponsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -215,10 +218,10 @@ export default function CouponsPage() {
           animate={{ opacity: 1, x: 0 }}
         >
           <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-          คูปองของฉัน
+          {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative thai-font">
-          คุณมีคูปองที่ใช้งานได้ {activeCouponCount} ใบ
+        <p className="text-gray-600 text-xs relative font-bold">
+          {t("subtitle", { count: activeCouponCount })}
         </p>
       </div>
 
@@ -226,10 +229,10 @@ export default function CouponsPage() {
         <div className="relative w-full sm:w-64">
           <input
             type="text"
-            placeholder="ค้นหาคูปอง..."
+            placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black pl-8 transition-all thai-font"
+            className="w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black pl-8 transition-all"
           />
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
         </div>
@@ -238,12 +241,12 @@ export default function CouponsPage() {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 pr-8 text-xs text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
+            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 pr-8 text-xs text-black focus:outline-none focus:border-black transition-all cursor-pointer"
           >
-            <option value="all">คูปองทั้งหมด</option>
-            <option value="active">ใช้งานได้</option>
-            <option value="used">ใช้แล้ว</option>
-            <option value="expired">หมดอายุ</option>
+            <option value="all">{t("filter.all")}</option>
+            <option value="active">{t("filter.active")}</option>
+            <option value="used">{t("filter.used")}</option>
+            <option value="expired">{t("filter.expired")}</option>
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 pointer-events-none" />
         </div>
@@ -263,20 +266,20 @@ export default function CouponsPage() {
               animate={{ opacity: 1, y: 0 }}
             >
               <Ticket className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-              <h2 className="text-lg font-bold text-black mb-1 thai-font">
-                ไม่พบคูปอง
+              <h2 className="text-lg font-bold text-black mb-1">
+                {t("no_coupons")}
               </h2>
-              <p className="text-gray-600 text-xs mb-4 thai-font">
+              <p className="text-gray-600 text-xs mb-4 font-bold">
                 {searchTerm
-                  ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"`
-                  : "คุณยังไม่มีคูปองในระบบ"}
+                  ? t("no_search_results", { query: searchTerm })
+                  : t("no_coupons_desc")}
               </p>
               <Link
-                href="/products"
-                className="bg-black text-white border-[3px] border-black px-3 py-1.5 text-xs font-bold inline-flex items-center hover:bg-gray-800 transition-all thai-font"
+                href="/games"
+                className="bg-black text-white border-[3px] border-black px-3 py-1.5 text-xs font-bold inline-flex items-center hover:bg-gray-800 transition-all"
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
-                ช้อปปิ้งเลย
+                {t("start_shopping")}
               </Link>
             </motion.div>
           ) : (
@@ -304,12 +307,12 @@ export default function CouponsPage() {
                         <div>
                           <div className="text-black font-bold text-base">
                             {coupon.description ||
-                              `ส่วนลด ${coupon.discountPercentage}%`}
+                              `${tCommon("member")} ${coupon.discountPercentage}%`}
                           </div>
-                          <div className="text-gray-600 text-xs">
+                          <div className="text-gray-600 text-xs font-bold">
                             {coupon.minPurchase
-                              ? `ขั้นต่ำ ${formatCurrency(coupon.minPurchase)}`
-                              : "ไม่มีขั้นต่ำ"}
+                              ? t("details.min_purchase", { amount: formatCurrency(coupon.minPurchase) })
+                              : t("details.no_min_purchase")}
                           </div>
                         </div>
                       </div>
@@ -317,19 +320,18 @@ export default function CouponsPage() {
                         <div className="mr-3">
                           <span
                             className={`text-[10px] px-2 py-0.5 border-[2px] border-black inline-flex items-center font-bold
-                            ${
-                              status === "active"
+                            ${status === "active"
                                 ? "bg-brutal-green text-black"
                                 : status === "used"
                                   ? "bg-gray-300 text-black"
                                   : "bg-gray-200 text-gray-600"
-                            }`}
+                              }`}
                           >
                             {status === "active"
-                              ? "ใช้งานได้"
+                              ? t("status.active")
                               : status === "used"
-                                ? "ใช้แล้ว"
-                                : "หมดอายุ"}
+                                ? t("status.used")
+                                : t("status.expired")}
                           </span>
                         </div>
                         {expandedCoupons.includes(coupon.id) ? (
@@ -344,14 +346,14 @@ export default function CouponsPage() {
                       <div className="p-3 border-t-[2px] border-black bg-gray-50">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div className="bg-white p-3 border-[2px] border-black">
-                            <h3 className="text-black text-xs font-bold mb-2 flex items-center gap-1.5 thai-font">
+                            <h3 className="text-black text-xs font-bold mb-2 flex items-center gap-1.5">
                               <Clock size={12} className="text-black" />{" "}
-                              รายละเอียดคูปอง
+                              {t("details.title")}
                             </h3>
                             <div className="space-y-1.5 text-xs">
                               <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                <span className="text-gray-600 thai-font">
-                                  ส่วนลด:
+                                <span className="text-gray-600 font-bold">
+                                  {t("details.discount")}
                                 </span>
                                 <span className="text-black font-bold">
                                   {coupon.discountPercentage}%
@@ -359,8 +361,8 @@ export default function CouponsPage() {
                               </div>
                               {coupon.maxDiscount && (
                                 <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                  <span className="text-gray-600 thai-font">
-                                    ส่วนลดสูงสุด:
+                                  <span className="text-gray-600 font-bold">
+                                    {t("details.max_discount")}
                                   </span>
                                   <span className="text-black font-bold">
                                     {formatCurrency(coupon.maxDiscount)}
@@ -368,26 +370,22 @@ export default function CouponsPage() {
                                 </div>
                               )}
                               <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                <span className="text-gray-600 thai-font">
-                                  ใช้ได้ถึง:
+                                <span className="text-gray-600 font-bold">
+                                  {t("details.valid_until")}
                                 </span>
                                 <span
                                   className={`font-bold ${status === "expired" ? "text-red-600" : "text-black"}`}
                                 >
-                                  {new Date(coupon.endDate).toLocaleDateString(
-                                    "th-TH",
-                                  )}
+                                  {new Date(coupon.endDate).toLocaleDateString()}
                                 </span>
                               </div>
                               {coupon.isUsed && coupon.usedAt && (
                                 <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                  <span className="text-gray-600 thai-font">
-                                    ใช้เมื่อ:
+                                  <span className="text-gray-600 font-bold">
+                                    {t("details.used_at")}
                                   </span>
-                                  <span className="text-black">
-                                    {new Date(coupon.usedAt).toLocaleDateString(
-                                      "th-TH",
-                                    )}
+                                  <span className="text-black font-bold">
+                                    {new Date(coupon.usedAt).toLocaleDateString()}
                                   </span>
                                 </div>
                               )}
@@ -396,8 +394,8 @@ export default function CouponsPage() {
 
                           <div className="bg-white p-3 border-[2px] border-black">
                             <div className="flex justify-between items-center mb-2">
-                              <h3 className="text-black text-xs font-bold thai-font">
-                                รหัสคูปอง
+                              <h3 className="text-black text-xs font-bold">
+                                {t("add_coupon")}
                               </h3>
                               {status === "active" && (
                                 <button
@@ -405,33 +403,33 @@ export default function CouponsPage() {
                                     e.stopPropagation();
                                     copyToClipboard(coupon.code, coupon.id);
                                   }}
-                                  className="text-[10px] text-black underline font-medium flex items-center transition-colors thai-font"
+                                  className="text-[10px] text-black underline font-bold flex items-center transition-colors"
                                 >
                                   {copiedCode === coupon.id ? (
                                     <>
                                       <Check className="h-3 w-3 mr-1" />
-                                      คัดลอกแล้ว
+                                      {t("details.copied")}
                                     </>
                                   ) : (
                                     <>
                                       <Copy className="h-3 w-3 mr-1" />
-                                      คัดลอกรหัส
+                                      {t("details.copy_code")}
                                     </>
                                   )}
                                 </button>
                               )}
                             </div>
-                            <div className="p-2 bg-gray-100 border-[2px] border-black font-mono text-black text-xs select-all text-center tracking-wider">
+                            <div className="p-2 bg-gray-100 border-[2px] border-black font-mono text-black text-xs select-all text-center tracking-wider font-bold">
                               {coupon.code}
                             </div>
 
                             {status === "active" && (
                               <div className="mt-3 text-center">
                                 <Link
-                                  href="/products"
-                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black inline-flex items-center justify-center text-xs py-1.5 transition-all font-bold thai-font"
+                                  href="/games"
+                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black inline-flex items-center justify-center text-xs py-1.5 transition-all font-bold"
                                 >
-                                  ใช้ทันที
+                                  {t("details.use_now")}
                                 </Link>
                               </div>
                             )}
@@ -455,18 +453,18 @@ export default function CouponsPage() {
             transition={{ delay: 0.2 }}
             whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-3 flex items-center gap-2 thai-font text-sm">
-              <Plus size={16} className="text-black" /> เพิ่มคูปอง
+            <h2 className="text-black font-bold mb-3 flex items-center gap-2 text-sm">
+              <Plus size={16} className="text-black" /> {t("add_coupon")}
             </h2>
             <div className="space-y-2">
               <div>
-                <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                  กรอกรหัสคูปอง
+                <label className="block text-xs text-gray-600 mb-1.5 font-bold">
+                  {t("code_label")}
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="เช่น SAVE20"
+                    placeholder={t("example_code")}
                     value={newCouponCode}
                     onChange={(e) => {
                       setNewCouponCode(e.target.value.toUpperCase());
@@ -485,20 +483,19 @@ export default function CouponsPage() {
                 </div>
                 {errorMessage && (
                   <motion.div
-                    className={`mt-2 text-[10px] flex items-start p-1.5 border-[2px] ${
-                      errorMessage.includes("กำลัง")
+                    className={`mt-2 text-[10px] flex items-start p-1.5 border-[2px] ${errorMessage.includes(t("validating")) || errorMessage.includes("กำลัง")
                         ? "text-yellow-700 bg-yellow-50 border-yellow-500"
                         : "text-red-600 bg-red-50 border-red-500"
-                    }`}
+                      }`}
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                   >
                     <AlertCircle className="h-3 w-3 mt-0.5 mr-1 flex-shrink-0" />
-                    <span>{errorMessage}</span>
+                    <span className="font-bold">{errorMessage}</span>
                   </motion.div>
                 )}
-                <p className="text-gray-600 text-[10px] mt-1.5 thai-font">
-                  กรอกรหัสคูปองที่ถูกต้องเพื่อเพิ่มลงในบัญชีของคุณ
+                <p className="text-gray-600 text-[10px] mt-1.5 font-bold">
+                  {t("expiry_hint")}
                 </p>
               </div>
             </div>
@@ -513,8 +510,8 @@ export default function CouponsPage() {
             transition={{ delay: 0.3 }}
             whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-3 thai-font text-sm">
-              วิธีใช้งาน
+            <h2 className="text-black font-bold mb-3 text-sm">
+              {t("how_to_use.title")}
             </h2>
             <div className="space-y-3">
               <div className="flex">
@@ -522,8 +519,8 @@ export default function CouponsPage() {
                   1
                 </div>
                 <div>
-                  <p className="text-gray-600 text-xs thai-font">
-                    ค้นหาคูปองหรือกรอกรหัสคูปอง
+                  <p className="text-gray-600 text-xs font-bold">
+                    {t("how_to_use.step1")}
                   </p>
                 </div>
               </div>
@@ -533,8 +530,8 @@ export default function CouponsPage() {
                   2
                 </div>
                 <div>
-                  <p className="text-gray-600 text-xs thai-font">
-                    คัดลอกรหัสคูปอง
+                  <p className="text-gray-600 text-xs font-bold">
+                    {t("how_to_use.step2")}
                   </p>
                 </div>
               </div>
@@ -544,16 +541,16 @@ export default function CouponsPage() {
                   3
                 </div>
                 <div>
-                  <p className="text-gray-600 text-xs thai-font">
-                    ใช้รหัสตอนชำระเงิน
+                  <p className="text-gray-600 text-xs font-bold">
+                    {t("how_to_use.step3")}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center mt-2 pt-2 border-t-[2px] border-black">
                 <Clock className="h-3.5 w-3.5 text-gray-600 mr-1.5" />
-                <span className="text-gray-600 text-[10px] thai-font">
-                  คูปองมีวันหมดอายุ โปรดใช้ก่อนที่จะหมดอายุ
+                <span className="text-gray-600 text-[10px] font-bold">
+                  {t("how_to_use.expiry_hint")}
                 </span>
               </div>
             </div>

@@ -17,9 +17,14 @@ import { Suspense } from "react";
 import { buttonVariants } from "@/components/ui/Button";
 import { paymentApi } from "@/lib/services/payment-api";
 
+import { useTranslations } from "next-intl";
+
 type PaymentStatus = "loading" | "success" | "processing" | "failed";
 
 function PaymentSuccessPageContent() {
+  const t = useTranslations("PaymentSuccess");
+  const tNav = useTranslations("Navigation");
+  const tCommon = useTranslations("Common");
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") || "";
   const sessionId = searchParams.get("session_id") || "";
@@ -103,43 +108,42 @@ function PaymentSuccessPageContent() {
 
   const statusConfig = {
     success: {
-      label: "ชำระเงินสำเร็จ",
-      title: "ชำระเงินสำเร็จ!",
-      description:
-        "คำสั่งซื้อของคุณถูกบันทึกเรียบร้อยแล้ว สามารถดูรายละเอียดได้ที่หน้าประวัติคำสั่งซื้อ",
+      label: t("title"),
+      title: t("title"),
+      description: t("subtitle"),
       icon: <CheckCircle2 className="h-10 w-10 text-emerald-600" />,
       accent: "bg-emerald-100",
       badge: "bg-emerald-100 text-emerald-800 border-emerald-300",
-      panelTitle: "ออเดอร์ของคุณพร้อมดำเนินการแล้ว",
+      panelTitle: "Order Ready",
     },
     processing: {
-      label: "กำลังตรวจสอบ",
-      title: "กำลังตรวจสอบสถานะการชำระเงิน",
+      label: t("processing_badge"),
+      title: "Verifying Payment",
       description:
-        "เรากำลังยืนยันรายการจากผู้ให้บริการชำระเงิน โปรดรอสักครู่หรือรีเฟรชหน้านี้อีกครั้ง",
+        "We are confirming your payment. Please wait a moment or refresh the page.",
       icon: <Clock3 className="h-10 w-10 text-amber-600" />,
       accent: "bg-amber-100",
       badge: "bg-amber-100 text-amber-800 border-amber-300",
-      panelTitle: "ระบบกำลังประมวลผลคำสั่งซื้อ",
+      panelTitle: "Processing Order",
     },
     failed: {
-      label: "ตรวจสอบไม่สำเร็จ",
-      title: "ไม่พบสถานะการชำระเงิน",
+      label: "Failed",
+      title: "Payment Not Found",
       description:
-        "ไม่สามารถดึงข้อมูลการชำระเงินได้ กรุณาติดต่อฝ่ายบริการลูกค้าหรือเริ่มทำรายการใหม่อีกครั้ง",
+        "We couldn't retrieve your payment information. Please contact support or try again.",
       icon: <CircleX className="h-10 w-10 text-rose-600" />,
       accent: "bg-rose-100",
       badge: "bg-rose-100 text-rose-800 border-rose-300",
-      panelTitle: "ต้องการความช่วยเหลือเพิ่มเติมหรือไม่",
+      panelTitle: "Need Help?",
     },
     loading: {
-      label: "กำลังโหลด",
-      title: "กำลังตรวจสอบสถานะ...",
-      description: "กรุณารอสักครู่ ระบบกำลังซิงก์ข้อมูลคำสั่งซื้อของคุณ",
+      label: tCommon("loading"),
+      title: "Checking Status...",
+      description: "Please wait while we sync your order information.",
       icon: <Loader2 className="h-10 w-10 animate-spin text-slate-600" />,
       accent: "bg-slate-100",
       badge: "bg-slate-100 text-slate-800 border-slate-300",
-      panelTitle: "กำลังดึงข้อมูลล่าสุดของรายการ",
+      panelTitle: "Fetching Data",
     },
   }[status];
 
@@ -156,7 +160,7 @@ function PaymentSuccessPageContent() {
               className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 transition-colors hover:text-black"
             >
               <ArrowLeft className="h-4 w-4" />
-              กลับไปเลือกเกม
+              {t("back_home")}
             </Link>
             <span
               className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusConfig.badge}`}
@@ -177,7 +181,7 @@ function PaymentSuccessPageContent() {
                   <h1 className="text-2xl font-extrabold text-black sm:text-3xl">
                     {statusConfig.title}
                   </h1>
-                  <p className="max-w-xl text-sm text-gray-700 sm:text-base">
+                  <p className="max-w-xl text-sm text-gray-700 sm:text-base font-bold">
                     {statusConfig.description}
                   </p>
                 </div>
@@ -185,9 +189,9 @@ function PaymentSuccessPageContent() {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {orderId && (
-                  <div className="rounded-xl border-2 border-black bg-white p-3">
+                  <div className="rounded-xl border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
                     <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                      Order ID
+                      {t("order_number")}
                     </p>
                     <p className="mt-1 break-all text-sm font-bold text-black">
                       {orderId}
@@ -195,7 +199,7 @@ function PaymentSuccessPageContent() {
                   </div>
                 )}
                 {sessionId && (
-                  <div className="rounded-xl border-2 border-black bg-white p-3">
+                  <div className="rounded-xl border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
                     <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                       Session
                     </p>
@@ -211,7 +215,7 @@ function PaymentSuccessPageContent() {
                   href="/dashboard/orders"
                   className={buttonVariants({ variant: "primary", size: "md" })}
                 >
-                  ดูคำสั่งซื้อของฉัน
+                  {t("view_order")}
                 </Link>
                 <Link
                   href="/games"
@@ -220,14 +224,14 @@ function PaymentSuccessPageContent() {
                     size: "md",
                   })}
                 >
-                  กลับไปหน้าเกม
+                  {t("back_home")}
                 </Link>
               </div>
             </div>
 
             <aside className="border-t-[3px] border-black bg-gradient-to-b from-white to-gray-50 p-5 sm:p-7 lg:border-l-[3px] lg:border-t-0">
               <div className="space-y-4">
-                <p className="inline-flex items-center gap-2 border-2 border-black bg-brutal-yellow px-3 py-1 text-xs font-bold uppercase tracking-wide text-black">
+                <p className="inline-flex items-center gap-2 border-2 border-black bg-brutal-yellow px-3 py-1 text-xs font-bold uppercase tracking-wide text-black shadow-[2px_2px_0_0_#000]">
                   <Sparkles className="h-3.5 w-3.5" />
                   Payment Flow
                 </p>
@@ -236,13 +240,13 @@ function PaymentSuccessPageContent() {
                 </h2>
 
                 <div className="space-y-3 text-sm text-gray-700">
-                  <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-white p-3">
+                  <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
                     <ReceiptText className="mt-0.5 h-4 w-4 shrink-0 text-black" />
-                    <p>ตรวจสอบคำสั่งซื้อได้ตลอดเวลาที่หน้าแดชบอร์ด</p>
+                    <p className="font-bold">{t("delivery_notice")}</p>
                   </div>
-                  <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-white p-3">
+                  <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
                     <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-black" />
-                    <p>ชำระเงินผ่านระบบที่เข้ารหัสและปลอดภัย</p>
+                    <p className="font-bold">Secure payment powered by Stripe</p>
                   </div>
                 </div>
               </div>

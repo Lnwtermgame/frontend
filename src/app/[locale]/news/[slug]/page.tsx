@@ -18,13 +18,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { cmsApi, NewsArticle } from "@/lib/services";
-
-const categoryLabels: Record<string, string> = {
-  general: "ทั่วไป",
-  promotion: "โปรโมชั่น",
-  update: "อัปเดต",
-  event: "กิจกรรม",
-};
+import { useTranslations } from "next-intl";
 
 const categoryColors: Record<string, string> = {
   general: "bg-gray-100 text-gray-700",
@@ -79,6 +73,9 @@ const markdownSchema = {
 };
 
 export default function NewsArticlePage() {
+  const t = useTranslations("NewsDetail");
+  const tNews = useTranslations("News");
+  const tCommon = useTranslations("Common");
   const params = useParams();
   const slug = params?.slug as string;
 
@@ -86,6 +83,13 @@ export default function NewsArticlePage() {
   const [recentNews, setRecentNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const categoryLabels: Record<string, string> = {
+    general: tNews("categories.general"),
+    promotion: tNews("categories.promotion"),
+    update: tNews("categories.update"),
+    event: tNews("categories.event"),
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -101,14 +105,14 @@ export default function NewsArticlePage() {
         if (articleRes.success && articleRes.data) {
           setArticle(articleRes.data);
         } else {
-          setError("ไม่พบบทความ");
+          setError("not_found");
         }
 
         if (recentRes.success && recentRes.data) {
           setRecentNews(recentRes.data.filter((n) => n.slug !== slug));
         }
       } catch (err) {
-        setError("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+        setError("loading_error");
         console.error("Failed to fetch news article:", err);
       } finally {
         setLoading(false);
@@ -124,7 +128,7 @@ export default function NewsArticlePage() {
         <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
             <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-brutal-pink" />
-            <p className="text-gray-600">กำลังโหลด...</p>
+            <p className="text-gray-600">{tCommon("loading")}</p>
           </div>
         </div>
       </div>
@@ -136,9 +140,11 @@ export default function NewsArticlePage() {
       <div className="page-container">
         <div className="max-w-4xl mx-auto text-center py-16">
           <Newspaper className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-          <h1 className="text-2xl font-bold text-black mb-2">ไม่พบบทความ</h1>
+          <h1 className="text-2xl font-bold text-black mb-2">
+            {error === "not_found" ? t("error_not_found") : t("error_loading")}
+          </h1>
           <p className="text-gray-600 mb-6">
-            บทความที่คุณกำลังค้นหาอาจถูกลบหรือไม่มีอยู่
+            {error === "not_found" ? t("error_not_found_desc") : ""}
           </p>
           <Link
             href="/news"
@@ -146,18 +152,18 @@ export default function NewsArticlePage() {
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            กลับไปหน้าข่าวสาร
+            {t("back_to_news")}
           </Link>
         </div>
       </div>
     );
   }
 
-  const category = categoryLabels[article.category] || "ทั่วไป";
+  const category = categoryLabels[article.category] || tNews("categories.general");
   const categoryColor =
     categoryColors[article.category] || categoryColors.general;
   const cleanedContent = article.content.replace(
-    /(?:^|\n)##\s*วิดีโอที่เกี่ยวข้อง[\s\S]*?(?=\n##\s|\n#\s|\n*$)/g,
+    /(?:^|\n)##\s*(วิดีโอที่เกี่ยวข้อง|Related Videos)[\s\S]*?(?=\n##\s|\n#\s|\n*$)/ig,
     "",
   );
 
@@ -170,7 +176,7 @@ export default function NewsArticlePage() {
           className="inline-flex items-center text-gray-600 hover:text-black mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          กลับไปหน้าข่าวสาร
+          {t("back_to_news")}
         </Link>
 
         {/* White rounded container like CMS pages */}
@@ -189,33 +195,23 @@ export default function NewsArticlePage() {
               </span>
               {article.isFeatured && (
                 <span className="inline-block px-3 py-1 text-sm font-medium bg-yellow-100 text-yellow-700">
-                  ข่าวเด่น
+                  {t("featured_badge")}
                 </span>
               )}
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold text-black thai-font mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-black mb-4">
               {article.title}
             </h1>
 
             <div className="flex items-center gap-4 text-sm text-gray-500">
               <span className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1" />
-                {article.publishedAt
-                  ? new Date(article.publishedAt).toLocaleDateString("th-TH", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : new Date(article.createdAt).toLocaleDateString("th-TH", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
               </span>
               <span className="flex items-center">
                 <Eye className="w-4 h-4 mr-1" />
-                {article.viewCount?.toLocaleString() || 0} ครั้ง
+                {article.viewCount?.toLocaleString() || 0} {t("views")}
               </span>
             </div>
           </div>
@@ -233,7 +229,7 @@ export default function NewsArticlePage() {
             </div>
           )}
 
-          <article className="prose prose-lg max-w-none text-gray-700 thai-font">
+          <article className="prose prose-lg max-w-none text-gray-700">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw, [rehypeSanitize, markdownSchema]]}
@@ -252,12 +248,12 @@ export default function NewsArticlePage() {
                   </ol>
                 ),
                 h2: ({ children }) => (
-                  <h2 className="text-2xl font-bold text-black mt-8 mb-3 thai-font">
+                  <h2 className="text-2xl font-bold text-black mt-8 mb-3">
                     {children}
                   </h2>
                 ),
                 h3: ({ children }) => (
-                  <h3 className="text-xl font-bold text-black mt-6 mb-2 thai-font">
+                  <h3 className="text-xl font-bold text-black mt-6 mb-2">
                     {children}
                   </h3>
                 ),
@@ -364,7 +360,7 @@ export default function NewsArticlePage() {
             >
               <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center">
                 <ExternalLink className="w-4 h-4 mr-2" />
-                แหล่งข่าว
+                {t("sources")}
               </h3>
               <ul className="space-y-2">
                 {(article as any).sources.map(
@@ -389,12 +385,8 @@ export default function NewsArticlePage() {
           {/* Last Updated */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              อัปเดตล่าสุด:{" "}
-              {new Date(article.updatedAt).toLocaleDateString("th-TH", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {t("last_updated")}:{" "}
+              {new Date(article.updatedAt).toLocaleDateString()}
             </p>
           </div>
         </motion.div>
@@ -407,9 +399,9 @@ export default function NewsArticlePage() {
             transition={{ delay: 0.2 }}
             className="mt-12"
           >
-            <h2 className="text-xl font-bold text-black thai-font mb-4 flex items-center">
+            <h2 className="text-xl font-bold text-black mb-4 flex items-center">
               <Newspaper className="w-5 h-5 mr-2" />
-              ข่าวอื่นๆ
+              {t("other_news")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {recentNews.slice(0, 3).map((news) => (
@@ -422,9 +414,7 @@ export default function NewsArticlePage() {
                     {news.title}
                   </h3>
                   <p className="text-xs text-gray-500 mt-2">
-                    {news.publishedAt
-                      ? new Date(news.publishedAt).toLocaleDateString("th-TH")
-                      : new Date(news.createdAt).toLocaleDateString("th-TH")}
+                    {new Date(news.publishedAt || news.createdAt).toLocaleDateString()}
                   </p>
                 </Link>
               ))}

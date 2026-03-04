@@ -15,8 +15,11 @@ import {
 } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function CreditsPage() {
+  const t = useTranslations("Credits");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const { user, isInitialized } = useAuth();
@@ -68,7 +71,7 @@ export default function CreditsPage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดข้อมูลเครดิตได้");
+        toast.error(t("error_loading"));
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -134,13 +137,13 @@ export default function CreditsPage() {
   const getTransactionTypeLabel = (type: string) => {
     switch (type) {
       case "TOPUP":
-        return "เติมเงิน";
+        return t("types.topup");
       case "PURCHASE":
-        return "ซื้อสินค้า";
+        return t("types.purchase");
       case "REFUND":
-        return "คืนเงิน";
+        return t("types.refund");
       case "BONUS":
-        return "โบนัส";
+        return t("types.bonus");
       default:
         return type;
     }
@@ -180,7 +183,7 @@ export default function CreditsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -196,10 +199,10 @@ export default function CreditsPage() {
           animate={{ opacity: 1, x: 0 }}
         >
           <span className="w-1.5 h-4 bg-brutal-yellow mr-2"></span>
-          เครดิต
+          {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative thai-font">
-          สะสมและแลกเครดิตเพื่อรับของรางวัลสุดพิเศษ
+        <p className="text-gray-600 text-xs relative">
+          {t("subtitle")}
         </p>
       </div>
 
@@ -226,11 +229,11 @@ export default function CreditsPage() {
                       <Coins size={24} />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-black thai-font">
-                        {balance.toLocaleString()} เครดิต
+                      <h2 className="text-xl font-bold text-black">
+                        {t("balance_label", { count: balance.toLocaleString() })}
                       </h2>
-                      <p className="text-gray-600 text-xs thai-font">
-                        มูลค่าเทียบเท่า {formatCurrency(balance * 0.01)}
+                      <p className="text-gray-600 text-xs font-bold">
+                        {t("value_hint", { amount: formatCurrency(balance * 0.01) })}
                       </p>
                     </div>
                   </div>
@@ -238,8 +241,8 @@ export default function CreditsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                     <div className="bg-gray-50 border-[2px] border-black p-3 transition-colors hover:bg-brutal-green/20">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-gray-600 text-xs thai-font">
-                          เครดิตที่ได้รับ
+                        <span className="text-gray-600 text-xs font-bold">
+                          {t("earned")}
                         </span>
                         <span className="bg-brutal-green border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold">
                           +{earnedCredits.toLocaleString()}
@@ -252,8 +255,8 @@ export default function CreditsPage() {
 
                     <div className="bg-gray-50 border-[2px] border-black p-3 transition-colors hover:bg-brutal-yellow/20">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-gray-600 text-xs thai-font">
-                          เครดิตที่ใช้ไป
+                        <span className="text-gray-600 text-xs font-bold">
+                          {t("spent")}
                         </span>
                         <span className="bg-brutal-yellow border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold">
                           -{spentCredits.toLocaleString()}
@@ -266,8 +269,8 @@ export default function CreditsPage() {
 
                     <div className="bg-gray-50 border-[2px] border-black p-3 transition-colors hover:bg-brutal-blue/20">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-gray-600 text-xs thai-font">
-                          ธุรกรรมทั้งหมด
+                        <span className="text-gray-600 text-xs font-bold">
+                          {t("total_transactions")}
                         </span>
                         <span className="bg-brutal-blue border-[2px] border-black text-black text-[10px] px-1.5 py-0.5 font-bold">
                           {transactions.length}
@@ -282,13 +285,13 @@ export default function CreditsPage() {
                   <div className="flex flex-col md:flex-row gap-3">
                     <button
                       onClick={() =>
-                        toast.success("ฟีเจอร์เติมเงินจะเปิดให้ใช้งานเร็วๆ นี้")
+                        toast.success(t("topup_upcoming"))
                       }
-                      className="flex-1 bg-black text-white border-[3px] border-black text-center py-2 px-3 font-bold flex items-center justify-center hover:bg-gray-800 transition-all thai-font text-sm"
+                      className="flex-1 bg-black text-white border-[3px] border-black text-center py-2 px-3 font-bold flex items-center justify-center hover:bg-gray-800 transition-all text-sm"
                       style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
                       <Coins size={16} className="mr-2" />
-                      เติมเครดิต
+                      {t("topup_button")}
                     </button>
                   </div>
                 </div>
@@ -305,9 +308,9 @@ export default function CreditsPage() {
                 whileHover={{ y: -2 }}
               >
                 <div className="p-3 border-b-[3px] border-black bg-brutal-blue">
-                  <h3 className="text-base font-bold text-black flex items-center thai-font">
+                  <h3 className="text-base font-bold text-black flex items-center">
                     <InfoIcon size={16} className="text-black mr-2" />
-                    เกี่ยวกับเครดิต
+                    {t("about.title")}
                   </h3>
                 </div>
 
@@ -318,11 +321,11 @@ export default function CreditsPage() {
                         <span className="font-bold text-xs">1</span>
                       </div>
                       <div>
-                        <h4 className="font-bold text-black mb-0.5 thai-font text-sm">
-                          รับเครดิต
+                        <h4 className="font-bold text-black mb-0.5 text-sm">
+                          {t("about.step1_title")}
                         </h4>
-                        <p className="text-xs thai-font">
-                          รับเครดิตจากการซื้อสินค้า โปรโมชั่น และการแนะนำเพื่อน
+                        <p className="text-xs font-medium">
+                          {t("about.step1_desc")}
                         </p>
                       </div>
                     </div>
@@ -332,11 +335,11 @@ export default function CreditsPage() {
                         <span className="font-bold text-xs">2</span>
                       </div>
                       <div>
-                        <h4 className="font-bold text-black mb-0.5 thai-font text-sm">
-                          แลกเครดิต
+                        <h4 className="font-bold text-black mb-0.5 text-sm">
+                          {t("about.step2_title")}
                         </h4>
-                        <p className="text-xs thai-font">
-                          ใช้เครดิตเป็นส่วนลดในการซื้อสินค้าหรือแลกของรางวัล
+                        <p className="text-xs font-medium">
+                          {t("about.step2_desc")}
                         </p>
                       </div>
                     </div>
@@ -346,11 +349,11 @@ export default function CreditsPage() {
                         <span className="font-bold text-xs">3</span>
                       </div>
                       <div>
-                        <h4 className="font-bold text-black mb-0.5 thai-font text-sm">
-                          มูลค่าเครดิต
+                        <h4 className="font-bold text-black mb-0.5 text-sm">
+                          {t("about.step3_title")}
                         </h4>
-                        <p className="text-xs thai-font">
-                          ทุกๆ 100 เครดิตมีมูลค่า 1 THB เมื่อใช้เป็นส่วนลด
+                        <p className="text-xs font-medium">
+                          {t("about.step3_desc")}
                         </p>
                       </div>
                     </div>
@@ -371,29 +374,29 @@ export default function CreditsPage() {
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <div className="p-3 border-b-[3px] border-black bg-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <h3 className="text-base font-bold text-black flex items-center thai-font">
+                <h3 className="text-base font-bold text-black flex items-center">
                   <History size={16} className="text-black mr-2" />
-                  ประวัติเครดิต
+                  {t("history.title")}
                 </h3>
 
                 <div className="flex bg-white border-[2px] border-black p-1">
                   <button
                     onClick={() => setPeriod("all")}
-                    className={`px-2 py-1 text-[10px] font-bold transition-all thai-font ${period === "all" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+                    className={`px-2 py-1 text-[10px] font-bold transition-all ${period === "all" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
                   >
-                    ทั้งหมด
+                    {t("history.all")}
                   </button>
                   <button
                     onClick={() => setPeriod("month")}
-                    className={`px-2 py-1 text-[10px] font-bold transition-all thai-font ${period === "month" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+                    className={`px-2 py-1 text-[10px] font-bold transition-all ${period === "month" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
                   >
-                    เดือนนี้
+                    {t("history.this_month")}
                   </button>
                   <button
                     onClick={() => setPeriod("week")}
-                    className={`px-2 py-1 text-[10px] font-bold transition-all thai-font ${period === "week" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
+                    className={`px-2 py-1 text-[10px] font-bold transition-all ${period === "week" ? "bg-black text-white" : "text-gray-600 hover:text-black"}`}
                   >
-                    สัปดาห์นี้
+                    {t("history.this_week")}
                   </button>
                 </div>
               </div>
@@ -421,15 +424,15 @@ export default function CreditsPage() {
                               {transaction.description ||
                                 getTransactionTypeLabel(transaction.type)}
                             </p>
-                            <p className="text-[10px] text-gray-600 flex items-center mt-0.5">
+                            <p className="text-[10px] text-gray-600 flex items-center mt-0.5 font-bold">
                               <Calendar size={10} className="mr-1" />
                               {new Date(
                                 transaction.createdAt,
-                              ).toLocaleDateString("th-TH")}{" "}
+                              ).toLocaleDateString()}{" "}
                               •{" "}
                               {new Date(
                                 transaction.createdAt,
-                              ).toLocaleTimeString("th-TH", {
+                              ).toLocaleTimeString(undefined, {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })}
@@ -450,11 +453,11 @@ export default function CreditsPage() {
                     <div className="w-12 h-12 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-3">
                       <Coins size={24} className="text-gray-400" />
                     </div>
-                    <h4 className="text-base font-bold text-black mb-1 thai-font">
-                      ไม่มีรายการเคลื่อนไหวเครดิต
+                    <h4 className="text-base font-bold text-black mb-1">
+                      {t("history.empty")}
                     </h4>
-                    <p className="text-gray-600 text-xs thai-font">
-                      คุณไม่มีรายการเคลื่อนไหวเครดิตในช่วงเวลาที่เลือก
+                    <p className="text-gray-600 text-xs font-bold">
+                      {t("history.empty_desc")}
                     </p>
                   </div>
                 )}

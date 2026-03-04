@@ -29,8 +29,11 @@ import { motion } from "@/lib/framer-exports";
 import { orderApi, Order } from "@/lib/services/order-api";
 import { deliveryApi, OrderDeliveryStatus } from "@/lib/services/delivery-api";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function OrderDetailsPage() {
+  const t = useTranslations("OrderDetail");
+  const tCommon = useTranslations("Common");
   const params = useParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -70,7 +73,7 @@ export default function OrderDetailsPage() {
       if (orderRes.success) {
         setOrder(orderRes.data);
       } else {
-        toast.error("ไม่พบคำสั่งซื้อ");
+        toast.error(t("error_not_found"));
         router.push("/dashboard/orders");
       }
 
@@ -79,7 +82,7 @@ export default function OrderDetailsPage() {
       }
     } catch (error) {
       console.error("Failed to fetch order:", error);
-      toast.error("ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้");
+      toast.error(t("error_loading"));
     } finally {
       setLoading(false);
     }
@@ -87,7 +90,7 @@ export default function OrderDetailsPage() {
 
   // Cancel order
   const handleCancelOrder = async () => {
-    if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการยกเลิกคำสั่งซื้อนี้?")) {
+    if (!confirm(t("actions.cancel_confirm"))) {
       return;
     }
 
@@ -95,13 +98,13 @@ export default function OrderDetailsPage() {
       setIsCancelling(true);
       const response = await orderApi.cancelOrder(orderId);
       if (response.success) {
-        toast.success("ยกเลิกคำสั่งซื้อสำเร็จ");
+        toast.success(t("actions.cancel_success"));
         fetchOrderData();
       } else {
-        toast.error(response.message || "ไม่สามารถยกเลิกคำสั่งซื้อได้");
+        toast.error(response.message || t("actions.cancel_failed"));
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.error?.message || "เกิดข้อผิดพลาด");
+      toast.error(error?.response?.data?.error?.message || "Error occurred");
     } finally {
       setIsCancelling(false);
     }
@@ -111,7 +114,7 @@ export default function OrderDetailsPage() {
   const copyToClipboard = (code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
-    toast.success("คัดลอกรหัสแล้ว");
+    toast.success(t("items.copy_success"));
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
@@ -139,7 +142,7 @@ export default function OrderDetailsPage() {
 
   // Format date
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("th-TH", {
+    return new Date(dateString).toLocaleDateString(undefined, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -150,35 +153,36 @@ export default function OrderDetailsPage() {
 
   // Get status badge
   const getStatusBadge = (status: string) => {
-    switch (status.toUpperCase()) {
+    const s = status.toUpperCase();
+    switch (s) {
       case "COMPLETED":
         return (
           <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-brutal-green text-black">
-            <CheckCircle className="w-4 h-4 mr-1.5" /> สำเร็จ
+            <CheckCircle className="w-4 h-4 mr-1.5" /> {tCommon("member")}
           </span>
         );
       case "PENDING":
         return (
           <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-brutal-yellow text-black">
-            <Clock className="w-4 h-4 mr-1.5" /> รอดำเนินการ
+            <Clock className="w-4 h-4 mr-1.5" /> {t("payment.status_pending")}
           </span>
         );
       case "PROCESSING":
         return (
           <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-brutal-blue text-black">
-            <RefreshCw className="w-4 h-4 mr-1.5 animate-spin" /> กำลังดำเนินการ
+            <RefreshCw className="w-4 h-4 mr-1.5 animate-spin" /> {t("delivery.statuses.processing")}
           </span>
         );
       case "CANCELLED":
         return (
           <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-gray-300 text-black">
-            <XCircle className="w-4 h-4 mr-1.5" /> ยกเลิกแล้ว
+            <XCircle className="w-4 h-4 mr-1.5" /> Cancelled
           </span>
         );
       case "FAILED":
         return (
           <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-red-100 text-red-700">
-            <AlertCircle className="w-4 h-4 mr-1.5" /> ล้มเหลว
+            <AlertCircle className="w-4 h-4 mr-1.5" /> Failed
           </span>
         );
       default:
@@ -196,25 +200,25 @@ export default function OrderDetailsPage() {
       case "COMPLETED":
         return (
           <span className="inline-flex items-center text-sm text-brutal-green font-medium">
-            <CheckCircle className="w-4 h-4 mr-1" /> จัดส่งสำเร็จ
+            <CheckCircle className="w-4 h-4 mr-1" /> {t("delivery.statuses.completed")}
           </span>
         );
       case "PENDING":
         return (
           <span className="inline-flex items-center text-sm text-gray-600 font-medium">
-            <Clock className="w-4 h-4 mr-1" /> รอจัดส่ง
+            <Clock className="w-4 h-4 mr-1" /> {t("delivery.statuses.pending")}
           </span>
         );
       case "PROCESSING":
         return (
           <span className="inline-flex items-center text-sm text-brutal-blue font-medium">
-            <RefreshCw className="w-4 h-4 mr-1 animate-spin" /> กำลังจัดส่ง
+            <RefreshCw className="w-4 h-4 mr-1 animate-spin" /> {t("delivery.statuses.processing")}
           </span>
         );
       case "FAILED":
         return (
           <span className="inline-flex items-center text-sm text-red-600 font-medium">
-            <XCircle className="w-4 h-4 mr-1" /> จัดส่งล้มเหลว
+            <XCircle className="w-4 h-4 mr-1" /> {t("delivery.statuses.failed")}
           </span>
         );
       default:
@@ -229,12 +233,12 @@ export default function OrderDetailsPage() {
   // Get payment method display
   const getPaymentMethodDisplay = (method?: string) => {
     const methods: Record<string, string> = {
-      CREDIT_CARD: "บัตรเครดิต/เดบิต",
-      PROMPTPAY: "พร้อมเพย์",
-      TRUEMONEY: "ทรูมันนี่วอลเล็ท",
-      BANK_TRANSFER: "โอนเงินผ่านธนาคาร",
+      CREDIT_CARD: t("payment.methods.credit_card"),
+      PROMPTPAY: t("payment.methods.promptpay"),
+      TRUEMONEY: t("payment.methods.truemoney"),
+      BANK_TRANSFER: t("payment.methods.bank_transfer"),
     };
-    return methods[method || ""] || method || "ไม่ระบุ";
+    return methods[method || ""] || method || t("payment.methods.unknown");
   };
 
   const getDisplayPlayerInfo = (
@@ -278,7 +282,7 @@ export default function OrderDetailsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -290,7 +294,7 @@ export default function OrderDetailsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center">
           <Loader2 className="w-12 h-12 animate-spin text-black" />
-          <p className="mt-4 text-gray-600">กำลังโหลดข้อมูลคำสั่งซื้อ...</p>
+          <p className="mt-4 text-gray-600">{t("loading")}</p>
         </div>
       </div>
     );
@@ -301,15 +305,15 @@ export default function OrderDetailsPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
-        <h2 className="text-xl font-bold text-black mb-2">ไม่พบคำสั่งซื้อ</h2>
+        <h2 className="text-xl font-bold text-black mb-2">{t("error_not_found")}</h2>
         <p className="text-gray-600 mb-4">
-          คำสั่งซื้อที่คุณค้นหาอาจถูกลบหรือไม่มีอยู่
+          {t("error_not_found_desc")}
         </p>
         <Link
           href="/dashboard/orders"
           className="px-4 py-2 bg-black text-white font-medium border-[3px] border-black hover:bg-gray-800 transition-colors"
         >
-          กลับไปหน้าคำสั่งซื้อ
+          {t("back_to_orders")}
         </Link>
       </div>
     );
@@ -332,12 +336,12 @@ export default function OrderDetailsPage() {
             animate={{ opacity: 1, x: 0 }}
           >
             <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
-            รายละเอียดคำสั่งซื้อ
+            {t("title")}
           </motion.h2>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-600 ml-8">
           <span>
-            รหัสคำสั่งซื้อ:{" "}
+            {t("order_id_label")}:{" "}
             <span className="text-black font-mono font-bold">
               {order.orderNumber}
             </span>
@@ -360,7 +364,7 @@ export default function OrderDetailsPage() {
             <div className="p-3 border-b-[3px] border-black flex justify-between items-center bg-brutal-yellow">
               <h3 className="font-bold text-black flex items-center gap-2 text-sm">
                 <Package className="h-4 w-4" />
-                รายการที่สั่งซื้อ
+                {t("items.title")}
               </h3>
               {getStatusBadge(order.status)}
             </div>
@@ -388,10 +392,10 @@ export default function OrderDetailsPage() {
                               ? item.productType?.name
                                 ? `${item.product.name} - ${item.productType.name}`
                                 : item.product.name
-                              : "สินค้า"}
+                              : "Product"}
                           </h4>
-                          <p className="text-gray-600 text-xs">
-                            จำนวน: {item.quantity}
+                          <p className="text-gray-600 text-xs font-bold">
+                            {t("items.quantity")} {item.quantity}
                           </p>
                           {item.playerInfo &&
                             Object.keys(item.playerInfo).length > 0 &&
@@ -399,14 +403,14 @@ export default function OrderDetailsPage() {
                               item.playerInfo as Record<string, unknown>,
                             ).length > 0 && (
                               <div className="mt-2 p-2 bg-brutal-gray border border-black/20 text-xs">
-                                <p className="text-gray-600 text-[10px] mb-1">
-                                  ข้อมูลบัญชี:
+                                <p className="text-gray-600 text-[10px] mb-1 font-bold">
+                                  {t("items.account_info")}
                                 </p>
                                 {getDisplayPlayerInfo(
                                   item.playerInfo as Record<string, unknown>,
                                 ).map(({ label, value }) => (
                                   <div key={label} className="flex gap-2">
-                                    <span className="text-gray-600 capitalize">
+                                    <span className="text-gray-600 capitalize font-medium">
                                       {label}:
                                     </span>
                                     <span className="font-mono font-bold">
@@ -425,8 +429,8 @@ export default function OrderDetailsPage() {
                       {/* Delivery Status */}
                       {deliveryStatus && (
                         <div className="mt-2 flex items-center gap-2">
-                          <span className="text-xs text-gray-600">
-                            สถานะจัดส่ง:
+                          <span className="text-xs text-gray-600 font-bold">
+                            {t("items.delivery_status")}
                           </span>
                           {getDeliveryStatusBadge(item.fulfillStatus)}
                         </div>
@@ -437,8 +441,8 @@ export default function OrderDetailsPage() {
                         item.pinCodes &&
                         item.pinCodes.length > 0 && (
                           <div className="mt-3 bg-brutal-green/20 border-[2px] border-black rounded-lg p-3">
-                            <p className="text-[10px] text-black uppercase font-bold mb-1">
-                              รหัสดิจิทัล / PIN
+                            <p className="text-[10px] text-black uppercase font-black mb-1">
+                              {t("items.digital_codes")}
                             </p>
                             <div className="space-y-2">
                               {item.pinCodes.map((card: any, idx: number) => {
@@ -457,8 +461,8 @@ export default function OrderDetailsPage() {
                                     {/* card_number from SEAGM */}
                                     {codeValue && (
                                       <div className="flex items-center gap-2 group mb-1">
-                                        <span className="text-[10px] text-gray-600 min-w-[40px]">
-                                          รหัส:
+                                        <span className="text-[10px] text-gray-600 min-w-[40px] font-bold">
+                                          {t("items.code_label")}
                                         </span>
                                         <code
                                           className={`flex-1 font-mono text-black text-xs tracking-wider break-all select-none ${!isRevealed ? "blur-sm hover:blur-none" : ""}`}
@@ -471,7 +475,7 @@ export default function OrderDetailsPage() {
                                           }
                                           className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
                                           title={
-                                            isRevealed ? "ซ่อนรหัส" : "แสดงรหัส"
+                                            isRevealed ? t("items.hide_code") : t("items.show_code")
                                           }
                                         >
                                           {isRevealed ? (
@@ -485,7 +489,7 @@ export default function OrderDetailsPage() {
                                             copyToClipboard(codeValue)
                                           }
                                           className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                          title="คัดลอกรหัส"
+                                          title="Copy Code"
                                         >
                                           {copiedCode === codeValue ? (
                                             <Check
@@ -501,8 +505,8 @@ export default function OrderDetailsPage() {
                                     {/* card_pin from SEAGM */}
                                     {pinValue && (
                                       <div className="flex items-center gap-2 group">
-                                        <span className="text-[10px] text-gray-600 min-w-[40px]">
-                                          PIN:
+                                        <span className="text-[10px] text-gray-600 min-w-[40px] font-bold">
+                                          {t("items.pin_label")}
                                         </span>
                                         <code
                                           className={`flex-1 font-mono text-black text-xs tracking-wider break-all select-none ${!isRevealed ? "blur-sm hover:blur-none" : ""}`}
@@ -515,7 +519,7 @@ export default function OrderDetailsPage() {
                                           }
                                           className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
                                           title={
-                                            isRevealed ? "ซ่อน PIN" : "แสดง PIN"
+                                            isRevealed ? "Hide PIN" : "Show PIN"
                                           }
                                         >
                                           {isRevealed ? (
@@ -529,7 +533,7 @@ export default function OrderDetailsPage() {
                                             copyToClipboard(pinValue)
                                           }
                                           className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                          title="คัดลอก PIN"
+                                          title="Copy PIN"
                                         >
                                           {copiedCode === pinValue ? (
                                             <Check
@@ -545,8 +549,8 @@ export default function OrderDetailsPage() {
                                     {/* serial number if exists */}
                                     {card.serial && (
                                       <div className="flex items-center gap-2 group mt-1 pt-1 border-t border-gray-200">
-                                        <span className="text-[10px] text-gray-600 min-w-[40px]">
-                                          Serial:
+                                        <span className="text-[10px] text-gray-600 min-w-[40px] font-bold">
+                                          {t("items.serial_label")}
                                         </span>
                                         <code className="flex-1 font-mono text-black text-xs tracking-wider break-all">
                                           {card.serial}
@@ -556,7 +560,7 @@ export default function OrderDetailsPage() {
                                             copyToClipboard(card.serial)
                                           }
                                           className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                          title="คัดลอก Serial"
+                                          title="Copy Serial"
                                         >
                                           {copiedCode === card.serial ? (
                                             <Check
@@ -572,8 +576,8 @@ export default function OrderDetailsPage() {
                                     {/* expiration date if exists */}
                                     {card.expired && (
                                       <div className="mt-1 pt-1 border-t border-gray-200">
-                                        <span className="text-[10px] text-gray-500">
-                                          หมดอายุ: {card.expired}
+                                        <span className="text-[10px] text-gray-500 font-medium">
+                                          {t("items.expired_label")} {card.expired}
                                         </span>
                                       </div>
                                     )}
@@ -581,9 +585,9 @@ export default function OrderDetailsPage() {
                                 );
                               })}
                             </div>
-                            <p className="text-[10px] text-gray-600 mt-2 flex items-center gap-1">
+                            <p className="text-[10px] text-gray-600 mt-2 flex items-center gap-1 font-medium">
                               <AlertCircle size={10} />
-                              กรุณาใช้รหัสนี้ทันที ห้ามเปิดเผยให้ผู้อื่น
+                              {t("items.usage_hint")}
                             </p>
                           </div>
                         )}
@@ -591,9 +595,9 @@ export default function OrderDetailsPage() {
                       {/* Failed Status */}
                       {item.fulfillStatus === "FAILED" && (
                         <div className="mt-3 bg-red-50 border-[2px] border-red-500 rounded-lg p-3">
-                          <p className="text-xs text-red-700 flex items-center gap-2">
+                          <p className="text-xs text-red-700 flex items-center gap-2 font-bold">
                             <AlertCircle size={14} />
-                            การจัดส่งล้มเหลว กรุณาติดต่อฝ่ายสนับสนุน
+                            {t("items.delivery_failed")}
                           </p>
                         </div>
                       )}
@@ -615,20 +619,20 @@ export default function OrderDetailsPage() {
             <div className="p-3 border-b-[3px] border-black bg-brutal-blue">
               <h3 className="font-bold text-black flex items-center gap-2 text-sm">
                 <CreditCard className="h-4 w-4" />
-                สรุปการชำระเงิน
+                {t("payment.title")}
               </h3>
             </div>
 
             <div className="p-3 space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-600">ยอดรวมย่อย</span>
+              <div className="flex justify-between text-xs font-medium">
+                <span className="text-gray-600">{t("payment.subtotal")}</span>
                 <span className="text-black">
                   {formatPrice(order.totalAmount)}
                 </span>
               </div>
               {order.discountAmount > 0 && (
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-600">ส่วนลด</span>
+                <div className="flex justify-between text-xs font-medium">
+                  <span className="text-gray-600">{t("payment.discount")}</span>
                   <span className="text-green-600">
                     -{formatPrice(order.discountAmount)}
                   </span>
@@ -636,9 +640,9 @@ export default function OrderDetailsPage() {
               )}
               <div className="border-t-[2px] border-black my-2 pt-2 flex justify-between items-center">
                 <span className="font-bold text-black text-sm">
-                  ยอดรวมทั้งสิ้น
+                  {t("payment.total")}
                 </span>
-                <span className="font-bold text-lg text-black">
+                <span className="font-black text-lg text-black">
                   {formatPrice(order.finalAmount)}
                 </span>
               </div>
@@ -649,8 +653,8 @@ export default function OrderDetailsPage() {
                     <CreditCard size={14} className="text-black" />
                   </div>
                   <div>
-                    <p className="text-gray-600 text-[10px]">วิธีการชำระเงิน</p>
-                    <p className="text-black font-medium">
+                    <p className="text-gray-600 text-[10px] font-bold">{t("payment.method")}</p>
+                    <p className="text-black font-bold">
                       {getPaymentMethodDisplay(order.payment.paymentMethod)}
                     </p>
                   </div>
@@ -665,9 +669,9 @@ export default function OrderDetailsPage() {
                       }`}
                     >
                       {order.payment.status === "COMPLETED"
-                        ? "ชำระแล้ว"
+                        ? t("payment.status_paid")
                         : order.payment.status === "PENDING"
-                          ? "รอชำระ"
+                          ? t("payment.status_pending")
                           : order.payment.status}
                     </span>
                   </div>
@@ -691,27 +695,27 @@ export default function OrderDetailsPage() {
               <div className="p-3 border-b-[3px] border-black bg-red-50">
                 <h3 className="font-bold text-red-700 flex items-center gap-2 text-sm">
                   <AlertCircle className="h-4 w-4" />
-                  ยกเลิกคำสั่งซื้อ
+                  {t("actions.cancel")}
                 </h3>
               </div>
               <div className="p-3">
-                <p className="text-xs text-gray-600 mb-3">
-                  คุณสามารถยกเลิกคำสั่งซื้อนี้ได้หากยังไม่ได้ชำระเงิน
+                <p className="text-xs text-gray-600 mb-3 font-medium">
+                  {t("actions.cancel_hint")}
                 </p>
                 <button
                   onClick={handleCancelOrder}
                   disabled={isCancelling}
-                  className="w-full flex items-center justify-center gap-2 p-2 border-[2px] border-red-500 text-red-600 hover:bg-red-50 transition-colors text-xs font-medium disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 p-2 border-[2px] border-red-500 text-red-600 hover:bg-red-50 transition-colors text-xs font-bold disabled:opacity-50"
                 >
                   {isCancelling ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      กำลังยกเลิก...
+                      {t("actions.cancelling")}
                     </>
                   ) : (
                     <>
                       <XCircle size={14} />
-                      ยกเลิกคำสั่งซื้อ
+                      {t("actions.cancel")}
                     </>
                   )}
                 </button>
@@ -730,7 +734,7 @@ export default function OrderDetailsPage() {
             <div className="p-3 border-b-[3px] border-black bg-brutal-pink">
               <h3 className="font-bold text-black flex items-center gap-2 text-sm">
                 <User className="h-4 w-4" />
-                ข้อมูลลูกค้า
+                {t("customer.title")}
               </h3>
             </div>
             <div className="p-3 space-y-3">
@@ -739,8 +743,8 @@ export default function OrderDetailsPage() {
                   <User size={14} className="text-gray-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-600">ชื่อผู้ใช้</p>
-                  <p className="text-xs text-black font-medium">
+                  <p className="text-[10px] text-gray-600 font-bold">{t("customer.username")}</p>
+                  <p className="text-xs text-black font-bold">
                     {order.user?.username || user?.username || "-"}
                   </p>
                 </div>
@@ -750,8 +754,8 @@ export default function OrderDetailsPage() {
                   <Mail size={14} className="text-gray-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-600">อีเมล</p>
-                  <p className="text-xs text-black font-medium">
+                  <p className="text-[10px] text-gray-600 font-bold">{t("customer.email")}</p>
+                  <p className="text-xs text-black font-bold">
                     {order.user?.email || user?.email || "-"}
                   </p>
                 </div>
@@ -761,8 +765,8 @@ export default function OrderDetailsPage() {
                   <Calendar size={14} className="text-gray-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-600">วันที่สั่งซื้อ</p>
-                  <p className="text-xs text-black font-medium">
+                  <p className="text-[10px] text-gray-600 font-bold">{t("customer.date")}</p>
+                  <p className="text-xs text-black font-bold">
                     {formatDate(order.createdAt)}
                   </p>
                 </div>
@@ -782,21 +786,21 @@ export default function OrderDetailsPage() {
               <div className="p-3 border-b-[3px] border-black bg-brutal-green">
                 <h3 className="font-bold text-black flex items-center gap-2 text-sm">
                   <MapPin className="h-4 w-4" />
-                  สถานะการจัดส่ง
+                  {t("delivery.title")}
                 </h3>
               </div>
               <div className="p-3">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">สถานะรวม:</span>
+                    <span className="text-xs text-gray-600 font-bold">{t("delivery.status_summary")}</span>
                     {getDeliveryStatusBadge(deliveryStatus.status)}
                   </div>
                   {deliveryStatus.completedAt && (
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">
-                        จัดส่งเสร็จ:
+                      <span className="text-xs text-gray-600 font-bold">
+                        {t("delivery.completed_at")}
                       </span>
-                      <span className="text-xs font-medium">
+                      <span className="text-xs font-bold">
                         {formatDate(deliveryStatus.completedAt)}
                       </span>
                     </div>
@@ -815,15 +819,15 @@ export default function OrderDetailsPage() {
             transition={{ delay: 0.3 }}
           >
             <div className="p-3 border-b-[3px] border-black bg-gray-100">
-              <h3 className="font-bold text-black text-sm">การดำเนินการ</h3>
+              <h3 className="font-bold text-black text-sm">{t("actions.title")}</h3>
             </div>
             <div className="p-2 space-y-2">
               <Link
                 href="/support"
-                className="w-full flex items-center gap-2 p-2 border-[2px] border-black hover:bg-gray-100 text-black transition-colors text-xs font-medium"
+                className="w-full flex items-center gap-2 p-2 border-[2px] border-black hover:bg-gray-100 text-black transition-colors text-xs font-bold"
               >
                 <AlertCircle size={16} />
-                แจ้งปัญหา
+                {t("actions.report_issue")}
               </Link>
             </div>
           </motion.div>
@@ -831,9 +835,9 @@ export default function OrderDetailsPage() {
           <div className="text-center">
             <Link
               href="/support"
-              className="text-xs text-black underline hover:no-underline"
+              className="text-xs text-black underline hover:no-underline font-bold"
             >
-              ต้องการความช่วยเหลือเกี่ยวกับคำสั่งซื้อนี้?
+              {t("actions.need_help")}
             </Link>
           </div>
         </div>

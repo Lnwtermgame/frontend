@@ -16,6 +16,7 @@ import {
 import { orderApi, Order } from "@/lib/services/order-api";
 import Link from "next/link";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useTranslations } from "next-intl";
 
 const statusStyles: Record<string, string> = {
   PENDING: "text-yellow-700 bg-yellow-100 border-yellow-300",
@@ -35,16 +36,17 @@ const statusIcons: Record<string, React.ReactNode> = {
   REFUNDED: <XCircle className="h-3 w-3 mr-1" />,
 };
 
-const statusText: Record<string, string> = {
-  PENDING: "รอดำเนินการ",
-  PROCESSING: "กำลังดำเนินการ",
-  COMPLETED: "สำเร็จ",
-  FAILED: "ล้มเหลว",
-  CANCELLED: "ยกเลิก",
-  REFUNDED: "คืนเงิน",
+const statusKeyMap: Record<string, string> = {
+  PENDING: "pending",
+  PROCESSING: "processing",
+  COMPLETED: "completed",
+  FAILED: "failed",
+  CANCELLED: "cancelled",
+  REFUNDED: "refunded",
 };
 
 export default function AdminOrders() {
+  const t = useTranslations("AdminPage");
   const { isAdmin, isInitialized, isSessionChecked } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -134,13 +136,13 @@ export default function AdminOrders() {
   );
 
   return (
-    <AdminLayout title="คำสั่งซื้อ">
+    <AdminLayout title={t("orders.title")}>
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-3 justify-between">
           <div className="flex items-center">
             <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-            <h1 className="text-xl font-bold text-black">จัดการคำสั่งซื้อ</h1>
+            <h1 className="text-xl font-bold text-black">{t("orders.subtitle")}</h1>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <div className="relative w-full sm:max-w-xs">
@@ -149,7 +151,7 @@ export default function AdminOrders() {
               </div>
               <input
                 type="text"
-                placeholder="ค้นหาคำสั่งซื้อ..."
+                placeholder={t("orders.search_placeholder")}
                 className="bg-white border-[2px] border-gray-300 text-black pl-9 pr-3 py-1.5 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -160,13 +162,13 @@ export default function AdminOrders() {
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
-              <option value="all">ทุกสถานะ</option>
-              <option value="PENDING">รอดำเนินการ</option>
-              <option value="PROCESSING">กำลังดำเนินการ</option>
-              <option value="COMPLETED">สำเร็จ</option>
-              <option value="FAILED">ล้มเหลว</option>
-              <option value="CANCELLED">ยกเลิก</option>
-              <option value="REFUNDED">คืนเงิน</option>
+              <option value="all">{t("orders.status.all")}</option>
+              <option value="PENDING">{t("orders.status.pending")}</option>
+              <option value="PROCESSING">{t("orders.status.processing")}</option>
+              <option value="COMPLETED">{t("orders.status.completed")}</option>
+              <option value="FAILED">{t("orders.status.failed")}</option>
+              <option value="CANCELLED">{t("orders.status.cancelled")}</option>
+              <option value="REFUNDED">{t("orders.status.refunded")}</option>
             </select>
           </div>
         </div>
@@ -189,7 +191,7 @@ export default function AdminOrders() {
           <div className="p-3 border-b-[2px] border-black bg-gray-50">
             <h3 className="text-base font-semibold text-black flex items-center">
               <Package className="mr-2 h-4 w-4 text-brutal-pink" />
-              รายการคำสั่งซื้อ
+              {t("orders.title")}
             </h3>
           </div>
           <div className="overflow-x-auto">
@@ -201,13 +203,13 @@ export default function AdminOrders() {
               <table className="w-full">
                 <thead>
                   <tr className="text-gray-600 text-xs border-b border-gray-200">
-                    <th className="px-3 py-2 text-left">รหัสคำสั่งซื้อ</th>
-                    <th className="px-3 py-2 text-left">ลูกค้า</th>
-                    <th className="px-3 py-2 text-left">รายการ</th>
-                    <th className="px-3 py-2 text-left">รวม</th>
-                    <th className="px-3 py-2 text-left">สถานะ</th>
-                    <th className="px-3 py-2 text-left">วันที่</th>
-                    <th className="px-3 py-2 text-left">การดำเนินการ</th>
+                    <th className="px-3 py-2 text-left">{t("orders.order_id")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.customer")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.product")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.amount")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.status")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.date")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -230,7 +232,7 @@ export default function AdminOrders() {
                         </td>
                         <td className="px-3 py-3">
                           <div className="text-gray-700">
-                            {order.items.length} รายการ
+                            {order.items.length} {t("order_detail.items")}
                           </div>
                           <div className="text-[10px] text-gray-500">
                             {order.items[0]?.productName}
@@ -250,12 +252,12 @@ export default function AdminOrders() {
                               statusStyles[order.status] || statusStyles.PENDING
                             }`}
                           >
-                            <option value="PENDING">รอดำเนินการ</option>
-                            <option value="PROCESSING">กำลังดำเนินการ</option>
-                            <option value="COMPLETED">สำเร็จ</option>
-                            <option value="FAILED">ล้มเหลว</option>
-                            <option value="CANCELLED">ยกเลิก</option>
-                            <option value="REFUNDED">คืนเงิน</option>
+                            <option value="PENDING">{t("orders.status.pending")}</option>
+                            <option value="PROCESSING">{t("orders.status.processing")}</option>
+                            <option value="COMPLETED">{t("orders.status.completed")}</option>
+                            <option value="FAILED">{t("orders.status.failed")}</option>
+                            <option value="CANCELLED">{t("orders.status.cancelled")}</option>
+                            <option value="REFUNDED">{t("orders.status.refunded")}</option>
                           </select>
                         </td>
                         <td className="px-3 py-3 text-gray-500 text-[10px]">
@@ -278,7 +280,7 @@ export default function AdminOrders() {
                         className="px-3 py-6 text-center text-gray-500 text-xs"
                         colSpan={7}
                       >
-                        ไม่พบคำสั่งซื้อ
+                        {t("orders.no_orders")}
                       </td>
                     </tr>
                   )}
@@ -291,7 +293,7 @@ export default function AdminOrders() {
           {!loading && pagination.totalPages > 1 && (
             <div className="p-3 border-t border-gray-200 flex justify-between items-center">
               <div className="text-xs text-gray-500">
-                แสดง {filteredOrders.length} จาก {pagination.total} คำสั่งซื้อ
+                {t("common.showing")} {filteredOrders.length} {t("common.from")} {pagination.total} {t("orders.title")}
               </div>
               <div className="flex space-x-1">
                 <button

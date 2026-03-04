@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 interface Invoice {
   id: string;
@@ -32,6 +33,8 @@ interface Invoice {
 }
 
 export default function InvoicePage() {
+  const t = useTranslations("Invoices");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const { user, isInitialized } = useAuth();
@@ -71,7 +74,7 @@ export default function InvoicePage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดใบแจ้งหนี้ได้");
+        toast.error(tCommon("error_occurred") || "Could not load invoices");
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -94,7 +97,11 @@ export default function InvoicePage() {
     // Apply status filter
     if (statusFilter !== "all") {
       result = result.filter(
-        (invoice) => invoice.status.toLowerCase() === statusFilter,
+        (invoice) => {
+          const s = invoice.status.toLowerCase();
+          if (statusFilter === "paid") return s === "completed" || s === "paid";
+          return s === statusFilter;
+        }
       );
     }
 
@@ -127,11 +134,7 @@ export default function InvoicePage() {
 
   // Format date
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("th-TH", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    return new Date(dateString).toLocaleDateString();
   };
 
   // If the user is not loaded yet or not logged in, show loading
@@ -140,7 +143,7 @@ export default function InvoicePage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -148,30 +151,31 @@ export default function InvoicePage() {
 
   // Render status badge
   const renderStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
+    const s = status.toLowerCase();
+    switch (s) {
       case "completed":
       case "paid":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-brutal-green text-black thai-font">
-            <CheckCircle className="w-3 h-3 mr-1" /> ชำระแล้ว
+          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-brutal-green text-black">
+            <CheckCircle className="w-3 h-3 mr-1" /> {t("status.paid")}
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-brutal-yellow text-black thai-font">
-            <Clock className="w-3 h-3 mr-1" /> รอดำเนินการ
+          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-brutal-yellow text-black">
+            <Clock className="w-3 h-3 mr-1" /> {t("status.pending")}
           </span>
         );
       case "cancelled":
       case "refunded":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-gray-300 text-black thai-font">
-            <AlertCircle className="w-3 h-3 mr-1" /> ยกเลิกแล้ว
+          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-gray-300 text-black">
+            <AlertCircle className="w-3 h-3 mr-1" /> {t("status.cancelled")}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-gray-200 text-black thai-font">
+          <span className="inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold bg-gray-200 text-black">
             {status}
           </span>
         );
@@ -183,15 +187,15 @@ export default function InvoicePage() {
       {/* Page Header */}
       <div className="relative mb-4">
         <motion.h2
-          className="text-lg font-bold text-black mb-1 relative flex items-center thai-font"
+          className="text-lg font-bold text-black mb-1 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
           <span className="w-1.5 h-4 bg-brutal-green mr-2"></span>
-          ใบแจ้งหนี้ของฉัน
+          {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative thai-font">
-          ดูและดาวน์โหลดใบแจ้งหนี้การทำธุรกรรมของคุณ
+        <p className="text-gray-600 text-xs relative font-bold">
+          {t("subtitle")}
         </p>
       </div>
 
@@ -199,10 +203,10 @@ export default function InvoicePage() {
         <div className="relative w-full sm:w-80">
           <input
             type="text"
-            placeholder="ค้นหาใบแจ้งหนี้หรือรหัสคำสั่งซื้อ..."
+            placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black pl-8 transition-all thai-font"
+            className="w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black pl-8 transition-all"
           />
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
         </div>
@@ -211,12 +215,12 @@ export default function InvoicePage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 pr-8 text-xs text-black focus:outline-none focus:border-black transition-all cursor-pointer thai-font"
+            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 pr-8 text-xs text-black focus:outline-none focus:border-black transition-all cursor-pointer"
           >
-            <option value="all">ใบแจ้งหนี้ทั้งหมด</option>
-            <option value="completed">ชำระแล้ว</option>
-            <option value="pending">รอดำเนินการ</option>
-            <option value="cancelled">ยกเลิกแล้ว</option>
+            <option value="all">{t("filter.all")}</option>
+            <option value="paid">{t("filter.paid")}</option>
+            <option value="pending">{t("filter.pending")}</option>
+            <option value="cancelled">{t("filter.cancelled")}</option>
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 pointer-events-none" />
         </div>
@@ -237,23 +241,23 @@ export default function InvoicePage() {
             <table className="w-full text-left">
               <thead className="bg-gray-100 border-b-[3px] border-black">
                 <tr>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap thai-font">
-                    รหัสใบแจ้งหนี้
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap">
+                    {t("table.invoice_number")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap thai-font">
-                    วันที่
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap">
+                    {t("table.date")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap thai-font">
-                    รหัสคำสั่งซื้อ
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap">
+                    {t("table.order_number")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap thai-font">
-                    จำนวนเงิน
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap">
+                    {t("table.amount")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap thai-font">
-                    สถานะ
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap">
+                    {t("table.status")}
                   </th>
-                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap text-right thai-font">
-                    การกระทำ
+                  <th className="px-4 py-3 text-xs font-bold text-gray-700 whitespace-nowrap text-right">
+                    {t("table.actions")}
                   </th>
                 </tr>
               </thead>
@@ -273,13 +277,13 @@ export default function InvoicePage() {
                           {invoice.invoiceNumber}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-xs text-gray-600">
+                      <td className="px-4 py-3 text-xs text-gray-600 font-bold">
                         {formatDate(invoice.issuedAt)}
                       </td>
-                      <td className="px-4 py-3 text-xs text-black font-mono bg-gray-100 py-0.5 px-1.5 border-[1px] border-black w-fit">
+                      <td className="px-4 py-3 text-xs text-black font-mono bg-gray-100 py-0.5 px-1.5 border-[1px] border-black w-fit font-bold">
                         {invoice.orderNumber}
                       </td>
-                      <td className="px-4 py-3 text-xs font-bold text-black">
+                      <td className="px-4 py-3 text-xs font-black text-black">
                         {formatCurrency(invoice.totalAmount)}
                       </td>
                       <td className="px-4 py-3">
@@ -290,7 +294,7 @@ export default function InvoicePage() {
                           <Link href={`/dashboard/invoice/${invoice.id}`}>
                             <button
                               className="p-1.5 border-[2px] border-black bg-brutal-blue hover:bg-brutal-blue/80 text-black transition-all"
-                              title="ดูใบแจ้งหนี้"
+                              title={t("actions.view")}
                             >
                               <Eye size={14} />
                             </button>
@@ -298,7 +302,7 @@ export default function InvoicePage() {
                           <Link href={`/dashboard/invoice/${invoice.id}`}>
                             <button
                               className="p-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 text-black transition-all"
-                              title="ดาวน์โหลด PDF"
+                              title={t("actions.download")}
                             >
                               <Download size={14} />
                             </button>
@@ -313,13 +317,13 @@ export default function InvoicePage() {
                       <div className="w-12 h-12 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-3">
                         <FileText size={24} className="text-gray-400" />
                       </div>
-                      <p className="text-black text-base font-bold mb-1 thai-font">
-                        ไม่พบใบแจ้งหนี้
+                      <p className="text-black text-base font-bold mb-1">
+                        {t("no_invoices")}
                       </p>
-                      <p className="text-xs text-gray-600 max-w-md mx-auto thai-font">
+                      <p className="text-xs text-gray-600 max-w-md mx-auto font-bold">
                         {searchTerm
-                          ? `ไม่พบผลลัพธ์สำหรับ "${searchTerm}"`
-                          : "คุณยังไม่มีใบแจ้งหนี้ใดๆ"}
+                          ? t("no_search_results", { query: searchTerm })
+                          : t("no_invoices_desc")}
                       </p>
                     </td>
                   </tr>

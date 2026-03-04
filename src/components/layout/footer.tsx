@@ -25,8 +25,6 @@ import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { useTranslations } from "next-intl";
 
 // Thai bank logos from https://github.com/casperstack/thai-banks-logo
-
-// Thai bank logos from https://github.com/casperstack/thai-banks-logo
 const paymentMethods = [
   {
     name: "กสิกรไทย",
@@ -73,7 +71,11 @@ export function Footer() {
     { label: tNav("games"), href: "/games", icon: Gamepad2 },
     { label: tNav("news"), href: "/news", icon: Newspaper },
     { label: tNav("card"), href: "/card", icon: CardIcon },
-    { label: tNav("mobile_recharge"), href: "/mobile-recharge", icon: Smartphone },
+    {
+      label: tNav("mobile_recharge"),
+      href: "/mobile-recharge",
+      icon: Smartphone,
+    },
     { label: tFooter("faq"), href: "/support/faq", icon: HelpCircle },
   ];
 
@@ -114,7 +116,8 @@ export function Footer() {
 
   const promotionsEnabled = settings?.features.enablePromotions ?? true;
   const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
-  const supportEmail = settings?.general.supportEmail || "support@lnwtermgame.com";
+  const supportEmail =
+    settings?.general.supportEmail || "support@lnwtermgame.com";
   const supportPhone = settings?.general.supportPhone || "";
 
   const visibleQuickLinks = quickLinks.filter((item) => {

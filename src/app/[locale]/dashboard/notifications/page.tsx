@@ -24,8 +24,11 @@ import {
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NotificationsPage() {
+  const t = useTranslations("Notifications");
+  const tCommon = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const { user, isInitialized } = useAuth();
@@ -70,7 +73,7 @@ export default function NotificationsPage() {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.code !== "ERR_CANCELED") {
-        toast.error("ไม่สามารถโหลดการแจ้งเตือนได้");
+        toast.error(t("error_loading"));
       }
     } finally {
       if (!controller.signal.aborted) {
@@ -91,14 +94,14 @@ export default function NotificationsPage() {
     try {
       const response = await notificationApi.markAllAsRead();
       if (response.success) {
-        toast.success("ทำเครื่องหมายว่าอ่านแล้วทั้งหมด");
+        toast.success(t("mark_read_success"));
         setNotifications((prev) =>
           prev.map((notif) => ({ ...notif, isRead: true })),
         );
         setUnreadCount(0);
       }
     } catch (error) {
-      toast.error("ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้");
+      toast.error(tCommon("error_occurred") || "Could not mark as read");
     }
   };
 
@@ -116,7 +119,7 @@ export default function NotificationsPage() {
         setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     } catch (error) {
-      toast.error("ไม่สามารถทำเครื่องหมายว่าอ่านแล้วได้");
+      toast.error(tCommon("error_occurred") || "Could not mark as read");
     }
   };
 
@@ -126,7 +129,7 @@ export default function NotificationsPage() {
     try {
       const response = await notificationApi.deleteNotification(id);
       if (response.success) {
-        toast.success("ลบการแจ้งเตือนแล้ว");
+        toast.success(t("delete_success"));
         const deletedNotif = notifications.find((n) => n.id === id);
         setNotifications((prev) => prev.filter((notif) => notif.id !== id));
         if (deletedNotif && !deletedNotif.isRead) {
@@ -134,7 +137,7 @@ export default function NotificationsPage() {
         }
       }
     } catch (error) {
-      toast.error("ไม่สามารถลบการแจ้งเตือนได้");
+      toast.error(tCommon("error_occurred") || "Could not delete notification");
     }
   };
 
@@ -201,7 +204,7 @@ export default function NotificationsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 thai-font">กำลังโหลด...</p>
+          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -214,20 +217,20 @@ export default function NotificationsPage() {
         <div className="flex justify-between items-start">
           <div>
             <motion.h2
-              className="text-lg font-bold text-gray-900 mb-1 relative thai-font flex items-center"
+              className="text-lg font-bold text-gray-900 mb-1 relative flex items-center"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
               <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-              การแจ้งเตือน
+              {t("title")}
               {unreadCount > 0 && (
                 <span className="ml-2 bg-brutal-pink text-white text-[10px] px-1.5 py-0.5 border-2 border-black font-bold">
-                  {unreadCount} ใหม่
+                  {t("unread_badge", { count: unreadCount })}
                 </span>
               )}
             </motion.h2>
-            <p className="text-gray-600 text-xs relative thai-font">
-              ติดตามความเคลื่อนไหวบัญชีของคุณ
+            <p className="text-gray-600 text-xs relative">
+              {t("subtitle")}
             </p>
           </div>
 
@@ -236,10 +239,10 @@ export default function NotificationsPage() {
               <motion.button
                 onClick={markAllAsRead}
                 whileHover={{ y: -2 }}
-                className="text-[10px] text-gray-700 hover:text-black transition-colors bg-white border-[2px] border-black px-2 py-1 font-medium thai-font"
+                className="text-[10px] text-gray-700 hover:text-black transition-colors bg-white border-[2px] border-black px-2 py-1 font-medium"
                 style={{ boxShadow: "2px 2px 0 0 #000000" }}
               >
-                ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
+                {t("mark_all_read")}
               </motion.button>
             )}
           </div>
@@ -250,18 +253,18 @@ export default function NotificationsPage() {
       <div className="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-none">
         <button
           onClick={() => setFilter("all")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all thai-font ${
+          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
             filter === "all"
               ? "bg-black text-white border-black"
               : "bg-white border-black text-gray-700 hover:bg-gray-50"
           }`}
           style={filter === "all" ? { boxShadow: "2px 2px 0 0 #000000" } : {}}
         >
-          ทั้งหมด
+          {t("filters.all")}
         </button>
         <button
           onClick={() => setFilter("unread")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all thai-font ${
+          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
             filter === "unread"
               ? "bg-brutal-pink text-white border-black"
               : "bg-white border-black text-gray-700 hover:bg-gray-50"
@@ -270,22 +273,22 @@ export default function NotificationsPage() {
             filter === "unread" ? { boxShadow: "2px 2px 0 0 #000000" } : {}
           }
         >
-          ยังไม่อ่าน
+          {t("filters.unread")}
         </button>
         <button
           onClick={() => setFilter("order")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all thai-font ${
+          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
             filter === "order"
               ? "bg-brutal-blue text-white border-black"
               : "bg-white border-black text-gray-700 hover:bg-gray-50"
           }`}
           style={filter === "order" ? { boxShadow: "2px 2px 0 0 #000000" } : {}}
         >
-          คำสั่งซื้อ
+          {t("filters.order")}
         </button>
         <button
           onClick={() => setFilter("payment")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all thai-font ${
+          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
             filter === "payment"
               ? "bg-brutal-green text-white border-black"
               : "bg-white border-black text-gray-700 hover:bg-gray-50"
@@ -294,11 +297,11 @@ export default function NotificationsPage() {
             filter === "payment" ? { boxShadow: "2px 2px 0 0 #000000" } : {}
           }
         >
-          การชำระเงิน
+          {t("filters.payment")}
         </button>
         <button
           onClick={() => setFilter("promotion")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all thai-font ${
+          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
             filter === "promotion"
               ? "bg-brutal-yellow text-black border-black"
               : "bg-white border-black text-gray-700 hover:bg-gray-50"
@@ -307,7 +310,7 @@ export default function NotificationsPage() {
             filter === "promotion" ? { boxShadow: "2px 2px 0 0 #000000" } : {}
           }
         >
-          โปรโมชั่น
+          {t("filters.promotion")}
         </button>
       </div>
 
@@ -354,11 +357,9 @@ export default function NotificationsPage() {
                       >
                         {notification.title}
                       </h3>
-                      <span className="text-[10px] text-gray-600 flex-shrink-0 flex items-center gap-1">
+                      <span className="text-[10px] text-gray-600 flex-shrink-0 flex items-center gap-1 font-bold">
                         <Clock size={10} />
-                        {new Date(notification.createdAt).toLocaleDateString(
-                          "th-TH",
-                        )}
+                        {new Date(notification.createdAt).toLocaleDateString()}
                       </span>
                     </div>
 
@@ -369,8 +370,8 @@ export default function NotificationsPage() {
                     </p>
 
                     <div className="flex justify-between items-center mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-[10px] text-brutal-blue font-bold hover:underline thai-font">
-                        ดูรายละเอียด
+                      <span className="text-[10px] text-brutal-blue font-bold hover:underline">
+                        {t("view_details")}
                       </span>
 
                       <div className="flex gap-1.5">
@@ -378,7 +379,7 @@ export default function NotificationsPage() {
                           <button
                             onClick={(e) => markAsRead(notification.id, e)}
                             className="p-1 border-[2px] border-black bg-brutal-green text-white hover:bg-brutal-green/80 transition-colors"
-                            title="ทำเครื่องหมายว่าอ่านแล้ว"
+                            title={t("mark_read")}
                           >
                             <Check size={12} />
                           </button>
@@ -388,7 +389,7 @@ export default function NotificationsPage() {
                             deleteNotification(notification.id, e)
                           }
                           className="p-1 border-[2px] border-black bg-brutal-pink text-white hover:bg-brutal-pink/80 transition-colors"
-                          title="ลบ"
+                          title={t("delete")}
                         >
                           <Trash2 size={12} />
                         </button>
@@ -408,13 +409,13 @@ export default function NotificationsPage() {
               <div className="w-12 h-12 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-3">
                 <Bell size={24} className="text-gray-400" />
               </div>
-              <h3 className="text-base font-bold text-black mb-1 thai-font">
-                ไม่มีการแจ้งเตือน
+              <h3 className="text-base font-bold text-black mb-1">
+                {t("empty_title")}
               </h3>
-              <p className="text-gray-600 text-xs thai-font">
+              <p className="text-gray-600 text-xs font-bold">
                 {filter !== "all"
-                  ? `คุณไม่มีการแจ้งเตือนในหมวดหมู่นี้`
-                  : "คุณอ่านครบแล้ว! กลับมาตรวจสอบใหม่ภายหลัง"}
+                  ? t("empty_filter_desc")
+                  : t("empty_desc")}
               </p>
             </motion.div>
           )}
@@ -425,9 +426,9 @@ export default function NotificationsPage() {
       <div className="mt-4 text-center">
         <Link
           href="/dashboard/notifications/preferences"
-          className="text-gray-600 hover:text-black text-xs font-medium transition-colors thai-font inline-flex items-center border-b border-transparent hover:border-black"
+          className="text-gray-600 hover:text-black text-xs font-bold transition-colors inline-flex items-center border-b border-transparent hover:border-black"
         >
-          จัดการการตั้งค่าการแจ้งเตือน
+          {t("manage_settings")}
         </Link>
       </div>
     </div>

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { productApi, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 interface CategoryFormData {
   name: string;
@@ -27,6 +28,7 @@ interface CategoryFormData {
 }
 
 export default function AdminCategories() {
+  const t = useTranslations("AdminPage");
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +67,7 @@ export default function AdminCategories() {
       );
       setCategories(sorted);
     } catch (err) {
-      setError("ไม่สามารถโหลดหมวดหมู่ได้");
+      setError(t("categories.load_failed"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -123,11 +125,11 @@ export default function AdminCategories() {
   // Save category
   const handleSave = async () => {
     if (!formData.name.trim()) {
-      toast.error("กรุณากรอกชื่อหมวดหมู่");
+      toast.error(t("categories.name_required"));
       return;
     }
     if (!formData.slug.trim()) {
-      toast.error("กรุณากรอก Slug");
+      toast.error(t("categories.slug_required"));
       return;
     }
 
@@ -141,7 +143,7 @@ export default function AdminCategories() {
           description: formData.description || undefined,
         });
         if (res.success) {
-          toast.success(`อัพเดท "${formData.name}" สำเร็จ`);
+          toast.success(t("categories.save_success"));
           closeModal();
           fetchCategories();
         }
@@ -153,13 +155,13 @@ export default function AdminCategories() {
           description: formData.description || undefined,
         });
         if (res.success) {
-          toast.success(`สร้าง "${formData.name}" สำเร็จ`);
+          toast.success(t("categories.save_success"));
           closeModal();
           fetchCategories();
         }
       }
     } catch (err: any) {
-      const message = err?.response?.data?.error?.message || "เกิดข้อผิดพลาด";
+      const message = err?.response?.data?.error?.message || t("common.error");
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -170,14 +172,14 @@ export default function AdminCategories() {
   const handleDelete = async (category: Category) => {
     if (category.productCount && category.productCount > 0) {
       toast.error(
-        `ไม่สามารถลบ "${category.name}" ได้ เนื่องจากมีสินค้า ${category.productCount} รายการอยู่ในหมวดหมู่นี้`,
+        t("categories.delete_has_products", { name: category.name, count: category.productCount }),
       );
       return;
     }
 
     if (
       !confirm(
-        `คุณแน่ใจหรือไม่ที่จะลบหมวดหมู่ "${category.name}"?\n\nการกระทำนี้จะทำให้หมวดหมู่ไม่แสดงในระบบ (Soft Delete)`,
+        t("categories.delete_confirm", { name: category.name }),
       )
     )
       return;
@@ -185,11 +187,11 @@ export default function AdminCategories() {
     try {
       const res = await productApi.deleteCategory(category.id);
       if (res.success) {
-        toast.success(`ลบ "${category.name}" สำเร็จ`);
+        toast.success(t("categories.delete_success"));
         fetchCategories();
       }
     } catch (err) {
-      toast.error("ไม่สามารถลบหมวดหมู่ได้");
+      toast.error(t("categories.delete_failed"));
     }
   };
 

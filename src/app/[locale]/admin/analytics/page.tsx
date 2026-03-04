@@ -34,6 +34,7 @@ import {
 } from "@/lib/services/analytics-api";
 import { motion } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useTranslations } from "next-intl";
 
 interface AnalyticsPageData {
   dashboardStats: DashboardStats | null;
@@ -121,20 +122,20 @@ const buildSalesChartPoints = (
   return points;
 };
 
-const getOrderStatusText = (status: string) => {
+const getOrderStatusKey = (status: string): string => {
   switch (status) {
     case "COMPLETED":
-      return "สำเร็จ";
+      return "completed";
     case "PENDING":
-      return "รอดำเนินการ";
+      return "pending";
     case "PROCESSING":
-      return "กำลังดำเนินการ";
+      return "processing";
     case "CANCELLED":
-      return "ยกเลิก";
+      return "cancelled";
     case "FAILED":
-      return "ล้มเหลว";
+      return "failed";
     default:
-      return status;
+      return status.toLowerCase();
   }
 };
 
@@ -155,6 +156,7 @@ const getOrderStatusClassName = (status: string) => {
 };
 
 export default function AdminAnalyticsPage() {
+  const t = useTranslations("AdminPage");
   const router = useRouter();
   const { isAdmin, isInitialized } = useAuth();
 
@@ -618,7 +620,7 @@ export default function AdminAnalyticsPage() {
                           order.status,
                         )}`}
                       >
-                        {getOrderStatusText(order.status)}
+                        {t(`orders.status.${getOrderStatusKey(order.status)}`)}
                       </span>
                     </td>
                     <td className="py-1.5 px-2 text-[9px] text-black text-right font-medium">
@@ -632,7 +634,7 @@ export default function AdminAnalyticsPage() {
                       colSpan={5}
                       className="py-3 px-2 text-center text-[9px] text-gray-500"
                     >
-                      ยังไม่มีกิจกรรมล่าสุด
+                      {t("dashboard.no_data")}
                     </td>
                   </tr>
                 )}

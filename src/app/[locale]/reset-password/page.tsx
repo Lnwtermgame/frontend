@@ -19,8 +19,10 @@ import { authApi } from "@/lib/services/auth-api";
 import toast from "react-hot-toast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useTranslations } from "next-intl";
 
 function ResetPasswordContent() {
+  const t = useTranslations("Verification.reset_password");
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -41,16 +43,16 @@ function ResetPasswordContent() {
 
   const validatePassword = (password: string): string | null => {
     if (password.length < 8) {
-      return "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร";
+      return t("password_requirements.length");
     }
     if (!/[A-Z]/.test(password)) {
-      return "รหัสผ่านต้องมีตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว";
+      return t("password_requirements.uppercase");
     }
     if (!/[a-z]/.test(password)) {
-      return "รหัสผ่านต้องมีตัวพิมพ์เล็กอย่างน้อย 1 ตัว";
+      return t("password_requirements.lowercase");
     }
     if (!/[0-9]/.test(password)) {
-      return "รหัสผ่านต้องมีตัวเลขอย่างน้อย 1 ตัว";
+      return t("password_requirements.number");
     }
     return null;
   };
@@ -59,7 +61,7 @@ function ResetPasswordContent() {
     e.preventDefault();
 
     if (!token) {
-      toast.error("ลิงก์ไม่ถูกต้อง");
+      toast.error(t("error_invalid"));
       return;
     }
 
@@ -72,7 +74,7 @@ function ResetPasswordContent() {
 
     // Check confirm password
     if (newPassword !== confirmPassword) {
-      toast.error("รหัสผ่านไม่ตรงกัน");
+      toast.error(t("match_error"));
       return;
     }
 
@@ -82,14 +84,14 @@ function ResetPasswordContent() {
 
       if (response.success) {
         setIsSuccess(true);
-        toast.success("รีเซ็ตรหัสผ่านสำเร็จ!");
+        toast.success(t("success_title"));
 
         // Redirect to login after 3 seconds
         setTimeout(() => {
           router.push("/login");
         }, 3000);
       } else {
-        toast.error(response.message || "ไม่สามารถรีเซ็ตรหัสผ่านได้");
+        toast.error(response.message || t("error_invalid"));
       }
     } catch (error: any) {
       const errorMessage = authApi.getErrorMessage(error);
@@ -98,12 +100,12 @@ function ResetPasswordContent() {
         errorMessage.includes("expired") ||
         errorMessage.includes("หมดอายุ")
       ) {
-        toast.error("ลิงก์หมดอายุแล้ว กรุณาขอลิงก์ใหม่");
+        toast.error(t("error_expired"));
       } else if (
         errorMessage.includes("Invalid") ||
         errorMessage.includes("invalid")
       ) {
-        toast.error("ลิงก์ไม่ถูกต้อง กรุณาขอลิงก์ใหม่");
+        toast.error(t("error_invalid"));
       } else {
         toast.error(errorMessage);
       }
@@ -124,7 +126,7 @@ function ResetPasswordContent() {
   };
 
   const passwordStrength = getPasswordStrength(newPassword);
-  const strengthLabels = ["อ่อน", "ปานกลาง", "ดี", "แข็งแรง", "ปลอดภัยมาก"];
+  const strengthLabels = t.raw("strength_labels");
   const strengthColors = [
     "bg-red-500",
     "bg-orange-500",
@@ -148,24 +150,24 @@ function ResetPasswordContent() {
                   <XCircle size={24} className="text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-black thai-font">
-                    ลิงก์ไม่ถูกต้อง
+                  <h1 className="text-xl font-bold text-black">
+                    {t("error_invalid_link")}
                   </h1>
                 </div>
               </div>
             </div>
 
             <div className="p-6 text-center">
-              <p className="text-gray-600 mb-6 thai-font">
-                ลิงก์รีเซ็ตรหัสผ่านไม่ถูกต้องหรือไม่สมบูรณ์
+              <p className="text-gray-600 mb-6">
+                {t("error_invalid_link_desc")}
               </p>
 
               <Link
                 href="/forgot-password"
-                className="inline-flex items-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors thai-font"
+                className="inline-flex items-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
               >
                 <ArrowLeft size={18} />
-                ขอลิงก์ใหม่
+                {t("error_get_new_link")}
               </Link>
             </div>
           </div>
@@ -189,10 +191,10 @@ function ResetPasswordContent() {
                 <Lock size={24} className="text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-black thai-font">
-                  รีเซ็ตรหัสผ่าน
+                <h1 className="text-xl font-bold text-black">
+                  {t("title")}
                 </h1>
-                <p className="text-sm text-gray-700">Reset Password</p>
+                <p className="text-sm text-gray-700 uppercase">Reset Password</p>
               </div>
             </div>
           </div>
@@ -201,18 +203,18 @@ function ResetPasswordContent() {
           <div className="p-6">
             {!isSuccess ? (
               <>
-                <p className="text-gray-600 mb-6 thai-font">
-                  สร้างรหัสผ่านใหม่ของคุณ
+                <p className="text-gray-600 mb-6">
+                  {t("subtitle")}
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* New Password */}
                   <div className="space-y-1.5">
                     <label
-                      className="text-sm font-bold text-gray-700 thai-font"
+                      className="text-sm font-bold text-gray-700"
                       htmlFor="newPassword"
                     >
-                      รหัสผ่านใหม่
+                      {t("new_password")}
                     </label>
                     <div className="relative">
                       <Input
@@ -255,8 +257,8 @@ function ResetPasswordContent() {
                             />
                           ))}
                         </div>
-                        <p className="text-xs text-gray-500 thai-font">
-                          ความปลอดภัย:{" "}
+                        <p className="text-xs text-gray-500">
+                          {t("strength")}{" "}
                           {passwordStrength > 0
                             ? strengthLabels[passwordStrength - 1]
                             : "-"}
@@ -268,10 +270,10 @@ function ResetPasswordContent() {
                   {/* Confirm Password */}
                   <div className="space-y-1.5">
                     <label
-                      className="text-sm font-bold text-gray-700 thai-font"
+                      className="text-sm font-bold text-gray-700"
                       htmlFor="confirmPassword"
                     >
-                      ยืนยันรหัสผ่าน
+                      {t("confirm_password")}
                     </label>
                     <div className="relative">
                       <Input
@@ -304,15 +306,15 @@ function ResetPasswordContent() {
                     {/* Password Match Indicator */}
                     {confirmPassword && (
                       <p
-                        className={`text-xs mt-1 thai-font ${
+                        className={`text-xs mt-1 ${
                           newPassword === confirmPassword
                             ? "text-brutal-green"
                             : "text-brutal-pink"
                         }`}
                       >
                         {newPassword === confirmPassword
-                          ? "✓ รหัสผ่านตรงกัน"
-                          : "✗ รหัสผ่านไม่ตรงกัน"}
+                          ? `✓ ${t("match_success")}`
+                          : `✗ ${t("match_error")}`}
                       </p>
                     )}
                   </div>
@@ -330,7 +332,7 @@ function ResetPasswordContent() {
                   >
                     {!isSubmitting && (
                       <>
-                        รีเซ็ตรหัสผ่าน
+                        {t("reset_button")}
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </>
                     )}
@@ -342,21 +344,21 @@ function ResetPasswordContent() {
                 <div className="w-16 h-16 bg-brutal-green border-[3px] border-black flex items-center justify-center mx-auto mb-4">
                   <CheckCircle size={32} className="text-black" />
                 </div>
-                <h2 className="text-lg font-bold text-black mb-2 thai-font">
-                  รีเซ็ตรหัสผ่านสำเร็จ!
+                <h2 className="text-lg font-bold text-black mb-2">
+                  {t("success_title")}
                 </h2>
-                <p className="text-gray-600 mb-4 thai-font">
-                  รหัสผ่านของคุณถูกเปลี่ยนแล้ว
+                <p className="text-gray-600 mb-4">
+                  {t("success_desc")}
                 </p>
                 <p className="text-sm text-gray-500 mb-6">
-                  กำลังนำคุณไปยังหน้าเข้าสู่ระบบ...
+                  {t("redirect_hint")}
                 </p>
 
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors thai-font"
+                  className="inline-flex items-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
                 >
-                  เข้าสู่ระบบตอนนี้
+                  {t("login_now")}
                   <ArrowRight size={18} />
                 </Link>
               </div>
@@ -366,10 +368,10 @@ function ResetPasswordContent() {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors thai-font"
+                  className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
                 >
                   <ArrowLeft size={18} />
-                  กลับไปหน้าเข้าสู่ระบบ
+                  {t("back_to_login")}
                 </Link>
               </div>
             )}
@@ -381,6 +383,7 @@ function ResetPasswordContent() {
 }
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("Common");
   return (
     <Suspense
       fallback={
@@ -390,7 +393,7 @@ export default function ResetPasswordPage() {
               size={48}
               className="animate-spin mx-auto mb-4 text-brutal-blue"
             />
-            <p className="text-gray-600 thai-font">กำลังโหลด...</p>
+            <p className="text-gray-600">{t("loading")}</p>
           </div>
         </div>
       }

@@ -17,15 +17,20 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { useTranslations, useLocale } from "next-intl";
 
 export function Header() {
+  const t = useTranslations("Header");
+  const locale = useLocale();
   const { user, logout } = useAuth();
   const { getTotalItems } = useCart();
   const cartItemCount = getTotalItems();
   const router = useRouter();
   const pathname = usePathname();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const langMenuRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -39,6 +44,12 @@ export function Header() {
         !userMenuRef.current.contains(event.target as Node)
       ) {
         setShowUserMenu(false);
+      }
+      if (
+        langMenuRef.current &&
+        !langMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowLangMenu(false);
       }
     }
 
@@ -55,6 +66,13 @@ export function Header() {
     await logout();
     setShowUserMenu(false);
     router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+  };
+
+  const handleLocaleChange = (newLocale: string) => {
+    const segments = pathname.split("/");
+    segments[1] = newLocale;
+    router.push(segments.join("/") || "/");
+    setShowLangMenu(false);
   };
 
   // Animation variants
@@ -111,43 +129,63 @@ export function Header() {
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
             <Link
               href="/news"
-              className="text-xs font-medium hover:text-black transition-colors thai-font"
+              className="text-xs font-medium hover:text-black transition-colors"
             >
-              ข่าวสาร
+              {t("news")}
             </Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
             <Link
               href="/support"
-              className="text-xs font-medium hover:text-black transition-colors thai-font"
+              className="text-xs font-medium hover:text-black transition-colors"
             >
-              ติดต่อเรา
+              {t("contact_us")}
             </Link>
           </motion.div>
           <motion.div whileHover={{ opacity: 1 }} initial={{ opacity: 0.8 }}>
             <Link
               href="/games"
-              className="text-xs font-medium hover:text-black transition-colors thai-font"
+              className="text-xs font-medium hover:text-black transition-colors"
             >
-              เกมทั้งหมด
+              {t("all_games")}
             </Link>
           </motion.div>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 relative" ref={langMenuRef}>
           <button
             type="button"
-            className="flex items-center space-x-1 hover:opacity-100 opacity-80 transition-opacity"
-          >
-            <span className="text-xs font-medium">EN</span>
-            <ChevronDown className="h-3 w-3" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className="flex items-center text-xs hover:scale-105 transition-transform font-medium"
+            onClick={() => setShowLangMenu(!showLangMenu)}
+            className="flex items-center space-x-1 hover:opacity-100 opacity-80 transition-opacity uppercase font-bold text-black"
           >
             <Languages className="h-3 w-3 mr-1" aria-hidden="true" />
-            <span className="text-black font-bold">ไทย</span>
+            <span className="text-xs">{locale}</span>
+            <ChevronDown className={`h-3 w-3 transition-transform ${showLangMenu ? "rotate-180" : ""}`} aria-hidden="true" />
           </button>
+
+          <AnimatePresence>
+            {showLangMenu && (
+              <motion.div
+                className="absolute right-0 top-full mt-2 w-32 bg-white border-[3px] border-black z-50 overflow-hidden shadow-[4px_4px_0_0_#000]"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                {[
+                  { code: "en", label: "English" },
+                  { code: "th", label: "ไทย" },
+                  { code: "zh", label: "中文" },
+                ].map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleLocaleChange(lang.code)}
+                    className={`w-full text-left px-4 py-2 text-xs font-bold hover:bg-gray-100 transition-colors ${locale === lang.code ? "text-brutal-pink bg-pink-50" : "text-black"}`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -177,25 +215,25 @@ export function Header() {
             <motion.div className="group relative" whileHover={{ y: -2 }}>
               <Link
                 href="/card"
-                className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors thai-font"
+                className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors"
               >
-                บัตรเติม <ChevronDown className="ml-1 h-3 w-3" />
+                {t("gift_cards")} <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
             <motion.div className="group relative" whileHover={{ y: -2 }}>
               <Link
-                href="/direct-topup"
-                className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors thai-font"
+                href="/games"
+                className="px-2 py-1 text-sm text-black uppercase inline-flex items-center hover:text-brutal-pink font-bold transition-colors"
               >
-                เติมเกม <ChevronDown className="ml-1 h-3 w-3" />
+                {t("direct_topup")} <ChevronDown className="ml-1 h-3 w-3" />
               </Link>
             </motion.div>
             <motion.div whileHover={{ y: -2 }}>
               <Link
                 href="/mobile-recharge"
-                className="px-2 py-1 text-sm text-black uppercase hover:text-brutal-pink font-bold transition-colors thai-font"
+                className="px-2 py-1 text-sm text-black uppercase hover:text-brutal-pink font-bold transition-colors"
               >
-                เติมเงินมือถือ
+                {t("mobile_recharge")}
               </Link>
             </motion.div>
           </nav>
@@ -205,8 +243,8 @@ export function Header() {
           <motion.div className="relative w-64" whileHover={{ scale: 1.01 }}>
             <input
               type="text"
-              placeholder="ค้นหาเกม..."
-              aria-label="ค้นหาเกม"
+              placeholder={t("search_placeholder")}
+              aria-label={t("search_placeholder")}
               autoComplete="off"
               className="w-full bg-white border-[2px] border-gray-300 px-4 py-2 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
             />
@@ -219,7 +257,7 @@ export function Header() {
           <div className="flex items-center space-x-3">
             <motion.button
               type="button"
-              aria-label="การแจ้งเตือน"
+              aria-label={t("notifications")}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-yellow transition-colors"
@@ -230,7 +268,7 @@ export function Header() {
 
             <motion.button
               type="button"
-              aria-label="ตะกร้าสินค้า"
+              aria-label={t("cart")}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center text-black hover:bg-brutal-green transition-colors relative"
@@ -308,10 +346,10 @@ export function Header() {
                           <motion.div
                             variants={menuItemVariants}
                             whileHover="hover"
-                            className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer thai-font"
+                            className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer"
                           >
                             <User className="h-4 w-4 mr-3" aria-hidden="true" />
-                            <span>บัญชีของฉัน</span>
+                            <span>{t("my_account")}</span>
                           </motion.div>
                         </Link>
 
@@ -323,13 +361,13 @@ export function Header() {
                           <motion.div
                             variants={menuItemVariants}
                             whileHover="hover"
-                            className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer thai-font"
+                            className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer"
                           >
                             <Coins
                               className="h-4 w-4 mr-3"
                               aria-hidden="true"
                             />
-                            <span>เครดิต</span>
+                            <span>{t("credits")}</span>
                           </motion.div>
                         </Link>
 
@@ -341,13 +379,13 @@ export function Header() {
                           <motion.div
                             variants={menuItemVariants}
                             whileHover="hover"
-                            className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer thai-font"
+                            className="w-full flex items-center px-4 py-2 text-sm text-gray-600 hover:text-black cursor-pointer"
                           >
                             <ShoppingCart
                               className="h-4 w-4 mr-3"
                               aria-hidden="true"
                             />
-                            <span>ประวัติการสั่งซื้อ</span>
+                            <span>{t("order_history")}</span>
                           </motion.div>
                         </Link>
 
@@ -357,11 +395,11 @@ export function Header() {
                           type="button"
                           variants={menuItemVariants}
                           whileHover="hover"
-                          className="w-full flex items-center px-4 py-2 text-sm text-brutal-pink hover:text-brutal-pink/80 thai-font font-bold"
+                          className="w-full flex items-center px-4 py-2 text-sm text-brutal-pink hover:text-brutal-pink/80 font-bold"
                           onClick={handleLogout}
                         >
                           <LogOut className="h-4 w-4 mr-3" aria-hidden="true" />
-                          <span>ออกจากระบบ</span>
+                          <span>{t("logout")}</span>
                         </motion.button>
                       </div>
                     </motion.div>
@@ -376,13 +414,13 @@ export function Header() {
                   boxShadow: "4px 4px 0 0 #000000",
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-black text-white text-sm px-5 py-2.5 border-[3px] border-black font-bold thai-font"
+                className="bg-black text-white text-sm px-5 py-2.5 border-[3px] border-black font-bold"
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
                 onClick={() =>
                   router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
                 }
               >
-                เข้าสู่ระบบ
+                {t("login")}
               </motion.button>
             )}
           </div>

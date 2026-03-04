@@ -24,6 +24,7 @@ import {
   Info,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 interface ProviderFormData {
   name: string;
@@ -42,6 +43,7 @@ const emptyFormData: ProviderFormData = {
 };
 
 export default function OAuthProvidersPage() {
+  const t = useTranslations("AdminPage");
   const router = useRouter();
   const { isAdmin, isInitialized } = useAuth();
 
@@ -69,7 +71,7 @@ export default function OAuthProvidersPage() {
       const response = await oauthProviderApi.getProviders();
       setProviders(response.data || []);
     } catch (error) {
-      toast.error("ไม่สามารถโหลดข้อมูล OAuth Providers ได้");
+      toast.error(t("oauth.load_error"));
       console.error(error);
     } finally {
       setLoading(false);

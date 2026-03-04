@@ -25,8 +25,11 @@ import {
   Download,
   Lock,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function SecurityPage() {
+  const t = useTranslations("Security");
+  const tCommon = useTranslations("Common");
   const { user, changePassword } = useAuth();
   const {
     securitySettings,
@@ -84,7 +87,7 @@ export default function SecurityPage() {
   // Handle requesting OTP for password setup
   const handleRequestOTP = async () => {
     if (!user?.email) {
-      toast.error("ไม่พบอีเมลของคุณ");
+      toast.error(t("error_email_not_found"));
       return;
     }
 
@@ -92,7 +95,7 @@ export default function SecurityPage() {
     try {
       const response = await authApi.requestPasswordSetupOTP(user.email);
       if (response.success) {
-        toast.success("ส่ง OTP ไปยังอีเมลของคุณแล้ว");
+        toast.success(t("change_password.otp_sent_success"));
         setOtpSent(true);
         setOtpCooldown(60); // 60 seconds cooldown
 
@@ -109,7 +112,7 @@ export default function SecurityPage() {
       }
     } catch (error: any) {
       toast.error(
-        error.response?.data?.error?.message || "ไม่สามารถส่ง OTP ได้",
+        error.response?.data?.error?.message || t("change_password.error_otp_failed"),
       );
     } finally {
       setIsRequestingOTP(false);
@@ -121,22 +124,22 @@ export default function SecurityPage() {
     e.preventDefault();
 
     if (!user?.email) {
-      toast.error("ไม่พบอีเมลของคุณ");
+      toast.error(t("error_email_not_found"));
       return;
     }
 
     if (setupPassword !== setupConfirmPassword) {
-      toast.error("รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน");
+      toast.error(t("change_password.match_error"));
       return;
     }
 
     if (setupPassword.length < 8) {
-      toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+      toast.error(t("change_password.length_hint"));
       return;
     }
 
     if (otp.length !== 6) {
-      toast.error("กรุณากรอก OTP 6 หลัก");
+      toast.error(t("change_password.otp_label"));
       return;
     }
 
@@ -149,9 +152,7 @@ export default function SecurityPage() {
       );
 
       if (response.success) {
-        toast.success(
-          "ตั้งรหัสผ่านสำเร็จ! ตอนนี้คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านได้",
-        );
+        toast.success(t("change_password.success_setup"));
         setShowPasswordSetup(false);
         setOtp("");
         setSetupPassword("");
@@ -163,7 +164,7 @@ export default function SecurityPage() {
       }
     } catch (error: any) {
       toast.error(
-        error.response?.data?.error?.message || "ไม่สามารถตั้งรหัสผ่านได้",
+        error.response?.data?.error?.message || t("change_password.error_setup_failed"),
       );
     } finally {
       setIsSettingPassword(false);
@@ -223,12 +224,12 @@ export default function SecurityPage() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error("รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน");
+      toast.error(t("change_password.match_error"));
       return;
     }
 
     if (newPassword.length < 8) {
-      toast.error("รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+      toast.error(t("change_password.length_hint"));
       return;
     }
 
@@ -244,7 +245,7 @@ export default function SecurityPage() {
       }
     } catch (err) {
       console.error("[ChangePassword] Error:", err);
-      toast.error("เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน");
+      toast.error(t("change_password.error_change_failed"));
     } finally {
       setIsChangingPassword(false);
     }
@@ -261,10 +262,10 @@ export default function SecurityPage() {
         >
           <span className="w-1.5 h-5 md:h-6 bg-brutal-pink mr-2"></span>
           <Shield className="text-brutal-pink h-6 w-6 md:h-7 md:w-7" />
-          Security Settings
+          {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs md:text-sm relative thai-font pl-4 md:pl-0">
-          จัดการความปลอดภัยของบัญชีและการตั้งค่าความเป็นส่วนตัวของคุณ
+        <p className="text-gray-600 text-xs md:text-sm relative pl-4 md:pl-0">
+          {t("subtitle")}
         </p>
       </div>
 
@@ -280,8 +281,8 @@ export default function SecurityPage() {
             transition={{ duration: 0.3 }}
           >
             <div className="p-3 bg-brutal-yellow border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black thai-font">
-                {isOAuthOnly ? "ตั้งรหัสผ่าน" : "เปลี่ยนรหัสผ่าน"}
+              <h2 className="text-base font-bold text-black">
+                {isOAuthOnly ? t("change_password.setup_title") : t("change_password.title")}
               </h2>
             </div>
 
@@ -295,44 +296,43 @@ export default function SecurityPage() {
                   >
                     {!otpSent ? (
                       <div className="text-center py-4">
-                        <p className="text-sm text-gray-600 mb-4 thai-font">
-                          คุณกำลังใช้การเข้าสู่ระบบผ่าน{" "}
-                          {user?.authProvider === "google"
-                            ? "Google"
-                            : "Discord"}
+                        <p className="text-sm text-gray-600 mb-4">
+                          {t("change_password.oauth_notice", {
+                            provider: user?.authProvider === "google" ? "Google" : "Discord"
+                          })}
                           <br />
-                          กดปุ่มด้านล่างเพื่อขอรับ OTP ไปยังอีเมล {user?.email}
+                          {t("change_password.request_otp")} {user?.email}
                         </p>
                         <button
                           type="button"
                           onClick={handleRequestOTP}
                           disabled={isRequestingOTP || otpCooldown > 0}
-                          className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font text-xs"
+                          className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-xs"
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           {isRequestingOTP ? (
                             <>
                               <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                              กำลังส่ง...
+                              {tCommon("loading")}
                             </>
                           ) : otpCooldown > 0 ? (
-                            `ส่งอีกครั้งใน ${otpCooldown} วินาที`
+                            t("change_password.otp_wait", { seconds: otpCooldown })
                           ) : (
-                            "ขอรับ OTP"
+                            t("change_password.request_otp")
                           )}
                         </button>
                       </div>
                     ) : (
                       <>
                         <div className="bg-green-50 border-[2px] border-green-500 p-3 mb-4">
-                          <p className="text-sm text-green-700 thai-font">
-                            ✅ ส่ง OTP ไปยัง {user?.email} แล้ว
+                          <p className="text-sm text-green-700">
+                            ✅ {t("change_password.otp_sent_success")} {user?.email}
                           </p>
                         </div>
 
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                            OTP (6 หลัก)
+                          <label className="block text-xs text-gray-600 mb-1.5">
+                            {t("change_password.otp_label")}
                           </label>
                           <input
                             type="text"
@@ -350,8 +350,8 @@ export default function SecurityPage() {
                         </div>
 
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                            รหัสผ่านใหม่
+                          <label className="block text-xs text-gray-600 mb-1.5">
+                            {t("change_password.new_label")}
                           </label>
                           <input
                             type="password"
@@ -362,14 +362,14 @@ export default function SecurityPage() {
                             required
                             minLength={8}
                           />
-                          <p className="text-[10px] text-gray-500 mt-1 thai-font">
-                            รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร
+                          <p className="text-[10px] text-gray-500 mt-1">
+                            {t("change_password.length_hint")}
                           </p>
                         </div>
 
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                            ยืนยันรหัสผ่าน
+                          <label className="block text-xs text-gray-600 mb-1.5">
+                            {t("change_password.setup_confirm_label")}
                           </label>
                           <input
                             type="password"
@@ -393,9 +393,9 @@ export default function SecurityPage() {
                               setSetupConfirmPassword("");
                               setOtpSent(false);
                             }}
-                            className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors thai-font order-2 md:order-1 text-xs font-bold"
+                            className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors order-2 md:order-1 text-xs font-bold"
                           >
-                            ยกเลิก
+                            {t("change_password.button_cancel")}
                           </button>
                           <button
                             type="submit"
@@ -405,16 +405,16 @@ export default function SecurityPage() {
                               !setupPassword ||
                               !setupConfirmPassword
                             }
-                            className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
+                            className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                           >
                             {isSettingPassword ? (
                               <>
                                 <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                กำลังบันทึก...
+                                {t("change_password.button_saving")}
                               </>
                             ) : (
-                              "ตั้งรหัสผ่าน"
+                              t("change_password.button_setup")
                             )}
                           </button>
                         </div>
@@ -426,8 +426,8 @@ export default function SecurityPage() {
                           className="w-full py-2 text-xs text-gray-600 hover:text-gray-800 disabled:opacity-50"
                         >
                           {otpCooldown > 0
-                            ? `ส่ง OTP อีกครั้งใน ${otpCooldown} วินาที`
-                            : "ส่ง OTP อีกครั้ง"}
+                            ? t("change_password.otp_wait", { seconds: otpCooldown })
+                            : t("change_password.resend_otp")}
                         </button>
                       </>
                     )}
@@ -439,32 +439,30 @@ export default function SecurityPage() {
                         <KeyRound className="text-white" size={16} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-black mb-0.5 thai-font text-sm">
-                          ตั้งรหัสผ่านสำรอง
+                        <h3 className="font-bold text-black mb-0.5 text-sm">
+                          {t("change_password.setup_title")}
                         </h3>
-                        <p className="text-xs text-gray-600 thai-font">
-                          คุณกำลังใช้การเข้าสู่ระบบผ่าน{" "}
-                          {user?.authProvider === "google"
-                            ? "Google"
-                            : "Discord"}
-                          ตั้งรหัสผ่านเพื่อเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้
+                        <p className="text-xs text-gray-600">
+                          {t("change_password.oauth_notice", {
+                            provider: user?.authProvider === "google" ? "Google" : "Discord"
+                          })}
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => setShowPasswordSetup(true)}
-                      className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform thai-font text-xs"
+                      className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform text-xs"
                       style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
-                      ตั้งรหัสผ่าน
+                      {t("change_password.button_setup")}
                     </button>
                   </div>
                 )
               ) : showChangePassword ? (
                 <form onSubmit={handleChangePassword} className="space-y-3">
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                      รหัสผ่านปัจจุบัน
+                    <label className="block text-xs text-gray-600 mb-1.5">
+                      {t("change_password.current_label")}
                     </label>
                     <input
                       type="password"
@@ -477,8 +475,8 @@ export default function SecurityPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                      รหัสผ่านใหม่
+                    <label className="block text-xs text-gray-600 mb-1.5">
+                      {t("change_password.new_label")}
                     </label>
                     <input
                       type="password"
@@ -489,14 +487,14 @@ export default function SecurityPage() {
                       required
                       minLength={8}
                     />
-                    <p className="text-[10px] text-gray-500 mt-1 thai-font">
-                      รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร
+                    <p className="text-[10px] text-gray-500 mt-1">
+                      {t("change_password.length_hint")}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1.5 thai-font">
-                      ยืนยันรหัสผ่านใหม่
+                    <label className="block text-xs text-gray-600 mb-1.5">
+                      {t("change_password.confirm_label")}
                     </label>
                     <input
                       type="password"
@@ -517,9 +515,9 @@ export default function SecurityPage() {
                         setNewPassword("");
                         setConfirmPassword("");
                       }}
-                      className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors thai-font order-2 md:order-1 text-xs font-bold"
+                      className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors order-2 md:order-1 text-xs font-bold"
                     >
-                      ยกเลิก
+                      {t("change_password.button_cancel")}
                     </button>
                     <button
                       type="submit"
@@ -529,16 +527,16 @@ export default function SecurityPage() {
                         !newPassword ||
                         !confirmPassword
                       }
-                      className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
+                      className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
                       style={{ boxShadow: "3px 3px 0 0 #000000" }}
                     >
                       {isChangingPassword ? (
                         <>
                           <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                          กำลังบันทึก...
+                          {t("change_password.button_saving")}
                         </>
                       ) : (
-                        "เปลี่ยนรหัสผ่าน"
+                        t("change_password.button_change")
                       )}
                     </button>
                   </div>
@@ -550,20 +548,20 @@ export default function SecurityPage() {
                       <KeyRound className="text-black" size={16} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-black mb-0.5 thai-font text-sm">
-                        อัปเดตรหัสผ่าน
+                      <h3 className="font-bold text-black mb-0.5 text-sm">
+                        {t("change_password.title")}
                       </h3>
-                      <p className="text-xs text-gray-600 thai-font">
-                        เปลี่ยนรหัสผ่านของคุณเพื่อความปลอดภัยที่ดีขึ้น
+                      <p className="text-xs text-gray-600">
+                        {t("change_password.length_hint")}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setShowChangePassword(true)}
-                    className="w-full py-2 px-3 bg-black text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform thai-font text-xs"
+                    className="w-full py-2 px-3 bg-black text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform text-xs"
                     style={{ boxShadow: "3px 3px 0 0 #000000" }}
                   >
-                    เปลี่ยนรหัสผ่าน
+                    {t("change_password.button_change")}
                   </button>
                 </div>
               )}
@@ -579,26 +577,25 @@ export default function SecurityPage() {
             transition={{ duration: 0.3, delay: 0.1 }}
           >
             <div className="p-3 bg-brutal-green border-b-[3px] border-black flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0">
-              <h2 className="text-base font-bold text-black thai-font">
-                การยืนยันตัวตนสองขั้นตอน
+              <h2 className="text-base font-bold text-black">
+                {t("two_factor.title")}
               </h2>
-              <span className="bg-gray-200 text-gray-600 border-[2px] border-black px-1.5 py-0.5 text-[10px] font-bold thai-font shadow-[2px_2px_0 0 #000]">
-                เร็วๆ นี้
+              <span className="bg-gray-200 text-gray-600 border-[2px] border-black px-1.5 py-0.5 text-[10px] font-bold shadow-[2px_2px_0 0 #000]">
+                {t("two_factor.coming_soon")}
               </span>
             </div>
 
             <div className="p-4 pointer-events-none">
               <div>
-                <p className="text-gray-600 mb-3 thai-font text-xs">
-                  การยืนยันตัวตนสองขั้นตอนเพิ่มความปลอดภัยอีกชั้นให้กับบัญชีของคุณ
-                  โดยต้องใช้รหัสยืนยันเสริมนอกเหนือจากรหัสผ่าน
+                <p className="text-gray-600 mb-3 text-xs">
+                  {t("two_factor.subtitle")}
                 </p>
                 <button
                   disabled
-                  className="w-full py-2 px-3 bg-gray-400 text-white border-[3px] border-gray-500 font-bold cursor-not-allowed thai-font text-xs"
+                  className="w-full py-2 px-3 bg-gray-400 text-white border-[3px] border-gray-500 font-bold cursor-not-allowed text-xs"
                   style={{ boxShadow: "3px 3px 0 0 #999" }}
                 >
-                  ตั้งค่าการยืนยันตัวตนสองขั้นตอน
+                  {t("two_factor.setup_button")}
                 </button>
               </div>
             </div>
@@ -613,8 +610,8 @@ export default function SecurityPage() {
             transition={{ duration: 0.3, delay: 0.2 }}
           >
             <div className="p-3 bg-brutal-blue border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black thai-font">
-                การยืนยันอีเมล
+              <h2 className="text-base font-bold text-black">
+                {t("email_verification.title")}
               </h2>
             </div>
 
@@ -626,38 +623,38 @@ export default function SecurityPage() {
                   ) : (
                     <AlertCircle className="text-brutal-pink" size={20} />
                   )}
-                  <h3 className="font-bold text-black md:hidden thai-font text-sm">
+                  <h3 className="font-bold text-black md:hidden text-sm">
                     {securitySettings.emailVerified
-                      ? "ยืนยันอีเมลแล้ว"
-                      : "ยังไม่ได้ยืนยันอีเมล"}
+                      ? t("email_verification.verified")
+                      : t("email_verification.not_verified")}
                   </h3>
                 </div>
 
                 <div className="w-full">
-                  <h3 className="font-bold text-black mb-1 hidden md:block thai-font text-sm">
+                  <h3 className="font-bold text-black mb-1 hidden md:block text-sm">
                     {securitySettings.emailVerified
-                      ? "ยืนยันอีเมลแล้ว"
-                      : "ยังไม่ได้ยืนยันอีเมล"}
+                      ? t("email_verification.verified")
+                      : t("email_verification.not_verified")}
                   </h3>
-                  <p className="text-xs text-gray-600 mb-3 thai-font">
+                  <p className="text-xs text-gray-600 mb-3">
                     {securitySettings.emailVerified
-                      ? "อีเมลของคุณได้รับการยืนยันแล้ว"
-                      : "กรุณายืนยันอีเมลของคุณเพื่อเพิ่มความปลอดภัย"}
+                      ? t("email_verification.verified_desc")
+                      : t("email_verification.not_verified_desc")}
                   </p>
 
                   {!securitySettings.emailVerified && (
                     <button
                       onClick={() => sendVerificationEmail()}
                       disabled={isLoadingSettings}
-                      className="w-full md:w-auto py-1.5 px-3 bg-black text-white border-[2px] border-black rounded-lg text-xs hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 thai-font shadow-[2px_2px_0_0_#000]"
+                      className="w-full md:w-auto py-1.5 px-3 bg-black text-white border-[2px] border-black rounded-lg text-xs hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[2px_2px_0_0_#000]"
                     >
                       {isLoadingSettings ? (
                         <>
                           <div className="w-2.5 h-2.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                          กำลังส่ง...
+                          {t("email_verification.sending")}
                         </>
                       ) : (
-                        "ส่งอีเมลยืนยัน"
+                        t("email_verification.send_button")
                       )}
                     </button>
                   )}
@@ -678,8 +675,8 @@ export default function SecurityPage() {
             transition={{ duration: 0.3, delay: 0.3 }}
           >
             <div className="p-3 bg-brutal-yellow border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black thai-font">
-                การตั้งค่าเพิ่มเติม
+              <h2 className="text-base font-bold text-black">
+                {t("additional_settings.title")}
               </h2>
             </div>
 
@@ -687,11 +684,11 @@ export default function SecurityPage() {
               {/* Login Notifications */}
               <div className="p-3 flex flex-col justify-between items-start gap-3">
                 <div>
-                  <h3 className="font-bold text-black thai-font text-sm">
-                    แจ้งเตือนการเข้าสู่ระบบ
+                  <h3 className="font-bold text-black text-sm">
+                    {t("additional_settings.login_notifications")}
                   </h3>
-                  <p className="text-xs text-gray-600 mt-0.5 thai-font">
-                    รับการแจ้งเตือนเมื่อมีคนเข้าสู่ระบบบัญชีของคุณ
+                  <p className="text-xs text-gray-600 mt-0.5">
+                    {t("additional_settings.login_notifications_desc")}
                   </p>
                 </div>
                 <div className="self-end">
@@ -723,23 +720,23 @@ export default function SecurityPage() {
             transition={{ duration: 0.3, delay: 0.4 }}
           >
             <div className="p-3 bg-brutal-pink border-b-[3px] border-black flex flex-col justify-between items-start gap-2">
-              <h2 className="text-base font-bold text-black thai-font">
-                อุปกรณ์ที่ใช้งานล่าสุด
+              <h2 className="text-base font-bold text-black">
+                {t("recent_devices.title")}
               </h2>
               <button
                 onClick={logoutAllDevices}
                 disabled={isLoadingSettings}
-                className="w-full justify-center text-xs text-black hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 font-medium thai-font border-[2px] border-black p-1.5 bg-white shadow-[2px_2px_0_0_#000]"
+                className="w-full justify-center text-xs text-black hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 font-medium border-[2px] border-black p-1.5 bg-white shadow-[2px_2px_0_0_#000]"
               >
                 {isLoadingSettings ? (
                   <>
                     <div className="w-2.5 h-2.5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                    กำลังดำเนินการ...
+                    {t("recent_devices.processing")}
                   </>
                 ) : (
                   <>
                     <LogOut size={12} />
-                    ออกจากระบบทุกอุปกรณ์
+                    {t("recent_devices.logout_all")}
                   </>
                 )}
               </button>
@@ -763,8 +760,8 @@ export default function SecurityPage() {
                           {device.name}
                         </h3>
                         {device.isCurrent ? (
-                          <span className="text-[10px] bg-brutal-green border-[1px] border-black text-black px-1.5 py-0.5 font-bold thai-font">
-                            ปัจจุบัน
+                          <span className="text-[10px] bg-brutal-green border-[1px] border-black text-black px-1.5 py-0.5 font-bold">
+                            {t("recent_devices.current_badge")}
                           </span>
                         ) : null}
                       </div>
@@ -801,8 +798,8 @@ export default function SecurityPage() {
             transition={{ duration: 0.3, delay: 0.5 }}
           >
             <div className="p-3 bg-red-100 border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black thai-font">
-                กิจกรรมที่น่าสงสัย
+              <h2 className="text-base font-bold text-black">
+                {t("suspicious_activity.title")}
               </h2>
             </div>
 
@@ -834,24 +831,18 @@ export default function SecurityPage() {
                     <div className="flex-grow min-w-0">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
                         <div className="flex-grow">
-                          <h3 className="font-bold text-black text-sm md:text-base break-words thai-font leading-tight">
+                          <h3 className="font-bold text-black text-sm md:text-base break-words leading-tight">
                             {activity.description}
                           </h3>
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-xs text-gray-600 thai-font">
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-xs text-gray-600">
                             <span className="flex items-center gap-1">
                               <Clock size={14} />
-                              {new Date(activity.timestamp).toLocaleString(
-                                "th-TH",
-                                {
-                                  dateStyle: "medium",
-                                  timeStyle: "short",
-                                },
-                              )}
+                              {new Date(activity.timestamp).toLocaleString()}
                             </span>
                             <span className="flex items-center gap-1">
                               <Globe size={14} />
                               {activity.location === "Admin Panel"
-                                ? "ผู้ดูแลระบบ"
+                                ? t("suspicious_activity.admin_location")
                                 : activity.location}
                             </span>
                             <span className="flex items-center gap-1 font-mono bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 text-xs">
@@ -866,15 +857,15 @@ export default function SecurityPage() {
                           {activity.suspicious && !activity.resolved ? (
                             <button
                               onClick={() => resolveActivity(activity.id)}
-                              className="w-full md:w-auto text-xs font-bold bg-white text-black border-[2px] border-black px-3 py-1.5 hover:bg-brutal-blue hover:text-white transition-all shadow-[2px_2px_0_0_#000] active:translate-y-[2px] active:shadow-none thai-font flex items-center justify-center gap-2"
+                              className="w-full md:w-auto text-xs font-bold bg-white text-black border-[2px] border-black px-3 py-1.5 hover:bg-brutal-blue hover:text-white transition-all shadow-[2px_2px_0_0_#000] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-2"
                             >
                               <Check size={14} />
-                              ยืนยัน
+                              {t("suspicious_activity.confirm_button")}
                             </button>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full border border-green-200 thai-font whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full border border-green-200 whitespace-nowrap">
                               <CheckCircle size={10} />
-                              ตรวจสอบแล้ว
+                              {t("suspicious_activity.resolved_badge")}
                             </span>
                           )}
                         </div>

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { authApi } from "@/lib/services/auth-api";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 type VerificationStatus =
   | "loading"
@@ -27,6 +28,7 @@ type VerificationStatus =
   | "error";
 
 function VerifyEmailContent() {
+  const t = useTranslations("Verification.verify_email");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email");
@@ -40,12 +42,12 @@ function VerifyEmailContent() {
   useEffect(() => {
     if (!token || !email) {
       setStatus("invalid_link");
-      setMessage("ลิงก์ยืนยันไม่ถูกต้อง กรุณาตรวจสอบลิงก์ในอีเมลอีกครั้ง");
+      setMessage(t("invalid_link_desc"));
       return;
     }
 
     verifyEmail();
-  }, [token, email]);
+  }, [token, email, t]);
 
   // Auto redirect after success
   useEffect(() => {
@@ -73,15 +75,15 @@ function VerifyEmailContent() {
         // Check if already verified
         if (response.data?.message?.includes("already verified")) {
           setStatus("already_verified");
-          setMessage("อีเมลนี้ได้รับการยืนยันแล้ว");
+          setMessage(t("already_verified_title"));
         } else {
           setStatus("success");
-          setMessage(response.data?.message || "ยืนยันอีเมลสำเร็จ!");
-          toast.success("ยืนยันอีเมลสำเร็จ!");
+          setMessage(response.data?.message || t("success_title"));
+          toast.success(t("success_title"));
         }
       } else {
         setStatus("error");
-        setMessage(response.message || "ไม่สามารถยืนยันอีเมลได้");
+        setMessage(response.message || t("error_title"));
       }
     } catch (error: any) {
       const errorMessage = authApi.getErrorMessage(error);
@@ -92,14 +94,14 @@ function VerifyEmailContent() {
         errorMessage.includes("หมดอายุ")
       ) {
         setStatus("expired");
-        setMessage("ลิงก์ยืนยันอีเมลหมดอายุแล้ว");
+        setMessage(t("expired_title"));
       } else if (
         errorMessage.includes("Invalid verification token") ||
         errorMessage.includes("token") ||
         errorMessage.includes("ไม่ถูกต้อง")
       ) {
         setStatus("invalid_token");
-        setMessage("รหัสยืนยันไม่ถูกต้อง");
+        setMessage(t("invalid_token_title"));
       } else {
         setStatus("error");
         setMessage(errorMessage);
@@ -115,9 +117,9 @@ function VerifyEmailContent() {
       const response = await authApi.resendVerificationEmail(email);
       if (response.success) {
         setResendSuccess(true);
-        toast.success("ส่งอีเมลยืนยันใหม่แล้ว กรุณาตรวจสอบกล่องจดหมาย");
+        toast.success(t("resend_success"));
       } else {
-        toast.error(response.message || "ไม่สามารถส่งอีเมลได้");
+        toast.error(response.message || t("error_title"));
       }
     } catch (error: any) {
       toast.error(authApi.getErrorMessage(error));
@@ -130,14 +132,14 @@ function VerifyEmailContent() {
   const statusConfig = {
     loading: {
       icon: <Loader2 size={48} className="animate-spin text-brutal-blue" />,
-      title: "กำลังยืนยัน...",
-      message: "กำลังยืนยันอีเมลของคุณ...",
+      title: t("loading"),
+      message: t("loading_desc"),
       bgColor: "bg-gray-100",
       textColor: "text-gray-600",
     },
     success: {
       icon: <CheckCircle size={48} className="text-black" />,
-      title: "ยืนยันอีเมลสำเร็จ!",
+      title: t("success_title"),
       message: message,
       bgColor: "bg-brutal-green",
       textColor: "text-black",
@@ -145,39 +147,39 @@ function VerifyEmailContent() {
     },
     already_verified: {
       icon: <CheckCircle size={48} className="text-black" />,
-      title: "อีเมลได้รับการยืนยันแล้ว",
-      message: message || "อีเมลนี้ได้รับการยืนยันแล้ว",
+      title: t("already_verified_title"),
+      message: message || t("already_verified_title"),
       bgColor: "bg-brutal-yellow",
       textColor: "text-black",
       showCountdown: true,
     },
     expired: {
       icon: <Clock size={48} className="text-black" />,
-      title: "ลิงก์หมดอายุ",
-      message: message || "ลิงก์ยืนยันอีเมลหมดอายุแล้ว",
+      title: t("expired_title"),
+      message: message || t("expired_title"),
       bgColor: "bg-brutal-pink",
       textColor: "text-black",
       showResend: true,
     },
     invalid_token: {
       icon: <AlertTriangle size={48} className="text-black" />,
-      title: "รหัสยืนยันไม่ถูกต้อง",
-      message: message || "รหัสยืนยันไม่ถูกต้อง กรุณาขอลิงก์ใหม่",
+      title: t("invalid_token_title"),
+      message: message || t("invalid_token_title"),
       bgColor: "bg-brutal-pink",
       textColor: "text-black",
       showResend: true,
     },
     invalid_link: {
       icon: <XCircle size={48} className="text-black" />,
-      title: "ลิงก์ไม่ถูกต้อง",
-      message: message || "ลิงก์ยืนยันไม่ถูกต้อง",
+      title: t("invalid_link_title"),
+      message: message || t("invalid_link_title"),
       bgColor: "bg-brutal-pink",
       textColor: "text-black",
     },
     error: {
       icon: <XCircle size={48} className="text-black" />,
-      title: "เกิดข้อผิดพลาด",
-      message: message || "ไม่สามารถยืนยันอีเมลได้",
+      title: t("error_title"),
+      message: message || t("error_title"),
       bgColor: "bg-brutal-pink",
       textColor: "text-black",
     },
@@ -204,10 +206,10 @@ function VerifyEmailContent() {
                 <Mail size={24} className="text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-black thai-font">
-                  ยืนยันอีเมล
+                <h1 className="text-xl font-bold text-black uppercase tracking-tight">
+                  {t("title")}
                 </h1>
-                <p className="text-sm text-gray-700">Email Verification</p>
+                <p className="text-sm text-gray-700 uppercase font-medium">Email Verification</p>
               </div>
             </div>
           </div>
@@ -224,13 +226,13 @@ function VerifyEmailContent() {
 
               {/* Title */}
               <h2
-                className={`text-lg font-bold ${currentStatus.textColor} mb-2 thai-font`}
+                className={`text-lg font-bold ${currentStatus.textColor} mb-2`}
               >
                 {currentStatus.title}
               </h2>
 
               {/* Message */}
-              <p className="text-gray-600 mb-4 thai-font">
+              <p className="text-gray-600 mb-4">
                 {currentStatus.message}
               </p>
 
@@ -244,7 +246,7 @@ function VerifyEmailContent() {
               {/* Countdown for success states */}
               {showCountdown && (
                 <p className="text-sm text-gray-500 mb-4">
-                  กำลังนำคุณไปยังหน้าบัญชีใน {countdown} วินาที...
+                  {t("redirect_hint", { seconds: countdown })}
                 </p>
               )}
 
@@ -255,8 +257,8 @@ function VerifyEmailContent() {
                   animate={{ opacity: 1, y: 0 }}
                   className="mb-4 p-3 bg-brutal-green border-[2px] border-black"
                 >
-                  <p className="text-sm text-black thai-font">
-                    ส่งอีเมลยืนยันใหม่แล้ว! กรุณาตรวจสอบกล่องจดหมาย
+                  <p className="text-sm text-black">
+                    {t("resend_success")}
                   </p>
                 </motion.div>
               )}
@@ -266,9 +268,9 @@ function VerifyEmailContent() {
                 {status === "success" && (
                   <Link
                     href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors thai-font"
+                    className="inline-flex items-center justify-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
                   >
-                    ไปยังบัญชีของฉัน
+                    {t("go_to_account")}
                     <ArrowRight size={18} />
                   </Link>
                 )}
@@ -276,9 +278,9 @@ function VerifyEmailContent() {
                 {status === "already_verified" && (
                   <Link
                     href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 bg-brutal-yellow text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-black hover:text-white transition-colors thai-font"
+                    className="inline-flex items-center justify-center gap-2 bg-brutal-yellow text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-black hover:text-white transition-colors"
                   >
-                    ไปยังบัญชีของฉัน
+                    {t("go_to_account")}
                     <ArrowRight size={18} />
                   </Link>
                 )}
@@ -288,23 +290,23 @@ function VerifyEmailContent() {
                     <button
                       onClick={handleResend}
                       disabled={isResending || resendSuccess}
-                      className="inline-flex items-center justify-center gap-2 bg-brutal-yellow text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-brutal-blue hover:text-white transition-colors thai-font disabled:opacity-50"
+                      className="inline-flex items-center justify-center gap-2 bg-brutal-yellow text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-brutal-blue hover:text-white transition-colors disabled:opacity-50"
                     >
                       {isResending ? (
                         <>
                           <Loader2 size={18} className="animate-spin" />
-                          กำลังส่ง...
+                          {t("sending")}
                         </>
                       ) : (
                         <>
                           <RefreshCw size={18} />
-                          ส่งอีเมลยืนยันใหม่
+                          {t("resend_button")}
                         </>
                       )}
                     </button>
 
-                    <p className="text-xs text-gray-500 thai-font">
-                      หากไม่ได้รับอีเมล กรุณาตรวจสอบในโฟลเดอร์ Spam
+                    <p className="text-xs text-gray-500">
+                      {t("spam_hint")}
                     </p>
                   </>
                 )}
@@ -312,9 +314,9 @@ function VerifyEmailContent() {
                 {status === "invalid_link" && (
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors thai-font"
+                    className="inline-flex items-center justify-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
                   >
-                    ไปยังหน้าเข้าสู่ระบบ
+                    {t("go_to_login")}
                     <ArrowRight size={18} />
                   </Link>
                 )}
@@ -322,9 +324,9 @@ function VerifyEmailContent() {
                 {status === "error" && !showResendButton && (
                   <Link
                     href="/support"
-                    className="inline-flex items-center justify-center gap-2 bg-gray-200 text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-gray-300 transition-colors thai-font"
+                    className="inline-flex items-center justify-center gap-2 bg-gray-200 text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-gray-300 transition-colors"
                   >
-                    ติดต่อฝ่ายสนับสนุน
+                    {t("contact_support")}
                   </Link>
                 )}
 
@@ -332,9 +334,9 @@ function VerifyEmailContent() {
                 {["expired", "invalid_token", "error"].includes(status) && (
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 border-[2px] border-gray-300 font-bold hover:bg-gray-200 transition-colors thai-font"
+                    className="inline-flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 border-[2px] border-gray-300 font-bold hover:bg-gray-200 transition-colors"
                   >
-                    กลับไปหน้าเข้าสู่ระบบ
+                    {t("back_to_login")}
                   </Link>
                 )}
               </div>
@@ -348,6 +350,7 @@ function VerifyEmailContent() {
 
 // Main page with suspense boundary
 export default function VerifyEmailPage() {
+  const t = useTranslations("Common");
   return (
     <Suspense
       fallback={
@@ -357,7 +360,7 @@ export default function VerifyEmailPage() {
               size={48}
               className="animate-spin mx-auto mb-4 text-brutal-blue"
             />
-            <p className="text-gray-600 thai-font">กำลังโหลด...</p>
+            <p className="text-gray-600">{t("loading")}</p>
           </div>
         </div>
       }

@@ -18,8 +18,10 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { publicSettingsApi } from "@/lib/services/public-settings-api";
+import { useTranslations } from "next-intl";
 
 export default function RegisterPage() {
+  const t = useTranslations("Auth.register");
   const router = useRouter();
   const { register, isLoading } = useAuth();
   const [username, setUsername] = useState("");
@@ -34,11 +36,11 @@ export default function RegisterPage() {
   // Validate password match
   useEffect(() => {
     if (confirmPassword && password !== confirmPassword) {
-      setPasswordError("รหัสผ่านไม่ตรงกัน");
+      setPasswordError(t("passwords_not_match"));
     } else {
       setPasswordError("");
     }
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword, t]);
 
   useEffect(() => {
     const loadPublicSettings = async () => {
@@ -84,17 +86,17 @@ export default function RegisterPage() {
     return (
       <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-xl bg-white border-[3px] border-black p-8 text-center shadow-[6px_6px_0_0_#000]">
-          <h1 className="text-2xl font-black text-black mb-3 thai-font">
-            ปิดรับสมัครสมาชิกชั่วคราว
+          <h1 className="text-2xl font-black text-black mb-3">
+            {t("registration_disabled")}
           </h1>
-          <p className="text-gray-600 thai-font mb-6">
-            ผู้ดูแลระบบปิดการสมัครสมาชิกใหม่ไว้ชั่วคราว กรุณาลองใหม่ภายหลัง
+          <p className="text-gray-600 mb-6">
+            {t("registration_disabled_desc")}
           </p>
           <Link
             href="/login"
             className="inline-block border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black"
           >
-            ไปหน้าเข้าสู่ระบบ
+            {t("go_to_login")}
           </Link>
         </div>
       </div>
@@ -115,19 +117,19 @@ export default function RegisterPage() {
             <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_0_#000]">
               <Zap className="w-6 h-6 text-black" fill="currentColor" />
             </div>
-            <span className="text-2xl font-black text-black thai-font">
+            <span className="text-2xl font-black text-black">
               {siteName}
             </span>
           </div>
 
-          <h1 className="text-4xl font-black text-black leading-tight thai-font">
-            สมัครสมาชิกวันนี้
+          <h1 className="text-4xl font-black text-black leading-tight">
+            {t("hero_title_1")}
             <br />
-            รับสิทธิ์ <span className="text-brutal-pink">พิเศษมากมาย</span>
+            {t("hero_title_2")} <span className="text-brutal-pink">{t("hero_title_3")}</span>
           </h1>
 
-          <p className="text-gray-600 text-lg thai-font">
-            สร้างบัญชีเพื่อเริ่มต้นเติมเกมและรับสิทธิประโยชน์สุดคุ้ม
+          <p className="text-gray-600 text-lg">
+            {t("hero_desc")}
           </p>
 
           {/* Benefits */}
@@ -146,9 +148,9 @@ export default function RegisterPage() {
                 <Gift className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-black font-bold thai-font">โบนัสต้อนรับ</h3>
+                <h3 className="text-black font-bold">{t("welcome_bonus")}</h3>
                 <p className="text-gray-500 text-sm">
-                  รับแต้มสะสมฟรีเมื่อสมัครครั้งแรก
+                  {t("welcome_bonus_desc")}
                 </p>
               </div>
             </motion.div>
@@ -167,9 +169,9 @@ export default function RegisterPage() {
                 <Clock className="w-5 h-5 text-black" />
               </div>
               <div>
-                <h3 className="text-black font-bold thai-font">เติมไว 24/7</h3>
+                <h3 className="text-black font-bold">{t("fast_247")}</h3>
                 <p className="text-gray-500 text-sm">
-                  บริการตลอด 24 ชั่วโมง ไม่มีวันหยุด
+                  {t("fast_247_desc")}
                 </p>
               </div>
             </motion.div>
@@ -188,24 +190,24 @@ export default function RegisterPage() {
               <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
                 <Zap className="w-5 h-5 text-black" fill="currentColor" />
               </div>
-              <span className="text-xl font-black text-black thai-font">
+              <span className="text-xl font-black text-black">
                 {siteName}
               </span>
             </div>
 
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-black mb-2 thai-font">
-                สมัครสมาชิก
+              <h2 className="text-2xl font-black text-black mb-2">
+                {t("title")}
               </h2>
-              <p className="text-gray-500 thai-font">
-                กรอกข้อมูลด้านล่างเพื่อสร้างบัญชีใหม่
+              <p className="text-gray-500">
+                {t("subtitle")}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <Input
                 id="username"
-                label="ชื่อผู้ใช้"
+                label={t("username")}
                 type="text"
                 placeholder="yourname"
                 value={username}
@@ -220,7 +222,7 @@ export default function RegisterPage() {
 
               <Input
                 id="email"
-                label="อีเมล"
+                label={t("email")}
                 type="email"
                 placeholder="your@email.com"
                 value={email}
@@ -234,9 +236,9 @@ export default function RegisterPage() {
               <div className="space-y-1.5">
                 <Input
                   id="password"
-                  label="รหัสผ่าน"
+                  label={t("password")}
                   type="password"
-                  placeholder="อย่างน้อย 8 ตัวอักษร"
+                  placeholder={t("password_hint")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   minLength={8}
@@ -246,14 +248,14 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                 />
                 <p className="text-xs text-gray-500">
-                  รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร
+                  {t("password_hint")}
                 </p>
               </div>
 
               <div className="space-y-1.5">
                 <Input
                   id="confirmPassword"
-                  label="ยืนยันรหัสผ่าน"
+                  label={t("confirm_password")}
                   type="password"
                   placeholder="••••••••"
                   value={confirmPassword}
@@ -287,38 +289,38 @@ export default function RegisterPage() {
               >
                 {!isLoading && (
                   <>
-                    สมัครสมาชิก <ArrowRight className="ml-2 h-5 w-5" />
+                    {t("register_button")} <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
               </Button>
             </form>
 
             <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-              <p className="text-gray-500 thai-font">
-                มีบัญชีอยู่แล้ว?{" "}
+              <p className="text-gray-500">
+                {t("already_have_account")}{" "}
                 <Link
                   href="/login"
                   className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
                 >
-                  เข้าสู่ระบบ
+                  {t("login_now")}
                 </Link>
               </p>
             </div>
 
-            <div className="mt-6 text-center text-xs text-gray-500 thai-font">
-              การสมัครสมาชิกแสดงว่าคุณยอมรับ{" "}
+            <div className="mt-6 text-center text-xs text-gray-500">
+              {t("terms_agreement")}{" "}
               <Link
                 href="/terms"
                 className="text-gray-700 hover:text-black font-bold transition-colors"
               >
-                เงื่อนไขการใช้งาน
+                {t("terms")}
               </Link>{" "}
-              และ{" "}
+              {t("and")}{" "}
               <Link
                 href="/privacy"
                 className="text-gray-700 hover:text-black font-bold transition-colors"
               >
-                นโยบายความเป็นส่วนตัว
+                {t("privacy_policy")}
               </Link>
             </div>
           </div>

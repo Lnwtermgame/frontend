@@ -41,8 +41,10 @@ import toast from "react-hot-toast";
 import AIGenerateAllButton from "@/components/admin/AIGenerateAllButton";
 import { isAppwriteUrl, processImageUrl } from "@/lib/services/storage-api";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useTranslations } from "next-intl";
 
 export default function AdminProducts() {
+  const t = useTranslations("AdminPage");
   const router = useRouter();
   const { isAdmin, isInitialized, isSessionChecked } = useAuth();
   const [products, setProducts] = useState<AdminProduct[]>([]);

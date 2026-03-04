@@ -26,6 +26,7 @@ import {
 import { getMinPrice, formatPrice } from "@/lib/utils";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface DashboardData {
   stats: DashboardStats | null;
@@ -34,6 +35,7 @@ interface DashboardData {
 }
 
 export default function AdminDashboard() {
+  const t = useTranslations("AdminPage");
   const router = useRouter();
   const { isAdmin, isInitialized } = useAuth();
 
@@ -74,7 +76,7 @@ export default function AdminDashboard() {
           popularProducts: productsRes.data,
         });
       } catch (err) {
-        setError("ไม่สามารถโหลดข้อมูลแดชบอร์ดได้");
+        setError(t("dashboard.load_error"));
         console.error(err);
       } finally {
         setLoading(false);

@@ -19,6 +19,7 @@ import {
   AdminSiteSettings,
   adminSettingsApi,
 } from "@/lib/services/admin-settings-api";
+import { useTranslations } from "next-intl";
 
 type LandingBlockKey = "promoCards" | "newsItems" | "seasonalEvents";
 
@@ -31,7 +32,7 @@ type CategoryTabItem = AdminSiteSettings["homepage"]["categoryTabs"][number];
 type QuickActionItem = AdminSiteSettings["homepage"]["quickActions"][number];
 type TrustBadgeItem = AdminSiteSettings["homepage"]["trustBadges"][number];
 
-const EMPTY_SETTINGS: AdminSiteSettings = {
+const getEmptySettings = (t: (key: string) => string): AdminSiteSettings => ({
   general: {
     siteName: "",
     siteTagline: "",
@@ -61,11 +62,11 @@ const EMPTY_SETTINGS: AdminSiteSettings = {
     quickActions: [],
     trustBadges: [],
     sectionLabels: {
-      featuredProductsTitle: "เกมแนะนำ",
-      specialsTitle: "โปรโมชั่นพิเศษ",
-      newsTitle: "ข่าวสารล่าสุด",
-      viewAllText: "ทั้งหมด",
-      heroButtonText: "ดูรายละเอียด",
+      featuredProductsTitle: t("settings.section_labels.featured_products"),
+      specialsTitle: t("settings.section_labels.specials"),
+      newsTitle: t("settings.section_labels.news"),
+      viewAllText: t("settings.section_labels.view_all"),
+      heroButtonText: t("settings.section_labels.hero_button"),
     },
   },
   commerce: {
@@ -92,7 +93,7 @@ const EMPTY_SETTINGS: AdminSiteSettings = {
     metaDescription: "",
     metaKeywords: [],
   },
-};
+});
 
 const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -173,6 +174,9 @@ function toCsv(values: string[]): string {
 
 export default function AdminSettingsPage() {
   const { isAdmin, isInitialized, isSessionChecked } = useAuth();
+  const t = useTranslations("AdminPage");
+  const EMPTY_SETTINGS = useMemo(() => getEmptySettings(t), [t]);
+
   const [settings, setSettings] = useState<AdminSiteSettings>(EMPTY_SETTINGS);
   const [liveSettings, setLiveSettings] =
     useState<AdminSiteSettings>(EMPTY_SETTINGS);

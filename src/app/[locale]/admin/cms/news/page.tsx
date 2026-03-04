@@ -35,6 +35,7 @@ import type { PerplexicaProvider } from "@/lib/services/ai-api";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
 import AINewsProgressPanel from "@/components/admin/AINewsProgressPanel";
+import { useTranslations } from "next-intl";
 
 // Slugify helper
 const slugify = (text: string) => {
@@ -47,21 +48,19 @@ const slugify = (text: string) => {
     .replace(/-+/g, "-");
 };
 
-const categories: { value: NewsCategory; label: string; color: string }[] = [
-  { value: "general", label: "ทั่วไป", color: "bg-gray-100 text-gray-700" },
-  {
-    value: "promotion",
-    label: "โปรโมชั่น",
-    color: "bg-pink-100 text-pink-700",
-  },
-  { value: "update", label: "อัปเดต", color: "bg-blue-100 text-blue-700" },
-  { value: "event", label: "กิจกรรม", color: "bg-yellow-100 text-yellow-700" },
-];
-
 export default function AdminCmsNewsPage() {
+  const t = useTranslations("AdminPage");
   const [mounted, setMounted] = useState(false);
 
   const { isSessionChecked, isAuthenticated, isAdmin } = useAuth();
+
+  // Category options with translations
+  const categories: { value: NewsCategory; label: string; color: string }[] = [
+    { value: "general", label: t("cms_news.categories.general"), color: "bg-gray-100 text-gray-700" },
+    { value: "promotion", label: t("cms_news.categories.promotion"), color: "bg-pink-100 text-pink-700" },
+    { value: "update", label: t("cms_news.categories.update"), color: "bg-blue-100 text-blue-700" },
+    { value: "event", label: t("cms_news.categories.event"), color: "bg-yellow-100 text-yellow-700" },
+  ];
 
   useEffect(() => {
     setMounted(true);

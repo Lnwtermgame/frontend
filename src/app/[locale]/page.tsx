@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/Input";
 import { productApi, Product } from "@/lib/services/product-api";
 import { cmsApi, NewsArticleListItem } from "@/lib/services/cms-api";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
+import { useTranslations } from "next-intl";
 
 interface FeaturedProduct {
   id: string;
@@ -109,125 +110,6 @@ function transformProductToFeatured(product: Product): FeaturedProduct {
   };
 }
 
-const DEFAULT_HERO_SLIDES = [
-  {
-    id: "hero-default-1",
-    title: "10% Cashback",
-    subtitle: "Top up with participating bank channels",
-    image: "https://placehold.co/1200x400/FFD93D/000000?text=Promotion",
-    link: "/promotions/1",
-    color: "yellow",
-    badgeText: "Promotion",
-  },
-  {
-    id: "hero-default-2",
-    title: "50% Extra Credits",
-    subtitle: "New member bonus campaign",
-    image: "https://placehold.co/1200x400/FF6B9D/ffffff?text=Extra+Credit",
-    link: "/promotions/2",
-    color: "pink",
-    badgeText: "Promotion",
-  },
-];
-const DEFAULT_CATEGORY_TABS = [
-  { id: "all", label: "All", icon: "gamepad" as const },
-  { id: "hot", label: "Hot", icon: "flame" as const },
-  { id: "cards", label: "Cards", icon: "card" as const },
-];
-const DEFAULT_PROMO_CARDS = [
-  {
-    id: "promo-1",
-    badge: "Latest",
-    title: "AI Game Assistant",
-    description: "Help players find the right game and top-up package faster",
-    ctaText: "Try now",
-    href: "/support",
-    theme: "blue" as const,
-  },
-  {
-    id: "promo-2",
-    badge: "HOT",
-    title: "50% Extra Credits",
-    description: "For new members",
-    ctaText: "Claim",
-    href: "/promotions",
-    theme: "pink" as const,
-  },
-];
-const DEFAULT_NEWS_ITEMS = [
-  {
-    id: 1,
-    title: "Valorant introduces a new map and agent next season",
-    image: "https://placehold.co/400x250/FF6B9D/ffffff?text=Valorant",
-    date: "15 Jan 2023",
-    category: "Game News",
-  },
-  {
-    id: 2,
-    title: "Special Steam campaign this month",
-    image: "https://placehold.co/400x250/4ECDC4/000000?text=Steam",
-    date: "10 Jan 2023",
-    category: "Promotion",
-  },
-  {
-    id: 3,
-    title: "Major PUBG Mobile update",
-    image: "https://placehold.co/400x250/FFD93D/000000?text=PUBG",
-    date: "5 Jan 2023",
-    category: "Update",
-  },
-];
-
-const DEFAULT_QUICK_ACTIONS = [
-  {
-    id: "qa-default-1",
-    icon: "credit-card" as const,
-    label: "Top Up",
-    href: "/games",
-    color: "yellow" as const,
-  },
-  {
-    id: "qa-default-2",
-    icon: "gift" as const,
-    label: "Cards",
-    href: "/card",
-    color: "pink" as const,
-  },
-  {
-    id: "qa-default-3",
-    icon: "star" as const,
-    label: "Promo",
-    href: "/?promo=true",
-    color: "green" as const,
-  },
-  {
-    id: "qa-default-4",
-    icon: "headphones" as const,
-    label: "Support",
-    href: "/support",
-    color: "blue" as const,
-  },
-];
-const DEFAULT_TRUST_BADGES = [
-  {
-    id: "tb-default-1",
-    icon: "shield" as const,
-    title: "100% Secure",
-    description: "Enterprise-grade security",
-  },
-  {
-    id: "tb-default-2",
-    icon: "headphones" as const,
-    title: "24/7 Support",
-    description: "Support team always online",
-  },
-  {
-    id: "tb-default-3",
-    icon: "zap" as const,
-    title: "Instant Delivery",
-    description: "Automatic fulfillment in seconds",
-  },
-];
 const QUICK_ACTION_ICON_MAP = {
   "credit-card": CreditCard,
   gift: Gift,
@@ -247,6 +129,7 @@ const TRUST_BADGE_ICON_MAP = {
 } as const;
 
 export default function HomePage() {
+  const t = useTranslations("Home");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeCategory, setActiveCategory] = useState("all");
   const { settings: publicSettings, loading: settingsLoading } =
@@ -256,65 +139,157 @@ export default function HomePage() {
   );
   const [newsArticles, setNewsArticles] = useState<NewsArticleListItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const sectionLabels = useMemo(
-    () => ({
-      featuredProductsTitle:
-        publicSettings?.homepage.sectionLabels?.featuredProductsTitle ||
-        "Featured Games",
-      specialsTitle:
-        publicSettings?.homepage.sectionLabels?.specialsTitle || "Specials",
-      newsTitle: publicSettings?.homepage.sectionLabels?.newsTitle || "News",
-      viewAllText:
-        publicSettings?.homepage.sectionLabels?.viewAllText || "View all",
-      heroButtonText:
-        publicSettings?.homepage.sectionLabels?.heroButtonText || "Details",
-    }),
-    [publicSettings],
-  );
 
   const heroSlides = useMemo(() => {
     if (publicSettings?.homepage?.heroSlides?.length) {
       return publicSettings.homepage.heroSlides;
     }
-    return DEFAULT_HERO_SLIDES;
-  }, [publicSettings]);
+    return [
+      {
+        id: "hero-default-1",
+        title: t("hero.default_1_title"),
+        subtitle: t("hero.default_1_subtitle"),
+        image: "https://placehold.co/1200x400/FFD93D/000000?text=Promotion",
+        link: "/promotions/1",
+        color: "yellow",
+        badgeText: t("hero.badge_promo"),
+      },
+      {
+        id: "hero-default-2",
+        title: t("hero.default_2_title"),
+        subtitle: t("hero.default_2_subtitle"),
+        image: "https://placehold.co/1200x400/FF6B9D/ffffff?text=Extra+Credit",
+        link: "/promotions/2",
+        color: "pink",
+        badgeText: t("hero.badge_promo"),
+      },
+    ];
+  }, [publicSettings, t]);
 
   const categoryTabs = useMemo(
     () =>
       publicSettings?.homepage?.categoryTabs?.length
         ? publicSettings.homepage.categoryTabs
-        : DEFAULT_CATEGORY_TABS,
-    [publicSettings],
+        : [
+            { id: "all", label: t("categories.all"), icon: "gamepad" as const },
+            { id: "hot", label: t("categories.hot"), icon: "flame" as const },
+            { id: "cards", label: t("categories.cards"), icon: "card" as const },
+          ],
+    [publicSettings, t],
   );
 
   const quickActions = useMemo(
     () =>
       publicSettings?.homepage?.quickActions?.length
         ? publicSettings.homepage.quickActions
-        : DEFAULT_QUICK_ACTIONS,
-    [publicSettings],
+        : [
+            {
+              id: "qa-default-1",
+              icon: "credit-card" as const,
+              label: t("quick_actions.topup"),
+              href: "/games",
+              color: "yellow" as const,
+            },
+            {
+              id: "qa-default-2",
+              icon: "gift" as const,
+              label: t("quick_actions.cards"),
+              href: "/card",
+              color: "pink" as const,
+            },
+            {
+              id: "qa-default-3",
+              icon: "star" as const,
+              label: t("quick_actions.promo"),
+              href: "/?promo=true",
+              color: "green" as const,
+            },
+            {
+              id: "qa-default-4",
+              icon: "headphones" as const,
+              label: t("quick_actions.support"),
+              href: "/support",
+              color: "blue" as const,
+            },
+          ],
+    [publicSettings, t],
   );
 
   const trustBadges = useMemo(
     () =>
       publicSettings?.homepage?.trustBadges?.length
         ? publicSettings.homepage.trustBadges
-        : DEFAULT_TRUST_BADGES,
-    [publicSettings],
+        : [
+            {
+              id: "tb-default-1",
+              icon: "shield" as const,
+              title: t("trust.secure_title"),
+              description: t("trust.secure_desc"),
+            },
+            {
+              id: "tb-default-2",
+              icon: "headphones" as const,
+              title: t("trust.support_title"),
+              description: t("trust.support_desc"),
+            },
+            {
+              id: "tb-default-3",
+              icon: "zap" as const,
+              title: t("trust.delivery_title"),
+              description: t("trust.delivery_desc"),
+            },
+          ],
+    [publicSettings, t],
   );
 
   const promoCards = useMemo(
     () =>
       publicSettings?.homepage?.promoCards?.length
         ? publicSettings.homepage.promoCards
-        : DEFAULT_PROMO_CARDS,
-    [publicSettings],
+        : [
+            {
+              id: "promo-1",
+              badge: "Latest",
+              title: t("promo.ai_title"),
+              description: t("promo.ai_desc"),
+              ctaText: t("promo.ai_cta"),
+              href: "/support",
+              theme: "blue" as const,
+            },
+            {
+              id: "promo-2",
+              badge: "HOT",
+              title: t("promo.extra_credits_title"),
+              description: t("promo.extra_credits_desc"),
+              ctaText: t("promo.extra_credits_cta"),
+              href: "/promotions",
+              theme: "pink" as const,
+            },
+          ],
+    [publicSettings, t],
   );
+
+  const sectionLabels = useMemo(
+    () => ({
+      featuredProductsTitle:
+        publicSettings?.homepage.sectionLabels?.featuredProductsTitle ||
+        t("sections.featured"),
+      specialsTitle:
+        publicSettings?.homepage.sectionLabels?.specialsTitle || t("sections.specials"),
+      newsTitle: publicSettings?.homepage.sectionLabels?.newsTitle || t("sections.news"),
+      viewAllText:
+        publicSettings?.homepage.sectionLabels?.viewAllText || t("sections.view_all"),
+      heroButtonText:
+        publicSettings?.homepage.sectionLabels?.heroButtonText || t("sections.details"),
+    }),
+    [publicSettings, t],
+  );
+
   const newsItems = useMemo(
     () =>
       publicSettings?.homepage?.newsItems?.length
         ? publicSettings.homepage.newsItems
-        : DEFAULT_NEWS_ITEMS,
+        : [],
     [publicSettings],
   );
 
@@ -398,9 +373,7 @@ export default function HomePage() {
     if (activeCategory === "all") return true;
     if (activeCategory === "hot")
       return product.isBestseller || product.discountPercent !== undefined;
-    if (activeCategory === "cards") {
-      return product.productType === "CARD";
-    }
+    if (activeCategory === "cards") return product.productType === "CARD";
     return true;
   });
 
@@ -428,10 +401,7 @@ export default function HomePage() {
               transition={{ duration: 0.6, repeat: Infinity, delay: 0.24 }}
             />
           </div>
-          <p className="text-base font-black text-black">กำลังโหลดหน้าแรก...</p>
-          <p className="mt-2 text-sm text-gray-600">
-            กำลังซิงก์ข้อมูลล่าสุดจากระบบ
-          </p>
+          <p className="text-base font-black text-black">{t("loading")}</p>
         </div>
       </div>
     );
@@ -547,10 +517,10 @@ export default function HomePage() {
         <div className="grid grid-cols-4 gap-3">
           {visibleQuickActions.map((action) => {
             const ActionIcon =
-              QUICK_ACTION_ICON_MAP[action.icon] ||
+              QUICK_ACTION_ICON_MAP[action.icon as keyof typeof QUICK_ACTION_ICON_MAP] ||
               QUICK_ACTION_ICON_MAP["credit-card"];
             const actionColor =
-              QUICK_ACTION_COLOR_MAP[action.color] ||
+              QUICK_ACTION_COLOR_MAP[action.color as keyof typeof QUICK_ACTION_COLOR_MAP] ||
               QUICK_ACTION_COLOR_MAP.yellow;
             return (
               <Link key={action.id || action.label} href={action.href}>
@@ -581,7 +551,7 @@ export default function HomePage() {
           <div className="relative group">
             <div className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition-transform group-focus-within:translate-x-1.5 group-focus-within:translate-y-1.5" />
             <Input
-              placeholder="ค้นหาเกมที่คุณต้องการ..."
+              placeholder={t("sections.featured")}
               icon={<Search size={20} className="text-black" />}
               className="relative bg-white border-[3px] border-black rounded-none h-14 text-base font-bold placeholder:text-zinc-500 focus-visible:ring-0 focus-visible:border-brutal-pink transition-colors"
             />
@@ -664,7 +634,7 @@ export default function HomePage() {
                         className={`${btnClass} border-[3px] border-black font-black text-sm md:text-base px-6 py-3 h-auto flex items-center gap-2 group/btn transition-all`}
                         style={{ boxShadow: "4px 4px 0 0 #000000" }}
                       >
-                        {card.ctaText || "ดูรายละเอียด"}
+                        {card.ctaText || t("sections.details")}
                         <ChevronRight
                           size={18}
                           className="group-hover/btn:translate-x-1 transition-transform"
@@ -780,7 +750,7 @@ export default function HomePage() {
                             className="bg-brutal-yellow text-black px-3 py-1.5 text-xs sm:text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                           >
-                            เติมเกมเลย
+                            {t("sections.details")}
                           </div>
                         </div>
 
@@ -788,14 +758,14 @@ export default function HomePage() {
                         {product.autoDelivery && (
                           <div
                             className="absolute bottom-2 right-2 z-10"
-                            title="ส่งให้ทันทีหลังชำระเงิน"
+                            title="Auto Delivery"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 512 512"
                               className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
                               role="img"
-                              aria-label="ส่งให้ทันทีหลังชำระเงิน"
+                              aria-label="Auto Delivery"
                             >
                               <g clipRule="evenodd" fillRule="evenodd">
                                 <circle
@@ -836,7 +806,7 @@ export default function HomePage() {
                                 className="text-brutal-pink sm:hidden"
                               />
                               <div className="hidden sm:block text-[8px] sm:text-[10px] font-bold text-white bg-brutal-pink px-1.5 py-0.5 border border-black">
-                                มาแรง
+                                HOT
                               </div>
                             </>
                           ) : (
@@ -856,7 +826,7 @@ export default function HomePage() {
           {!loading && filteredProducts.length === 0 && (
             <div className="text-center py-12">
               <Gamepad2 size={48} className="mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500 font-bold">ไม่พบเกมที่แนะนำ</p>
+              <p className="text-gray-500 font-bold">No games found</p>
             </div>
           )}
         </section>
@@ -865,7 +835,7 @@ export default function HomePage() {
         <section className="grid grid-cols-3 gap-2 sm:gap-4">
           {trustBadges.map((badge, i) => {
             const BadgeIcon =
-              TRUST_BADGE_ICON_MAP[badge.icon] || TRUST_BADGE_ICON_MAP.shield;
+              TRUST_BADGE_ICON_MAP[badge.icon as keyof typeof TRUST_BADGE_ICON_MAP] || TRUST_BADGE_ICON_MAP.shield;
             return (
               <div
                 key={badge.id || i}
@@ -923,12 +893,12 @@ export default function HomePage() {
                         <div className="absolute top-2 left-2 bg-brutal-blue text-white text-[10px] font-bold px-2 py-1 border-[2px] border-black">
                           {(item.category as any)?.name ||
                             (item.category as any) ||
-                            "ข่าวสาร"}
+                            "News"}
                         </div>
                       </div>
                       <div className="p-3 sm:p-4">
                         <p className="text-[10px] text-gray-500 mb-1 font-bold">
-                          {new Date(item.createdAt).toLocaleDateString("th-TH")}
+                          {new Date(item.createdAt).toLocaleDateString()}
                         </p>
                         <h3 className="text-sm sm:text-base font-black text-black line-clamp-2 leading-snug">
                           {item.title}

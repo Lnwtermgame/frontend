@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { notificationClient } from "@/lib/client/gateway";
+import { useTranslations } from "next-intl";
 
 interface EmailTemplate {
   id: string;
@@ -36,33 +37,35 @@ interface EmailTemplate {
   isSystem: boolean;
 }
 
-const CATEGORY_OPTIONS = [
-  { value: "AUTHENTICATION", label: "การยืนยันตัวตน" },
-  { value: "ORDER", label: "คำสั่งซื้อ" },
-  { value: "PAYMENT", label: "การชำระเงิน" },
-  { value: "PROMOTION", label: "โปรโมชั่น" },
-  { value: "SUPPORT", label: "การสนับสนุน" },
-  { value: "SYSTEM", label: "ระบบ" },
-  { value: "GENERAL", label: "ทั่วไป" },
-];
-
-const COMMON_PLACEHOLDERS = [
-  { name: "username", description: "ชื่อผู้ใช้" },
-  { name: "email", description: "อีเมลผู้ใช้" },
-  { name: "siteName", description: "ชื่อเว็บไซต์" },
-  { name: "orderNumber", description: "เลขที่คำสั่งซื้อ" },
-  { name: "orderDate", description: "วันที่สั่งซื้อ" },
-  { name: "totalAmount", description: "ยอดรวม" },
-  { name: "finalAmount", description: "ยอดสุทธิ" },
-  { name: "discountAmount", description: "ส่วนลด" },
-  { name: "resetUrl", description: "ลิงก์รีเซ็ตรหัสผ่าน" },
-  { name: "verificationUrl", description: "ลิงก์ยืนยันอีเมล" },
-  { name: "ticketNumber", description: "เลขที่ตั๋ว" },
-  { name: "expiresIn", description: "เวลาหมดอายุ" },
-];
-
 export default function EmailTemplateEditorPage() {
+  const t = useTranslations("AdminPage");
   const router = useRouter();
+
+  // Category options with translations
+  const CATEGORY_OPTIONS = [
+    { value: "AUTHENTICATION", label: t("email.categories.authentication") },
+    { value: "ORDER", label: t("email.categories.order") },
+    { value: "PAYMENT", label: t("email.categories.payment") },
+    { value: "PROMOTION", label: t("email.categories.promotion") },
+    { value: "SUPPORT", label: t("email.categories.support") },
+    { value: "SYSTEM", label: t("email.categories.system") },
+    { value: "GENERAL", label: t("email.categories.general") },
+  ];
+
+  const COMMON_PLACEHOLDERS = [
+    { name: "username", description: t("email.placeholders.username") },
+    { name: "email", description: t("email.placeholders.email") },
+    { name: "siteName", description: t("email.placeholders.siteName") },
+    { name: "orderNumber", description: t("email.placeholders.orderNumber") },
+    { name: "orderDate", description: t("email.placeholders.orderDate") },
+    { name: "totalAmount", description: t("email.placeholders.totalAmount") },
+    { name: "finalAmount", description: t("email.placeholders.finalAmount") },
+    { name: "discountAmount", description: t("email.placeholders.discountAmount") },
+    { name: "resetUrl", description: t("email.placeholders.resetUrl") },
+    { name: "verificationUrl", description: t("email.placeholders.verificationUrl") },
+    { name: "ticketNumber", description: t("email.placeholders.ticketNumber") },
+    { name: "expiresIn", description: t("email.placeholders.expiresIn") },
+  ];
   const params = useParams();
   const { isAdmin, isInitialized } = useAuth();
   const isNew = params.id === "new";
@@ -487,11 +490,10 @@ export default function EmailTemplateEditorPage() {
                 </h2>
                 <button
                   onClick={() => setShowVariableHelper(!showVariableHelper)}
-                  className={`flex items-center gap-1 px-2 py-0.5 text-xs border-[2px] border-black ${
-                    showVariableHelper
+                  className={`flex items-center gap-1 px-2 py-0.5 text-xs border-[2px] border-black ${showVariableHelper
                       ? "bg-brutal-yellow"
                       : "bg-white hover:bg-gray-100"
-                  }`}
+                    }`}
                 >
                   <Sparkles className="h-3 w-3" />
                   ตัวแปร

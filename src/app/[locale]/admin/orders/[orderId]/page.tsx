@@ -22,43 +22,38 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { orderApi, Order } from "@/lib/services/order-api";
+import { useTranslations } from "next-intl";
 
 const statusConfig: Record<
   string,
-  { label: string; color: string; bgColor: string; icon: React.ReactNode }
+  { color: string; bgColor: string; icon: React.ReactNode }
 > = {
   PENDING: {
-    label: "รอดำเนินการ",
     color: "text-yellow-700",
     bgColor: "bg-yellow-100",
     icon: <Clock className="h-5 w-5" />,
   },
   PROCESSING: {
-    label: "กำลังดำเนินการ",
     color: "text-blue-700",
     bgColor: "bg-blue-100",
     icon: <Truck className="h-5 w-5" />,
   },
   COMPLETED: {
-    label: "สำเร็จ",
     color: "text-green-700",
     bgColor: "bg-green-100",
     icon: <CheckCircle className="h-5 w-5" />,
   },
   FAILED: {
-    label: "ล้มเหลว",
     color: "text-red-700",
     bgColor: "bg-red-100",
     icon: <XCircle className="h-5 w-5" />,
   },
   CANCELLED: {
-    label: "ยกเลิก",
     color: "text-red-700",
     bgColor: "bg-red-100",
     icon: <XCircle className="h-5 w-5" />,
   },
   REFUNDED: {
-    label: "คืนเงิน",
     color: "text-gray-700",
     bgColor: "bg-gray-100",
     icon: <XCircle className="h-5 w-5" />,
@@ -67,27 +62,34 @@ const statusConfig: Record<
 
 const fulfillStatusConfig: Record<
   string,
-  { label: string; color: string; bgColor: string }
+  { color: string; bgColor: string }
 > = {
   PENDING: {
-    label: "รอดำเนินการ",
     color: "text-yellow-700",
     bgColor: "bg-yellow-100",
   },
   PROCESSING: {
-    label: "กำลังดำเนินการ",
     color: "text-blue-700",
     bgColor: "bg-blue-100",
   },
   COMPLETED: {
-    label: "สำเร็จ",
     color: "text-green-700",
     bgColor: "bg-green-100",
   },
-  FAILED: { label: "ล้มเหลว", color: "text-red-700", bgColor: "bg-red-100" },
+  FAILED: { color: "text-red-700", bgColor: "bg-red-100" },
+};
+
+const statusKeyMap: Record<string, string> = {
+  PENDING: "pending",
+  PROCESSING: "processing",
+  COMPLETED: "completed",
+  FAILED: "failed",
+  CANCELLED: "cancelled",
+  REFUNDED: "refunded",
 };
 
 export default function OrderViewPage() {
+  const t = useTranslations("AdminPage");
   const params = useParams();
   const router = useRouter();
   const orderId = params.orderId as string;
@@ -201,7 +203,7 @@ export default function OrderViewPage() {
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <ArrowLeft size={18} className="mr-2" />
-            กลับไปหน้ารายการคำสั่งซื้อ
+            {t("order_detail.back_to_orders")}
           </Link>
         </motion.div>
       </div>
@@ -225,11 +227,11 @@ export default function OrderViewPage() {
           <div>
             <h1 className="text-xl font-black text-black flex items-center gap-2">
               <Package className="h-5 w-5 text-brutal-pink" />
-              คำสั่งซื้อ #
+              {t("order_detail.title")} #
               {order.orderNumber || order.id.slice(-8).toUpperCase()}
             </h1>
             <p className="text-gray-600 text-xs">
-              รายละเอียดและจัดการคำสั่งซื้อ
+              {t("order_detail.subtitle")}
             </p>
           </div>
         </div>
@@ -241,7 +243,7 @@ export default function OrderViewPage() {
             style={{ boxShadow: "3px 3px 0 0 #000000" }}
           >
             <RefreshCw className="h-3 w-3" />
-            รีเฟรช
+            {t("common.refresh")}
           </button>
         </div>
       </div>
@@ -260,14 +262,14 @@ export default function OrderViewPage() {
             {status.icon}
           </div>
           <div>
-            <p className="text-xs text-gray-600">สถานะคำสั่งซื้อ</p>
+            <p className="text-xs text-gray-600">{t("order_detail.order_status")}</p>
             <p className={`text-base font-bold ${status.color}`}>
-              {status.label}
+              {t(`orders.status.${statusKeyMap[order.status] || order.status.toLowerCase()}`)}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-xs text-gray-600">วันที่สั่งซื้อ</p>
+          <p className="text-xs text-gray-600">{t("order_detail.order_date")}</p>
           <p className="font-bold text-black text-sm">{formatDate(order.createdAt)}</p>
         </div>
       </motion.div>
@@ -287,7 +289,7 @@ export default function OrderViewPage() {
             <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
               <h2 className="font-bold text-black flex items-center gap-2 text-base">
                 <Package className="h-4 w-4 text-brutal-blue" />
-                รายการสินค้า
+                {t("order_detail.items")}
               </h2>
             </div>
             <div className="divide-y-[2px] divide-gray-200">
@@ -329,7 +331,7 @@ export default function OrderViewPage() {
                       <span
                         className={`inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold ${itemStatus.bgColor} ${itemStatus.color}`}
                       >
-                        {itemStatus.label}
+                        {t(`orders.status.${statusKeyMap[order.status] || order.status.toLowerCase()}`)}
                       </span>
                     </div>
                   </div>
@@ -534,14 +536,14 @@ export default function OrderViewPage() {
               {/* Cancel Button */}
               {(order.status === "PENDING" ||
                 order.status === "PROCESSING") && (
-                <button
-                  onClick={() => setSelectedStatus("CANCELLED")}
-                  className="w-full py-1.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold border-[2px] border-red-500 transition-all hover:-translate-y-0.5 text-sm"
-                  style={{ boxShadow: "2px 2px 0 0 #ef4444" }}
-                >
-                  ยกเลิกคำสั่งซื้อ
-                </button>
-              )}
+                  <button
+                    onClick={() => setSelectedStatus("CANCELLED")}
+                    className="w-full py-1.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold border-[2px] border-red-500 transition-all hover:-translate-y-0.5 text-sm"
+                    style={{ boxShadow: "2px 2px 0 0 #ef4444" }}
+                  >
+                    ยกเลิกคำสั่งซื้อ
+                  </button>
+                )}
             </div>
           </motion.div>
         </div>

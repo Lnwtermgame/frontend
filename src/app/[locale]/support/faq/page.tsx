@@ -22,8 +22,11 @@ import {
   AlertCircle,
   Eye,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function FaqPage() {
+  const t = useTranslations("SupportFAQ");
+  const tCommon = useTranslations("Common");
   const LOCAL_VOTE_KEY = "faqUserVotes";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -208,13 +211,12 @@ export default function FaqPage() {
               <div className="bg-brutal-yellow p-3 border-[3px] border-black mr-3">
                 <HelpCircle className="h-8 w-8 text-black" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-black">
-                คำถามที่พบบ่อย
+              <h1 className="text-3xl md:text-4xl font-black text-black uppercase">
+                {t("title")}
               </h1>
             </div>
-            <p className="text-gray-600 mb-6">
-              ค้นหาคำตอบสำหรับคำถามเกี่ยวกับบริการ การสั่งซื้อ
-              และการจัดการบัญชีของคุณ
+            <p className="text-gray-600 font-bold uppercase">
+              {t("subtitle")}
             </p>
 
             {/* Search Box */}
@@ -222,10 +224,10 @@ export default function FaqPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="ค้นหาคำตอบ..."
+                  placeholder={t("search_placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black text-black focus:outline-none focus:border-black transition-colors"
+                  className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors font-bold"
                 />
                 <Search
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -248,29 +250,28 @@ export default function FaqPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center shadow-[4px_4px_0_0_#000]"
         >
           <AlertCircle className="text-black mr-3" size={20} />
-          <span className="text-black">{error}</span>
+          <span className="text-black font-black uppercase">{error}</span>
           <button
             onClick={loadArticles}
-            className="ml-auto text-black hover:text-gray-700 flex items-center font-medium"
+            className="ml-auto text-black hover:text-gray-700 flex items-center font-black uppercase text-xs"
           >
             <Clock size={16} className="mr-1" />
-            ลองอีกครั้ง
+            Retry
           </button>
         </motion.div>
       )}
 
-      {/* Back to Support Home */}
+      {/* Back Link */}
       <div className="mb-6">
         <Link
           href="/support"
-          className="text-black hover:text-gray-700 transition-colors inline-flex items-center font-medium"
+          className="text-black hover:text-gray-700 transition-colors inline-flex items-center font-black uppercase text-xs"
         >
           <ArrowLeft size={18} className="mr-1" />
-          กลับไปหน้าศูนย์ช่วยเหลือ
+          {t("back_to_faq")}
         </Link>
       </div>
 
@@ -278,13 +279,12 @@ export default function FaqPage() {
         {/* Sidebar - Categories */}
         <div className="lg:col-span-1">
           <div
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-white border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000]"
           >
-            <div className="p-4 bg-brutal-gray border-b-[3px] border-black">
-              <h3 className="text-black font-medium flex items-center">
+            <div className="p-4 bg-brutal-gray border-b-[3px] border-black font-black uppercase text-xs">
+              <h3 className="text-black flex items-center">
                 <Filter size={16} className="mr-2" />
-                หมวดหมู่
+                {t("categories")}
               </h3>
             </div>
             <div className="p-2">
@@ -293,17 +293,17 @@ export default function FaqPage() {
                   setSelectedCategory(null);
                   setExpandedArticle(null);
                 }}
-                className={`w-full text-left px-4 py-2 flex items-center ${
+                className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${
                   selectedCategory === null
-                    ? "bg-brutal-yellow border-[2px] border-black text-black font-medium"
-                    : "text-gray-700 hover:bg-brutal-gray hover:text-black"
+                    ? "bg-brutal-yellow border-[2px] border-black text-black"
+                    : "text-gray-700 hover:bg-brutal-gray"
                 }`}
               >
-                <span className="bg-brutal-gray border-[2px] border-black p-1.5 text-black mr-3">
-                  ทั้งหมด
+                <span className="bg-brutal-gray border-[2px] border-black p-1 text-black mr-3">
+                  All
                 </span>
-                หมวดหมู่ทั้งหมด
-                <span className="ml-auto text-xs text-gray-600">
+                {t("all")}
+                <span className="ml-auto text-[10px] text-gray-600">
                   {totalArticles}
                 </span>
               </button>
@@ -315,15 +315,15 @@ export default function FaqPage() {
                     setSelectedCategory(category.id);
                     setExpandedArticle(null);
                   }}
-                  className={`w-full text-left px-4 py-2 flex items-center ${
+                  className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${
                     selectedCategory === category.id
-                      ? "bg-brutal-yellow border-[2px] border-black text-black font-medium"
-                      : "text-gray-700 hover:bg-brutal-gray hover:text-black"
+                      ? "bg-brutal-yellow border-[2px] border-black text-black"
+                      : "text-gray-700 hover:bg-brutal-gray"
                   }`}
                 >
                   <span className="mr-3 text-lg">{category.icon || "📄"}</span>
                   <span className="flex-1">{category.name}</span>
-                  <span className="text-xs text-gray-600">
+                  <span className="text-[10px] text-gray-600">
                     {category.articleCount}
                   </span>
                 </button>
@@ -331,60 +331,42 @@ export default function FaqPage() {
             </div>
           </div>
 
-          {/* Need more help */}
+          {/* Need help CTA */}
           <div
-            className="bg-white border-[3px] border-black p-5 mt-6"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-white border-[3px] border-black p-5 mt-6 shadow-[4px_4px_0_0_#000]"
           >
             <div className="flex items-center mb-4">
               <div className="bg-brutal-green p-2 border-[2px] border-black mr-2">
                 <MessageSquare size={20} className="text-black" />
               </div>
-              <h3 className="text-black font-medium">
-                ต้องการความช่วยเหลือเพิ่มเติม?
+              <h3 className="text-black font-black uppercase text-sm">
+                Need Help?
               </h3>
             </div>
-            <p className="text-gray-600 text-sm mb-4">
-              หาไม่เจอหรือ? ทีมซัพพอร์ตของเราพร้อมช่วยเหลือคุณ
+            <p className="text-gray-600 text-xs font-bold mb-4 uppercase">
+              Can't find what you're looking for?
             </p>
             <Link
               href="/support/tickets"
-              className="bg-black text-white border-[3px] border-black w-full py-2 font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-black text-white border-[3px] border-black w-full py-2 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs shadow-[3px_3px_0_0_#000]"
             >
-              ติดต่อทีมซัพพอร์ต
+              Contact Support
             </Link>
           </div>
         </div>
 
-        {/* Main Content - FAQ List */}
+        {/* Main Content */}
         <div className="lg:col-span-3">
-          {/* Category Title */}
-          {selectedCategory && (
-            <div className="mb-6">
-              <div className="flex items-center mb-2">
-                <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-                <h2 className="text-2xl font-bold text-black">
-                  {getCategoryById(selectedCategory)?.name || "คำถามที่พบบ่อย"}
-                </h2>
-              </div>
-              <p className="text-gray-600 mt-1">
-                {getCategoryById(selectedCategory)?.description}
-              </p>
-            </div>
-          )}
-
-          {/* Loading State */}
+          {/* Loading */}
           {isLoading ? (
             <div
-              className="bg-white border-[3px] border-black p-12 text-center"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-white border-[3px] border-black p-12 text-center shadow-[4px_4px_0_0_#000]"
             >
               <Loader2
                 className="animate-spin mx-auto text-black mb-4"
                 size={48}
               />
-              <p className="text-gray-600">กำลังโหลดคำถามที่พบบ่อย...</p>
+              <p className="text-gray-600 font-bold uppercase">{tCommon("loading")}</p>
             </div>
           ) : articles.length > 0 ? (
             <div className="space-y-4">
@@ -393,12 +375,11 @@ export default function FaqPage() {
                   key={article.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`border-[3px] border-black overflow-hidden ${
+                  className={`border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000] ${
                     expandedArticle === article.id
                       ? "bg-brutal-gray"
                       : "bg-white"
                   }`}
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <button
                     onClick={() =>
@@ -406,26 +387,18 @@ export default function FaqPage() {
                         expandedArticle === article.id ? null : article.id,
                       )
                     }
-                    className="w-full text-left p-5 font-medium text-black focus:outline-none flex justify-between items-center"
+                    className="w-full text-left p-5 font-black text-black focus:outline-none flex justify-between items-center uppercase text-sm"
                   >
                     <div className="flex items-center gap-3">
                       {article.isPinned && (
-                        <span className="text-black" title="ปักหมุด">
-                          📌
-                        </span>
+                        <span>📌</span>
                       )}
                       <span>{article.title}</span>
                     </div>
                     {expandedArticle === article.id ? (
-                      <ChevronUp
-                        size={20}
-                        className="text-gray-600 flex-shrink-0"
-                      />
+                      <ChevronUp size={20} className="text-gray-600 flex-shrink-0" />
                     ) : (
-                      <ChevronDown
-                        size={20}
-                        className="text-gray-600 flex-shrink-0"
-                      />
+                      <ChevronDown size={20} className="text-gray-600 flex-shrink-0" />
                     )}
                   </button>
 
@@ -436,97 +409,60 @@ export default function FaqPage() {
                       transition={{ duration: 0.3 }}
                       className="px-5 pb-5"
                     >
-                      <div className="border-t-[2px] border-black pt-4 text-gray-700">
-                        <div className="prose max-w-none text-black">
+                      <div className="border-t-[3px] border-black pt-4 text-gray-700">
+                        <div className="prose prose-sm max-w-none text-black font-bold">
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                              h2: (props) => (
-                                <h2
-                                  className="text-xl font-bold mt-4 mb-2"
-                                  {...props}
-                                />
-                              ),
-                              p: (props) => (
-                                <p
-                                  className="mb-3 leading-relaxed whitespace-pre-wrap"
-                                  {...props}
-                                />
-                              ),
-                              ul: (props) => (
-                                <ul
-                                  className="list-disc pl-6 mb-3"
-                                  {...props}
-                                />
-                              ),
-                              ol: (props) => (
-                                <ol
-                                  className="list-decimal pl-6 mb-3"
-                                  {...props}
-                                />
-                              ),
+                              h2: (props) => <h2 className="text-lg font-black mt-4 mb-2 uppercase" {...props} />,
+                              p: (props) => <p className="mb-3 leading-relaxed uppercase" {...props} />,
+                              ul: (props) => <ul className="list-disc pl-6 mb-3" {...props} />,
                               li: (props) => <li className="mb-1" {...props} />,
-                              strong: (props) => (
-                                <strong className="font-semibold" {...props} />
-                              ),
-                              em: (props) => (
-                                <em className="italic" {...props} />
-                              ),
                             }}
                           >
-                            {article.content ||
-                              article.excerpt ||
-                              "คลิกเพื่ออ่านบทความเต็ม..."}
+                            {article.content || article.excerpt}
                           </ReactMarkdown>
                         </div>
 
-                        <Link
-                          href={`/support/faq/${article.slug}`}
-                          className="inline-flex items-center text-black hover:underline mt-3 font-medium"
-                        >
-                          อ่านบทความเต็ม
-                          <ArrowLeft size={16} className="ml-1 rotate-180" />
-                        </Link>
-
                         <div className="flex flex-wrap gap-2 mt-4">
-                          <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brutal-gray border-[2px] border-black text-black">
+                          <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
                             <Eye size={12} />
-                            {article.viewCount} ครั้ง
+                            {article.viewCount}
                           </div>
-                          <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brutal-gray border-[2px] border-black text-black">
+                          <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
                             <Tag size={12} />
                             {article.categoryName}
                           </div>
                         </div>
 
-                        <div className="flex justify-between items-center mt-4 pt-3 border-t-[2px] border-black">
-                          <span className="text-xs text-gray-600 flex items-center">
-                            <Clock size={12} className="mr-1" />
+                        <div className="flex justify-between items-center mt-4 pt-3 border-t-[3px] border-black">
+                          <span className="text-[10px] font-black text-gray-600 uppercase">
+                            <Clock size={12} className="inline mr-1" />
                             {new Date(article.createdAt).toLocaleDateString()}
                           </span>
 
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleVote(article.id, true)}
-                              className={`text-xs flex items-center px-2 py-1 rounded-full border-[2px] transition-colors ${
+                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${
                                 userVotes[article.id] === true
-                                  ? "bg-brutal-green border-black text-black"
-                                  : "bg-white border-black text-gray-700 hover:bg-brutal-green"
+                                  ? "bg-brutal-green text-black"
+                                  : "bg-white hover:bg-brutal-green"
                               }`}
                             >
                               <ThumbsUp size={12} className="mr-1" />
-                              มีประโยชน์
+                              {t("yes")}
                             </button>
                             <button
                               onClick={() => handleVote(article.id, false)}
-                              className={`text-xs flex items-center px-2 py-1 rounded-full border-[2px] transition-colors ${
+                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${
                                 userVotes[article.id] === false
-                                  ? "bg-brutal-pink border-black text-black"
-                                  : "bg-white border-black text-gray-700 hover:bg-brutal-pink"
+                                  ? "bg-brutal-pink text-black"
+                                  : "bg-white hover:bg-brutal-pink"
                               }`}
                             >
                               <ThumbsDown size={12} className="mr-1" />
-                              ไม่ช่วยเลย
+                              {t("no")}
                             </button>
                           </div>
                         </div>
@@ -538,53 +474,21 @@ export default function FaqPage() {
             </div>
           ) : (
             <div
-              className="bg-white border-[3px] border-black p-8 text-center"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-white border-[3px] border-black p-8 text-center shadow-[4px_4px_0_0_#000]"
             >
               <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-bold text-black mb-2">
-                ไม่พบคำถามที่ตรงกัน
+              <h3 className="text-xl font-black text-black mb-2 uppercase">
+                {t("no_results", { query: searchQuery })}
               </h3>
-              <p className="text-gray-600 mb-6">
-                ไม่พบคำถามที่ตรงกับการค้นหา
-                กรุณาปรับคำค้นหาหรือเลือกดูตามหมวดหมู่
-              </p>
               <button
                 onClick={() => {
                   setSearchQuery("");
                   setSelectedCategory(null);
                 }}
-                className="bg-black text-white border-[3px] border-black px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                className="bg-black text-white border-[3px] border-black px-6 py-2 font-black hover:bg-gray-800 transition-colors uppercase text-xs shadow-[3px_3px_0_0_#000]"
               >
-                ดูคำถามที่พบบ่อยทั้งหมด
+                View All
               </button>
-            </div>
-          )}
-
-          {/* Contact Support CTA */}
-          {(articles.length > 0 || !isLoading) && (
-            <div
-              className="bg-brutal-blue border-[3px] border-black p-6 mt-8"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
-              <div className="flex flex-col md:flex-row items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-black mb-2">
-                    ต้องการความช่วยเหลือเพิ่มเติม?
-                  </h3>
-                  <p className="text-gray-800">
-                    หากยังไม่พบคำตอบที่ต้องการ ทีมซัพพอร์ตพร้อมช่วยเหลือคุณ
-                  </p>
-                </div>
-                <Link
-                  href="/support/tickets"
-                  className="mt-4 md:mt-0 bg-black text-white border-[3px] border-black px-6 py-3 font-medium whitespace-nowrap hover:bg-gray-800 transition-colors"
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                >
-                  ติดต่อทีมซัพพอร์ต
-                </Link>
-              </div>
             </div>
           )}
         </div>

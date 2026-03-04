@@ -46,26 +46,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
-
-// Field label translation map
-const FIELD_LABEL_MAP: Record<string, string> = {
-  "Player ID": "ไอดีผู้เล่น (Player ID)",
-  "User ID": "ไอดีผู้ใช้ (User ID)",
-  "Server ID": "เซิร์ฟเวอร์ (Server ID)",
-  "Zone ID": "รหัสโซน (Zone ID)",
-  "Role Name": "ชื่อตัวละคร",
-  "Character Name": "ชื่อตัวละคร",
-  "Character ID": "ไอดีตัวละคร",
-  Region: "ภูมิภาค",
-  Email: "อีเมล",
-  Phone: "เบอร์โทรศัพท์",
-  "Riot ID": "Riot ID",
-  Tag: "Tag",
-};
-
-const translateLabel = (label: string) => {
-  return FIELD_LABEL_MAP[label] || label;
-};
+import { useTranslations } from "next-intl";
 
 // Game details interface matching the UI expectations
 interface GameDetails {
@@ -169,6 +150,8 @@ function transformProductToGameDetails(
 }
 
 export default function GameDetailsPage() {
+  const t = useTranslations("ProductDetail");
+  const tCommon = useTranslations("Common");
   const params = useParams<{
     gameId?: string;
     cardId?: string;
@@ -220,11 +203,31 @@ export default function GameDetailsPage() {
   const [isBuying, setIsBuying] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const backHref = "/games";
-  const backLabel = "ย้อนกลับ";
-  const optionsTabLabel = "ตัวเลือกเติมเงิน";
-  const infoTabLabel = "ข้อมูลเกม";
-  const purchaseTitle = "สรุปการสั่งซื้อ";
+  // Field label translation map
+  const FIELD_LABEL_MAP: Record<string, string> = {
+    "Player ID": "Player ID",
+    "User ID": "User ID",
+    "Server ID": "Server ID",
+    "Zone ID": "Zone ID",
+    "Role Name": "Role Name",
+    "Character Name": "Character Name",
+    "Character ID": "Character ID",
+    Region: "Region",
+    Email: "Email",
+    Phone: "Phone",
+    "Riot ID": "Riot ID",
+    Tag: "Tag",
+  };
+
+  const translateLabel = (label: string) => {
+    return FIELD_LABEL_MAP[label] || label;
+  };
+
+  const backHref = isCardRoute ? "/card" : isMobileRechargeRoute ? "/mobile-recharge" : "/games";
+  const backLabel = t("back");
+  const optionsTabLabel = t("topup_options");
+  const infoTabLabel = t("game_info");
+  const purchaseTitle = t("purchase_summary");
 
   const selectedTopUp = useMemo(() => {
     if (!selectedOption || !game) return null;
@@ -262,7 +265,7 @@ export default function GameDetailsPage() {
       await navigator.clipboard.writeText(value);
       toast.success(message);
     } catch {
-      toast.error("ไม่สามารถคัดลอกข้อมูลได้");
+      toast.error(t("copy_link_failed"));
     }
   };
 
@@ -329,13 +332,13 @@ export default function GameDetailsPage() {
 
   const handleBuyNow = async () => {
     if (!product || !selectedOption) {
-      toast.error("กรุณาเลือกตัวเลือกเติมเงิน");
+      toast.error(t("error.select_option"));
       return;
     }
 
     // Check if user is logged in before allowing purchase
     if (!isAuthenticated) {
-      toast.error("กรุณาเข้าสู่ระบบเพื่อทำการซื้อ", { duration: 3000 });
+      toast.error(t("error.login_required"), { duration: 3000 });
       const currentPath = window.location.pathname;
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
@@ -345,20 +348,17 @@ export default function GameDetailsPage() {
     const selectedProductType = productTypes.find(
       (pt) => pt.id === selectedOption,
     );
-    const selectedOptionData = game?.topUpOptions.find(
-      (opt) => opt.id === selectedOption,
-    );
 
     if (isMobileRechargeRoute) {
       const normalizedPhone = getNormalizedMobilePhone();
 
       if (!normalizedPhone) {
-        toast.error("กรุณากรอกเบอร์โทรศัพท์");
+        toast.error(t("error.enter_phone"));
         return;
       }
 
       if (normalizedPhone.length < 9) {
-        toast.error("เบอร์โทรศัพท์ไม่ถูกต้อง");
+        toast.error(t("error.invalid_phone"));
         return;
       }
     }
@@ -372,7 +372,7 @@ export default function GameDetailsPage() {
       );
       if (missingFields.length > 0) {
         toast.error(
-          `กรุณากรอกข้อมูล: ${missingFields.map((f) => f.label).join(", ")}`,
+          t("error.fill_all_fields", { fields: missingFields.map((f) => translateLabel(f.label)).join(", ") }),
         );
         return;
       }
@@ -399,22 +399,22 @@ export default function GameDetailsPage() {
         paymentOptionCode,
       );
       if (!intentRes.success) {
-        toast.error("สร้างการชำระเงินไม่สำเร็จ");
+        toast.error(t("error.payment_failed"));
         return false;
       }
 
       const { redirectUrl } = intentRes.data;
       if (!redirectUrl) {
-        toast.error("ไม่พบลิงก์สำหรับชำระเงิน");
+        toast.error(t("error.no_payment_link"));
         return false;
       }
 
-      toast.loading("กำลังนำไปหน้าชำระเงิน...", { duration: 2000 });
+      toast.loading(t("error.redirecting"), { duration: 2000 });
       window.location.href = redirectUrl;
       return true;
     } catch (err) {
       console.error("Payment flow error", err);
-      toast.error("ไม่สามารถสร้างการชำระเงินได้");
+      toast.error(t("error.payment_error"));
       return false;
     }
   };
@@ -425,7 +425,7 @@ export default function GameDetailsPage() {
 
     try {
       setIsBuying(true);
-      toast.loading("กำลังสร้างคำสั่งซื้อ...");
+      toast.loading(tCommon("loading"));
 
       const playerInfo = buildPlayerInfo();
       const paymentOptionCode = selectedPaymentOption || undefined;
@@ -434,7 +434,7 @@ export default function GameDetailsPage() {
         items: [
           {
             productId: product.id,
-            productTypeId: selectedOption, // The selected product type (e.g., 60 UC, 325 UC)
+            productTypeId: selectedOption,
             quantity: 1,
             playerInfo,
           },
@@ -446,12 +446,12 @@ export default function GameDetailsPage() {
       toast.dismiss();
 
       if (response.success) {
-        toast.success("สั่งซื้อสำเร็จ! กำลังนำไปหน้าชำระเงิน...");
+        toast.success(t("error.order_success_redirect"));
         setShowConfirmModal(false);
         setIsPaymentSelectOpen(false);
         await startPaymentFlow(response.data.id, paymentOptionCode);
       } else {
-        toast.error(response.message || "สั่งซื้อไม่สำเร็จ");
+        toast.error(response.message || tCommon("error_occurred"));
       }
     } catch (err: any) {
       toast.dismiss();
@@ -468,7 +468,7 @@ export default function GameDetailsPage() {
         errorCode === 20093
       ) {
         toast.error(
-          "User ID หรือ Zone ID ไม่ถูกต้อง กรุณาตรวจสอบข้อมูลบัญชีเกมของคุณ",
+          t("error.player_id_invalid", { defaultMessage: "User ID or Zone ID is invalid. Please check your game account." }),
           { duration: 5000 },
         );
       } else if (
@@ -476,18 +476,11 @@ export default function GameDetailsPage() {
         /phone number.*region.*match/i.test(errorMessage)
       ) {
         toast.error(
-          "เบอร์โทรศัพท์ไม่ตรงกับภูมิภาคของเครือข่ายที่เลือก กรุณาตรวจสอบเบอร์หรือเปลี่ยนแพ็กเกจให้ตรงประเทศ",
+          t("error.phone_region_mismatch", { defaultMessage: "Phone number does not match the selected region. Please check your number or selection." }),
           { duration: 5000 },
         );
-      } else if (
-        errorMessage.includes("Missing required parameter") ||
-        errorCode === 10406
-      ) {
-        toast.error("ข้อมูลไม่ครบถ้วน กรุณากรอกข้อมูลให้ครบ", {
-          duration: 5000,
-        });
       } else {
-        toast.error(errorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", {
+        toast.error(errorMessage || tCommon("error_occurred"), {
           duration: 5000,
         });
       }
@@ -501,10 +494,10 @@ export default function GameDetailsPage() {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
-      toast.success("คัดลอกลิงก์เรียบร้อยแล้ว");
+      toast.success(t("copy_link_success"));
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      toast.error("ไม่สามารถคัดลอกลิงก์ได้");
+      toast.error(t("copy_link_failed"));
     }
   };
 
@@ -524,7 +517,7 @@ export default function GameDetailsPage() {
     if (!product) return;
 
     if (!isAuthenticated) {
-      toast.error("กรุณาเข้าสู่ระบบเพื่อบันทึก", { duration: 3000 });
+      toast.error(t("error.login_required"), { duration: 3000 });
       const currentPath = window.location.pathname;
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
@@ -539,11 +532,9 @@ export default function GameDetailsPage() {
         try {
           await productApi.addFavorite(product.id);
           setIsFavorite(true);
-          // Find the favorite ID after adding
           const favId = await productApi.findFavoriteId(product.id);
           setFavoriteId(favId);
         } catch (addErr: any) {
-          // If already exists, just update UI state and find the ID
           if (addErr?.response?.data?.error?.code === "ALREADY_EXISTS") {
             setIsFavorite(true);
             const favId = await productApi.findFavoriteId(product.id);
@@ -558,17 +549,14 @@ export default function GameDetailsPage() {
     }
   };
 
-  // Helper function to detect if a string is a CUID or UUID (database ID)
   const isValidDatabaseId = (id: string): boolean => {
-    // CUID: starts with 'c' followed by alphanumeric, typically 25 chars
     const cuidPattern = /^c[a-z0-9]{24,}$/i;
-    // UUID: 8-4-4-4-12 hex format
     const uuidPattern =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return cuidPattern.test(id) || uuidPattern.test(id);
   };
 
-  // Load game details from Product table
+  // Load game details
   useEffect(() => {
     if (typeof productSlug !== "string") return;
 
@@ -577,18 +565,15 @@ export default function GameDetailsPage() {
         setLoading(true);
         setError(null);
 
-        // Fetch product by ID or slug based on format detection
         let productResponse;
         if (isValidDatabaseId(productSlug)) {
-          // product slug looks like a CUID/UUID - fetch by ID
           productResponse = await productApi.getProductById(productSlug);
         } else {
-          // product slug looks like a slug - fetch by slug
           productResponse = await productApi.getProductBySlug(productSlug);
         }
 
         if (!productResponse.success || !productResponse.data) {
-          throw new Error("Game not found");
+          throw new Error("Product not found");
         }
 
         const productData = productResponse.data;
@@ -596,20 +581,15 @@ export default function GameDetailsPage() {
           (productData.productType as string | undefined) || "DIRECT_TOPUP";
         setProduct(productData);
 
-        // Extract product types from response (now included in single API call)
         let typesData: ProductType[] = [];
         if (productData.types && productData.types.length > 0) {
           typesData = productData.types;
         }
 
         setProductTypes(typesData);
-
-        // Transform to GameDetails
         const gameData = transformProductToGameDetails(productData, typesData);
-
         setGame(gameData);
 
-        // Set default selected option
         if (gameData.topUpOptions.length > 0) {
           const popularOption = gameData.topUpOptions.find(
             (option) => option.isPopular,
@@ -619,7 +599,6 @@ export default function GameDetailsPage() {
           );
         }
 
-        // Fetch other games for recommendations (Similar & Related by Dev)
         try {
           const allGamesResponse = await productApi.getProducts({
             isActive: true,
@@ -627,7 +606,6 @@ export default function GameDetailsPage() {
           });
 
           if (allGamesResponse.success) {
-            // 1. Similar Games by Category
             const otherGames = allGamesResponse.data.filter((p) => {
               const pType =
                 (p.productType as string | undefined) || "DIRECT_TOPUP";
@@ -635,7 +613,6 @@ export default function GameDetailsPage() {
             });
             setSimilarGames(otherGames.slice(0, 5));
 
-            // 2. Related Games by Developer/Publisher
             const currentGameDetails = productData.gameDetails;
             const currentDev = currentGameDetails?.developer;
             const currentPub = currentGameDetails?.publisher;
@@ -644,17 +621,16 @@ export default function GameDetailsPage() {
               const related = allGamesResponse.data.filter((p) => {
                 if (p.id === productData.id) return false;
                 const pDetails = p.gameDetails;
-                const sameDev =
-                  currentDev && pDetails?.developer === currentDev;
-                const samePub =
-                  currentPub && pDetails?.publisher === currentPub;
-                return sameDev || samePub;
+                return (
+                  (currentDev && pDetails?.developer === currentDev) ||
+                  (currentPub && pDetails?.publisher === currentPub)
+                );
               });
               setRelatedGamesByDev(related.slice(0, 4));
             }
           }
         } catch {
-          // Ignore errors for recommendations
+          // Ignore recommendations errors
         }
       } catch (err) {
         console.error("Error fetching game:", err);
@@ -667,7 +643,6 @@ export default function GameDetailsPage() {
     fetchGameDetails();
   }, [productSlug]);
 
-  // Check favorite status separately to avoid refetching game details on auth state changes
   useEffect(() => {
     if (!product?.id || !isAuthenticated) {
       setIsFavorite(false);
@@ -676,18 +651,14 @@ export default function GameDetailsPage() {
     }
 
     let cancelled = false;
-
     const checkFavorite = async () => {
       try {
         const isFav = await productApi.checkIsFavorite(product.id);
         if (cancelled) return;
-
         setIsFavorite(isFav);
         if (isFav) {
           const favId = await productApi.findFavoriteId(product.id);
-          if (!cancelled) {
-            setFavoriteId(favId);
-          }
+          if (!cancelled) setFavoriteId(favId);
         } else {
           setFavoriteId(null);
         }
@@ -698,12 +669,8 @@ export default function GameDetailsPage() {
         }
       }
     };
-
     checkFavorite();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [product?.id, isAuthenticated]);
 
   if (loading) {
@@ -711,7 +678,7 @@ export default function GameDetailsPage() {
       <div className="page-container flex items-center justify-center h-96 bg-brutal-gray">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">กำลังโหลดข้อมูลเกม...</p>
+          <p className="mt-4 text-gray-600 font-bold">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -725,9 +692,9 @@ export default function GameDetailsPage() {
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle size={48} className="mx-auto text-brutal-pink mb-4" />
-          <h2 className="text-2xl font-bold text-black mb-2">ไม่พบเกม</h2>
-          <p className="text-gray-600 mb-6">
-            {error || "เกมที่คุณกำลังค้นหาไม่มีอยู่หรืออาจถูกลบไปแล้ว"}
+          <h2 className="text-2xl font-bold text-black mb-2 uppercase">{t("error.not_found")}</h2>
+          <p className="text-gray-600 mb-6 font-bold">
+            {error || t("error.not_found_desc")}
           </p>
           <Link href={backHref}>
             <Button>
@@ -746,7 +713,7 @@ export default function GameDetailsPage() {
       <div className="mb-6">
         <Link
           href={backHref}
-          className="text-gray-600 hover:text-black transition-colors inline-flex items-center font-medium"
+          className="text-gray-600 hover:text-black transition-colors inline-flex items-center font-bold"
         >
           <ChevronLeft size={18} className="mr-1" />
           {backLabel}
@@ -759,7 +726,6 @@ export default function GameDetailsPage() {
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <div className="relative min-h-[18rem] md:h-96 overflow-hidden">
-          {/* Main banner image - cover full area with crop */}
           <Image
             src={
               game.coverImage ||
@@ -793,12 +759,12 @@ export default function GameDetailsPage() {
                 />
               </div>
               <div className="flex-1 min-w-0 flex flex-col justify-center md:justify-end gap-1.5 md:gap-2">
-                <h1 className="text-xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">
+                <h1 className="text-xl md:text-4xl font-black text-white leading-tight drop-shadow-md">
                   {game.title}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-bold border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1 shadow-[2px_2px_0_0_#000]">
+                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-black border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1 shadow-[2px_2px_0_0_#000] uppercase">
                     {getCountryFlagCode(game.category) && (
                       <CountryFlag
                         code={getCountryFlagCode(game.category)}
@@ -809,8 +775,8 @@ export default function GameDetailsPage() {
                   </span>
                 </div>
 
-                <p className="text-gray-300 text-sm md:text-base font-bold drop-shadow-sm">
-                  โดย {game.publisher || game.developer || "ไม่ระบุ"}
+                <p className="text-gray-300 text-sm md:text-base font-black drop-shadow-sm">
+                  {t("by_developer", { developer: game.publisher || game.developer || t("unknown") })}
                 </p>
               </div>
 
@@ -847,46 +813,41 @@ export default function GameDetailsPage() {
 
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left column - Game info */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Tab navigation */}
           <div
             className="bg-white border-[3px] border-black overflow-hidden"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="flex border-b-[3px] border-black overflow-x-auto hide-scrollbar">
-              {/* Desktop Tabs */}
               <button
                 onClick={() => setActiveTab("topup")}
-                className={`hidden md:flex py-4 px-6 text-sm font-bold items-center whitespace-nowrap flex-shrink-0 ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`hidden md:flex py-4 px-6 text-sm font-black items-center whitespace-nowrap flex-shrink-0 uppercase ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <DollarSign size={18} className="mr-2" />
                 {optionsTabLabel}
               </button>
               <button
                 onClick={() => setActiveTab("info")}
-                className={`hidden md:flex py-4 px-6 text-sm font-bold items-center whitespace-nowrap flex-shrink-0 ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`hidden md:flex py-4 px-6 text-sm font-black items-center whitespace-nowrap flex-shrink-0 uppercase ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
               >
                 <Info size={18} className="mr-2" />
                 {infoTabLabel}
               </button>
 
-              {/* Mobile Header - Always show Game Info header */}
-              <div className="md:hidden py-4 px-6 text-sm font-bold flex items-center w-full bg-brutal-yellow text-black">
+              <div className="md:hidden py-4 px-6 text-sm font-black flex items-center w-full bg-brutal-yellow text-black uppercase">
                 <Info size={18} className="mr-2" />
                 {infoTabLabel}
               </div>
             </div>
 
             <div className="p-4 md:p-8">
-              {/* Top Up Options - Desktop Only */}
               <div
                 className={activeTab === "topup" ? "hidden md:block" : "hidden"}
               >
                 <div className="space-y-6">
                   <div className="hidden md:flex items-center justify-between">
-                    <p className="text-gray-600 font-bold">
-                      เลือกจำนวนที่ต้องการเติม:
+                    <p className="text-gray-600 font-black">
+                      {t("select_package")}
                     </p>
                   </div>
 
@@ -896,14 +857,13 @@ export default function GameDetailsPage() {
                         className="mx-auto text-gray-500 mb-2"
                         size={32}
                       />
-                      <p className="text-gray-600">ไม่มีตัวเลือกการเติมเงิน</p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        กรุณาลองใหม่อีกครั้งภายหลัง
+                      <p className="text-gray-600 font-bold">{t("no_options")}</p>
+                      <p className="text-sm text-gray-500 mt-1 font-bold">
+                        {t("no_options_desc")}
                       </p>
                     </div>
                   ) : (
                     <>
-                      {/* Desktop Grid */}
                       <div className="hidden md:block">
                         <Grid cols={2} md={3} gap={3} className="md:gap-4">
                           {game.topUpOptions.map((option: any) => (
@@ -911,8 +871,8 @@ export default function GameDetailsPage() {
                               key={option.id}
                               onClick={() => setSelectedOption(option.id)}
                               className={`relative border-[3px] p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] ${selectedOption === option.id
-                                  ? "bg-brutal-yellow border-black"
-                                  : "bg-white border-black hover:bg-gray-100"
+                                ? "bg-brutal-yellow border-black"
+                                : "bg-white border-black hover:bg-gray-100"
                                 }`}
                               style={{
                                 boxShadow:
@@ -924,31 +884,28 @@ export default function GameDetailsPage() {
                             >
                               {option.isPopular && (
                                 <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                                  <span className="bg-brutal-pink text-black text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
-                                    ยอดนิยม
+                                  <span className="bg-brutal-pink text-black text-[9px] md:text-[10px] font-black px-1.5 md:px-2 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
+                                    {t("popular_badge")}
                                   </span>
                                 </div>
                               )}
 
-                              <h4 className="text-black font-bold text-center text-[13px] md:text-base leading-tight line-clamp-2">
+                              <h4 className="text-black font-black text-center text-[13px] md:text-base leading-tight line-clamp-2">
                                 {option.title}
                               </h4>
 
                               <div className="text-center">
                                 {option.originalPrice > option.price ? (
                                   <div className="flex flex-col items-center">
-                                    <span className="line-through text-gray-500 text-[10px] md:text-xs">
-                                      ฿
-                                      {Number(
-                                        option.originalPrice || 0,
-                                      ).toFixed(2)}
+                                    <span className="line-through text-gray-500 text-[10px] md:text-xs font-bold">
+                                      ฿{Number(option.originalPrice || 0).toFixed(2)}
                                     </span>
-                                    <span className="text-black font-bold text-sm md:text-base">
+                                    <span className="text-black font-black text-sm md:text-base">
                                       ฿{Number(option.price || 0).toFixed(2)}
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-black font-bold text-sm md:text-base">
+                                  <span className="text-black font-black text-sm md:text-base">
                                     ฿{Number(option.price || 0).toFixed(2)}
                                   </span>
                                 )}
@@ -964,14 +921,10 @@ export default function GameDetailsPage() {
                         </Grid>
                       </div>
 
-                      {/* Mobile Options - Hidden as we use Sheet/Modal on mobile */}
-                      {/* <div className="md:hidden"> ... </div> */}
-
-                      {/* Mobile Options Sheet */}
                       <Sheet
                         isOpen={isOptionsModalOpen}
                         onClose={() => setIsOptionsModalOpen(false)}
-                        title="เลือกจำนวนที่ต้องการเติม"
+                        title={t("select_package")}
                       >
                         <div className="grid grid-cols-2 gap-3 pb-8">
                           {game.topUpOptions.map((option: any) => (
@@ -982,8 +935,8 @@ export default function GameDetailsPage() {
                                 setIsOptionsModalOpen(false);
                               }}
                               className={`relative border-[3px] p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] ${selectedOption === option.id
-                                  ? "bg-brutal-yellow border-black"
-                                  : "bg-white border-black hover:bg-gray-100"
+                                ? "bg-brutal-yellow border-black"
+                                : "bg-white border-black hover:bg-gray-100"
                                 }`}
                               style={{
                                 boxShadow:
@@ -994,31 +947,28 @@ export default function GameDetailsPage() {
                             >
                               {option.isPopular && (
                                 <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                                  <span className="bg-brutal-pink text-black text-[9px] font-bold px-1.5 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
-                                    ยอดนิยม
+                                  <span className="bg-brutal-pink text-black text-[9px] font-black px-1.5 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
+                                    {t("popular_badge")}
                                   </span>
                                 </div>
                               )}
 
-                              <h4 className="text-black font-bold text-center text-[13px] leading-tight line-clamp-2">
+                              <h4 className="text-black font-black text-center text-[13px] leading-tight line-clamp-2">
                                 {option.title}
                               </h4>
 
                               <div className="text-center">
                                 {option.originalPrice > option.price ? (
                                   <div className="flex flex-col items-center">
-                                    <span className="line-through text-gray-500 text-[10px]">
-                                      ฿
-                                      {Number(
-                                        option.originalPrice || 0,
-                                      ).toFixed(2)}
+                                    <span className="line-through text-gray-500 text-[10px] font-bold">
+                                      ฿{Number(option.originalPrice || 0).toFixed(2)}
                                     </span>
-                                    <span className="text-black font-bold text-sm">
+                                    <span className="text-black font-black text-sm">
                                       ฿{Number(option.price || 0).toFixed(2)}
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-black font-bold text-sm">
+                                  <span className="text-black font-black text-sm">
                                     ฿{Number(option.price || 0).toFixed(2)}
                                   </span>
                                 )}
@@ -1035,39 +985,17 @@ export default function GameDetailsPage() {
                       </Sheet>
                     </>
                   )}
-
-                  {/* First Purchase Bonus - Removed */}
-                  {/* {game.topUpOptions.length > 0 && (
-                    <div className="mt-6 bg-brutal-blue/20 border-[3px] border-black p-4">
-                      <div className="flex items-start">
-                        <Gift
-                          className="text-black mr-3 mt-1 flex-shrink-0"
-                          size={20}
-                        />
-                        <div>
-                          <h4 className="text-black font-bold mb-1">
-                            โบนัสการซื้อครั้งแรก!
-                          </h4>
-                          <p className="text-gray-700 text-sm">
-                            รับโบนัสพิเศษ 10% สำหรับการซื้อครั้งแรก
-                            โบนัสจะถูกเพิ่มเข้าบัญชีของคุณอัตโนมัติ
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )} */}
                 </div>
               </div>
 
-              {/* Game Info - Visible on Desktop if activeTab=info, Always visible on Mobile */}
               <div
                 className={activeTab === "info" ? "block" : "block md:hidden"}
               >
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold text-black mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight">
+                    <h3 className="text-lg md:text-xl font-black text-black mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight uppercase">
                       <span className="w-1.5 h-5 bg-brutal-pink flex-shrink-0 mt-1 md:mt-0"></span>
-                      <span>เกี่ยวกับ {game.title}</span>
+                      <span>{t("about_product", { name: game.title })}</span>
                     </h3>
                     <ProductDescription
                       description={game.longDescription || game.description}
@@ -1079,12 +1007,12 @@ export default function GameDetailsPage() {
                       className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
-                      <h4 className="text-black font-bold mb-2 flex items-center">
+                      <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
                         <Package className="mr-2 text-black" size={18} />
-                        ผู้พัฒนา
+                        {t("developer")}
                       </h4>
-                      <p className="text-gray-700">
-                        {game.developer || "ไม่ระบุ"}
+                      <p className="text-gray-700 font-bold">
+                        {game.developer || t("unknown")}
                       </p>
                     </div>
 
@@ -1092,12 +1020,12 @@ export default function GameDetailsPage() {
                       className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
-                      <h4 className="text-black font-bold mb-2 flex items-center">
+                      <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
                         <Award className="mr-2 text-black" size={18} />
-                        ผู้จัดจำหน่าย
+                        {t("publisher")}
                       </h4>
-                      <p className="text-gray-700">
-                        {game.publisher || "ไม่ระบุ"}
+                      <p className="text-gray-700 font-bold">
+                        {game.publisher || t("unknown")}
                       </p>
                     </div>
 
@@ -1106,15 +1034,12 @@ export default function GameDetailsPage() {
                         className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                         style={{ boxShadow: "2px 2px 0 0 #000000" }}
                       >
-                        <h4 className="text-black font-bold mb-2 flex items-center">
+                        <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
                           <Calendar className="mr-2 text-black" size={18} />
-                          วันวางจำหน่าย
+                          {t("release_date")}
                         </h4>
-                        <p className="text-gray-700">
-                          {new Date(game.releaseDate).toLocaleDateString(
-                            "en-US",
-                            { year: "numeric", month: "long", day: "numeric" },
-                          )}
+                        <p className="text-gray-700 font-bold">
+                          {new Date(game.releaseDate).toLocaleDateString()}
                         </p>
                       </div>
                     )}
@@ -1123,11 +1048,11 @@ export default function GameDetailsPage() {
                       className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
                       style={{ boxShadow: "2px 2px 0 0 #000000" }}
                     >
-                      <h4 className="text-black font-bold mb-2 flex items-center">
+                      <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
                         <Smartphone className="mr-2 text-black" size={18} />
-                        แพลตฟอร์ม
+                        {t("platforms")}
                       </h4>
-                      <p className="text-gray-700">
+                      <p className="text-gray-700 font-bold">
                         {game.platforms.join(", ")}
                       </p>
                     </div>
@@ -1137,12 +1062,11 @@ export default function GameDetailsPage() {
             </div>
           </div>
 
-          {/* Related Games - Same Developer/Publisher */}
           {relatedGamesByDev.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+              <h2 className="text-xl font-black text-black mb-4 flex items-center uppercase">
                 <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-                เกมที่เกี่ยวข้อง
+                {t("related_products")}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {relatedGamesByDev.map((relatedGame) => (
@@ -1166,12 +1090,12 @@ export default function GameDetailsPage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                         <div className="absolute bottom-2 left-2 right-2">
-                          <h3 className="text-sm font-bold text-white line-clamp-1">
+                          <h3 className="text-sm font-black text-white line-clamp-1 drop-shadow-sm">
                             {relatedGame.name}
                           </h3>
                           <div className="flex items-center mt-1">
-                            <span className="text-xs bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-bold">
-                              {relatedGame.gameDetails?.developer || "เกม"}
+                            <span className="text-[10px] bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-black uppercase">
+                              {relatedGame.gameDetails?.developer || "GAME"}
                             </span>
                           </div>
                         </div>
@@ -1184,9 +1108,8 @@ export default function GameDetailsPage() {
           )}
         </div>
 
-        {/* Right column - Purchase section */}
+        {/* Right column */}
         <div className="order-first lg:order-last">
-          {/* Mobile Selector - Shown above the main box on mobile */}
           <div className="md:hidden mb-4">
             {(() => {
               const selected = game.topUpOptions.find(
@@ -1199,16 +1122,16 @@ export default function GameDetailsPage() {
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <div className="flex-1">
-                    <span className="text-[10px] font-bold text-gray-500 uppercase block mb-1">
-                      แพ็กเกจที่เลือก
+                    <span className="text-[10px] font-black text-gray-500 uppercase block mb-1">
+                      {t("selected_package_label")}
                     </span>
-                    <h4 className="text-black font-bold text-base leading-tight">
-                      {selected?.title || "กรุณาเลือกแพ็กเกจ"}
+                    <h4 className="text-black font-black text-base leading-tight">
+                      {selected?.title || t("select_package")}
                     </h4>
                   </div>
                   <div className="flex items-center gap-3">
                     {selected && (
-                      <span className="text-black font-bold text-lg">
+                      <span className="text-black font-black text-lg">
                         ฿{Number(selected.price || 0).toFixed(2)}
                       </span>
                     )}
@@ -1225,7 +1148,7 @@ export default function GameDetailsPage() {
             className="bg-white border-[3px] border-black p-4 md:p-6 sticky top-24"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
-            <h3 className="text-lg md:text-xl font-bold text-black mb-4 flex items-center">
+            <h3 className="text-lg md:text-xl font-black text-black mb-4 flex items-center uppercase">
               <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
               {purchaseTitle}
             </h3>
@@ -1239,15 +1162,14 @@ export default function GameDetailsPage() {
 
                 return (
                   <div className="space-y-6">
-                    {/* Login required notice for guests */}
                     {!isAuthenticated && (
                       <div className="bg-gray-100 border-[2px] border-gray-300 p-3 text-sm flex items-center gap-2">
                         <AlertTriangle
                           size={16}
                           className="text-yellow-500 flex-shrink-0"
                         />
-                        <span className="text-gray-500">
-                          กรุณาเข้าสู่ระบบเพื่อกรอกข้อมูลและทำการซื้อ
+                        <span className="text-gray-500 font-bold">
+                          {t("login_required_notice")}
                         </span>
                       </div>
                     )}
@@ -1257,16 +1179,15 @@ export default function GameDetailsPage() {
                         /phone|user id/i.test(`${field.name} ${field.label}`),
                       ) && (
                         <Input
-                          label="เบอร์โทรศัพท์ *"
+                          label={t("mobile_number_label")}
                           type="tel"
                           value={mobilePhoneNumber}
                           onChange={(e) => setMobilePhoneNumber(e.target.value)}
-                          placeholder="กรอกเบอร์โทรศัพท์"
+                          placeholder={t("mobile_number_placeholder")}
                           disabled={!isAuthenticated}
                         />
                       )}
 
-                    {/* Dynamic Fields for Direct Top-Up */}
                     {option.fields && option.fields.length > 0 && (
                       <div className="space-y-4">
                         {option.fields.map((field) => (
@@ -1274,12 +1195,12 @@ export default function GameDetailsPage() {
                             {field.type === "select" ? (
                               <Select
                                 label={
-                                  <>
+                                  <span className="font-bold">
                                     {translateLabel(field.label)}{" "}
                                     {field.required && (
                                       <span className="text-red-500">*</span>
                                     )}
-                                  </>
+                                  </span>
                                 }
                                 options={
                                   field.options?.map((opt) => ({
@@ -1291,7 +1212,7 @@ export default function GameDetailsPage() {
                                 onChange={(value) =>
                                   handleFieldChange(field.name, value)
                                 }
-                                placeholder={`เลือก${translateLabel(field.label)}`}
+                                placeholder={`Choose ${translateLabel(field.label)}`}
                                 disabled={!isAuthenticated}
                               />
                             ) : (
@@ -1304,15 +1225,10 @@ export default function GameDetailsPage() {
                                 }
                                 placeholder={
                                   field.placeholder ||
-                                  `กรอก${translateLabel(field.label)}ของคุณ`
+                                  `Enter your ${translateLabel(field.label)}`
                                 }
                                 disabled={!isAuthenticated}
                               />
-                            )}
-                            {field.prefix && (
-                              <span className="text-xs text-gray-600 mt-1 block">
-                                คำนำหน้า: {field.prefix}
-                              </span>
                             )}
                           </div>
                         ))}
@@ -1320,32 +1236,30 @@ export default function GameDetailsPage() {
                     )}
 
                     <div className="flex justify-between items-start gap-4">
-                      <span className="text-gray-600 flex-shrink-0 pt-0.5">
-                        จำนวนที่เลือก:
+                      <span className="text-gray-600 flex-shrink-0 pt-0.5 font-bold">
+                        {t("selected_package_label")}
                       </span>
                       <div className="text-right min-w-0">
-                        <span className="text-black font-bold block leading-tight break-words">
+                        <span className="text-black font-black block leading-tight break-words">
                           {option.title}
                         </span>
                       </div>
                     </div>
 
-                    {/* Payment option selection moved to modal after buy */}
-
                     <div className="py-4 border-y-[3px] border-black">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-600">ราคา:</span>
+                        <span className="text-gray-600 font-bold">{t("price_label")}</span>
                         {option.originalPrice > option.price ? (
                           <div>
-                            <span className="line-through text-gray-500 text-sm mr-2">
+                            <span className="line-through text-gray-500 text-sm mr-2 font-bold">
                               ฿{Number(option.originalPrice || 0).toFixed(2)}
                             </span>
-                            <span className="text-black font-bold text-xl">
+                            <span className="text-black font-black text-xl">
                               ฿{Number(option.price || 0).toFixed(2)}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-black font-bold text-xl">
+                          <span className="text-black font-black text-xl">
                             ฿{Number(option.price || 0).toFixed(2)}
                           </span>
                         )}
@@ -1353,8 +1267,8 @@ export default function GameDetailsPage() {
 
                       {option.originalPrice > option.price && (
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600">ประหยัด:</span>
-                          <span className="text-brutal-green font-bold">
+                          <span className="text-gray-600 font-bold">{t("savings_label")}</span>
+                          <span className="text-brutal-green font-black">
                             ฿
                             {(
                               Number(option.originalPrice || 0) -
@@ -1371,7 +1285,7 @@ export default function GameDetailsPage() {
                         disabled={isBuying}
                         isLoading={isBuying}
                         size="full"
-                        className="bg-black text-white hover:bg-gray-800"
+                        className="bg-black text-white hover:bg-gray-800 font-black h-12"
                       >
                         {!isBuying && (
                           <>
@@ -1381,21 +1295,21 @@ export default function GameDetailsPage() {
                               aria-hidden="true"
                             />
                             {isAuthenticated
-                              ? "ซื้อเลย"
-                              : "เข้าสู่ระบบเพื่อซื้อ"}
+                              ? t("buy_now_button")
+                              : t("login_to_buy_button")}
                           </>
                         )}
                       </Button>
                     </div>
 
                     <div className="bg-brutal-gray border-[3px] border-black p-3 text-sm">
-                      <div className="flex">
+                      <div className="flex items-center">
                         <Clock
                           size={16}
-                          className="text-gray-600 mr-2 mt-0.5 flex-shrink-0"
+                          className="text-gray-600 mr-2 flex-shrink-0"
                         />
-                        <span className="text-gray-600">
-                          จัดส่งอัตโนมัติทันที
+                        <span className="text-gray-600 font-bold">
+                          {t("auto_delivery_hint")}
                         </span>
                       </div>
                     </div>
@@ -1406,11 +1320,11 @@ export default function GameDetailsPage() {
         </div>
       </div>
 
-      {/* Related Games section - show actual similar games */}
+      {/* Similar products */}
       <section className="mt-16 mb-10">
-        <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+        <h2 className="text-xl font-black text-black mb-4 flex items-center uppercase">
           <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
-          เกมที่คล้ายกัน
+          {t("similar_products")}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {similarGames.length > 0 ? (
@@ -1432,14 +1346,14 @@ export default function GameDetailsPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                     <div className="absolute bottom-2 left-2 right-2">
-                      <h3 className="text-sm font-bold text-white line-clamp-1">
+                      <h3 className="text-sm font-black text-white line-clamp-1 drop-shadow-sm">
                         {similarGame.name}
                       </h3>
                       <div className="flex items-center mt-1">
-                        <span className="text-xs bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-bold">
+                        <span className="text-[10px] bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-black uppercase">
                           {similarGame.gameDetails?.developer ||
                             similarGame.category?.name ||
-                            "เกม"}
+                            "GAME"}
                         </span>
                       </div>
                     </div>
@@ -1448,14 +1362,14 @@ export default function GameDetailsPage() {
               </Link>
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-600">
-              ไม่พบเกมที่คล้ายกัน
+            <div className="col-span-full text-center py-8 text-gray-600 font-bold">
+              {t("no_similar_found")}
             </div>
           )}
         </div>
       </section>
 
-      {/* Confirmation Modal - Redesigned for horizontal layout */}
+      {/* Confirmation Modal */}
       <AnimatePresence>
         {showConfirmModal && verificationStatus && (
           <motion.div
@@ -1473,7 +1387,6 @@ export default function GameDetailsPage() {
               style={{ boxShadow: "8px 8px 0 0 #000000" }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
               <div
                 className={`border-b-[3px] border-black p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-brutal-pink" : "bg-brutal-yellow"}`}
               >
@@ -1483,10 +1396,10 @@ export default function GameDetailsPage() {
                   ) : (
                     <Check size={22} className="text-black" />
                   )}
-                  <h2 className="text-base sm:text-lg font-bold text-black">
+                  <h2 className="text-base sm:text-lg font-black text-black uppercase">
                     {!verificationStatus.supported
-                      ? "ไม่สามารถตรวจสอบบัญชีได้"
-                      : "ยืนยันข้อมูลการสั่งซื้อ"}
+                      ? t("unverified_account_warning")
+                      : t("confirm_order_title")}
                   </h2>
                 </div>
                 <button
@@ -1497,9 +1410,7 @@ export default function GameDetailsPage() {
                 </button>
               </div>
 
-              {/* Content - Horizontal Layout */}
               <div className="flex-1 overflow-y-auto">
-                {/* Warning Banner - Compact */}
                 {!verificationStatus.supported && (
                   <div className="bg-red-50 border-b-[2px] border-red-200 p-3">
                     <div className="flex items-start gap-2">
@@ -1508,49 +1419,45 @@ export default function GameDetailsPage() {
                         className="text-red-600 mt-0.5 flex-shrink-0"
                       />
                       <div className="flex-1">
-                        <p className="font-bold text-red-700 text-sm">
-                          เกมนี้ไม่รองรับการตรวจสอบบัญชีอัตโนมัติ
+                        <p className="font-black text-red-700 text-sm">
+                          {t("unverified_account_warning")}
                         </p>
-                        <p className="text-xs text-red-600 mt-0.5">
-                          กรุณาตรวจสอบข้อมูลให้แน่ใจก่อนดำเนินการ
+                        <p className="text-xs text-red-600 mt-0.5 font-bold">
+                          {t("verify_info_hint")}
                         </p>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Main Grid Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                  {/* Left Column - Product Info */}
                   <div className="p-4 sm:p-5 space-y-4 border-b-[2px] lg:border-b-0 lg:border-r-[2px] border-black/10">
-                    {/* Product Summary Card */}
                     <div className="bg-brutal-gray border-[2px] border-black p-3 sm:p-4 shadow-[3px_3px_0_0_#000]">
-                      <h3 className="font-bold text-black text-sm mb-3 flex items-center gap-1.5">
+                      <h3 className="font-black text-black text-sm mb-3 flex items-center gap-1.5 uppercase">
                         <Package size={16} />
-                        รายละเอียดสินค้า
+                        {t("product_details_title")}
                       </h3>
-                      <div className="space-y-2 text-sm">
+                      <div className="space-y-2 text-sm font-bold">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">สินค้า:</span>
-                          <span className="font-medium text-black text-right max-w-[60%]">
+                          <span className="text-gray-600">Product:</span>
+                          <span className="text-black text-right max-w-[60%]">
                             {verificationStatus.productName}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">จำนวน:</span>
-                          <span className="font-medium text-black">
+                          <span className="text-gray-600">Package:</span>
+                          <span className="text-black">
                             {verificationStatus.optionName}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Player Info - Compact */}
                     {Object.keys(verificationStatus.playerInfo).length > 0 && (
                       <div className="bg-white border-[2px] border-black p-3 sm:p-4 shadow-[3px_3px_0_0_#000]">
-                        <h3 className="font-bold text-black text-sm mb-2 flex items-center gap-1.5">
+                        <h3 className="font-black text-black text-sm mb-2 flex items-center gap-1.5 uppercase">
                           <User size={16} />
-                          ข้อมูลบัญชี
+                          {t("account_info_title")}
                         </h3>
                         <div className="grid grid-cols-2 gap-2">
                           {Object.entries(verificationStatus.playerInfo).map(
@@ -1559,10 +1466,10 @@ export default function GameDetailsPage() {
                                 key={key}
                                 className="bg-brutal-gray p-2 border border-black/20"
                               >
-                                <span className="text-xs text-gray-500 block capitalize">
+                                <span className="text-[10px] text-gray-500 block uppercase font-black">
                                   {key}
                                 </span>
-                                <span className="font-mono font-bold text-black text-sm truncate block">
+                                <span className="font-mono font-black text-black text-sm truncate block">
                                   {value}
                                 </span>
                               </div>
@@ -1572,7 +1479,6 @@ export default function GameDetailsPage() {
                       </div>
                     )}
 
-                    {/* Warning - No Refund */}
                     <div className="bg-red-50 border-l-4 border-red-500 p-3">
                       <div className="flex items-start gap-2">
                         <AlertCircle
@@ -1580,45 +1486,41 @@ export default function GameDetailsPage() {
                           className="text-red-600 mt-0.5 flex-shrink-0"
                         />
                         <div>
-                          <p className="font-bold text-red-700 text-xs">
-                            ไม่สามารถขอคืนเงินได้
+                          <p className="font-black text-red-700 text-xs">
+                            {t("no_refund_warning_title")}
                           </p>
-                          <p className="text-xs text-red-600 mt-0.5 leading-relaxed">
-                            หากข้อมูลไม่ถูกต้อง
-                            ระบบไม่สามารถคืนเงินหรือยกเลิกรายการได้
+                          <p className="text-xs text-red-600 mt-0.5 leading-relaxed font-bold">
+                            {t("no_refund_warning_desc")}
                           </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Column - Payment & Actions */}
                   <div className="p-4 sm:p-5 space-y-4 bg-gray-50/50">
-                    {/* Payment Method */}
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">
-                        ช่องทางชำระเงิน
+                      <span className="text-sm text-gray-600 font-black uppercase">
+                        {t("payment_method_label")}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-black text-sm">
-                          {priceSummary.label || "เลือกช่องทาง"}
+                        <span className="font-black text-black text-sm">
+                          {priceSummary.label || "Select Method"}
                         </span>
                         <Button
                           size="sm"
                           variant="secondary"
                           onClick={() => setIsPaymentSelectOpen(true)}
-                          className="text-xs py-1 px-2 h-auto"
+                          className="text-[10px] py-1 px-2 h-auto font-black uppercase border-black"
                         >
-                          เปลี่ยน
+                          {t("change_button")}
                         </Button>
                       </div>
                     </div>
 
-                    {/* Price Breakdown */}
                     <div className="bg-white border-[2px] border-black p-4 shadow-[3px_3px_0_0_#000]">
-                      <div className="space-y-2 text-sm">
+                      <div className="space-y-2 text-sm font-bold">
                         <div className="flex justify-between text-gray-600">
-                          <span>ยอดสินค้า</span>
+                          <span>{t("subtotal_label")}</span>
                           <span>
                             ฿
                             {Number(
@@ -1629,16 +1531,14 @@ export default function GameDetailsPage() {
                           </span>
                         </div>
                         <div className="flex justify-between text-gray-600">
-                          <span>ค่าธรรมเนียม</span>
+                          <span>{t("fee_label")}</span>
                           <span>
                             ฿{Number(priceSummary.fee || 0).toFixed(2)}
                           </span>
                         </div>
                         <div className="border-t-2 border-black pt-2 mt-2">
                           <div className="flex justify-between items-baseline">
-                            <span className="font-bold text-black">
-                              ยอดสุทธิ
-                            </span>
+                            <span className="font-black text-black">{t("total_label")}</span>
                             <span className="text-2xl sm:text-3xl font-black text-black">
                               ฿
                               {Number(
@@ -1652,15 +1552,12 @@ export default function GameDetailsPage() {
                       </div>
                     </div>
 
-                    {/* Security Note */}
-                    <div className="bg-sky-50 border border-sky-200 p-2.5 text-xs text-sky-700 flex items-start gap-2">
+                    <div className="bg-sky-50 border border-sky-200 p-2.5 text-[10px] text-sky-700 flex items-start gap-2 font-bold uppercase">
                       <ShieldCheck size={14} className="mt-0.5 flex-shrink-0" />
-                      <span>การชำระเงินปลอดภัยผ่านระบบ Stripe</span>
+                      <span>{t("secure_payment_notice")}</span>
                     </div>
 
-                    {/* Action Buttons - Side by Side Layout */}
                     <div className="pt-4 border-t border-gray-200">
-                      {/* Terms and Conditions Checkbox */}
                       <div className="mb-4">
                         <label className="flex items-start gap-2 cursor-pointer">
                           <input
@@ -1669,41 +1566,38 @@ export default function GameDetailsPage() {
                             onChange={(e) => setTermsAccepted(e.target.checked)}
                             className="mt-0.5 w-4 h-4 accent-black flex-shrink-0 cursor-pointer"
                           />
-                          <span className="text-xs text-gray-600 leading-tight">
-                            ฉันได้อ่านและยอมรับ{" "}
-                            <Link href="/terms" target="_blank" className="text-brutal-pink hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>เงื่อนไขการให้บริการ</Link>,{" "}
-                            <Link href="/privacy" target="_blank" className="text-brutal-pink hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>นโยบายความเป็นส่วนตัว</Link> และ{" "}
-                            <Link href="/refund-policy" target="_blank" className="text-brutal-pink hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>นโยบายการคืนเงิน</Link>
+                          <span className="text-[10px] text-gray-600 leading-tight font-bold">
+                            {t("terms_agreement_prefix")}{" "}
+                            <Link href="/terms" target="_blank" className="text-brutal-pink hover:underline" onClick={(e) => e.stopPropagation()}>{t("terms_label")}</Link>,{" "}
+                            <Link href="/privacy" target="_blank" className="text-brutal-pink hover:underline" onClick={(e) => e.stopPropagation()}>{t("privacy_label")}</Link> and{" "}
+                            <Link href="/refund-policy" target="_blank" className="text-brutal-pink hover:underline" onClick={(e) => e.stopPropagation()}>{t("refund_label")}</Link>
                           </span>
                         </label>
                       </div>
 
                       <div className="flex flex-col sm:flex-row gap-3">
-                        {/* Primary Action - Confirm */}
                         <Button
                           onClick={createOrder}
                           disabled={isBuying || !termsAccepted}
                           isLoading={isBuying}
-                          className="flex-1 bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-base sm:text-lg font-bold shadow-[3px_3px_0_0_#000] border-[2px] border-black disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex-1 bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-base sm:text-lg font-black shadow-[3px_3px_0_0_#000] border-[2px] border-black disabled:opacity-50 disabled:cursor-not-allowed uppercase"
                         >
                           {!isBuying && <Check size={20} className="mr-2" />}
-                          ยืนยันการสั่งซื้อ
+                          {t("confirm_button")}
                         </Button>
 
-                        {/* Secondary Action - Cancel */}
                         <Button
                           variant="secondary"
                           onClick={() => setShowConfirmModal(false)}
                           disabled={isBuying}
-                          className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-semibold border-[2px] border-black shadow-[3px_3px_0_0_#000]"
+                          className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-black border-[2px] border-black shadow-[3px_3px_0_0_#000] uppercase"
                         >
-                          ยกเลิก
+                          {t("cancel_button")}
                         </Button>
                       </div>
 
-                      {/* Helper Text */}
-                      <p className="text-center text-xs text-gray-400 mt-3">
-                        กดปุ่มยืนยันเพื่อดำเนินการชำระเงินต่อ
+                      <p className="text-center text-[10px] text-gray-400 mt-3 font-bold uppercase">
+                        {t("confirm_hint")}
                       </p>
                     </div>
                   </div>
@@ -1714,7 +1608,6 @@ export default function GameDetailsPage() {
         )}
       </AnimatePresence>
 
-      {/* Payment selection modal (desktop & mobile) */}
       <AnimatePresence>
         {isPaymentSelectOpen && (
           <motion.div
@@ -1728,25 +1621,21 @@ export default function GameDetailsPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white w-full max-w-5xl border-[3px] border-black shadow-brutal p-4 sm:p-6"
+              className="bg-white w-full max-w-5xl border-[3px] border-black shadow-[8px_8px_0_0_#000] p-4 sm:p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-start gap-3 mb-5">
                 <div>
-                  <p className="text-xs uppercase text-gray-500 font-bold tracking-widest">
-                    Payment Method
-                  </p>
-                  <h3 className="text-2xl font-black text-black">
-                    เลือกช่องทางชำระเงิน
+                  <h3 className="text-2xl font-black text-black uppercase">
+                    {t("payment_selection_title")}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    เลือกวิธีที่สะดวก
-                    ระบบจะคำนวณค่าธรรมเนียมและยอดรวมให้อัตโนมัติ
+                  <p className="text-sm text-gray-600 mt-1 font-bold">
+                    {t("payment_selection_desc")}
                   </p>
                 </div>
                 <button
                   onClick={() => setIsPaymentSelectOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded"
+                  className="p-2 hover:bg-gray-100 rounded transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -1776,10 +1665,10 @@ export default function GameDetailsPage() {
                               className="mt-1 accent-black"
                             />
                             <div>
-                              <div className="text-black font-semibold text-base flex items-center gap-2">
+                              <div className="text-black font-black text-base flex items-center gap-2">
                                 {opt.label}
                               </div>
-                              <div className="text-xs text-gray-600 mt-1">
+                              <div className="text-[10px] text-gray-600 mt-1 font-bold">
                                 Gateway: {opt.gateway.name}
                               </div>
                             </div>
@@ -1790,23 +1679,20 @@ export default function GameDetailsPage() {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] uppercase border border-black px-2 py-0.5 bg-white text-gray-700 font-bold">
+                          <span className="text-[11px] uppercase border border-black px-2 py-0.5 bg-white text-gray-700 font-black">
                             {opt.method}
-                          </span>
-                          <span className="text-xs text-gray-600">
-                            Code: {opt.code}
                           </span>
                         </div>
 
-                        <div className="border-t border-black/20 pt-2 text-xs text-gray-700 space-y-1">
+                        <div className="border-t border-black/20 pt-2 text-[10px] text-gray-700 space-y-1 font-bold">
                           <div className="flex justify-between">
-                            <span>ค่าธรรมเนียม %</span>
+                            <span>FEE %</span>
                             <span>
                               {Number(opt.surchargePercent || 0).toFixed(2)}%
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>ค่าธรรมเนียมคงที่</span>
+                            <span>FLAT FEE</span>
                             <span>{formatTHB(Number(opt.flatFee || 0))}</span>
                           </div>
                         </div>
@@ -1816,41 +1702,36 @@ export default function GameDetailsPage() {
                 </div>
 
                 <div className="border-[2px] border-black p-4 bg-gray-50 h-fit space-y-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">
-                      Transaction Summary
-                    </p>
-                    <h4 className="text-lg font-bold text-black mt-1">
-                      สรุปรายการชำระเงิน
-                    </h4>
-                  </div>
+                  <h4 className="text-lg font-black text-black uppercase">
+                    {t("transaction_summary_title")}
+                  </h4>
 
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2 text-sm font-bold">
                     <div className="flex justify-between text-gray-700">
-                      <span>สินค้า</span>
-                      <span className="font-semibold text-black max-w-[55%] text-right truncate">
+                      <span>Product:</span>
+                      <span className="text-black max-w-[55%] text-right truncate">
                         {game?.title || "-"}
                       </span>
                     </div>
                     <div className="flex justify-between text-gray-700">
-                      <span>แพ็กเกจ</span>
-                      <span className="font-semibold text-black max-w-[55%] text-right truncate">
+                      <span>Package:</span>
+                      <span className="text-black max-w-[55%] text-right truncate">
                         {selectedTopUp?.title || "-"}
                       </span>
                     </div>
                     <div className="flex justify-between text-gray-700">
-                      <span>ยอดสินค้า</span>
+                      <span>Subtotal:</span>
                       <span>{formatTHB(Number(priceSummary.base || 0))}</span>
                     </div>
                     <div className="flex justify-between text-gray-700">
-                      <span>ค่าธรรมเนียม</span>
+                      <span>Fee:</span>
                       <span>{formatTHB(Number(priceSummary.fee || 0))}</span>
                     </div>
                   </div>
 
-                  <div className="border-t-2 border-black pt-3 flex justify-between items-end">
-                    <span className="text-sm text-gray-600">
-                      ยอดที่ต้องชำระ
+                  <div className="border-t-2 border-black pt-3 flex justify-between items-end font-bold">
+                    <span className="text-sm text-gray-600 uppercase">
+                      {t("total_label")}
                     </span>
                     <span className="text-2xl font-black text-black">
                       {formatTHB(Number(priceSummary.total || 0))}
@@ -1862,15 +1743,17 @@ export default function GameDetailsPage() {
                       onClick={() => setIsPaymentSelectOpen(false)}
                       disabled={!selectedPaymentOption}
                       fullWidth
+                      className="font-black uppercase"
                     >
-                      ยืนยันช่องทางนี้
+                      {t("confirm_selection_button")}
                     </Button>
                     <Button
                       variant="secondary"
                       onClick={() => setIsPaymentSelectOpen(false)}
                       fullWidth
+                      className="font-black uppercase border-black"
                     >
-                      ปิดหน้าต่าง
+                      {t("close_window_button")}
                     </Button>
                   </div>
                 </div>

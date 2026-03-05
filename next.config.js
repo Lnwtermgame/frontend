@@ -43,10 +43,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.lnwtermgame.com",
       },
-      {
-        protocol: "https",
-        hostname: "qr.stripe.com",
-      },
     ],
     dangerouslyAllowSVG: true,
     // Use inline disposition so SVG/payment icons render in-place

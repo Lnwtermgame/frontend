@@ -4,7 +4,12 @@ export interface PaymentMethodOption {
   id: string;
   code: string;
   label: string;
-  method: "CREDIT_CARD" | "PROMPTPAY" | "TRUEMONEY" | "BANK_TRANSFER";
+  method:
+    | "PROMPTPAY"
+    | "TRUEMONEY"
+    | "LINEPAY"
+    | "CREDIT_CARD"
+    | "BANK_TRANSFER";
   gateway: {
     id: string;
     name: string;
@@ -19,17 +24,29 @@ export interface PaymentMethodOption {
   metadata?: Record<string, any> | null;
 }
 
-export interface PaymentIntentResponse {
-  redirectUrl: string;
-  checkoutSessionId: string;
-  paymentIntentId?: string;
-}
-
 export type PaymentMethodCode =
-  | "CREDIT_CARD"
   | "PROMPTPAY"
   | "TRUEMONEY"
+  | "LINEPAY"
+  | "CREDIT_CARD"
   | "BANK_TRANSFER";
+
+/**
+ * Response from create-intent endpoint
+ * Unified response that handles all payment types (QR, LinePay, TrueMoney)
+ */
+export interface PaymentIntentResponse {
+  // For QR payments (PromptPay)
+  qrCodeUrl?: string;
+  // For redirect payments (LinePay, TrueMoney) - HTML form that auto-submits
+  paymentFormHtml?: string;
+  // For redirect payments - direct URL
+  redirectUrl?: string;
+  // Common fields
+  referenceNo: string;
+  // Amount for display purposes (optional)
+  amount?: number;
+}
 
 export interface AdminPaymentGateway {
   id: string;
@@ -94,9 +111,15 @@ export interface PaymentStatusResponse {
   orderId: string;
   amount: number;
   currency: string;
-  paymentMethod: "CREDIT_CARD" | "PROMPTPAY" | "TRUEMONEY" | "BANK_TRANSFER";
+  paymentMethod:
+    | "PROMPTPAY"
+    | "TRUEMONEY"
+    | "LINEPAY"
+    | "CREDIT_CARD"
+    | "BANK_TRANSFER";
   status: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "REFUNDED";
   transactionId?: string | null;
+  ffpReferenceNo?: string | null;
   feeAmount?: number;
   netAmount?: number;
   nextAction?: any;
@@ -110,19 +133,19 @@ export interface PaymentAuditLogItem {
   source: string;
   severity: "INFO" | "WARN" | "ALERT";
   previousStatus?:
-  | "PENDING"
-  | "PROCESSING"
-  | "COMPLETED"
-  | "FAILED"
-  | "REFUNDED"
-  | null;
+    | "PENDING"
+    | "PROCESSING"
+    | "COMPLETED"
+    | "FAILED"
+    | "REFUNDED"
+    | null;
   newStatus?:
-  | "PENDING"
-  | "PROCESSING"
-  | "COMPLETED"
-  | "FAILED"
-  | "REFUNDED"
-  | null;
+    | "PENDING"
+    | "PROCESSING"
+    | "COMPLETED"
+    | "FAILED"
+    | "REFUNDED"
+    | null;
   message: string;
   metadata?: Record<string, unknown> | null;
   createdAt: string;
@@ -150,6 +173,13 @@ class PaymentApiService {
     return response.data;
   }
 
+  /**
+   * Create payment intent - handles all payment types (QR, LinePay, TrueMoney)
+   *
+   * Response depends on payment method:
+   * - PROMPTPAY_QR: Returns qrCodeUrl for displaying QR code
+   * - LINEPAY/TRUEMONEY: Returns paymentFormHtml that auto-redirects to payment page
+   */
   async createIntent(
     orderId: string,
     paymentOptionCode?: string,
@@ -161,6 +191,17 @@ class PaymentApiService {
     return response.data;
   }
 
+  /**
+   * @deprecated Use createIntent instead - it now handles all payment types
+   * Kept for backward compatibility
+   */
+  async createQR(
+    orderId: string,
+    paymentOptionCode?: string,
+  ): Promise<{ success: boolean; data: PaymentIntentResponse }> {
+    return this.createIntent(orderId, paymentOptionCode);
+  }
+
   async getStatus(
     orderId: string,
   ): Promise<{ success: boolean; data: PaymentStatusResponse }> {
@@ -170,11 +211,11 @@ class PaymentApiService {
 
   async verifyPublic(
     orderId: string,
-    sessionId: string,
+    referenceNo: string,
   ): Promise<{ success: boolean; data: PaymentStatusResponse }> {
     const response = await paymentClient.get(
       `/api/payments/${orderId}/verify`,
-      { params: { session_id: sessionId } },
+      { params: { referenceNo } },
     );
     return response.data;
   }

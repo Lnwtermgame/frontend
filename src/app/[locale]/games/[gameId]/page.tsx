@@ -223,7 +223,11 @@ export default function GameDetailsPage() {
     return FIELD_LABEL_MAP[label] || label;
   };
 
-  const backHref = isCardRoute ? "/card" : isMobileRechargeRoute ? "/mobile-recharge" : "/games";
+  const backHref = isCardRoute
+    ? "/card"
+    : isMobileRechargeRoute
+      ? "/mobile-recharge"
+      : "/games";
   const backLabel = t("back");
   const optionsTabLabel = t("topup_options");
   const infoTabLabel = t("game_info");
@@ -372,7 +376,11 @@ export default function GameDetailsPage() {
       );
       if (missingFields.length > 0) {
         toast.error(
-          t("error.fill_all_fields", { fields: missingFields.map((f) => translateLabel(f.label)).join(", ") }),
+          t("error.fill_all_fields", {
+            fields: missingFields
+              .map((f) => translateLabel(f.label))
+              .join(", "),
+          }),
         );
         return;
       }
@@ -394,24 +402,49 @@ export default function GameDetailsPage() {
     paymentOptionCode?: string,
   ): Promise<boolean> => {
     try {
-      const intentRes = await paymentApi.createIntent(
-        orderId,
-        paymentOptionCode,
-      );
-      if (!intentRes.success) {
+      // Use createIntent for all payment types (QR, LinePay, TrueMoney)
+      const res = await paymentApi.createIntent(orderId, paymentOptionCode);
+      if (!res.success) {
         toast.error(t("error.payment_failed"));
         return false;
       }
 
-      const { redirectUrl } = intentRes.data;
-      if (!redirectUrl) {
-        toast.error(t("error.no_payment_link"));
-        return false;
+      const { qrCodeUrl, paymentFormHtml, redirectUrl, referenceNo } = res.data;
+
+      // Handle redirect payments (LinePay, TrueMoney)
+      // Backend returns HTML form that auto-submits to payment page
+      // Handle redirect payments (LinePay, TrueMoney)
+      // Backend returns HTML form that auto-submits to payment page
+      if (paymentFormHtml) {
+        // Perform direct redirect of the main window
+        const container = document.createElement("div");
+        container.innerHTML = paymentFormHtml;
+        document.body.appendChild(container);
+        const form = container.querySelector("form");
+        if (form) {
+          form.submit();
+        }
+        return true;
       }
 
-      toast.loading(t("error.redirecting"), { duration: 2000 });
-      window.location.href = redirectUrl;
-      return true;
+      // Handle direct redirect URL
+      if (redirectUrl) {
+        window.open(redirectUrl, "_blank");
+        return true;
+      }
+
+      // Handle QR URL directly inline without popup
+      if (qrCodeUrl) {
+        // Store QR data in sessionStorage (too large for URL params - causes HTTP 431)
+        sessionStorage.setItem(`qr_${orderId}`, qrCodeUrl);
+        router.push(
+          `/payments/pending?orderId=${orderId}&referenceNo=${referenceNo}`,
+        );
+        return true;
+      }
+
+      toast.error(t("error.no_payment_link"));
+      return false;
     } catch (err) {
       console.error("Payment flow error", err);
       toast.error(t("error.payment_error"));
@@ -430,6 +463,12 @@ export default function GameDetailsPage() {
       const playerInfo = buildPlayerInfo();
       const paymentOptionCode = selectedPaymentOption || undefined;
 
+      // Map the selected option code to its base payment method category
+      const selectedOptionObj = paymentOptions.find(
+        (opt) => opt.code === selectedPaymentOption
+      );
+      const paymentMethod = selectedOptionObj ? selectedOptionObj.method : "PROMPTPAY";
+
       const response = await orderApi.createOrder({
         items: [
           {
@@ -439,7 +478,7 @@ export default function GameDetailsPage() {
             playerInfo,
           },
         ],
-        paymentMethod: "PROMPTPAY",
+        paymentMethod,
         paymentOptionCode,
       });
 
@@ -468,7 +507,10 @@ export default function GameDetailsPage() {
         errorCode === 20093
       ) {
         toast.error(
-          t("error.player_id_invalid", { defaultMessage: "User ID or Zone ID is invalid. Please check your game account." }),
+          t("error.player_id_invalid", {
+            defaultMessage:
+              "User ID or Zone ID is invalid. Please check your game account.",
+          }),
           { duration: 5000 },
         );
       } else if (
@@ -476,7 +518,10 @@ export default function GameDetailsPage() {
         /phone number.*region.*match/i.test(errorMessage)
       ) {
         toast.error(
-          t("error.phone_region_mismatch", { defaultMessage: "Phone number does not match the selected region. Please check your number or selection." }),
+          t("error.phone_region_mismatch", {
+            defaultMessage:
+              "Phone number does not match the selected region. Please check your number or selection.",
+          }),
           { duration: 5000 },
         );
       } else {
@@ -670,7 +715,9 @@ export default function GameDetailsPage() {
       }
     };
     checkFavorite();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [product?.id, isAuthenticated]);
 
   if (loading) {
@@ -692,7 +739,9 @@ export default function GameDetailsPage() {
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle size={48} className="mx-auto text-brutal-pink mb-4" />
-          <h2 className="text-2xl font-bold text-black mb-2 uppercase">{t("error.not_found")}</h2>
+          <h2 className="text-2xl font-bold text-black mb-2 uppercase">
+            {t("error.not_found")}
+          </h2>
           <p className="text-gray-600 mb-6 font-bold">
             {error || t("error.not_found_desc")}
           </p>
@@ -776,7 +825,9 @@ export default function GameDetailsPage() {
                 </div>
 
                 <p className="text-gray-300 text-sm md:text-base font-black drop-shadow-sm">
-                  {t("by_developer", { developer: game.publisher || game.developer || t("unknown") })}
+                  {t("by_developer", {
+                    developer: game.publisher || game.developer || t("unknown"),
+                  })}
                 </p>
               </div>
 
@@ -857,7 +908,9 @@ export default function GameDetailsPage() {
                         className="mx-auto text-gray-500 mb-2"
                         size={32}
                       />
-                      <p className="text-gray-600 font-bold">{t("no_options")}</p>
+                      <p className="text-gray-600 font-bold">
+                        {t("no_options")}
+                      </p>
                       <p className="text-sm text-gray-500 mt-1 font-bold">
                         {t("no_options_desc")}
                       </p>
@@ -898,7 +951,10 @@ export default function GameDetailsPage() {
                                 {option.originalPrice > option.price ? (
                                   <div className="flex flex-col items-center">
                                     <span className="line-through text-gray-500 text-[10px] md:text-xs font-bold">
-                                      ฿{Number(option.originalPrice || 0).toFixed(2)}
+                                      ฿
+                                      {Number(
+                                        option.originalPrice || 0,
+                                      ).toFixed(2)}
                                     </span>
                                     <span className="text-black font-black text-sm md:text-base">
                                       ฿{Number(option.price || 0).toFixed(2)}
@@ -961,7 +1017,10 @@ export default function GameDetailsPage() {
                                 {option.originalPrice > option.price ? (
                                   <div className="flex flex-col items-center">
                                     <span className="line-through text-gray-500 text-[10px] font-bold">
-                                      ฿{Number(option.originalPrice || 0).toFixed(2)}
+                                      ฿
+                                      {Number(
+                                        option.originalPrice || 0,
+                                      ).toFixed(2)}
                                     </span>
                                     <span className="text-black font-black text-sm">
                                       ฿{Number(option.price || 0).toFixed(2)}
@@ -1248,7 +1307,9 @@ export default function GameDetailsPage() {
 
                     <div className="py-4 border-y-[3px] border-black">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-600 font-bold">{t("price_label")}</span>
+                        <span className="text-gray-600 font-bold">
+                          {t("price_label")}
+                        </span>
                         {option.originalPrice > option.price ? (
                           <div>
                             <span className="line-through text-gray-500 text-sm mr-2 font-bold">
@@ -1267,7 +1328,9 @@ export default function GameDetailsPage() {
 
                       {option.originalPrice > option.price && (
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600 font-bold">{t("savings_label")}</span>
+                          <span className="text-gray-600 font-bold">
+                            {t("savings_label")}
+                          </span>
                           <span className="text-brutal-green font-black">
                             ฿
                             {(
@@ -1538,7 +1601,9 @@ export default function GameDetailsPage() {
                         </div>
                         <div className="border-t-2 border-black pt-2 mt-2">
                           <div className="flex justify-between items-baseline">
-                            <span className="font-black text-black">{t("total_label")}</span>
+                            <span className="font-black text-black">
+                              {t("total_label")}
+                            </span>
                             <span className="text-2xl sm:text-3xl font-black text-black">
                               ฿
                               {Number(
@@ -1568,9 +1633,32 @@ export default function GameDetailsPage() {
                           />
                           <span className="text-[10px] text-gray-600 leading-tight font-bold">
                             {t("terms_agreement_prefix")}{" "}
-                            <Link href="/terms" target="_blank" className="text-brutal-pink hover:underline" onClick={(e) => e.stopPropagation()}>{t("terms_label")}</Link>,{" "}
-                            <Link href="/privacy" target="_blank" className="text-brutal-pink hover:underline" onClick={(e) => e.stopPropagation()}>{t("privacy_label")}</Link> and{" "}
-                            <Link href="/refund-policy" target="_blank" className="text-brutal-pink hover:underline" onClick={(e) => e.stopPropagation()}>{t("refund_label")}</Link>
+                            <Link
+                              href="/terms"
+                              target="_blank"
+                              className="text-brutal-pink hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t("terms_label")}
+                            </Link>
+                            ,{" "}
+                            <Link
+                              href="/privacy"
+                              target="_blank"
+                              className="text-brutal-pink hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t("privacy_label")}
+                            </Link>{" "}
+                            and{" "}
+                            <Link
+                              href="/refund-policy"
+                              target="_blank"
+                              className="text-brutal-pink hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t("refund_label")}
+                            </Link>
                           </span>
                         </label>
                       </div>

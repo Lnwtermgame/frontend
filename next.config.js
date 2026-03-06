@@ -6,7 +6,6 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig = {
   reactStrictMode: true,
   // Disable static generation for pages that use client-side context
-  output: "standalone",
   async redirects() {
     return [
       {

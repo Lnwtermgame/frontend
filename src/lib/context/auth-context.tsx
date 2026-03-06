@@ -313,10 +313,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const profileResponse = await authApi.getProfile();
           if (profileResponse.success) {
             setUser(profileResponse.data);
+          } else {
+            // Profile fetch failed (e.g., user deleted or banned)
+            clearAuth();
+            if (typeof window !== "undefined") {
+              import("next-auth/react").then(({ signOut }) => signOut({ redirect: false }));
+              sessionStorage.setItem("session_expired", "true");
+              window.location.href = "/login?session_expired=true";
+            }
+          }
+        } else {
+          // Token refresh failed (e.g., expired cookie, logged out on another device)
+          clearAuth();
+          if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+            import("next-auth/react").then(({ signOut }) => signOut({ redirect: false }));
+            sessionStorage.setItem("session_expired", "true");
+            window.location.href = "/login?session_expired=true";
           }
         }
       } catch (err) {
         console.log("[Auth] Refresh cookie session failed:", err);
+        clearAuth();
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+          import("next-auth/react").then(({ signOut }) => signOut({ redirect: false }));
+          sessionStorage.setItem("session_expired", "true");
+          window.location.href = "/login?session_expired=true";
+        }
       } finally {
         isCheckingSessionRef.current = false;
         setIsSessionChecked(true);

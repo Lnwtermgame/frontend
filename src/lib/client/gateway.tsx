@@ -304,6 +304,12 @@ const createServiceClient = (service: string): AxiosInstance => {
           if (typeof window !== "undefined") {
             setAccessToken(null);
             localStorage.removeItem("mali-gamepass-user");
+
+            // Clear NextAuth session as well to prevent auth loop mismatch
+            import("next-auth/react").then(({ signOut }) => {
+              signOut({ redirect: false }).catch(console.error);
+            });
+
             // Only redirect if not already on the login page to prevent redirect loops
             if (!window.location.pathname.startsWith("/login")) {
               sessionStorage.setItem("session_expired", "true");

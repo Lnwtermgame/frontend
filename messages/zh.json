@@ -1636,5 +1636,19 @@
     "connect_failed": "连接 {platform} 失败",
     "disconnect_success": "成功断开与 {platform} 的连接",
     "disconnect_failed": "断开与 {platform} 的连接失败"
+  },
+  "CookieNotice": {
+    "title": "本网站使用Cookie",
+    "description": "我们目前仅使用必要的Cookie，用途如下：",
+    "items": [
+      "身份验证和登录会话连续性",
+      "CSRF安全防护",
+      "OAuth登录和会话流程支持"
+    ],
+    "tawkItem": "在线客服支持：如果启用了Tawk.to小部件，其提供商可能会设置Cookie以实现聊天功能",
+    "noTawkItem": "Tawk.to在线客服小部件当前未启用",
+    "acknowledge": "我知道了",
+    "privacy": "隐私政策",
+    "ariaClose": "关闭Cookie通知"
   }
 }

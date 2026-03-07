@@ -1698,5 +1698,19 @@
     "connect_failed": "Failed to connect to {platform}",
     "disconnect_success": "Successfully disconnected from {platform}",
     "disconnect_failed": "Failed to disconnect from {platform}"
+  },
+  "CookieNotice": {
+    "title": "This website uses cookies",
+    "description": "We currently use necessary cookies for these purposes:",
+    "items": [
+      "Authentication and login session continuity",
+      "CSRF protection for security",
+      "OAuth sign-in and session flow support"
+    ],
+    "tawkItem": "Live chat support: if Tawk.to widget is enabled, its provider may set cookies for chat functionality",
+    "noTawkItem": "Tawk.to live chat widget is currently not enabled",
+    "acknowledge": "Acknowledge",
+    "privacy": "Privacy Policy",
+    "ariaClose": "Close cookie notice"
   }
 }

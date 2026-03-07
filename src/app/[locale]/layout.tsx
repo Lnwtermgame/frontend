@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 import Script from "next/script";
 import { ReactGrabInit } from "@/components/ReactGrabInit";
 import { Toaster } from "react-hot-toast";
@@ -21,6 +21,7 @@ import { NextAuthProvider } from "@/components/providers/nextauth-provider";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { TawkTo } from "@/components/tawk-to";
+import { CookieNotice } from "@/components/cookie/CookieNotice";
 
 // Import Noto Sans Thai for Thai language support
 import "@fontsource/noto-sans-thai/300.css";
@@ -154,10 +155,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout(props: Readonly<{
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}>) {
+export default async function RootLayout(
+  props: Readonly<{
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
+  }>,
+) {
   const params = await props.params;
   const { locale } = params;
 
@@ -169,6 +172,11 @@ export default async function RootLayout(props: Readonly<{
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();
+  const isTawkEnabled = Boolean(
+    process.env.NEXT_PUBLIC_TAWK_TO_PROPERTY_ID &&
+    process.env.NEXT_PUBLIC_TAWK_TO_WIDGET_ID,
+  );
+
   return (
     <html lang={locale} style={{ colorScheme: "light" }}>
       <head>
@@ -197,6 +205,7 @@ export default async function RootLayout(props: Readonly<{
                               <MainLayout>{props.children}</MainLayout>
                             </PublicSettingsProvider>
                           </CartProvider>
+                          <CookieNotice isTawkEnabled={isTawkEnabled} />
                           <Toaster
                             position="bottom-right"
                             containerStyle={{

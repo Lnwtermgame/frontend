@@ -1698,5 +1698,19 @@
     "connect_failed": "Error al conectar con {platform}",
     "disconnect_success": "Desconectado correctamente de {platform}",
     "disconnect_failed": "Error al desconectar de {platform}"
+  },
+  "CookieNotice": {
+    "title": "Este sitio web utiliza cookies",
+    "description": "Actualmente solo usamos cookies necesarias para estos propósitos:",
+    "items": [
+      "Autenticación y continuidad de sesión de inicio de sesión",
+      "Protección CSRF para seguridad",
+      "Soporte de inicio de sesión OAuth y flujo de sesión"
+    ],
+    "tawkItem": "Soporte de chat en vivo: si el widget de Tawk.to está habilitado, su proveedor puede establecer cookies para la funcionalidad del chat",
+    "noTawkItem": "El widget de chat en vivo de Tawk.to no está habilitado actualmente",
+    "acknowledge": "Aceptar",
+    "privacy": "Política de Privacidad",
+    "ariaClose": "Cerrar aviso de cookies"
   }
 }

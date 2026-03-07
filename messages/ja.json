@@ -1698,5 +1698,19 @@
     "connect_failed": "{platform} との連携に失敗しました",
     "disconnect_success": "{platform} との連携を解除しました",
     "disconnect_failed": "{platform} との連携解除に失敗しました"
+  },
+  "CookieNotice": {
+    "title": "このウェブサイトはCookieを使用しています",
+    "description": "現在、以下の目的で必要なCookieのみを使用しています：",
+    "items": [
+      "認証とログインセッションの継続性",
+      "セキュリティのためのCSRF保護",
+      "OAuthサインインとセッションフローのサポート"
+    ],
+    "tawkItem": "ライブチャットサポート：Tawk.toウィジェットが有効な場合、チャット機能のためにプロバイダーがCookieを設定する可能性があります",
+    "noTawkItem": "Tawk.toライブチャットウィジェットは現在無効です",
+    "acknowledge": "了解しました",
+    "privacy": "プライバシーポリシー",
+    "ariaClose": "Cookie通知を閉じる"
   }
 }

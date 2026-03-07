@@ -252,7 +252,7 @@ export default function SecurityPage() {
   };
 
   return (
-    <div className="bg-brutal-gray min-h-full">
+    <div className="bg-transparent min-h-full">
       {/* Page Header */}
       <div className="relative mb-4">
         <motion.h2
@@ -813,11 +813,10 @@ export default function SecurityPage() {
                     {/* Icon Column */}
                     <div className="flex-shrink-0">
                       <div
-                        className={`w-10 h-10 rounded-full border-[2px] border-black flex items-center justify-center ${
-                          activity.suspicious && !activity.resolved
+                        className={`w-10 h-10 rounded-full border-[2px] border-black flex items-center justify-center ${activity.suspicious && !activity.resolved
                             ? "bg-red-100 text-red-600"
                             : "bg-brutal-green/20 text-brutal-green"
-                        }`}
+                          }`}
                       >
                         {activity.suspicious && !activity.resolved ? (
                           <AlertTriangle size={20} />

@@ -722,7 +722,7 @@ export default function GameDetailsPage() {
 
   if (loading) {
     return (
-      <div className="page-container flex items-center justify-center h-96 bg-brutal-gray">
+      <div className="page-container flex items-center justify-center h-96 bg-transparent">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600 font-bold">{tCommon("loading")}</p>
@@ -733,7 +733,7 @@ export default function GameDetailsPage() {
 
   if (error || !game) {
     return (
-      <div className="page-container bg-brutal-gray">
+      <div className="page-container bg-transparent">
         <div
           className="bg-white border-[3px] border-black p-8 text-center"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
@@ -757,7 +757,7 @@ export default function GameDetailsPage() {
   }
 
   return (
-    <div className="page-container bg-brutal-gray">
+    <div className="page-container bg-transparent">
       {/* Back link */}
       <div className="mb-6">
         <Link

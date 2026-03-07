@@ -484,8 +484,8 @@ export default function CouponsPage() {
                 {errorMessage && (
                   <motion.div
                     className={`mt-2 text-[10px] flex items-start p-1.5 border-[2px] ${errorMessage.includes(t("validating")) || errorMessage.includes("กำลัง")
-                        ? "text-yellow-700 bg-yellow-50 border-yellow-500"
-                        : "text-red-600 bg-red-50 border-red-500"
+                      ? "text-yellow-700 bg-yellow-50 border-yellow-500"
+                      : "text-red-600 bg-red-50 border-red-500"
                       }`}
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}

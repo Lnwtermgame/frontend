@@ -164,7 +164,7 @@ export default function AccountPage() {
   const isEmailVerified = user?.emailVerified ?? true; // Default to true if not provided (for backward compatibility)
 
   return (
-    <div className="bg-brutal-gray min-h-full">
+    <div className="bg-transparent min-h-full">
       {/* Page Header */}
       <div className="relative mb-4">
         <motion.h2
@@ -256,10 +256,9 @@ export default function AccountPage() {
                         className={`
                           flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border-[2px] border-black
                           transition-all duration-200 whitespace-nowrap
-                          ${
-                            cooldownSeconds > 0 || isSendingVerification
-                              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                              : "bg-brutal-yellow text-black hover:bg-brutal-blue hover:text-white"
+                          ${cooldownSeconds > 0 || isSendingVerification
+                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                            : "bg-brutal-yellow text-black hover:bg-brutal-blue hover:text-white"
                           }
                         `}
                       >

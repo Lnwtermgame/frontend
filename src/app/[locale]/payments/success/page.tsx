@@ -148,7 +148,7 @@ function PaymentSuccessPageContent() {
     }[status];
 
     return (
-        <main className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[radial-gradient(circle_at_15%_10%,#fde68a_0,transparent_35%),radial-gradient(circle_at_85%_15%,#99f6e4_0,transparent_35%),linear-gradient(180deg,#f9fafb_0%,#eef2ff_100%)]">
+        <main className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-transparent">
             <div className="pointer-events-none absolute -left-24 top-20 h-56 w-56 rounded-full border-[3px] border-black bg-brutal-yellow/70" />
             <div className="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full border-[3px] border-black bg-brutal-blue/60" />
 

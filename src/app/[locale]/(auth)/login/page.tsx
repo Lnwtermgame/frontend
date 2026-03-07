@@ -158,8 +158,8 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <div className="min-h-[100dvh] bg-transparent flex items-center justify-center px-4 py-4 lg:py-12">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
         {/* Left Side - Branding */}
         <motion.div
           className="hidden lg:flex flex-col space-y-6"
@@ -238,10 +238,10 @@ function LoginContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="bg-white border-[3px] border-black shadow-[8px_8px_0_0_#000] p-8">
+          <div className="bg-white border-[3px] border-black shadow-[8px_8px_0_0_#000] p-5 lg:p-8">
             {/* Session Expired Warning */}
             {sessionExpired && (
-              <div className="mb-6 p-4 bg-yellow-100 border-[2px] border-yellow-500">
+              <div className="mb-4 lg:mb-6 p-3 lg:p-4 bg-yellow-100 border-[2px] border-yellow-500">
                 <div className="flex items-center space-x-2">
                   <Info className="w-5 h-5 text-yellow-700" />
                   <span className="text-yellow-800 font-bold">
@@ -255,20 +255,20 @@ function LoginContent() {
             )}
 
             {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
-                <Zap className="w-5 h-5 text-black" fill="currentColor" />
+            <div className="lg:hidden flex items-center justify-center space-x-2 mb-4">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
+                <Zap className="w-4 h-4 lg:w-5 lg:h-5 text-black" fill="currentColor" />
               </div>
-              <span className="text-xl font-black text-black">
+              <span className="text-lg lg:text-xl font-black text-black">
                 {siteName}
               </span>
             </div>
 
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-black mb-2">
+            <div className="text-center mb-4 lg:mb-8">
+              <h2 className="text-xl lg:text-2xl font-black text-black mb-1 lg:mb-2">
                 {t("title")}
               </h2>
-              <p className="text-gray-500">
+              <p className="text-sm lg:text-base text-gray-500">
                 {t("no_account")}{" "}
                 <Link
                   href="/register"
@@ -279,7 +279,7 @@ function LoginContent() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-5">
               <Input
                 id="email"
                 label={t("email")}
@@ -334,18 +334,18 @@ function LoginContent() {
             {/* OAuth Section */}
             {oauthProviders.length > 0 && (
               <>
-                <div className="relative my-6">
+                <div className="relative my-4 lg:my-6">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-200"></div>
                   </div>
-                  <div className="relative flex justify-center text-sm">
+                  <div className="relative flex justify-center text-xs lg:text-sm">
                     <span className="px-3 bg-white text-gray-500">
                       {t("or_login_with")}
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 gap-2 lg:gap-3">
                   {oauthLoading ? (
                     <div className="flex justify-center py-4">
                       <Loader2 className="w-6 h-6 animate-spin text-gray-400" />

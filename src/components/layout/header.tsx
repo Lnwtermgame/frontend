@@ -122,6 +122,9 @@ export function Header() {
     { code: "ja", label: "日本語" },
     { code: "ko", label: "한국어" },
     { code: "ms", label: "Melayu" },
+    { code: 'hi', label: 'हिन्दी', flagCode: 'in' },
+    { code: 'es', label: 'Español', flagCode: 'es' },
+    { code: 'fr', label: 'Français', flagCode: 'fr' }
   ];
 
   const currentLanguageLabel = languages.find((l) => l.code === locale)?.label || locale;

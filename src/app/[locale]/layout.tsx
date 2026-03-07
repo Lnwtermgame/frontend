@@ -46,6 +46,12 @@ import "@fontsource/noto-sans-kr/400.css";
 import "@fontsource/noto-sans-kr/500.css";
 import "@fontsource/noto-sans-kr/700.css";
 
+// Import Noto Sans Devanagari for Hindi language support
+import "@fontsource/noto-sans-devanagari/300.css";
+import "@fontsource/noto-sans-devanagari/400.css";
+import "@fontsource/noto-sans-devanagari/500.css";
+import "@fontsource/noto-sans-devanagari/700.css";
+
 // Import Poppins for English language and generic text
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";

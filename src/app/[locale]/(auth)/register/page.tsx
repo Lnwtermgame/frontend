@@ -104,8 +104,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <div className="min-h-[100dvh] bg-transparent flex items-center justify-center px-4 py-4 lg:py-12">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
         {/* Left Side - Branding */}
         <motion.div
           className="hidden lg:flex flex-col space-y-6"
@@ -184,27 +184,27 @@ export default function RegisterPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="bg-white border-[3px] border-black p-6 md:p-8 shadow-[6px_6px_0_0_#000]">
+          <div className="bg-white border-[3px] border-black p-5 md:p-8 shadow-[6px_6px_0_0_#000]">
             {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
-                <Zap className="w-5 h-5 text-black" fill="currentColor" />
+            <div className="lg:hidden flex items-center justify-center space-x-2 mb-4">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
+                <Zap className="w-4 h-4 lg:w-5 lg:h-5 text-black" fill="currentColor" />
               </div>
-              <span className="text-xl font-black text-black">
+              <span className="text-lg lg:text-xl font-black text-black">
                 {siteName}
               </span>
             </div>
 
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-black mb-2">
+            <div className="text-center mb-4 lg:mb-8">
+              <h2 className="text-xl lg:text-2xl font-black text-black mb-1 lg:mb-2">
                 {t("title")}
               </h2>
-              <p className="text-gray-500">
+              <p className="text-sm lg:text-base text-gray-500">
                 {t("subtitle")}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-5">
               <Input
                 id="username"
                 label={t("username")}
@@ -265,10 +265,10 @@ export default function RegisterPage() {
                   icon={
                     <CheckCircle
                       className={`h-5 w-5 transition-colors ${password &&
-                          confirmPassword &&
-                          password === confirmPassword
-                          ? "text-brutal-green"
-                          : "text-gray-400"
+                        confirmPassword &&
+                        password === confirmPassword
+                        ? "text-brutal-green"
+                        : "text-gray-400"
                         }`}
                     />
                   }
@@ -294,8 +294,8 @@ export default function RegisterPage() {
               </Button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-              <p className="text-gray-500">
+            <div className="mt-4 lg:mt-8 pt-4 lg:pt-6 border-t border-gray-200 text-center">
+              <p className="text-sm lg:text-base text-gray-500">
                 {t("already_have_account")}{" "}
                 <Link
                   href="/login"
@@ -306,7 +306,7 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <div className="mt-6 text-center text-xs text-gray-500">
+            <div className="mt-4 lg:mt-6 text-center text-xs text-gray-500">
               {t("terms_agreement")}{" "}
               <Link
                 href="/terms"

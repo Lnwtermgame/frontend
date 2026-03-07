@@ -69,10 +69,10 @@ export default function FaqArticlePage() {
         setArticle((prev) =>
           prev
             ? {
-                ...prev,
-                helpfulCount: response.data.helpfulCount,
-                unhelpfulCount: response.data.unhelpfulCount,
-              }
+              ...prev,
+              helpfulCount: response.data.helpfulCount,
+              unhelpfulCount: response.data.unhelpfulCount,
+            }
             : null,
         );
       }
@@ -83,7 +83,7 @@ export default function FaqArticlePage() {
 
   if (isLoading) {
     return (
-      <div className="page-container bg-brutal-gray">
+      <div className="page-container bg-transparent">
         <div
           className="bg-white border-[3px] border-black p-12 text-center"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
@@ -97,7 +97,7 @@ export default function FaqArticlePage() {
 
   if (error || !article) {
     return (
-      <div className="page-container bg-brutal-gray">
+      <div className="page-container bg-transparent">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ export default function FaqArticlePage() {
   }
 
   return (
-    <div className="page-container bg-brutal-gray">
+    <div className="page-container bg-transparent">
       {/* Breadcrumb */}
       <div className="mb-6">
         <div className="flex items-center text-sm text-gray-600">
@@ -246,11 +246,10 @@ export default function FaqArticlePage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleVote(true)}
-                  className={`flex items-center px-4 py-2 border-[3px] transition-colors ${
-                    userVote === true
+                  className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === true
                       ? "bg-brutal-green border-black text-black"
                       : "bg-white border-black text-black hover:bg-brutal-green"
-                  }`}
+                    }`}
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <ThumbsUp size={16} className="mr-2" />
@@ -258,11 +257,10 @@ export default function FaqArticlePage() {
                 </button>
                 <button
                   onClick={() => handleVote(false)}
-                  className={`flex items-center px-4 py-2 border-[3px] transition-colors ${
-                    userVote === false
+                  className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === false
                       ? "bg-brutal-pink border-black text-black"
                       : "bg-white border-black text-black hover:bg-brutal-pink"
-                  }`}
+                    }`}
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
                   <ThumbsDown size={16} className="mr-2" />

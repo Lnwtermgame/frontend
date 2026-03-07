@@ -115,6 +115,17 @@ export function Header() {
     },
   };
 
+  const languages = [
+    { code: "en", label: "English" },
+    { code: "th", label: "ไทย" },
+    { code: "zh", label: "中文" },
+    { code: "ja", label: "日本語" },
+    { code: "ko", label: "한국어" },
+    { code: "ms", label: "Melayu" },
+  ];
+
+  const currentLanguageLabel = languages.find((l) => l.code === locale)?.label || locale;
+
   return (
     <motion.header
       className="w-full bg-white border-b-[3px] border-black"
@@ -158,7 +169,7 @@ export function Header() {
             className="flex items-center space-x-1 hover:opacity-100 opacity-80 transition-opacity uppercase font-bold text-black"
           >
             <Languages className="h-3 w-3 mr-1" aria-hidden="true" />
-            <span className="text-xs">{locale}</span>
+            <span className="text-xs">{currentLanguageLabel}</span>
             <ChevronDown className={`h-3 w-3 transition-transform ${showLangMenu ? "rotate-180" : ""}`} aria-hidden="true" />
           </button>
 
@@ -170,11 +181,7 @@ export function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
               >
-                {[
-                  { code: "en", label: "English" },
-                  { code: "th", label: "ไทย" },
-                  { code: "zh", label: "中文" },
-                ].map((lang) => (
+                {languages.map((lang) => (
                   <button
                     key={lang.code}
                     onClick={() => handleLocaleChange(lang.code)}

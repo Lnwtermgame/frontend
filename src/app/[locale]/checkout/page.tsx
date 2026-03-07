@@ -171,7 +171,7 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="page-container flex items-center justify-center bg-brutal-gray h-96">
+      <div className="page-container flex items-center justify-center bg-transparent h-96">
         <div className="flex flex-col items-center">
           <Loader2 className="w-12 h-12 text-brutal-pink animate-spin" />
           <p className="mt-4 text-gray-600">{t("loading")}</p>
@@ -182,7 +182,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="page-container flex items-center justify-center bg-brutal-gray h-[calc(100vh-200px)]">
+      <div className="page-container flex items-center justify-center bg-transparent h-[calc(100vh-200px)]">
         <div
           className="bg-white border-[3px] border-black p-8 text-center max-w-md w-full mx-4"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
@@ -206,7 +206,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="page-container bg-brutal-gray">
+    <div className="page-container bg-transparent">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
@@ -260,11 +260,10 @@ export default function CheckoutPage() {
                         {item.name}
                       </h3>
                       <span
-                        className={`inline-flex items-center gap-1 text-sm mt-1 font-medium ${
-                          item.productType === "DIRECT_TOPUP"
+                        className={`inline-flex items-center gap-1 text-sm mt-1 font-medium ${item.productType === "DIRECT_TOPUP"
                             ? "text-brutal-pink"
                             : "text-brutal-blue"
-                        }`}
+                          }`}
                       >
                         {item.productType === "DIRECT_TOPUP" ? (
                           <>

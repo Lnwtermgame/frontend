@@ -158,7 +158,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Left Side - Branding */}
         <motion.div

@@ -84,7 +84,7 @@ export default function RegisterPage() {
 
   if (!loadingSettings && !registrationEnabled) {
     return (
-      <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-xl bg-white border-[3px] border-black p-8 text-center shadow-[6px_6px_0_0_#000]">
           <h1 className="text-2xl font-black text-black mb-3">
             {t("registration_disabled")}
@@ -104,7 +104,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Left Side - Branding */}
         <motion.div
@@ -264,13 +264,12 @@ export default function RegisterPage() {
                   disabled={isLoading}
                   icon={
                     <CheckCircle
-                      className={`h-5 w-5 transition-colors ${
-                        password &&
-                        confirmPassword &&
-                        password === confirmPassword
+                      className={`h-5 w-5 transition-colors ${password &&
+                          confirmPassword &&
+                          password === confirmPassword
                           ? "text-brutal-green"
                           : "text-gray-400"
-                      }`}
+                        }`}
                     />
                   }
                   errorText={passwordError}

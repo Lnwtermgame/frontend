@@ -8,6 +8,9 @@
       "Poppins", "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont,
       "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-thai: "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
+    --font-cn: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    --font-kr: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 
     /* Neo-Brutalism Lite - Light Theme Base */
     --background: 0 0% 100%;
@@ -53,6 +56,11 @@
     --font-sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans Thai", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
+  html[lang="ja"] {
+    --font-thai: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
+    --font-sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans Thai", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
   /* iOS touch optimization */
   * {
     -webkit-tap-highlight-color: transparent;
@@ -66,12 +74,11 @@
     /* Critical: prevents iOS zoom */
   }
 
-  /* Global font smoothing for better rendering across all browsers */
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-family: var(--font-thai) !important;
+    font-family: var(--font-sans) !important;
     -webkit-text-size-adjust: 100%;
     scroll-behavior: auto;
     overflow-y: scroll;
@@ -80,6 +87,27 @@
     width: 100%;
     max-width: 100%;
   }
+
+  html[lang="th"] {
+    font-family: var(--font-thai) !important;
+  }
+
+  html[lang="zh"] {
+    font-family: var(--font-cn) !important;
+  }
+
+  html[lang="ja"] {
+    font-family: var(--font-jp) !important;
+  }
+
+  html[lang="ko"] {
+    font-family: var(--font-kr) !important;
+  }
+
+  html[lang="en"] {
+    font-family: var(--font-sans) !important;
+  }
+
 
   /* Thai font class for explicit targeting */
   .thai-font {

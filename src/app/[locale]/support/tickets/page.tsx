@@ -205,7 +205,7 @@ export default function TicketsPage() {
 
   if (!supportTicketsEnabled) {
     return (
-      <div className="page-container bg-brutal-gray">
+      <div className="page-container bg-transparent">
         <div
           className="mx-auto max-w-2xl border-[3px] border-black bg-white p-8 text-center"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
@@ -230,7 +230,7 @@ export default function TicketsPage() {
   }
 
   return (
-    <div className="page-container bg-brutal-gray">
+    <div className="page-container bg-transparent">
       {/* Header */}
       <motion.div
         className="bg-white border-[3px] border-black p-6 md:p-8 mb-8"
@@ -311,11 +311,10 @@ export default function TicketsPage() {
                     onClick={() =>
                       setStatusFilter(status as TicketStatus | "ALL")
                     }
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border-[2px] transition-colors ${
-                      statusFilter === status
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border-[2px] transition-colors ${statusFilter === status
                         ? "bg-black text-white border-black"
                         : "bg-white text-gray-700 border-black hover:bg-brutal-gray"
-                    }`}
+                      }`}
                   >
                     {status === "ALL"
                       ? t("status.all")
@@ -351,11 +350,10 @@ export default function TicketsPage() {
                   <button
                     key={ticket.id}
                     onClick={() => loadTicketDetail(ticket.id)}
-                    className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-brutal-gray transition-colors ${
-                      selectedTicket?.id === ticket.id
+                    className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-brutal-gray transition-colors ${selectedTicket?.id === ticket.id
                         ? "bg-brutal-yellow border-l-4 border-l-black"
                         : ""
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <span className="text-xs text-gray-600">
@@ -420,14 +418,14 @@ export default function TicketsPage() {
                         {!["CLOSED", "RESOLVED"].includes(
                           selectedTicket.status,
                         ) && (
-                          <button
-                            onClick={handleCloseTicket}
-                            className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray transition-colors"
-                            title={t("detail.closed_notice")}
-                          >
-                            <X size={18} />
-                          </button>
-                        )}
+                            <button
+                              onClick={handleCloseTicket}
+                              className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray transition-colors"
+                              title={t("detail.closed_notice")}
+                            >
+                              <X size={18} />
+                            </button>
+                          )}
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-4 text-sm text-gray-600">
@@ -483,13 +481,12 @@ export default function TicketsPage() {
                     {selectedTicket.messages.map((message) => (
                       <div key={message.id} className="flex gap-4">
                         <div
-                          className={`w-8 h-8 border-[2px] border-black flex items-center justify-center flex-shrink-0 ${
-                            message.sender === "admin"
+                          className={`w-8 h-8 border-[2px] border-black flex items-center justify-center flex-shrink-0 ${message.sender === "admin"
                               ? "bg-brutal-green"
                               : message.sender === "system"
                                 ? "bg-gray-300"
                                 : "bg-brutal-blue"
-                          }`}
+                            }`}
                         >
                           {message.sender === "admin" ? (
                             <span className="text-black text-xs font-bold">
@@ -515,13 +512,12 @@ export default function TicketsPage() {
                             </span>
                           </div>
                           <div
-                            className={`p-3 border-[2px] border-black ${
-                              message.sender === "admin"
+                            className={`p-3 border-[2px] border-black ${message.sender === "admin"
                                 ? "bg-brutal-green text-black"
                                 : message.sender === "system"
                                   ? "bg-gray-200 text-black"
                                   : "bg-brutal-gray text-gray-700"
-                            }`}
+                              }`}
                           >
                             {message.content}
                           </div>

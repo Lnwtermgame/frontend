@@ -11,7 +11,7 @@ export default function MobileRechargePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+        <div className="min-h-screen bg-transparent flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Loader2 className="w-8 h-8 text-brutal-green animate-spin" />
             <span className="text-gray-900 font-bold">{t("loading")}</span>

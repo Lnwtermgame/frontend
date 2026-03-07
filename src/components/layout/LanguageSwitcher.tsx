@@ -16,6 +16,9 @@ const languages = [
   { code: "th", label: "ไทย", flagCode: "th" },
   { code: "en", label: "English", flagCode: "us" },
   { code: "zh", label: "中文", flagCode: "cn" },
+  { code: "ja", label: "日本語", flagCode: "jp" },
+  { code: "ko", label: "한국어", flagCode: "kr" },
+  { code: "ms", label: "Melayu", flagCode: "my" },
 ];
 
 export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwitcherProps) {
@@ -61,9 +64,9 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
               )}
             >
               <div className="w-8 h-8 mb-1 border border-black overflow-hidden shrink-0">
-                <img 
-                  src={getFlagUrl(lang.flagCode)} 
-                  alt={lang.label} 
+                <img
+                  src={getFlagUrl(lang.flagCode)}
+                  alt={lang.label}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -83,16 +86,16 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
         style={{ boxShadow: isOpen ? "none" : "3px 3px 0 0 #000000" }}
       >
         <div className="w-5 h-5 border border-black overflow-hidden shrink-0">
-          <img 
-            src={getFlagUrl(currentLanguage.flagCode)} 
-            alt={currentLanguage.label} 
+          <img
+            src={getFlagUrl(currentLanguage.flagCode)}
+            alt={currentLanguage.label}
             className="w-full h-full object-cover"
           />
         </div>
-        <span className="text-sm font-bold uppercase">{locale}</span>
-        <ChevronDown 
-          size={14} 
-          className={cn("text-gray-500 transition-transform duration-200", isOpen && "rotate-180")} 
+        <span className="text-sm font-bold uppercase">{currentLanguage.label}</span>
+        <ChevronDown
+          size={14}
+          className={cn("text-gray-500 transition-transform duration-200", isOpen && "rotate-180")}
         />
       </button>
 
@@ -113,16 +116,16 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
                   onClick={() => handleLanguageChange(lang.code)}
                   className={cn(
                     "w-full flex items-center justify-between px-3 py-2 text-sm transition-colors",
-                    locale === lang.code 
-                      ? "bg-brutal-yellow/20 font-bold text-black" 
+                    locale === lang.code
+                      ? "bg-brutal-yellow/20 font-bold text-black"
                       : "text-gray-700 hover:bg-gray-100"
                   )}
                 >
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 border border-black overflow-hidden shrink-0">
-                      <img 
-                        src={getFlagUrl(lang.flagCode)} 
-                        alt={lang.label} 
+                      <img
+                        src={getFlagUrl(lang.flagCode)}
+                        alt={lang.label}
                         className="w-full h-full object-cover"
                       />
                     </div>

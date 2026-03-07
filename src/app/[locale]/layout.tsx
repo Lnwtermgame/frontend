@@ -34,6 +34,18 @@ import "@fontsource/noto-sans-sc/400.css";
 import "@fontsource/noto-sans-sc/500.css";
 import "@fontsource/noto-sans-sc/700.css";
 
+// Import Noto Sans JP for Japanese language support
+import "@fontsource/noto-sans-jp/300.css";
+import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/500.css";
+import "@fontsource/noto-sans-jp/700.css";
+
+// Import Noto Sans KR for Korean language support
+import "@fontsource/noto-sans-kr/300.css";
+import "@fontsource/noto-sans-kr/400.css";
+import "@fontsource/noto-sans-kr/500.css";
+import "@fontsource/noto-sans-kr/700.css";
+
 // Import Poppins for English language and generic text
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";

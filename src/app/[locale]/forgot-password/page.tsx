@@ -49,7 +49,7 @@ function ForgotPasswordContent() {
   };
 
   return (
-    <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -161,7 +161,7 @@ export default function ForgotPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+        <div className="min-h-screen bg-transparent flex items-center justify-center">
           <div className="text-center">
             <Loader2
               size={48}

@@ -192,7 +192,7 @@ function VerifyEmailContent() {
   const showCountdown = ["success", "already_verified"].includes(status);
 
   return (
-    <div className="min-h-screen bg-brutal-gray flex items-center justify-center p-4">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -354,7 +354,7 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+        <div className="min-h-screen bg-transparent flex items-center justify-center">
           <div className="text-center">
             <Loader2
               size={48}

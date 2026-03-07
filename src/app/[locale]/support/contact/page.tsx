@@ -103,7 +103,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="page-container bg-brutal-gray">
+    <div className="page-container bg-transparent">
       {/* Hero Section */}
       <motion.div
         className="bg-white border-[3px] border-black p-8 mb-8"

@@ -160,12 +160,12 @@ export default function FaqPage() {
           prev.map((article) =>
             article.id === articleId
               ? {
-                  ...article,
-                  helpfulCount:
-                    response.data.helpfulCount ?? article.helpfulCount,
-                  unhelpfulCount:
-                    response.data.unhelpfulCount ?? article.unhelpfulCount,
-                }
+                ...article,
+                helpfulCount:
+                  response.data.helpfulCount ?? article.helpfulCount,
+                unhelpfulCount:
+                  response.data.unhelpfulCount ?? article.unhelpfulCount,
+              }
               : article,
           ),
         );
@@ -192,7 +192,7 @@ export default function FaqPage() {
   };
 
   return (
-    <div className="page-container bg-brutal-gray">
+    <div className="page-container bg-transparent">
       {/* Hero Section */}
       <motion.div
         className="bg-white border-[3px] border-black p-8 mb-8"
@@ -293,11 +293,10 @@ export default function FaqPage() {
                   setSelectedCategory(null);
                   setExpandedArticle(null);
                 }}
-                className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${
-                  selectedCategory === null
+                className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === null
                     ? "bg-brutal-yellow border-[2px] border-black text-black"
                     : "text-gray-700 hover:bg-brutal-gray"
-                }`}
+                  }`}
               >
                 <span className="bg-brutal-gray border-[2px] border-black p-1 text-black mr-3">
                   All
@@ -315,11 +314,10 @@ export default function FaqPage() {
                     setSelectedCategory(category.id);
                     setExpandedArticle(null);
                   }}
-                  className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${
-                    selectedCategory === category.id
+                  className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === category.id
                       ? "bg-brutal-yellow border-[2px] border-black text-black"
                       : "text-gray-700 hover:bg-brutal-gray"
-                  }`}
+                    }`}
                 >
                   <span className="mr-3 text-lg">{category.icon || "📄"}</span>
                   <span className="flex-1">{category.name}</span>
@@ -375,11 +373,10 @@ export default function FaqPage() {
                   key={article.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000] ${
-                    expandedArticle === article.id
+                  className={`border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000] ${expandedArticle === article.id
                       ? "bg-brutal-gray"
                       : "bg-white"
-                  }`}
+                    }`}
                 >
                   <button
                     onClick={() =>
@@ -444,22 +441,20 @@ export default function FaqPage() {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleVote(article.id, true)}
-                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${
-                                userVotes[article.id] === true
+                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === true
                                   ? "bg-brutal-green text-black"
                                   : "bg-white hover:bg-brutal-green"
-                              }`}
+                                }`}
                             >
                               <ThumbsUp size={12} className="mr-1" />
                               {t("yes")}
                             </button>
                             <button
                               onClick={() => handleVote(article.id, false)}
-                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${
-                                userVotes[article.id] === false
+                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === false
                                   ? "bg-brutal-pink text-black"
                                   : "bg-white hover:bg-brutal-pink"
-                              }`}
+                                }`}
                             >
                               <ThumbsDown size={12} className="mr-1" />
                               {t("no")}

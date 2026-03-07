@@ -137,7 +137,7 @@ function ResetPasswordContent() {
 
   if (isInvalid) {
     return (
-      <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -177,7 +177,7 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="min-h-screen bg-brutal-gray flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -249,11 +249,10 @@ function ResetPasswordContent() {
                           {[0, 1, 2, 3, 4].map((i) => (
                             <div
                               key={i}
-                              className={`h-1 flex-1 border border-black ${
-                                i < passwordStrength
+                              className={`h-1 flex-1 border border-black ${i < passwordStrength
                                   ? strengthColors[passwordStrength - 1]
                                   : "bg-gray-200"
-                              }`}
+                                }`}
                             />
                           ))}
                         </div>
@@ -306,11 +305,10 @@ function ResetPasswordContent() {
                     {/* Password Match Indicator */}
                     {confirmPassword && (
                       <p
-                        className={`text-xs mt-1 ${
-                          newPassword === confirmPassword
+                        className={`text-xs mt-1 ${newPassword === confirmPassword
                             ? "text-brutal-green"
                             : "text-brutal-pink"
-                        }`}
+                          }`}
                       >
                         {newPassword === confirmPassword
                           ? `✓ ${t("match_success")}`
@@ -387,7 +385,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-brutal-gray flex items-center justify-center">
+        <div className="min-h-screen bg-transparent flex items-center justify-center">
           <div className="text-center">
             <Loader2
               size={48}

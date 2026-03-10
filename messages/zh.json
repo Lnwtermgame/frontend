@@ -831,7 +831,11 @@
       "payment_error": "无法创建支付",
       "order_success_redirect": "订单创建成功！正在跳转至支付页面...",
       "player_id_invalid": "用户 ID 或区域 ID 无效。请检查您的游戏账户信息。",
-      "phone_region_mismatch": "手机号码与所选区域不匹配。请检查您的号码或选择。"
+      "phone_region_mismatch": "手机号码与所选区域不匹配。请检查您的号码或选择。",
+      "not_found": "未找到商品",
+      "not_found_desc": "您查找的商品可能已被删除或暂时不可用",
+      "payment_method_unavailable": "当前金额无法使用此支付方式",
+      "truemoney_minimum": "TrueWallet 需要最低 {amount} 泰铢"
     }
   },
   "Security": {

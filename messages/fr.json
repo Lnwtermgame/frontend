@@ -877,7 +877,9 @@
       "player_id_invalid": "L'ID utilisateur ou l'ID de zone est invalide. Veuillez vérifier votre compte de jeu.",
       "phone_region_mismatch": "Le numéro de téléphone ne correspond pas à la région sélectionnée. Veuillez vérifier votre numéro ou votre sélection.",
       "not_found": "Produit non trouvé",
-      "not_found_desc": "Le produit que vous recherchez a peut-être été supprimé ou est temporairement indisponible."
+      "not_found_desc": "Le produit que vous recherchez a peut-être été supprimé ou est temporairement indisponible.",
+      "payment_method_unavailable": "Ce mode de paiement n'est pas disponible pour le montant actuel",
+      "truemoney_minimum": "TrueWallet nécessite un minimum de {amount} THB"
     }
   },
   "Security": {

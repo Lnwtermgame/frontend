@@ -877,7 +877,9 @@
       "player_id_invalid": "사용자 UID 또는 서버(Zone ID)값이 올바르지 않은 것으로 판별되었습니다. 다시 한 번 정확히 입력바랍니다.",
       "phone_region_mismatch": "선택하신 국가 코드 구역과 입력하신 번호가 맞지 않는 것 같습니다. 다시 확인해주세요.",
       "not_found": "해당되는 상품이 없습니다",
-      "not_found_desc": "찾으시려는 페이지가 비공개/삭제 처리 되었거나 일시적인 장애 상태일 수 있습니다."
+      "not_found_desc": "찾으시려는 페이지가 비공개/삭제 처리 되었거나 일시적인 장애 상태일 수 있습니다.",
+      "payment_method_unavailable": "현재 금액에 대해 이 결제 수단을 사용할 수 없습니다",
+      "truemoney_minimum": "TrueWallet는 최소 {amount} THB가 필요합니다"
     }
   },
   "Security": {

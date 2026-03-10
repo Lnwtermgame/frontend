@@ -877,7 +877,9 @@
       "player_id_invalid": "ユーザーIDまたはゾーンIDが無効です。ゲームアカウントをご確認ください。",
       "phone_region_mismatch": "電話番号が選択した地域と一致しません。番号または選択を確認してください。",
       "not_found": "商品が見つかりません",
-      "not_found_desc": "お探しの商品は削除されたか、一時的に利用できない可能性があります。"
+      "not_found_desc": "お探しの商品は削除されたか、一時的に利用できない可能性があります。",
+      "payment_method_unavailable": "このお支払い方法は現在の金額ではご利用いただけません",
+      "truemoney_minimum": "TrueWalletは最低{amount}THB必要です"
     }
   },
   "Security": {

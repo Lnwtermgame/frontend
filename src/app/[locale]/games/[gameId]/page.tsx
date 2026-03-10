@@ -264,6 +264,25 @@ export default function GameDetailsPage() {
     }).format(amount || 0);
   };
 
+  // TrueWallet minimum amount constraint ( FeelFreePay requirement )
+  const TRUEMONEY_MIN_AMOUNT = 20;
+
+  // Check if a payment method is available for the current amount
+  const isPaymentMethodAvailable = (method: string, totalAmount: number) => {
+    if (method === "TRUEMONEY" && totalAmount < TRUEMONEY_MIN_AMOUNT) {
+      return false;
+    }
+    return true;
+  };
+
+  // Get unavailable reason for display
+  const getPaymentMethodUnavailableReason = (method: string, totalAmount: number) => {
+    if (method === "TRUEMONEY" && totalAmount < TRUEMONEY_MIN_AMOUNT) {
+      return t("error.truemoney_minimum", { amount: TRUEMONEY_MIN_AMOUNT });
+    }
+    return null;
+  };
+
   const copyText = async (value: string, message: string) => {
     try {
       await navigator.clipboard.writeText(value);
@@ -301,6 +320,30 @@ export default function GameDetailsPage() {
 
     loadMethods();
   }, [isInitialized, isAuthenticated]);
+
+  // Reset selected payment option if it becomes unavailable (e.g., TrueWallet below minimum)
+  useEffect(() => {
+    if (!selectedPaymentOption || paymentOptions.length === 0) return;
+
+    const selectedOpt = paymentOptions.find((o) => o.code === selectedPaymentOption);
+    if (!selectedOpt) return;
+
+    const totalAmount = priceSummary.total;
+    if (!isPaymentMethodAvailable(selectedOpt.method, totalAmount)) {
+      // Find an available alternative (prefer PromptPay)
+      const alternative = paymentOptions.find(
+        (o) => isPaymentMethodAvailable(o.method, totalAmount)
+      );
+      if (alternative) {
+        setSelectedPaymentOption(alternative.code);
+        toast.info(
+          t("error.truemoney_minimum", { amount: TRUEMONEY_MIN_AMOUNT })
+        );
+      } else {
+        setSelectedPaymentOption(null);
+      }
+    }
+  }, [priceSummary.total, selectedPaymentOption, paymentOptions]);
 
   const buildPlayerInfo = (): Record<string, string> => {
     const info = { ...fieldValues };
@@ -346,6 +389,16 @@ export default function GameDetailsPage() {
       const currentPath = window.location.pathname;
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
+    }
+
+    // Check if selected payment method is available for the current amount
+    if (selectedPaymentOption) {
+      const selectedOpt = paymentOptions.find((o) => o.code === selectedPaymentOption);
+      if (selectedOpt && !isPaymentMethodAvailable(selectedOpt.method, priceSummary.total)) {
+        const reason = getPaymentMethodUnavailableReason(selectedOpt.method, priceSummary.total);
+        toast.error(reason || t("error.payment_method_unavailable"));
+        return;
+      }
     }
 
     // Check if all required fields are filled
@@ -1733,12 +1786,26 @@ export default function GameDetailsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1">
                   {paymentOptions.map((opt: PaymentMethodOption) => {
                     const isActive = selectedPaymentOption === opt.code;
+                    const totalAmount = priceSummary.total;
+                    const isAvailable = isPaymentMethodAvailable(opt.method, totalAmount);
+                    const unavailableReason = getPaymentMethodUnavailableReason(opt.method, totalAmount);
+
                     return (
                       <label
                         key={opt.code}
-                        className={`border-[2px] border-black p-4 flex flex-col gap-3 cursor-pointer transition-all ${isActive ? "bg-brutal-yellow" : "bg-white"
-                          }`}
+                        className={`border-[2px] border-black p-4 flex flex-col gap-3 transition-all ${
+                          isActive ? "bg-brutal-yellow" : "bg-white"
+                        } ${
+                          !isAvailable
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
                         style={{ boxShadow: "2px 2px 0 0 #000" }}
+                        onClick={() => {
+                          if (isAvailable) {
+                            setSelectedPaymentOption(opt.code);
+                          }
+                        }}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-start gap-2">
@@ -1748,26 +1815,37 @@ export default function GameDetailsPage() {
                               value={opt.code}
                               checked={isActive}
                               onChange={() =>
-                                setSelectedPaymentOption(opt.code)
+                                isAvailable && setSelectedPaymentOption(opt.code)
                               }
-                              className="mt-1 accent-black"
+                              disabled={!isAvailable}
+                              className="mt-1 accent-black disabled:cursor-not-allowed"
                             />
                             <div>
                               <div className="text-black font-black text-base flex items-center gap-2">
                                 {opt.label}
+                                {!isAvailable && (
+                                  <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded">
+                                    Min {TRUEMONEY_MIN_AMOUNT}฿
+                                  </span>
+                                )}
                               </div>
                               <div className="text-[10px] text-gray-600 mt-1 font-bold">
                                 Gateway: {opt.gateway.name}
                               </div>
+                              {unavailableReason && (
+                                <div className="text-[10px] text-red-600 mt-1 font-bold">
+                                  {unavailableReason}
+                                </div>
+                              )}
                             </div>
                           </div>
-                          {isActive && (
+                          {isActive && isAvailable && (
                             <Check size={16} className="text-black" />
                           )}
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] uppercase border border-black px-2 py-0.5 bg-white text-gray-700 font-black">
+                          <span className={`text-[11px] uppercase border border-black px-2 py-0.5 bg-white text-gray-700 font-black ${!isAvailable ? "opacity-50" : ""}`}>
                             {opt.method}
                           </span>
                         </div>

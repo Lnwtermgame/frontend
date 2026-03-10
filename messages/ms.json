@@ -877,7 +877,9 @@
       "player_id_invalid": "ID tak sah tiada dijumpai log sistem game pangkalan pusat.",
       "phone_region_mismatch": "Lain negeri lain nombor. Periksa angka awalan tu betul idok",
       "not_found": "Kehilangan Barang",
-      "not_found_desc": "Produk tak dapat dicam. Kosong ghaib dari peta jualan"
+      "not_found_desc": "Produk tak dapat dicam. Kosong ghaib dari peta jualan",
+      "payment_method_unavailable": "Kaedah pembayaran ini tidak tersedia untuk jumlah semasa",
+      "truemoney_minimum": "TrueWallet memerlukan minimum {amount} THB"
     }
   },
   "Security": {

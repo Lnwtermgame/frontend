@@ -231,7 +231,8 @@
       "registration_disabled": "पंजीकरण अस्थायी रूप से अक्षम",
       "registration_disabled_desc": "व्यवस्थापक ने नए पंजीकरण अस्थायी रूप से रोक दिए हैं। कृपया बाद में प्रयास करें।",
       "go_to_login": "लॉगिन पर जाएं"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "चेकआउट",
@@ -758,7 +759,10 @@
       "step2": "कूपन कोड कॉपी करें",
       "step3": "चेकआउट पर कोड का उपयोग करें",
       "expiry_hint": "कूपन की समाप्ति तिथि होती है। कृपया समाप्त होने से पहले उपयोग करें।"
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "मेरे चालान",
@@ -968,7 +972,11 @@
     "print": "प्रिंट करें",
     "back_to_list": "चालान सूची पर वापस जाएं",
     "copy_success": "चालान आईडी कॉपी की गई!",
-    "error_not_found": "चालान नहीं मिला।"
+    "error_not_found": "चालान नहीं मिला।",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "अधिसूचना सेटिंग्स",
@@ -1713,6 +1721,33 @@
     "noTawkItem": "Tawk.to लाइव चैट विजेट वर्तमान में सक्षम नहीं है",
     "acknowledge": "स्वीकार करें",
     "privacy": "गोपनीयता नीति",
-    "ariaClose": "कुकीज़ सूचना बंद करें"
+    "ariaClose": "कुकीज़ सूचना बंद करें",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

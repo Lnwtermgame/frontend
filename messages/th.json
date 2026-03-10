@@ -231,7 +231,8 @@
       "registration_disabled": "ปิดรับสมัครสมาชิกชั่วคราว",
       "registration_disabled_desc": "ผู้ดูแลระบบปิดการสมัครสมาชิกใหม่ไว้ชั่วคราว กรุณาลองใหม่ภายหลัง",
       "go_to_login": "ไปหน้าเข้าสู่ระบบ"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "ชำระเงิน",
@@ -758,7 +759,10 @@
       "step2": "คัดลอกรหัสคูปอง",
       "step3": "ใช้รหัสตอนชำระเงิน",
       "expiry_hint": "คูปองมีวันหมดอายุ โปรดใช้ก่อนที่จะหมดอายุ"
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "ใบแจ้งหนี้ของฉัน",
@@ -968,7 +972,11 @@
     "print": "พิมพ์",
     "back_to_list": "กลับไปหน้ารายการ",
     "copy_success": "คัดลอกเลขที่ใบแจ้งหนี้แล้ว!",
-    "error_not_found": "ไม่พบใบแจ้งหนี้"
+    "error_not_found": "ไม่พบใบแจ้งหนี้",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "ตั้งค่าการแจ้งเตือน",
@@ -1713,6 +1721,33 @@
     "noTawkItem": "ขณะนี้ยังไม่เปิดใช้งานวิดเจ็ตแชทสดของ Tawk.to",
     "acknowledge": "รับทราบ",
     "privacy": "นโยบายความเป็นส่วนตัว",
-    "ariaClose": "ปิดข้อความคุกกี้"
+    "ariaClose": "ปิดข้อความคุกกี้",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

@@ -207,7 +207,7 @@ export default function AdminOrders() {
                     <th className="px-3 py-2 text-left">{t("orders.customer")}</th>
                     <th className="px-3 py-2 text-left">{t("orders.product")}</th>
                     <th className="px-3 py-2 text-left">{t("orders.amount")}</th>
-                    <th className="px-3 py-2 text-left">{t("orders.status")}</th>
+                    <th className="px-3 py-2 text-left">{t("orders.status_text")}</th>
                     <th className="px-3 py-2 text-left">{t("orders.date")}</th>
                     <th className="px-3 py-2 text-left">{t("orders.actions")}</th>
                   </tr>

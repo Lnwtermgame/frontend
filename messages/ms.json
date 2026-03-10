@@ -231,7 +231,8 @@
       "registration_disabled": "Pendaftaran Dinyahaktifkan Terlebih Dahulu",
       "registration_disabled_desc": "Pentadbir telah melumpuhkan pendaftaran baharu buat masa ini. Sila cuba lagi kemudian.",
       "go_to_login": "Pergi ke Log Masuk"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "Daftar Keluar",
@@ -758,7 +759,10 @@
       "step2": "Salin kod kupon",
       "step3": "Gunakan kod semasa pembayaran",
       "expiry_hint": "Kupon mempunyai tarikh luput. Sila gunakan sebelum ia luput."
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "Invois Saya",
@@ -968,7 +972,11 @@
     "print": "Cetak Dokumen",
     "back_to_list": "Kembali Ke Halaman Resit",
     "copy_success": "Sudah disalin ID Tuan!",
-    "error_not_found": "Tiada rekod invois ini di pangkalan data."
+    "error_not_found": "Tiada rekod invois ini di pangkalan data.",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "Pusat Tetapan Makluman",
@@ -1713,6 +1721,33 @@
     "noTawkItem": "Widget sembang langsung Tawk.to kini tidak diaktifkan",
     "acknowledge": "Terima",
     "privacy": "Dasar Privasi",
-    "ariaClose": "Tutup notis kuki"
+    "ariaClose": "Tutup notis kuki",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

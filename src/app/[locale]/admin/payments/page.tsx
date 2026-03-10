@@ -9,6 +9,11 @@ import {
     RefreshCw,
     Save,
     XCircle,
+    CreditCard,
+    Settings,
+    ShieldCheck,
+    Activity,
+    FileCode2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -301,10 +306,10 @@ export default function AdminPaymentsPage() {
             <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h2 className="text-xl font-black text-black">
+                        <h2 className="text-xl font-black text-black thai-font">
                             Payment Gateways & Options
                         </h2>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-gray-600 thai-font">
                             จัดการผู้ให้บริการชำระเงินและช่องทางรับเงินทั้งหมด
                         </p>
                     </div>
@@ -332,488 +337,512 @@ export default function AdminPaymentsPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="space-y-3 rounded-none border-[3px] border-black bg-white p-3"
+                            className="rounded-none border-[3px] border-black bg-white overflow-hidden"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
-                            <h3 className="text-base font-bold text-black">Payment Gateway</h3>
-                            <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
-                                <input
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="ชื่อ Gateway"
-                                    value={gatewayForm.name}
-                                    onChange={(e) =>
-                                        setGatewayForm((prev) => ({
-                                            ...prev,
-                                            name: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Provider (e.g. feelfreepay)"
-                                    value={gatewayForm.provider}
-                                    onChange={(e) =>
-                                        setGatewayForm((prev) => ({
-                                            ...prev,
-                                            provider: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Gateway Fee %"
-                                    value={gatewayForm.feePercent}
-                                    onChange={(e) =>
-                                        setGatewayForm((prev) => ({
-                                            ...prev,
-                                            feePercent: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Flat Fee"
-                                    value={gatewayForm.flatFee}
-                                    onChange={(e) =>
-                                        setGatewayForm((prev) => ({
-                                            ...prev,
-                                            flatFee: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
+                            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
+                                <h3 className="text-sm font-semibold text-black flex items-center thai-font">
+                                    <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
+                                    <CreditCard className="mr-2 h-4 w-4 text-brutal-pink" />
+                                    Payment Gateways
+                                </h3>
+                            </div>
+                            <div className="p-3 space-y-3">
+                                <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
                                     <input
-                                        type="checkbox"
-                                        checked={gatewayForm.isActive}
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="ชื่อ Gateway"
+                                        value={gatewayForm.name}
                                         onChange={(e) =>
                                             setGatewayForm((prev) => ({
                                                 ...prev,
-                                                isActive: e.target.checked,
+                                                name: e.target.value,
                                             }))
                                         }
                                     />
-                                    Active
-                                </label>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                <button
-                                    onClick={handleSaveGateway}
-                                    disabled={savingGateway}
-                                    className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
-                                >
-                                    {savingGateway ? (
-                                        <Loader2 className="h-3 w-3 animate-spin" />
-                                    ) : (
-                                        <Save className="h-3 w-3" />
-                                    )}
-                                    {editingGatewayId ? "บันทึกการแก้ไข" : "สร้าง Gateway"}
-                                </button>
-                                {editingGatewayId && (
+                                    <input
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Provider (e.g. feelfreepay)"
+                                        value={gatewayForm.provider}
+                                        onChange={(e) =>
+                                            setGatewayForm((prev) => ({
+                                                ...prev,
+                                                provider: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Gateway Fee %"
+                                        value={gatewayForm.feePercent}
+                                        onChange={(e) =>
+                                            setGatewayForm((prev) => ({
+                                                ...prev,
+                                                feePercent: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Flat Fee"
+                                        value={gatewayForm.flatFee}
+                                        onChange={(e) =>
+                                            setGatewayForm((prev) => ({
+                                                ...prev,
+                                                flatFee: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
+                                        <input
+                                            type="checkbox"
+                                            checked={gatewayForm.isActive}
+                                            onChange={(e) =>
+                                                setGatewayForm((prev) => ({
+                                                    ...prev,
+                                                    isActive: e.target.checked,
+                                                }))
+                                            }
+                                        />
+                                        Active
+                                    </label>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
                                     <button
-                                        onClick={resetGatewayForm}
-                                        className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
+                                        onClick={handleSaveGateway}
+                                        disabled={savingGateway}
+                                        className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
                                     >
-                                        <XCircle className="h-3 w-3" />
-                                        ยกเลิก
+                                        {savingGateway ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                            <Save className="h-3 w-3" />
+                                        )}
+                                        {editingGatewayId ? "บันทึกการแก้ไข" : "สร้าง Gateway"}
                                     </button>
-                                )}
-                            </div>
+                                    {editingGatewayId && (
+                                        <button
+                                            onClick={resetGatewayForm}
+                                            className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
+                                        >
+                                            <XCircle className="h-3 w-3" />
+                                            ยกเลิก
+                                        </button>
+                                    )}
+                                </div>
 
-                            <div className="overflow-x-auto border-2 border-black">
-                                <table className="w-full min-w-[720px] text-xs">
-                                    <thead className="bg-gray-100 text-left">
-                                        <tr>
-                                            <th className="px-3 py-2">Gateway</th>
-                                            <th className="px-3 py-2">Provider</th>
-                                            <th className="px-3 py-2">Fee %</th>
-                                            <th className="px-3 py-2">Flat Fee</th>
-                                            <th className="px-3 py-2">Options</th>
-                                            <th className="px-3 py-2">Status</th>
-                                            <th className="px-3 py-2">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {gateways.map((gateway) => (
-                                            <tr key={gateway.id} className="border-t border-gray-200">
-                                                <td className="px-3 py-2 font-semibold">
-                                                    {gateway.name}
-                                                </td>
-                                                <td className="px-3 py-2">{gateway.provider}</td>
-                                                <td className="px-3 py-2">{gateway.feePercent}%</td>
-                                                <td className="px-3 py-2">฿{gateway.flatFee}</td>
-                                                <td className="px-3 py-2">{gateway.optionCount}</td>
-                                                <td className="px-3 py-2">
-                                                    {gateway.isActive ? (
-                                                        <span className="inline-flex items-center gap-1 text-green-700">
-                                                            <CheckCircle2 className="h-3 w-3" /> Active
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1 text-gray-500">
-                                                            <XCircle className="h-3 w-3" /> Inactive
-                                                        </span>
-                                                    )}
-                                                </td>
-                                                <td className="px-3 py-2">
-                                                    <div className="flex gap-2">
-                                                        <button
-                                                            onClick={() => handleEditGateway(gateway)}
-                                                            className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                        >
-                                                            แก้ไข
-                                                        </button>
-                                                        <button
-                                                            onClick={() => toggleGateway(gateway)}
-                                                            className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                        >
-                                                            {gateway.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                <div className="overflow-x-auto border-2 border-black">
+                                    <table className="w-full min-w-[720px] text-xs">
+                                        <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                            <tr>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Gateway</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Provider</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Fee %</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Flat Fee</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Options</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Status</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Actions</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {gateways.map((gateway) => (
+                                                <tr key={gateway.id} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-3 py-2 font-bold text-black text-xs">
+                                                        {gateway.name}
+                                                    </td>
+                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-600">{gateway.provider}</td>
+                                                    <td className="px-3 py-2 font-medium">{gateway.feePercent}%</td>
+                                                    <td className="px-3 py-2 font-medium">฿{gateway.flatFee}</td>
+                                                    <td className="px-3 py-2 font-medium">{gateway.optionCount}</td>
+                                                    <td className="px-3 py-2">
+                                                        {gateway.isActive ? (
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-700 bg-green-100 border-green-300 flex items-center gap-1 w-fit">
+                                                                <CheckCircle2 className="h-3 w-3" /> Active
+                                                            </span>
+                                                        ) : (
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-600 bg-gray-100 border-gray-300 flex items-center gap-1 w-fit">
+                                                                <XCircle className="h-3 w-3" /> Inactive
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-3 py-2">
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => handleEditGateway(gateway)}
+                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
+                                                            >
+                                                                แก้ไข
+                                                            </button>
+                                                            <button
+                                                                onClick={() => toggleGateway(gateway)}
+                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
+                                                            >
+                                                                {gateway.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </motion.div>
 
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="space-y-3 rounded-none border-[3px] border-black bg-white p-3"
+                            className="rounded-none border-[3px] border-black bg-white overflow-hidden"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
-                            <h3 className="text-base font-bold text-black">Payment Options</h3>
-                            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-                                <select
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    value={optionForm.gatewayId}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            gatewayId: e.target.value,
-                                        }))
-                                    }
-                                >
-                                    <option value="">เลือก Gateway</option>
-                                    {gateways.map((gateway) => (
-                                        <option key={gateway.id} value={gateway.id}>
-                                            {gateway.name} ({gateway.provider})
-                                        </option>
-                                    ))}
-                                </select>
-                                <input
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Option Code (e.g. PROMPTPAY_DEFAULT)"
-                                    value={optionForm.code}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({ ...prev, code: e.target.value }))
-                                    }
-                                />
-                                <input
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Label"
-                                    value={optionForm.label}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            label: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <select
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    value={optionForm.method}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            method: e.target.value as PaymentMethodCode,
-                                        }))
-                                    }
-                                >
-                                    {PAYMENT_METHODS.map((method) => (
-                                        <option key={method} value={method}>
-                                            {method}
-                                        </option>
-                                    ))}
-                                </select>
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Surcharge %"
-                                    value={optionForm.surchargePercent}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            surchargePercent: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Flat Fee"
-                                    value={optionForm.flatFee}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            flatFee: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Min Amount (optional)"
-                                    value={optionForm.minAmount}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            minAmount: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="border-2 border-black px-2 py-1.5 text-sm"
-                                    placeholder="Max Amount (optional)"
-                                    value={optionForm.maxAmount}
-                                    onChange={(e) =>
-                                        setOptionForm((prev) => ({
-                                            ...prev,
-                                            maxAmount: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
-                                    <input
-                                        type="checkbox"
-                                        checked={optionForm.isActive}
+                            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
+                                <h3 className="text-sm font-semibold text-black flex items-center thai-font">
+                                    <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
+                                    <Settings className="mr-2 h-4 w-4 text-brutal-blue" />
+                                    Payment Options
+                                </h3>
+                            </div>
+                            <div className="p-3 space-y-3">
+                                <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                                    <select
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        value={optionForm.gatewayId}
                                         onChange={(e) =>
                                             setOptionForm((prev) => ({
                                                 ...prev,
-                                                isActive: e.target.checked,
+                                                gatewayId: e.target.value,
+                                            }))
+                                        }
+                                    >
+                                        <option value="">เลือก Gateway</option>
+                                        {gateways.map((gateway) => (
+                                            <option key={gateway.id} value={gateway.id}>
+                                                {gateway.name} ({gateway.provider})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <input
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Option Code (e.g. PROMPTPAY_DEFAULT)"
+                                        value={optionForm.code}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({ ...prev, code: e.target.value }))
+                                        }
+                                    />
+                                    <input
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Label"
+                                        value={optionForm.label}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({
+                                                ...prev,
+                                                label: e.target.value,
                                             }))
                                         }
                                     />
-                                    Active
-                                </label>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                                <button
-                                    onClick={handleSaveOption}
-                                    disabled={savingOption}
-                                    className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
-                                >
-                                    {savingOption ? (
-                                        <Loader2 className="h-3 w-3 animate-spin" />
-                                    ) : editingOptionId ? (
-                                        <Save className="h-3 w-3" />
-                                    ) : (
-                                        <Plus className="h-3 w-3" />
-                                    )}
-                                    {editingOptionId ? "บันทึกการแก้ไข" : "สร้าง Option"}
-                                </button>
-                                {editingOptionId && (
-                                    <button
-                                        onClick={resetOptionForm}
-                                        className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
+                                    <select
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        value={optionForm.method}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({
+                                                ...prev,
+                                                method: e.target.value as PaymentMethodCode,
+                                            }))
+                                        }
                                     >
-                                        <XCircle className="h-3 w-3" />
-                                        ยกเลิก
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="overflow-x-auto border-2 border-black">
-                                <table className="w-full min-w-[900px] text-xs">
-                                    <thead className="bg-gray-100 text-left">
-                                        <tr>
-                                            <th className="px-3 py-2">Code</th>
-                                            <th className="px-3 py-2">Label</th>
-                                            <th className="px-3 py-2">Gateway</th>
-                                            <th className="px-3 py-2">Method</th>
-                                            <th className="px-3 py-2">Surcharge %</th>
-                                            <th className="px-3 py-2">Flat Fee</th>
-                                            <th className="px-3 py-2">Range</th>
-                                            <th className="px-3 py-2">Status</th>
-                                            <th className="px-3 py-2">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {options.map((option) => (
-                                            <tr key={option.id} className="border-t border-gray-200">
-                                                <td className="px-3 py-2 font-semibold">
-                                                    {option.code}
-                                                </td>
-                                                <td className="px-3 py-2">{option.label}</td>
-                                                <td className="px-3 py-2">
-                                                    {gatewayNameMap[option.gatewayId] ||
-                                                        option.gateway.name}
-                                                </td>
-                                                <td className="px-3 py-2">{option.method}</td>
-                                                <td className="px-3 py-2">
-                                                    {option.surchargePercent}%
-                                                </td>
-                                                <td className="px-3 py-2">฿{option.flatFee}</td>
-                                                <td className="px-3 py-2">
-                                                    {option.minAmount ?? "-"} - {option.maxAmount ?? "-"}
-                                                </td>
-                                                <td className="px-3 py-2">
-                                                    {option.isActive ? (
-                                                        <span className="inline-flex items-center gap-1 text-green-700">
-                                                            <CheckCircle2 className="h-3 w-3" /> Active
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1 text-gray-500">
-                                                            <XCircle className="h-3 w-3" /> Inactive
-                                                        </span>
-                                                    )}
-                                                </td>
-                                                <td className="px-3 py-2">
-                                                    <div className="flex gap-2">
-                                                        <button
-                                                            onClick={() => handleEditOption(option)}
-                                                            className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                        >
-                                                            แก้ไข
-                                                        </button>
-                                                        <button
-                                                            onClick={() => toggleOption(option)}
-                                                            className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                        >
-                                                            {option.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                        {PAYMENT_METHODS.map((method) => (
+                                            <option key={method} value={method}>
+                                                {method}
+                                            </option>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </select>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Surcharge %"
+                                        value={optionForm.surchargePercent}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({
+                                                ...prev,
+                                                surchargePercent: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Flat Fee"
+                                        value={optionForm.flatFee}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({
+                                                ...prev,
+                                                flatFee: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Min Amount (optional)"
+                                        value={optionForm.minAmount}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({
+                                                ...prev,
+                                                minAmount: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        placeholder="Max Amount (optional)"
+                                        value={optionForm.maxAmount}
+                                        onChange={(e) =>
+                                            setOptionForm((prev) => ({
+                                                ...prev,
+                                                maxAmount: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                    <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
+                                        <input
+                                            type="checkbox"
+                                            checked={optionForm.isActive}
+                                            onChange={(e) =>
+                                                setOptionForm((prev) => ({
+                                                    ...prev,
+                                                    isActive: e.target.checked,
+                                                }))
+                                            }
+                                        />
+                                        Active
+                                    </label>
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        onClick={handleSaveOption}
+                                        disabled={savingOption}
+                                        className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
+                                    >
+                                        {savingOption ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : editingOptionId ? (
+                                            <Save className="h-3 w-3" />
+                                        ) : (
+                                            <Plus className="h-3 w-3" />
+                                        )}
+                                        {editingOptionId ? "บันทึกการแก้ไข" : "สร้าง Option"}
+                                    </button>
+                                    {editingOptionId && (
+                                        <button
+                                            onClick={resetOptionForm}
+                                            className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
+                                        >
+                                            <XCircle className="h-3 w-3" />
+                                            ยกเลิก
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="overflow-x-auto border-2 border-black">
+                                    <table className="w-full min-w-[900px] text-xs">
+                                        <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                            <tr>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Code</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Label</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Gateway</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Method</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Surcharge %</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Flat Fee</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Range</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Status</th>
+                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {options.map((option) => (
+                                                <tr key={option.id} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-3 py-2 font-mono text-[11px] font-bold text-black">
+                                                        {option.code}
+                                                    </td>
+                                                    <td className="px-3 py-2 font-medium">{option.label}</td>
+                                                    <td className="px-3 py-2 font-medium">
+                                                        {gatewayNameMap[option.gatewayId] ||
+                                                            option.gateway.name}
+                                                    </td>
+                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-600">{option.method}</td>
+                                                    <td className="px-3 py-2 font-medium">
+                                                        {option.surchargePercent}%
+                                                    </td>
+                                                    <td className="px-3 py-2 font-medium">฿{option.flatFee}</td>
+                                                    <td className="px-3 py-2 font-medium text-gray-600 text-[11px]">
+                                                        {option.minAmount ?? "-"} - {option.maxAmount ?? "-"}
+                                                    </td>
+                                                    <td className="px-3 py-2">
+                                                        {option.isActive ? (
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-700 bg-green-100 border-green-300 flex items-center gap-1 w-fit">
+                                                                <CheckCircle2 className="h-3 w-3" /> Active
+                                                            </span>
+                                                        ) : (
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-600 bg-gray-100 border-gray-300 flex items-center gap-1 w-fit">
+                                                                <XCircle className="h-3 w-3" /> Inactive
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-3 py-2">
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => handleEditOption(option)}
+                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
+                                                            >
+                                                                แก้ไข
+                                                            </button>
+                                                            <button
+                                                                onClick={() => toggleOption(option)}
+                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
+                                                            >
+                                                                {option.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </motion.div>
 
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="space-y-3 rounded-none border-[3px] border-black bg-white p-3"
+                            className="rounded-none border-[3px] border-black bg-white overflow-hidden"
                             style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
-                            <h3 className="text-base font-bold text-black">
-                                Security Monitoring
-                            </h3>
-                            <p className="text-xs text-gray-600">
-                                Track payment transitions, suspicious events, and webhook nonce
-                                records for replay detection.
-                            </p>
-
-                            <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
-                                <div className="space-y-2">
-                                    <h4 className="font-semibold text-black text-sm">
-                                        Payment Audit Logs
-                                    </h4>
-                                    <div className="max-h-[300px] overflow-auto border-2 border-black">
-                                        <table className="w-full min-w-[760px] text-[10px]">
-                                            <thead className="bg-gray-100 text-left">
-                                                <tr>
-                                                    <th className="px-2 py-1.5">Time</th>
-                                                    <th className="px-2 py-1.5">Severity</th>
-                                                    <th className="px-2 py-1.5">Event</th>
-                                                    <th className="px-2 py-1.5">Order</th>
-                                                    <th className="px-2 py-1.5">Status</th>
-                                                    <th className="px-2 py-1.5">Message</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {auditLogs.map((log) => (
-                                                    <tr
-                                                        key={log.id}
-                                                        className="border-t border-gray-200 align-top"
-                                                    >
-                                                        <td className="px-2 py-1.5 whitespace-nowrap">
-                                                            {new Date(log.createdAt).toLocaleString()}
-                                                        </td>
-                                                        <td className="px-2 py-1.5 font-semibold">
-                                                            {log.severity}
-                                                        </td>
-                                                        <td className="px-2 py-1.5">{log.eventType}</td>
-                                                        <td className="px-2 py-1.5">
-                                                            {log.order?.orderNumber || log.orderId || "-"}
-                                                        </td>
-                                                        <td className="px-2 py-1.5">
-                                                            {log.previousStatus || "-"} {"->"}{" "}
-                                                            {log.newStatus || "-"}
-                                                        </td>
-                                                        <td className="px-2 py-1.5">{log.message}</td>
-                                                    </tr>
-                                                ))}
-                                                {auditLogs.length === 0 && (
-                                                    <tr>
-                                                        <td
-                                                            colSpan={6}
-                                                            className="px-2 py-4 text-center text-gray-500"
-                                                        >
-                                                            No audit logs
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
+                                <div>
+                                    <h3 className="text-sm font-semibold text-black flex items-center thai-font">
+                                        <span className="w-1.5 h-4 bg-brutal-green mr-2"></span>
+                                        <ShieldCheck className="mr-2 h-4 w-4 text-brutal-green" />
+                                        Security Monitoring
+                                    </h3>
+                                    <p className="text-[10px] text-gray-500 mt-1 thai-font ml-3">
+                                        ติดตามสถานะและตรวจสอบเหตุการณ์ต้องสงสัยในระบบชำระเงิน
+                                    </p>
                                 </div>
-
-                                <div className="space-y-2">
-                                    <h4 className="font-semibold text-black text-sm">
-                                        SEAGM Webhook Nonce Store
-                                    </h4>
-                                    <div className="max-h-[300px] overflow-auto border-2 border-black">
-                                        <table className="w-full min-w-[680px] text-[10px]">
-                                            <thead className="bg-gray-100 text-left">
-                                                <tr>
-                                                    <th className="px-2 py-1.5">Created</th>
-                                                    <th className="px-2 py-1.5">Provider</th>
-                                                    <th className="px-2 py-1.5">Nonce Hash</th>
-                                                    <th className="px-2 py-1.5">Expires</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {webhookNonces.map((item) => (
-                                                    <tr
-                                                        key={item.id}
-                                                        className="border-t border-gray-200 align-top"
-                                                    >
-                                                        <td className="px-2 py-1.5 whitespace-nowrap">
-                                                            {new Date(item.createdAt).toLocaleString()}
-                                                        </td>
-                                                        <td className="px-2 py-1.5">{item.provider}</td>
-                                                        <td className="px-2 py-1.5 font-mono text-[9px]">
-                                                            {item.nonceHash.slice(0, 18)}...
-                                                        </td>
-                                                        <td className="px-2 py-1.5 whitespace-nowrap">
-                                                            {new Date(item.expiresAt).toLocaleString()}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                                {webhookNonces.length === 0 && (
+                            </div>
+                            <div className="p-3">
+                                <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                                    <div className="space-y-2">
+                                        <h4 className="font-semibold text-black text-xs flex items-center thai-font">
+                                            <Activity className="mr-1.5 h-3.5 w-3.5 text-gray-600" />
+                                            Payment Audit Logs
+                                        </h4>
+                                        <div className="max-h-[300px] overflow-auto border-2 border-black">
+                                            <table className="w-full min-w-[760px] text-[10px]">
+                                                <thead className="bg-gray-50 text-left border-b-2 border-black">
                                                     <tr>
-                                                        <td
-                                                            colSpan={4}
-                                                            className="px-2 py-4 text-center text-gray-500"
-                                                        >
-                                                            No nonce records
-                                                        </td>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Time</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Severity</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Event</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Order</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Status</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Message</th>
                                                     </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {auditLogs.map((log) => (
+                                                        <tr
+                                                            key={log.id}
+                                                            className="hover:bg-gray-50 transition-colors align-top"
+                                                        >
+                                                            <td className="px-2 py-1.5 whitespace-nowrap">
+                                                                {new Date(log.createdAt).toLocaleString()}
+                                                            </td>
+                                                            <td className="px-2 py-1.5 font-semibold">
+                                                                {log.severity}
+                                                            </td>
+                                                            <td className="px-2 py-1.5">{log.eventType}</td>
+                                                            <td className="px-2 py-1.5">
+                                                                {log.order?.orderNumber || log.orderId || "-"}
+                                                            </td>
+                                                            <td className="px-2 py-1.5">
+                                                                {log.previousStatus || "-"} {"->"}{" "}
+                                                                {log.newStatus || "-"}
+                                                            </td>
+                                                            <td className="px-2 py-1.5">{log.message}</td>
+                                                        </tr>
+                                                    ))}
+                                                    {auditLogs.length === 0 && (
+                                                        <tr>
+                                                            <td
+                                                                colSpan={6}
+                                                                className="px-2 py-4 text-center text-gray-500"
+                                                            >
+                                                                No audit logs
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <h4 className="font-semibold text-black text-xs flex items-center thai-font">
+                                            <FileCode2 className="mr-1.5 h-3.5 w-3.5 text-gray-600" />
+                                            Webhook Nonce Store
+                                        </h4>
+                                        <div className="max-h-[300px] overflow-auto border-2 border-black">
+                                            <table className="w-full min-w-[680px] text-[10px]">
+                                                <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                                    <tr>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Created</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Provider</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Nonce Hash</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Expires</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {webhookNonces.map((item) => (
+                                                        <tr
+                                                            key={item.id}
+                                                            className="hover:bg-gray-50 transition-colors align-top"
+                                                        >
+                                                            <td className="px-2 py-1.5 whitespace-nowrap">
+                                                                {new Date(item.createdAt).toLocaleString()}
+                                                            </td>
+                                                            <td className="px-2 py-1.5">{item.provider}</td>
+                                                            <td className="px-2 py-1.5 font-mono text-[9px]">
+                                                                {item.nonceHash.slice(0, 18)}...
+                                                            </td>
+                                                            <td className="px-2 py-1.5 whitespace-nowrap">
+                                                                {new Date(item.expiresAt).toLocaleString()}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                    {webhookNonces.length === 0 && (
+                                                        <tr>
+                                                            <td
+                                                                colSpan={4}
+                                                                className="px-2 py-4 text-center text-gray-500"
+                                                            >
+                                                                No nonce records
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

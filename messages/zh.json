@@ -189,7 +189,8 @@
       "registration_disabled": "注册暂时关闭",
       "registration_disabled_desc": "管理员暂时关闭了新用户注册。请稍后再试。",
       "go_to_login": "前往登录页面"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "结账",
@@ -714,7 +715,10 @@
       "step2": "复制优惠券代码",
       "step3": "在结账时使用代码",
       "expiry_hint": "优惠券有有效期，请在过期前使用。"
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "我的发票",
@@ -922,7 +926,11 @@
     "cancelled": "已取消",
     "download_pdf": "下载 PDF",
     "print": "打印",
-    "back_to_list": "返回发票列表"
+    "back_to_list": "返回发票列表",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "通知设置",
@@ -1653,6 +1661,33 @@
     "noTawkItem": "Tawk.to在线客服小部件当前未启用",
     "acknowledge": "我知道了",
     "privacy": "隐私政策",
-    "ariaClose": "关闭Cookie通知"
+    "ariaClose": "关闭Cookie通知",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

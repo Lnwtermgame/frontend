@@ -231,7 +231,8 @@
       "registration_disabled": "Registration Temporarily Disabled",
       "registration_disabled_desc": "The administrator has temporarily disabled new registrations. Please try again later.",
       "go_to_login": "Go to Login"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "Checkout",
@@ -758,7 +759,10 @@
       "step2": "Copy the coupon code",
       "step3": "Use code at checkout",
       "expiry_hint": "Coupons have expiration dates. Please use before they expire."
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "My Invoices",
@@ -968,7 +972,11 @@
     "print": "Print",
     "back_to_list": "Back to Invoices",
     "copy_success": "Invoice ID copied!",
-    "error_not_found": "Invoice not found."
+    "error_not_found": "Invoice not found.",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "Notification Settings",
@@ -1713,6 +1721,33 @@
     "noTawkItem": "Tawk.to live chat widget is currently not enabled",
     "acknowledge": "Acknowledge",
     "privacy": "Privacy Policy",
-    "ariaClose": "Close cookie notice"
+    "ariaClose": "Close cookie notice",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

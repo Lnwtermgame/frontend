@@ -231,7 +231,8 @@
       "registration_disabled": "登録は一時的に無効になっています",
       "registration_disabled_desc": "管理者が新規登録を一時的に無効にしています。後でもう一度お試しください。",
       "go_to_login": "ログインへ"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "チェックアウト",
@@ -758,7 +759,10 @@
       "step2": "クーポンコードをコピーする",
       "step3": "チェックアウトでコードを使用",
       "expiry_hint": "クーポンには有効期限があります。期限切れになる前にご使用ください。"
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "マイ請求書",
@@ -968,7 +972,11 @@
     "print": "印刷",
     "back_to_list": "請求書一覧へ戻る",
     "copy_success": "請求書IDをコピーしました！",
-    "error_not_found": "請求書が見つかりません。"
+    "error_not_found": "請求書が見つかりません。",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "通知設定",
@@ -1713,6 +1721,33 @@
     "noTawkItem": "Tawk.toライブチャットウィジェットは現在無効です",
     "acknowledge": "了解しました",
     "privacy": "プライバシーポリシー",
-    "ariaClose": "Cookie通知を閉じる"
+    "ariaClose": "Cookie通知を閉じる",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

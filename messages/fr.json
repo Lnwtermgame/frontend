@@ -231,7 +231,8 @@
       "registration_disabled": "Inscription temporairement désactivée",
       "registration_disabled_desc": "L'administrateur a temporairement désactivé les nouvelles inscriptions. Veuillez réessayer plus tard.",
       "go_to_login": "Aller à la connexion"
-    }
+    },
+    "already_have_account": "Already have an account?"
   },
   "Checkout": {
     "title": "Paiement",
@@ -758,7 +759,10 @@
       "step2": "Copiez le code promo",
       "step3": "Utilisez le code au moment du paiement",
       "expiry_hint": "Les coupons ont des dates d'expiration. Veuillez les utiliser avant qu'ils n'expirent."
-    }
+    },
+    "filter_title": "Filter",
+    "already_added": "Coupon already added",
+    "expired": "Coupon has expired"
   },
   "Invoices": {
     "title": "Mes factures",
@@ -974,7 +978,11 @@
     "print": "Imprimer",
     "back_to_list": "Retour aux factures",
     "copy_success": "ID de facture copié !",
-    "error_not_found": "Facture non trouvée."
+    "error_not_found": "Facture non trouvée.",
+    "actions": {
+      "download": "Download PDF",
+      "view": "View Invoice"
+    }
   },
   "NotificationPreferences": {
     "title": "Paramètres de notification",
@@ -1719,6 +1727,33 @@
     "noTawkItem": "Le widget de chat en direct Tawk.to n'est pas activé actuellement",
     "acknowledge": "Accepter",
     "privacy": "Politique de Confidentialité",
-    "ariaClose": "Fermer l'avis sur les cookies"
+    "ariaClose": "Fermer l'avis sur les cookies",
+    "learn_more": "Learn more"
+  },
+  "ContactPage": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!"
+    }
+  },
+  "SmartSearch": {
+    "recent_searches": "Recent Searches",
+    "suggestions": "Suggestions",
+    "popular": "Popular"
+  },
+  "AdminTickets": {
+    "status": {
+      "ALL": "All",
+      "UNASSIGNED": "Unassigned",
+      "WAITING_ADMIN": "Waiting for Admin",
+      "SLA_8": "SLA 8h",
+      "SLA_24": "SLA 24h"
+    }
   }
 }

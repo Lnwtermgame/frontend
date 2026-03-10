@@ -199,7 +199,7 @@ function PendingPaymentContent() {
               {t("try_again")}
             </button>
             <button
-              onClick={() => router.push("/orders")}
+              onClick={() => router.push("/dashboard/orders/")}
               className="bg-white text-black px-6 py-4 rounded-lg font-bold border-2 border-black hover:bg-gray-50 transition-colors uppercase tracking-wider"
             >
               {t("view_orders")}

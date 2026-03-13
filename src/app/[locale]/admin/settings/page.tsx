@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, ReactNode } from "react";
 import {
   GripVertical,
   Loader2,
@@ -10,6 +10,22 @@ import {
   Settings2,
   Upload,
   X,
+  Globe,
+  Palette,
+  ShoppingCart,
+  LayoutGrid,
+  Calendar,
+  Shield,
+  History,
+  Eye,
+  Users,
+  ExternalLink,
+  Bell,
+  Tag,
+  Type,
+  Megaphone,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -202,6 +218,7 @@ export default function AdminSettingsPage() {
   const [auditPage, setAuditPage] = useState(1);
   const [auditTotalPages, setAuditTotalPages] = useState(1);
 
+  const [activeTab, setActiveTab] = useState('general');
   const [dragState, setDragState] = useState<{
     block: LandingBlockKey;
     index: number;
@@ -566,1307 +583,555 @@ export default function AdminSettingsPage() {
     }));
   };
 
+  // ── UI Helper sub-components ──────────────────────────────
+  const inputCls = "w-full border-[2px] border-gray-300 px-3 py-2 text-sm focus:border-black focus:ring-2 focus:ring-black focus:outline-none transition-colors";
+  const selectCls = inputCls;
+
+  const SectionCard = ({ title, description, accent = "bg-brutal-pink", icon, children }: { title: string; description?: string; accent?: string; icon?: ReactNode; children: ReactNode }) => (
+    <div className="bg-white border-[2px] border-black" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+      <div className="p-4 border-b-[2px] border-gray-200 bg-gray-50">
+        <h2 className="text-base font-bold text-black flex items-center">
+          <span className={`w-1.5 h-5 ${accent} mr-2`}></span>
+          {icon && <span className="mr-2 text-gray-600">{icon}</span>}
+          {title}
+        </h2>
+        {description && <p className="text-xs text-gray-500 mt-1 ml-3.5">{description}</p>}
+      </div>
+      <div className="p-5 space-y-4">{children}</div>
+    </div>
+  );
+
+  const FormField = ({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) => (
+    <div>
+      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label}</label>
+      {children}
+      {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
+    </div>
+  );
+
+  const FormRow = ({ children }: { children: ReactNode }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>
+  );
+
+  const ToggleField = ({ label, description, checked, onChange }: { label: string; description?: string; checked: boolean; onChange: (v: boolean) => void }) => (
+    <label className="flex items-center justify-between p-3 bg-gray-50 border-[2px] border-gray-200 hover:border-black transition-colors cursor-pointer">
+      <div>
+        <span className="text-sm font-semibold text-black">{label}</span>
+        {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
+      </div>
+      <div className={`relative w-11 h-6 rounded-full border-[2px] border-black transition-colors shrink-0 ml-4 ${checked ? 'bg-brutal-green' : 'bg-gray-300'}`}>
+        <div className={`absolute top-[2px] w-4 h-4 bg-white border-[1px] border-black rounded-full transition-transform ${checked ? 'left-[22px]' : 'left-[2px]'}`} />
+        <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      </div>
+    </label>
+  );
+
+  const ItemCard = ({ index, label, onRemove, draggable: isDraggable, onDragStart, onDragOver, onDrop, children }: {
+    index: number; label: string; onRemove: () => void; draggable?: boolean;
+    onDragStart?: () => void; onDragOver?: (e: React.DragEvent) => void; onDrop?: () => void; children: ReactNode;
+  }) => (
+    <div
+      draggable={isDraggable}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      className="border-[2px] border-gray-200 bg-white p-4 hover:border-black transition-colors"
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500">
+          {isDraggable && <GripVertical size={14} className="text-gray-400" />}
+          {label} #{index + 1}
+        </span>
+        <button onClick={onRemove} className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 transition-colors" title="ลบ">
+          <X size={16} />
+        </button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{children}</div>
+    </div>
+  );
+
+  const AddButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
+    <button onClick={onClick} className="inline-flex items-center gap-1.5 border-[2px] border-black bg-white px-3 py-1.5 text-sm font-bold hover:bg-brutal-yellow transition-colors" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+      <Plus size={14} /> {label}
+    </button>
+  );
+
+  const tabs = [
+    { id: 'general', label: 'ทั่วไป & SEO', icon: <Settings2 size={16} /> },
+    { id: 'features', label: 'ร้านค้า & ฟีเจอร์', icon: <ShoppingCart size={16} /> },
+    { id: 'landing', label: 'หน้าแรก', icon: <LayoutGrid size={16} /> },
+    { id: 'events', label: 'อีเวนต์ & ข่าว', icon: <Calendar size={16} /> },
+    { id: 'system', label: 'ระบบ', icon: <Shield size={16} /> },
+  ];
+
   return (
     <AdminLayout title="ตั้งค่าเว็บไซต์">
       <div className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h1 className="flex items-center gap-2 text-2xl font-bold text-black">
-              <Settings2 className="h-6 w-6" />
-              Site Settings CMS
-            </h1>
-            <p className="text-sm text-gray-600">
-              แก้ draft, preview, reorder แล้ว publish เป็น live
-            </p>
+        {/* ── Header & Actions ── */}
+        <div className="bg-white border-[2px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h1 className="flex items-center gap-2 text-xl font-black text-black">
+                <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+                  <Settings2 className="h-4 w-4 text-white" />
+                </div>
+                Site Settings CMS
+              </h1>
+              <p className="text-xs text-gray-500 mt-1 ml-10">แก้ไข Draft → Preview → Publish เป็น Live</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button onClick={loadSettings} disabled={loading || saving || publishing} className="flex items-center gap-1.5 border-[2px] border-black bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+                <RefreshCcw size={14} /> โหลดใหม่
+              </button>
+              <button onClick={resetDraft} disabled={resetting || saving || publishing} className="flex items-center gap-1.5 border-[2px] border-red-500 bg-white px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #ef4444" }}>
+                {resetting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCcw size={14} />}
+                {resetting ? "กำลังรีเซ็ต..." : "รีเซ็ต Draft"}
+              </button>
+              <button onClick={saveSettings} disabled={!hasChanges || saving || loading || publishing} className="flex items-center gap-1.5 border-[2px] border-black bg-black px-3 py-1.5 text-sm font-bold text-white hover:bg-gray-800 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+                {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save size={14} />}
+                Save Draft
+              </button>
+              <button onClick={publishSettings} disabled={publishing || saving || !isDraftDirty} className="flex items-center gap-1.5 border-[2px] border-black bg-brutal-green px-3 py-1.5 text-sm font-bold text-black hover:brightness-95 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+                {publishing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload size={14} />}
+                Publish Live
+              </button>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={loadSettings}
-              disabled={loading || saving || publishing}
-              className="flex items-center gap-2 border-[2px] border-gray-400 px-3 py-2 text-sm disabled:opacity-50"
-            >
-              <RefreshCcw size={16} /> โหลดใหม่
-            </button>
-            <button
-              onClick={resetDraft}
-              disabled={resetting || saving || publishing}
-              className="border-[2px] border-red-400 px-3 py-2 text-sm text-red-700 disabled:opacity-50"
-            >
-              {resetting ? "กำลังรีเซ็ต..." : "รีเซ็ต Draft"}
-            </button>
-            <button
-              onClick={saveSettings}
-              disabled={!hasChanges || saving || loading || publishing}
-              className="flex items-center gap-2 border-[2px] border-black bg-black px-3 py-2 text-sm text-white disabled:opacity-50"
-            >
-              {saving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Save size={16} />
-              )}
-              Save Draft
-            </button>
-            <button
-              onClick={publishSettings}
-              disabled={publishing || saving || !isDraftDirty}
-              className="flex items-center gap-2 border-[2px] border-black bg-brutal-green px-3 py-2 text-sm text-black disabled:opacity-50"
-            >
-              {publishing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Upload size={16} />
-              )}
-              Publish Live
-            </button>
+
+          {/* Status bar */}
+          <div className="mt-3 pt-3 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-600">
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-brutal-yellow border border-black"></span>
+              <span className="font-semibold">Draft:</span>
+              {updatedAt ? new Date(updatedAt).toLocaleString("th-TH") : "-"} โดย {updatedBy || "-"}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-brutal-green border border-black"></span>
+              <span className="font-semibold">Live:</span>
+              {publishedAt ? new Date(publishedAt).toLocaleString("th-TH") : "-"} โดย {publishedBy || "-"}
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 rounded border-[2px] border-gray-300 bg-white p-3 text-xs text-gray-700 md:grid-cols-2">
-          <div>
-            Draft updated:{" "}
-            {updatedAt ? new Date(updatedAt).toLocaleString("th-TH") : "-"} by{" "}
-            {updatedBy || "-"}
-          </div>
-          <div>
-            Live published:{" "}
-            {publishedAt ? new Date(publishedAt).toLocaleString("th-TH") : "-"}{" "}
-            by {publishedBy || "-"}
-          </div>
-        </div>
-
+        {/* ── Alerts ── */}
         {error && (
-          <div className="rounded border-[2px] border-red-400 bg-red-50 p-3 text-sm text-red-700">
-            {error}
+          <div className="border-[2px] border-red-400 bg-red-50 p-3 text-sm text-red-700 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-red-500 shrink-0"></span> {error}
           </div>
         )}
         {success && (
-          <div className="rounded border-[2px] border-green-400 bg-green-50 p-3 text-sm text-green-700">
-            {success}
+          <div className="border-[2px] border-green-400 bg-green-50 p-3 text-sm text-green-700 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-500 shrink-0"></span> {success}
           </div>
         )}
 
         {loading ? (
-          <div className="flex h-64 items-center justify-center rounded border-[3px] border-black bg-white">
-            <Loader2 className="h-8 w-8 animate-spin" />
+          <div className="flex h-64 items-center justify-center bg-white border-[2px] border-black" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+            <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <h2 className="text-lg font-bold">General</h2>
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Site name"
-                  value={settings.general.siteName}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      general: { ...s.general, siteName: e.target.value },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Tagline"
-                  value={settings.general.siteTagline || ""}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      general: { ...s.general, siteTagline: e.target.value },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Support email"
-                  value={settings.general.supportEmail}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      general: { ...s.general, supportEmail: e.target.value },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Support phone"
-                  value={settings.general.supportPhone || ""}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      general: { ...s.general, supportPhone: e.target.value },
-                    }))
-                  }
-                />
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <h2 className="text-lg font-bold">Landing Header</h2>
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Hero title"
-                value={settings.homepage.heroTitle || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    homepage: { ...s.homepage, heroTitle: e.target.value },
-                  }))
-                }
-              />
-              <textarea
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                rows={2}
-                placeholder="Hero subtitle"
-                value={settings.homepage.heroSubtitle || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    homepage: { ...s.homepage, heroSubtitle: e.target.value },
-                  }))
-                }
-              />
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.homepage.announcementEnabled}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      homepage: {
-                        ...s.homepage,
-                        announcementEnabled: e.target.checked,
-                      },
-                    }))
-                  }
-                />{" "}
-                Announcement enabled
-              </label>
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Announcement text"
-                value={settings.homepage.announcementText || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    homepage: {
-                      ...s.homepage,
-                      announcementText: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Featured category slugs (comma-separated)"
-                value={toCsv(settings.homepage.featuredCategorySlugs)}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    homepage: {
-                      ...s.homepage,
-                      featuredCategorySlugs: parseCsv(e.target.value),
-                    },
-                  }))
-                }
-              />
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Featured products title"
-                  value={settings.homepage.sectionLabels.featuredProductsTitle}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      homepage: {
-                        ...s.homepage,
-                        sectionLabels: {
-                          ...s.homepage.sectionLabels,
-                          featuredProductsTitle: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Specials title"
-                  value={settings.homepage.sectionLabels.specialsTitle}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      homepage: {
-                        ...s.homepage,
-                        sectionLabels: {
-                          ...s.homepage.sectionLabels,
-                          specialsTitle: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="News title"
-                  value={settings.homepage.sectionLabels.newsTitle}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      homepage: {
-                        ...s.homepage,
-                        sectionLabels: {
-                          ...s.homepage.sectionLabels,
-                          newsTitle: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="View all text"
-                  value={settings.homepage.sectionLabels.viewAllText}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      homepage: {
-                        ...s.homepage,
-                        sectionLabels: {
-                          ...s.homepage.sectionLabels,
-                          viewAllText: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2 md:col-span-2"
-                  placeholder="Hero button text"
-                  value={settings.homepage.sectionLabels.heroButtonText}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      homepage: {
-                        ...s.homepage,
-                        sectionLabels: {
-                          ...s.homepage.sectionLabels,
-                          heroButtonText: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                />
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">Hero Slides</h2>
+          <>
+            {/* ── Tab Navigation ── */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {tabs.map((tab) => (
                 <button
-                  onClick={addHeroSlide}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`whitespace-nowrap flex items-center gap-2 border-[2px] border-black px-4 py-2 text-sm font-bold transition-all ${activeTab === tab.id
+                      ? 'bg-brutal-yellow text-black'
+                      : 'bg-white text-gray-600 hover:bg-gray-100 hover:text-black'
+                    }`}
+                  style={activeTab === tab.id ? { boxShadow: "3px 3px 0 0 #000000" } : { boxShadow: "2px 2px 0 0 #000000" }}
                 >
-                  <Plus size={14} /> Add
+                  {tab.icon}
+                  {tab.label}
                 </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.heroSlides.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
-                        Slide #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeHeroSlide(index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Title"
-                        value={item.title}
-                        onChange={(e) =>
-                          updateHeroSlide(index, "title", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Badge text"
-                        value={item.badgeText || ""}
-                        onChange={(e) =>
-                          updateHeroSlide(index, "badgeText", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Subtitle"
-                        value={item.subtitle || ""}
-                        onChange={(e) =>
-                          updateHeroSlide(index, "subtitle", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Image URL"
-                        value={item.image}
-                        onChange={(e) =>
-                          updateHeroSlide(index, "image", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Link URL"
-                        value={item.link || ""}
-                        onChange={(e) =>
-                          updateHeroSlide(index, "link", e.target.value)
-                        }
-                      />
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.color}
-                        onChange={(e) =>
-                          updateHeroSlide(index, "color", e.target.value)
-                        }
-                      >
-                        <option value="yellow">yellow</option>
-                        <option value="pink">pink</option>
-                        <option value="blue">blue</option>
-                        <option value="green">green</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+              ))}
+            </div>
 
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">Category Tabs</h2>
-                <button
-                  onClick={addCategoryTab}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
-                >
-                  <Plus size={14} /> Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.categoryTabs.map((item, index) => (
-                  <div
-                    key={`${item.id}-${index}`}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
-                        Tab #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeCategoryTab(index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.id}
-                        onChange={(e) =>
-                          updateCategoryTab(index, "id", e.target.value)
-                        }
-                      >
-                        <option value="all">all</option>
-                        <option value="hot">hot</option>
-                        <option value="cards">cards</option>
-                      </select>
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Label"
-                        value={item.label}
-                        onChange={(e) =>
-                          updateCategoryTab(index, "label", e.target.value)
-                        }
-                      />
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.icon}
-                        onChange={(e) =>
-                          updateCategoryTab(index, "icon", e.target.value)
-                        }
-                      >
-                        <option value="gamepad">gamepad</option>
-                        <option value="flame">flame</option>
-                        <option value="card">card</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+            
+            {/* ── Tab Content ── */}
+            <div className="space-y-6 mt-4">
+              {activeTab === 'general' && (
+                <div className="grid grid-cols-1 gap-6">
+                  <SectionCard title="General Settings" description="Basic site information and support contacts" icon={<Globe />}>
+                    <FormRow>
+                      <FormField label="Site Name">
+                        <input className={inputCls} placeholder="Site name" value={settings.general.siteName} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, siteName: e.target.value } }))} />
+                      </FormField>
+                      <FormField label="Tagline">
+                        <input className={inputCls} placeholder="Tagline" value={settings.general.siteTagline || ""} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, siteTagline: e.target.value } }))} />
+                      </FormField>
+                    </FormRow>
+                    <FormRow>
+                      <FormField label="Support Email">
+                        <input className={inputCls} placeholder="Support email" value={settings.general.supportEmail} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, supportEmail: e.target.value } }))} />
+                      </FormField>
+                      <FormField label="Support Phone">
+                        <input className={inputCls} placeholder="Support phone" value={settings.general.supportPhone || ""} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, supportPhone: e.target.value } }))} />
+                      </FormField>
+                    </FormRow>
+                  </SectionCard>
 
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">Quick Actions</h2>
-                <button
-                  onClick={addQuickAction}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
-                >
-                  <Plus size={14} /> Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.quickActions.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
-                        Action #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeQuickAction(index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Label"
-                        value={item.label}
-                        onChange={(e) =>
-                          updateQuickAction(index, "label", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="URL"
-                        value={item.href}
-                        onChange={(e) =>
-                          updateQuickAction(index, "href", e.target.value)
-                        }
-                      />
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.icon}
-                        onChange={(e) =>
-                          updateQuickAction(index, "icon", e.target.value)
-                        }
-                      >
-                        <option value="credit-card">credit-card</option>
-                        <option value="gift">gift</option>
-                        <option value="star">star</option>
-                        <option value="headphones">headphones</option>
-                      </select>
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.color}
-                        onChange={(e) =>
-                          updateQuickAction(index, "color", e.target.value)
-                        }
-                      >
-                        <option value="yellow">yellow</option>
-                        <option value="pink">pink</option>
-                        <option value="green">green</option>
-                        <option value="blue">blue</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  <SectionCard title="Branding & Colors" description="Site appearance, logos and colors" icon={<Palette />} accent="bg-brutal-yellow">
+                    <FormRow>
+                      <FormField label="Logo URL">
+                        <input className={inputCls} placeholder="Logo URL" value={settings.branding.logoUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, logoUrl: e.target.value } }))} />
+                      </FormField>
+                      <FormField label="Favicon URL">
+                        <input className={inputCls} placeholder="Favicon URL" value={settings.branding.faviconUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, faviconUrl: e.target.value } }))} />
+                      </FormField>
+                    </FormRow>
+                    <FormRow>
+                      <FormField label="Primary Color">
+                        <div className="flex gap-2">
+                          <input type="color" className="h-9 w-12 border-[2px] border-gray-300 p-0 cursor-pointer" value={settings.branding.primaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
+                          <input className={inputCls} placeholder="#FF6B9D" value={settings.branding.primaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
+                        </div>
+                      </FormField>
+                      <FormField label="Secondary Color">
+                        <div className="flex gap-2">
+                          <input type="color" className="h-9 w-12 border-[2px] border-gray-300 p-0 cursor-pointer" value={settings.branding.secondaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
+                          <input className={inputCls} placeholder="#95E1D3" value={settings.branding.secondaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
+                        </div>
+                      </FormField>
+                    </FormRow>
+                  </SectionCard>
 
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">Trust Badges</h2>
-                <button
-                  onClick={addTrustBadge}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
-                >
-                  <Plus size={14} /> Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.trustBadges.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
-                        Badge #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeTrustBadge(index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Title"
-                        value={item.title}
-                        onChange={(e) =>
-                          updateTrustBadge(index, "title", e.target.value)
-                        }
-                      />
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.icon}
-                        onChange={(e) =>
-                          updateTrustBadge(index, "icon", e.target.value)
-                        }
-                      >
-                        <option value="shield">shield</option>
-                        <option value="headphones">headphones</option>
-                        <option value="zap">zap</option>
-                      </select>
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Description"
-                        value={item.description || ""}
-                        onChange={(e) =>
-                          updateTrustBadge(index, "description", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4">
-              <h2 className="text-lg font-bold">Branding + SEO</h2>
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Logo URL"
-                value={settings.branding.logoUrl || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    branding: { ...s.branding, logoUrl: e.target.value },
-                  }))
-                }
-              />
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Favicon URL"
-                value={settings.branding.faviconUrl || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    branding: { ...s.branding, faviconUrl: e.target.value },
-                  }))
-                }
-              />
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Primary color"
-                  value={settings.branding.primaryColor}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      branding: { ...s.branding, primaryColor: e.target.value },
-                    }))
-                  }
-                />
-                <input
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Secondary color"
-                  value={settings.branding.secondaryColor}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      branding: {
-                        ...s.branding,
-                        secondaryColor: e.target.value,
-                      },
-                    }))
-                  }
-                />
-              </div>
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Meta title"
-                value={settings.seo.metaTitle || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    seo: { ...s.seo, metaTitle: e.target.value },
-                  }))
-                }
-              />
-              <textarea
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                rows={2}
-                placeholder="Meta description"
-                value={settings.seo.metaDescription || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    seo: { ...s.seo, metaDescription: e.target.value },
-                  }))
-                }
-              />
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Meta keywords comma-separated"
-                value={toCsv(settings.seo.metaKeywords)}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    seo: { ...s.seo, metaKeywords: parseCsv(e.target.value) },
-                  }))
-                }
-              />
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4">
-              <h2 className="text-lg font-bold">
-                Features + Social + Commerce
-              </h2>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.features.enablePromotions}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      features: {
-                        ...s.features,
-                        enablePromotions: e.target.checked,
-                      },
-                    }))
-                  }
-                />{" "}
-                Enable promotions
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.features.enableSupportTickets}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      features: {
-                        ...s.features,
-                        enableSupportTickets: e.target.checked,
-                      },
-                    }))
-                  }
-                />{" "}
-                Enable support tickets
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.features.enableUserRegistration}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      features: {
-                        ...s.features,
-                        enableUserRegistration: e.target.checked,
-                      },
-                    }))
-                  }
-                />{" "}
-                Enable registration
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.features.enableMaintenanceMode}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      features: {
-                        ...s.features,
-                        enableMaintenanceMode: e.target.checked,
-                      },
-                    }))
-                  }
-                />{" "}
-                Enable maintenance
-              </label>
-              <textarea
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                rows={2}
-                placeholder="Maintenance message"
-                value={settings.features.maintenanceMessage || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    features: {
-                      ...s.features,
-                      maintenanceMessage: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Facebook URL"
-                value={settings.social.facebookUrl || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    social: { ...s.social, facebookUrl: e.target.value },
-                  }))
-                }
-              />
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="LINE URL"
-                value={settings.social.lineUrl || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    social: { ...s.social, lineUrl: e.target.value },
-                  }))
-                }
-              />
-              <input
-                className="w-full border-[2px] border-gray-300 px-3 py-2"
-                placeholder="Discord URL"
-                value={settings.social.discordUrl || ""}
-                onChange={(e) =>
-                  setSettings((s) => ({
-                    ...s,
-                    social: { ...s.social, discordUrl: e.target.value },
-                  }))
-                }
-              />
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.commerce.allowGuestCheckout}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      commerce: {
-                        ...s.commerce,
-                        allowGuestCheckout: e.target.checked,
-                      },
-                    }))
-                  }
-                />{" "}
-                Allow guest checkout
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="number"
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Tax %"
-                  value={settings.commerce.taxPercent}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      commerce: {
-                        ...s.commerce,
-                        taxPercent: Number(e.target.value) || 0,
-                      },
-                    }))
-                  }
-                />
-                <input
-                  type="number"
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Auto cancel minutes"
-                  value={settings.commerce.orderAutoCancelMinutes}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      commerce: {
-                        ...s.commerce,
-                        orderAutoCancelMinutes: Number(e.target.value) || 1,
-                      },
-                    }))
-                  }
-                />
-                <input
-                  type="number"
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Min topup"
-                  value={settings.commerce.minTopupAmount}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      commerce: {
-                        ...s.commerce,
-                        minTopupAmount: Number(e.target.value) || 0,
-                      },
-                    }))
-                  }
-                />
-                <input
-                  type="number"
-                  className="border-[2px] border-gray-300 px-3 py-2"
-                  placeholder="Max topup"
-                  value={settings.commerce.maxTopupAmount}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      commerce: {
-                        ...s.commerce,
-                        maxTopupAmount: Number(e.target.value) || 0,
-                      },
-                    }))
-                  }
-                />
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">
-                  Promo Cards (Drag to Reorder)
-                </h2>
-                <button
-                  onClick={() => addBlockItem("promoCards")}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
-                >
-                  <Plus size={14} /> Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.promoCards.map((item, index) => (
-                  <div
-                    key={item.id}
-                    draggable
-                    onDragStart={() => handleDragStart("promoCards", index)}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={() => handleDrop("promoCards", index)}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-                        <GripVertical size={14} /> Item #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeBlockItem("promoCards", index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Title"
-                        value={item.title}
-                        onChange={(e) =>
-                          updatePromo(index, "title", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Badge"
-                        value={item.badge || ""}
-                        onChange={(e) =>
-                          updatePromo(index, "badge", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Description"
-                        value={item.description || ""}
-                        onChange={(e) =>
-                          updatePromo(index, "description", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="CTA text"
-                        value={item.ctaText || ""}
-                        onChange={(e) =>
-                          updatePromo(index, "ctaText", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="URL"
-                        value={item.href || ""}
-                        onChange={(e) =>
-                          updatePromo(index, "href", e.target.value)
-                        }
-                      />
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.theme}
-                        onChange={(e) =>
-                          updatePromo(index, "theme", e.target.value)
-                        }
-                      >
-                        <option value="blue">blue</option>
-                        <option value="pink">pink</option>
-                        <option value="yellow">yellow</option>
-                        <option value="green">green</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">
-                  News Items (Drag to Reorder)
-                </h2>
-                <button
-                  onClick={() => addBlockItem("newsItems")}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
-                >
-                  <Plus size={14} /> Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.newsItems.map((item, index) => (
-                  <div
-                    key={item.id}
-                    draggable
-                    onDragStart={() => handleDragStart("newsItems", index)}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={() => handleDrop("newsItems", index)}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-                        <GripVertical size={14} /> Item #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeBlockItem("newsItems", index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Title"
-                        value={item.title}
-                        onChange={(e) =>
-                          updateNews(index, "title", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Category"
-                        value={item.category}
-                        onChange={(e) =>
-                          updateNews(index, "category", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Date"
-                        value={item.date}
-                        onChange={(e) =>
-                          updateNews(index, "date", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Image URL"
-                        value={item.image}
-                        onChange={(e) =>
-                          updateNews(index, "image", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="URL"
-                        value={item.href || ""}
-                        onChange={(e) =>
-                          updateNews(index, "href", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">
-                  Seasonal Events (Drag to Reorder)
-                </h2>
-                <button
-                  onClick={() => addBlockItem("seasonalEvents")}
-                  className="inline-flex items-center gap-1 border-[2px] border-black px-3 py-1 text-sm"
-                >
-                  <Plus size={14} /> Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {settings.homepage.seasonalEvents.map((item, index) => (
-                  <div
-                    key={item.id}
-                    draggable
-                    onDragStart={() => handleDragStart("seasonalEvents", index)}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={() => handleDrop("seasonalEvents", index)}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-                        <GripVertical size={14} /> Item #{index + 1}
-                      </span>
-                      <button
-                        onClick={() => removeBlockItem("seasonalEvents", index)}
-                        className="text-red-600"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Title"
-                        value={item.title}
-                        onChange={(e) =>
-                          updateEvent(index, "title", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Description"
-                        value={item.description}
-                        onChange={(e) =>
-                          updateEvent(index, "description", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Start date (YYYY-MM-DD)"
-                        value={item.startDate}
-                        onChange={(e) =>
-                          updateEvent(index, "startDate", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="End date (YYYY-MM-DD)"
-                        value={item.endDate}
-                        onChange={(e) =>
-                          updateEvent(index, "endDate", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="Image URL"
-                        value={item.image}
-                        onChange={(e) =>
-                          updateEvent(index, "image", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Discount"
-                        value={item.discount || ""}
-                        onChange={(e) =>
-                          updateEvent(index, "discount", e.target.value)
-                        }
-                      />
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        placeholder="Games (comma-separated)"
-                        value={toCsv(item.games || [])}
-                        onChange={(e) =>
-                          updateEvent(index, "games", e.target.value)
-                        }
-                      />
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.type}
-                        onChange={(e) =>
-                          updateEvent(index, "type", e.target.value)
-                        }
-                      >
-                        <option value="cashback">cashback</option>
-                        <option value="discount">discount</option>
-                        <option value="bonus">bonus</option>
-                        <option value="special">special</option>
-                      </select>
-                      <select
-                        className="border-[2px] border-gray-300 px-2 py-1"
-                        value={item.discountColor || "blue"}
-                        onChange={(e) =>
-                          updateEvent(index, "discountColor", e.target.value)
-                        }
-                      >
-                        <option value="blue">blue</option>
-                        <option value="purple">purple</option>
-                        <option value="green">green</option>
-                        <option value="pink">pink</option>
-                      </select>
-                      <input
-                        className="border-[2px] border-gray-300 px-2 py-1 md:col-span-2"
-                        placeholder="URL"
-                        value={item.href || ""}
-                        onChange={(e) =>
-                          updateEvent(index, "href", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <h2 className="text-lg font-bold">Preview Draft vs Live</h2>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                <div className="rounded border-[2px] border-black p-3">
-                  <p className="mb-2 text-xs font-bold">
-                    Draft Promo ({settings.homepage.promoCards.length})
-                  </p>
-                  {settings.homepage.promoCards.slice(0, 2).map((item) => (
-                    <div
-                      key={item.id}
-                      className="mb-2 rounded border border-gray-300 p-2 text-sm"
-                    >
-                      <p className="font-bold">{item.title || "(no title)"}</p>
-                      <p className="text-xs text-gray-500">
-                        {item.ctaText || "-"}
-                      </p>
-                    </div>
-                  ))}
+                  <SectionCard title="SEO Settings" description="Search engine optimization metadata" icon={<Megaphone />} accent="bg-brutal-green">
+                    <FormField label="Meta Title">
+                      <input className={inputCls} placeholder="Meta title" value={settings.seo.metaTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaTitle: e.target.value } }))} />
+                    </FormField>
+                    <FormField label="Meta Description">
+                      <textarea className={inputCls} rows={2} placeholder="Meta description" value={settings.seo.metaDescription || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaDescription: e.target.value } }))} />
+                    </FormField>
+                    <FormField label="Meta Keywords">
+                      <input className={inputCls} placeholder="Keyword1, Keyword2, Keyword3" value={toCsv(settings.seo.metaKeywords)} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaKeywords: parseCsv(e.target.value) } }))} />
+                    </FormField>
+                  </SectionCard>
                 </div>
-                <div className="rounded border-[2px] border-black p-3">
-                  <p className="mb-2 text-xs font-bold">
-                    Live Promo ({liveSettings.homepage.promoCards.length})
-                  </p>
-                  {liveSettings.homepage.promoCards.slice(0, 2).map((item) => (
-                    <div
-                      key={item.id}
-                      className="mb-2 rounded border border-gray-300 p-2 text-sm"
-                    >
-                      <p className="font-bold">{item.title || "(no title)"}</p>
-                      <p className="text-xs text-gray-500">
-                        {item.ctaText || "-"}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
+              )}
 
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <h2 className="text-lg font-bold">Permissions</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse text-sm">
-                  <thead>
-                    <tr className="border-b-[2px] border-gray-300 text-left">
-                      <th className="px-2 py-2">Admin</th>
-                      <th className="px-2 py-2">Email</th>
-                      <th className="px-2 py-2">Read</th>
-                      <th className="px-2 py-2">Write</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {permissions.map((item) => (
-                      <tr
-                        key={item.adminId}
-                        className="border-b border-gray-200"
-                      >
-                        <td className="px-2 py-2">{item.username}</td>
-                        <td className="px-2 py-2 text-gray-600">
-                          {item.email}
-                        </td>
-                        <td className="px-2 py-2">
-                          <input
-                            type="checkbox"
-                            checked={item.read}
-                            onChange={(e) =>
-                              updatePermission(
-                                item.adminId,
-                                "read",
-                                e.target.checked,
-                              )
-                            }
-                          />
-                        </td>
-                        <td className="px-2 py-2">
-                          <input
-                            type="checkbox"
-                            checked={item.write}
-                            onChange={(e) =>
-                              updatePermission(
-                                item.adminId,
-                                "write",
-                                e.target.checked,
-                              )
-                            }
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            <section className="space-y-3 rounded border-[3px] border-black bg-white p-4 lg:col-span-2">
-              <h2 className="text-lg font-bold">
-                Audit Log (Item-level diff on publish)
-              </h2>
-              <div className="space-y-2">
-                {auditLogs.map((log) => (
-                  <div
-                    key={log.id}
-                    className="rounded border-[2px] border-gray-300 p-3"
-                  >
-                    <div className="text-xs text-gray-500">
-                      {new Date(log.createdAt).toLocaleString("th-TH")} |{" "}
-                      {log.action} |{" "}
-                      {log.actor?.username || log.actorId || "system"}
+              {activeTab === 'landing' && (
+                <div className="grid grid-cols-1 gap-6">
+                  <SectionCard title="Landing Header" description="Top section of the homepage" icon={<LayoutGrid />} accent="bg-brutal-pink">
+                    <FormField label="Hero Title">
+                      <input className={inputCls} placeholder="Hero title" value={settings.homepage.heroTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroTitle: e.target.value } }))} />
+                    </FormField>
+                    <FormField label="Hero Subtitle">
+                      <textarea className={inputCls} rows={2} placeholder="Hero subtitle" value={settings.homepage.heroSubtitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroSubtitle: e.target.value } }))} />
+                    </FormField>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                      <ToggleField label="Enable Announcement" checked={settings.homepage.announcementEnabled} onChange={(v) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, announcementEnabled: v } }))} />
+                      <FormField label="Announcement Text">
+                        <input className={inputCls} placeholder="Announcement text" value={settings.homepage.announcementText || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, announcementText: e.target.value } }))} />
+                      </FormField>
                     </div>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-gray-700">
-                      {flattenDiff(log.diff).map((line, idx) => (
-                        <li key={`${log.id}-${idx}`}>{line}</li>
+                    <div className="h-[1px] w-full bg-gray-200 my-2"></div>
+                    <FormField label="Featured Category Slugs" hint="Comma-separated list of category slugs to feature.">
+                      <input className={inputCls} placeholder="hot, popular, new" value={toCsv(settings.homepage.featuredCategorySlugs)} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, featuredCategorySlugs: parseCsv(e.target.value) } }))} />
+                    </FormField>
+                    <h3 className="font-bold text-sm text-gray-700 pt-2 border-t-[1px] border-gray-200 mt-2">Section Labels</h3>
+                    <FormRow>
+                      <FormField label="Featured Products Title"><input className={inputCls} value={settings.homepage.sectionLabels.featuredProductsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, featuredProductsTitle: e.target.value } } }))} /></FormField>
+                      <FormField label="Specials Title"><input className={inputCls} value={settings.homepage.sectionLabels.specialsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, specialsTitle: e.target.value } } }))} /></FormField>
+                    </FormRow>
+                    <FormRow>
+                      <FormField label="News Title"><input className={inputCls} value={settings.homepage.sectionLabels.newsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, newsTitle: e.target.value } } }))} /></FormField>
+                      <FormField label="View All Text"><input className={inputCls} value={settings.homepage.sectionLabels.viewAllText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, viewAllText: e.target.value } } }))} /></FormField>
+                    </FormRow>
+                    <FormField label="Hero Button Text"><input className={inputCls} value={settings.homepage.sectionLabels.heroButtonText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, heroButtonText: e.target.value } } }))} /></FormField>
+                  </SectionCard>
+
+                  <SectionCard title="Category Tabs" description="Navigation tabs on homepage" icon={<Tag />} accent="bg-brutal-yellow">
+                    <div className="mb-4">
+                      <AddButton onClick={addCategoryTab} label="Add Category Tab" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {settings.homepage.categoryTabs.map((item, index) => (
+                        <ItemCard key={`${item.id}-${index}`} index={index} label="Tab" onRemove={() => removeCategoryTab(index)}>
+                          <FormField label="ID"><select className={selectCls} value={item.id} onChange={(e) => updateCategoryTab(index, "id", e.target.value)}><option value="all">all</option><option value="hot">hot</option><option value="cards">cards</option></select></FormField>
+                          <FormField label="Label"><input className={inputCls} value={item.label} onChange={(e) => updateCategoryTab(index, "label", e.target.value)} /></FormField>
+                          <div className="md:col-span-2">
+                            <FormField label="Icon"><select className={selectCls} value={item.icon} onChange={(e) => updateCategoryTab(index, "icon", e.target.value)}><option value="gamepad">gamepad</option><option value="flame">flame</option><option value="card">card</option></select></FormField>
+                          </div>
+                        </ItemCard>
                       ))}
-                    </ul>
-                  </div>
-                ))}
-                {auditLogs.length === 0 && (
-                  <div className="text-sm text-gray-500">No logs</div>
-                )}
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <button
-                  className="border-[2px] border-gray-300 px-2 py-1 disabled:opacity-50"
-                  disabled={auditPage <= 1}
-                  onClick={() => loadAuditLogs(Math.max(1, auditPage - 1))}
-                >
-                  Prev
-                </button>
-                <span>
-                  Page {auditPage}/{auditTotalPages}
-                </span>
-                <button
-                  className="border-[2px] border-gray-300 px-2 py-1 disabled:opacity-50"
-                  disabled={auditPage >= auditTotalPages}
-                  onClick={() => loadAuditLogs(auditPage + 1)}
-                >
-                  Next
-                </button>
-              </div>
-            </section>
-          </div>
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Quick Actions" description="Fast links for users" icon={<ExternalLink />} accent="bg-brutal-green">
+                    <div className="mb-4">
+                      <AddButton onClick={addQuickAction} label="Add Quick Action" />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {settings.homepage.quickActions.map((item, index) => (
+                        <ItemCard key={item.id} index={index} label="Action" onRemove={() => removeQuickAction(index)}>
+                          <FormField label="Label"><input className={inputCls} value={item.label} onChange={(e) => updateQuickAction(index, "label", e.target.value)} /></FormField>
+                          <FormField label="URL"><input className={inputCls} value={item.href} onChange={(e) => updateQuickAction(index, "href", e.target.value)} /></FormField>
+                          <FormField label="Icon"><select className={selectCls} value={item.icon} onChange={(e) => updateQuickAction(index, "icon", e.target.value)}><option value="credit-card">credit-card</option><option value="gift">gift</option><option value="star">star</option><option value="headphones">headphones</option></select></FormField>
+                          <FormField label="Color"><select className={selectCls} value={item.color} onChange={(e) => updateQuickAction(index, "color", e.target.value)}><option value="yellow">yellow</option><option value="pink">pink</option><option value="green">green</option><option value="blue">blue</option></select></FormField>
+                        </ItemCard>
+                      ))}
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Trust Badges" description="Badges shown to build customer trust" icon={<Shield />} accent="bg-blue-400">
+                    <div className="mb-4">
+                      <AddButton onClick={addTrustBadge} label="Add Trust Badge" />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {settings.homepage.trustBadges.map((item, index) => (
+                        <ItemCard key={item.id} index={index} label="Badge" onRemove={() => removeTrustBadge(index)}>
+                          <FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateTrustBadge(index, "title", e.target.value)} /></FormField>
+                          <FormField label="Icon"><select className={selectCls} value={item.icon} onChange={(e) => updateTrustBadge(index, "icon", e.target.value)}><option value="shield">shield</option><option value="headphones">headphones</option><option value="zap">zap</option></select></FormField>
+                          <div className="md:col-span-2">
+                            <FormField label="Description"><input className={inputCls} value={item.description || ""} onChange={(e) => updateTrustBadge(index, "description", e.target.value)} /></FormField>
+                          </div>
+                        </ItemCard>
+                      ))}
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Promo Cards" description="Promotional cards shown on the landing page (Drag to Reorder)" icon={<ShoppingCart />} accent="bg-purple-400">
+                    <div className="mb-4">
+                      <AddButton onClick={() => addBlockItem("promoCards")} label="Add Promo Card" />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      {settings.homepage.promoCards.map((item, index) => (
+                        <ItemCard key={item.id} index={index} label="Promo Card" draggable onDragStart={() => handleDragStart("promoCards", index)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop("promoCards", index)} onRemove={() => removeBlockItem("promoCards", index)}>
+                          <FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updatePromo(index, "title", e.target.value)} /></FormField>
+                          <FormField label="Badge"><input className={inputCls} value={item.badge || ""} onChange={(e) => updatePromo(index, "badge", e.target.value)} /></FormField>
+                          <div className="md:col-span-2">
+                            <FormField label="Description"><input className={inputCls} value={item.description || ""} onChange={(e) => updatePromo(index, "description", e.target.value)} /></FormField>
+                          </div>
+                          <FormField label="CTA Text"><input className={inputCls} value={item.ctaText || ""} onChange={(e) => updatePromo(index, "ctaText", e.target.value)} /></FormField>
+                          <FormRow>
+                            <FormField label="URL"><input className={inputCls} value={item.href || ""} onChange={(e) => updatePromo(index, "href", e.target.value)} /></FormField>
+                            <FormField label="Theme"><select className={selectCls} value={item.theme} onChange={(e) => updatePromo(index, "theme", e.target.value)}><option value="blue">blue</option><option value="pink">pink</option><option value="yellow">yellow</option><option value="green">green</option></select></FormField>
+                          </FormRow>
+                        </ItemCard>
+                      ))}
+                    </div>
+                  </SectionCard>
+                </div>
+              )}
+
+              {activeTab === 'events' && (
+                <div className="grid grid-cols-1 gap-6">
+                  <SectionCard title="Hero Slides" description="Main banner carousel" icon={<Eye />} accent="bg-brutal-pink">
+                    <div className="mb-4">
+                      <AddButton onClick={addHeroSlide} label="Add Hero Slide" />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      {settings.homepage.heroSlides.map((item, index) => (
+                        <ItemCard key={item.id} index={index} label="Slide" onRemove={() => removeHeroSlide(index)}>
+                          <FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateHeroSlide(index, "title", e.target.value)} /></FormField>
+                          <FormField label="Badge Text"><input className={inputCls} value={item.badgeText || ""} onChange={(e) => updateHeroSlide(index, "badgeText", e.target.value)} /></FormField>
+                          <div className="md:col-span-2"><FormField label="Subtitle"><input className={inputCls} value={item.subtitle || ""} onChange={(e) => updateHeroSlide(index, "subtitle", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Image URL"><input className={inputCls} value={item.image} onChange={(e) => updateHeroSlide(index, "image", e.target.value)} /></FormField></div>
+                          <FormField label="Link URL"><input className={inputCls} value={item.link || ""} onChange={(e) => updateHeroSlide(index, "link", e.target.value)} /></FormField>
+                          <FormField label="Color"><select className={selectCls} value={item.color} onChange={(e) => updateHeroSlide(index, "color", e.target.value)}><option value="yellow">yellow</option><option value="pink">pink</option><option value="blue">blue</option><option value="green">green</option></select></FormField>
+                        </ItemCard>
+                      ))}
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="News Items" description="Recent news and updates (Drag to Reorder)" icon={<Type />} accent="bg-brutal-yellow">
+                    <div className="mb-4">
+                      <AddButton onClick={() => addBlockItem("newsItems")} label="Add News Item" />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {settings.homepage.newsItems.map((item, index) => (
+                        <ItemCard key={item.id} index={index} label="News" draggable onDragStart={() => handleDragStart("newsItems", index)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop("newsItems", index)} onRemove={() => removeBlockItem("newsItems", index)}>
+                          <div className="md:col-span-2"><FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateNews(index, "title", e.target.value)} /></FormField></div>
+                          <FormField label="Category"><input className={inputCls} value={item.category} onChange={(e) => updateNews(index, "category", e.target.value)} /></FormField>
+                          <FormField label="Date"><input className={inputCls} value={item.date} onChange={(e) => updateNews(index, "date", e.target.value)} /></FormField>
+                          <div className="md:col-span-2"><FormField label="Image URL"><input className={inputCls} value={item.image} onChange={(e) => updateNews(index, "image", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Link URL"><input className={inputCls} value={item.href || ""} onChange={(e) => updateNews(index, "href", e.target.value)} /></FormField></div>
+                        </ItemCard>
+                      ))}
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Seasonal Events" description="Special event promotions (Drag to Reorder)" icon={<Calendar />} accent="bg-brutal-green">
+                    <div className="mb-4">
+                      <AddButton onClick={() => addBlockItem("seasonalEvents")} label="Add Event" />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      {settings.homepage.seasonalEvents.map((item, index) => (
+                        <ItemCard key={item.id} index={index} label="Event" draggable onDragStart={() => handleDragStart("seasonalEvents", index)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop("seasonalEvents", index)} onRemove={() => removeBlockItem("seasonalEvents", index)}>
+                          <div className="md:col-span-2"><FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateEvent(index, "title", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Description"><input className={inputCls} value={item.description} onChange={(e) => updateEvent(index, "description", e.target.value)} /></FormField></div>
+                          <FormField label="Start Date"><input className={inputCls} placeholder="YYYY-MM-DD" value={item.startDate} onChange={(e) => updateEvent(index, "startDate", e.target.value)} /></FormField>
+                          <FormField label="End Date"><input className={inputCls} placeholder="YYYY-MM-DD" value={item.endDate} onChange={(e) => updateEvent(index, "endDate", e.target.value)} /></FormField>
+                          <div className="md:col-span-2"><FormField label="Image URL"><input className={inputCls} value={item.image} onChange={(e) => updateEvent(index, "image", e.target.value)} /></FormField></div>
+                          <FormField label="Discount"><input className={inputCls} value={item.discount || ""} onChange={(e) => updateEvent(index, "discount", e.target.value)} /></FormField>
+                          <FormField label="Games (Comma-separated)"><input className={inputCls} value={toCsv(item.games || [])} onChange={(e) => updateEvent(index, "games", e.target.value)} /></FormField>
+                          <FormField label="Type"><select className={selectCls} value={item.type} onChange={(e) => updateEvent(index, "type", e.target.value)}><option value="cashback">cashback</option><option value="discount">discount</option><option value="bonus">bonus</option><option value="special">special</option></select></FormField>
+                          <FormField label="Discount Color"><select className={selectCls} value={item.discountColor || "blue"} onChange={(e) => updateEvent(index, "discountColor", e.target.value)}><option value="blue">blue</option><option value="purple">purple</option><option value="green">green</option><option value="pink">pink</option></select></FormField>
+                          <div className="md:col-span-2"><FormField label="Link URL"><input className={inputCls} value={item.href || ""} onChange={(e) => updateEvent(index, "href", e.target.value)} /></FormField></div>
+                        </ItemCard>
+                      ))}
+                    </div>
+                  </SectionCard>
+                </div>
+              )}
+
+              {activeTab === 'features' && (
+                <div className="grid grid-cols-1 gap-6">
+                  <SectionCard title="System Features" description="Enable or disable main system modules" icon={<Settings2 />} accent="bg-brutal-pink">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <ToggleField label="Enable Promotions" description="Show promotion pages and banners" checked={settings.features.enablePromotions} onChange={(v) => setSettings((s) => ({ ...s, features: { ...s.features, enablePromotions: v } }))} />
+                      <ToggleField label="Enable Support Tickets" description="Allow users to create tickets" checked={settings.features.enableSupportTickets} onChange={(v) => setSettings((s) => ({ ...s, features: { ...s.features, enableSupportTickets: v } }))} />
+                      <ToggleField label="Enable User Registration" description="Allow new user signups" checked={settings.features.enableUserRegistration} onChange={(v) => setSettings((s) => ({ ...s, features: { ...s.features, enableUserRegistration: v } }))} />
+                      <ToggleField label="Enable Maintenance Mode" description="Disable frontend access" checked={settings.features.enableMaintenanceMode} onChange={(v) => setSettings((s) => ({ ...s, features: { ...s.features, enableMaintenanceMode: v } }))} />
+                    </div>
+                    {settings.features.enableMaintenanceMode && (
+                      <div className="mt-4">
+                        <FormField label="Maintenance Message">
+                          <textarea className={inputCls} rows={2} placeholder="Maintenance message" value={settings.features.maintenanceMessage || ""} onChange={(e) => setSettings((s) => ({ ...s, features: { ...s.features, maintenanceMessage: e.target.value } }))} />
+                        </FormField>
+                      </div>
+                    )}
+                  </SectionCard>
+
+                  <SectionCard title="Commerce Config" description="Rules for purchases and checkouts" icon={<ShoppingCart />} accent="bg-brutal-yellow">
+                    <ToggleField label="Allow Guest Checkout" description="Users can buy without logging in" checked={settings.commerce.allowGuestCheckout} onChange={(v) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, allowGuestCheckout: v } }))} />
+                    <div className="mt-4">
+                      <FormRow>
+                        <FormField label="Tax %"><input type="number" className={inputCls} value={settings.commerce.taxPercent} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, taxPercent: Number(e.target.value) || 0 } }))} /></FormField>
+                        <FormField label="Order Auto Cancel (Minutes)"><input type="number" className={inputCls} value={settings.commerce.orderAutoCancelMinutes} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, orderAutoCancelMinutes: Number(e.target.value) || 1 } }))} /></FormField>
+                      </FormRow>
+                      <FormRow>
+                        <FormField label="Min Topup Amount"><input type="number" className={inputCls} value={settings.commerce.minTopupAmount} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, minTopupAmount: Number(e.target.value) || 0 } }))} /></FormField>
+                        <FormField label="Max Topup Amount"><input type="number" className={inputCls} value={settings.commerce.maxTopupAmount} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, maxTopupAmount: Number(e.target.value) || 0 } }))} /></FormField>
+                      </FormRow>
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Social Media Links" description="External community links" icon={<Globe />} accent="bg-brutal-green">
+                    <FormRow>
+                      <FormField label="Facebook URL"><input className={inputCls} value={settings.social.facebookUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, facebookUrl: e.target.value } }))} /></FormField>
+                      <FormField label="LINE URL"><input className={inputCls} value={settings.social.lineUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, lineUrl: e.target.value } }))} /></FormField>
+                    </FormRow>
+                    <FormField label="Discord URL"><input className={inputCls} value={settings.social.discordUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, discordUrl: e.target.value } }))} /></FormField>
+                  </SectionCard>
+                </div>
+              )}
+
+              {activeTab === 'system' && (
+                <div className="grid grid-cols-1 gap-6">
+                  <SectionCard title="Permissions" description="Admin user roles" icon={<Users />} accent="bg-brutal-pink">
+                    <div className="overflow-x-auto border-[2px] border-black">
+                      <table className="min-w-full border-collapse text-sm">
+                        <thead className="bg-gray-100">
+                          <tr className="border-b-[2px] border-black text-left">
+                            <th className="px-3 py-3 border-r-[2px] border-black">Admin</th>
+                            <th className="px-3 py-3 border-r-[2px] border-black">Email</th>
+                            <th className="px-3 py-3 border-r-[2px] border-black text-center">Read</th>
+                            <th className="px-3 py-3 text-center">Write</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {permissions.map((item, i) => (
+                            <tr key={item.adminId} className={`${i !== permissions.length - 1 ? "border-b-[2px] border-black" : ""}`}>
+                              <td className="px-3 py-3 border-r-[2px] border-black font-semibold">{item.username}</td>
+                              <td className="px-3 py-3 border-r-[2px] border-black text-gray-600">{item.email}</td>
+                              <td className="px-3 py-3 border-r-[2px] border-black text-center">
+                                <input type="checkbox" className="w-5 h-5 accent-brutal-pink cursor-pointer border-[2px] border-black" checked={item.read} onChange={(e) => updatePermission(item.adminId, "read", e.target.checked)} />
+                              </td>
+                              <td className="px-3 py-3 text-center">
+                                <input type="checkbox" className="w-5 h-5 accent-brutal-pink cursor-pointer border-[2px] border-black" checked={item.write} onChange={(e) => updatePermission(item.adminId, "write", e.target.checked)} />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Preview Draft vs Live" description="Compare current changes to live data" icon={<History />} accent="bg-brutal-yellow">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="border-[2px] border-black bg-white">
+                        <div className="bg-gray-100 p-2 border-b-[2px] border-black font-bold flex items-center justify-between">
+                          <span>Draft Promo</span>
+                          <span className="bg-brutal-yellow border-[2px] border-black px-2 text-xs rounded-full">{settings.homepage.promoCards.length} items</span>
+                        </div>
+                        <div className="p-3 space-y-2">
+                          {settings.homepage.promoCards.slice(0, 3).map((item) => (
+                            <div key={item.id} className="rounded border-[2px] border-gray-300 p-2 text-sm bg-gray-50">
+                              <p className="font-bold">{item.title || "(no title)"}</p>
+                              <p className="text-xs text-gray-500 truncate">{item.ctaText || "-"}</p>
+                            </div>
+                          ))}
+                          {settings.homepage.promoCards.length > 3 && <p className="text-xs text-center text-gray-500 font-bold">+ {settings.homepage.promoCards.length - 3} more</p>}
+                        </div>
+                      </div>
+
+                      <div className="border-[2px] border-black bg-white">
+                        <div className="bg-brutal-green text-black p-2 border-b-[2px] border-black font-bold flex items-center justify-between">
+                          <span>Live Promo</span>
+                          <span className="bg-white border-[2px] border-black px-2 text-xs rounded-full">{liveSettings.homepage.promoCards.length} items</span>
+                        </div>
+                        <div className="p-3 space-y-2">
+                          {liveSettings.homepage.promoCards.slice(0, 3).map((item) => (
+                            <div key={item.id} className="rounded border-[2px] border-gray-300 p-2 text-sm bg-gray-50">
+                              <p className="font-bold">{item.title || "(no title)"}</p>
+                              <p className="text-xs text-gray-500 truncate">{item.ctaText || "-"}</p>
+                            </div>
+                          ))}
+                          {liveSettings.homepage.promoCards.length > 3 && <p className="text-xs text-center text-gray-500 font-bold">+ {liveSettings.homepage.promoCards.length - 3} more</p>}
+                        </div>
+                      </div>
+                    </div>
+                  </SectionCard>
+
+                  <SectionCard title="Audit Log" description="Item-level diff on publish actions" icon={<History />} accent="bg-brutal-green">
+                    <div className="space-y-3">
+                      {auditLogs.map((log) => (
+                        <div key={log.id} className="border-[2px] border-black bg-white p-3 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center justify-between mb-2 pb-2 border-b-[2px] border-gray-100">
+                            <span className="text-xs font-bold bg-black text-white px-2 py-1 uppercase">{log.action}</span>
+                            <span className="text-xs font-medium text-gray-600">{new Date(log.createdAt).toLocaleString("th-TH")}</span>
+                          </div>
+                          <div className="text-sm font-semibold mb-2">By: {log.actor?.username || log.actorId || "system"}</div>
+                          {flattenDiff(log.diff).length > 0 ? (
+                            <div className="bg-gray-100 p-3 border-[2px] border-gray-200">
+                              <ul className="list-disc space-y-1 pl-5 text-xs text-gray-700 font-mono">
+                                {flattenDiff(log.diff).map((line, idx) => (
+                                  <li key={`${log.id}-${idx}`}>{line}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : (
+                            <div className="text-xs text-gray-500 italic">No visible diff data</div>
+                          )}
+                        </div>
+                      ))}
+                      {auditLogs.length === 0 && (
+                        <div className="text-center py-6 text-sm text-gray-500 font-medium border-[2px] border-dashed border-gray-300">
+                          No audit logs found
+                        </div>
+                      )}
+                    </div>
+                    
+                    {auditTotalPages > 1 && (
+                      <div className="flex items-center justify-between text-sm mt-4 font-bold">
+                        <button className="border-[2px] border-black bg-white px-3 py-1.5 hover:bg-brutal-yellow transition-colors disabled:opacity-50 disabled:hover:bg-white" disabled={auditPage <= 1} onClick={() => loadAuditLogs(Math.max(1, auditPage - 1))}>
+                          Prev
+                        </button>
+                        <span>Page {auditPage} of {auditTotalPages}</span>
+                        <button className="border-[2px] border-black bg-white px-3 py-1.5 hover:bg-brutal-yellow transition-colors disabled:opacity-50 disabled:hover:bg-white" disabled={auditPage >= auditTotalPages} onClick={() => loadAuditLogs(auditPage + 1)}>
+                          Next
+                        </button>
+                      </div>
+                    )}
+                  </SectionCard>
+                </div>
+              )}
+            </div>
+</>
         )}
       </div>
     </AdminLayout>

@@ -757,9 +757,9 @@
       "title": "Cara Menggunakan",
       "step1": "Cari atau masukkan kod kupon",
       "step2": "Salin kod kupon",
-      "step3": "Gunakan kod semasa pembayaran",
-      "expiry_hint": "Kupon mempunyai tarikh luput. Sila gunakan sebelum ia luput."
+      "step3": "Gunakan kod semasa pembayaran"
     },
+    "expiry_hint": "Kupon mempunyai tarikh luput. Sila gunakan sebelum ia luput.",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

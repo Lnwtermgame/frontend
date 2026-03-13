@@ -32,6 +32,7 @@ import { motion, AnimatePresence } from "@/lib/framer-exports";
 import {
   useState,
   useEffect,
+  useCallback,
   useMemo,
   memo,
   useRef,
@@ -408,41 +409,44 @@ function MainLayoutContent({
     }
   }, [publicSettings]);
 
+  const [logoLoaded, setLogoLoaded] = useState(false);
+  const logoUrl = publicSettings?.branding.logoUrl;
+  const logoUrlRef = useRef<string | null | undefined>(undefined);
+
+  // Reset loaded state when logoUrl changes
+  if (logoUrl !== logoUrlRef.current) {
+    logoUrlRef.current = logoUrl;
+    setLogoLoaded(false);
+  }
+
+  // Ref callback: handles cached images that load before onLoad attaches
+  const logoRef = useCallback(
+    (img: HTMLImageElement | null) => {
+      if (img && img.complete && img.naturalWidth > 0) {
+        setLogoLoaded(true);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [logoUrl],
+  );
+
   const renderBrand = (compact = false) => {
     const siteName = publicSettings?.general.siteName || "Lnwtermgame";
-    const logoUrl = publicSettings?.branding.logoUrl;
-
-    if (logoUrl) {
-      return (
-        <div className="flex items-center gap-2">
-          <img
-            src={logoUrl}
-            alt={siteName}
-            className="h-8 w-8 rounded border-[2px] border-black object-cover"
-          />
-          <span
-            className={cn(
-              "font-bold text-black",
-              compact ? "text-lg" : "text-xl",
-            )}
-          >
-            {siteName}
-          </span>
-        </div>
-      );
-    }
 
     return (
-      <div
-        className={cn(
-          "font-bold flex items-center",
-          compact ? "text-lg" : "text-xl",
+      <div className={cn("flex items-center py-1", compact ? "h-8 sm:h-10 md:h-12 lg:h-14" : "h-10 sm:h-10 md:h-12 lg:h-14")}>
+        {logoUrl && (
+          <img
+            ref={logoRef}
+            src={logoUrl}
+            alt={siteName}
+            onLoad={() => setLogoLoaded(true)}
+            className={cn(
+              "w-auto h-full max-w-[140px] sm:max-w-[180px] md:max-w-[240px] object-contain",
+              logoLoaded ? "visible" : "invisible",
+            )}
+          />
         )}
-      >
-        <span className="text-brutal-pink">
-          {siteName.slice(0, 4) || "Mali"}
-        </span>
-        <span className="text-black">{siteName.slice(4) || "GamePass"}</span>
       </div>
     );
   };
@@ -491,7 +495,7 @@ function MainLayoutContent({
           {/* Top row: Logo, Search, User */}
           <div className="h-16 flex items-center justify-between px-4 min-w-0">
             {/* Mobile Menu Button + Logo */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="lg:hidden text-gray-700 focus:outline-none p-1"
@@ -504,14 +508,16 @@ function MainLayoutContent({
             </div>
 
             {/* Search - Desktop */}
-            <div className="hidden md:block flex-1 max-w-md mx-4">
-              <SearchBar variant="header" placeholder={tSearch("placeholder")} />
+            <div className="hidden md:flex flex-1 justify-center max-w-md mx-4">
+              <div className="w-full">
+                <SearchBar variant="header" placeholder={tSearch("placeholder")} />
+              </div>
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center justify-end gap-2 flex-1 min-w-0">
               <LanguageSwitcher className="hidden md:block" />
-              
+
               {/* Notification Dropdown - Show only when authenticated */}
               {isAuthenticated && (
                 <div className="relative" ref={notificationRef}>

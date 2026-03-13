@@ -713,9 +713,9 @@
       "title": "如何使用",
       "step1": "搜索或输入优惠券代码",
       "step2": "复制优惠券代码",
-      "step3": "在结账时使用代码",
-      "expiry_hint": "优惠券有有效期，请在过期前使用。"
+      "step3": "在结账时使用代码"
     },
+    "expiry_hint": "优惠券有有效期，请在过期前使用。",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

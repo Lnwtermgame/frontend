@@ -550,7 +550,7 @@ export default function CouponsPage() {
               <div className="flex items-center mt-2 pt-2 border-t-[2px] border-black">
                 <Clock className="h-3.5 w-3.5 text-gray-600 mr-1.5" />
                 <span className="text-gray-600 text-[10px] font-bold">
-                  {t("how_to_use.expiry_hint")}
+                  {t("expiry_hint")}
                 </span>
               </div>
             </div>

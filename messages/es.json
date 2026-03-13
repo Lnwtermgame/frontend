@@ -757,9 +757,9 @@
       "title": "Cómo usar",
       "step1": "Busca o introduce un código de cupón",
       "step2": "Copia el código",
-      "step3": "Úsalo al pagar",
-      "expiry_hint": "Los cupones tienen fecha de vencimiento. Por favor úsalo antes de que caduque."
+      "step3": "Úsalo al pagar"
     },
+    "expiry_hint": "Los cupones tienen fecha de vencimiento. Por favor úsalo antes de que caduque.",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

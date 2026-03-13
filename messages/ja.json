@@ -757,9 +757,9 @@
       "title": "使い方",
       "step1": "クーポンコードを検索または入力します",
       "step2": "クーポンコードをコピーする",
-      "step3": "チェックアウトでコードを使用",
-      "expiry_hint": "クーポンには有効期限があります。期限切れになる前にご使用ください。"
+      "step3": "チェックアウトでコードを使用"
     },
+    "expiry_hint": "クーポンには有効期限があります。期限切れになる前にご使用ください。",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

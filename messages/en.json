@@ -757,9 +757,9 @@
       "title": "How to Use",
       "step1": "Search or enter a coupon code",
       "step2": "Copy the coupon code",
-      "step3": "Use code at checkout",
-      "expiry_hint": "Coupons have expiration dates. Please use before they expire."
+      "step3": "Use code at checkout"
     },
+    "expiry_hint": "Coupons have expiration dates. Please use before they expire.",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

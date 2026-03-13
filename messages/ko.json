@@ -757,9 +757,9 @@
       "title": "이용 방법",
       "step1": "쿠폰 코드를 찾거나 입력하세요",
       "step2": "코드를 클립보드에 복사해두세요",
-      "step3": "결제 페이지에서 이를 붙여넣으시면 됩니다",
-      "expiry_hint": "유효기간이 지나기 전에 사용하셔야 불이익이 없습니다."
+      "step3": "결제 페이지에서 이를 붙여넣으시면 됩니다"
     },
+    "expiry_hint": "유효기간이 지나기 전에 사용하셔야 불이익이 없습니다.",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

@@ -19,7 +19,7 @@ import { paymentApi } from "@/lib/services/payment-api";
 
 import { useTranslations } from "next-intl";
 
-type PaymentStatus = "loading" | "success" | "processing" | "failed";
+type PaymentStatus = "loading" | "success" | "processing" | "declined" | "failed";
 
 function PaymentSuccessPageContent() {
     const t = useTranslations("PaymentSuccess");
@@ -66,9 +66,11 @@ function PaymentSuccessPageContent() {
                     return false;
                 }
 
-                setStatus("failed");
+                // Payment exists but was declined/failed by gateway
+                setStatus("declined");
                 return true;
             } catch {
+                // API error or payment not found
                 setStatus("failed");
                 return true;
             }
@@ -125,6 +127,16 @@ function PaymentSuccessPageContent() {
             accent: "bg-amber-100",
             badge: "bg-amber-100 text-amber-800 border-amber-300",
             panelTitle: "Processing Order",
+        },
+        declined: {
+            label: "Declined",
+            title: "Payment Declined",
+            description:
+                "Your payment was declined by the payment provider. Please try again with a different payment method or a higher amount.",
+            icon: <CircleX className="h-10 w-10 text-rose-600" />,
+            accent: "bg-rose-100",
+            badge: "bg-rose-100 text-rose-800 border-rose-300",
+            panelTitle: "Need Help?",
         },
         failed: {
             label: "Failed",

@@ -757,9 +757,9 @@
       "title": "วิธีใช้งาน",
       "step1": "ค้นหาคูปองหรือกรอกรหัสคูปอง",
       "step2": "คัดลอกรหัสคูปอง",
-      "step3": "ใช้รหัสตอนชำระเงิน",
-      "expiry_hint": "คูปองมีวันหมดอายุ โปรดใช้ก่อนที่จะหมดอายุ"
+      "step3": "ใช้รหัสตอนชำระเงิน"
     },
+    "expiry_hint": "คูปองมีวันหมดอายุ โปรดใช้ก่อนที่จะหมดอายุ",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

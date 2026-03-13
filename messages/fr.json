@@ -757,9 +757,9 @@
       "title": "Comment utiliser",
       "step1": "Recherchez ou entrez un code promo",
       "step2": "Copiez le code promo",
-      "step3": "Utilisez le code au moment du paiement",
-      "expiry_hint": "Les coupons ont des dates d'expiration. Veuillez les utiliser avant qu'ils n'expirent."
+      "step3": "Utilisez le code au moment du paiement"
     },
+    "expiry_hint": "Les coupons ont des dates d'expiration. Veuillez les utiliser avant qu'ils n'expirent.",
     "filter_title": "Filter",
     "already_added": "Coupon already added",
     "expired": "Coupon has expired"

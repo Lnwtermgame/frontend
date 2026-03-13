@@ -336,7 +336,7 @@ export default function GameDetailsPage() {
       );
       if (alternative) {
         setSelectedPaymentOption(alternative.code);
-        toast.info(
+        toast(
           t("error.truemoney_minimum", { amount: TRUEMONEY_MIN_AMOUNT })
         );
       } else {
@@ -1793,13 +1793,11 @@ export default function GameDetailsPage() {
                     return (
                       <label
                         key={opt.code}
-                        className={`border-[2px] border-black p-4 flex flex-col gap-3 transition-all ${
-                          isActive ? "bg-brutal-yellow" : "bg-white"
-                        } ${
-                          !isAvailable
+                        className={`border-[2px] border-black p-4 flex flex-col gap-3 transition-all ${isActive ? "bg-brutal-yellow" : "bg-white"
+                          } ${!isAvailable
                             ? "opacity-50 cursor-not-allowed"
                             : "cursor-pointer"
-                        }`}
+                          }`}
                         style={{ boxShadow: "2px 2px 0 0 #000" }}
                         onClick={() => {
                           if (isAvailable) {

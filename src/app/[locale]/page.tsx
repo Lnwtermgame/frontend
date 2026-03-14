@@ -171,10 +171,10 @@ export default function HomePage() {
       publicSettings?.homepage?.categoryTabs?.length
         ? publicSettings.homepage.categoryTabs
         : [
-            { id: "all", label: t("categories.all"), icon: "gamepad" as const },
-            { id: "hot", label: t("categories.hot"), icon: "flame" as const },
-            { id: "cards", label: t("categories.cards"), icon: "card" as const },
-          ],
+          { id: "all", label: t("categories.all"), icon: "gamepad" as const },
+          { id: "hot", label: t("categories.hot"), icon: "flame" as const },
+          { id: "cards", label: t("categories.cards"), icon: "card" as const },
+        ],
     [publicSettings, t],
   );
 
@@ -183,35 +183,35 @@ export default function HomePage() {
       publicSettings?.homepage?.quickActions?.length
         ? publicSettings.homepage.quickActions
         : [
-            {
-              id: "qa-default-1",
-              icon: "credit-card" as const,
-              label: t("quick_actions.topup"),
-              href: "/games",
-              color: "yellow" as const,
-            },
-            {
-              id: "qa-default-2",
-              icon: "gift" as const,
-              label: t("quick_actions.cards"),
-              href: "/card",
-              color: "pink" as const,
-            },
-            {
-              id: "qa-default-3",
-              icon: "star" as const,
-              label: t("quick_actions.promo"),
-              href: "/?promo=true",
-              color: "green" as const,
-            },
-            {
-              id: "qa-default-4",
-              icon: "headphones" as const,
-              label: t("quick_actions.support"),
-              href: "/support",
-              color: "blue" as const,
-            },
-          ],
+          {
+            id: "qa-default-1",
+            icon: "credit-card" as const,
+            label: t("quick_actions.topup"),
+            href: "/games",
+            color: "yellow" as const,
+          },
+          {
+            id: "qa-default-2",
+            icon: "gift" as const,
+            label: t("quick_actions.cards"),
+            href: "/card",
+            color: "pink" as const,
+          },
+          {
+            id: "qa-default-3",
+            icon: "star" as const,
+            label: t("quick_actions.promo"),
+            href: "/?promo=true",
+            color: "green" as const,
+          },
+          {
+            id: "qa-default-4",
+            icon: "headphones" as const,
+            label: t("quick_actions.support"),
+            href: "/support",
+            color: "blue" as const,
+          },
+        ],
     [publicSettings, t],
   );
 
@@ -220,25 +220,25 @@ export default function HomePage() {
       publicSettings?.homepage?.trustBadges?.length
         ? publicSettings.homepage.trustBadges
         : [
-            {
-              id: "tb-default-1",
-              icon: "shield" as const,
-              title: t("trust.secure_title"),
-              description: t("trust.secure_desc"),
-            },
-            {
-              id: "tb-default-2",
-              icon: "headphones" as const,
-              title: t("trust.support_title"),
-              description: t("trust.support_desc"),
-            },
-            {
-              id: "tb-default-3",
-              icon: "zap" as const,
-              title: t("trust.delivery_title"),
-              description: t("trust.delivery_desc"),
-            },
-          ],
+          {
+            id: "tb-default-1",
+            icon: "shield" as const,
+            title: t("trust.secure_title"),
+            description: t("trust.secure_desc"),
+          },
+          {
+            id: "tb-default-2",
+            icon: "headphones" as const,
+            title: t("trust.support_title"),
+            description: t("trust.support_desc"),
+          },
+          {
+            id: "tb-default-3",
+            icon: "zap" as const,
+            title: t("trust.delivery_title"),
+            description: t("trust.delivery_desc"),
+          },
+        ],
     [publicSettings, t],
   );
 
@@ -247,25 +247,25 @@ export default function HomePage() {
       publicSettings?.homepage?.promoCards?.length
         ? publicSettings.homepage.promoCards
         : [
-            {
-              id: "promo-1",
-              badge: "Latest",
-              title: t("promo.ai_title"),
-              description: t("promo.ai_desc"),
-              ctaText: t("promo.ai_cta"),
-              href: "/support",
-              theme: "blue" as const,
-            },
-            {
-              id: "promo-2",
-              badge: "HOT",
-              title: t("promo.extra_credits_title"),
-              description: t("promo.extra_credits_desc"),
-              ctaText: t("promo.extra_credits_cta"),
-              href: "/promotions",
-              theme: "pink" as const,
-            },
-          ],
+          {
+            id: "promo-1",
+            badge: "Latest",
+            title: t("promo.ai_title"),
+            description: t("promo.ai_desc"),
+            ctaText: t("promo.ai_cta"),
+            href: "/support",
+            theme: "blue" as const,
+          },
+          {
+            id: "promo-2",
+            badge: "HOT",
+            title: t("promo.extra_credits_title"),
+            description: t("promo.extra_credits_desc"),
+            ctaText: t("promo.extra_credits_cta"),
+            href: "/promotions",
+            theme: "pink" as const,
+          },
+        ],
     [publicSettings, t],
   );
 
@@ -285,13 +285,7 @@ export default function HomePage() {
     [publicSettings, t],
   );
 
-  const newsItems = useMemo(
-    () =>
-      publicSettings?.homepage?.newsItems?.length
-        ? publicSettings.homepage.newsItems
-        : [],
-    [publicSettings],
-  );
+
 
   const promotionsEnabled = publicSettings?.features.enablePromotions ?? true;
   const supportTicketsEnabled =
@@ -436,11 +430,10 @@ export default function HomePage() {
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.2 }}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] md:text-xs font-black mb-3 border-[2px] border-black uppercase tracking-wider ${
-                            slide.color === "pink"
-                              ? "bg-brutal-pink text-white"
-                              : "bg-brutal-yellow text-black"
-                          }`}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] md:text-xs font-black mb-3 border-[2px] border-black uppercase tracking-wider ${slide.color === "pink"
+                            ? "bg-brutal-pink text-white"
+                            : "bg-brutal-yellow text-black"
+                            }`}
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           <Zap size={12} className="fill-current" />
@@ -473,11 +466,10 @@ export default function HomePage() {
                           <Link href={slide.link || "/promotions"}>
                             <Button
                               size="sm"
-                              className={`font-black text-xs md:text-base px-5 py-2.5 h-auto border-[3px] border-black group/hero transition-all ${
-                                slide.color === "pink"
-                                  ? "bg-white text-black hover:bg-zinc-100"
-                                  : "bg-brutal-yellow text-black hover:bg-yellow-400"
-                              }`}
+                              className={`font-black text-xs md:text-base px-5 py-2.5 h-auto border-[3px] border-black group/hero transition-all ${slide.color === "pink"
+                                ? "bg-white text-black hover:bg-zinc-100"
+                                : "bg-brutal-yellow text-black hover:bg-yellow-400"
+                                }`}
                               style={{ boxShadow: "3px 3px 0 0 #000000" }}
                             >
                               {sectionLabels.heroButtonText}
@@ -501,11 +493,10 @@ export default function HomePage() {
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 border-[2px] border-black transition-all ${
-                  index === currentSlide
-                    ? "bg-brutal-yellow scale-125 rotate-45"
-                    : "bg-white/50 hover:bg-white"
-                }`}
+                className={`w-3 h-3 border-[2px] border-black transition-all ${index === currentSlide
+                  ? "bg-brutal-yellow scale-125 rotate-45"
+                  : "bg-white/50 hover:bg-white"
+                  }`}
               />
             ))}
           </div>
@@ -585,11 +576,10 @@ export default function HomePage() {
               return (
                 <motion.div
                   key={card.id}
-                  className={`${
-                    isPrimary
-                      ? "md:col-span-7 lg:col-span-8"
-                      : "md:col-span-5 lg:col-span-4"
-                  } ${cardClass} border-[3px] border-black p-6 sm:p-8 relative overflow-hidden group min-h-[220px] md:min-h-[260px] flex flex-col justify-between`}
+                  className={`${isPrimary
+                    ? "md:col-span-7 lg:col-span-8"
+                    : "md:col-span-5 lg:col-span-4"
+                    } ${cardClass} border-[3px] border-black p-6 sm:p-8 relative overflow-hidden group min-h-[220px] md:min-h-[260px] flex flex-col justify-between`}
                   style={{ boxShadow: "8px 8px 0 0 #000000" }}
                   whileHover={{
                     y: -4,
@@ -607,21 +597,19 @@ export default function HomePage() {
                       </div>
                     )}
                     <h3
-                      className={`font-black text-2xl sm:text-3xl md:text-4xl mb-3 leading-[1.1] ${
-                        card.theme === "yellow" || card.theme === "green"
-                          ? "text-black"
-                          : "text-white"
-                      } drop-shadow-[2px_2px_0_rgba(0,0,0,0.3)]`}
+                      className={`font-black text-2xl sm:text-3xl md:text-4xl mb-3 leading-[1.1] ${card.theme === "yellow" || card.theme === "green"
+                        ? "text-black"
+                        : "text-white"
+                        } drop-shadow-[2px_2px_0_rgba(0,0,0,0.3)]`}
                     >
                       {card.title}
                     </h3>
                     {card.description && (
                       <p
-                        className={`text-sm md:text-base mb-6 max-w-md font-bold leading-relaxed ${
-                          card.theme === "yellow" || card.theme === "green"
-                            ? "text-black/80"
-                            : "text-white/90"
-                        }`}
+                        className={`text-sm md:text-base mb-6 max-w-md font-bold leading-relaxed ${card.theme === "yellow" || card.theme === "green"
+                          ? "text-black/80"
+                          : "text-white/90"
+                          }`}
                       >
                         {card.description}
                       </p>
@@ -663,11 +651,10 @@ export default function HomePage() {
               {categoryTabs.map((category) => (
                 <motion.button
                   key={category.id}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold whitespace-nowrap border-[3px] transition-all flex-shrink-0 ${
-                    activeCategory === category.id
-                      ? "bg-brutal-yellow border-black text-black"
-                      : "bg-white border-gray-300 text-gray-700 hover:border-black"
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold whitespace-nowrap border-[3px] transition-all flex-shrink-0 ${activeCategory === category.id
+                    ? "bg-brutal-yellow border-black text-black"
+                    : "bg-white border-gray-300 text-gray-700 hover:border-black"
+                    }`}
                   style={
                     activeCategory === category.id
                       ? { boxShadow: "3px 3px 0 0 #000000" }
@@ -873,63 +860,47 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {newsArticles.length > 0
               ? newsArticles.map((item) => (
-                  <Link key={item.id} href={`/news/${item.slug}`}>
-                    <motion.div
-                      className="bg-white border-[3px] border-black overflow-hidden hover:-translate-y-1 transition-all h-full"
-                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                      whileHover={{ scale: 1.01 }}
-                    >
-                      <div className="relative aspect-video">
-                        <img
-                          src={
-                            (item as any).featuredImage ||
-                            (item as any).imageUrl ||
-                            (item as any).coverImage ||
-                            "https://placehold.co/600x400?text=News"
-                          }
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-2 left-2 bg-brutal-blue text-white text-[10px] font-bold px-2 py-1 border-[2px] border-black">
-                          {(item.category as any)?.name ||
-                            (item.category as any) ||
-                            "News"}
-                        </div>
-                      </div>
-                      <div className="p-3 sm:p-4">
-                        <p className="text-[10px] text-gray-500 mb-1 font-bold">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </p>
-                        <h3 className="text-sm sm:text-base font-black text-black line-clamp-2 leading-snug">
-                          {item.title}
-                        </h3>
-                      </div>
-                    </motion.div>
-                  </Link>
-                ))
-              : newsItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white border-[3px] border-black overflow-hidden"
+                <Link key={item.id} href={`/news/${item.slug}`}>
+                  <motion.div
+                    className="bg-white border-[3px] border-black overflow-hidden hover:-translate-y-1 transition-all h-full"
                     style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                    whileHover={{ scale: 1.01 }}
                   >
                     <div className="relative aspect-video">
                       <img
-                        src={item.image}
+                        src={
+                          (item as any).featuredImage ||
+                          (item as any).imageUrl ||
+                          (item as any).coverImage ||
+                          "https://placehold.co/600x400?text=News"
+                        }
                         alt={item.title}
                         className="w-full h-full object-cover"
                       />
+                      <div className="absolute top-2 left-2 bg-brutal-blue text-white text-[10px] font-bold px-2 py-1 border-[2px] border-black">
+                        {(item.category as any)?.name ||
+                          (item.category as any) ||
+                          "News"}
+                      </div>
                     </div>
                     <div className="p-3 sm:p-4">
-                      <p className="text-[10px] text-gray-500 mb-1">
-                        {item.date}
+                      <p className="text-[10px] text-gray-500 mb-1 font-bold">
+                        {new Date(item.createdAt).toLocaleDateString()}
                       </p>
-                      <h3 className="text-sm sm:text-base font-black text-black">
+                      <h3 className="text-sm sm:text-base font-black text-black line-clamp-2 leading-snug">
                         {item.title}
                       </h3>
                     </div>
-                  </div>
-                ))}
+                  </motion.div>
+                </Link>
+              ))
+              : (
+                <div className="col-span-full text-center py-12">
+                  <Clock size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500 font-bold">ยังไม่มีข่าวสาร</p>
+                  <p className="text-gray-400 text-sm mt-1">ติดตามข่าวสารและโปรโมชั่นได้เร็วๆ นี้</p>
+                </div>
+              )}
           </div>
         </section>
       </div>

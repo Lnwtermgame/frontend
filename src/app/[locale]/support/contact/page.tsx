@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import {
@@ -82,11 +82,22 @@ export default function ContactPage() {
     }));
   };
 
+  const submitTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => {
+      if (submitTimerRef.current) clearTimeout(submitTimerRef.current);
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    };
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus("submitting");
 
-    setTimeout(() => {
+    submitTimerRef.current = setTimeout(() => {
       setFormStatus("success");
       setFormData({
         name: "",
@@ -96,7 +107,7 @@ export default function ContactPage() {
         message: "",
       });
 
-      setTimeout(() => {
+      resetTimerRef.current = setTimeout(() => {
         setFormStatus("idle");
       }, 5000);
     }, 1500);

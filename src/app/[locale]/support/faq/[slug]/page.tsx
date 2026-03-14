@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useParams } from "next/navigation";
@@ -32,6 +32,14 @@ export default function FaqArticlePage() {
   const [error, setError] = useState<string | null>(null);
   const [userVote, setUserVote] = useState<boolean | null>(null);
   const [showThankYou, setShowThankYou] = useState(false);
+  const thankYouTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (thankYouTimerRef.current) clearTimeout(thankYouTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (slug) {
@@ -64,7 +72,7 @@ export default function FaqArticlePage() {
       if (response.success) {
         setUserVote(response.data.userVote);
         setShowThankYou(true);
-        setTimeout(() => setShowThankYou(false), 3000);
+        thankYouTimerRef.current = setTimeout(() => setShowThankYou(false), 3000);
         // Update article with new counts
         setArticle((prev) =>
           prev
@@ -247,8 +255,8 @@ export default function FaqArticlePage() {
                 <button
                   onClick={() => handleVote(true)}
                   className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === true
-                      ? "bg-brutal-green border-black text-black"
-                      : "bg-white border-black text-black hover:bg-brutal-green"
+                    ? "bg-brutal-green border-black text-black"
+                    : "bg-white border-black text-black hover:bg-brutal-green"
                     }`}
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >
@@ -258,8 +266,8 @@ export default function FaqArticlePage() {
                 <button
                   onClick={() => handleVote(false)}
                   className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === false
-                      ? "bg-brutal-pink border-black text-black"
-                      : "bg-white border-black text-black hover:bg-brutal-pink"
+                    ? "bg-brutal-pink border-black text-black"
+                    : "bg-white border-black text-black hover:bg-brutal-pink"
                     }`}
                   style={{ boxShadow: "4px 4px 0 0 #000000" }}
                 >

@@ -191,7 +191,11 @@ export default function AINewsProgressPanel({
         message,
         details,
       };
-      setLogs((prev) => [...prev, log]);
+      setLogs((prev) => {
+        const updated = [...prev, log];
+        // Cap at 500 entries to prevent unbounded memory growth
+        return updated.length > 500 ? updated.slice(-500) : updated;
+      });
     };
 
     console.log = (...args) => {
@@ -323,13 +327,12 @@ export default function AINewsProgressPanel({
               >
                 {/* Icon */}
                 <div
-                  className={`flex items-center justify-center w-10 h-10 border-[2px] shrink-0 ${
-                    status === "completed"
+                  className={`flex items-center justify-center w-10 h-10 border-[2px] shrink-0 ${status === "completed"
                       ? "bg-green-500 border-green-600 text-white"
                       : status === "current"
                         ? "bg-purple-500 border-purple-600 text-white animate-pulse"
                         : "bg-gray-100 border-gray-300 text-gray-400"
-                  }`}
+                    }`}
                 >
                   {status === "completed" ? (
                     <CheckCircle2 className="w-5 h-5" />
@@ -343,13 +346,12 @@ export default function AINewsProgressPanel({
                 {/* Label */}
                 <div className="flex-1">
                   <p
-                    className={`text-sm font-medium ${
-                      status === "completed"
+                    className={`text-sm font-medium ${status === "completed"
                         ? "text-green-700"
                         : status === "current"
                           ? "text-purple-700"
                           : "text-gray-500"
-                    }`}
+                      }`}
                   >
                     {stage.label}
                   </p>
@@ -359,9 +361,8 @@ export default function AINewsProgressPanel({
                 {!isLast && (
                   <div className="absolute left-9 mt-10 w-0.5 h-6 -z-10">
                     <div
-                      className={`w-full h-full ${
-                        status === "completed" ? "bg-green-400" : "bg-gray-300"
-                      }`}
+                      className={`w-full h-full ${status === "completed" ? "bg-green-400" : "bg-gray-300"
+                        }`}
                     />
                   </div>
                 )}
@@ -429,8 +430,7 @@ export default function AINewsProgressPanel({
                       key={log.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className={`flex items-start gap-2 p-2 border-l-2 text-xs font-mono ${
-                        log.type === "error"
+                      className={`flex items-start gap-2 p-2 border-l-2 text-xs font-mono ${log.type === "error"
                           ? "bg-red-950 border-red-500 text-red-300"
                           : log.type === "success"
                             ? "bg-green-950 border-green-500 text-green-300"
@@ -439,7 +439,7 @@ export default function AINewsProgressPanel({
                               : log.type === "api_call"
                                 ? "bg-blue-950 border-blue-500 text-blue-300"
                                 : "bg-gray-800 border-gray-600 text-gray-300"
-                      }`}
+                        }`}
                     >
                       <span className="shrink-0 mt-0.5 opacity-70">
                         {getLogIcon(log.type)}
@@ -491,13 +491,12 @@ export default function AINewsProgressPanel({
       {/* Progress Bar */}
       <div className="h-2 bg-gray-200">
         <motion.div
-          className={`h-full ${
-            currentStage === "error"
+          className={`h-full ${currentStage === "error"
               ? "bg-red-500"
               : currentStage === "completed"
                 ? "bg-green-500"
                 : "bg-gradient-to-r from-purple-500 to-pink-500"
-          }`}
+            }`}
           initial={{ width: "0%" }}
           animate={{
             width:

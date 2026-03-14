@@ -5,6 +5,7 @@ import {
   useContext,
   ReactNode,
   useCallback,
+  useMemo,
   useState,
   useEffect,
   useRef,
@@ -348,26 +349,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   }, [items]);
 
+  const contextValue = useMemo(() => ({
+    items,
+    addItem,
+    removeItem,
+    updateQuantity,
+    updatePlayerInfo,
+    clearCart,
+    getTotalItems,
+    getTotalPrice,
+    // Sync features
+    syncStatus,
+    lastSyncedAt,
+    syncError,
+    syncCart,
+    isOnline,
+    pendingSync,
+  }), [
+    items, addItem, removeItem, updateQuantity, updatePlayerInfo,
+    clearCart, getTotalItems, getTotalPrice,
+    syncStatus, lastSyncedAt, syncError, syncCart, isOnline, pendingSync,
+  ]);
+
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        updatePlayerInfo,
-        clearCart,
-        getTotalItems,
-        getTotalPrice,
-        // Sync features
-        syncStatus,
-        lastSyncedAt,
-        syncError,
-        syncCart,
-        isOnline,
-        pendingSync,
-      }}
-    >
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

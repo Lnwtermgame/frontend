@@ -186,16 +186,16 @@ function MainLayoutContent({
   const tCommon = useTranslations("Common");
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const toggleUserMenu = () => {
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
+  const toggleUserMenu = useCallback(() => {
+    setIsUserMenuOpen((prev) => !prev);
+  }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await logout();
     setIsUserMenuOpen(false);
     // Redirect to login page after logout
     router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
-  };
+  }, [logout, router, pathname]);
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { notifications, unreadCount, markAsRead, markAllAsRead } =

@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
   useRef,
   ReactNode,
 } from "react";
@@ -478,8 +479,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     [deleteNotification],
   );
 
-  // Context value - simple object without useMemo
-  const value: NotificationContextType = {
+  // Context value - memoized to prevent unnecessary re-renders
+  const value: NotificationContextType = useMemo(() => ({
     notifications,
     unreadCount,
     isLoading,
@@ -499,7 +500,27 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     addNotification,
     clearNotifications,
     dismissNotification,
-  };
+  }), [
+    notifications,
+    unreadCount,
+    isLoading,
+    error,
+    preferences,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    refreshNotifications,
+    loadMoreNotifications,
+    updatePreferences,
+    subscribePush,
+    unsubscribePush,
+    isPushSupported,
+    isPushSubscribed,
+    isWebSocketConnected,
+    addNotification,
+    clearNotifications,
+    dismissNotification,
+  ]);
 
   return (
     <NotificationContext.Provider value={value}>

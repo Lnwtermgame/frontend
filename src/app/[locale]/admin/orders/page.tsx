@@ -119,7 +119,7 @@ export default function AdminOrders() {
       console.error("ไม่สามารถอัปเดตสถานะคำสั่งซื้อ:", err);
       setError(
         err?.response?.data?.error?.message ||
-          "ไม่สามารถอัปเดตสถานะคำสั่งซื้อได้",
+        "ไม่สามารถอัปเดตสถานะคำสั่งซื้อได้",
       );
     } finally {
       setLoading(false);
@@ -131,7 +131,7 @@ export default function AdminOrders() {
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.items.some((item) =>
-        item.productName?.toLowerCase().includes(searchTerm.toLowerCase()),
+        (item.product?.name || item.productName)?.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
   );
 
@@ -232,12 +232,18 @@ export default function AdminOrders() {
                         </td>
                         <td className="px-3 py-3">
                           <div className="text-gray-700">
-                            {order.items.length} {t("order_detail.items")}
+                            {order.items[0]?.product?.name || order.items[0]?.productName || `${order.items.length} ${t("order_detail.items")}`}
                           </div>
-                          <div className="text-[10px] text-gray-500">
-                            {order.items[0]?.productName}
-                            {order.items.length > 1 && "..."}
-                          </div>
+                          {order.items[0]?.productType?.name && (
+                            <div className="text-[10px] text-blue-600 font-semibold">
+                              {order.items[0].productType.name}
+                            </div>
+                          )}
+                          {order.items.length > 1 && (
+                            <div className="text-[10px] text-gray-500">
+                              +{order.items.length - 1} {t("order_detail.items")}
+                            </div>
+                          )}
                         </td>
                         <td className="px-3 py-3 font-medium text-black">
                           {order.totalAmount.toFixed(2)} ฿
@@ -248,9 +254,8 @@ export default function AdminOrders() {
                             onChange={(e) =>
                               handleUpdateStatus(order.id, e.target.value)
                             }
-                            className={`px-1.5 py-0.5 text-[10px] border-[1px] cursor-pointer font-medium focus:outline-none ${
-                              statusStyles[order.status] || statusStyles.PENDING
-                            }`}
+                            className={`px-1.5 py-0.5 text-[10px] border-[1px] cursor-pointer font-medium focus:outline-none ${statusStyles[order.status] || statusStyles.PENDING
+                              }`}
                           >
                             <option value="PENDING">{t("orders.status.pending")}</option>
                             <option value="PROCESSING">{t("orders.status.processing")}</option>

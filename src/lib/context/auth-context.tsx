@@ -7,6 +7,7 @@ import {
   useEffect,
   ReactNode,
   useCallback,
+  useMemo,
   useRef,
 } from "react";
 import toast from "react-hot-toast";
@@ -155,9 +156,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isInitialized, storageVersion, setUser, setStorageVersion]);
 
-  // Debug logging for admin access issues
+  // Debug logging for admin access issues (dev only)
   useEffect(() => {
-    if (isInitialized && user) {
+    if (process.env.NODE_ENV === "development" && isInitialized && user) {
       console.log("[Auth Debug] User:", user);
       console.log("[Auth Debug] Role:", user?.role);
       console.log("[Auth Debug] Is Admin:", isAdmin);
@@ -421,7 +422,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isLoggingInRef = useRef(false);
 
   // Login with API
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     // Prevent duplicate login attempts
     if (isLoggingInRef.current) {
       console.log("[Auth] Login already in progress, skipping");
@@ -465,10 +466,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoggingInRef.current = false;
       console.log("[Auth] Login completed");
     }
-  };
+  }, [scheduleTokenRefresh]);
 
   // Register with API
-  const register = async (
+  const register = useCallback(async (
     username: string,
     email: string,
     password: string,
@@ -506,10 +507,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [scheduleTokenRefresh]);
 
   // Logout with API
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       if (token) {
         await authApi.logout();
@@ -531,10 +532,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         window.location.href = "/login";
       }
     }
-  };
+  }, [token, nextAuthStatus, clearAuth]);
 
   // Update profile
-  const updateProfile = async (data: {
+  const updateProfile = useCallback(async (data: {
     username?: string;
     email?: string;
   }): Promise<boolean> => {
@@ -558,10 +559,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Change password
-  const changePassword = async (
+  const changePassword = useCallback(async (
     currentPassword: string,
     newPassword: string,
   ): Promise<boolean> => {
@@ -584,12 +585,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   /**
    * @deprecated Use NextAuth signIn() instead. Legacy OAuth flow is deprecated.
    */
-  const oauthLogin = async (
+  const oauthLogin = useCallback(async (
     code: string,
     provider: "google" | "discord",
   ): Promise<boolean> => {
@@ -628,27 +629,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [scheduleTokenRefresh]);
+
+  const contextValue = useMemo(() => ({
+    user,
+    token,
+    isLoading,
+    isAuthenticated,
+    isAdmin,
+    login,
+    register,
+    oauthLogin,
+    logout,
+    updateProfile,
+    changePassword,
+    // "Initialized" means hydration + session restore has completed.
+    isInitialized: isInitialized && isHydrated && isSessionChecked,
+    isSessionChecked,
+  }), [
+    user, token, isLoading, isAuthenticated, isAdmin,
+    login, register, oauthLogin, logout, updateProfile, changePassword,
+    isInitialized, isHydrated, isSessionChecked,
+  ]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        isLoading,
-        isAuthenticated,
-        isAdmin,
-        login,
-        register,
-        oauthLogin,
-        logout,
-        updateProfile,
-        changePassword,
-        // "Initialized" means hydration + session restore has completed.
-        isInitialized: isInitialized && isHydrated && isSessionChecked,
-        isSessionChecked,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

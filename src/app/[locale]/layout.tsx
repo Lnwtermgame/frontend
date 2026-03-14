@@ -14,7 +14,6 @@ import { PaymentProvider } from "@/lib/context/payment-context";
 import { SupportProvider } from "@/lib/context/support-context";
 import { SecurityProvider } from "@/lib/context/security-context";
 import { DeliveryProvider } from "@/lib/context/delivery-context";
-import { PromotionProvider } from "@/lib/context/promotion-context";
 import { CartProvider } from "@/lib/context/cart-context";
 import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
 import { NextAuthProvider } from "@/components/providers/nextauth-provider";
@@ -199,43 +198,41 @@ export default async function RootLayout(
                   <PaymentProvider>
                     <SupportProvider>
                       <DeliveryProvider>
-                        <PromotionProvider>
-                          <CartProvider>
-                            <PublicSettingsProvider>
-                              <MainLayout>{props.children}</MainLayout>
-                            </PublicSettingsProvider>
-                          </CartProvider>
-                          <CookieNotice isTawkEnabled={isTawkEnabled} />
-                          <Toaster
-                            position="bottom-right"
-                            containerStyle={{
-                              zIndex: 50,
-                            }}
-                            toastOptions={{
-                              duration: 4000,
-                              style: {
-                                background: "#FFFFFF",
-                                color: "#1f2937",
-                                border: "3px solid #000000",
-                                boxShadow: "4px 4px 0 0 #000000",
-                                borderRadius: "8px",
-                                padding: "12px 16px",
+                        <CartProvider>
+                          <PublicSettingsProvider>
+                            <MainLayout>{props.children}</MainLayout>
+                          </PublicSettingsProvider>
+                        </CartProvider>
+                        <CookieNotice isTawkEnabled={isTawkEnabled} />
+                        <Toaster
+                          position="bottom-right"
+                          containerStyle={{
+                            zIndex: 50,
+                          }}
+                          toastOptions={{
+                            duration: 4000,
+                            style: {
+                              background: "#FFFFFF",
+                              color: "#1f2937",
+                              border: "3px solid #000000",
+                              boxShadow: "4px 4px 0 0 #000000",
+                              borderRadius: "8px",
+                              padding: "12px 16px",
+                            },
+                            success: {
+                              iconTheme: {
+                                primary: "#95E1D3",
+                                secondary: "#000000",
                               },
-                              success: {
-                                iconTheme: {
-                                  primary: "#95E1D3",
-                                  secondary: "#000000",
-                                },
+                            },
+                            error: {
+                              iconTheme: {
+                                primary: "#FF6B9D",
+                                secondary: "#FFFFFF",
                               },
-                              error: {
-                                iconTheme: {
-                                  primary: "#FF6B9D",
-                                  secondary: "#FFFFFF",
-                                },
-                              },
-                            }}
-                          />
-                        </PromotionProvider>
+                            },
+                          }}
+                        />
                       </DeliveryProvider>
                     </SupportProvider>
                   </PaymentProvider>

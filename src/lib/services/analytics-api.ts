@@ -167,6 +167,8 @@ export interface PopularProduct {
   name: string;
   imageUrl: string | null;
   salesCount: number;
+  revenue?: number;
+  totalRevenue?: number;
   // Public types with displayPrice only
   types?: {
     displayPrice: number;

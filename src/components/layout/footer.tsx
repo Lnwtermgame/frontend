@@ -156,13 +156,18 @@ export function Footer() {
           <div className="lg:col-span-4 space-y-3 flex flex-col items-center md:items-start text-center md:text-left">
             <Link href="/" className="inline-block">
               {logoUrl ? (
-                <div className="flex items-center gap-2">
-                  <img
-                    src={logoUrl}
-                    alt={siteName}
-                    className="h-8 w-8 rounded border-[2px] border-black object-cover"
-                  />
-                  <span className="font-black text-xl text-black">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 bg-white border-[2px] border-black flex items-center justify-center overflow-hidden flex-shrink-0"
+                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  >
+                    <img
+                      src={logoUrl}
+                      alt={siteName}
+                      className="w-7 h-7 object-contain"
+                    />
+                  </div>
+                  <span className="font-black text-xl text-black tracking-tight">
                     {siteName}
                   </span>
                 </div>

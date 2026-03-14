@@ -1,78 +1,50 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { useLocalStorage } from "../hooks/use-local-storage";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  ReactNode,
+} from "react";
 import { useAuth } from "../hooks/use-auth";
-
-export interface SupportTicket {
-  id: string;
-  userId: string;
-  subject: string;
-  message: string;
-  category: "account" | "payment" | "order" | "technical" | "other";
-  status: "open" | "in-progress" | "closed";
-  priority: "low" | "medium" | "high";
-  createdAt: string;
-  updatedAt: string;
-  responses: SupportResponse[];
-  attachments?: string[];
-}
-
-export interface SupportResponse {
-  id: string;
-  ticketId: string;
-  message: string;
-  isStaff: boolean;
-  createdAt: string;
-  attachments?: string[];
-  staffName?: string;
-}
-
-export interface ChatMessage {
-  id: string;
-  message: string;
-  isUser: boolean;
-  timestamp: string;
-  read: boolean;
-  agentName?: string;
-}
+import {
+  supportApi,
+  Ticket,
+  TicketDetail,
+  TicketMessage,
+  TicketStatus,
+  CreateTicketData,
+  TicketReplyData,
+  FaqCategory,
+  FaqArticleListItem,
+} from "../services/support-api";
+import toast from "react-hot-toast";
 
 type SupportContextType = {
-  tickets: SupportTicket[];
-  createTicket: (
-    ticket: Omit<
-      SupportTicket,
-      "id" | "userId" | "createdAt" | "updatedAt" | "status" | "responses"
-    >,
-  ) => Promise<SupportTicket>;
-  updateTicket: (
-    id: string,
-    updates: Partial<SupportTicket>,
-  ) => Promise<SupportTicket>;
+  tickets: Ticket[];
+  isLoading: boolean;
+  error: string | null;
+  fetchTickets: (params?: {
+    status?: TicketStatus;
+    page?: number;
+    limit?: number;
+  }) => Promise<void>;
+  getTicketDetail: (ticketId: string) => Promise<TicketDetail | null>;
+  createTicket: (data: CreateTicketData) => Promise<Ticket | null>;
   replyToTicket: (
     ticketId: string,
-    message: string,
-    attachments?: string[],
-  ) => Promise<SupportResponse>;
-  closeTicket: (id: string) => Promise<SupportTicket>;
-  chatHistory: ChatMessage[];
-  sendChatMessage: (message: string) => Promise<void>;
-  chatAvailable: boolean;
-  isChatOpen: boolean;
-  setChatOpen: (isOpen: boolean) => void;
-  isAgentTyping: boolean;
-  unreadMessages: number;
-  markChatAsRead: () => void;
-  faqCategories: string[];
-  faqArticles: {
-    id: string;
-    title: string;
-    content: string;
-    category: string;
-    tags: string[];
-    helpful: number;
-    views: number;
-  }[];
+    data: TicketReplyData,
+  ) => Promise<TicketMessage | null>;
+  closeTicket: (ticketId: string) => Promise<boolean>;
+  faqCategories: FaqCategory[];
+  faqArticles: FaqArticleListItem[];
+  fetchFaqCategories: () => Promise<void>;
+  fetchFaqArticles: (params?: {
+    categoryId?: string;
+    search?: string;
+  }) => Promise<void>;
 };
 
 export const SupportContext = createContext<SupportContextType | undefined>(
@@ -81,329 +53,211 @@ export const SupportContext = createContext<SupportContextType | undefined>(
 
 export function SupportProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const userId = user?.id || "guest";
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [faqCategories, setFaqCategories] = useState<FaqCategory[]>([]);
+  const [faqArticles, setFaqArticles] = useState<FaqArticleListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Support tickets storage
-  const [tickets, setTickets] = useLocalStorage<SupportTicket[]>(
-    "mali-gamepass-tickets",
+  const fetchTickets = useCallback(
+    async (params?: {
+      status?: TicketStatus;
+      page?: number;
+      limit?: number;
+    }) => {
+      if (!user) return;
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await supportApi.getUserTickets(
+          params?.page ?? 1,
+          params?.limit ?? 20,
+          params?.status,
+        );
+        if (response.success) {
+          setTickets(response.data);
+        }
+      } catch (err) {
+        const message = supportApi.getErrorMessage(err);
+        setError(message);
+        toast.error(message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [user],
+  );
+
+  const getTicketDetail = useCallback(
+    async (ticketId: string): Promise<TicketDetail | null> => {
+      try {
+        const response = await supportApi.getTicketDetail(ticketId);
+        if (response.success) {
+          return response.data;
+        }
+        return null;
+      } catch (err) {
+        const message = supportApi.getErrorMessage(err);
+        toast.error(message);
+        return null;
+      }
+    },
     [],
   );
 
-  // Live chat state
-  const [chatHistory, setChatHistory] = useLocalStorage<ChatMessage[]>(
-    "mali-gamepass-chat",
+  const createTicket = useCallback(
+    async (data: CreateTicketData): Promise<Ticket | null> => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await supportApi.createTicket(data);
+        if (response.success) {
+          setTickets((prev) => [response.data, ...prev]);
+          toast.success("สร้างตั๋วสำเร็จ");
+          return response.data;
+        }
+        return null;
+      } catch (err) {
+        const message = supportApi.getErrorMessage(err);
+        setError(message);
+        toast.error(message);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
     [],
   );
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isAgentTyping, setIsAgentTyping] = useState(false);
-  const [chatAvailable, setChatAvailable] = useState(true);
 
-  // FAQ Data
-  const [faqCategories] = useState([
-    "Account & Profile",
-    "Payments & Billing",
-    "Game Top-ups",
-    "Gift Cards",
-    "Technical Issues",
-    "General Inquiries",
-  ]);
+  const replyToTicket = useCallback(
+    async (
+      ticketId: string,
+      data: TicketReplyData,
+    ): Promise<TicketMessage | null> => {
+      setIsLoading(true);
+      setError(null);
 
-  const [faqArticles] = useState([
-    {
-      id: "1",
-      title: "How to change my account email address",
-      content:
-        "To change your email address, go to Account Settings > Personal Information > Edit Email. Follow the verification steps to confirm your new email address.",
-      category: "Account & Profile",
-      tags: ["account", "settings", "email", "profile"],
-      helpful: 124,
-      views: 2340,
-    },
-    {
-      id: "2",
-      title: "My payment was declined",
-      content:
-        "If your payment was declined, please check: 1. Your card has sufficient funds, 2. The card details were entered correctly, 3. Your bank hasn't blocked the transaction. You can also try a different payment method.",
-      category: "Payments & Billing",
-      tags: ["payment", "declined", "card", "error"],
-      helpful: 256,
-      views: 5432,
-    },
-    {
-      id: "3",
-      title: "How long does it take to receive my game top-up?",
-      content:
-        "Most game top-ups are processed instantly. However, during high traffic periods or server maintenance, it may take up to 15 minutes. If you haven't received your top-up after 30 minutes, please contact our support team.",
-      category: "Game Top-ups",
-      tags: ["top-up", "delay", "delivery", "game"],
-      helpful: 189,
-      views: 4120,
-    },
-    {
-      id: "4",
-      title: "Can I use Lnwtermgame gift cards internationally?",
-      content:
-        "Yes, Lnwtermgame gift cards can be used globally. However, the currency conversion will be based on the current exchange rate, and some region-specific content may not be available based on your location.",
-      category: "Gift Cards",
-      tags: ["gift card", "international", "region", "currency"],
-      helpful: 87,
-      views: 1560,
-    },
-  ]);
-
-  // Calculate unread messages
-  const unreadMessages = chatHistory.filter(
-    (msg) => !msg.isUser && !msg.read,
-  ).length;
-
-  const markChatAsRead = () => {
-    setChatHistory((current) =>
-      current.map((msg) => (!msg.isUser ? { ...msg, read: true } : msg)),
-    );
-  };
-
-  // Support ticket functions
-  const createTicket = async (
-    ticket: Omit<
-      SupportTicket,
-      "id" | "userId" | "createdAt" | "updatedAt" | "status" | "responses"
-    >,
-  ): Promise<SupportTicket> => {
-    const now = new Date().toISOString();
-    const newTicket: SupportTicket = {
-      ...ticket,
-      id: `ticket-${Date.now()}`,
-      userId,
-      status: "open",
-      createdAt: now,
-      updatedAt: now,
-      responses: [],
-    };
-
-    setTickets((current) => [newTicket, ...current]);
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return newTicket;
-  };
-
-  const updateTicket = async (
-    id: string,
-    updates: Partial<SupportTicket>,
-  ): Promise<SupportTicket> => {
-    let updatedTicket: SupportTicket | undefined;
-
-    setTickets((current) =>
-      current.map((ticket) => {
-        if (ticket.id === id) {
-          updatedTicket = {
-            ...ticket,
-            ...updates,
-            updatedAt: new Date().toISOString(),
-          };
-          return updatedTicket;
+      try {
+        const response = await supportApi.addReply(ticketId, data);
+        if (response.success) {
+          return response.data;
         }
-        return ticket;
-      }),
-    );
+        return null;
+      } catch (err) {
+        const message = supportApi.getErrorMessage(err);
+        setError(message);
+        toast.error(message);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  const closeTicket = useCallback(
+    async (ticketId: string): Promise<boolean> => {
+      setIsLoading(true);
+      setError(null);
 
-    if (!updatedTicket) {
-      throw new Error("Ticket not found");
-    }
-
-    return updatedTicket;
-  };
-
-  const replyToTicket = async (
-    ticketId: string,
-    message: string,
-    attachments?: string[],
-  ): Promise<SupportResponse> => {
-    const response: SupportResponse = {
-      id: `response-${Date.now()}`,
-      ticketId,
-      message,
-      isStaff: false,
-      createdAt: new Date().toISOString(),
-      attachments,
-    };
-
-    setTickets((current) =>
-      current.map((ticket) => {
-        if (ticket.id === ticketId) {
-          return {
-            ...ticket,
-            responses: [...ticket.responses, response],
-            updatedAt: new Date().toISOString(),
-            status: "in-progress",
-          };
+      try {
+        const response = await supportApi.closeTicket(ticketId);
+        if (response.success) {
+          setTickets((prev) =>
+            prev.map((t) =>
+              t.id === ticketId ? { ...t, status: "CLOSED" as TicketStatus } : t,
+            ),
+          );
+          toast.success("ปิดตั๋วสำเร็จ");
+          return true;
         }
-        return ticket;
-      }),
-    );
+        return false;
+      } catch (err) {
+        const message = supportApi.getErrorMessage(err);
+        setError(message);
+        toast.error(message);
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  const fetchFaqCategories = useCallback(async () => {
+    try {
+      const response = await supportApi.getFaqCategories();
+      if (response.success) {
+        setFaqCategories(response.data);
+      }
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to fetch FAQ categories:", err);
+      }
+    }
+  }, []);
 
-    // Simulate staff response after a delay
-    setTimeout(() => {
-      const staffResponse: SupportResponse = {
-        id: `response-${Date.now() + 1}`,
-        ticketId,
-        message: `Thank you for your message. Our support team is reviewing your case and will respond shortly. Your ticket ID is ${ticketId}.`,
-        isStaff: true,
-        staffName: "Support Team",
-        createdAt: new Date().toISOString(),
-      };
-
-      setTickets((current) =>
-        current.map((ticket) => {
-          if (ticket.id === ticketId) {
-            return {
-              ...ticket,
-              responses: [...ticket.responses, staffResponse],
-              updatedAt: new Date().toISOString(),
-            };
-          }
-          return ticket;
-        }),
-      );
-    }, 5000);
-
-    return response;
-  };
-
-  const closeTicket = async (id: string): Promise<SupportTicket> => {
-    let closedTicket: SupportTicket | undefined;
-
-    setTickets((current) =>
-      current.map((ticket) => {
-        if (ticket.id === id) {
-          closedTicket = {
-            ...ticket,
-            status: "closed",
-            updatedAt: new Date().toISOString(),
-          };
-          return closedTicket;
+  const fetchFaqArticles = useCallback(
+    async (params?: { categoryId?: string; search?: string }) => {
+      try {
+        const response = await supportApi.getFaqArticles(
+          1,
+          20,
+          params?.categoryId,
+          params?.search,
+        );
+        if (response.success) {
+          setFaqArticles(response.data);
         }
-        return ticket;
-      }),
-    );
+      } catch (err) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Failed to fetch FAQ articles:", err);
+        }
+      }
+    },
+    [],
+  );
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    if (!closedTicket) {
-      throw new Error("Ticket not found");
-    }
-
-    return closedTicket;
-  };
-
-  // Live chat functions
-  const sendChatMessage = async (message: string): Promise<void> => {
-    const userMessage: ChatMessage = {
-      id: `msg-${Date.now()}`,
-      message,
-      isUser: true,
-      timestamp: new Date().toISOString(),
-      read: true,
-    };
-
-    setChatHistory((current) => [...current, userMessage]);
-
-    // Simulate agent typing
-    setIsAgentTyping(true);
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const agentMessage: ChatMessage = {
-      id: `msg-${Date.now() + 1}`,
-      message: getAutomatedResponse(message),
-      isUser: false,
-      agentName: "Support Agent",
-      timestamp: new Date().toISOString(),
-      read: isChatOpen,
-    };
-
-    setChatHistory((current) => [...current, agentMessage]);
-    setIsAgentTyping(false);
-  };
-
-  // Helper function to generate automated responses
-  const getAutomatedResponse = (message: string): string => {
-    const lowerMsg = message.toLowerCase();
-
-    if (
-      lowerMsg.includes("hello") ||
-      lowerMsg.includes("hi") ||
-      lowerMsg.includes("hey")
-    ) {
-      return "Hello there! How can I assist you today with Lnwtermgame?";
-    }
-
-    if (
-      lowerMsg.includes("payment") ||
-      lowerMsg.includes("pay") ||
-      lowerMsg.includes("transaction")
-    ) {
-      return "I see you have a question about payments. Could you provide more details about your issue? If it's about a specific transaction, please share the order ID if available.";
-    }
-
-    if (lowerMsg.includes("refund")) {
-      return "For refund requests, please provide your order ID and the reason for requesting a refund. Our team will review your request within 24-48 hours.";
-    }
-
-    if (
-      lowerMsg.includes("game") ||
-      lowerMsg.includes("top up") ||
-      lowerMsg.includes("topup")
-    ) {
-      return "For game top-up issues, please let me know which game you're referring to and describe the problem you're experiencing. I'll do my best to help!";
-    }
-
-    if (
-      lowerMsg.includes("card") ||
-      lowerMsg.includes("gift card") ||
-      lowerMsg.includes("code")
-    ) {
-      return "If you're having issues with a gift card or redemption code, please provide the last 4 digits of the code and describe the problem you're facing.";
-    }
-
-    return "Thank you for contacting Lnwtermgame support. How can I assist you with your gaming needs today?";
-  };
+  const contextValue = useMemo(
+    () => ({
+      tickets,
+      isLoading,
+      error,
+      fetchTickets,
+      getTicketDetail,
+      createTicket,
+      replyToTicket,
+      closeTicket,
+      faqCategories,
+      faqArticles,
+      fetchFaqCategories,
+      fetchFaqArticles,
+    }),
+    [
+      tickets,
+      isLoading,
+      error,
+      fetchTickets,
+      getTicketDetail,
+      createTicket,
+      replyToTicket,
+      closeTicket,
+      faqCategories,
+      faqArticles,
+      fetchFaqCategories,
+      fetchFaqArticles,
+    ],
+  );
 
   return (
-    <SupportContext.Provider
-      value={{
-        tickets,
-        createTicket,
-        updateTicket,
-        replyToTicket,
-        closeTicket,
-        chatHistory,
-        sendChatMessage,
-        chatAvailable,
-        isChatOpen,
-        setChatOpen: setIsChatOpen,
-        isAgentTyping,
-        unreadMessages,
-        markChatAsRead,
-        faqCategories,
-        faqArticles,
-      }}
-    >
+    <SupportContext.Provider value={contextValue}>
       {children}
     </SupportContext.Provider>
   );
 }
 
-// Custom hook to use the support context
 export function useSupport() {
   const context = useContext(SupportContext);
   if (context === undefined) {

@@ -348,45 +348,59 @@ export default function AdminDashboard() {
             <div className="p-3">
               {data.popularProducts.length > 0 ? (
                 <div className="space-y-2">
-                  {data.popularProducts.map((product, index) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center space-x-3 p-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
-                    >
-                      <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-brutal-yellow border-[2px] border-black rounded text-black font-bold text-[10px]">
-                        {index + 1}
-                      </div>
-                      <div className="flex-shrink-0 w-8 h-8 bg-white border-[2px] border-black overflow-hidden">
-                        {product.imageUrl ? (
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
+                  {data.popularProducts.map((product, index) => {
+                    const revenuePercent = product.totalRevenue && product.totalRevenue > 0
+                      ? (product.revenue || 0) / product.totalRevenue * 100
+                      : 0;
+                    return (
+                      <div
+                        key={product.id}
+                        className="relative flex items-center space-x-3 p-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 overflow-hidden"
+                      >
+                        {/* Revenue percentage bar */}
+                        {revenuePercent > 0 && (
+                          <div
+                            className="absolute left-0 top-0 bottom-0 bg-brutal-blue/10"
+                            style={{ width: `${revenuePercent}%` }}
                           />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            <Package className="h-4 w-4" />
-                          </div>
                         )}
+                        <div className="relative flex items-center space-x-3 w-full">
+                          <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-brutal-yellow border-[2px] border-black rounded text-black font-bold text-[10px]">
+                            {index + 1}
+                          </div>
+                          <div className="flex-shrink-0 w-8 h-8 bg-white border-[2px] border-black overflow-hidden">
+                            {product.imageUrl ? (
+                              <img
+                                src={product.imageUrl}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                <Package className="h-4 w-4" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-medium text-black truncate">
+                              {product.name}
+                            </p>
+                            <p className="text-[9px] text-gray-500">
+                              ขายแล้ว {product.salesCount.toLocaleString()} ชิ้น
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-[10px] font-bold text-black">
+                              {product.revenue ? formatCurrency(product.revenue) : formatPrice(getMinPrice(product.types))}
+                            </p>
+                            <p className="text-[9px] text-green-600 font-medium">
+                              {revenuePercent > 0 ? `${revenuePercent.toFixed(1)}% ของรายได้` : `${product.salesCount.toLocaleString()} ชิ้น`}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-medium text-black truncate">
-                          {product.name}
-                        </p>
-                        <p className="text-[9px] text-gray-500">
-                          ขายแล้ว {product.salesCount.toLocaleString()} ชิ้น
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[10px] font-medium text-black">
-                          {formatPrice(getMinPrice(product.types))}
-                        </p>
-                        <p className="text-[9px] text-green-600 font-medium">
-                          ขายแล้ว: {product.salesCount.toLocaleString()} ชิ้น
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="text-center py-4 text-gray-500 text-[10px]">

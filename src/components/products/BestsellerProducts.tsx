@@ -24,19 +24,21 @@ export function BestsellerProducts({
   const tProducts = useTranslations("Products");
 
   useEffect(() => {
+    let cancelled = false;
     const fetchBestsellers = async () => {
       try {
         setLoading(true);
         const response = await productApi.getBestsellerProducts(limit);
-        setProducts(response.data);
+        if (!cancelled) setProducts(response.data);
       } catch (err) {
-        setError("Failed to load bestseller products");
+        if (!cancelled) setError("Failed to load bestseller products");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchBestsellers();
+    return () => { cancelled = true; };
   }, [limit]);
 
   if (loading) {

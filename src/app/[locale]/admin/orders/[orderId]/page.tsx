@@ -294,21 +294,37 @@ export default function OrderViewPage() {
             </div>
             <div className="divide-y-[2px] divide-gray-200">
               {order.items.map((item, index) => {
-                const itemStatus =
-                  statusConfig[order.status] || statusConfig.PENDING;
+                const itemFulfillStatus =
+                  fulfillStatusConfig[item.fulfillStatus] || fulfillStatusConfig.PENDING;
+                const productName = item.product?.name || item.productName || "สินค้า";
+                const productTypeName = item.productType?.name;
                 return (
                   <div
                     key={item.id}
                     className="p-3 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-brutal-gray border-[2px] border-black flex items-center justify-center font-bold text-gray-600 text-xs">
-                        {index + 1}
-                      </div>
+                      {item.product?.imageUrl ? (
+                        <img
+                          src={item.product.imageUrl}
+                          alt={productName}
+                          className="w-10 h-10 object-cover border-[2px] border-black"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center font-bold text-gray-600 text-xs">
+                          {index + 1}
+                        </div>
+                      )}
                       <div>
                         <p className="font-bold text-black text-sm">
-                          {item.productName || "สินค้า"}
+                          {productName}
                         </p>
+                        {productTypeName && (
+                          <p className="text-xs text-brutal-blue font-semibold">
+                            {productTypeName}
+                            {item.productType?.parValue ? ` (${item.productType.parValue} ${item.productType.currency || ''})`.trim() : ''}
+                          </p>
+                        )}
                         <p className="text-xs text-gray-600">
                           จำนวน: {item.quantity} | ราคา:{" "}
                           {formatPrice(item.priceAtPurchase || item.price || 0)}
@@ -319,7 +335,7 @@ export default function OrderViewPage() {
                               {Object.entries(item.playerInfo).map(
                                 ([key, value]) => (
                                   <div key={key}>
-                                    {key}: {value}
+                                    <span className="font-semibold">{key}:</span> {value}
                                   </div>
                                 ),
                               )}
@@ -327,12 +343,15 @@ export default function OrderViewPage() {
                           )}
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right space-y-1">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold ${itemStatus.bgColor} ${itemStatus.color}`}
+                        className={`inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}
                       >
-                        {t(`orders.status.${statusKeyMap[order.status] || order.status.toLowerCase()}`)}
+                        {t(`orders.status.${statusKeyMap[item.fulfillStatus] || item.fulfillStatus.toLowerCase()}`)}
                       </span>
+                      <p className="text-xs text-gray-500 font-mono">
+                        {formatPrice((item.priceAtPurchase || item.price || 0) * item.quantity)}
+                      </p>
                     </div>
                   </div>
                 );

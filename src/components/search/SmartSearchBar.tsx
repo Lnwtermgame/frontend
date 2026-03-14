@@ -140,13 +140,38 @@ export function SmartSearchBar({
     }
   };
 
-  // Debounced search
+  // Debounced search with cancellation
   useEffect(() => {
-    const timer = setTimeout(() => {
-      performSearch(query);
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoading(true);
+
+    const timer = setTimeout(async () => {
+      try {
+        const searchResults = await searchAPI(query);
+        if (!cancelled) {
+          setResults(searchResults.slice(0, maxResults));
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+        if (!cancelled) {
+          setResults([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
     }, 300);
 
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [query, maxResults]);
 
   // Clear search

@@ -469,14 +469,28 @@ export default function GameDetailsPage() {
       // Handle redirect payments (LinePay, TrueMoney)
       // Backend returns HTML form that auto-submits to payment page
       if (paymentFormHtml) {
-        // Perform direct redirect of the main window
-        const container = document.createElement("div");
-        container.innerHTML = paymentFormHtml;
-        document.body.appendChild(container);
-        const form = container.querySelector("form");
-        if (form) {
-          form.submit();
+        // Safely parse payment form HTML — avoid raw innerHTML XSS
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(paymentFormHtml, "text/html");
+        const parsedForm = doc.querySelector("form");
+        if (!parsedForm) {
+          toast.error(t("error.payment_failed"));
+          return false;
         }
+
+        // Reconstruct form with only safe attributes (action, method, hidden inputs)
+        const form = document.createElement("form");
+        form.method = parsedForm.getAttribute("method") || "POST";
+        form.action = parsedForm.getAttribute("action") || "";
+        parsedForm.querySelectorAll('input[type="hidden"]').forEach((input) => {
+          const safeInput = document.createElement("input");
+          safeInput.type = "hidden";
+          safeInput.name = input.getAttribute("name") || "";
+          safeInput.value = input.getAttribute("value") || "";
+          form.appendChild(safeInput);
+        });
+        document.body.appendChild(form);
+        form.submit();
         return true;
       }
 

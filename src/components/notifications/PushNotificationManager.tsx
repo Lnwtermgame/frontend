@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Bell, AlertCircle, RefreshCw } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
@@ -26,14 +26,26 @@ export function PushNotificationManager({
   } = usePushNotifications();
 
   const [showError, setShowError] = useState(false);
+  const errorTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Show error message if any
-  if (error && !showError) {
+  // Show error message when error prop changes — with proper cleanup
+  useEffect(() => {
+    if (!error) {
+      setShowError(false);
+      return;
+    }
     setShowError(true);
-    setTimeout(() => {
+    errorTimerRef.current = setTimeout(() => {
       setShowError(false);
     }, 5000);
-  }
+
+    return () => {
+      if (errorTimerRef.current) {
+        clearTimeout(errorTimerRef.current);
+        errorTimerRef.current = null;
+      }
+    };
+  }, [error]);
 
   // If push notifications are not supported
   if (!isSupported) {

@@ -26,21 +26,23 @@ export function RelatedProducts({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchRelated = async () => {
       if (!productId) return;
 
       try {
         setLoading(true);
         const response = await productApi.getRelatedProducts(productId, limit);
-        setProducts(response.data);
+        if (!cancelled) setProducts(response.data);
       } catch (err) {
-        setError("Failed to load related products");
+        if (!cancelled) setError("Failed to load related products");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchRelated();
+    return () => { cancelled = true; };
   }, [productId, limit]);
 
   if (loading) {

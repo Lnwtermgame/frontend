@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "@/lib/framer-exports";
 import {
   Facebook,
@@ -41,6 +41,16 @@ export function SocialMediaIntegration({
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const messageTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up any pending message timer on unmount
+  useEffect(() => {
+    return () => {
+      if (messageTimerRef.current) {
+        clearTimeout(messageTimerRef.current);
+      }
+    };
+  }, []);
 
   // Default platforms if none provided
   const defaultPlatforms: SocialPlatform[] = [
@@ -93,12 +103,12 @@ export function SocialMediaIntegration({
       setSuccessMessage(
         `Successfully connected to ${displayPlatforms.find((p) => p.id === platformId)?.name}`,
       );
-      setTimeout(() => setSuccessMessage(null), 3000);
+      messageTimerRef.current = setTimeout(() => setSuccessMessage(null), 3000);
     } catch (error) {
       setErrorMessage(
         `Failed to connect to ${displayPlatforms.find((p) => p.id === platformId)?.name}`,
       );
-      setTimeout(() => setErrorMessage(null), 3000);
+      messageTimerRef.current = setTimeout(() => setErrorMessage(null), 3000);
     } finally {
       setIsConnecting(null);
     }
@@ -114,12 +124,12 @@ export function SocialMediaIntegration({
       setSuccessMessage(
         `Successfully disconnected from ${displayPlatforms.find((p) => p.id === platformId)?.name}`,
       );
-      setTimeout(() => setSuccessMessage(null), 3000);
+      messageTimerRef.current = setTimeout(() => setSuccessMessage(null), 3000);
     } catch (error) {
       setErrorMessage(
         `Failed to disconnect from ${displayPlatforms.find((p) => p.id === platformId)?.name}`,
       );
-      setTimeout(() => setErrorMessage(null), 3000);
+      messageTimerRef.current = setTimeout(() => setErrorMessage(null), 3000);
     } finally {
       setIsConnecting(null);
     }

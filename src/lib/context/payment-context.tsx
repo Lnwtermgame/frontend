@@ -1,45 +1,35 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { useLocalStorage } from "../hooks/use-local-storage";
-
-export interface PaymentMethod {
-    id: string;
-    name: string;
-    icon: string;
-    type: "qr" | "card" | "bank" | "wallet" | "crypto";
-    processorId: string;
-    isActive: boolean;
-    fee?: number;
-    minAmount?: number;
-    maxAmount?: number;
-    exchangeRate?: number; // For multi-currency
-    currency?: string;
-}
-
-export interface SavedPaymentMethod {
-    id: string;
-    methodId: string;
-    nickname: string;
-    lastUsed: string;
-    maskedNumber?: string; // For cards: "•••• 1234"
-    icon?: string;
-}
+import {
+    createContext,
+    useContext,
+    useState,
+    useCallback,
+    useMemo,
+    ReactNode,
+} from "react";
+import {
+    paymentApi,
+    PaymentMethodOption,
+    PaymentIntentResponse,
+    PaymentStatusResponse,
+} from "../services/payment-api";
+import toast from "react-hot-toast";
 
 type PaymentContextType = {
-    availablePaymentMethods: PaymentMethod[];
-    savedPaymentMethods: SavedPaymentMethod[];
-    selectedPaymentMethod: PaymentMethod | null;
-    setSelectedPaymentMethod: (method: PaymentMethod | null) => void;
-    addSavedPaymentMethod: (method: Omit<SavedPaymentMethod, "id">) => void;
-    removeSavedPaymentMethod: (id: string) => void;
-    isProcessing: boolean;
-    processingError: string | null;
-    processPayment: (
-        amount: number,
-        currency: string,
-    ) => Promise<{ success: boolean; transactionId?: string; error?: string }>;
-    exchangeRates: Record<string, number>;
+    paymentMethods: PaymentMethodOption[];
+    selectedMethod: PaymentMethodOption | null;
+    setSelectedMethod: (method: PaymentMethodOption | null) => void;
+    isLoading: boolean;
+    error: string | null;
+    fetchPaymentMethods: () => Promise<void>;
+    createPaymentIntent: (
+        orderId: string,
+        paymentOptionCode?: string,
+    ) => Promise<PaymentIntentResponse | null>;
+    getPaymentStatus: (
+        orderId: string,
+    ) => Promise<PaymentStatusResponse | null>;
 };
 
 export const PaymentContext = createContext<PaymentContextType | undefined>(
@@ -47,146 +37,112 @@ export const PaymentContext = createContext<PaymentContextType | undefined>(
 );
 
 export function PaymentProvider({ children }: { children: ReactNode }) {
-    // Mock payment methods that would typically come from an API
-    const [availablePaymentMethods] = useState<PaymentMethod[]>([
-        {
-            id: "qr-promptpay",
-            name: "PromptPay QR",
-            icon: "/images/payment/promptpay.svg",
-            type: "qr",
-            processorId: "feelfreepay",
-            isActive: true,
-            fee: 0,
-        },
-        {
-            id: "wallet-true",
-            name: "True Money Wallet",
-            icon: "/images/payment/truemoney.svg",
-            type: "wallet",
-            processorId: "feelfreepay",
-            isActive: true,
-            fee: 1.5,
-        },
-        {
-            id: "line-pay",
-            name: "Line Pay",
-            icon: "/images/payment/linepay.svg",
-            type: "wallet",
-            processorId: "feelfreepay",
-            isActive: true,
-            fee: 0,
-        },
-        {
-            id: "mobile-banking",
-            name: "Mobile Banking",
-            icon: "/images/payment/banking.svg",
-            type: "bank",
-            processorId: "feelfreepay",
-            isActive: true,
-            fee: 0,
-        },
-        {
-            id: "bank-transfer",
-            name: "Bank Transfer",
-            icon: "/images/payment/banking.svg",
-            type: "bank",
-            processorId: "feelfreepay",
-            isActive: true,
-            fee: 0,
-        },
-    ]);
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethodOption[]>(
+        [],
+    );
+    const [selectedMethod, setSelectedMethod] =
+        useState<PaymentMethodOption | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // Saved payment methods (stored in localStorage)
-    const [savedPaymentMethods, setSavedPaymentMethods] = useLocalStorage<
-        SavedPaymentMethod[]
-    >("mali-gamepass-payment-methods", []);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] =
-        useState<PaymentMethod | null>(null);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [processingError, setProcessingError] = useState<string | null>(null);
-
-    // Mock exchange rates for multi-currency support
-    const [exchangeRates] = useState<Record<string, number>>({
-        USD: 35.5,
-        EUR: 38.2,
-        SGD: 26.3,
-        JPY: 0.24,
-        KRW: 0.026,
-        USDT: 35.2,
-    });
-
-    const addSavedPaymentMethod = (method: Omit<SavedPaymentMethod, "id">) => {
-        const newMethod = {
-            ...method,
-            id: Date.now().toString(),
-        };
-
-        setSavedPaymentMethods((prev) => [newMethod, ...prev]);
-    };
-
-    const removeSavedPaymentMethod = (id: string) => {
-        setSavedPaymentMethods((prev) => prev.filter((method) => method.id !== id));
-    };
-
-    // Mock payment processing function
-    const processPayment = async (amount: number, currency: string) => {
-        if (!selectedPaymentMethod) {
-            return { success: false, error: "No payment method selected" };
-        }
-
-        setIsProcessing(true);
-        setProcessingError(null);
+    const fetchPaymentMethods = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
 
         try {
-            // In a real app, you would integrate with payment gateways here
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API delay
-
-            // Simulate success (with 90% success rate)
-            const isSuccess = Math.random() > 0.1;
-
-            if (isSuccess) {
-                return {
-                    success: true,
-                    transactionId: `TXN-${Date.now()}`,
-                };
-            } else {
-                throw new Error("Payment processing failed. Please try again.");
+            const response = await paymentApi.getMethods();
+            if (response.success) {
+                setPaymentMethods(response.data);
             }
-        } catch (error) {
-            setProcessingError(
-                error instanceof Error ? error.message : "Unknown error occurred",
-            );
-            return {
-                success: false,
-                error:
-                    error instanceof Error ? error.message : "Unknown error occurred",
-            };
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Failed to load payment methods";
+            setError(message);
+            toast.error(message);
         } finally {
-            setIsProcessing(false);
+            setIsLoading(false);
         }
-    };
+    }, []);
+
+    const createPaymentIntent = useCallback(
+        async (
+            orderId: string,
+            paymentOptionCode?: string,
+        ): Promise<PaymentIntentResponse | null> => {
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const response = await paymentApi.createIntent(
+                    orderId,
+                    paymentOptionCode,
+                );
+                if (response.success) {
+                    return response.data;
+                }
+                return null;
+            } catch (err) {
+                const message =
+                    err instanceof Error ? err.message : "Payment processing failed";
+                setError(message);
+                toast.error(message);
+                return null;
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [],
+    );
+
+    const getPaymentStatus = useCallback(
+        async (orderId: string): Promise<PaymentStatusResponse | null> => {
+            try {
+                const response = await paymentApi.getStatus(orderId);
+                if (response.success) {
+                    return response.data;
+                }
+                return null;
+            } catch (err) {
+                const message =
+                    err instanceof Error
+                        ? err.message
+                        : "Failed to get payment status";
+                toast.error(message);
+                return null;
+            }
+        },
+        [],
+    );
+
+    const contextValue = useMemo(
+        () => ({
+            paymentMethods,
+            selectedMethod,
+            setSelectedMethod,
+            isLoading,
+            error,
+            fetchPaymentMethods,
+            createPaymentIntent,
+            getPaymentStatus,
+        }),
+        [
+            paymentMethods,
+            selectedMethod,
+            isLoading,
+            error,
+            fetchPaymentMethods,
+            createPaymentIntent,
+            getPaymentStatus,
+        ],
+    );
 
     return (
-        <PaymentContext.Provider
-            value={{
-                availablePaymentMethods,
-                savedPaymentMethods,
-                selectedPaymentMethod,
-                setSelectedPaymentMethod,
-                addSavedPaymentMethod,
-                removeSavedPaymentMethod,
-                isProcessing,
-                processingError,
-                processPayment,
-                exchangeRates,
-            }}
-        >
+        <PaymentContext.Provider value={contextValue}>
             {children}
         </PaymentContext.Provider>
     );
 }
 
-// Custom hook to use the payment context
 export function usePayment() {
     const context = useContext(PaymentContext);
     if (context === undefined) {

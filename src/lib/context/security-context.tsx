@@ -7,6 +7,7 @@ import {
   ReactNode,
   useEffect,
   useCallback,
+  useMemo,
   useRef,
 } from "react";
 import { useAuth } from "../hooks/use-auth";
@@ -144,7 +145,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   // Security data is loaded lazily - only when refreshSecurityData() is called
   // (e.g., on the security settings page), NOT on every page load
 
-  const updateSecuritySettings = async (
+  const updateSecuritySettings = useCallback(async (
     settings: Partial<SecuritySettingsExtended>,
   ) => {
     // Update local state immediately for responsiveness
@@ -178,9 +179,9 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         }));
       }
     }
-  };
+  }, []);
 
-  const sendVerificationEmail = async (): Promise<boolean> => {
+  const sendVerificationEmail = useCallback(async (): Promise<boolean> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.sendVerificationEmail();
@@ -197,9 +198,9 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, [updateSecuritySettings]);
 
-  const setupTwoFactor = async (
+  const setupTwoFactor = useCallback(async (
     method: "2fa-app" | "sms" | "email",
   ): Promise<{ success: boolean; secret?: string; qrCodeUrl?: string }> => {
     setIsLoadingSettings(true);
@@ -222,9 +223,9 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, [updateSecuritySettings]);
 
-  const verifyTwoFactorCode = async (code: string): Promise<boolean> => {
+  const verifyTwoFactorCode = useCallback(async (code: string): Promise<boolean> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.verifyTwoFactor(code);
@@ -245,9 +246,9 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, [updateSecuritySettings]);
 
-  const disableTwoFactor = async (password: string): Promise<boolean> => {
+  const disableTwoFactor = useCallback(async (password: string): Promise<boolean> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.disableTwoFactor(password);
@@ -268,15 +269,14 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, [updateSecuritySettings]);
 
-  const logoutAllDevices = async (): Promise<boolean> => {
+  const logoutAllDevices = useCallback(async (): Promise<boolean> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.logoutAllDevices();
 
       if (response.success) {
-        // Refresh devices list
         const devicesRes = await securityApi.getDevices();
         if (devicesRes.success) {
           updateSecuritySettings({
@@ -294,20 +294,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, [updateSecuritySettings]);
 
-  const removeDevice = async (deviceId: string): Promise<boolean> => {
+  const removeDevice = useCallback(async (deviceId: string): Promise<boolean> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.removeDevice(deviceId);
 
       if (response.success) {
-        // Update local state
-        updateSecuritySettings({
-          recentDevices: securitySettings.recentDevices.filter(
-            (d) => d.id !== deviceId,
-          ),
-        });
+        setSecuritySettings((prev) => ({
+          ...prev,
+          recentDevices: prev.recentDevices.filter((d) => d.id !== deviceId),
+        }));
         toast.success("ลบอุปกรณ์สำเร็จ");
         return true;
       }
@@ -319,30 +317,31 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, []);
 
-  const resolveActivity = async (activityId: string): Promise<void> => {
+  const resolveActivity = useCallback(async (activityId: string): Promise<void> => {
     try {
       const response = await securityApi.resolveActivity(activityId);
 
       if (response.success) {
-        updateSecuritySettings({
-          suspiciousActivities: securitySettings.suspiciousActivities.map(
+        setSecuritySettings((prev) => ({
+          ...prev,
+          suspiciousActivities: prev.suspiciousActivities.map(
             (activity) =>
               activity.id === activityId
                 ? { ...activity, resolved: true }
                 : activity,
           ),
-        });
+        }));
         toast.success("ทำเครื่องหมายว่าตรวจสอบแล้ว");
       }
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
       toast.error(message || "ไม่สามารถอัปเดตสถานะได้");
     }
-  };
+  }, []);
 
-  const generateBackupCodes = async (): Promise<string[]> => {
+  const generateBackupCodes = useCallback(async (): Promise<string[]> => {
     setIsLoadingSettings(true);
     try {
       const response = await securityApi.regenerateBackupCodes();
@@ -358,26 +357,31 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoadingSettings(false);
     }
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    securitySettings,
+    updateSecuritySettings,
+    sendVerificationEmail,
+    setupTwoFactor,
+    verifyTwoFactorCode,
+    disableTwoFactor,
+    logoutAllDevices,
+    removeDevice,
+    resolveActivity,
+    isLoadingSettings,
+    is2FAVerified,
+    generateBackupCodes,
+    refreshSecurityData,
+  }), [
+    securitySettings, updateSecuritySettings, sendVerificationEmail,
+    setupTwoFactor, verifyTwoFactorCode, disableTwoFactor,
+    logoutAllDevices, removeDevice, resolveActivity,
+    isLoadingSettings, is2FAVerified, generateBackupCodes, refreshSecurityData,
+  ]);
 
   return (
-    <SecurityContext.Provider
-      value={{
-        securitySettings,
-        updateSecuritySettings,
-        sendVerificationEmail,
-        setupTwoFactor,
-        verifyTwoFactorCode,
-        disableTwoFactor,
-        logoutAllDevices,
-        removeDevice,
-        resolveActivity,
-        isLoadingSettings,
-        is2FAVerified,
-        generateBackupCodes,
-        refreshSecurityData,
-      }}
-    >
+    <SecurityContext.Provider value={contextValue}>
       {children}
     </SecurityContext.Provider>
   );

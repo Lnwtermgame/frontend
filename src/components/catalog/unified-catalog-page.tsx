@@ -154,14 +154,27 @@ function sortThailandFirst<T extends { id: string; name: string }>(
   items: T[],
 ): T[] {
   const clone = [...items];
-  const idx = clone.findIndex(
+
+  // Pin Global right after "all" (position 1)
+  const globalIdx = clone.findIndex(
+    (item) =>
+      item.name.toLowerCase() === "global" ||
+      item.id.toLowerCase() === "global",
+  );
+  if (globalIdx > 1) {
+    const [globalItem] = clone.splice(globalIdx, 1);
+    clone.splice(1, 0, globalItem);
+  }
+
+  // Pin Thailand right after Global (position 2)
+  const thaiIdx = clone.findIndex(
     (item) =>
       item.name.toLowerCase().includes("thailand") ||
       item.id.toLowerCase().includes("thailand"),
   );
-  if (idx > 1) {
-    const [thaiItem] = clone.splice(idx, 1);
-    clone.splice(1, 0, thaiItem);
+  if (thaiIdx > 2) {
+    const [thaiItem] = clone.splice(thaiIdx, 1);
+    clone.splice(2, 0, thaiItem);
   }
   return clone;
 }
@@ -384,7 +397,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       {} as Record<string, number>,
     );
 
-    return [
+    return sortThailandFirst([
       {
         id: "all",
         name: t("sort.all"),
@@ -395,9 +408,13 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
         id: name.toLowerCase(),
         name,
         count,
-        icon: <CreditCard size={16} className="text-gray-500" />,
+        icon: getCountryFlagCode(name) ? (
+          <CountryFlag code={getCountryFlagCode(name)} size="M" />
+        ) : (
+          <CreditCard size={16} className="text-gray-500" />
+        ),
       })),
-    ];
+    ]);
   }, [mode, items, t]);
 
   const secondaryOptions = useMemo(() => {
@@ -409,14 +426,14 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
         },
         {} as Record<string, number>,
       );
-      return [
+      return sortThailandFirst([
         { id: "all", name: t("sort.all"), count: items.length },
         ...Object.entries(categoryCounts).map(([name, count]) => ({
           id: name.toLowerCase(),
           name,
           count,
         })),
-      ];
+      ]);
     }
 
     if (mode === "mobile-recharge" || mode === "mobile") {
@@ -493,11 +510,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                 <motion.button
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
-                  className={`w-full flex justify-between items-center text-left p-3 transition-all border-[2px] ${
-                    selectedPrimary === option.id
-                      ? "bg-brutal-blue border-black text-black"
-                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
-                  }`}
+                  className={`w-full flex justify-between items-center text-left p-3 transition-all border-[2px] ${selectedPrimary === option.id
+                    ? "bg-brutal-blue border-black text-black"
+                    : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                    }`}
                   style={
                     selectedPrimary === option.id
                       ? { boxShadow: "3px 3px 0 0 #000000" }
@@ -510,11 +526,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     {option.name}
                   </span>
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                      selectedPrimary === option.id
-                        ? "bg-white text-black"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${selectedPrimary === option.id
+                      ? "bg-white text-black"
+                      : "bg-gray-100 text-gray-600"
+                      }`}
                   >
                     {option.count}
                   </span>
@@ -542,11 +557,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   <motion.button
                     key={option.id}
                     onClick={() => setSelectedSecondary(option.id)}
-                    className={`w-full flex justify-between items-center text-left p-3 transition-all border-[2px] ${
-                      selectedSecondary === option.id
-                        ? "bg-brutal-yellow border-black text-black"
-                        : "bg-white border-transparent text-gray-700 hover:border-gray-300"
-                    }`}
+                    className={`w-full flex justify-between items-center text-left p-3 transition-all border-[2px] ${selectedSecondary === option.id
+                      ? "bg-brutal-yellow border-black text-black"
+                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                      }`}
                     style={
                       selectedSecondary === option.id
                         ? { boxShadow: "3px 3px 0 0 #000000" }
@@ -564,11 +578,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       {option.name}
                     </span>
                     <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${
-                        selectedSecondary === option.id
-                          ? "bg-white text-black"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
+                      className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${selectedSecondary === option.id
+                        ? "bg-white text-black"
+                        : "bg-gray-100 text-gray-600"
+                        }`}
                     >
                       {option.count}
                     </span>
@@ -644,11 +657,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   <button
                     key={option.id}
                     onClick={() => setSelectedPrimary(option.id)}
-                    className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex items-center gap-1.5 ${
-                      selectedPrimary === option.id
-                        ? "bg-brutal-blue text-black"
-                        : "bg-white text-gray-700"
-                    }`}
+                    className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex items-center gap-1.5 ${selectedPrimary === option.id
+                      ? "bg-brutal-blue text-black"
+                      : "bg-white text-gray-700"
+                      }`}
                   >
                     {renderOptionIcon(
                       option,
@@ -666,14 +678,13 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     <button
                       key={option.id}
                       onClick={() => setSelectedSecondary(option.id)}
-                      className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex items-center gap-1.5 ${
-                        selectedSecondary === option.id
-                          ? "bg-brutal-yellow text-black"
-                          : "bg-white text-gray-700"
-                      }`}
+                      className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex items-center gap-1.5 ${selectedSecondary === option.id
+                        ? "bg-brutal-yellow text-black"
+                        : "bg-white text-gray-700"
+                        }`}
                     >
                       {(mode === "mobile-recharge" || mode === "mobile") &&
-                      option.id === "all" ? (
+                        option.id === "all" ? (
                         <>
                           <Globe size={14} />
                           {option.name}
@@ -780,11 +791,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
 
                       <div className="p-2 sm:p-2.5">
                         <p
-                          className={`text-gray-900 text-[11px] sm:text-xs font-bold ${
-                            mode === "card"
-                              ? "line-clamp-2 sm:line-clamp-1"
-                              : "line-clamp-1"
-                          } mb-1 transition-colors ${copy.hoverNameClass}`}
+                          className={`text-gray-900 text-[11px] sm:text-xs font-bold ${mode === "card"
+                            ? "line-clamp-2 sm:line-clamp-1"
+                            : "line-clamp-1"
+                            } mb-1 transition-colors ${copy.hoverNameClass}`}
                         >
                           {mode === "mobile-recharge" || mode === "mobile"
                             ? item.operator
@@ -851,11 +861,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     setSelectedPrimary(option.id);
                     setIsFilterOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
-                    selectedPrimary === option.id
-                      ? "bg-brutal-blue text-black shadow-[2px_2px_0_0_#000]"
-                      : "bg-white text-gray-700"
-                  }`}
+                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${selectedPrimary === option.id
+                    ? "bg-brutal-blue text-black shadow-[2px_2px_0_0_#000]"
+                    : "bg-white text-gray-700"
+                    }`}
                 >
                   <span className="flex items-center gap-2">
                     {renderOptionIcon(
@@ -884,11 +893,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       setSelectedSecondary(option.id);
                       setIsFilterOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${
-                      selectedSecondary === option.id
-                        ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
-                        : "bg-white text-gray-700"
-                    }`}
+                    className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${selectedSecondary === option.id
+                      ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
+                      : "bg-white text-gray-700"
+                      }`}
                   >
                     <span className="flex items-center gap-2">
                       {getCountryFlagCode(option.name) && (

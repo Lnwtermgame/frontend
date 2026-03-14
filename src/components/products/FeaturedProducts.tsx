@@ -24,19 +24,21 @@ export function FeaturedProducts({
   const tProducts = useTranslations("Products");
 
   useEffect(() => {
+    let cancelled = false;
     const fetchFeatured = async () => {
       try {
         setLoading(true);
         const response = await productApi.getFeaturedProducts(limit);
-        setProducts(response.data);
+        if (!cancelled) setProducts(response.data);
       } catch (err) {
-        setError("Failed to load featured products");
+        if (!cancelled) setError("Failed to load featured products");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchFeatured();
+    return () => { cancelled = true; };
   }, [limit]);
 
   if (loading) {

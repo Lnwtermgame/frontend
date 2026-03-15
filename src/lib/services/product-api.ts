@@ -728,6 +728,34 @@ class ProductApiService {
     return response.data;
   }
 
+  async bulkDeleteProducts(
+    ids: string[],
+  ): Promise<{ success: boolean; data: { message: string; deletedCount: number } }> {
+    const response = await productClient.post(
+      "/api/admin/products/bulk-delete",
+      { ids },
+    );
+    return response.data;
+  }
+
+  async bulkToggleActive(
+    ids: string[],
+    isActive: boolean,
+  ): Promise<{ success: boolean; data: { message: string; updatedCount: number } }> {
+    const response = await productClient.post(
+      "/api/admin/products/bulk-toggle-active",
+      { ids, isActive },
+    );
+    return response.data;
+  }
+
+  async deleteProduct(
+    id: string,
+  ): Promise<{ success: boolean; data: { message: string } }> {
+    const response = await productClient.delete(`/api/admin/products/${id}`);
+    return response.data;
+  }
+
   // ============ Admin: Product Sync ============
 
   /**

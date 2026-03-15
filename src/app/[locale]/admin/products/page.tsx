@@ -27,6 +27,10 @@ import {
   ImageIcon,
   Upload,
   Download,
+  CheckSquare,
+  Square,
+  ToggleLeft,
+  ToggleRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -96,6 +100,11 @@ export default function AdminProducts() {
   const [imageTarget, setImageTarget] = useState<"logo" | "cover">("logo");
   const [copySourceProductId, setCopySourceProductId] = useState<string>("");
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [isBulkToggling, setIsBulkToggling] = useState(false);
 
   const filteredProducts = useMemo<AdminProduct[]>(() => {
     return products.filter((product) => {
@@ -200,11 +209,88 @@ export default function AdminProducts() {
     if (!confirm("คุณแน่ใจหรือไม่ที่จะลบสินค้านี้?")) return;
 
     try {
-      // Note: Need to add deleteProduct to productApi
-      // await productApi.deleteProduct(productId);
+      await productApi.deleteProduct(productId);
       setProducts(products.filter((p) => p.id !== productId));
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(productId);
+        return next;
+      });
+      toast.success("ลบสินค้าสำเร็จ");
     } catch (err) {
       console.error("ไม่สามารถลบสินค้า:", err);
+      toast.error("ไม่สามารถลบสินค้าได้");
+    }
+  };
+
+  // Bulk selection helpers
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredProducts.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredProducts.map((p) => p.id)));
+    }
+  };
+
+  const clearSelection = () => setSelectedIds(new Set());
+
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (
+      !confirm(
+        `คุณแน่ใจหรือไม่ที่จะลบสินค้า ${ids.length} รายการ?\n\n⚠️ การกระทำนี้จะลบสินค้าและประเภทสินค้าทั้งหมดที่เกี่ยวข้องอย่างถาวร!`,
+      )
+    )
+      return;
+
+    setIsBulkDeleting(true);
+    try {
+      const res = await productApi.bulkDeleteProducts(ids);
+      if (res.success) {
+        setProducts((prev) => prev.filter((p) => !selectedIds.has(p.id)));
+        toast.success(`ลบสินค้าสำเร็จ ${res.data.deletedCount} รายการ`);
+        clearSelection();
+      }
+    } catch (err) {
+      console.error("Bulk delete failed:", err);
+      toast.error("ไม่สามารถลบสินค้าได้");
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  const handleBulkToggleActive = async (isActive: boolean) => {
+    const ids = Array.from(selectedIds);
+    const label = isActive ? "เปิดขาย" : "ปิดขาย";
+    if (!confirm(`ตั้งสถานะ "${label}" ให้กับสินค้า ${ids.length} รายการ?`))
+      return;
+
+    setIsBulkToggling(true);
+    try {
+      const res = await productApi.bulkToggleActive(ids, isActive);
+      if (res.success) {
+        setProducts((prev) =>
+          prev.map((p) =>
+            selectedIds.has(p.id) ? { ...p, isActive } : p,
+          ),
+        );
+        toast.success(`อัปเดตสถานะสำเร็จ ${res.data.updatedCount} รายการ`);
+        clearSelection();
+      }
+    } catch (err) {
+      console.error("Bulk toggle failed:", err);
+      toast.error("ไม่สามารถอัปเดตสถานะได้");
+    } finally {
+      setIsBulkToggling(false);
     }
   };
 
@@ -739,6 +825,19 @@ export default function AdminProducts() {
               <table className="w-full">
                 <thead>
                   <tr className="text-gray-500 text-[11px] uppercase tracking-wider border-b-[2px] border-gray-200 bg-gray-50">
+                    <th className="px-3 py-2.5 text-center font-bold w-10">
+                      <button
+                        onClick={toggleSelectAll}
+                        className="p-0.5 hover:bg-gray-200 transition-colors"
+                        title={selectedIds.size === filteredProducts.length ? "ยกเลิกเลือกทั้งหมด" : "เลือกทั้งหมด"}
+                      >
+                        {selectedIds.size > 0 && selectedIds.size === filteredProducts.length ? (
+                          <CheckSquare className="w-4 h-4 text-brutal-blue" />
+                        ) : (
+                          <Square className="w-4 h-4" />
+                        )}
+                      </button>
+                    </th>
                     <th className="px-4 py-2.5 text-left font-bold">สินค้า</th>
                     <th className="px-4 py-2.5 text-left font-bold">ประเภท</th>
                     <th className="px-4 py-2.5 text-left font-bold">หมวดหมู่</th>
@@ -752,8 +851,20 @@ export default function AdminProducts() {
                     filteredProducts.map((product) => (
                       <tr
                         key={product.id}
-                        className="text-sm hover:bg-brutal-blue/5 transition-colors group"
+                        className={`text-sm transition-colors group ${selectedIds.has(product.id) ? "bg-brutal-blue/10" : "hover:bg-brutal-blue/5"}`}
                       >
+                        <td className="px-3 py-2.5 text-center">
+                          <button
+                            onClick={() => toggleSelect(product.id)}
+                            className="p-0.5 hover:bg-gray-200 transition-colors"
+                          >
+                            {selectedIds.has(product.id) ? (
+                              <CheckSquare className="w-4 h-4 text-brutal-blue" />
+                            ) : (
+                              <Square className="w-4 h-4 text-gray-400" />
+                            )}
+                          </button>
+                        </td>
                         <td className="px-4 py-2.5 font-medium text-black">
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 border-[2px] border-black bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -833,7 +944,7 @@ export default function AdminProducts() {
                     <tr>
                       <td
                         className="px-4 py-10 text-center text-gray-400 text-sm"
-                        colSpan={6}
+                        colSpan={7}
                       >
                         <Package className="w-8 h-8 mx-auto mb-2 text-gray-300" />
                         ไม่พบสินค้าที่ตรงกับเงื่อนไขการค้นหา
@@ -1417,6 +1528,63 @@ export default function AdminProducts() {
           products={products}
           filteredProducts={filteredProducts}
         />
+
+        {/* Bulk Action Bar */}
+        {selectedIds.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white border-[3px] border-black px-6 py-3 flex items-center gap-4 shadow-[6px_6px_0_0_rgba(59,130,246,0.5)]"
+          >
+            <span className="text-sm font-bold">
+              เลือกแล้ว {selectedIds.size} รายการ
+            </span>
+
+            <div className="w-px h-6 bg-gray-600" />
+
+            <button
+              onClick={() => handleBulkToggleActive(true)}
+              disabled={isBulkToggling}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-sm font-medium border-[2px] border-white hover:bg-green-600 transition-colors disabled:opacity-50"
+            >
+              <ToggleRight className="w-4 h-4" />
+              เปิดขาย
+            </button>
+
+            <button
+              onClick={() => handleBulkToggleActive(false)}
+              disabled={isBulkToggling}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600 text-white text-sm font-medium border-[2px] border-white hover:bg-gray-700 transition-colors disabled:opacity-50"
+            >
+              <ToggleLeft className="w-4 h-4" />
+              ปิดขาย
+            </button>
+
+            <button
+              onClick={handleBulkDelete}
+              disabled={isBulkDeleting}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white text-sm font-medium border-[2px] border-white hover:bg-red-600 transition-colors disabled:opacity-50"
+            >
+              {isBulkDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+              ลบทั้งหมด
+            </button>
+
+            <div className="w-px h-6 bg-gray-600" />
+
+            <button
+              onClick={clearSelection}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-gray-300 text-sm font-medium hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+              ยกเลิก
+            </button>
+          </motion.div>
+        )}
       </div>
     </AdminLayout>
   );

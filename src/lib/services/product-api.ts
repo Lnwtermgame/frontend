@@ -752,24 +752,37 @@ class ProductApiService {
     return response.data;
   }
 
-  async syncAll(): Promise<{ success: boolean; data: SyncResult }> {
-    const response = await productClient.post("/api/admin/sync/all");
+  async syncAll(
+    env: "production" | "sandbox" = "sandbox",
+  ): Promise<{ success: boolean; data: SyncResult }> {
+    const response = await productClient.post("/api/admin/sync/all", { env });
     return response.data;
   }
 
-  async syncCards(): Promise<{ success: boolean; data: SyncResult }> {
-    const response = await productClient.post("/api/admin/sync/cards");
+  async syncCards(
+    env: "production" | "sandbox" = "sandbox",
+  ): Promise<{ success: boolean; data: SyncResult }> {
+    const response = await productClient.post("/api/admin/sync/cards", {
+      env,
+    });
     return response.data;
   }
 
-  async syncDirectTopUp(): Promise<{ success: boolean; data: SyncResult }> {
-    const response = await productClient.post("/api/admin/sync/direct-topup");
+  async syncDirectTopUp(
+    env: "production" | "sandbox" = "sandbox",
+  ): Promise<{ success: boolean; data: SyncResult }> {
+    const response = await productClient.post("/api/admin/sync/direct-topup", {
+      env,
+    });
     return response.data;
   }
 
-  async syncMobileRecharge(): Promise<{ success: boolean; data: SyncResult }> {
+  async syncMobileRecharge(
+    env: "production" | "sandbox" = "sandbox",
+  ): Promise<{ success: boolean; data: SyncResult }> {
     const response = await productClient.post(
       "/api/admin/sync/mobile-recharge",
+      { env },
     );
     return response.data;
   }

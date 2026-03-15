@@ -15,11 +15,17 @@ import {
   Layers,
   Tag,
   Box,
+  Shield,
+  FlaskConical,
 } from "lucide-react";
 import { productApi, SyncResult } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
 
+type SeagmEnv = "production" | "sandbox";
+
 export default function SeagmSyncPage() {
+  const [selectedEnv, setSelectedEnv] = useState<SeagmEnv>("sandbox");
+
   const [isLoading, setIsLoading] = useState<{
     all: boolean;
     cards: boolean;
@@ -58,9 +64,10 @@ export default function SeagmSyncPage() {
 
   const [cacheStats, setCacheStats] = useState<{ size: number } | null>(null);
 
-  // Load cache stats on mount
+  // Load cache stats on mount (delay to allow auth token to initialize on hard refresh)
   useEffect(() => {
-    loadCacheStats();
+    const timer = setTimeout(() => loadCacheStats(), 500);
+    return () => clearTimeout(timer);
   }, []);
 
   const loadCacheStats = async () => {
@@ -77,11 +84,13 @@ export default function SeagmSyncPage() {
   const handleSyncAll = async () => {
     setIsLoading((prev) => ({ ...prev, all: true }));
     try {
-      const response = await productApi.syncAll();
+      const response = await productApi.syncAll(selectedEnv);
       if (response.success) {
         setResults((prev) => ({ ...prev, all: response.data }));
         setLastSync((prev) => ({ ...prev, all: new Date() }));
-        toast.success("ซิงค์สินค้าทั้งหมดสำเร็จ");
+        toast.success(
+          `ซิงค์สินค้าทั้งหมดสำเร็จ (${selectedEnv === "production" ? "Production" : "Sandbox"})`,
+        );
       }
     } catch (error) {
       console.error("Sync all failed:", error);
@@ -95,11 +104,13 @@ export default function SeagmSyncPage() {
   const handleSyncCards = async () => {
     setIsLoading((prev) => ({ ...prev, cards: true }));
     try {
-      const response = await productApi.syncCards();
+      const response = await productApi.syncCards(selectedEnv);
       if (response.success) {
         setResults((prev) => ({ ...prev, cards: response.data }));
         setLastSync((prev) => ({ ...prev, cards: new Date() }));
-        toast.success("ซิงค์สินค้าบัตรสำเร็จ");
+        toast.success(
+          `ซิงค์สินค้าบัตรสำเร็จ (${selectedEnv === "production" ? "Production" : "Sandbox"})`,
+        );
       }
     } catch (error) {
       console.error("Sync cards failed:", error);
@@ -113,11 +124,13 @@ export default function SeagmSyncPage() {
   const handleSyncDirectTopUp = async () => {
     setIsLoading((prev) => ({ ...prev, directTopUp: true }));
     try {
-      const response = await productApi.syncDirectTopUp();
+      const response = await productApi.syncDirectTopUp(selectedEnv);
       if (response.success) {
         setResults((prev) => ({ ...prev, directTopUp: response.data }));
         setLastSync((prev) => ({ ...prev, directTopUp: new Date() }));
-        toast.success("ซิงค์สินค้าเติมเงินสำเร็จ");
+        toast.success(
+          `ซิงค์สินค้าเติมเงินสำเร็จ (${selectedEnv === "production" ? "Production" : "Sandbox"})`,
+        );
       }
     } catch (error) {
       console.error("Sync direct top-up failed:", error);
@@ -131,11 +144,13 @@ export default function SeagmSyncPage() {
   const handleSyncMobileRecharge = async () => {
     setIsLoading((prev) => ({ ...prev, mobileRecharge: true }));
     try {
-      const response = await productApi.syncMobileRecharge();
+      const response = await productApi.syncMobileRecharge(selectedEnv);
       if (response.success) {
         setResults((prev) => ({ ...prev, mobileRecharge: response.data }));
         setLastSync((prev) => ({ ...prev, mobileRecharge: new Date() }));
-        toast.success("ซิงค์สินค้ามือถือสำเร็จ");
+        toast.success(
+          `ซิงค์สินค้ามือถือสำเร็จ (${selectedEnv === "production" ? "Production" : "Sandbox"})`,
+        );
       }
     } catch (error) {
       console.error("Sync mobile recharge failed:", error);
@@ -150,6 +165,8 @@ export default function SeagmSyncPage() {
     if (!date) return "ไม่เคย";
     return date.toLocaleTimeString("th-TH");
   };
+
+  const isAnySyncing = Object.values(isLoading).some(Boolean);
 
   const SyncCard = ({
     title,
@@ -194,8 +211,8 @@ export default function SeagmSyncPage() {
         onClick={onClick}
         disabled={isLoading}
         className={`w-full py-2 px-4 font-medium transition-all flex items-center justify-center gap-2 border-[3px] border-black ${isLoading
-            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-black text-white hover:bg-gray-800"
+          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+          : "bg-black text-white hover:bg-gray-800"
           }`}
         style={{ boxShadow: isLoading ? "none" : "4px 4px 0 0 #000000" }}
       >
@@ -287,6 +304,100 @@ export default function SeagmSyncPage() {
           </div>
         </div>
 
+        {/* Environment Toggle */}
+        <motion.div
+          className="bg-white border-[3px] border-black p-5"
+          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-black mb-1">
+                เลือก Environment
+              </h2>
+              <p className="text-sm text-gray-500">
+                เลือก environment ที่ต้องการซิงค์ข้อมูลจาก SEAGM API
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Sandbox Toggle */}
+              <button
+                onClick={() => setSelectedEnv("sandbox")}
+                disabled={isAnySyncing}
+                className={`flex items-center gap-2 px-5 py-2.5 font-medium border-[3px] border-black transition-all ${selectedEnv === "sandbox"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+                  } ${isAnySyncing ? "opacity-50 cursor-not-allowed" : ""}`}
+                style={{
+                  boxShadow:
+                    selectedEnv === "sandbox"
+                      ? "4px 4px 0 0 #000000"
+                      : "2px 2px 0 0 #000000",
+                }}
+              >
+                <FlaskConical className="w-4 h-4" />
+                Sandbox
+              </button>
+
+              {/* Production Toggle */}
+              <button
+                onClick={() => setSelectedEnv("production")}
+                disabled={isAnySyncing}
+                className={`flex items-center gap-2 px-5 py-2.5 font-medium border-[3px] border-black transition-all ${selectedEnv === "production"
+                  ? "bg-red-500 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-50"
+                  } ${isAnySyncing ? "opacity-50 cursor-not-allowed" : ""}`}
+                style={{
+                  boxShadow:
+                    selectedEnv === "production"
+                      ? "4px 4px 0 0 #000000"
+                      : "2px 2px 0 0 #000000",
+                }}
+              >
+                <Shield className="w-4 h-4" />
+                Production
+              </button>
+            </div>
+          </div>
+
+          {/* Environment Info Bar */}
+          <div
+            className={`mt-4 p-3 border-[2px] border-black flex items-center gap-3 ${selectedEnv === "production"
+              ? "bg-red-50"
+              : "bg-emerald-50"
+              }`}
+          >
+            {selectedEnv === "production" ? (
+              <>
+                <Shield className="w-5 h-5 text-red-600 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-red-700">
+                    Production Mode — openapi.seagm.com
+                  </p>
+                  <p className="text-xs text-red-600">
+                    ⚠️ ข้อมูลจริง! การซิงค์จะใช้บัญชี Production กับสินค้าจริง
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <FlaskConical className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-emerald-700">
+                    Sandbox Mode — openapi.seagm.io
+                  </p>
+                  <p className="text-xs text-emerald-600">
+                    ✓ โหมดทดสอบ ปลอดภัย ใช้ข้อมูลทดสอบจาก SEAGM
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </motion.div>
+
         {/* Sync Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <SyncCard
@@ -356,8 +467,8 @@ export default function SeagmSyncPage() {
                   <h4 className="text-black font-medium">สินค้า (เกม)</h4>
                   <p className="text-sm text-gray-600">
                     แต่ละเกมเก็บเป็นสินค้าพร้อมข้อมูลพื้นฐาน: ชื่อ รหัส โหมด
-                    (บัตร/เติมเงิน) ภูมิภาค ตัวอย่าง: "PUBG Mobile UC (MY)"
-                    ด้วยรหัส "pubg-mobile-uc-top-up"
+                    (บัตร/เติมเงิน) ภูมิภาค ตัวอย่าง: &quot;PUBG Mobile UC (MY)&quot;
+                    ด้วยรหัส &quot;pubg-mobile-uc-top-up&quot;
                   </p>
                 </div>
               </div>

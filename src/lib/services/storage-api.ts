@@ -13,6 +13,83 @@ async function getStorageHeaders(includeContentType?: boolean): Promise<Record<s
   return headers;
 }
 
+/** File metadata returned from storage API */
+export interface StorageFile {
+  id: string;
+  name: string;
+  size: number;
+  mimeType: string;
+  createdAt: string;
+  updatedAt: string;
+  url: string;
+}
+
+/** List files response */
+export interface ListFilesResponse {
+  files: StorageFile[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+/** List all files in storage with pagination and optional search */
+export async function listFiles(
+  limit = 25,
+  offset = 0,
+  search?: string,
+): Promise<ListFilesResponse> {
+  const headers = await getStorageHeaders();
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+  if (search?.trim()) params.set("search", search.trim());
+
+  const response = await fetch(`${GATEWAY_URL}/api/storage?${params}`, {
+    headers,
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: Failed to list files`);
+  }
+  const result = await response.json();
+  if (!result.success) {
+    const msg = typeof result.error === "string" ? result.error : JSON.stringify(result.error) || "Failed to list files";
+    throw new Error(msg);
+  }
+  return result.data;
+}
+
+/** Get single file info */
+export async function getFileInfo(fileId: string): Promise<StorageFile> {
+  const headers = await getStorageHeaders();
+  const response = await fetch(`${GATEWAY_URL}/api/storage/${fileId}`, {
+    headers,
+    credentials: "include",
+  });
+  const result = await response.json();
+  if (!result.success) throw new Error(result.error || "Failed to get file info");
+  return result.data;
+}
+
+/** Upload file directly (no toast, for programmatic use) */
+export async function uploadFileRaw(
+  file: File,
+  folder = "products",
+): Promise<StorageFile> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("folder", folder);
+  const headers = await getStorageHeaders();
+
+  const response = await fetch(`${GATEWAY_URL}/api/storage`, {
+    method: "POST",
+    body: formData,
+    headers,
+    credentials: "include",
+  });
+  const result = await response.json();
+  if (!result.success) throw new Error(result.error || "Upload failed");
+  return result.data;
+}
+
 /**
  * Check if URL is from Appwrite Storage
  */

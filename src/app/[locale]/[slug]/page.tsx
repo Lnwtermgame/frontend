@@ -33,6 +33,11 @@ export async function generateStaticParams() {
   ];
 }
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://lnwtermgame.com";
+
+const LOCALES = ["th", "en", "zh", "ja", "ko", "ms", "hi", "es", "fr"];
+
 // Generate metadata for the page
 export async function generateMetadata({
   params,
@@ -48,9 +53,27 @@ export async function generateMetadata({
     };
   }
 
+  const title = page.metaTitle || page.title;
+  const description = page.metaDescription || "";
+
+  const languageAlternates: Record<string, string> = {};
+  for (const locale of LOCALES) {
+    languageAlternates[locale] = `${SITE_URL}/${locale}/${slug}`;
+  }
+
   return {
-    title: page.metaTitle || page.title,
-    description: page.metaDescription,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/${slug}`,
+      type: "article",
+    },
+    alternates: {
+      canonical: `${SITE_URL}/${slug}`,
+      languages: languageAlternates,
+    },
   };
 }
 

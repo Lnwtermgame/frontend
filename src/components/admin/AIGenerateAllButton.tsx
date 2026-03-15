@@ -106,13 +106,13 @@ interface ProductGenerationState {
   product: Product;
   categoryName?: string;
   status:
-    | "pending"
-    | "generating"
-    | "completed"
-    | "saved"
-    | "error"
-    | "skipped"
-    | "cancelled";
+  | "pending"
+  | "generating"
+  | "completed"
+  | "saved"
+  | "error"
+  | "skipped"
+  | "cancelled";
   progress?: GenerationProgress;
   results?: GeneratedContent;
   error?: string;
@@ -399,12 +399,12 @@ export default function AIGenerateAllButton({
         prev.map((s, idx) =>
           idx === i
             ? {
-                ...s,
-                status: "generating" as const,
-                error: undefined,
-                results: undefined,
-                elapsedTime: 0,
-              }
+              ...s,
+              status: "generating" as const,
+              error: undefined,
+              results: undefined,
+              elapsedTime: 0,
+            }
             : s,
         ),
       );
@@ -467,7 +467,7 @@ export default function AIGenerateAllButton({
     setIsRunning(false);
     setCurrentIndex(-1);
     if (totalTimerRef.current) clearInterval(totalTimerRef.current);
-  }, [products, categories, skipComplete]);
+  }, [products, categories, skipComplete, selectedModel]);
 
   // Pause/Resume
   const togglePause = () => {
@@ -587,13 +587,13 @@ export default function AIGenerateAllButton({
       prev.map((s, idx) =>
         idx === index
           ? {
-              ...s,
-              status: "generating" as const,
-              error: undefined,
-              results: undefined,
-              progress: undefined,
-              elapsedTime: 0,
-            }
+            ...s,
+            status: "generating" as const,
+            error: undefined,
+            results: undefined,
+            progress: undefined,
+            elapsedTime: 0,
+          }
           : s,
       ),
     );
@@ -684,10 +684,10 @@ export default function AIGenerateAllButton({
   const progressPercent =
     stats.total > 0
       ? Math.round(
-          ((stats.completed + stats.saved + stats.error + stats.skipped) /
-            stats.total) *
-            100,
-        )
+        ((stats.completed + stats.saved + stats.error + stats.skipped) /
+          stats.total) *
+        100,
+      )
       : 0;
 
   const formatTime = (seconds: number) => {
@@ -734,11 +734,10 @@ export default function AIGenerateAllButton({
       case "skipped":
         return (
           <span
-            className={`px-2 py-0.5 text-xs font-medium border flex items-center gap-1 ${
-              isComplete
+            className={`px-2 py-0.5 text-xs font-medium border flex items-center gap-1 ${isComplete
                 ? "bg-green-50 text-green-600 border-green-300"
                 : "bg-gray-100 text-gray-500 border-gray-300"
-            }`}
+              }`}
           >
             {isComplete && <CheckCircle2 className="w-3 h-3" />}
             {isComplete ? "ข้อมูลครบ - ข้าม" : "ข้าม"}
@@ -960,15 +959,14 @@ export default function AIGenerateAllButton({
                   {productStates.map((state, index) => (
                     <div
                       key={state.product.id}
-                      className={`transition-colors ${
-                        state.status === "generating"
+                      className={`transition-colors ${state.status === "generating"
                           ? "bg-blue-50"
                           : state.status === "saved"
                             ? "bg-green-50/50"
                             : state.status === "skipped" && state.isComplete
                               ? "bg-gray-50/50"
                               : ""
-                      }`}
+                        }`}
                     >
                       {/* Product Row */}
                       <div className="px-5 py-3 flex items-center gap-4">
@@ -1063,11 +1061,10 @@ export default function AIGenerateAllButton({
                             state.status !== "generating" && (
                               <button
                                 onClick={() => toggleExpand(index)}
-                                className={`p-1.5 border transition-all ${
-                                  state.expanded
+                                className={`p-1.5 border transition-all ${state.expanded
                                     ? "text-black bg-gray-200 border-gray-400"
                                     : "text-gray-500 hover:text-black hover:bg-gray-100 border-transparent hover:border-gray-300"
-                                }`}
+                                  }`}
                                 title="ดูรายละเอียด"
                               >
                                 <Eye className="w-4 h-4" />
@@ -1255,10 +1252,10 @@ export default function AIGenerateAllButton({
                                         <p className="text-sm text-gray-800">
                                           {displayData.gameDetails
                                             .developer || (
-                                            <span className="text-gray-400 italic">
-                                              ไม่มีข้อมูล
-                                            </span>
-                                          )}
+                                              <span className="text-gray-400 italic">
+                                                ไม่มีข้อมูล
+                                              </span>
+                                            )}
                                         </p>
                                       </div>
                                       <div
@@ -1272,10 +1269,10 @@ export default function AIGenerateAllButton({
                                         <p className="text-sm text-gray-800">
                                           {displayData.gameDetails
                                             .publisher || (
-                                            <span className="text-gray-400 italic">
-                                              ไม่มีข้อมูล
-                                            </span>
-                                          )}
+                                              <span className="text-gray-400 italic">
+                                                ไม่มีข้อมูล
+                                              </span>
+                                            )}
                                         </p>
                                       </div>
                                       <div
@@ -1314,7 +1311,7 @@ export default function AIGenerateAllButton({
                                     (displayData.categorySlug ||
                                       displayData.isFeatured !== undefined ||
                                       displayData.isBestseller !==
-                                        undefined) && (
+                                      undefined) && (
                                       <div className="grid grid-cols-3 gap-3">
                                         <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
                                           <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
@@ -1341,11 +1338,10 @@ export default function AIGenerateAllButton({
                                             สินค้าแนะนำ
                                           </h5>
                                           <span
-                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${
-                                              displayData.isFeatured
+                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isFeatured
                                                 ? "bg-yellow-200 text-yellow-800 border-yellow-400"
                                                 : "bg-gray-100 text-gray-500 border-gray-300"
-                                            }`}
+                                              }`}
                                           >
                                             {displayData.isFeatured
                                               ? "Featured"
@@ -1358,11 +1354,10 @@ export default function AIGenerateAllButton({
                                             สินค้าขายดี
                                           </h5>
                                           <span
-                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${
-                                              displayData.isBestseller
+                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isBestseller
                                                 ? "bg-green-200 text-green-800 border-green-400"
                                                 : "bg-gray-100 text-gray-500 border-gray-300"
-                                            }`}
+                                              }`}
                                           >
                                             {displayData.isBestseller
                                               ? "Bestseller"
@@ -1488,11 +1483,10 @@ export default function AIGenerateAllButton({
                       <>
                         <button
                           onClick={togglePause}
-                          className={`flex items-center gap-2 px-4 py-2 border-[3px] border-black font-bold transition-all ${
-                            isPaused
+                          className={`flex items-center gap-2 px-4 py-2 border-[3px] border-black font-bold transition-all ${isPaused
                               ? "bg-green-500 text-white hover:bg-green-600"
                               : "bg-yellow-400 text-black hover:bg-yellow-500"
-                          }`}
+                            }`}
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           {isPaused ? (

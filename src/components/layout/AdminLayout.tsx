@@ -23,6 +23,7 @@ import {
   Newspaper,
   Mail,
   Key,
+  ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/context/auth-context";
@@ -103,6 +104,11 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           title: tAdmin("manage_faq"),
           href: "/admin/faq",
           icon: <HelpCircle className="w-4 h-4" />,
+        },
+        {
+          title: tAdmin("images"),
+          href: "/admin/images",
+          icon: <ImageIcon className="w-4 h-4" />,
         },
       ],
     },

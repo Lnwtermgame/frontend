@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { TawkTo } from "@/components/tawk-to";
 import { CookieNotice } from "@/components/cookie/CookieNotice";
+import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 
 // Import Noto Sans Thai for Thai language support
 import "@fontsource/noto-sans-thai/300.css";
@@ -70,9 +71,18 @@ export const viewport: Viewport = {
 
 type PublicSettingsMetadataPayload = {
   general?: { siteName?: string; siteTagline?: string };
-  seo?: { metaTitle?: string; metaDescription?: string };
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    metaKeywords?: string;
+  };
   branding?: { faviconUrl?: string | null };
 };
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://lnwtermgame.com";
+
+const LOCALES = ["th", "en", "zh", "ja", "ko", "ms", "hi", "es", "fr"];
 
 const METADATA_FETCH_TIMEOUT_MS = 2500;
 const METADATA_FETCH_RETRIES = 3;
@@ -135,21 +145,73 @@ async function getPublicSettingsMetadata(): Promise<PublicSettingsMetadataPayloa
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getPublicSettingsMetadata();
+  const siteName =
+    settings?.general?.siteName || "Lnwtermgame";
   const title =
     settings?.seo?.metaTitle ||
-    settings?.general?.siteName ||
-    "Lnwtermgame - Game Top Up & Digital Cards";
+    siteName + " - Game Top Up & Digital Cards";
   const description =
     settings?.seo?.metaDescription ||
     settings?.general?.siteTagline ||
     "Fast and secure game top-up and digital card service.";
   const favicon = settings?.branding?.faviconUrl || "/favicon.ico";
+  const rawKeywords = settings?.seo?.metaKeywords;
+  const keywords = Array.isArray(rawKeywords)
+    ? rawKeywords
+    : typeof rawKeywords === "string" && rawKeywords
+      ? rawKeywords.split(",").map((k) => k.trim())
+      : [
+        "game top up",
+        "เติมเกม",
+        "gift card",
+        "digital card",
+        "mobile recharge",
+        "Lnwtermgame",
+      ];
+
+  const languageAlternates: Record<string, string> = {};
+  for (const locale of LOCALES) {
+    languageAlternates[locale] = `${SITE_URL}/${locale}`;
+  }
 
   return {
-    title,
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: title,
+      template: `%s | ${siteName}`,
+    },
     description,
+    keywords,
     icons: {
       icon: favicon,
+    },
+    openGraph: {
+      title,
+      description,
+      url: SITE_URL,
+      siteName,
+      type: "website",
+      locale: "th_TH",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: SITE_URL,
+      languages: languageAlternates,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
@@ -187,6 +249,7 @@ export default async function RootLayout(
             strategy="beforeInteractive"
           />
         )}
+        <HomeJsonLd />
       </head>
       <body className={cn("min-h-screen bg-brutal-gray font-sans antialiased")}>
         <ReactGrabInit />

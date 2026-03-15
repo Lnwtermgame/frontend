@@ -6,6 +6,7 @@ export interface FaqCategory {
   id: string;
   name: string;
   slug: string;
+  locale: string;
   description?: string;
   icon?: string;
   sortOrder: number;
@@ -23,6 +24,7 @@ export interface FaqArticle {
   };
   title: string;
   slug: string;
+  locale: string;
   content: string;
   excerpt?: string;
   isActive: boolean;
@@ -40,6 +42,7 @@ export interface FaqArticleListItem {
   categoryName: string;
   title: string;
   slug: string;
+  locale: string;
   content: string;
   excerpt?: string;
   isPinned: boolean;
@@ -191,6 +194,7 @@ class SupportApiService {
     categoryId?: string,
     search?: string,
     isPinned?: boolean,
+    locale?: string,
   ): Promise<ApiResponse<FaqArticleListItem[]>> {
     const params = new URLSearchParams();
     params.append("page", String(page));
@@ -198,6 +202,7 @@ class SupportApiService {
     if (categoryId) params.append("categoryId", categoryId);
     if (search) params.append("search", search);
     if (isPinned !== undefined) params.append("isPinned", String(isPinned));
+    if (locale) params.append("locale", locale);
 
     const response = await supportClient.get<ApiResponse<FaqArticleListItem[]>>(
       `/api/support/faq/articles?${params}`,
@@ -271,6 +276,7 @@ class SupportApiService {
     categoryId: string;
     title: string;
     slug?: string;
+    locale?: string;
     content: string;
     excerpt?: string;
     isActive?: boolean;

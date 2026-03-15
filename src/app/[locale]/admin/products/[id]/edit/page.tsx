@@ -171,7 +171,7 @@ export default function EditProductPage() {
       } else {
         toast.error(
           "ไม่สามารถบันทึกได้: " +
-            ((response as any).error?.message || "เกิดข้อผิดพลาด"),
+          ((response as any).error?.message || "เกิดข้อผิดพลาด"),
         );
       }
     } catch (error) {
@@ -448,11 +448,10 @@ export default function EditProductPage() {
                   แก้ไขสินค้า
                 </h1>
                 <span
-                  className={`px-2 py-0.5 text-[10px] font-medium border-[1px] border-black ${
-                    formData.isActive
+                  className={`px-2 py-0.5 text-[10px] font-medium border-[1px] border-black ${formData.isActive
                       ? "bg-brutal-green text-black"
                       : "bg-gray-200 text-gray-600"
-                  }`}
+                    }`}
                 >
                   {formData.isActive ? "เผยแพร่แล้ว" : "ฉบับร่าง"}
                 </span>
@@ -491,7 +490,7 @@ export default function EditProductPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border-2 border-black p-4 overflow-hidden relative group shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+              className="bg-white border-[2px] border-black p-4 overflow-hidden relative group shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
               <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                 <FileText className="w-20 h-20 text-brutal-blue transform rotate-12 translate-x-6 -translate-y-6" />
@@ -815,8 +814,8 @@ export default function EditProductPage() {
                         .filter((p) =>
                           imageSearch
                             ? p.name
-                                .toLowerCase()
-                                .includes(imageSearch.toLowerCase())
+                              .toLowerCase()
+                              .includes(imageSearch.toLowerCase())
                             : true,
                         )
                         .map((p) => (
@@ -904,21 +903,18 @@ export default function EditProductPage() {
 
               <div className="space-y-1">
                 <label
-                  className={`flex items-center gap-3 p-2.5 border-[2px] border-black transition-all cursor-pointer ${
-                    formData.isActive
+                  className={`flex items-center gap-3 p-2.5 border-[2px] border-black transition-all cursor-pointer ${formData.isActive
                       ? "bg-brutal-green/20"
                       : "bg-gray-100 hover:bg-gray-200"
-                  }`}
+                    }`}
                 >
                   <div
-                    className={`w-8 h-5 relative transition-colors ${
-                      formData.isActive ? "bg-brutal-green" : "bg-gray-400"
-                    }`}
+                    className={`w-8 h-5 relative transition-colors ${formData.isActive ? "bg-brutal-green" : "bg-gray-400"
+                      }`}
                   >
                     <div
-                      className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white border border-black transition-transform ${
-                        formData.isActive ? "translate-x-3" : "translate-x-0"
-                      }`}
+                      className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white border border-black transition-transform ${formData.isActive ? "translate-x-3" : "translate-x-0"
+                        }`}
                     />
                   </div>
                   <input
@@ -1015,16 +1011,14 @@ export default function EditProductPage() {
                   ประเภทสินค้า
                 </label>
                 <div
-                  className={`p-2.5 border-[2px] border-black flex items-center gap-2.5 ${
-                    isDirectTopUp ? "bg-orange-100" : "bg-blue-100"
-                  }`}
+                  className={`p-2.5 border-[2px] border-black flex items-center gap-2.5 ${isDirectTopUp ? "bg-orange-100" : "bg-blue-100"
+                    }`}
                 >
                   <div
-                    className={`p-1 border border-black ${
-                      isDirectTopUp
+                    className={`p-1 border border-black ${isDirectTopUp
                         ? "bg-orange-200 text-orange-700"
                         : "bg-blue-200 text-blue-700"
-                    }`}
+                      }`}
                   >
                     {isDirectTopUp ? (
                       <Zap className="w-4 h-4" />
@@ -1171,11 +1165,10 @@ export default function EditProductPage() {
                     {["iOS", "Android", "PC", "Console"].map((platform) => (
                       <label
                         key={platform}
-                        className={`flex items-center gap-2 p-2 border-[1px] border-black cursor-pointer transition-all ${
-                          formData.gameDetails.platforms.includes(platform)
+                        className={`flex items-center gap-2 p-2 border-[1px] border-black cursor-pointer transition-all ${formData.gameDetails.platforms.includes(platform)
                             ? "bg-purple-100 border-black"
                             : "bg-gray-50 hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         <input
                           type="checkbox"
@@ -1190,12 +1183,12 @@ export default function EditProductPage() {
                                 ...formData.gameDetails,
                                 platforms: isChecked
                                   ? [
-                                      ...formData.gameDetails.platforms,
-                                      platform,
-                                    ]
+                                    ...formData.gameDetails.platforms,
+                                    platform,
+                                  ]
                                   : formData.gameDetails.platforms.filter(
-                                      (p) => p !== platform,
-                                    ),
+                                    (p) => p !== platform,
+                                  ),
                               },
                             });
                           }}
@@ -1291,18 +1284,16 @@ export default function EditProductPage() {
                       </p>
                     </div>
                     <div
-                      className={`w-8 h-5 relative transition-colors ${
-                        formData.gameDetails.autoDelivery
+                      className={`w-8 h-5 relative transition-colors ${formData.gameDetails.autoDelivery
                           ? "bg-brutal-green"
                           : "bg-gray-400"
-                      }`}
+                        }`}
                     >
                       <div
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white border border-black transition-transform ${
-                          formData.gameDetails.autoDelivery
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white border border-black transition-transform ${formData.gameDetails.autoDelivery
                             ? "translate-x-3"
                             : "translate-x-0"
-                        }`}
+                          }`}
                       />
                     </div>
                     <input

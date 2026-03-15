@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "@/lib/framer-exports";
+import { AnimatePresence, motion } from "@/lib/framer-exports";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
@@ -22,11 +22,12 @@ import {
   AlertCircle,
   Eye,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function FaqPage() {
   const t = useTranslations("SupportFAQ");
   const tCommon = useTranslations("Common");
+  const locale = useLocale();
   const LOCAL_VOTE_KEY = "faqUserVotes";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -36,6 +37,7 @@ export default function FaqPage() {
   const [categories, setCategories] = useState<FaqCategory[]>([]);
   const [articles, setArticles] = useState<FaqArticleListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefetching, setIsRefetching] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalArticles, setTotalArticles] = useState(0);
@@ -45,10 +47,10 @@ export default function FaqPage() {
   const hasInitializedSearch = useRef(false);
   const hasLoadedVotes = useRef(false);
 
-  // Load categories on mount
+  // Load categories on mount or locale change
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, [locale]);
 
   // Rehydrate stored votes (session persistence)
   useEffect(() => {
@@ -65,10 +67,10 @@ export default function FaqPage() {
     }
   }, []);
 
-  // Load articles when category changes
+  // Load articles when category changes or locale changes
   useEffect(() => {
     loadArticles();
-  }, [selectedCategory]);
+  }, [selectedCategory, locale]);
 
   // Search debounce
   useEffect(() => {
@@ -84,7 +86,7 @@ export default function FaqPage() {
       }
     }, 300);
     return () => clearTimeout(timeout);
-  }, [searchQuery]);
+  }, [searchQuery, locale]);
 
   const loadCategories = async () => {
     try {
@@ -98,7 +100,11 @@ export default function FaqPage() {
   };
 
   const loadArticles = async () => {
-    setIsLoading(true);
+    if (articles.length === 0 && !searchQuery) {
+      setIsLoading(true);
+    } else {
+      setIsRefetching(true);
+    }
     setError(null);
     try {
       const response = await supportApi.getFaqArticles(
@@ -107,6 +113,7 @@ export default function FaqPage() {
         selectedCategory || undefined,
         undefined,
         undefined,
+        locale,
       );
       if (response.success) {
         setArticles(response.data);
@@ -116,6 +123,7 @@ export default function FaqPage() {
       setError(supportApi.getErrorMessage(err));
     } finally {
       setIsLoading(false);
+      setIsRefetching(false);
     }
   };
 
@@ -194,19 +202,12 @@ export default function FaqPage() {
   return (
     <div className="page-container bg-transparent">
       {/* Hero Section */}
-      <motion.div
+      <div
         className="bg-white border-[3px] border-black p-8 mb-8"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         <div className="max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <div>
             <div className="flex items-center justify-center mb-4">
               <div className="bg-brutal-yellow p-3 border-[3px] border-black mr-3">
                 <HelpCircle className="h-8 w-8 text-black" />
@@ -241,15 +242,13 @@ export default function FaqPage() {
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Error Message */}
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
           className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center shadow-[4px_4px_0_0_#000]"
         >
           <AlertCircle className="text-black mr-3" size={20} />
@@ -261,7 +260,7 @@ export default function FaqPage() {
             <Clock size={16} className="mr-1" />
             Retry
           </button>
-        </motion.div>
+        </div>
       )}
 
       {/* Back Link */}
@@ -294,8 +293,8 @@ export default function FaqPage() {
                   setExpandedArticle(null);
                 }}
                 className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === null
-                    ? "bg-brutal-yellow border-[2px] border-black text-black"
-                    : "text-gray-700 hover:bg-brutal-gray"
+                  ? "bg-brutal-yellow border-[2px] border-black text-black"
+                  : "text-gray-700 hover:bg-brutal-gray"
                   }`}
               >
                 <span className="bg-brutal-gray border-[2px] border-black p-1 text-black mr-3">
@@ -315,8 +314,8 @@ export default function FaqPage() {
                     setExpandedArticle(null);
                   }}
                   className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === category.id
-                      ? "bg-brutal-yellow border-[2px] border-black text-black"
-                      : "text-gray-700 hover:bg-brutal-gray"
+                    ? "bg-brutal-yellow border-[2px] border-black text-black"
+                    : "text-gray-700 hover:bg-brutal-gray"
                     }`}
                 >
                   <span className="mr-3 text-lg">{category.icon || "📄"}</span>
@@ -367,15 +366,13 @@ export default function FaqPage() {
               <p className="text-gray-600 font-bold uppercase">{tCommon("loading")}</p>
             </div>
           ) : articles.length > 0 ? (
-            <div className="space-y-4">
+            <div className={`space-y-4 transition-opacity duration-200 ${isRefetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
               {articles.map((article) => (
-                <motion.div
+                <div
                   key={article.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000] ${expandedArticle === article.id
-                      ? "bg-brutal-gray"
-                      : "bg-white"
+                  className={`border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000] transition-colors duration-200 ${expandedArticle === article.id
+                    ? "bg-brutal-gray"
+                    : "bg-white"
                     }`}
                 >
                   <button
@@ -399,72 +396,77 @@ export default function FaqPage() {
                     )}
                   </button>
 
-                  {expandedArticle === article.id && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.3 }}
-                      className="px-5 pb-5"
-                    >
-                      <div className="border-t-[3px] border-black pt-4 text-gray-700">
-                        <div className="prose prose-sm max-w-none text-black font-bold">
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              h2: (props) => <h2 className="text-lg font-black mt-4 mb-2 uppercase" {...props} />,
-                              p: (props) => <p className="mb-3 leading-relaxed uppercase" {...props} />,
-                              ul: (props) => <ul className="list-disc pl-6 mb-3" {...props} />,
-                              li: (props) => <li className="mb-1" {...props} />,
-                            }}
-                          >
-                            {article.content || article.excerpt}
-                          </ReactMarkdown>
-                        </div>
+                  <AnimatePresence>
+                    {expandedArticle === article.id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 pb-5">
+                          <div className="border-t-[3px] border-black pt-4 text-gray-700">
+                            <div className="prose prose-sm max-w-none text-black font-bold">
+                              <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                  h2: (props) => <h2 className="text-lg font-black mt-4 mb-2 uppercase" {...props} />,
+                                  p: (props) => <p className="mb-3 leading-relaxed uppercase" {...props} />,
+                                  ul: (props) => <ul className="list-disc pl-6 mb-3" {...props} />,
+                                  li: (props) => <li className="mb-1" {...props} />,
+                                }}
+                              >
+                                {article.content || article.excerpt}
+                              </ReactMarkdown>
+                            </div>
 
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
-                            <Eye size={12} />
-                            {article.viewCount}
-                          </div>
-                          <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
-                            <Tag size={12} />
-                            {article.categoryName}
+                            <div className="flex flex-wrap gap-2 mt-4">
+                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
+                                <Eye size={12} />
+                                {article.viewCount}
+                              </div>
+                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
+                                <Tag size={12} />
+                                {article.categoryName}
+                              </div>
+                            </div>
+
+                            <div className="flex justify-between items-center mt-4 pt-3 border-t-[3px] border-black">
+                              <span className="text-[10px] font-black text-gray-600 uppercase">
+                                <Clock size={12} className="inline mr-1" />
+                                {new Date(article.createdAt).toLocaleDateString()}
+                              </span>
+
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleVote(article.id, true)}
+                                  className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === true
+                                    ? "bg-brutal-green text-black"
+                                    : "bg-white hover:bg-brutal-green"
+                                    }`}
+                                >
+                                  <ThumbsUp size={12} className="mr-1" />
+                                  {t("yes")}
+                                </button>
+                                <button
+                                  onClick={() => handleVote(article.id, false)}
+                                  className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === false
+                                    ? "bg-brutal-pink text-black"
+                                    : "bg-white hover:bg-brutal-pink"
+                                    }`}
+                                >
+                                  <ThumbsDown size={12} className="mr-1" />
+                                  {t("no")}
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-
-                        <div className="flex justify-between items-center mt-4 pt-3 border-t-[3px] border-black">
-                          <span className="text-[10px] font-black text-gray-600 uppercase">
-                            <Clock size={12} className="inline mr-1" />
-                            {new Date(article.createdAt).toLocaleDateString()}
-                          </span>
-
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleVote(article.id, true)}
-                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === true
-                                  ? "bg-brutal-green text-black"
-                                  : "bg-white hover:bg-brutal-green"
-                                }`}
-                            >
-                              <ThumbsUp size={12} className="mr-1" />
-                              {t("yes")}
-                            </button>
-                            <button
-                              onClick={() => handleVote(article.id, false)}
-                              className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === false
-                                  ? "bg-brutal-pink text-black"
-                                  : "bg-white hover:bg-brutal-pink"
-                                }`}
-                            >
-                              <ThumbsDown size={12} className="mr-1" />
-                              {t("no")}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               ))}
             </div>
           ) : (

@@ -26,7 +26,11 @@ import {
   ArrowLeft,
   Sparkles,
   Wand2,
+  Settings2,
+  Check,
+  Bot,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   supportApi,
   FaqCategory,
@@ -35,6 +39,19 @@ import {
 } from "@/lib/services";
 import { aiService, AIModel } from "@/lib/services/ai-api";
 import Link from "next/link";
+
+// Supported locales
+const SUPPORTED_LOCALES = [
+  { code: "th", label: "🇹🇭 ไทย" },
+  { code: "en", label: "🇺🇸 English" },
+  { code: "zh", label: "🇨🇳 中文" },
+  { code: "ja", label: "🇯🇵 日本語" },
+  { code: "ko", label: "🇰🇷 한국어" },
+  { code: "ms", label: "🇲🇾 Melayu" },
+  { code: "hi", label: "🇮🇳 हिन्दी" },
+  { code: "es", label: "🇪🇸 Español" },
+  { code: "fr", label: "🇫🇷 Français" },
+];
 
 // Slugify helper: English-only URL-safe, with fallback if text is non-Latin
 const slugify = (text: string) => {
@@ -66,6 +83,7 @@ interface FaqArticleWithCategory {
   categoryName?: string;
   title: string;
   slug: string;
+  locale: string;
   content: string;
   excerpt?: string;
   isActive: boolean;
@@ -112,6 +130,7 @@ export default function AdminFaqPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [localeFilter, setLocaleFilter] = useState<string>("ALL");
 
   // Modals
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -154,6 +173,29 @@ export default function AdminFaqPage() {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [showAIGenerate, setShowAIGenerate] = useState(false);
+  const [aiCount, setAiCount] = useState(5);
+  const [aiCategoryId, setAiCategoryId] = useState("");
+  const [aiSystemPrompt, setAiSystemPrompt] = useState(`[Business DNA — Lnwtermgame]
+ชื่อแบรนด์: Lnwtermgame (เทพเติมเกม) | URL: https://lnwtermgame.com
+ธุรกิจ: แพลตฟอร์ม E-commerce เติมเกมออนไลน์และสินค้าดิจิทัลครบวงจร
+กลุ่มเป้าหมาย: เกมเมอร์ไทยและเอเชียตะวันออกเฉียงใต้
+บริการ: เติมเกมตรง (Direct Top-Up ผ่าน User ID), บัตรของขวัญดิจิทัล (Steam, PSN, Xbox, Nintendo, Google Play, iTunes), บัตรเติมเงินมือถือ
+จุดเด่น: จัดส่งอัตโนมัติทันที, ราคาเป็นธรรม, ปลอดภัย 100%, ซัพพอร์ต 24 ชม., ครอบคลุมทุกเกมทุกแพลตฟอร์ม
+ชำระเงิน: PromptPay, โอนธนาคาร, TrueMoney Wallet, บัตรเครดิต/เดบิต, 7-Eleven
+
+คุณคือ FAQ Content Writer ผู้เชี่ยวชาญสำหรับ Lnwtermgame
+หน้าที่: สร้างคำถามที่พบบ่อย (FAQ) เป็นภาษาไทยที่ครบถ้วน ชัดเจน และเป็นประโยชน์
+กฎ:
+- ตอบกลับเป็น JSON array เท่านั้น ไม่ใส่ markdown code block
+- ทุกคำตอบต้องละเอียดและเป็นประโยชน์จริง ไม่ generic
+- ใช้ภาษาที่เข้าใจง่ายสำหรับผู้ใช้ทั่วไป
+- content ต้องยาวพอสมควร (3-5 ย่อหน้า) อธิบายอย่างครบถ้วน
+- อ้างอิงบริการ แพลตฟอร์ม และจุดเด่นของ Lnwtermgame ตาม Business DNA`);
+  const [showSystemPrompt, setShowSystemPrompt] = useState(false);
+  const [aiGeneratedFAQs, setAiGeneratedFAQs] = useState<{ title: string; content: string; excerpt: string; locale: string; selected: boolean }[]>([]);
+  const [aiProgress, setAiProgress] = useState("");
+  const [isSavingFAQs, setIsSavingFAQs] = useState(false);
+  const [aiLocales, setAiLocales] = useState<string[]>(["th"]);
 
   // AI Model selection states
   const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
@@ -229,6 +271,7 @@ export default function AdminFaqPage() {
               categoryName: cat?.name || article.categoryName || "Unknown",
               title: article.title,
               slug: article.slug,
+              locale: article.locale || "th",
               content: article.content || "",
               excerpt: article.excerpt,
               isActive: true,
@@ -262,7 +305,9 @@ export default function AdminFaqPage() {
       (statusFilter === "ACTIVE" && article.isActive) ||
       (statusFilter === "INACTIVE" && !article.isActive) ||
       (statusFilter === "PINNED" && article.isPinned);
-    return matchesSearch && matchesCategory && matchesStatus;
+    const matchesLocale =
+      localeFilter === "ALL" || article.locale === localeFilter;
+    return matchesSearch && matchesCategory && matchesStatus && matchesLocale;
   });
 
   // Category CRUD
@@ -275,6 +320,7 @@ export default function AdminFaqPage() {
       const payload = {
         ...categoryForm,
         slug: categoryForm.slug?.trim() || slugify(categoryForm.name),
+        locale: "th" as const,
       };
       const response = await supportApi.createFaqCategory(payload);
       if (response.success) {
@@ -457,6 +503,91 @@ export default function AdminFaqPage() {
     setShowArticleModal(true);
   };
 
+  // AI FAQ Generation
+  const handleAIGenerate = async () => {
+    if (!aiTopic.trim() || !aiCategoryId) {
+      toast.error("กรุณาใส่หัวข้อและเลือกหมวดหมู่");
+      return;
+    }
+    if (aiLocales.length === 0) {
+      toast.error("กรุณาเลือกภาษาอย่างน้อย 1 ภาษา");
+      return;
+    }
+
+    const cat = categories.find((c) => c.id === aiCategoryId);
+    if (!cat) return;
+
+    setIsGeneratingAI(true);
+    setAiGeneratedFAQs([]);
+
+    try {
+      if (selectedModel) aiService.setModel(selectedModel);
+      const allFaqs: { title: string; content: string; excerpt: string; locale: string; selected: boolean }[] = [];
+
+      for (const locale of aiLocales) {
+        const localeLabel = SUPPORTED_LOCALES.find(l => l.code === locale)?.label || locale;
+        setAiProgress(`กำลังสร้าง FAQ ${aiCount} ข้อ (${localeLabel})...`);
+
+        const faqs = await aiService.generateFAQs(
+          aiTopic,
+          cat.name,
+          aiCount,
+          aiSystemPrompt,
+          locale,
+        );
+        allFaqs.push(...faqs.map((f) => ({ ...f, locale, selected: true })));
+      }
+
+      setAiGeneratedFAQs(allFaqs);
+      setAiProgress("");
+      toast.success(`สร้าง FAQ สำเร็จ ${allFaqs.length} ข้อ (${aiLocales.length} ภาษา)`);
+    } catch (err) {
+      console.error("[AI FAQ] Generation failed:", err);
+      toast.error(`สร้าง FAQ ล้มเหลว: ${err instanceof Error ? err.message : "Unknown error"}`);
+      setAiProgress("");
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const handleSaveGeneratedFAQs = async () => {
+    const selected = aiGeneratedFAQs.filter((f) => f.selected);
+    if (selected.length === 0) {
+      toast.error("กรุณาเลือก FAQ อย่างน้อย 1 ข้อ");
+      return;
+    }
+
+    setIsSavingFAQs(true);
+    let saved = 0;
+    for (const faq of selected) {
+      try {
+        const response = await supportApi.createFaqArticle({
+          categoryId: aiCategoryId,
+          title: faq.title,
+          slug: slugify(faq.title),
+          locale: faq.locale,
+          content: faq.content,
+          excerpt: faq.excerpt,
+          isActive: true,
+          isPinned: false,
+        });
+        if (response.success) saved++;
+      } catch (err) {
+        console.error(`[AI FAQ] Failed to save: ${faq.title}`, err);
+      }
+    }
+    toast.success(`บันทึก FAQ ${saved}/${selected.length} สำเร็จ`);
+    setAiGeneratedFAQs([]);
+    setIsSavingFAQs(false);
+    loadData();
+  };
+
+  const toggleFaqSelection = (index: number) => {
+    setAiGeneratedFAQs((prev) =>
+      prev.map((f, i) => (i === index ? { ...f, selected: !f.selected } : f)),
+    );
+  };
+
   return (
     <AdminLayout title="จัดการคำถามที่พบบ่อย (FAQ)">
       <div className="space-y-4">
@@ -467,6 +598,17 @@ export default function AdminFaqPage() {
             <h1 className="text-xl font-bold text-black">จัดการ FAQ</h1>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={() => setShowAIGenerate(!showAIGenerate)}
+              className={`border-[2px] border-black px-3 py-1.5 font-medium flex items-center transition-colors text-sm ${showAIGenerate
+                ? "bg-brutal-blue text-white"
+                : "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
+                }`}
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            >
+              <Sparkles size={16} className="mr-2" />
+              AI สร้าง FAQ
+            </button>
             <button
               onClick={() => {
                 setEditingCategory(null);
@@ -528,6 +670,256 @@ export default function AdminFaqPage() {
               >
                 <X size={16} />
               </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* AI Generate Panel */}
+        <AnimatePresence>
+          {showAIGenerate && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-gradient-to-br from-purple-50 to-blue-50 border-[2px] border-black overflow-hidden"
+              style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            >
+              <div className="p-3 border-b-[2px] border-black bg-gradient-to-r from-purple-100 to-blue-100">
+                <h2 className="text-base font-bold text-black flex items-center">
+                  <Bot size={18} className="mr-2 text-purple-600" />
+                  AI สร้าง FAQ อัตโนมัติ
+                </h2>
+              </div>
+              <div className="p-4 space-y-4">
+                {/* Row 1: Topic + Category + Count */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+                  <div className="md:col-span-5">
+                    <label className="block text-xs font-bold text-black mb-1">หัวข้อ / คีย์เวิร์ด</label>
+                    <input
+                      type="text"
+                      value={aiTopic}
+                      onChange={(e) => setAiTopic(e.target.value)}
+                      placeholder="เช่น: การเติมเกม, วิธีชำระเงิน, การสั่งซื้อ"
+                      className="w-full py-2 px-3 bg-white border-[2px] border-black text-sm focus:outline-none focus:border-brutal-blue"
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-bold text-black mb-1">หมวดหมู่เป้าหมาย</label>
+                    <select
+                      value={aiCategoryId}
+                      onChange={(e) => setAiCategoryId(e.target.value)}
+                      className="w-full py-2 px-3 bg-white border-[2px] border-black text-sm focus:outline-none focus:border-brutal-blue cursor-pointer"
+                    >
+                      <option value="">เลือกหมวดหมู่...</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-black mb-1">จำนวน</label>
+                    <select
+                      value={aiCount}
+                      onChange={(e) => setAiCount(Number(e.target.value))}
+                      className="w-full py-2 px-3 bg-white border-[2px] border-black text-sm focus:outline-none focus:border-brutal-blue cursor-pointer"
+                    >
+                      {[3, 5, 10, 15, 20].map((n) => (
+                        <option key={n} value={n}>{n} ข้อ</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-black mb-1">Model</label>
+                    <select
+                      value={selectedModel}
+                      onChange={(e) => {
+                        setSelectedModel(e.target.value);
+                        aiService.setModel(e.target.value);
+                      }}
+                      disabled={isLoadingModels}
+                      className="w-full py-2 px-3 bg-white border-[2px] border-black text-sm focus:outline-none focus:border-brutal-blue cursor-pointer disabled:opacity-50"
+                    >
+                      {availableModels.map((m) => (
+                        <option key={m.id} value={m.id}>{m.id}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Row 2: Locale Selection */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-black">ภาษาที่ต้องการสร้าง ({aiLocales.length} เลือก)</label>
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setAiLocales(SUPPORTED_LOCALES.map(l => l.code))}
+                        className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 border border-purple-300 hover:bg-purple-200 transition-colors"
+                      >
+                        เลือกทั้งหมด
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAiLocales(["th"])}
+                        className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors"
+                      >
+                        รีเซ็ต
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {SUPPORTED_LOCALES.map((locale) => (
+                      <label
+                        key={locale.code}
+                        className={`flex items-center gap-1.5 px-2.5 py-1.5 border-[2px] border-black text-xs font-medium cursor-pointer transition-colors ${aiLocales.includes(locale.code)
+                          ? "bg-purple-500 text-white"
+                          : "bg-white text-black hover:bg-gray-50"
+                          }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={aiLocales.includes(locale.code)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setAiLocales([...aiLocales, locale.code]);
+                            } else {
+                              setAiLocales(aiLocales.filter(l => l !== locale.code));
+                            }
+                          }}
+                          className="sr-only"
+                        />
+                        {locale.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* System Prompt (collapsible) */}
+                <div className="border-[2px] border-black bg-white">
+                  <button
+                    onClick={() => setShowSystemPrompt(!showSystemPrompt)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-black hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="flex items-center">
+                      <Settings2 size={14} className="mr-1.5 text-gray-600" />
+                      AI System Prompt (แก้ไขได้)
+                    </span>
+                    {showSystemPrompt ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </button>
+                  <AnimatePresence>
+                    {showSystemPrompt && (
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: "auto" }}
+                        exit={{ height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-3 pb-3">
+                          <textarea
+                            value={aiSystemPrompt}
+                            onChange={(e) => setAiSystemPrompt(e.target.value)}
+                            rows={6}
+                            className="w-full bg-gray-50 border-[2px] border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-black resize-y"
+                            placeholder="กำหนด system prompt สำหรับ AI..."
+                          />
+                          <p className="text-[10px] text-gray-500 mt-1">
+                            กำหนดบทบาทและกฎของ AI เช่น โทนเสียง, ความยาวคำตอบ, รูปแบบเฉพาะของเว็บ
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Generate Button */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleAIGenerate}
+                    disabled={isGeneratingAI || !aiTopic.trim() || !aiCategoryId}
+                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white border-[2px] border-black font-medium text-sm hover:from-purple-600 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    style={{ boxShadow: "2px 2px 0 0 #000" }}
+                  >
+                    {isGeneratingAI ? (
+                      <><Loader2 size={16} className="animate-spin" /> กำลังสร้าง...</>
+                    ) : (
+                      <><Sparkles size={16} /> สร้าง FAQ</>
+                    )}
+                  </button>
+                  {aiProgress && (
+                    <span className="text-xs text-purple-700 font-medium animate-pulse">{aiProgress}</span>
+                  )}
+                </div>
+
+                {/* Generated FAQs Preview */}
+                {aiGeneratedFAQs.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold text-black flex items-center">
+                        <CheckCircle size={16} className="mr-1.5 text-green-600" />
+                        ผลลัพธ์ ({aiGeneratedFAQs.filter((f) => f.selected).length}/{aiGeneratedFAQs.length} ข้อ)
+                      </h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setAiGeneratedFAQs((prev) => prev.map((f) => ({ ...f, selected: true })))}
+                          className="text-xs text-brutal-blue hover:underline"
+                        >
+                          เลือกทั้งหมด
+                        </button>
+                        <button
+                          onClick={() => setAiGeneratedFAQs((prev) => prev.map((f) => ({ ...f, selected: false })))}
+                          className="text-xs text-gray-500 hover:underline"
+                        >
+                          ยกเลิกทั้งหมด
+                        </button>
+                      </div>
+                    </div>
+
+                    {aiGeneratedFAQs.map((faq, index) => (
+                      <div
+                        key={index}
+                        className={`border-[2px] bg-white p-3 transition-all ${faq.selected
+                          ? "border-green-500"
+                          : "border-gray-300 opacity-60"
+                          }`}
+                        style={{ boxShadow: faq.selected ? "2px 2px 0 0 #22c55e" : "none" }}
+                      >
+                        <div className="flex items-start gap-2">
+                          <button
+                            onClick={() => toggleFaqSelection(index)}
+                            className={`mt-0.5 w-5 h-5 border-[2px] border-black flex items-center justify-center flex-shrink-0 ${faq.selected ? "bg-green-500 text-white" : "bg-white"
+                              }`}
+                          >
+                            {faq.selected && <Check size={12} />}
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-sm font-bold text-black">{faq.title}</h4>
+                              <span className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 border border-purple-300 font-bold shrink-0">
+                                {SUPPORTED_LOCALES.find(l => l.code === faq.locale)?.label || faq.locale}
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-0.5 italic">{faq.excerpt}</p>
+                            <p className="text-xs text-gray-700 mt-1 line-clamp-3">{faq.content}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      onClick={handleSaveGeneratedFAQs}
+                      disabled={isSavingFAQs || aiGeneratedFAQs.filter((f) => f.selected).length === 0}
+                      className="w-full py-2.5 bg-green-500 text-white border-[2px] border-black font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      style={{ boxShadow: "3px 3px 0 0 #000" }}
+                    >
+                      {isSavingFAQs ? (
+                        <><Loader2 size={16} className="animate-spin" /> กำลังบันทึก...</>
+                      ) : (
+                        <><Save size={16} /> บันทึกที่เลือก ({aiGeneratedFAQs.filter((f) => f.selected).length} ข้อ)</>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -712,6 +1104,19 @@ export default function AdminFaqPage() {
                   <option value="INACTIVE">ไม่แสดง</option>
                   <option value="PINNED">ปักหมุด</option>
                 </select>
+                {/* Locale Filter */}
+                <select
+                  value={localeFilter}
+                  onChange={(e) => setLocaleFilter(e.target.value)}
+                  className="py-1.5 px-2 bg-white border-[2px] border-gray-300 text-black text-xs focus:outline-none focus:border-black"
+                >
+                  <option value="ALL">ทุกภาษา</option>
+                  {SUPPORTED_LOCALES.map((loc) => (
+                    <option key={loc.code} value={loc.code}>
+                      {loc.label}
+                    </option>
+                  ))}
+                </select>
                 {/* Refresh */}
                 <button
                   onClick={loadData}
@@ -747,6 +1152,7 @@ export default function AdminFaqPage() {
                       setSearchQuery("");
                       setCategoryFilter("ALL");
                       setStatusFilter("ALL");
+                      setLocaleFilter("ALL");
                     }}
                     className="text-brutal-blue hover:underline mt-1 text-sm"
                   >
@@ -792,6 +1198,9 @@ export default function AdminFaqPage() {
                   <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 mb-1.5">
                     <span className="bg-brutal-blue/10 px-1.5 py-0.5 border-[1px] border-brutal-blue/30">
                       {article.categoryName}
+                    </span>
+                    <span className="bg-purple-50 px-1.5 py-0.5 border-[1px] border-purple-300 text-purple-700 text-[10px] font-bold">
+                      {SUPPORTED_LOCALES.find(l => l.code === article.locale)?.label || article.locale}
                     </span>
                     <span className="flex items-center">
                       <Eye size={12} className="mr-1" />
@@ -1262,7 +1671,7 @@ export default function AdminFaqPage() {
                                   } catch (err: any) {
                                     setError(
                                       err.message ||
-                                        "ไม่สามารถสร้างเนื้อหาด้วย AI ได้",
+                                      "ไม่สามารถสร้างเนื้อหาด้วย AI ได้",
                                     );
                                   } finally {
                                     setIsGeneratingAI(false);

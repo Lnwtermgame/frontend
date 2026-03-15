@@ -1,23 +1,49 @@
 "use client";
 
-import { motion } from "@/lib/framer-exports";
+import { useState, useEffect } from "react";
 import {
-  FileText,
   PanelRight,
   Clock,
   AlertCircle,
   ChevronRight,
   Headphones,
   HelpCircle,
+  Loader2,
+  Eye,
 } from "lucide-react";
 import Link from "next/link";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { supportApi, FaqArticleListItem } from "@/lib/services";
 
 export default function SupportPage() {
   const t = useTranslations("Support");
+  const locale = useLocale();
   const { settings } = usePublicSettings();
   const supportTicketsEnabled = settings?.features.enableSupportTickets ?? true;
+
+  const [topArticles, setTopArticles] = useState<FaqArticleListItem[]>([]);
+  const [isLoadingFaq, setIsLoadingFaq] = useState(true);
+
+  useEffect(() => {
+    loadTopArticles();
+  }, [locale]);
+
+  const loadTopArticles = async () => {
+    setIsLoadingFaq(true);
+    try {
+      const response = await supportApi.getFaqArticles(1, 50, undefined, undefined, undefined, locale);
+      if (response.success) {
+        // Sort by viewCount descending, take top 6
+        const sorted = [...response.data].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        setTopArticles(sorted.slice(0, 6));
+      }
+    } catch (err) {
+      console.error("Failed to load top FAQ articles:", err);
+    } finally {
+      setIsLoadingFaq(false);
+    }
+  };
 
   // Support category tiles
   const supportCategories = [
@@ -46,19 +72,12 @@ export default function SupportPage() {
   return (
     <div className="page-container bg-transparent">
       {/* Hero Section */}
-      <motion.div
-        className="bg-white border-[3px] border-black rounded-xl p-8 mb-8"
+      <div
+        className="bg-white border-[3px] border-black p-8 mb-8"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         <div className="max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <div>
             <div className="flex items-center justify-center mb-4">
               <div className="bg-brutal-blue p-3 border-[3px] border-black mr-3">
                 <Headphones className="h-8 w-8 text-black" />
@@ -70,9 +89,9 @@ export default function SupportPage() {
             <p className="text-gray-600 mb-6">
               {t("subtitle")}
             </p>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Support Options */}
       <section className="mb-12">
@@ -82,14 +101,10 @@ export default function SupportPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {visibleSupportCategories.map((category, index) => (
-            <motion.div
+            <div
               key={index}
-              className="bg-white border-[3px] border-black rounded-xl overflow-hidden group"
+              className="bg-white border-[3px] border-black overflow-hidden group hover:-translate-y-1 transition-transform"
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ y: -5, boxShadow: "6px 6px 0 0 #000000" }}
             >
               <Link href={category.link} className="block p-6">
                 <div className="flex items-start">
@@ -108,16 +123,16 @@ export default function SupportPage() {
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Support hours */}
+      {/* Support hours + Popular FAQ */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
           <div
-            className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8"
+            className="bg-white border-[3px] border-black p-6 md:p-8"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <div className="flex items-center mb-4">
@@ -157,62 +172,55 @@ export default function SupportPage() {
           </div>
         </div>
 
-        {/* Quick Help Topics */}
+        {/* Popular FAQ Topics - dynamic from API */}
         <div className="lg:col-span-2">
           <div
-            className="bg-white border-[3px] border-black rounded-xl p-6 md:p-8"
+            className="bg-white border-[3px] border-black p-6 md:p-8"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
-            <div className="flex items-center mb-6">
-              <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-              <h2 className="text-xl font-bold text-black">{t("common_issues.title")}</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
+                <h2 className="text-xl font-bold text-black">{t("common_issues.title")}</h2>
+              </div>
               <Link
-                href="/support/guides/missing-credits"
-                className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
+                href="/support/faq"
+                className="text-sm font-medium text-black hover:text-gray-600 flex items-center transition-colors"
               >
-                <span className="text-black">{t("common_issues.missing_credits")}</span>
-                <ChevronRight size={18} className="text-gray-600" />
-              </Link>
-              <Link
-                href="/support/guides/refund-process"
-                className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
-              >
-                <span className="text-black">{t("common_issues.refund_process")}</span>
-                <ChevronRight size={18} className="text-gray-600" />
-              </Link>
-              <Link
-                href="/support/guides/payment-issues"
-                className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
-              >
-                <span className="text-black">
-                  {t("common_issues.payment_issues")}
-                </span>
-                <ChevronRight size={18} className="text-gray-600" />
-              </Link>
-              <Link
-                href="/support/guides/account-settings"
-                className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
-              >
-                <span className="text-black">{t("common_issues.account_settings")}</span>
-                <ChevronRight size={18} className="text-gray-600" />
-              </Link>
-              <Link
-                href="/support/guides/redeem-code"
-                className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
-              >
-                <span className="text-black">{t("common_issues.redeem_code")}</span>
-                <ChevronRight size={18} className="text-gray-600" />
-              </Link>
-              <Link
-                href="/support/guides/account-security"
-                className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black rounded-lg p-4 flex justify-between items-center transition-colors"
-              >
-                <span className="text-black">{t("common_issues.account_security")}</span>
-                <ChevronRight size={18} className="text-gray-600" />
+                {t("visit")}
+                <ChevronRight size={14} className="ml-0.5" />
               </Link>
             </div>
+
+            {isLoadingFaq ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="animate-spin text-gray-400" size={28} />
+              </div>
+            ) : topArticles.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {topArticles.map((article) => (
+                  <Link
+                    key={article.id}
+                    href={`/support/faq`}
+                    className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black p-4 flex justify-between items-center transition-colors group"
+                  >
+                    <span className="text-black text-sm line-clamp-1 flex-1">{article.title}</span>
+                    <div className="flex items-center gap-2 ml-2 shrink-0">
+                      <span className="text-[10px] text-gray-500 flex items-center">
+                        <Eye size={10} className="mr-0.5" />
+                        {article.viewCount || 0}
+                      </span>
+                      <ChevronRight size={18} className="text-gray-600 group-hover:text-black transition-colors" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                <HelpCircle size={32} className="mx-auto mb-2 opacity-40" />
+                <p className="text-sm">ยังไม่มีบทความ FAQ</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

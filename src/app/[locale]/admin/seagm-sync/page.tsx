@@ -171,14 +171,14 @@ export default function SeagmSyncPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-white border-[3px] border-black rounded-xl p-6"
+      className="bg-white border-[3px] border-black p-6"
       style={{ boxShadow: "4px 4px 0 0 #000000" }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-lg ${color}`}>
+        <div className={`p-3 ${color}`}>
           <Icon className="w-6 h-6 text-white" />
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -193,11 +193,10 @@ export default function SeagmSyncPage() {
       <button
         onClick={onClick}
         disabled={isLoading}
-        className={`w-full py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 border-[3px] border-black ${
-          isLoading
+        className={`w-full py-2 px-4 font-medium transition-all flex items-center justify-center gap-2 border-[3px] border-black ${isLoading
             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
             : "bg-black text-white hover:bg-gray-800"
-        }`}
+          }`}
         style={{ boxShadow: isLoading ? "none" : "4px 4px 0 0 #000000" }}
       >
         {isLoading ? (
@@ -246,7 +245,7 @@ export default function SeagmSyncPage() {
             </span>
           </div>
           {result.errors.length > 0 && (
-            <div className="mt-2 p-2 bg-red-100 rounded-lg border-[2px] border-red-500">
+            <div className="mt-2 p-2 bg-red-100 border-[2px] border-black">
               <div className="flex items-center gap-2 text-red-600 text-sm">
                 <AlertCircle className="w-4 h-4" />
                 <span>{result.errors.length} ข้อผิดพลาด</span>
@@ -274,7 +273,7 @@ export default function SeagmSyncPage() {
           </div>
           <div className="flex items-center gap-4">
             <div
-              className="bg-white border-[3px] border-black rounded-xl px-4 py-2 flex items-center gap-3"
+              className="bg-white border-[3px] border-black px-4 py-2 flex items-center gap-3"
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               <Database className="w-5 h-5 text-brutal-purple" />
@@ -334,7 +333,7 @@ export default function SeagmSyncPage() {
 
         {/* Info Section */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl p-6"
+          className="bg-white border-[3px] border-black p-6"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -350,7 +349,7 @@ export default function SeagmSyncPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 border-[2px] border-blue-500">
+                <div className="w-8 h-8 bg-blue-100 flex items-center justify-center flex-shrink-0 border-[2px] border-blue-500">
                   <Box className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
@@ -363,7 +362,7 @@ export default function SeagmSyncPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 border-[2px] border-orange-500">
+                <div className="w-8 h-8 bg-orange-100 flex items-center justify-center flex-shrink-0 border-[2px] border-orange-500">
                   <Layers className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
@@ -379,7 +378,7 @@ export default function SeagmSyncPage() {
             </div>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 border-[2px] border-green-500">
+                <div className="w-8 h-8 bg-green-100 flex items-center justify-center flex-shrink-0 border-[2px] border-green-500">
                   <CreditCard className="w-4 h-4 text-green-600" />
                 </div>
                 <div>
@@ -392,7 +391,7 @@ export default function SeagmSyncPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 border-[2px] border-purple-500">
+                <div className="w-8 h-8 bg-purple-100 flex items-center justify-center flex-shrink-0 border-[2px] border-purple-500">
                   <Zap className="w-4 h-4 text-purple-600" />
                 </div>
                 <div>
@@ -409,7 +408,7 @@ export default function SeagmSyncPage() {
 
         {/* Error Handling Info */}
         <motion.div
-          className="bg-white border-[3px] border-black rounded-xl p-6"
+          className="bg-white border-[3px] border-black p-6"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

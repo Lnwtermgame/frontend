@@ -749,13 +749,6 @@ class ProductApiService {
     return response.data;
   }
 
-  async deleteProduct(
-    id: string,
-  ): Promise<{ success: boolean; data: { message: string } }> {
-    const response = await productClient.delete(`/api/admin/products/${id}`);
-    return response.data;
-  }
-
   // ============ Admin: Product Sync ============
 
   /**

@@ -489,7 +489,7 @@ function MainLayoutContent({
       <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 w-full max-w-full min-w-0 overflow-x-clip pb-20 lg:pb-0">
         {/* Header */}
         <header
-          className="sticky top-0 z-30 bg-white border-b-[3px] border-black"
+          className="sticky top-0 z-sticky bg-white border-b-[3px] border-black"
           style={{ boxShadow: "0 4px 0 0 #000000" }}
         >
           {/* Top row: Logo, Search, User */}
@@ -820,7 +820,7 @@ function MainLayoutContent({
 
       {/* Mobile navbar - Bottom */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-[3px] border-black lg:hidden safe-bottom h-16"
+        className="fixed bottom-0 left-0 right-0 z-overlay bg-white border-t-[3px] border-black lg:hidden safe-bottom h-16"
         style={{ boxShadow: "0 -4px 0 0 #000000" }}
       >
         <div className="flex justify-around items-center h-full">
@@ -851,7 +851,7 @@ function MainLayoutContent({
         <>
           <button
             onClick={() => setIsMobileSearchOpen(true)}
-            className="lg:hidden fixed bottom-20 right-4 z-30 w-14 h-14 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-lg"
+            className="lg:hidden fixed bottom-20 right-4 z-sticky w-14 h-14 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-lg"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
             aria-label="เปิดค้นหา"
           >

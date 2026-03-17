@@ -22,6 +22,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { TawkTo } from "@/components/tawk-to";
 import { CookieNotice } from "@/components/cookie/CookieNotice";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 // Import Noto Sans Thai for Thai language support
 import "@fontsource/noto-sans-thai/300.css";
@@ -250,6 +251,7 @@ export default async function RootLayout(
           />
         )}
         <HomeJsonLd />
+        <BreadcrumbJsonLd />
       </head>
       <body className={cn("min-h-screen bg-brutal-gray font-sans antialiased")}>
         <ReactGrabInit />

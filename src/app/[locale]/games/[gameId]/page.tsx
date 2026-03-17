@@ -47,6 +47,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
 import { useTranslations } from "next-intl";
+import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
 
 // Game details interface matching the UI expectations
 interface GameDetails {
@@ -787,6 +788,24 @@ export default function GameDetailsPage() {
     };
   }, [product?.id, isAuthenticated]);
 
+  // Client-side document title + meta description for SEO
+  // IMPORTANT: This hook must be BEFORE any early returns to satisfy Rules of Hooks
+  useEffect(() => {
+    if (!game) return;
+    const metaTitle = game.metaTitle || game.title;
+    document.title = `${metaTitle} | Lnwtermgame`;
+
+    const metaDesc =
+      game.metaDescription || game.shortDescription || game.description;
+    let descTag = document.querySelector('meta[name="description"]');
+    if (!descTag) {
+      descTag = document.createElement("meta");
+      descTag.setAttribute("name", "description");
+      document.head.appendChild(descTag);
+    }
+    descTag.setAttribute("content", metaDesc);
+  }, [game]);
+
   if (loading) {
     return (
       <div className="page-container flex items-center justify-center h-96 bg-transparent">
@@ -823,8 +842,31 @@ export default function GameDetailsPage() {
     );
   }
 
+  // Compute price range for JSON-LD
+  const priceLow = game?.topUpOptions?.length
+    ? Math.min(...game.topUpOptions.map((o) => o.price))
+    : undefined;
+  const priceHigh = game?.topUpOptions?.length
+    ? Math.max(...game.topUpOptions.map((o) => o.price))
+    : undefined;
+
   return (
     <div className="page-container bg-transparent">
+      {/* Product JSON-LD for SEO */}
+      {game && product && (
+        <ProductJsonLd
+          name={game.title}
+          description={game.metaDescription || game.shortDescription || game.description}
+          image={game.mainImage}
+          slug={product.slug || product.id}
+          priceLow={priceLow}
+          priceHigh={priceHigh}
+          category={game.category}
+          rating={game.rating}
+          ratingCount={game.ratingCount}
+        />
+      )}
+
       {/* Back link */}
       <div className="mb-6">
         <Link

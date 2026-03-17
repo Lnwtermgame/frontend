@@ -93,24 +93,28 @@ export function Footer() {
       title: tFooter("features.payment"),
       desc: tFooter("features.payment_desc"),
       color: "bg-brutal-yellow",
+      tint: "bg-yellow-50",
     },
     {
-      icon: ShieldCheck,
+      icon: ShieldCheck, // Kept ShieldCheck as Shield is not imported
       title: tFooter("features.security"),
       desc: tFooter("features.security_desc"),
       color: "bg-brutal-green",
+      tint: "bg-emerald-50",
     },
     {
       icon: DollarSign,
       title: tFooter("features.price"),
       desc: tFooter("features.price_desc"),
       color: "bg-brutal-pink",
+      tint: "bg-pink-50",
     },
     {
       icon: Headphones,
       title: tFooter("features.support"),
       desc: tFooter("features.support_desc"),
       color: "bg-brutal-blue",
+      tint: "bg-teal-50",
     },
   ];
 
@@ -151,7 +155,7 @@ export function Footer() {
 
   return (
     <footer className="bg-white border-t-[3px] border-black mt-auto">
-      <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="lg:col-span-4 space-y-3 flex flex-col items-center md:items-start text-center md:text-left">
             <Link href="/" className="inline-block">
@@ -332,11 +336,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 py-4 mt-4 border-t-[2px] border-b-[2px] border-black">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 py-4 mt-6 border-t-[2px] border-b-[2px] border-black">
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              className="flex items-center gap-2.5 p-2.5 bg-brutal-gray border-[2px] border-black"
+              className={`flex items-center gap-2.5 p-2.5 ${feature.tint} border-[2px] border-black`}
               style={{ boxShadow: "3px 3px 0 0 #000000" }}
               whileHover={{ y: -2, boxShadow: "4px 4px 0 0 #000000" }}
             >
@@ -358,26 +362,26 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="pt-4 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div className="pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
           <div className="text-[10px] text-gray-500 font-medium text-center md:text-left">
             &copy; {year} {siteName} {tFooter("copyright")}
           </div>
           <div className="flex flex-wrap justify-center gap-3 text-[10px] text-gray-500">
             <Link
               href="/privacy"
-              className="hover:text-black font-medium transition-colors"
+              className="hover:text-brutal-pink font-medium transition-colors"
             >
               {tFooter("privacy_policy")}
             </Link>
             <Link
               href="/terms"
-              className="hover:text-black font-medium transition-colors"
+              className="hover:text-brutal-pink font-medium transition-colors"
             >
               {tFooter("terms_of_service")}
             </Link>
             <Link
               href="/refund"
-              className="hover:text-black font-medium transition-colors"
+              className="hover:text-brutal-pink font-medium transition-colors"
             >
               {tFooter("refund_policy")}
             </Link>

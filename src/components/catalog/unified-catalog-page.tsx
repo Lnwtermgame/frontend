@@ -480,7 +480,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
   );
 
   return (
-    <div className="space-y-6">
+    <div>
       <div className="flex flex-col lg:flex-row gap-6 min-w-0">
         <motion.div
           className="hidden lg:block w-64 lg:min-w-[256px] shrink-0"
@@ -613,7 +613,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           </div>
         </motion.div>
 
-        <div className="flex-1 min-w-0 space-y-6">
+        <div className="flex-1 min-w-0">
           <motion.div
             className="bg-white border-[3px] border-black p-5"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
@@ -708,12 +708,12 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           </motion.div>
 
           <motion.div
-            className="space-y-4"
+            className="mt-6 md:mt-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <h2 className="text-gray-900 text-lg font-black flex items-center">
+            <h2 className="text-gray-900 text-lg font-black flex items-center mb-4">
               {copy.gridTitle}
               <span className="ml-2 text-sm font-normal text-gray-500">
                 ({filteredItems.length})

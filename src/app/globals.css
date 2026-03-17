@@ -50,6 +50,32 @@
     --trust-text: #1f2937;
     --trust-muted: #6b7280;
     --trust-border: #e5e7eb;
+
+    /* Semantic Spacing Scale (4pt base) */
+    --space-xs: 0.25rem;
+    /* 4px */
+    --space-sm: 0.5rem;
+    /* 8px */
+    --space-md: 1rem;
+    /* 16px */
+    --space-lg: 1.5rem;
+    /* 24px */
+    --space-xl: 2rem;
+    /* 32px */
+    --space-2xl: 3rem;
+    /* 48px */
+    --space-3xl: 4rem;
+    /* 64px */
+    --space-4xl: 6rem;
+    /* 96px */
+
+    /* Semantic Z-Index Scale */
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-overlay: 30;
+    --z-modal: 40;
+    --z-toast: 50;
+    --z-tooltip: 60;
   }
 
   html[lang="zh"] {
@@ -143,7 +169,7 @@
   }
 
   body {
-    background-color: #f9fafb;
+    background-color: oklch(97.5% 0.005 180);
     color: #1f2937;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

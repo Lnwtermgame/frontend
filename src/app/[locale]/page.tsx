@@ -536,7 +536,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 space-y-8 md:space-y-12 mt-4 md:mt-10">
+      <div className="container mx-auto px-4 mt-4 md:mt-10">
         {/* Search Bar - Mobile */}
         <section className="md:hidden">
           <div className="relative group">
@@ -551,7 +551,7 @@ export default function HomePage() {
 
         {/* Featured Promotion Cards */}
         {promotionsEnabled && (
-          <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <section className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6 md:mb-8">
             {promoCards.slice(0, 3).map((card, index) => {
               const isPrimary = index === 0;
               const cardClass =
@@ -646,7 +646,7 @@ export default function HomePage() {
 
         {/* Categories - Horizontal Scroll */}
         {promotionsEnabled && (
-          <section>
+          <section className="mb-3 md:mb-4">
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
               {categoryTabs.map((category) => (
                 <motion.button
@@ -678,8 +678,8 @@ export default function HomePage() {
         )}
 
         {/* Featured Games - From Database */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
+        <section className="mt-4 md:mt-6">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
               <span className="w-1.5 h-5 sm:h-6 bg-brutal-pink mr-2"></span>
               {sectionLabels.featuredProductsTitle}
@@ -819,21 +819,27 @@ export default function HomePage() {
         </section>
 
         {/* Trust Badges */}
-        <section className="grid grid-cols-3 gap-2 sm:gap-4">
+        <section className="grid grid-cols-3 gap-2 sm:gap-4 mt-section">
           {trustBadges.map((badge, i) => {
             const BadgeIcon =
               TRUST_BADGE_ICON_MAP[badge.icon as keyof typeof TRUST_BADGE_ICON_MAP] || TRUST_BADGE_ICON_MAP.shield;
+            const badgeThemes = [
+              { bg: 'bg-emerald-50', icon: 'text-emerald-600' },
+              { bg: 'bg-pink-50', icon: 'text-pink-500' },
+              { bg: 'bg-teal-50', icon: 'text-teal-600' },
+            ];
+            const theme = badgeThemes[i % badgeThemes.length];
             return (
               <div
                 key={badge.id || i}
-                className="bg-white border-[2px] border-black p-3 sm:p-4 text-center"
+                className={`${theme.bg} border-[2px] border-black p-3 sm:p-4 text-center`}
                 style={{ boxShadow: "3px 3px 0 0 #000000" }}
               >
-                <BadgeIcon size={24} className="mx-auto text-black mb-2" />
+                <BadgeIcon size={24} className={`mx-auto ${theme.icon} mb-2`} />
                 <p className="text-xs sm:text-sm font-bold text-black">
                   {badge.title}
                 </p>
-                <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">
+                <p className="text-[10px] sm:text-xs text-gray-600 hidden sm:block">
                   {badge.description}
                 </p>
               </div>
@@ -842,8 +848,8 @@ export default function HomePage() {
         </section>
 
         {/* News Section */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
+        <section className="mt-section">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
               <span className="w-1.5 h-5 sm:h-6 bg-brutal-blue mr-2"></span>
               {sectionLabels.newsTitle}
@@ -862,7 +868,7 @@ export default function HomePage() {
               ? newsArticles.map((item) => (
                 <Link key={item.id} href={`/news/${item.slug}`}>
                   <motion.div
-                    className="bg-white border-[3px] border-black overflow-hidden hover:-translate-y-1 transition-all h-full"
+                    className="bg-white border-[3px] border-black border-t-[4px] border-t-brutal-blue overflow-hidden hover:-translate-y-1 transition-all h-full"
                     style={{ boxShadow: "4px 4px 0 0 #000000" }}
                     whileHover={{ scale: 1.01 }}
                   >
@@ -896,9 +902,9 @@ export default function HomePage() {
               ))
               : (
                 <div className="col-span-full text-center py-12">
-                  <Clock size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500 font-bold">ยังไม่มีข่าวสาร</p>
-                  <p className="text-gray-400 text-sm mt-1">ติดตามข่าวสารและโปรโมชั่นได้เร็วๆ นี้</p>
+                  <Clock size={48} className="mx-auto text-brutal-blue/40 mb-4" />
+                  <p className="text-gray-600 font-bold">ยังไม่มีข่าวสาร</p>
+                  <p className="text-gray-500 text-sm mt-1">ติดตามข่าวสารและโปรโมชั่นได้เร็วๆ นี้</p>
                 </div>
               )}
           </div>

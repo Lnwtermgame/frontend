@@ -107,6 +107,20 @@ module.exports = {
       spacing: {
         18: "4.5rem", // 72px - touch target
         22: "5.5rem", // 88px - large buttons
+        // Semantic spacing tokens (use these instead of arbitrary values)
+        'tight': 'var(--space-sm)',     // 8px — siblings, related items
+        'related': 'var(--space-md)',   // 16px — related groups
+        'section': 'var(--space-2xl)', // 48px — between distinct sections
+        'block': 'var(--space-3xl)',   // 64px — major page blocks
+        'region': 'var(--space-4xl)',  // 96px — hero-level separations
+      },
+      zIndex: {
+        dropdown: 'var(--z-dropdown)',
+        sticky: 'var(--z-sticky)',
+        overlay: 'var(--z-overlay)',
+        modal: 'var(--z-modal)',
+        toast: 'var(--z-toast)',
+        tooltip: 'var(--z-tooltip)',
       },
       screens: {
         xs: "375px", // iPhone SE

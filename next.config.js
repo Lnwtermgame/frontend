@@ -70,6 +70,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.lnwtermgame.com",
       },
+      {
+        // Appwrite storage — product images
+        protocol: "https",
+        hostname: "**.appwrite.io",
+      },
+      {
+        // SEAGM CDN — product thumbnails
+        protocol: "https",
+        hostname: "**.seagm.com",
+      },
     ],
     dangerouslyAllowSVG: true,
     // Use inline disposition so SVG/payment icons render in-place

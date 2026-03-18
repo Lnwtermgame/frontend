@@ -1750,5 +1750,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Página No Encontrada",
+      "description": "La página que buscas no existe o ha sido movida.",
+      "goHome": "← Ir al Inicio",
+      "goBack": "Volver"
+    },
+    "generic": {
+      "title": "Algo Salió Mal",
+      "description": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo.",
+      "tryAgain": "Reintentar",
+      "goHome": "← Ir al Inicio"
+    }
   }
 }

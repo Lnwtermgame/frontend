@@ -270,7 +270,7 @@ export class NotificationWebSocket {
       };
 
       this.ws.onerror = (error) => {
-        console.error("[WebSocket] Error:", error);
+        console.warn("[WebSocket] Error:", error);
         this.isConnecting = false;
         this.onError?.(error);
       };

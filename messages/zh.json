@@ -1690,5 +1690,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "页面未找到",
+      "description": "您要查找的页面不存在或已被移动。",
+      "goHome": "← 返回首页",
+      "goBack": "返回"
+    },
+    "generic": {
+      "title": "出了点问题",
+      "description": "发生了意外错误，请重试。",
+      "tryAgain": "重试",
+      "goHome": "← 返回首页"
+    }
   }
 }

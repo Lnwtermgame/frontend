@@ -1750,5 +1750,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "페이지를 찾을 수 없습니다",
+      "description": "찾고 있는 페이지가 존재하지 않거나 이동되었습니다.",
+      "goHome": "← 홈으로",
+      "goBack": "뒤로가기"
+    },
+    "generic": {
+      "title": "문제가 발생했습니다",
+      "description": "예기치 않은 오류가 발생했습니다. 다시 시도해주세요.",
+      "tryAgain": "다시 시도",
+      "goHome": "← 홈으로"
+    }
   }
 }

@@ -1750,5 +1750,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "ページが見つかりません",
+      "description": "お探しのページは存在しないか、移動されました。",
+      "goHome": "← ホームへ",
+      "goBack": "戻る"
+    },
+    "generic": {
+      "title": "エラーが発生しました",
+      "description": "予期しないエラーが発生しました。もう一度お試しください。",
+      "tryAgain": "再試行",
+      "goHome": "← ホームへ"
+    }
   }
 }

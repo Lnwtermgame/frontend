@@ -1750,5 +1750,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Not Found",
+      "description": "The page you are looking for does not exist or has been moved.",
+      "goHome": "← Go Home",
+      "goBack": "Go Back"
+    },
+    "generic": {
+      "title": "Something Went Wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "tryAgain": "Try Again",
+      "goHome": "← Go Home"
+    }
   }
 }

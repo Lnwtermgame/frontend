@@ -85,11 +85,13 @@ async function getCmsPage(slug: string) {
     });
 
     if (!response.ok) {
-      console.error("[Frontend] Failed to fetch CMS page", {
-        slug,
-        endpoint,
-        status: response.status,
-      });
+      // 404 is expected for non-CMS slugs — only log server errors
+      if (response.status >= 500) {
+        console.error("[Frontend] CMS page fetch error", {
+          slug,
+          status: response.status,
+        });
+      }
       return null;
     }
 

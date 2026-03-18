@@ -1756,5 +1756,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Non Trouvée",
+      "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
+      "goHome": "← Accueil",
+      "goBack": "Retour"
+    },
+    "generic": {
+      "title": "Une Erreur s'est Produite",
+      "description": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "tryAgain": "Réessayer",
+      "goHome": "← Accueil"
+    }
   }
 }

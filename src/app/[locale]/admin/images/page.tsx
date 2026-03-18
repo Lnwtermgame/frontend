@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
 import {
@@ -664,122 +665,125 @@ export default function AdminImagesPage() {
                     </div>
                 )}
 
-                {/* Preview Modal */}
-                <AnimatePresence>
-                    {previewFile && (
-                        <div
-                            className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
-                            onClick={() => setPreviewFile(null)}
-                        >
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="bg-white border-[3px] border-black w-full max-w-3xl overflow-hidden"
-                                style={{ boxShadow: "4px 4px 0 0 #000" }}
-                                onClick={(e) => e.stopPropagation()}
+                {/* Preview Modal - Rendered via Portal to escape stacking contexts */}
+                {typeof document !== "undefined" && createPortal(
+                    <AnimatePresence>
+                        {previewFile && (
+                            <div
+                                className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
+                                onClick={() => setPreviewFile(null)}
                             >
-                                {/* Modal Header */}
-                                <div className="p-4 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
-                                    <h3 className="text-lg font-bold text-white flex items-center gap-2 truncate">
-                                        <Eye className="w-5 h-5 flex-shrink-0" />
-                                        <span className="truncate">{previewFile.name}</span>
-                                    </h3>
-                                    <button
-                                        onClick={() => setPreviewFile(null)}
-                                        className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors flex-shrink-0"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </button>
-                                </div>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="bg-white border-[3px] border-black w-full max-w-3xl overflow-hidden"
+                                    style={{ boxShadow: "4px 4px 0 0 #000" }}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {/* Modal Header */}
+                                    <div className="p-4 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
+                                        <h3 className="text-lg font-bold text-white flex items-center gap-2 truncate">
+                                            <Eye className="w-5 h-5 flex-shrink-0" />
+                                            <span className="truncate">{previewFile.name}</span>
+                                        </h3>
+                                        <button
+                                            onClick={() => setPreviewFile(null)}
+                                            className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors flex-shrink-0"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
 
-                                {/* Modal Content */}
-                                <div className="p-6">
-                                    {/* Preview Image */}
-                                    {isImageMime(previewFile.mimeType) ? (
-                                        <div className="bg-gray-100 border-[2px] border-black flex items-center justify-center max-h-[50vh] overflow-hidden mb-4">
-                                            <img
-                                                src={previewFile.url}
-                                                alt={previewFile.name}
-                                                className="max-w-full max-h-[50vh] object-contain"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="bg-gray-100 border-[2px] border-black flex items-center justify-center py-12 mb-4">
-                                            <FileText className="w-16 h-16 text-gray-400" />
-                                        </div>
-                                    )}
+                                    {/* Modal Content */}
+                                    <div className="p-6">
+                                        {/* Preview Image */}
+                                        {isImageMime(previewFile.mimeType) ? (
+                                            <div className="bg-gray-100 border-[2px] border-black flex items-center justify-center max-h-[50vh] overflow-hidden mb-4">
+                                                <img
+                                                    src={previewFile.url}
+                                                    alt={previewFile.name}
+                                                    className="max-w-full max-h-[50vh] object-contain"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="bg-gray-100 border-[2px] border-black flex items-center justify-center py-12 mb-4">
+                                                <FileText className="w-16 h-16 text-gray-400" />
+                                            </div>
+                                        )}
 
-                                    {/* File Info */}
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                                        <div className="bg-gray-50 border-[2px] border-black p-3">
-                                            <p className="text-xs text-gray-500 font-bold">ขนาด</p>
-                                            <p className="font-medium text-black">{formatFileSize(previewFile.size)}</p>
+                                        {/* File Info */}
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                                            <div className="bg-gray-50 border-[2px] border-black p-3">
+                                                <p className="text-xs text-gray-500 font-bold">ขนาด</p>
+                                                <p className="font-medium text-black">{formatFileSize(previewFile.size)}</p>
+                                            </div>
+                                            <div className="bg-gray-50 border-[2px] border-black p-3">
+                                                <p className="text-xs text-gray-500 font-bold">ประเภท</p>
+                                                <p className="font-medium text-black">{previewFile.mimeType}</p>
+                                            </div>
+                                            <div className="bg-gray-50 border-[2px] border-black p-3">
+                                                <p className="text-xs text-gray-500 font-bold">สร้างเมื่อ</p>
+                                                <p className="font-medium text-black">{formatDate(previewFile.createdAt)}</p>
+                                            </div>
+                                            <div className="bg-gray-50 border-[2px] border-black p-3">
+                                                <p className="text-xs text-gray-500 font-bold">ID</p>
+                                                <p className="font-medium text-black truncate" title={previewFile.id}>{previewFile.id}</p>
+                                            </div>
                                         </div>
-                                        <div className="bg-gray-50 border-[2px] border-black p-3">
-                                            <p className="text-xs text-gray-500 font-bold">ประเภท</p>
-                                            <p className="font-medium text-black">{previewFile.mimeType}</p>
-                                        </div>
-                                        <div className="bg-gray-50 border-[2px] border-black p-3">
-                                            <p className="text-xs text-gray-500 font-bold">สร้างเมื่อ</p>
-                                            <p className="font-medium text-black">{formatDate(previewFile.createdAt)}</p>
-                                        </div>
-                                        <div className="bg-gray-50 border-[2px] border-black p-3">
-                                            <p className="text-xs text-gray-500 font-bold">ID</p>
-                                            <p className="font-medium text-black truncate" title={previewFile.id}>{previewFile.id}</p>
+
+                                        {/* URL */}
+                                        <div className="mt-4 bg-gray-50 border-[2px] border-black p-3">
+                                            <p className="text-xs text-gray-500 font-bold mb-1">URL</p>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    readOnly
+                                                    value={previewFile.url}
+                                                    className="flex-1 text-xs bg-white border border-gray-300 px-2 py-1.5 text-gray-700"
+                                                    onClick={(e) => (e.target as HTMLInputElement).select()}
+                                                />
+                                                <button
+                                                    onClick={() => handleCopyUrl(previewFile)}
+                                                    className="px-3 py-1.5 bg-brutal-blue text-white border-[2px] border-black text-xs font-medium hover:bg-blue-600 transition-all flex items-center gap-1"
+                                                    style={{ boxShadow: "1px 1px 0 0 #000" }}
+                                                >
+                                                    {copiedId === previewFile.id ? (
+                                                        <>
+                                                            <Check className="w-3 h-3" /> คัดลอกแล้ว
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Copy className="w-3 h-3" /> คัดลอก
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* URL */}
-                                    <div className="mt-4 bg-gray-50 border-[2px] border-black p-3">
-                                        <p className="text-xs text-gray-500 font-bold mb-1">URL</p>
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="text"
-                                                readOnly
-                                                value={previewFile.url}
-                                                className="flex-1 text-xs bg-white border border-gray-300 px-2 py-1.5 text-gray-700"
-                                                onClick={(e) => (e.target as HTMLInputElement).select()}
-                                            />
-                                            <button
-                                                onClick={() => handleCopyUrl(previewFile)}
-                                                className="px-3 py-1.5 bg-brutal-blue text-white border-[2px] border-black text-xs font-medium hover:bg-blue-600 transition-all flex items-center gap-1"
-                                                style={{ boxShadow: "1px 1px 0 0 #000" }}
-                                            >
-                                                {copiedId === previewFile.id ? (
-                                                    <>
-                                                        <Check className="w-3 h-3" /> คัดลอกแล้ว
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Copy className="w-3 h-3" /> คัดลอก
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
+                                    {/* Modal Footer */}
+                                    <div className="p-4 border-t-[3px] border-black bg-gray-50 flex justify-between">
+                                        <button
+                                            onClick={() => handleDelete(previewFile)}
+                                            className="px-4 py-2 bg-red-500 text-white border-[2px] border-black text-sm font-medium hover:bg-red-600 transition-all flex items-center gap-1"
+                                            style={{ boxShadow: "2px 2px 0 0 #000" }}
+                                        >
+                                            <Trash2 className="w-4 h-4" /> ลบไฟล์
+                                        </button>
+                                        <button
+                                            onClick={() => setPreviewFile(null)}
+                                            className="px-4 py-2 bg-white text-black border-[2px] border-black text-sm font-medium hover:bg-gray-100 transition-all"
+                                        >
+                                            ปิด
+                                        </button>
                                     </div>
-                                </div>
-
-                                {/* Modal Footer */}
-                                <div className="p-4 border-t-[3px] border-black bg-gray-50 flex justify-between">
-                                    <button
-                                        onClick={() => handleDelete(previewFile)}
-                                        className="px-4 py-2 bg-red-500 text-white border-[2px] border-black text-sm font-medium hover:bg-red-600 transition-all flex items-center gap-1"
-                                        style={{ boxShadow: "2px 2px 0 0 #000" }}
-                                    >
-                                        <Trash2 className="w-4 h-4" /> ลบไฟล์
-                                    </button>
-                                    <button
-                                        onClick={() => setPreviewFile(null)}
-                                        className="px-4 py-2 bg-white text-black border-[2px] border-black text-sm font-medium hover:bg-gray-100 transition-all"
-                                    >
-                                        ปิด
-                                    </button>
-                                </div>
-                            </motion.div>
-                        </div>
-                    )}
-                </AnimatePresence>
+                                </motion.div>
+                            </div>
+                        )}
+                    </AnimatePresence>,
+                    document.body
+                )}
             </div>
         </AdminLayout>
     );

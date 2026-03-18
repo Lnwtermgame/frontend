@@ -1750,5 +1750,19 @@
       "SLA_8": "SLA 8h",
       "SLA_24": "SLA 24h"
     }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Halaman Tidak Dijumpai",
+      "description": "Halaman yang anda cari tidak wujud atau telah dipindahkan.",
+      "goHome": "← Ke Laman Utama",
+      "goBack": "Kembali"
+    },
+    "generic": {
+      "title": "Sesuatu Tidak Kena",
+      "description": "Ralat tidak dijangka telah berlaku. Sila cuba lagi.",
+      "tryAgain": "Cuba Lagi",
+      "goHome": "← Ke Laman Utama"
+    }
   }
 }

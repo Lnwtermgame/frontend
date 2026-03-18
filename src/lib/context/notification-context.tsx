@@ -240,7 +240,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     };
 
     const handleError = (error: Event) => {
-      console.error("[NotificationContext] WebSocket error:", error);
+      console.warn("[NotificationContext] WebSocket error:", error);
     };
 
     // Assign handlers

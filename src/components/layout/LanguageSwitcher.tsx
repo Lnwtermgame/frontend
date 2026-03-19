@@ -2,7 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { Languages, ChevronDown, Check } from "lucide-react";
@@ -34,6 +34,7 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
   const containerRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage = languages.find((l) => l.code === locale) || languages[0];
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setMounted(true);
@@ -48,7 +49,9 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
 
   const handleLanguageChange = (newLocale: string) => {
     setIsOpen(false);
-    router.replace(pathname, { locale: newLocale as any });
+    startTransition(() => {
+      router.replace(pathname, { locale: newLocale as any });
+    });
   };
 
   const getFlagUrl = (code: string) => `https://kapowaz.github.io/square-flags/flags/${code}.svg`;

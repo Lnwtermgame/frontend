@@ -52,7 +52,7 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-// Component that reads search params
+// Component that reads search params without suspending on locale changes
 function SearchParamsReader({
   children,
 }: {

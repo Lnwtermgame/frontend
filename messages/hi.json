@@ -1219,5 +1219,14 @@
     "no_deals": "कोई छूट वाले उत्पाद नहीं",
     "no_products": "कोई उत्पाद उपलब्ध नहीं",
     "no_news": "अभी कोई समाचार नहीं",
-    "promotion_badge": "प्रोमो"
+    "promotion_badge": "प्रोमो",
+    "login_success": "लॉगिन सफल",
+    "invalid_email_password": "अमान्य ईमेल या पासवर्ड",
+    "register_success": "पंजीकरण सफल",
+    "register_error": "पंजीकरण त्रुटि",
+    "logout_success": "लॉगआउट सफल",
+    "profile_update_success": "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई",
+    "profile_update_error": "प्रोफ़ाइल अपडेट विफल रहा",
+    "password_change_success": "पासवर्ड सफलतापूर्वक बदल गया",
+    "login_error": "लॉगिन त्रुटि"
 }

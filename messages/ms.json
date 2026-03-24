@@ -1219,5 +1219,14 @@
     "no_deals": "Tiada produk berdiskaun tersedia",
     "no_products": "Tiada produk tersedia",
     "no_news": "Belum ada artikel berita",
-    "promotion_badge": "PROMO"
+    "promotion_badge": "PROMO",
+    "login_success": "Log masuk berjaya",
+    "invalid_email_password": "E-mel atau kata laluan tidak sah",
+    "register_success": "Pendaftaran berjaya",
+    "register_error": "Ralat pendaftaran",
+    "logout_success": "Log keluar berjaya",
+    "profile_update_success": "Profil berjaya dikemas kini",
+    "profile_update_error": "Kemas kini profil gagal",
+    "password_change_success": "Kata laluan berjaya ditukar",
+    "login_error": "Ralat log masuk"
 }

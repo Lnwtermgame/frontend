@@ -1219,5 +1219,14 @@
     "no_deals": "割引商品はありません",
     "no_products": "商品がありません",
     "no_news": "ニュースはまだありません",
-    "promotion_badge": "セール"
+    "promotion_badge": "セール",
+    "login_success": "ログインに成功しました",
+    "invalid_email_password": "メールアドレスまたはパスワードが正しくありません",
+    "register_success": "登録に成功しました",
+    "register_error": "登録エラー",
+    "logout_success": "ログアウトしました",
+    "profile_update_success": "プロフィールを更新しました",
+    "profile_update_error": "プロフィールの更新に失敗しました",
+    "password_change_success": "パスワードを変更しました",
+    "login_error": "ログインエラー"
 }

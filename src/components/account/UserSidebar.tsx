@@ -13,6 +13,7 @@ import {
   LayoutGrid,
   X,
   Menu,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMemo, memo, useState, useEffect } from "react";
@@ -89,6 +90,7 @@ const UserSidebar = memo(function UserSidebar({
 }) {
   const pathname = usePathname();
   const t = useTranslations("UserMenu");
+  const tAccount = useTranslations("Account");
 
   const navItems = useMemo(
     () => [
@@ -134,8 +136,14 @@ const UserSidebar = memo(function UserSidebar({
         icon: <Bell className="w-[18px] h-[18px]" />,
         color: "",
       },
+      {
+        href: "/dashboard/account/security",
+        label: tAccount("security"),
+        icon: <Shield className="w-[18px] h-[18px]" />,
+        color: "",
+      },
     ],
-    [t],
+    [t, tAccount],
   );
 
   const renderSidebarContent = (className?: string) => (

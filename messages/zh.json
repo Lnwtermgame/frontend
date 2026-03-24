@@ -1219,5 +1219,14 @@
     "no_deals": "暂无折扣商品",
     "no_products": "暂无商品",
     "no_news": "暂无新闻",
-    "promotion_badge": "优惠"
+    "promotion_badge": "优惠",
+    "login_success": "登录成功",
+    "invalid_email_password": "电子邮件或密码错误",
+    "register_success": "注册成功",
+    "register_error": "注册错误",
+    "logout_success": "登出成功",
+    "profile_update_success": "个人资料更新成功",
+    "profile_update_error": "个人资料更新失败",
+    "password_change_success": "密码修改成功",
+    "login_error": "登录错误"
 }

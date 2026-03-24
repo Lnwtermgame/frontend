@@ -1219,5 +1219,14 @@
     "no_deals": "할인 상품이 없습니다",
     "no_products": "상품이 없습니다",
     "no_news": "뉴스가 아직 없습니다",
-    "promotion_badge": "프로모션"
+    "promotion_badge": "프로모션",
+    "login_success": "로그인 성공",
+    "invalid_email_password": "이메일 또는 비밀번호가 잘못되었습니다",
+    "register_success": "회원가입 성공",
+    "register_error": "등록 오류",
+    "logout_success": "로그아웃 성공",
+    "profile_update_success": "프로필 업데이트 성공",
+    "profile_update_error": "프로필 업데이트 실패",
+    "password_change_success": "비밀번호 변경 성공",
+    "login_error": "로그인 오류"
 }

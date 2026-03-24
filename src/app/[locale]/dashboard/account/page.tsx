@@ -153,14 +153,6 @@ export default function AccountPage() {
     )
     .slice(0, 5);
 
-  const accountLinks = [
-    {
-      icon: <Shield size={18} />,
-      label: t("security"),
-      href: "/dashboard/account/security",
-    },
-  ];
-
   // Check if email is verified
   const isEmailVerified = user?.emailVerified ?? true; // Default to true if not provided (for backward compatibility)
 
@@ -181,8 +173,8 @@ export default function AccountPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
+      <div className="grid gap-4">
+        <div className="w-full">
           <div className="grid gap-6">
             {/* User profile */}
             <motion.div
@@ -432,40 +424,6 @@ export default function AccountPage() {
                     <p className="text-sm font-medium">{t("no_recent_purchases")}</p>
                   </div>
                 )}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-1">
-          <div className="grid gap-6">
-            {/* Account Links */}
-            <motion.div
-              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-            >
-              <div className="p-6">
-                <h2 className="text-lg font-bold text-white mb-4 flex items-center">
-                  <span className="w-1.5 h-5 bg-green-500 mr-3 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
-                  {t("account_settings")}
-                </h2>
-                <div className="space-y-2">
-                  {accountLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="flex items-center px-4 py-3 bg-[#1A1C1E] border border-site-border rounded-xl text-gray-400 hover:text-white hover:border-site-accent/30 transition-all group"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-site-accent/10 flex items-center justify-center text-site-accent mr-3 group-hover:scale-110 transition-transform">
-                        {link.icon}
-                      </div>
-                      <span className="font-medium text-sm">{link.label}</span>
-                      <ChevronRight size={16} className="ml-auto opacity-50 group-hover:opacity-100 group-hover:text-site-accent transition-all" />
-                    </Link>
-                  ))}
-                </div>
               </div>
             </motion.div>
           </div>

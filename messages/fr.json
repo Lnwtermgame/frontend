@@ -1219,5 +1219,14 @@
     "no_deals": "Aucun produit en promotion",
     "no_products": "Aucun produit disponible",
     "no_news": "Pas encore d'actualités",
-    "promotion_badge": "PROMO"
+    "promotion_badge": "PROMO",
+    "login_success": "Connexion réussie",
+    "invalid_email_password": "E-mail ou mot de passe invalide",
+    "register_success": "Inscription réussie",
+    "register_error": "Erreur d'inscription",
+    "logout_success": "Déconnexion réussie",
+    "profile_update_success": "Profil mis à jour avec succès",
+    "profile_update_error": "Échec de la mise à jour du profil",
+    "password_change_success": "Mot de passe changé avec succès",
+    "login_error": "Erreur de connexion"
 }

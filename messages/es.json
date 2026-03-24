@@ -1219,5 +1219,14 @@
     "no_deals": "Sin productos con descuento",
     "no_products": "Sin productos disponibles",
     "no_news": "Aún no hay noticias",
-    "promotion_badge": "PROMO"
+    "promotion_badge": "PROMO",
+    "login_success": "Inicio de sesión exitoso",
+    "invalid_email_password": "Correo electrónico o contraseña no válidos",
+    "register_success": "Registro exitoso",
+    "register_error": "Error de registro",
+    "logout_success": "Cierre de sesión exitoso",
+    "profile_update_success": "Perfil actualizado con éxito",
+    "profile_update_error": "Error al actualizar el perfil",
+    "password_change_success": "Contraseña cambiada con éxito",
+    "login_error": "Error de inicio de sesión"
 }

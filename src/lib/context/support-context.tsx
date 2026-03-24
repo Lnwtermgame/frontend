@@ -21,6 +21,7 @@ import {
   FaqArticleListItem,
 } from "../services/support-api";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 type SupportContextType = {
   tickets: Ticket[];
@@ -52,6 +53,7 @@ export const SupportContext = createContext<SupportContextType | undefined>(
 );
 
 export function SupportProvider({ children }: { children: ReactNode }) {
+  const t = useTranslations();
   const { user } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [faqCategories, setFaqCategories] = useState<FaqCategory[]>([]);
@@ -115,7 +117,7 @@ export function SupportProvider({ children }: { children: ReactNode }) {
         const response = await supportApi.createTicket(data);
         if (response.success) {
           setTickets((prev) => [response.data, ...prev]);
-          toast.success("สร้างตั๋วสำเร็จ");
+          toast.success(t("ticket_created_successfully"));
           return response.data;
         }
         return null;
@@ -128,7 +130,7 @@ export function SupportProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [],
+    [t],
   );
 
   const replyToTicket = useCallback(
@@ -170,7 +172,7 @@ export function SupportProvider({ children }: { children: ReactNode }) {
               t.id === ticketId ? { ...t, status: "CLOSED" as TicketStatus } : t,
             ),
           );
-          toast.success("ปิดตั๋วสำเร็จ");
+          toast.success(t("ticket_closed_successfully"));
           return true;
         }
         return false;
@@ -183,7 +185,7 @@ export function SupportProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [],
+    [t],
   );
 
   const fetchFaqCategories = useCallback(async () => {

@@ -167,61 +167,59 @@ export default function AccountPage() {
   return (
     <div className="bg-transparent min-h-full">
       {/* Page Header */}
-      <div className="relative mb-4">
+      <div className="relative mb-6">
         <motion.h2
-          className="text-lg font-bold text-black mb-1 relative flex items-center"
+          className="text-xl md:text-2xl font-bold text-white mb-2 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
+          <span className="w-1.5 h-6 bg-site-accent mr-3 rounded-full shadow-accent-glow"></span>
           {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative">
+        <p className="text-gray-400 text-sm relative">
           {t("subtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          <div className="grid gap-4">
-            {/* User profile - Enhanced with gradient border */}
+          <div className="grid gap-6">
+            {/* User profile */}
             <motion.div
-              className="bg-white border-[3px] border-black overflow-hidden relative"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border rounded-xl overflow-hidden relative shadow-ocean"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              whileHover={{ y: -2 }}
             >
-              <div className="p-4">
-                <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-3">
-                  <div className="flex flex-col md:flex-row items-center gap-3">
+              <div className="p-6">
+                <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4">
+                  <div className="flex flex-col md:flex-row items-center gap-4">
                     <div className="relative">
-                      <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-brutal-yellow border-[3px] border-black flex items-center justify-center text-black text-lg md:text-xl font-bold overflow-hidden shadow-[2px_2px_0_0_#000]">
+                      <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-[#1A1C1E] border border-site-border flex items-center justify-center text-site-accent text-xl md:text-3xl font-bold overflow-hidden shadow-inner">
                         {user?.username?.charAt(0).toUpperCase() || "U"}
                       </div>
                     </div>
-                    <div className="flex flex-col items-center md:items-start gap-1">
-                      <h2 className="text-lg md:text-xl font-bold text-black">
+                    <div className="flex flex-col items-center md:items-start gap-1.5">
+                      <h2 className="text-xl md:text-2xl font-bold text-white">
                         {user?.username || "User"}
                       </h2>
-                      <div className="flex flex-col md:flex-row items-center gap-2">
+                      <div className="flex flex-col md:flex-row items-center gap-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-600 text-xs">
+                          <span className="text-gray-400 text-sm">
                             {t("email_label")}
                           </span>
-                          <span className="text-gray-900 text-xs font-medium">
+                          <span className="text-gray-200 text-sm font-medium">
                             {user?.email || "user@example.com"}
                           </span>
                         </div>
                         {isEmailVerified ? (
-                          <span className="bg-brutal-green text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black flex items-center gap-1">
-                            <CheckCircle size={10} />
+                          <span className="bg-green-500/10 text-green-400 text-xs font-bold px-2.5 py-1 rounded-md border border-green-500/30/20 flex items-center gap-1.5">
+                            <CheckCircle size={12} />
                             {t("verified")}
                           </span>
                         ) : (
-                          <span className="bg-brutal-pink text-black text-[10px] font-bold px-2 py-0.5 border-[2px] border-black flex items-center gap-1">
-                            <AlertCircle size={10} />
+                          <span className="bg-red-500/10 text-red-400 text-xs font-bold px-2.5 py-1 rounded-md border border-red-500/30/20 flex items-center gap-1.5">
+                            <AlertCircle size={12} />
                             {t("not_verified")}
                           </span>
                         )}
@@ -235,18 +233,18 @@ export default function AccountPage() {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="mt-3 p-3 bg-brutal-pink/20 border-[2px] border-black"
+                    className="mt-5 p-4 rounded-xl bg-red-500/10 border border-red-500/30/20"
                   >
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
-                      <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 bg-brutal-yellow border-[2px] border-black flex items-center justify-center flex-shrink-0">
-                          <Mail size={14} className="text-black" />
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                          <Mail size={16} className="text-red-400" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-black">
+                          <p className="text-sm font-bold text-red-400">
                             {t("verify_email_banner")}
                           </p>
-                          <p className="text-[10px] text-gray-600 mt-0.5">
+                          <p className="text-xs text-red-400/70 mt-1">
                             {t("verify_email_desc")}
                           </p>
                         </div>
@@ -255,34 +253,34 @@ export default function AccountPage() {
                         onClick={handleSendVerificationEmail}
                         disabled={cooldownSeconds > 0 || isSendingVerification}
                         className={`
-                          flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border-[2px] border-black
-                          transition-all duration-200 whitespace-nowrap
+                          flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-lg border
+                          transition-all duration-200 whitespace-nowrap md:w-auto w-full
                           ${cooldownSeconds > 0 || isSendingVerification
-                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                            : "bg-brutal-yellow text-black hover:bg-brutal-blue hover:text-white"
+                            ? "bg-[#212328]/5 text-gray-400 border-white/10 cursor-not-allowed"
+                            : "bg-red-500/20 text-red-400 border-red-500/30/30 hover:bg-red-500 hover:text-white hover:border-red-500/30 shadow-sm"
                           }
                         `}
                       >
                         {isSendingVerification ? (
                           <>
-                            <Loader2 size={12} className="animate-spin" />
+                            <Loader2 size={14} className="animate-spin" />
                             {t("sending")}
                           </>
                         ) : cooldownSeconds > 0 ? (
                           <>
-                            <RefreshCw size={12} className="opacity-50" />
+                            <RefreshCw size={14} className="opacity-50" />
                             {t("wait_cooldown", { seconds: cooldownSeconds })}
                           </>
                         ) : (
                           <>
-                            <Mail size={12} />
+                            <Mail size={14} />
                             {t("send_verification")}
                           </>
                         )}
                       </button>
                     </div>
                     {cooldownSeconds > 0 && (
-                      <p className="text-[10px] text-gray-500 mt-1 text-center md:text-right">
+                      <p className="text-xs text-red-400/60 mt-2 text-center md:text-right">
                         {t("spam_hint")}
                       </p>
                     )}
@@ -291,84 +289,82 @@ export default function AccountPage() {
               </div>
             </motion.div>
 
-            {/* Order statistics - Enhanced with icons and better styling */}
+            {/* Order statistics */}
             <motion.div
-              className="bg-white border-[3px] border-black"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              whileHover={{ y: -2 }}
             >
-              <div className="p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-base font-bold text-black flex items-center">
-                    <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-lg font-bold text-white flex items-center">
+                    <span className="w-1.5 h-5 bg-site-accent mr-3 rounded-full shadow-accent-glow"></span>
                     {t("my_orders")}
                   </h2>
                   <Link
                     href="/dashboard/orders"
-                    className="text-black text-xs flex items-center hover:underline font-medium"
+                    className="text-site-accent text-sm flex items-center hover:text-white transition-colors font-medium px-3 py-1.5 rounded-lg hover:bg-[#212328]/5"
                   >
-                    {t("view_all_orders")} <ChevronRight size={14} />
+                    {t("view_all_orders")} <ChevronRight size={16} className="ml-1" />
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-blue w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
-                      <History size={16} className="text-black" />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                    <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <History size={18} className="text-yellow-400" />
                     </div>
-                    <div className="text-xl font-bold text-black">
+                    <div className="text-2xl font-bold text-white mb-1">
                       {isLoading ? (
-                        <Loader2 size={16} className="animate-spin mx-auto" />
+                        <Loader2 size={24} className="animate-spin mx-auto text-site-accent" />
                       ) : (
                         orderStats.waitSend
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs">{t("order_status.pending")}</div>
+                    <div className="text-gray-400 text-xs font-medium">{t("order_status.pending")}</div>
                   </div>
-                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-blue w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
-                      <History size={16} className="text-black" />
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <History size={18} className="text-blue-400" />
                     </div>
-                    <div className="text-xl font-bold text-black">
+                    <div className="text-2xl font-bold text-white mb-1">
                       {isLoading ? (
-                        <Loader2 size={16} className="animate-spin mx-auto" />
+                        <Loader2 size={24} className="animate-spin mx-auto text-site-accent" />
                       ) : (
                         orderStats.sending
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs">
+                    <div className="text-gray-400 text-xs font-medium">
                       {t("order_status.processing")}
                     </div>
                   </div>
-                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-brutal-green w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
-                      <History size={16} className="text-black" />
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <History size={18} className="text-green-400" />
                     </div>
-                    <div className="text-xl font-bold text-black">
+                    <div className="text-2xl font-bold text-white mb-1">
                       {isLoading ? (
-                        <Loader2 size={16} className="animate-spin mx-auto" />
+                        <Loader2 size={24} className="animate-spin mx-auto text-site-accent" />
                       ) : (
                         orderStats.completed
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs">
+                    <div className="text-gray-400 text-xs font-medium">
                       {t("order_status.completed")}
                     </div>
                   </div>
-                  <div className="p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/20 transition-colors">
-                    <div className="bg-gray-200 w-8 h-8 border-[2px] border-black flex items-center justify-center mx-auto mb-1.5">
-                      <History size={16} className="text-gray-600" />
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                    <div className="w-10 h-10 rounded-lg bg-[#181A1D]0/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <History size={18} className="text-gray-400" />
                     </div>
-                    <div className="text-xl font-bold text-black">
+                    <div className="text-2xl font-bold text-white mb-1">
                       {isLoading ? (
-                        <Loader2 size={16} className="animate-spin mx-auto" />
+                        <Loader2 size={24} className="animate-spin mx-auto text-site-accent" />
                       ) : (
                         orderStats.refunded
                       )}
                     </div>
-                    <div className="text-gray-600 text-xs">
+                    <div className="text-gray-400 text-xs font-medium">
                       {t("order_status.refunded")}
                     </div>
                   </div>
@@ -376,52 +372,51 @@ export default function AccountPage() {
               </div>
             </motion.div>
 
-            {/* Recently Purchased - Enhanced with animation and styling */}
+            {/* Recently Purchased */}
             <motion.div
-              className="bg-white border-[3px] border-black"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
-              whileHover={{ y: -2 }}
             >
-              <div className="p-4">
-                <h2 className="text-base font-bold text-black mb-3 flex items-center">
-                  <span className="w-1.5 h-4 bg-brutal-green mr-2"></span>
+              <div className="p-6">
+                <h2 className="text-lg font-bold text-white mb-6 flex items-center">
+                  <span className="w-1.5 h-5 bg-purple-500 mr-3 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.8)]"></span>
                   {t("recent_purchases")}
                 </h2>
                 {recentlyPurchased.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {recentlyPurchased.map((item) => (
                       <motion.div
                         key={item.itemId}
-                        className="flex items-center p-3 bg-gray-50 border-[2px] border-black hover:bg-brutal-yellow/10 transition-colors"
-                        whileHover={{ x: 2 }}
+                        className="flex items-center p-4 bg-[#1A1C1E] border border-site-border rounded-xl hover:bg-[#212328]/5 transition-colors group"
                       >
-                        <div className="w-10 h-10 border-[2px] border-black overflow-hidden mr-3 bg-white">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden mr-4 bg-[#16181A] flex-shrink-0">
                           <img
                             src={item.image}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div>
-                          <h3 className="font-bold text-black text-sm">{item.name}</h3>
-                          <p className="text-xs text-gray-600 mt-0.5">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-white text-sm truncate">{item.name}</h3>
+                          <p className="text-xs text-site-accent mt-1">
                             {item.amount}
                           </p>
                         </div>
-                        <div className="flex gap-2 ml-auto">
+                        <div className="flex gap-2 ml-4 flex-shrink-0">
                           <motion.button
-                            className="bg-brutal-yellow border-[2px] border-black w-7 h-7 flex items-center justify-center text-black hover:bg-brutal-pink transition-colors"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-500 hover:bg-yellow-500 hover:text-white transition-colors border border-yellow-500/30/20 hover:border-transparent"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            title="Favorite"
                           >
                             <Star size={14} />
                           </motion.button>
                           <Link
                             href={`/dashboard/orders/${item.id}`}
-                            className="bg-black border-[2px] border-black w-7 h-7 flex items-center justify-center text-white hover:bg-gray-800 transition-colors"
+                            className="w-8 h-8 rounded-lg bg-site-accent/10 flex items-center justify-center text-site-accent hover:bg-site-accent hover:text-[#1A1C1E] transition-colors border border-site-accent/20 hover:border-transparent"
+                            title="View Details"
                           >
                             <ChevronRight size={14} />
                           </Link>
@@ -430,11 +425,11 @@ export default function AccountPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-gray-100 text-gray-600 text-center py-6 border-[2px] border-black">
-                    <div className="w-12 h-12 mx-auto mb-2 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
-                      <History size={20} className="text-black" />
+                  <div className="bg-[#1A1C1E] rounded-xl text-gray-400 text-center py-10 border border-site-border">
+                    <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#212328]/5 flex items-center justify-center">
+                      <History size={24} className="text-gray-500" />
                     </div>
-                    <p className="text-sm">{t("no_recent_purchases")}</p>
+                    <p className="text-sm font-medium">{t("no_recent_purchases")}</p>
                   </div>
                 )}
               </div>
@@ -443,33 +438,31 @@ export default function AccountPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="grid gap-4">
-            {/* Account Links - New section */}
+          <div className="grid gap-6">
+            {/* Account Links */}
             <motion.div
-              className="bg-white border-[3px] border-black"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.4 }}
-              whileHover={{ y: -2 }}
             >
-              <div className="p-4">
-                <h2 className="text-base font-bold text-black mb-3 flex items-center">
-                  <span className="w-1.5 h-4 bg-brutal-yellow mr-2"></span>
+              <div className="p-6">
+                <h2 className="text-lg font-bold text-white mb-4 flex items-center">
+                  <span className="w-1.5 h-5 bg-green-500 mr-3 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
                   {t("account_settings")}
                 </h2>
-                <div className="divide-y divide-gray-200">
+                <div className="space-y-2">
                   {accountLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="flex items-center py-2.5 text-gray-600 hover:text-black transition-colors"
+                      className="flex items-center px-4 py-3 bg-[#1A1C1E] border border-site-border rounded-xl text-gray-400 hover:text-white hover:border-site-accent/30 transition-all group"
                     >
-                      <div className="w-7 h-7 bg-brutal-blue border-[2px] border-black flex items-center justify-center text-black mr-3">
+                      <div className="w-8 h-8 rounded-lg bg-site-accent/10 flex items-center justify-center text-site-accent mr-3 group-hover:scale-110 transition-transform">
                         {link.icon}
                       </div>
                       <span className="font-medium text-sm">{link.label}</span>
-                      <ChevronRight size={14} className="ml-auto" />
+                      <ChevronRight size={16} className="ml-auto opacity-50 group-hover:opacity-100 group-hover:text-site-accent transition-all" />
                     </Link>
                   ))}
                 </div>

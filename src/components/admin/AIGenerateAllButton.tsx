@@ -703,7 +703,7 @@ export default function AIGenerateAllButton({
     switch (status) {
       case "pending":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 border border-gray-300">
+          <span className="px-2 py-0.5 text-xs font-medium bg-[#1A1C1E] text-gray-600 border border-gray-300">
             รอดำเนินการ
           </span>
         );
@@ -715,19 +715,19 @@ export default function AIGenerateAllButton({
         );
       case "completed":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-700 border border-yellow-300">
+          <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-300">
             รอยืนยัน
           </span>
         );
       case "saved":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 border border-green-300">
+          <span className="px-2 py-0.5 text-xs font-medium bg-green-500/10 text-green-400 border border-green-300">
             บันทึกแล้ว
           </span>
         );
       case "error":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 border border-red-300">
+          <span className="px-2 py-0.5 text-xs font-medium bg-red-500/10 text-red-400 border border-red-300">
             ผิดพลาด
           </span>
         );
@@ -736,7 +736,7 @@ export default function AIGenerateAllButton({
           <span
             className={`px-2 py-0.5 text-xs font-medium border flex items-center gap-1 ${isComplete
                 ? "bg-green-50 text-green-600 border-green-300"
-                : "bg-gray-100 text-gray-500 border-gray-300"
+                : "bg-[#1A1C1E] text-gray-500 border-gray-300"
               }`}
           >
             {isComplete && <CheckCircle2 className="w-3 h-3" />}
@@ -792,7 +792,7 @@ export default function AIGenerateAllButton({
       <button
         onClick={handleOpen}
         disabled={products.length === 0}
-        className="bg-brutal-pink border-[3px] border-black text-white flex items-center justify-center gap-2 px-4 py-2 hover:bg-pink-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-pink-500 border border-site-border/30 rounded-[12px] text-white flex items-center justify-center gap-2 px-4 py-2 hover:bg-pink-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <Wand2 className="h-5 w-5" />
@@ -810,21 +810,21 @@ export default function AIGenerateAllButton({
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              className="bg-white border-[3px] border-black w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
               style={{ boxShadow: "8px 8px 0 0 #000000" }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-brutal-pink shrink-0">
+              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-pink-500 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-white border-[2px] border-black">
-                    <Sparkles className="w-5 h-5 text-black" />
+                  <div className="p-2 bg-[#212328] border-[2px] border-black">
+                    <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-black text-lg">
+                    <h3 className="font-bold text-white text-lg">
                       AI Generate ทุกเกม
                     </h3>
-                    <p className="text-sm text-black/70">
+                    <p className="text-sm text-white/70">
                       สร้างเนื้อหาอัตโนมัติสำหรับ{" "}
                       {skipComplete
                         ? `${stats.incompleteProducts} จาก ${stats.total}`
@@ -835,7 +835,7 @@ export default function AIGenerateAllButton({
                 </div>
                 <div className="flex items-center gap-2">
                   {isRunning && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border-[2px] border-black text-black text-sm font-bold">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#212328] border-[2px] border-black text-white text-sm font-bold">
                       <Clock className="w-3.5 h-3.5" />
                       <span>{formatTime(totalElapsed)}</span>
                     </div>
@@ -845,14 +845,14 @@ export default function AIGenerateAllButton({
                       onClick={handleClose}
                       className="p-2 hover:bg-black/10 transition-colors border-[2px] border-transparent hover:border-black"
                     >
-                      <X className="w-5 h-5 text-black" />
+                      <X className="w-5 h-5 text-white" />
                     </button>
                   )}
                 </div>
               </div>
 
               {/* Stats Bar */}
-              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-gray-50 shrink-0">
+              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-[#181A1D] shrink-0">
                 {/* Model Selector */}
                 <div className="mb-3">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -869,7 +869,7 @@ export default function AIGenerateAllButton({
                       availableModels.length === 0 ||
                       isRunning
                     }
-                    className="w-full py-2 px-3 bg-white border-[2px] border-gray-300 text-black text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                    className="w-full py-2 px-3 bg-[#212328] border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
                   >
                     {isLoadingModels ? (
                       <option value="">กำลังโหลด models...</option>
@@ -893,14 +893,14 @@ export default function AIGenerateAllButton({
                       checked={skipComplete}
                       onChange={(e) => setSkipComplete(e.target.checked)}
                       disabled={isRunning}
-                      className="w-4 h-4 border-2 border-black text-brutal-pink focus:ring-brutal-pink/50 cursor-pointer disabled:opacity-50"
+                      className="w-4 h-4 border-2 border-black text-pink-500 focus:ring-pink-500/50 cursor-pointer disabled:opacity-50"
                     />
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-white transition-colors">
                       ข้ามสินค้าที่มีข้อมูลครบแล้ว
                     </span>
                   </label>
                   <div className="flex items-center gap-3 text-xs">
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-green-100 text-green-700 border border-green-300">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 text-green-400 border border-green-300">
                       <CheckCircle2 className="w-3 h-3" />
                       ข้อมูลครบ: {stats.completeProducts}
                     </span>
@@ -915,7 +915,7 @@ export default function AIGenerateAllButton({
                   <div className="flex items-center gap-4 text-sm">
                     <span className="text-gray-600">
                       ทั้งหมด:{" "}
-                      <strong className="text-black">{stats.total}</strong>
+                      <strong className="text-white">{stats.total}</strong>
                     </span>
                     {stats.completed > 0 && (
                       <span className="text-yellow-600">
@@ -943,9 +943,9 @@ export default function AIGenerateAllButton({
                   </span>
                 </div>
                 {/* Overall Progress Bar */}
-                <div className="h-2.5 bg-gray-200 border-[2px] border-black overflow-hidden">
+                <div className="h-2.5 bg-site-border/30 border-[2px] border-black overflow-hidden">
                   <motion.div
-                    className="h-full bg-brutal-pink"
+                    className="h-full bg-pink-500"
                     initial={{ width: "0%" }}
                     animate={{ width: `${progressPercent}%` }}
                     transition={{ duration: 0.5 }}
@@ -964,7 +964,7 @@ export default function AIGenerateAllButton({
                           : state.status === "saved"
                             ? "bg-green-50/50"
                             : state.status === "skipped" && state.isComplete
-                              ? "bg-gray-50/50"
+                              ? "bg-[#181A1D]/50"
                               : ""
                         }`}
                     >
@@ -983,19 +983,19 @@ export default function AIGenerateAllButton({
                             className="w-8 h-8 object-cover border-[2px] border-black shrink-0"
                           />
                         ) : (
-                          <div className="w-8 h-8 bg-gray-200 border-[2px] border-gray-300 shrink-0" />
+                          <div className="w-8 h-8 bg-site-border/30 border-[2px] border-gray-300 shrink-0" />
                         )}
 
                         {/* Product Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium text-black text-sm truncate">
+                            <span className="font-medium text-white text-sm truncate">
                               {state.product.name}
                             </span>
                             {getStatusBadge(state.status, state.isComplete)}
                             {/* Completeness badge */}
                             {state.status === "pending" && state.isComplete && (
-                              <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 border border-green-300 flex items-center gap-1">
+                              <span className="px-2 py-0.5 text-xs font-medium bg-green-500/10 text-green-400 border border-green-300 flex items-center gap-1">
                                 <CheckCircle2 className="w-3 h-3" />
                                 ข้อมูลครบ
                               </span>
@@ -1028,7 +1028,7 @@ export default function AIGenerateAllButton({
                           {/* Mini Progress for generating state */}
                           {state.status === "generating" && state.progress && (
                             <div className="mt-1 flex items-center gap-2">
-                              <div className="flex-1 h-1.5 bg-gray-200 overflow-hidden">
+                              <div className="flex-1 h-1.5 bg-site-border/30 overflow-hidden">
                                 <motion.div
                                   className="h-full bg-blue-500"
                                   animate={{
@@ -1062,8 +1062,8 @@ export default function AIGenerateAllButton({
                               <button
                                 onClick={() => toggleExpand(index)}
                                 className={`p-1.5 border transition-all ${state.expanded
-                                    ? "text-black bg-gray-200 border-gray-400"
-                                    : "text-gray-500 hover:text-black hover:bg-gray-100 border-transparent hover:border-gray-300"
+                                    ? "text-white bg-site-border/30 border-gray-400"
+                                    : "text-gray-500 hover:text-white hover:bg-[#1A1C1E] border-transparent hover:border-gray-300"
                                   }`}
                                 title="ดูรายละเอียด"
                               >
@@ -1097,7 +1097,7 @@ export default function AIGenerateAllButton({
                           {state.status === "completed" && (
                             <button
                               onClick={() => cancelProduct(index)}
-                              className="p-1.5 text-red-500 hover:text-white hover:bg-red-500 border border-red-300 hover:border-red-500 transition-all"
+                              className="p-1.5 text-red-500 hover:text-white hover:bg-red-500 border border-red-300 hover:border-red-500/30 transition-all"
                               title="ยกเลิก - ไม่ใช้ผลลัพธ์"
                             >
                               <XCircle className="w-4 h-4" />
@@ -1108,7 +1108,7 @@ export default function AIGenerateAllButton({
                           {state.status === "pending" && isRunning && (
                             <button
                               onClick={() => skipProduct(index)}
-                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 border border-transparent hover:border-gray-300 transition-all"
+                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-[#1A1C1E] border border-transparent hover:border-gray-300 transition-all"
                               title="ข้ามสินค้านี้"
                             >
                               <SkipForward className="w-4 h-4" />
@@ -1156,7 +1156,7 @@ export default function AIGenerateAllButton({
 
                                   {/* Description */}
                                   <div
-                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-gray-50 border-gray-200"}`}
+                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-[#181A1D] border-gray-200"}`}
                                   >
                                     <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                                       คำอธิบาย
@@ -1172,7 +1172,7 @@ export default function AIGenerateAllButton({
 
                                   {/* Short Description */}
                                   <div
-                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-gray-50 border-gray-200"}`}
+                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-[#181A1D] border-gray-200"}`}
                                   >
                                     <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                                       คำอธิบายสั้น
@@ -1340,7 +1340,7 @@ export default function AIGenerateAllButton({
                                           <span
                                             className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isFeatured
                                                 ? "bg-yellow-200 text-yellow-800 border-yellow-400"
-                                                : "bg-gray-100 text-gray-500 border-gray-300"
+                                                : "bg-[#1A1C1E] text-gray-500 border-gray-300"
                                               }`}
                                           >
                                             {displayData.isFeatured
@@ -1356,7 +1356,7 @@ export default function AIGenerateAllButton({
                                           <span
                                             className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isBestseller
                                                 ? "bg-green-200 text-green-800 border-green-400"
-                                                : "bg-gray-100 text-gray-500 border-gray-300"
+                                                : "bg-[#1A1C1E] text-gray-500 border-gray-300"
                                               }`}
                                           >
                                             {displayData.isBestseller
@@ -1430,9 +1430,9 @@ export default function AIGenerateAllButton({
                                     )}
 
                                   {state.status === "saved" && (
-                                    <div className="p-2 bg-green-100 border-[2px] border-green-400 flex items-center gap-2">
+                                    <div className="p-2 bg-green-500/10 border-[2px] border-green-400 flex items-center gap-2">
                                       <CheckCircle2 className="w-4 h-4 text-green-600" />
-                                      <span className="text-sm text-green-700 font-medium">
+                                      <span className="text-sm text-green-400 font-medium">
                                         บันทึกลง Database เรียบร้อยแล้ว
                                       </span>
                                     </div>
@@ -1448,7 +1448,7 @@ export default function AIGenerateAllButton({
               </div>
 
               {/* Footer Actions */}
-              <div className="p-4 border-t-[3px] border-black bg-gray-50 shrink-0">
+              <div className="p-4 border-t-[3px] border-black bg-[#181A1D] shrink-0">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   {/* Left side */}
                   <div className="flex items-center gap-2">
@@ -1458,7 +1458,7 @@ export default function AIGenerateAllButton({
                       stats.saved === 0 && (
                         <button
                           onClick={startGeneration}
-                          className="flex items-center gap-2 px-5 py-2.5 bg-brutal-pink text-white border-[3px] border-black font-bold transition-all hover:bg-pink-600"
+                          className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-pink-600"
                           style={{ boxShadow: "4px 4px 0 0 #000000" }}
                         >
                           <Play className="w-4 h-4" />
@@ -1471,7 +1471,7 @@ export default function AIGenerateAllButton({
                       stats.pending > 0 && (
                         <button
                           onClick={startGeneration}
-                          className="flex items-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[3px] border-black font-bold transition-all hover:bg-pink-600"
+                          className="flex items-center gap-2 px-4 py-2 bg-pink-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-pink-600"
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           <Play className="w-4 h-4" />
@@ -1483,9 +1483,9 @@ export default function AIGenerateAllButton({
                       <>
                         <button
                           onClick={togglePause}
-                          className={`flex items-center gap-2 px-4 py-2 border-[3px] border-black font-bold transition-all ${isPaused
+                          className={`flex items-center gap-2 px-4 py-2 border border-site-border/30 rounded-[12px] font-bold transition-all ${isPaused
                               ? "bg-green-500 text-white hover:bg-green-600"
-                              : "bg-yellow-400 text-black hover:bg-yellow-500"
+                              : "bg-yellow-400 text-white hover:bg-yellow-500"
                             }`}
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
@@ -1503,7 +1503,7 @@ export default function AIGenerateAllButton({
                         </button>
                         <button
                           onClick={cancelGeneration}
-                          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white border-[3px] border-black font-bold transition-all hover:bg-red-600"
+                          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-red-600"
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           <X className="w-4 h-4" />
@@ -1518,7 +1518,7 @@ export default function AIGenerateAllButton({
                     {stats.completed > 0 && !isRunning && (
                       <button
                         onClick={saveAllCompleted}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white border-[3px] border-black font-bold transition-all hover:bg-green-700"
+                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-green-700"
                         style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         <Save className="w-4 h-4" />
@@ -1529,7 +1529,7 @@ export default function AIGenerateAllButton({
                     {!isRunning && (
                       <button
                         onClick={handleClose}
-                        className="flex items-center gap-2 px-4 py-2 bg-white text-black border-[3px] border-black font-bold transition-all hover:bg-gray-100"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#212328] text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-[#1A1C1E]"
                         style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         ปิด

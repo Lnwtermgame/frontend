@@ -17,6 +17,7 @@ import {
   SecurityActivity,
   SecuritySettings,
 } from "../services/security-api";
+import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 
 // Minimum time between security data refreshes (5 seconds)
@@ -51,6 +52,7 @@ export const SecurityContext = createContext<SecurityContextType | undefined>(
 );
 
 export function SecurityProvider({ children }: { children: ReactNode }) {
+  const t = useTranslations();
   const { user } = useAuth();
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [is2FAVerified, setIs2FAVerified] = useState(false);
@@ -130,7 +132,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         lastFetchTime.current = Date.now();
       } catch (error) {
         console.error("Error fetching security data:", error);
-        toast.error("ไม่สามารถโหลดข้อมูลความปลอดภัยได้");
+        toast.error(t("security_data_load_error"));
       } finally {
         setIsLoadingSettings(false);
         isFetching.current = false;
@@ -140,7 +142,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
 
     pendingPromise.current = fetchPromise;
     return fetchPromise;
-  }, [user]);
+  }, [user, t]);
 
   // Security data is loaded lazily - only when refreshSecurityData() is called
   // (e.g., on the security settings page), NOT on every page load
@@ -166,7 +168,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         await securityApi.updateSecuritySettings(apiFields);
       } catch (error) {
         const message = securityApi.getErrorMessage(error);
-        toast.error(message || "ไม่สามารถบันทึกการตั้งค่าได้");
+        toast.error(message || t("settings_save_error"));
         // Revert on failure
         setSecuritySettings((prevSettings) => ({
           ...prevSettings,
@@ -179,7 +181,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         }));
       }
     }
-  }, []);
+  }, [t]);
 
   const sendVerificationEmail = useCallback(async (): Promise<boolean> => {
     setIsLoadingSettings(true);
@@ -187,18 +189,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       const response = await securityApi.sendVerificationEmail();
       if (response.success) {
         updateSecuritySettings({ emailVerified: true });
-        toast.success("ยืนยันอีเมลสำเร็จ");
+        toast.success(t("email_verified_success"));
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถส่งอีเมลยืนยันได้");
+      toast.error(message || t("email_verify_send_error"));
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
-  }, [updateSecuritySettings]);
+  }, [updateSecuritySettings, t]);
 
   const setupTwoFactor = useCallback(async (
     method: "2fa-app" | "sms" | "email",
@@ -218,12 +220,12 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       return { success: false };
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถตั้งค่า 2FA ได้");
+      toast.error(message || t("2fa_setup_error"));
       return { success: false };
     } finally {
       setIsLoadingSettings(false);
     }
-  }, [updateSecuritySettings]);
+  }, [updateSecuritySettings, t]);
 
   const verifyTwoFactorCode = useCallback(async (code: string): Promise<boolean> => {
     setIsLoadingSettings(true);
@@ -235,18 +237,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         updateSecuritySettings({
           twoFactorEnabled: true,
         });
-        toast.success("เปิดใช้งาน 2FA สำเร็จ");
+        toast.success(t("2fa_enable_success"));
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "รหัสยืนยันไม่ถูกต้อง");
+      toast.error(message || t("invalid_verify_code"));
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
-  }, [updateSecuritySettings]);
+  }, [updateSecuritySettings, t]);
 
   const disableTwoFactor = useCallback(async (password: string): Promise<boolean> => {
     setIsLoadingSettings(true);
@@ -258,18 +260,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
           twoFactorEnabled: false,
           twoFactorMethod: null,
         });
-        toast.success("ปิดใช้งาน 2FA สำเร็จ");
+        toast.success(t("2fa_disable_success"));
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "รหัสผ่านไม่ถูกต้อง");
+      toast.error(message || t("invalid_password"));
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
-  }, [updateSecuritySettings]);
+  }, [updateSecuritySettings, t]);
 
   const logoutAllDevices = useCallback(async (): Promise<boolean> => {
     setIsLoadingSettings(true);
@@ -283,18 +285,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
             recentDevices: devicesRes.data,
           });
         }
-        toast.success("ออกจากระบบทุกอุปกรณ์สำเร็จ");
+        toast.success(t("logout_all_success"));
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถออกจากระบบทุกอุปกรณ์ได้");
+      toast.error(message || t("logout_all_error"));
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
-  }, [updateSecuritySettings]);
+  }, [updateSecuritySettings, t]);
 
   const removeDevice = useCallback(async (deviceId: string): Promise<boolean> => {
     setIsLoadingSettings(true);
@@ -306,18 +308,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
           ...prev,
           recentDevices: prev.recentDevices.filter((d) => d.id !== deviceId),
         }));
-        toast.success("ลบอุปกรณ์สำเร็จ");
+        toast.success(t("device_remove_success"));
         return true;
       }
       return false;
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถลบอุปกรณ์ได้");
+      toast.error(message || t("device_remove_error"));
       return false;
     } finally {
       setIsLoadingSettings(false);
     }
-  }, []);
+  }, [t]);
 
   const resolveActivity = useCallback(async (activityId: string): Promise<void> => {
     try {
@@ -333,13 +335,13 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
                 : activity,
           ),
         }));
-        toast.success("ทำเครื่องหมายว่าตรวจสอบแล้ว");
+        toast.success(t("marked_as_verified"));
       }
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถอัปเดตสถานะได้");
+      toast.error(message || t("status_update_error"));
     }
-  }, []);
+  }, [t]);
 
   const generateBackupCodes = useCallback(async (): Promise<string[]> => {
     setIsLoadingSettings(true);
@@ -352,12 +354,12 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       return [];
     } catch (error) {
       const message = securityApi.getErrorMessage(error);
-      toast.error(message || "ไม่สามารถสร้างรหัสสำรองได้");
+      toast.error(message || t("backup_code_error"));
       return [];
     } finally {
       setIsLoadingSettings(false);
     }
-  }, []);
+  }, [t]);
 
   const contextValue = useMemo(() => ({
     securitySettings,

@@ -438,17 +438,17 @@ export default function ExportProductsModal({
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border-[3px] border-black w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-lg"
             >
                 {/* Header */}
-                <div className="p-4 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
+                <div className="p-4 border-b-[3px] border-black bg-site-accent flex items-center justify-between">
                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                         <Download className="h-5 w-5" />
                         Export ข้อมูลสินค้า
                     </h3>
                     <button
                         onClick={onClose}
-                        className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
+                        className="p-2 bg-[#212328] border-[2px] border-black hover:bg-[#1A1C1E] transition-colors"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -467,8 +467,8 @@ export default function ExportProductsModal({
                                 <button
                                     onClick={() => setFormat("csv")}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${format === "csv"
-                                        ? "bg-brutal-blue text-white"
-                                        : "bg-white text-black hover:bg-gray-100"
+                                        ? "bg-site-accent text-white"
+                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -478,8 +478,8 @@ export default function ExportProductsModal({
                                 <button
                                     onClick={() => setFormat("json")}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${format === "json"
-                                        ? "bg-brutal-blue text-white"
-                                        : "bg-white text-black hover:bg-gray-100"
+                                        ? "bg-site-accent text-white"
+                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -499,7 +499,7 @@ export default function ExportProductsModal({
                                     onClick={() => setExportScope("all")}
                                     className={`px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${exportScope === "all"
                                         ? "bg-black text-white"
-                                        : "bg-white text-black hover:bg-gray-100"
+                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -509,7 +509,7 @@ export default function ExportProductsModal({
                                     onClick={() => setExportScope("filtered")}
                                     className={`px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${exportScope === "filtered"
                                         ? "bg-black text-white"
-                                        : "bg-white text-black hover:bg-gray-100"
+                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -526,13 +526,13 @@ export default function ExportProductsModal({
                         </span>
                         <button
                             onClick={selectAll}
-                            className="text-xs text-brutal-blue hover:text-black font-medium underline"
+                            className="text-xs text-site-accent hover:text-white font-medium underline"
                         >
                             เลือกทั้งหมด
                         </button>
                         <button
                             onClick={deselectAll}
-                            className="text-xs text-red-500 hover:text-red-700 font-medium underline"
+                            className="text-xs text-red-500 hover:text-red-400 font-medium underline"
                         >
                             ยกเลิกทั้งหมด
                         </button>
@@ -555,7 +555,7 @@ export default function ExportProductsModal({
                             return (
                                 <div
                                     key={group.key}
-                                    className="border border-gray-200 bg-gray-50"
+                                    className="border border-gray-200 bg-[#181A1D]"
                                 >
                                     {/* Group header */}
                                     <div className="flex items-center gap-2 px-3 py-2">
@@ -564,12 +564,12 @@ export default function ExportProductsModal({
                                             className="flex items-center"
                                         >
                                             {allSelected ? (
-                                                <CheckSquare className="h-4 w-4 text-brutal-blue" />
+                                                <CheckSquare className="h-4 w-4 text-site-accent" />
                                             ) : someSelected ? (
                                                 <div className="relative">
                                                     <Square className="h-4 w-4 text-gray-400" />
                                                     <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div className="w-2 h-2 bg-brutal-blue/70" />
+                                                        <div className="w-2 h-2 bg-site-accent/70" />
                                                     </div>
                                                 </div>
                                             ) : (
@@ -605,7 +605,7 @@ export default function ExportProductsModal({
                                                         onChange={() => toggleField(field.key)}
                                                         className="accent-[#4ecdc4] w-3.5 h-3.5"
                                                     />
-                                                    <span className="text-xs text-gray-600 group-hover:text-black transition-colors">
+                                                    <span className="text-xs text-gray-600 group-hover:text-white transition-colors">
                                                         {field.label}
                                                     </span>
                                                 </label>
@@ -627,7 +627,7 @@ export default function ExportProductsModal({
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t-[3px] border-black bg-gray-50 flex items-center justify-between">
+                <div className="p-4 border-t-[3px] border-black bg-[#181A1D] flex items-center justify-between">
                     <span className="text-xs text-gray-500">
                         {dataSource.length} สินค้า •{" "}
                         {format === "csv" ? "CSV" : "JSON"}
@@ -635,7 +635,7 @@ export default function ExportProductsModal({
                     <div className="flex gap-2">
                         <button
                             onClick={onClose}
-                            className="px-4 py-1.5 text-sm font-medium border-[2px] border-black bg-white text-black hover:bg-gray-100 transition-colors"
+                            className="px-4 py-1.5 text-sm font-medium border-[2px] border-black bg-[#212328] text-white hover:bg-[#1A1C1E] transition-colors"
                             style={{ boxShadow: "2px 2px 0 0 #000" }}
                         >
                             ยกเลิก
@@ -643,7 +643,7 @@ export default function ExportProductsModal({
                         <button
                             onClick={handleExport}
                             disabled={selectedFields.size === 0}
-                            className="px-4 py-1.5 text-sm font-bold border-[2px] border-black bg-brutal-blue text-white hover:bg-[#3dbdb5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                            className="px-4 py-1.5 text-sm font-bold border-[2px] border-black bg-site-accent text-white hover:bg-[#3dbdb5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                             style={{ boxShadow: "2px 2px 0 0 #000" }}
                         >
                             <Download className="h-4 w-4" />

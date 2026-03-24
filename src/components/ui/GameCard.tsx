@@ -42,9 +42,9 @@ export function GameCard({
       className={cn("h-full", className)}
     >
       <Link href={`/games/${slug}`} className="block h-full">
-        <Card className="h-full flex flex-col overflow-hidden hover:shadow-[6px_6px_0_0_#000] transition-shadow duration-200">
+        <Card className="h-full flex flex-col overflow-hidden hover:shadow-gaming-card-hover transition-shadow duration-200">
           {/* Image Container */}
-          <div className="relative aspect-[4/3] w-full bg-gray-100 overflow-hidden">
+          <div className="relative aspect-[4/3] w-full bg-gaming-dark overflow-hidden">
             {image ? (
               <Image
                 src={image}
@@ -54,13 +54,13 @@ export function GameCard({
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-gray-400">
+              <div className="flex h-full items-center justify-center text-zinc-500">
                 No Image
               </div>
             )}
 
             {isFeatured && (
-              <div className="absolute left-2 top-2 bg-brutal-yellow border-2 border-black px-2 py-0.5 text-xs font-bold shadow-[2px_2px_0_0_#000]">
+              <div className="absolute left-2 top-2 bg-gaming-btn text-white border border-blue-500 px-2 py-0.5 text-xs font-bold rounded-full">
                 {tProducts("recommended")}
               </div>
             )}
@@ -71,7 +71,7 @@ export function GameCard({
                 {tags.slice(0, 2).map((tag) => (
                   <span
                     key={tag}
-                    className="bg-black text-white text-[10px] px-1.5 py-0.5 font-bold"
+                    className="bg-black/70 text-white text-[10px] px-1.5 py-0.5 font-bold rounded-full"
                   >
                     {tag}
                   </span>
@@ -83,16 +83,16 @@ export function GameCard({
           {/* Content */}
           <CardContent className="flex-1 p-3 space-y-2">
             <h3
-              className="font-bold text-black text-base line-clamp-1 thai-font"
+              className="font-bold text-white text-base line-clamp-1 thai-font"
               title={title}
             >
               {title}
             </h3>
 
             <div className="flex items-center gap-1 text-sm">
-              <Star className="w-3.5 h-3.5 fill-brutal-yellow text-black" />
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               <span className="font-bold">{rating?.toFixed(1) || "0.0"}</span>
-              <span className="text-gray-500 text-xs">
+              <span className="text-zinc-500 text-xs">
                 ({reviewCount || 0})
               </span>
             </div>
@@ -102,18 +102,18 @@ export function GameCard({
           <CardFooter className="p-3 pt-0 mt-auto flex items-center justify-between border-t-2 border-transparent">
             <div className="flex flex-col">
               {originalPrice && (
-                <span className="text-xs text-gray-500 line-through">
+                <span className="text-xs text-zinc-500 line-through">
                   {typeof originalPrice === "number"
                     ? formatPrice(originalPrice)
                     : originalPrice}
                 </span>
               )}
-              <span className="text-lg font-black text-brutal-pink">
+              <span className="text-lg font-black text-blue-400">
                 {typeof price === "number" ? formatPrice(price) : price}
               </span>
             </div>
 
-            <div className="bg-black text-white p-2 rounded-none hover:bg-gray-800 transition-colors">
+            <div className="bg-gaming-btn text-white p-2 rounded-lg hover:shadow-gaming-btn transition-all">
               <ShoppingCart size={16} />
             </div>
           </CardFooter>

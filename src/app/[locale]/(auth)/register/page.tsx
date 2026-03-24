@@ -84,17 +84,17 @@ export default function RegisterPage() {
 
   if (!loadingSettings && !registrationEnabled) {
     return (
-      <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-xl bg-white border-[3px] border-black p-8 text-center shadow-[6px_6px_0_0_#000]">
-          <h1 className="text-2xl font-black text-black mb-3">
+      <div className="min-h-screen bg-[#16181A] flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-xl bg-[#222427] border border-site-border rounded-2xl p-8 text-center shadow-ocean">
+          <h1 className="text-2xl font-black text-white mb-3">
             {t("registration_disabled")}
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-400 mb-6">
             {t("registration_disabled_desc")}
           </p>
           <Link
             href="/login"
-            className="inline-block border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black"
+            className="inline-block bg-site-accent rounded-[6px] shadow-accent-glow hover:bg-site-accent-hover transition-colors px-6 py-2.5 font-bold text-white"
           >
             {t("go_to_login")}
           </Link>
@@ -104,7 +104,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-transparent flex items-center justify-center px-4 py-4 lg:py-12">
+    <div className="min-h-[100dvh] bg-[#16181A] flex items-center justify-center px-4 py-4 lg:py-12">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
         {/* Left Side - Branding */}
         <motion.div
@@ -114,63 +114,53 @@ export default function RegisterPage() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_0_#000]">
-              <Zap className="w-6 h-6 text-black" fill="currentColor" />
+            <div className="w-12 h-12 bg-[#222427] border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+              <Zap className="w-6 h-6 text-site-accent" fill="currentColor" />
             </div>
-            <span className="text-2xl font-black text-black">
+            <span className="text-2xl font-black text-white">
               {siteName}
             </span>
           </div>
 
-          <h1 className="text-4xl font-black text-black leading-tight">
+          <h1 className="text-4xl font-black text-white leading-tight">
             {t("hero_title_1")}
             <br />
-            {t("hero_title_2")} <span className="text-brutal-pink">{t("hero_title_3")}</span>
+            {t("hero_title_2")} <span className="text-site-accent">{t("hero_title_3")}</span>
           </h1>
 
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-400 text-lg">
             {t("hero_desc")}
           </p>
 
           {/* Benefits */}
           <div className="grid grid-cols-1 gap-4 pt-4">
             <motion.div
-              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000]"
-              whileHover={{
-                scale: 1.02,
-                x: -2,
-                y: -2,
-                boxShadow: "6px 6px 0 0 #000000",
-              }}
+              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/50 transition-colors"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 bg-brutal-pink border-[2px] border-black flex items-center justify-center">
-                <Gift className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-[#16181A] rounded-lg border border-site-border flex items-center justify-center">
+                <Gift className="w-5 h-5 text-site-accent" />
               </div>
               <div>
-                <h3 className="text-black font-bold">{t("welcome_bonus")}</h3>
-                <p className="text-gray-500 text-sm">
+                <h3 className="text-white font-bold">{t("welcome_bonus")}</h3>
+                <p className="text-gray-400 text-sm">
                   {t("welcome_bonus_desc")}
                 </p>
               </div>
             </motion.div>
 
             <motion.div
-              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000]"
-              whileHover={{
-                scale: 1.02,
-                x: -2,
-                y: -2,
-                boxShadow: "6px 6px 0 0 #000000",
-              }}
+              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/50 transition-colors"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
-                <Clock className="w-5 h-5 text-black" />
+              <div className="w-10 h-10 bg-[#16181A] rounded-lg border border-site-border flex items-center justify-center">
+                <Clock className="w-5 h-5 text-site-accent" />
               </div>
               <div>
-                <h3 className="text-black font-bold">{t("fast_247")}</h3>
-                <p className="text-gray-500 text-sm">
+                <h3 className="text-white font-bold">{t("fast_247")}</h3>
+                <p className="text-gray-400 text-sm">
                   {t("fast_247_desc")}
                 </p>
               </div>
@@ -184,22 +174,22 @@ export default function RegisterPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="bg-white border-[3px] border-black p-5 md:p-8 shadow-[6px_6px_0_0_#000]">
+          <div className="bg-[#222427] border border-site-border p-5 md:p-8 rounded-2xl shadow-ocean">
             {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center space-x-2 mb-4">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
-                <Zap className="w-4 h-4 lg:w-5 lg:h-5 text-black" fill="currentColor" />
+            <div className="lg:hidden flex items-center justify-center space-x-2 mb-6">
+              <div className="w-10 h-10 bg-[#16181A] border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+                <Zap className="w-5 h-5 text-site-accent" fill="currentColor" />
               </div>
-              <span className="text-lg lg:text-xl font-black text-black">
+              <span className="text-xl font-black text-white">
                 {siteName}
               </span>
             </div>
 
             <div className="text-center mb-4 lg:mb-8">
-              <h2 className="text-xl lg:text-2xl font-black text-black mb-1 lg:mb-2">
+              <h2 className="text-xl lg:text-2xl font-black text-white mb-2">
                 {t("title")}
               </h2>
-              <p className="text-sm lg:text-base text-gray-500">
+              <p className="text-sm lg:text-base text-gray-400">
                 {t("subtitle")}
               </p>
             </div>
@@ -222,7 +212,7 @@ export default function RegisterPage() {
 
               <Input
                 id="email"
-                label={t("email")}
+                label={t("email._base")}
                 type="email"
                 placeholder="your@email.com"
                 value={email}
@@ -267,21 +257,20 @@ export default function RegisterPage() {
                       className={`h-5 w-5 transition-colors ${password &&
                         confirmPassword &&
                         password === confirmPassword
-                        ? "text-brutal-green"
-                        : "text-gray-400"
+                        ? "text-green-400"
+                        : "text-gray-500"
                         }`}
                     />
                   }
                   errorText={passwordError}
                   className={
-                    passwordError ? "border-brutal-pink bg-brutal-pink/10" : ""
+                    passwordError ? "border-red-500/30 focus:border-red-500/30 focus:shadow-[0_0_12px_rgba(239,68,68,0.4)]" : ""
                   }
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full bg-black text-white hover:bg-gray-800"
                 disabled={isLoading || !!passwordError}
                 isLoading={isLoading}
                 size="lg"
@@ -294,30 +283,30 @@ export default function RegisterPage() {
               </Button>
             </form>
 
-            <div className="mt-4 lg:mt-8 pt-4 lg:pt-6 border-t border-gray-200 text-center">
-              <p className="text-sm lg:text-base text-gray-500">
+            <div className="mt-4 lg:mt-8 pt-4 lg:pt-6 border-t border-site-border text-center">
+              <p className="text-sm lg:text-base text-gray-400">
                 {t("already_have_account")}{" "}
                 <Link
                   href="/login"
-                  className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
+                  className="text-site-accent hover:text-site-accent-hover font-bold transition-colors"
                 >
                   {t("login_now")}
                 </Link>
               </p>
             </div>
 
-            <div className="mt-4 lg:mt-6 text-center text-xs text-gray-500">
+            <div className="mt-4 lg:mt-6 text-center text-xs text-gray-400">
               {t("terms_agreement")}{" "}
               <Link
                 href="/terms"
-                className="text-gray-700 hover:text-black font-bold transition-colors"
+                className="text-gray-300 hover:text-white font-bold transition-colors"
               >
                 {t("terms")}
               </Link>{" "}
               {t("and")}{" "}
               <Link
                 href="/privacy"
-                className="text-gray-700 hover:text-black font-bold transition-colors"
+                className="text-gray-300 hover:text-white font-bold transition-colors"
               >
                 {t("privacy_policy")}
               </Link>

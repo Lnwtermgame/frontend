@@ -10,6 +10,7 @@ import { orderApi } from "@/lib/services/order-api";
 import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";
 import {
   ChevronLeft,
+  Flame,
   ShoppingCart,
   Heart,
   Share2,
@@ -810,8 +811,8 @@ export default function GameDetailsPage() {
     return (
       <div className="page-container flex items-center justify-center h-96 bg-transparent">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 font-bold">{tCommon("loading")}</p>
+          <div className="w-16 h-16 border-4 border-site-border border-t-site-accent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -820,19 +821,16 @@ export default function GameDetailsPage() {
   if (error || !game) {
     return (
       <div className="page-container bg-transparent">
-        <div
-          className="bg-white border-[3px] border-black p-8 text-center"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
-        >
-          <AlertCircle size={48} className="mx-auto text-brutal-pink mb-4" />
-          <h2 className="text-2xl font-bold text-black mb-2 uppercase">
+        <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border p-8 text-center rounded-2xl shadow-ocean">
+          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">
             {t("error.not_found")}
           </h2>
-          <p className="text-gray-600 mb-6 font-bold">
+          <p className="text-gray-400 mb-6">
             {error || t("error.not_found_desc")}
           </p>
           <Link href={backHref}>
-            <Button>
+            <Button variant="outline" className="text-white border-site-border hover:bg-site-border">
               <ChevronLeft size={18} className="mr-2" />
               {backLabel}
             </Button>
@@ -871,7 +869,7 @@ export default function GameDetailsPage() {
       <div className="mb-6">
         <Link
           href={backHref}
-          className="text-gray-600 hover:text-black transition-colors inline-flex items-center font-bold"
+          className="text-gray-400 hover:text-white transition-colors inline-flex items-center font-medium"
         >
           <ChevronLeft size={18} className="mr-1" />
           {backLabel}
@@ -879,10 +877,7 @@ export default function GameDetailsPage() {
       </div>
 
       {/* Game Hero */}
-      <div
-        className="bg-white border-[3px] border-black overflow-hidden mb-8"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
-      >
+      <div className="bg-[#222427]/50 backdrop-blur-md border border-site-border overflow-hidden mb-8 rounded-2xl shadow-ocean">
         <div className="relative min-h-[18rem] md:h-96 overflow-hidden">
           <Image
             src={
@@ -902,10 +897,7 @@ export default function GameDetailsPage() {
           {/* Game info overlay */}
           <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
             <div className="flex flex-row items-center md:items-end gap-3 md:gap-6">
-              <div
-                className="relative w-20 h-20 md:w-32 md:h-32 overflow-hidden border-[3px] border-black flex-shrink-0"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+              <div className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border border-site-border flex-shrink-0 rounded-2xl shadow-ocean">
                 <Image
                   src={
                     game.mainImage ||
@@ -917,23 +909,23 @@ export default function GameDetailsPage() {
                 />
               </div>
               <div className="flex-1 min-w-0 flex flex-col justify-center md:justify-end gap-1.5 md:gap-2">
-                <h1 className="text-xl md:text-4xl font-black text-white leading-tight drop-shadow-md">
+                <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">
                   {game.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="bg-brutal-yellow text-black px-2 py-0.5 md:px-3 md:py-1 font-black border-[2px] border-black text-xs md:text-sm inline-flex items-center gap-1 shadow-[2px_2px_0_0_#000] uppercase">
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                  <span className="bg-[#111315]/80 backdrop-blur-md text-white px-3 py-1 font-bold border border-white/10 rounded-full text-[11px] md:text-xs inline-flex items-center gap-1.5 shadow-lg tracking-widest uppercase">
                     {getCountryFlagCode(game.category) && (
                       <CountryFlag
                         code={getCountryFlagCode(game.category)}
                         size="S"
                       />
                     )}
-                    {game.category}
+                    <span className="text-site-accent">{game.category}</span>
                   </span>
                 </div>
 
-                <p className="text-gray-300 text-sm md:text-base font-black drop-shadow-sm">
+                <p className="text-gray-300 text-sm md:text-base font-medium drop-shadow-sm mt-1">
                   {t("by_developer", {
                     developer: game.publisher || game.developer || t("unknown"),
                   })}
@@ -942,28 +934,22 @@ export default function GameDetailsPage() {
 
               <div className="absolute top-4 right-4 flex space-x-2 md:static md:mt-0">
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="icon"
                   onClick={handleToggleFavorite}
-                  className={
-                    isFavorite
-                      ? "bg-brutal-pink text-black w-9 h-9 md:w-10 md:h-10"
-                      : "w-9 h-9 md:w-10 md:h-10"
-                  }
+                  className={`w-9 h-9 md:w-10 md:h-10 border-site-border bg-[#222427]/80 hover:bg-site-border backdrop-blur-sm shadow-ocean rounded-xl ${isFavorite ? "text-red-500 border-red-500/30/50 bg-red-500/10" : "text-gray-300"
+                    }`}
                 >
-                  <Heart size={18} className={isFavorite ? "fill-black" : ""} />
+                  <Heart size={18} className={isFavorite ? "fill-red-500" : ""} />
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="icon"
                   onClick={handleCopyLink}
-                  className={
-                    copied
-                      ? "bg-brutal-green text-black w-9 h-9 md:w-10 md:h-10"
-                      : "w-9 h-9 md:w-10 md:h-10"
-                  }
+                  className={`w-9 h-9 md:w-10 md:h-10 border-site-border bg-[#222427]/80 hover:bg-site-border backdrop-blur-sm shadow-ocean rounded-xl ${copied ? "text-green-400 border-green-500/30/50 bg-green-500/10" : "text-gray-300"
+                    }`}
                 >
-                  {copied ? <Check size={18} /> : <Share2 size={18} />}
+                  {copied ? <Check size={18} className="text-green-400" /> : <Share2 size={18} />}
                 </Button>
               </div>
             </div>
@@ -974,27 +960,24 @@ export default function GameDetailsPage() {
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <div
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <div className="flex border-b-[3px] border-black overflow-x-auto hide-scrollbar">
+          <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border overflow-hidden rounded-2xl shadow-ocean">
+            <div className="flex border-b border-site-border/50 overflow-x-auto hide-scrollbar bg-[#1A1C1E]/50">
               <button
                 onClick={() => setActiveTab("topup")}
-                className={`hidden md:flex py-4 px-6 text-sm font-black items-center whitespace-nowrap flex-shrink-0 uppercase ${activeTab === "topup" ? "text-black bg-brutal-yellow border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`hidden md:flex py-4 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors ${activeTab === "topup" ? "text-site-accent border-b-2 border-site-accent bg-site-accent/5" : "text-gray-400 hover:text-white hover:bg-[#212328]/5"}`}
               >
                 <DollarSign size={18} className="mr-2" />
                 {optionsTabLabel}
               </button>
               <button
                 onClick={() => setActiveTab("info")}
-                className={`hidden md:flex py-4 px-6 text-sm font-black items-center whitespace-nowrap flex-shrink-0 uppercase ${activeTab === "info" ? "text-black bg-brutal-yellow border-l-[3px] border-r-[3px] border-black" : "text-gray-600 hover:text-black hover:bg-gray-100"}`}
+                className={`hidden md:flex py-4 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors ${activeTab === "info" ? "text-site-accent border-b-2 border-site-accent bg-site-accent/5" : "text-gray-400 hover:text-white hover:bg-[#212328]/5"}`}
               >
                 <Info size={18} className="mr-2" />
                 {infoTabLabel}
               </button>
 
-              <div className="md:hidden py-4 px-6 text-sm font-black flex items-center w-full bg-brutal-yellow text-black uppercase">
+              <div className="md:hidden py-4 px-6 text-sm font-semibold flex items-center w-full bg-site-accent/10 border-b-2 border-site-accent text-site-accent">
                 <Info size={18} className="mr-2" />
                 {infoTabLabel}
               </div>
@@ -1012,15 +995,15 @@ export default function GameDetailsPage() {
                   </div>
 
                   {game.topUpOptions.length === 0 ? (
-                    <div className="text-center py-8 bg-brutal-gray border-[3px] border-black">
+                    <div className="text-center py-8 bg-[#1A1C1E] border border-site-border rounded-xl">
                       <AlertCircle
                         className="mx-auto text-gray-500 mb-2"
                         size={32}
                       />
-                      <p className="text-gray-600 font-bold">
+                      <p className="text-gray-400 font-medium">
                         {t("no_options")}
                       </p>
-                      <p className="text-sm text-gray-500 mt-1 font-bold">
+                      <p className="text-sm text-gray-500 mt-1">
                         {t("no_options_desc")}
                       </p>
                     </div>
@@ -1032,52 +1015,47 @@ export default function GameDetailsPage() {
                             <motion.div
                               key={option.id}
                               onClick={() => setSelectedOption(option.id)}
-                              className={`relative border-[3px] p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] ${selectedOption === option.id
-                                ? "bg-brutal-yellow border-black"
-                                : "bg-white border-black hover:bg-gray-100"
+                              className={`relative border p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] rounded-xl ${selectedOption === option.id
+                                ? "bg-site-accent/10 border-site-accent shadow-[0_0_15px_rgba(103,176,186,0.15)]"
+                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
                                 }`}
-                              style={{
-                                boxShadow:
-                                  selectedOption === option.id
-                                    ? "4px 4px 0 0 #000000"
-                                    : "none",
-                              }}
                               whileHover={{ y: -2 }}
                             >
                               {option.isPopular && (
                                 <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                                  <span className="bg-brutal-pink text-black text-[9px] md:text-[10px] font-black px-1.5 md:px-2 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
+                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] md:text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full shadow-[0_2px_10px_rgba(255,51,102,0.4)] flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
+                                    <Flame size={10} className="text-yellow-200 fill-yellow-200" />
                                     {t("popular_badge")}
                                   </span>
                                 </div>
                               )}
 
-                              <h4 className="text-black font-black text-center text-[13px] md:text-base leading-tight line-clamp-2">
+                              <h4 className="text-white font-bold text-center text-[13px] md:text-base leading-tight line-clamp-2">
                                 {option.title}
                               </h4>
 
                               <div className="text-center">
                                 {option.originalPrice > option.price ? (
                                   <div className="flex flex-col items-center">
-                                    <span className="line-through text-gray-500 text-[10px] md:text-xs font-bold">
+                                    <span className="line-through text-gray-500 text-[10px] md:text-xs">
                                       ฿
                                       {Number(
                                         option.originalPrice || 0,
                                       ).toFixed(2)}
                                     </span>
-                                    <span className="text-black font-black text-sm md:text-base">
+                                    <span className={`font-bold text-sm md:text-base ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
                                       ฿{Number(option.price || 0).toFixed(2)}
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-black font-black text-sm md:text-base">
+                                  <span className={`font-bold text-sm md:text-base ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
                                     ฿{Number(option.price || 0).toFixed(2)}
                                   </span>
                                 )}
                               </div>
 
                               {selectedOption === option.id && (
-                                <div className="absolute bottom-1 right-1 text-black">
+                                <div className="absolute bottom-2 right-2 text-site-accent">
                                   <Check size={14} className="md:w-4 md:h-4" />
                                 </div>
                               )}
@@ -1099,51 +1077,46 @@ export default function GameDetailsPage() {
                                 setSelectedOption(option.id);
                                 setIsOptionsModalOpen(false);
                               }}
-                              className={`relative border-[3px] p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] ${selectedOption === option.id
-                                ? "bg-brutal-yellow border-black"
-                                : "bg-white border-black hover:bg-gray-100"
+                              className={`relative border p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] rounded-xl ${selectedOption === option.id
+                                ? "bg-site-accent/10 border-site-accent shadow-[0_0_15px_rgba(103,176,186,0.15)]"
+                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
                                 }`}
-                              style={{
-                                boxShadow:
-                                  selectedOption === option.id
-                                    ? "4px 4px 0 0 #000000"
-                                    : "none",
-                              }}
                             >
                               {option.isPopular && (
                                 <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                                  <span className="bg-brutal-pink text-black text-[9px] font-black px-1.5 py-0.5 border-[2px] border-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] whitespace-nowrap">
+                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] font-black tracking-wider px-2 py-0.5 rounded-full shadow-[0_2px_10px_rgba(255,51,102,0.4)] flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
+                                    <Flame size={10} className="text-yellow-200 fill-yellow-200" />
                                     {t("popular_badge")}
                                   </span>
                                 </div>
                               )}
 
-                              <h4 className="text-black font-black text-center text-[13px] leading-tight line-clamp-2">
+                              <h4 className="text-white font-bold text-center text-[13px] leading-tight line-clamp-2">
                                 {option.title}
                               </h4>
 
                               <div className="text-center">
                                 {option.originalPrice > option.price ? (
                                   <div className="flex flex-col items-center">
-                                    <span className="line-through text-gray-500 text-[10px] font-bold">
+                                    <span className="line-through text-gray-500 text-[10px]">
                                       ฿
                                       {Number(
                                         option.originalPrice || 0,
                                       ).toFixed(2)}
                                     </span>
-                                    <span className="text-black font-black text-sm">
+                                    <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
                                       ฿{Number(option.price || 0).toFixed(2)}
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-black font-black text-sm">
+                                  <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
                                     ฿{Number(option.price || 0).toFixed(2)}
                                   </span>
                                 )}
                               </div>
 
                               {selectedOption === option.id && (
-                                <div className="absolute bottom-1 right-1 text-black">
+                                <div className="absolute bottom-2 right-2 text-site-accent">
                                   <Check size={14} />
                                 </div>
                               )}
@@ -1161,8 +1134,8 @@ export default function GameDetailsPage() {
               >
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg md:text-xl font-black text-black mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight uppercase">
-                      <span className="w-1.5 h-5 bg-brutal-pink flex-shrink-0 mt-1 md:mt-0"></span>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight">
+                      <span className="w-1.5 h-5 bg-site-accent rounded-full flex-shrink-0 mt-1 md:mt-0 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
                       <span>{t("about_product", { name: game.title })}</span>
                     </h3>
                     <ProductDescription
@@ -1171,56 +1144,44 @@ export default function GameDetailsPage() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div
-                      className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    >
-                      <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
-                        <Package className="mr-2 text-black" size={18} />
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                      <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                        <Package className="mr-2 text-gray-400" size={18} />
                         {t("developer")}
                       </h4>
-                      <p className="text-gray-700 font-bold">
+                      <p className="text-white font-medium">
                         {game.developer || t("unknown")}
                       </p>
                     </div>
 
-                    <div
-                      className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    >
-                      <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
-                        <Award className="mr-2 text-black" size={18} />
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                      <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                        <Award className="mr-2 text-gray-400" size={18} />
                         {t("publisher")}
                       </h4>
-                      <p className="text-gray-700 font-bold">
+                      <p className="text-white font-medium">
                         {game.publisher || t("unknown")}
                       </p>
                     </div>
 
                     {game.releaseDate && (
-                      <div
-                        className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
-                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                      >
-                        <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
-                          <Calendar className="mr-2 text-black" size={18} />
+                      <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                        <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                          <Calendar className="mr-2 text-gray-400" size={18} />
                           {t("release_date")}
                         </h4>
-                        <p className="text-gray-700 font-bold">
+                        <p className="text-white font-medium">
                           {new Date(game.releaseDate).toLocaleDateString()}
                         </p>
                       </div>
                     )}
 
-                    <div
-                      className="bg-brutal-gray border-[3px] border-black p-3 md:p-4"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    >
-                      <h4 className="text-black font-black mb-2 flex items-center text-sm uppercase">
-                        <Smartphone className="mr-2 text-black" size={18} />
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                      <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                        <Smartphone className="mr-2 text-gray-400" size={18} />
                         {t("platforms")}
                       </h4>
-                      <p className="text-gray-700 font-bold">
+                      <p className="text-white font-medium">
                         {game.platforms.join(", ")}
                       </p>
                     </div>
@@ -1232,8 +1193,8 @@ export default function GameDetailsPage() {
 
           {relatedGamesByDev.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-xl font-black text-black mb-4 flex items-center uppercase">
-                <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
+              <h2 className="text-xl font-bold text-white mb-4 flex items-center uppercase">
+                <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
                 {t("related_products")}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -1243,11 +1204,10 @@ export default function GameDetailsPage() {
                     key={relatedGame.id}
                   >
                     <motion.div
-                      className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
-                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                      className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/50"
                       whileHover={{ y: -4 }}
                     >
-                      <div className="relative aspect-square bg-brutal-gray overflow-hidden">
+                      <div className="relative aspect-square overflow-hidden bg-[#222427]">
                         <img
                           src={
                             relatedGame.imageUrl ||
@@ -1258,11 +1218,11 @@ export default function GameDetailsPage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                         <div className="absolute bottom-2 left-2 right-2">
-                          <h3 className="text-sm font-black text-white line-clamp-1 drop-shadow-sm">
+                          <h3 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">
                             {relatedGame.name}
                           </h3>
                           <div className="flex items-center mt-1">
-                            <span className="text-[10px] bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-black uppercase">
+                            <span className="text-[10px] bg-site-accent/20 text-site-accent px-2 py-0.5 border border-site-accent/30 font-medium uppercase rounded-full">
                               {relatedGame.gameDetails?.developer || "GAME"}
                             </span>
                           </div>
@@ -1286,24 +1246,23 @@ export default function GameDetailsPage() {
               return (
                 <div
                   onClick={() => setIsOptionsModalOpen(true)}
-                  className="relative bg-white border-[3px] border-black p-4 flex items-center justify-between cursor-pointer group"
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  className="relative bg-[#222427]/80 backdrop-blur-md border border-site-border p-4 flex items-center justify-between cursor-pointer group rounded-2xl shadow-ocean"
                 >
                   <div className="flex-1">
-                    <span className="text-[10px] font-black text-gray-500 uppercase block mb-1">
+                    <span className="text-[10px] font-medium text-gray-400 uppercase block mb-1">
                       {t("selected_package_label")}
                     </span>
-                    <h4 className="text-black font-black text-base leading-tight">
+                    <h4 className="text-white font-bold text-base leading-tight">
                       {selected?.title || t("select_package")}
                     </h4>
                   </div>
                   <div className="flex items-center gap-3">
                     {selected && (
-                      <span className="text-black font-black text-lg">
+                      <span className="text-site-accent font-bold text-lg">
                         ฿{Number(selected.price || 0).toFixed(2)}
                       </span>
                     )}
-                    <div className="bg-brutal-yellow p-1 border-[2px] border-black group-hover:bg-brutal-yellow/80">
+                    <div className="bg-site-accent/10 p-1 border border-site-accent/30 rounded-lg group-hover:bg-site-accent/20 text-site-accent">
                       <ChevronRight size={20} />
                     </div>
                   </div>
@@ -1312,12 +1271,9 @@ export default function GameDetailsPage() {
             })()}
           </div>
 
-          <div
-            className="bg-white border-[3px] border-black p-4 md:p-6 sticky top-24"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <h3 className="text-lg md:text-xl font-black text-black mb-4 flex items-center uppercase">
-              <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
+          <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border p-4 md:p-6 sticky top-24 rounded-2xl shadow-ocean">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center uppercase">
+              <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
               {purchaseTitle}
             </h3>
 
@@ -1331,12 +1287,12 @@ export default function GameDetailsPage() {
                 return (
                   <div className="space-y-6">
                     {!isAuthenticated && (
-                      <div className="bg-gray-100 border-[2px] border-gray-300 p-3 text-sm flex items-center gap-2">
+                      <div className="bg-yellow-500/10 border border-yellow-500/30/30 p-3 text-sm flex items-center gap-2 rounded-xl">
                         <AlertTriangle
                           size={16}
                           className="text-yellow-500 flex-shrink-0"
                         />
-                        <span className="text-gray-500 font-bold">
+                        <span className="text-yellow-200/90 font-medium">
                           {t("login_required_notice")}
                         </span>
                       </div>
@@ -1404,32 +1360,32 @@ export default function GameDetailsPage() {
                     )}
 
                     <div className="flex justify-between items-start gap-4">
-                      <span className="text-gray-600 flex-shrink-0 pt-0.5 font-bold">
+                      <span className="text-gray-400 flex-shrink-0 pt-0.5 font-medium">
                         {t("selected_package_label")}
                       </span>
                       <div className="text-right min-w-0">
-                        <span className="text-black font-black block leading-tight break-words">
+                        <span className="text-white font-bold block leading-tight break-words">
                           {option.title}
                         </span>
                       </div>
                     </div>
 
-                    <div className="py-4 border-y-[3px] border-black">
+                    <div className="py-4 border-y border-site-border">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-600 font-bold">
+                        <span className="text-gray-400 font-medium">
                           {t("price_label")}
                         </span>
                         {option.originalPrice > option.price ? (
                           <div>
-                            <span className="line-through text-gray-500 text-sm mr-2 font-bold">
+                            <span className="line-through text-gray-500 text-sm mr-2">
                               ฿{Number(option.originalPrice || 0).toFixed(2)}
                             </span>
-                            <span className="text-black font-black text-xl">
+                            <span className="text-site-accent font-bold text-xl">
                               ฿{Number(option.price || 0).toFixed(2)}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-black font-black text-xl">
+                          <span className="text-site-accent font-bold text-xl">
                             ฿{Number(option.price || 0).toFixed(2)}
                           </span>
                         )}
@@ -1437,10 +1393,10 @@ export default function GameDetailsPage() {
 
                       {option.originalPrice > option.price && (
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600 font-bold">
+                          <span className="text-gray-400 font-medium">
                             {t("savings_label")}
                           </span>
-                          <span className="text-brutal-green font-black">
+                          <span className="text-green-400 font-bold">
                             ฿
                             {(
                               Number(option.originalPrice || 0) -
@@ -1457,7 +1413,7 @@ export default function GameDetailsPage() {
                         disabled={isBuying}
                         isLoading={isBuying}
                         size="full"
-                        className="bg-black text-white hover:bg-gray-800 font-black h-12"
+                        className="bg-site-accent hover:bg-site-accent/90 text-white font-bold h-12 shadow-[0_0_15px_rgba(103,176,186,0.5)] border-none"
                       >
                         {!isBuying && (
                           <>
@@ -1474,13 +1430,13 @@ export default function GameDetailsPage() {
                       </Button>
                     </div>
 
-                    <div className="bg-brutal-gray border-[3px] border-black p-3 text-sm">
+                    <div className="bg-site-accent/5 border border-site-accent/20 p-3 text-sm rounded-xl">
                       <div className="flex items-center">
                         <Clock
                           size={16}
-                          className="text-gray-600 mr-2 flex-shrink-0"
+                          className="text-site-accent mr-2 flex-shrink-0"
                         />
-                        <span className="text-gray-600 font-bold">
+                        <span className="text-site-accent/90 font-medium">
                           {t("auto_delivery_hint")}
                         </span>
                       </div>
@@ -1494,8 +1450,8 @@ export default function GameDetailsPage() {
 
       {/* Similar products */}
       <section className="mt-16 mb-10">
-        <h2 className="text-xl font-black text-black mb-4 flex items-center uppercase">
-          <span className="w-1.5 h-5 bg-brutal-green mr-2"></span>
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center uppercase">
+          <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
           {t("similar_products")}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -1503,11 +1459,10 @@ export default function GameDetailsPage() {
             similarGames.map((similarGame) => (
               <Link href={`/games/${similarGame.slug}`} key={similarGame.id}>
                 <motion.div
-                  className="bg-white border-[3px] border-black overflow-hidden group cursor-pointer"
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/50 transition-colors"
                   whileHover={{ y: -4 }}
                 >
-                  <div className="aspect-square relative bg-brutal-gray overflow-hidden">
+                  <div className="aspect-square relative overflow-hidden bg-[#222427]">
                     <img
                       src={
                         similarGame.imageUrl ||
@@ -1518,11 +1473,11 @@ export default function GameDetailsPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                     <div className="absolute bottom-2 left-2 right-2">
-                      <h3 className="text-sm font-black text-white line-clamp-1 drop-shadow-sm">
+                      <h3 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">
                         {similarGame.name}
                       </h3>
                       <div className="flex items-center mt-1">
-                        <span className="text-[10px] bg-brutal-blue text-black px-1.5 py-0.5 border border-black font-black uppercase">
+                        <span className="text-[10px] bg-site-accent/20 text-site-accent px-2 py-0.5 border border-site-accent/30 font-medium uppercase rounded-full">
                           {similarGame.gameDetails?.developer ||
                             similarGame.category?.name ||
                             "GAME"}
@@ -1534,7 +1489,7 @@ export default function GameDetailsPage() {
               </Link>
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-600 font-bold">
+            <div className="col-span-full text-center py-8 text-gray-500 font-medium">
               {t("no_similar_found")}
             </div>
           )}
@@ -1548,27 +1503,26 @@ export default function GameDetailsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-md"
             onClick={() => setShowConfirmModal(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white border-[3px] border-black w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
-              style={{ boxShadow: "8px 8px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-2xl shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div
-                className={`border-b-[3px] border-black p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-brutal-pink" : "bg-brutal-yellow"}`}
+                className={`border-b border-site-border p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-red-500/10" : "bg-site-accent/10"}`}
               >
                 <div className="flex items-center gap-2">
                   {!verificationStatus.supported ? (
-                    <ShieldAlert size={22} className="text-black" />
+                    <ShieldAlert size={22} className="text-red-500" />
                   ) : (
-                    <Check size={22} className="text-black" />
+                    <Check size={22} className="text-site-accent" />
                   )}
-                  <h2 className="text-base sm:text-lg font-black text-black uppercase">
+                  <h2 className="text-base sm:text-lg font-bold text-white uppercase">
                     {!verificationStatus.supported
                       ? t("unverified_account_warning")
                       : t("confirm_order_title")}
@@ -1576,7 +1530,7 @@ export default function GameDetailsPage() {
                 </div>
                 <button
                   onClick={() => setShowConfirmModal(false)}
-                  className="p-1.5 hover:bg-black/10 rounded transition-colors"
+                  className="p-1.5 hover:bg-[#212328]/10 rounded-lg transition-colors text-white"
                 >
                   <X size={20} />
                 </button>
@@ -1584,17 +1538,17 @@ export default function GameDetailsPage() {
 
               <div className="flex-1 overflow-y-auto">
                 {!verificationStatus.supported && (
-                  <div className="bg-red-50 border-b-[2px] border-red-200 p-3">
+                  <div className="bg-red-500/10 border-b border-red-500/30/30 p-3">
                     <div className="flex items-start gap-2">
                       <AlertCircle
                         size={18}
-                        className="text-red-600 mt-0.5 flex-shrink-0"
+                        className="text-red-500 mt-0.5 flex-shrink-0"
                       />
                       <div className="flex-1">
-                        <p className="font-black text-red-700 text-sm">
+                        <p className="font-bold text-red-400 text-sm">
                           {t("unverified_account_warning")}
                         </p>
-                        <p className="text-xs text-red-600 mt-0.5 font-bold">
+                        <p className="text-xs text-red-300 mt-0.5 font-medium">
                           {t("verify_info_hint")}
                         </p>
                       </div>
@@ -1603,22 +1557,22 @@ export default function GameDetailsPage() {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                  <div className="p-4 sm:p-5 space-y-4 border-b-[2px] lg:border-b-0 lg:border-r-[2px] border-black/10">
-                    <div className="bg-brutal-gray border-[2px] border-black p-3 sm:p-4 shadow-[3px_3px_0_0_#000]">
-                      <h3 className="font-black text-black text-sm mb-3 flex items-center gap-1.5 uppercase">
-                        <Package size={16} />
+                  <div className="p-4 sm:p-5 space-y-4 border-b lg:border-b-0 lg:border-r border-site-border">
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 sm:p-4 rounded-xl">
+                      <h3 className="font-bold text-white text-sm mb-3 flex items-center gap-1.5 uppercase">
+                        <Package size={16} className="text-site-accent" />
                         {t("product_details_title")}
                       </h3>
-                      <div className="space-y-2 text-sm font-bold">
+                      <div className="space-y-2 text-sm font-medium">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Product:</span>
-                          <span className="text-black text-right max-w-[60%]">
+                          <span className="text-gray-400">Product:</span>
+                          <span className="text-white text-right max-w-[60%]">
                             {verificationStatus.productName}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Package:</span>
-                          <span className="text-black">
+                          <span className="text-gray-400">Package:</span>
+                          <span className="text-white">
                             {verificationStatus.optionName}
                           </span>
                         </div>
@@ -1626,9 +1580,9 @@ export default function GameDetailsPage() {
                     </div>
 
                     {Object.keys(verificationStatus.playerInfo).length > 0 && (
-                      <div className="bg-white border-[2px] border-black p-3 sm:p-4 shadow-[3px_3px_0_0_#000]">
-                        <h3 className="font-black text-black text-sm mb-2 flex items-center gap-1.5 uppercase">
-                          <User size={16} />
+                      <div className="bg-[#1A1C1E] border border-site-border p-3 sm:p-4 rounded-xl">
+                        <h3 className="font-bold text-white text-sm mb-2 flex items-center gap-1.5 uppercase">
+                          <User size={16} className="text-site-accent" />
                           {t("account_info_title")}
                         </h3>
                         <div className="grid grid-cols-2 gap-2">
@@ -1636,12 +1590,12 @@ export default function GameDetailsPage() {
                             ([key, value]) => (
                               <div
                                 key={key}
-                                className="bg-brutal-gray p-2 border border-black/20"
+                                className="bg-[#16181A] p-2 border border-site-border rounded-lg"
                               >
-                                <span className="text-[10px] text-gray-500 block uppercase font-black">
+                                <span className="text-[10px] text-gray-500 block uppercase font-bold">
                                   {key}
                                 </span>
-                                <span className="font-mono font-black text-black text-sm truncate block">
+                                <span className="font-mono font-bold text-white text-sm truncate block mt-0.5">
                                   {value}
                                 </span>
                               </div>
@@ -1651,17 +1605,17 @@ export default function GameDetailsPage() {
                       </div>
                     )}
 
-                    <div className="bg-red-50 border-l-4 border-red-500 p-3">
+                    <div className="bg-red-500/10 border border-red-500/30/30 p-3 rounded-xl">
                       <div className="flex items-start gap-2">
                         <AlertCircle
                           size={16}
-                          className="text-red-600 mt-0.5 flex-shrink-0"
+                          className="text-red-500 mt-0.5 flex-shrink-0"
                         />
                         <div>
-                          <p className="font-black text-red-700 text-xs">
+                          <p className="font-bold text-red-400 text-xs">
                             {t("no_refund_warning_title")}
                           </p>
-                          <p className="text-xs text-red-600 mt-0.5 leading-relaxed font-bold">
+                          <p className="text-xs text-red-300/80 mt-0.5 leading-relaxed font-medium">
                             {t("no_refund_warning_desc")}
                           </p>
                         </div>
@@ -1669,31 +1623,31 @@ export default function GameDetailsPage() {
                     </div>
                   </div>
 
-                  <div className="p-4 sm:p-5 space-y-4 bg-gray-50/50">
+                  <div className="p-4 sm:p-5 space-y-4 bg-[#1A1C1E]">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600 font-black uppercase">
+                      <span className="text-sm text-gray-400 font-bold uppercase">
                         {t("payment_method_label")}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="font-black text-black text-sm">
+                        <span className="font-bold text-white text-sm">
                           {priceSummary.label || "Select Method"}
                         </span>
                         <Button
                           size="sm"
-                          variant="secondary"
+                          variant="outline"
                           onClick={() => setIsPaymentSelectOpen(true)}
-                          className="text-[10px] py-1 px-2 h-auto font-black uppercase border-black"
+                          className="text-[10px] py-1 px-2 h-auto font-bold uppercase border-site-border text-white hover:bg-site-border hover:text-white"
                         >
                           {t("change_button")}
                         </Button>
                       </div>
                     </div>
 
-                    <div className="bg-white border-[2px] border-black p-4 shadow-[3px_3px_0_0_#000]">
-                      <div className="space-y-2 text-sm font-bold">
-                        <div className="flex justify-between text-gray-600">
+                    <div className="bg-[#222427] border border-site-border p-4 rounded-xl">
+                      <div className="space-y-2 text-sm font-medium">
+                        <div className="flex justify-between text-gray-400">
                           <span>{t("subtotal_label")}</span>
-                          <span>
+                          <span className="text-white">
                             ฿
                             {Number(
                               priceSummary.base ||
@@ -1702,18 +1656,18 @@ export default function GameDetailsPage() {
                             ).toFixed(2)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-gray-600">
+                        <div className="flex justify-between text-gray-400">
                           <span>{t("fee_label")}</span>
-                          <span>
-                            ฿{Number(priceSummary.fee || 0).toFixed(2)}
+                          <span className="text-pink-400">
+                            +฿{Number(priceSummary.fee || 0).toFixed(2)}
                           </span>
                         </div>
-                        <div className="border-t-2 border-black pt-2 mt-2">
+                        <div className="border-t border-site-border pt-2 mt-2">
                           <div className="flex justify-between items-baseline">
-                            <span className="font-black text-black">
+                            <span className="font-bold text-white">
                               {t("total_label")}
                             </span>
-                            <span className="text-2xl sm:text-3xl font-black text-black">
+                            <span className="text-2xl sm:text-3xl font-bold text-site-accent">
                               ฿
                               {Number(
                                 priceSummary.total ||
@@ -1726,26 +1680,26 @@ export default function GameDetailsPage() {
                       </div>
                     </div>
 
-                    <div className="bg-sky-50 border border-sky-200 p-2.5 text-[10px] text-sky-700 flex items-start gap-2 font-bold uppercase">
+                    <div className="bg-sky-500/10 border border-sky-500/30 p-2.5 text-[10px] text-sky-400 flex items-start gap-2 font-medium uppercase rounded-xl">
                       <ShieldCheck size={14} className="mt-0.5 flex-shrink-0" />
                       <span>{t("secure_payment_notice")}</span>
                     </div>
 
-                    <div className="pt-4 border-t border-gray-200">
+                    <div className="pt-4 border-t border-site-border">
                       <div className="mb-4">
-                        <label className="flex items-start gap-2 cursor-pointer">
+                        <label className="flex items-start gap-2 cursor-pointer group">
                           <input
                             type="checkbox"
                             checked={termsAccepted}
                             onChange={(e) => setTermsAccepted(e.target.checked)}
-                            className="mt-0.5 w-4 h-4 accent-black flex-shrink-0 cursor-pointer"
+                            className="mt-0.5 w-4 h-4 rounded border-site-border bg-[#1A1C1E] accent-site-accent flex-shrink-0 cursor-pointer"
                           />
-                          <span className="text-[10px] text-gray-600 leading-tight font-bold">
+                          <span className="text-[10px] text-gray-400 group-hover:text-gray-300 transition-colors leading-tight font-medium">
                             {t("terms_agreement_prefix")}{" "}
                             <Link
                               href="/terms"
                               target="_blank"
-                              className="text-brutal-pink hover:underline"
+                              className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {t("terms_label")}
@@ -1754,7 +1708,7 @@ export default function GameDetailsPage() {
                             <Link
                               href="/privacy"
                               target="_blank"
-                              className="text-brutal-pink hover:underline"
+                              className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {t("privacy_label")}
@@ -1763,7 +1717,7 @@ export default function GameDetailsPage() {
                             <Link
                               href="/refund-policy"
                               target="_blank"
-                              className="text-brutal-pink hover:underline"
+                              className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {t("refund_label")}
@@ -1777,23 +1731,23 @@ export default function GameDetailsPage() {
                           onClick={createOrder}
                           disabled={isBuying || !termsAccepted}
                           isLoading={isBuying}
-                          className="flex-1 bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-base sm:text-lg font-black shadow-[3px_3px_0_0_#000] border-[2px] border-black disabled:opacity-50 disabled:cursor-not-allowed uppercase"
+                          className="flex-1 bg-site-accent hover:bg-site-accent/90 text-white h-12 sm:h-14 text-base sm:text-lg font-bold disabled:opacity-50 border-none uppercase shadow-[0_0_15px_rgba(103,176,186,0.3)] transition-all"
                         >
                           {!isBuying && <Check size={20} className="mr-2" />}
                           {t("confirm_button")}
                         </Button>
 
                         <Button
-                          variant="secondary"
+                          variant="outline"
                           onClick={() => setShowConfirmModal(false)}
                           disabled={isBuying}
-                          className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-black border-[2px] border-black shadow-[3px_3px_0_0_#000] uppercase"
+                          className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-bold border-site-border bg-transparent text-white hover:bg-site-border hover:text-white uppercase transition-all"
                         >
                           {t("cancel_button")}
                         </Button>
                       </div>
 
-                      <p className="text-center text-[10px] text-gray-400 mt-3 font-bold uppercase">
+                      <p className="text-center text-[10px] text-gray-500 mt-3 font-medium uppercase">
                         {t("confirm_hint")}
                       </p>
                     </div>
@@ -1811,28 +1765,28 @@ export default function GameDetailsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-md"
             onClick={() => setIsPaymentSelectOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white w-full max-w-5xl border-[3px] border-black shadow-[8px_8px_0_0_#000] p-4 sm:p-6"
+              className="bg-[#222427] w-full max-w-5xl border border-site-border shadow-2xl p-4 sm:p-6 rounded-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-start gap-3 mb-5">
                 <div>
-                  <h3 className="text-2xl font-black text-black uppercase">
+                  <h3 className="text-2xl font-bold text-white uppercase">
                     {t("payment_selection_title")}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1 font-bold">
+                  <p className="text-sm text-gray-400 mt-1 font-medium">
                     {t("payment_selection_desc")}
                   </p>
                 </div>
                 <button
                   onClick={() => setIsPaymentSelectOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded transition-colors"
+                  className="p-2 hover:bg-[#212328]/10 rounded-lg transition-colors text-white"
                 >
                   <X size={18} />
                 </button>
@@ -1849,12 +1803,11 @@ export default function GameDetailsPage() {
                     return (
                       <label
                         key={opt.code}
-                        className={`border-[2px] border-black p-4 flex flex-col gap-3 transition-all ${isActive ? "bg-brutal-yellow" : "bg-white"
+                        className={`border p-4 flex flex-col gap-3 transition-all rounded-xl ${isActive ? "bg-site-accent/10 border-site-accent shadow-[0_0_15px_rgba(103,176,186,0.15)]" : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
                           } ${!isAvailable
                             ? "opacity-50 cursor-not-allowed"
                             : "cursor-pointer"
                           }`}
-                        style={{ boxShadow: "2px 2px 0 0 #000" }}
                         onClick={() => {
                           if (isAvailable) {
                             setSelectedPaymentOption(opt.code);
@@ -1872,48 +1825,48 @@ export default function GameDetailsPage() {
                                 isAvailable && setSelectedPaymentOption(opt.code)
                               }
                               disabled={!isAvailable}
-                              className="mt-1 accent-black disabled:cursor-not-allowed"
+                              className="mt-1 accent-site-accent disabled:cursor-not-allowed bg-[#16181A] border-site-border"
                             />
                             <div>
-                              <div className="text-black font-black text-base flex items-center gap-2">
+                              <div className="text-white font-bold text-base flex items-center gap-2">
                                 {opt.label}
                                 {!isAvailable && (
-                                  <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded">
+                                  <span className="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded border border-red-500/20">
                                     Min {TRUEMONEY_MIN_AMOUNT}฿
                                   </span>
                                 )}
                               </div>
-                              <div className="text-[10px] text-gray-600 mt-1 font-bold">
+                              <div className="text-[10px] text-gray-400 mt-1 font-medium">
                                 Gateway: {opt.gateway.name}
                               </div>
                               {unavailableReason && (
-                                <div className="text-[10px] text-red-600 mt-1 font-bold">
+                                <div className="text-[10px] text-red-400 mt-1 font-medium">
                                   {unavailableReason}
                                 </div>
                               )}
                             </div>
                           </div>
                           {isActive && isAvailable && (
-                            <Check size={16} className="text-black" />
+                            <Check size={16} className="text-site-accent" />
                           )}
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className={`text-[11px] uppercase border border-black px-2 py-0.5 bg-white text-gray-700 font-black ${!isAvailable ? "opacity-50" : ""}`}>
+                          <span className={`text-[11px] uppercase border border-site-border px-2 py-0.5 bg-[#16181A] text-gray-400 font-bold rounded ${!isAvailable ? "opacity-50" : ""}`}>
                             {opt.method}
                           </span>
                         </div>
 
-                        <div className="border-t border-black/20 pt-2 text-[10px] text-gray-700 space-y-1 font-bold">
+                        <div className="border-t border-site-border/50 pt-2 text-[10px] text-gray-400 space-y-1 font-medium">
                           <div className="flex justify-between">
                             <span>FEE %</span>
-                            <span>
+                            <span className="text-white">
                               {Number(opt.surchargePercent || 0).toFixed(2)}%
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span>FLAT FEE</span>
-                            <span>{formatTHB(Number(opt.flatFee || 0))}</span>
+                            <span className="text-white">{formatTHB(Number(opt.flatFee || 0))}</span>
                           </div>
                         </div>
                       </label>
@@ -1921,39 +1874,39 @@ export default function GameDetailsPage() {
                   })}
                 </div>
 
-                <div className="border-[2px] border-black p-4 bg-gray-50 h-fit space-y-4">
-                  <h4 className="text-lg font-black text-black uppercase">
+                <div className="border border-site-border p-4 bg-[#1A1C1E] rounded-xl h-fit space-y-4">
+                  <h4 className="text-lg font-bold text-white uppercase">
                     {t("transaction_summary_title")}
                   </h4>
 
-                  <div className="space-y-2 text-sm font-bold">
-                    <div className="flex justify-between text-gray-700">
+                  <div className="space-y-2 text-sm font-medium">
+                    <div className="flex justify-between text-gray-400">
                       <span>Product:</span>
-                      <span className="text-black max-w-[55%] text-right truncate">
+                      <span className="text-white max-w-[55%] text-right truncate">
                         {game?.title || "-"}
                       </span>
                     </div>
-                    <div className="flex justify-between text-gray-700">
+                    <div className="flex justify-between text-gray-400">
                       <span>Package:</span>
-                      <span className="text-black max-w-[55%] text-right truncate">
+                      <span className="text-white max-w-[55%] text-right truncate">
                         {selectedTopUp?.title || "-"}
                       </span>
                     </div>
-                    <div className="flex justify-between text-gray-700">
+                    <div className="flex justify-between text-gray-400">
                       <span>Subtotal:</span>
-                      <span>{formatTHB(Number(priceSummary.base || 0))}</span>
+                      <span className="text-white">{formatTHB(Number(priceSummary.base || 0))}</span>
                     </div>
-                    <div className="flex justify-between text-gray-700">
+                    <div className="flex justify-between text-gray-400">
                       <span>Fee:</span>
-                      <span>{formatTHB(Number(priceSummary.fee || 0))}</span>
+                      <span className="text-pink-400">{formatTHB(Number(priceSummary.fee || 0))}</span>
                     </div>
                   </div>
 
-                  <div className="border-t-2 border-black pt-3 flex justify-between items-end font-bold">
-                    <span className="text-sm text-gray-600 uppercase">
+                  <div className="border-t border-site-border pt-3 flex justify-between items-end font-bold">
+                    <span className="text-sm text-gray-400 uppercase">
                       {t("total_label")}
                     </span>
-                    <span className="text-2xl font-black text-black">
+                    <span className="text-2xl font-bold text-site-accent">
                       {formatTHB(Number(priceSummary.total || 0))}
                     </span>
                   </div>
@@ -1963,15 +1916,15 @@ export default function GameDetailsPage() {
                       onClick={() => setIsPaymentSelectOpen(false)}
                       disabled={!selectedPaymentOption}
                       fullWidth
-                      className="font-black uppercase"
+                      className="font-bold uppercase bg-site-accent hover:bg-site-accent/90 text-white border-none shadow-[0_0_15px_rgba(103,176,186,0.3)] transition-all"
                     >
                       {t("confirm_selection_button")}
                     </Button>
                     <Button
-                      variant="secondary"
+                      variant="outline"
                       onClick={() => setIsPaymentSelectOpen(false)}
                       fullWidth
-                      className="font-black uppercase border-black"
+                      className="font-bold uppercase border-site-border bg-transparent text-white hover:bg-site-border hover:text-white transition-all"
                     >
                       {t("close_window_button")}
                     </Button>

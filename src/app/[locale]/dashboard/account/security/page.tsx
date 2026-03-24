@@ -24,6 +24,7 @@ import {
   CheckCircle,
   Download,
   Lock,
+  Settings,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -254,65 +255,64 @@ export default function SecurityPage() {
   return (
     <div className="bg-transparent min-h-full">
       {/* Page Header */}
-      <div className="relative mb-4">
+      <div className="relative mb-6">
         <motion.h2
-          className="text-lg md:text-xl font-bold text-black mb-1 relative flex items-center gap-2"
+          className="text-xl md:text-2xl font-bold text-white mb-2 relative flex items-center gap-3"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-5 md:h-6 bg-brutal-pink mr-2"></span>
-          <Shield className="text-brutal-pink h-6 w-6 md:h-7 md:w-7" />
+          <span className="w-1.5 h-6 md:h-7 bg-site-accent mr-1 rounded-full shadow-accent-glow"></span>
+          <Shield className="text-site-accent h-6 w-6 md:h-7 md:w-7" />
           {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs md:text-sm relative pl-4 md:pl-0">
+        <p className="text-gray-400 text-sm relative pl-6 md:pl-0">
           {t("subtitle")}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Left Column (2/3 width on large screens) */}
-        <div className="xl:col-span-2 space-y-4">
+        <div className="xl:col-span-2 space-y-6">
           {/* Change Password */}
           <motion.div
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="p-3 bg-brutal-yellow border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black">
+            <div className="p-4 bg-[#1A1C1E]/50 border-b border-site-border">
+              <h2 className="text-base font-bold text-white flex items-center">
+                <KeyRound size={18} className="text-site-accent mr-2" />
                 {isOAuthOnly ? t("change_password.setup_title") : t("change_password.title")}
               </h2>
             </div>
 
-            <div className="p-4">
+            <div className="p-6">
               {/* OAuth-only user: Show password setup with OTP */}
               {isOAuthOnly ? (
                 showPasswordSetup ? (
                   <form
                     onSubmit={handleVerifyOTPAndSetPassword}
-                    className="space-y-3"
+                    className="space-y-4"
                   >
                     {!otpSent ? (
-                      <div className="text-center py-4">
-                        <p className="text-sm text-gray-600 mb-4">
+                      <div className="text-center py-6">
+                        <p className="text-sm text-gray-400 mb-6">
                           {t("change_password.oauth_notice", {
                             provider: user?.authProvider === "google" ? "Google" : "Discord"
                           })}
                           <br />
-                          {t("change_password.request_otp")} {user?.email}
+                          {t("change_password.request_otp")} <span className="text-white font-medium">{user?.email}</span>
                         </p>
                         <button
                           type="button"
                           onClick={handleRequestOTP}
                           disabled={isRequestingOTP || otpCooldown > 0}
-                          className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-xs"
-                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                          className="w-full py-2.5 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm hover:scale-[1.02] shadow-accent-glow transition-all"
                         >
                           {isRequestingOTP ? (
                             <>
-                              <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                              <div className="w-4 h-4 border-2 border-[#1A1C1E]/30 border-t-[#1A1C1E] rounded-full animate-spin"></div>
                               {tCommon("loading")}
                             </>
                           ) : otpCooldown > 0 ? (
@@ -324,14 +324,15 @@ export default function SecurityPage() {
                       </div>
                     ) : (
                       <>
-                        <div className="bg-green-50 border-[2px] border-green-500 p-3 mb-4">
-                          <p className="text-sm text-green-700">
-                            ✅ {t("change_password.otp_sent_success")} {user?.email}
+                        <div className="bg-green-500/10 border border-green-500/30/20 p-4 rounded-xl mb-6">
+                          <p className="text-sm text-green-400 flex items-center gap-2">
+                            <CheckCircle size={16} />
+                            {t("change_password.otp_sent_success")} <span className="font-bold">{user?.email}</span>
                           </p>
                         </div>
 
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1.5">
+                          <label className="block text-sm text-gray-400 mb-2">
                             {t("change_password.otp_label")}
                           </label>
                           <input
@@ -343,14 +344,14 @@ export default function SecurityPage() {
                               )
                             }
                             placeholder="123456"
-                            className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm text-center tracking-widest"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-base text-center tracking-[0.5em] transition-all"
                             required
                             maxLength={6}
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1.5">
+                          <label className="block text-sm text-gray-400 mb-2">
                             {t("change_password.new_label")}
                           </label>
                           <input
@@ -358,17 +359,17 @@ export default function SecurityPage() {
                             value={setupPassword}
                             onChange={(e) => setSetupPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
                             required
                             minLength={8}
                           />
-                          <p className="text-[10px] text-gray-500 mt-1">
+                          <p className="text-[11px] text-gray-500 mt-2">
                             {t("change_password.length_hint")}
                           </p>
                         </div>
 
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1.5">
+                          <label className="block text-sm text-gray-400 mb-2">
                             {t("change_password.setup_confirm_label")}
                           </label>
                           <input
@@ -378,12 +379,12 @@ export default function SecurityPage() {
                               setSetupConfirmPassword(e.target.value)
                             }
                             placeholder="••••••••"
-                            className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
                             required
                           />
                         </div>
 
-                        <div className="flex flex-col md:flex-row gap-2 pt-2">
+                        <div className="flex flex-col md:flex-row gap-3 pt-4">
                           <button
                             type="button"
                             onClick={() => {
@@ -393,7 +394,7 @@ export default function SecurityPage() {
                               setSetupConfirmPassword("");
                               setOtpSent(false);
                             }}
-                            className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors order-2 md:order-1 text-xs font-bold"
+                            className="flex-1 py-3 px-4 bg-[#1A1C1E] text-white border border-site-border rounded-lg hover:bg-[#212328]/5 hover:border-white/10 transition-all order-2 md:order-1 text-sm font-bold"
                           >
                             {t("change_password.button_cancel")}
                           </button>
@@ -405,12 +406,11 @@ export default function SecurityPage() {
                               !setupPassword ||
                               !setupConfirmPassword
                             }
-                            className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                            className="flex-1 py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] shadow-accent-glow transition-all order-1 md:order-2 text-sm"
                           >
                             {isSettingPassword ? (
                               <>
-                                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                <div className="w-4 h-4 border-2 border-[#1A1C1E]/30 border-t-[#1A1C1E] rounded-full animate-spin"></div>
                                 {t("change_password.button_saving")}
                               </>
                             ) : (
@@ -423,7 +423,7 @@ export default function SecurityPage() {
                           type="button"
                           onClick={handleRequestOTP}
                           disabled={isRequestingOTP || otpCooldown > 0}
-                          className="w-full py-2 text-xs text-gray-600 hover:text-gray-800 disabled:opacity-50"
+                          className="w-full py-3 text-sm text-site-accent hover:text-site-accent-hover disabled:opacity-50 disabled:text-gray-500 transition-colors"
                         >
                           {otpCooldown > 0
                             ? t("change_password.otp_wait", { seconds: otpCooldown })
@@ -434,15 +434,15 @@ export default function SecurityPage() {
                   </form>
                 ) : (
                   <div>
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center">
-                        <KeyRound className="text-white" size={16} />
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-10 h-10 rounded-lg bg-site-accent/10 flex items-center justify-center flex-shrink-0">
+                        <KeyRound className="text-site-accent" size={20} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-black mb-0.5 text-sm">
+                        <h3 className="font-bold text-white mb-1 md:text-base text-sm">
                           {t("change_password.setup_title")}
                         </h3>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-sm text-gray-400">
                           {t("change_password.oauth_notice", {
                             provider: user?.authProvider === "google" ? "Google" : "Discord"
                           })}
@@ -451,17 +451,16 @@ export default function SecurityPage() {
                     </div>
                     <button
                       onClick={() => setShowPasswordSetup(true)}
-                      className="w-full py-2 px-3 bg-brutal-pink text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform text-xs"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                      className="w-full py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold hover:scale-[1.02] shadow-accent-glow transition-all text-sm"
                     >
                       {t("change_password.button_setup")}
                     </button>
                   </div>
                 )
               ) : showChangePassword ? (
-                <form onSubmit={handleChangePassword} className="space-y-3">
+                <form onSubmit={handleChangePassword} className="space-y-4">
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1.5">
+                    <label className="block text-sm text-gray-400 mb-2">
                       {t("change_password.current_label")}
                     </label>
                     <input
@@ -469,13 +468,13 @@ export default function SecurityPage() {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1.5">
+                    <label className="block text-sm text-gray-400 mb-2">
                       {t("change_password.new_label")}
                     </label>
                     <input
@@ -483,17 +482,17 @@ export default function SecurityPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
                       required
                       minLength={8}
                     />
-                    <p className="text-[10px] text-gray-500 mt-1">
+                    <p className="text-[11px] text-gray-500 mt-2">
                       {t("change_password.length_hint")}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1.5">
+                    <label className="block text-sm text-gray-400 mb-2">
                       {t("change_password.confirm_label")}
                     </label>
                     <input
@@ -501,12 +500,12 @@ export default function SecurityPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-2 bg-white border-[2px] border-gray-300 rounded-lg text-black focus:outline-none focus:border-black text-sm"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
                       required
                     />
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-2 pt-2">
+                  <div className="flex flex-col md:flex-row gap-3 pt-4">
                     <button
                       type="button"
                       onClick={() => {
@@ -515,7 +514,7 @@ export default function SecurityPage() {
                         setNewPassword("");
                         setConfirmPassword("");
                       }}
-                      className="flex-1 py-2 px-3 bg-gray-200 text-gray-700 border-[2px] border-gray-300 rounded-lg hover:bg-gray-300 transition-colors order-2 md:order-1 text-xs font-bold"
+                      className="flex-1 py-3 px-4 bg-[#1A1C1E] text-white border border-site-border rounded-lg hover:bg-[#212328]/5 hover:border-white/10 transition-all order-2 md:order-1 text-sm font-bold"
                     >
                       {t("change_password.button_cancel")}
                     </button>
@@ -527,12 +526,11 @@ export default function SecurityPage() {
                         !newPassword ||
                         !confirmPassword
                       }
-                      className="flex-1 py-2 px-3 bg-black text-white border-[3px] border-black font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform order-1 md:order-2 text-xs"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                      className="flex-1 py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] shadow-accent-glow transition-all order-1 md:order-2 text-sm"
                     >
                       {isChangingPassword ? (
                         <>
-                          <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          <div className="w-4 h-4 border-2 border-[#1A1C1E]/30 border-t-[#1A1C1E] rounded-full animate-spin"></div>
                           {t("change_password.button_saving")}
                         </>
                       ) : (
@@ -543,23 +541,22 @@ export default function SecurityPage() {
                 </form>
               ) : (
                 <div>
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center">
-                      <KeyRound className="text-black" size={16} />
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="w-10 h-10 rounded-lg bg-site-accent/10 flex items-center justify-center flex-shrink-0">
+                      <KeyRound className="text-site-accent" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-black mb-0.5 text-sm">
+                      <h3 className="font-bold text-white mb-1 md:text-base text-sm">
                         {t("change_password.title")}
                       </h3>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-sm text-gray-400">
                         {t("change_password.length_hint")}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setShowChangePassword(true)}
-                    className="w-full py-2 px-3 bg-black text-white border-[3px] border-black font-bold hover:-translate-y-0.5 transition-transform text-xs"
-                    style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                    className="w-full py-3 px-4 bg-[#1A1C1E] text-white border border-site-border rounded-lg hover:bg-[#212328]/5 hover:border-white/10 hover:text-site-accent transition-all text-sm font-bold"
                   >
                     {t("change_password.button_change")}
                   </button>
@@ -570,128 +567,63 @@ export default function SecurityPage() {
 
           {/* Two-Factor Authentication (Coming Soon) */}
           <motion.div
-            className="bg-white border-[3px] border-black overflow-hidden opacity-60"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden opacity-60"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 0.6, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           >
-            <div className="p-3 bg-brutal-green border-b-[3px] border-black flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0">
-              <h2 className="text-base font-bold text-black">
+            <div className="p-4 bg-[#1A1C1E]/50 border-b border-site-border flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0">
+              <h2 className="text-base font-bold text-white flex items-center">
+                <Smartphone size={18} className="text-site-accent mr-2" />
                 {t("two_factor.title")}
               </h2>
-              <span className="bg-gray-200 text-gray-600 border-[2px] border-black px-1.5 py-0.5 text-[10px] font-bold shadow-[2px_2px_0 0 #000]">
+              <span className="bg-[#212328]/10 text-gray-400 border border-site-border px-2 py-1 rounded text-xs font-bold shadow-sm">
                 {t("two_factor.coming_soon")}
               </span>
             </div>
 
-            <div className="p-4 pointer-events-none">
-              <div>
-                <p className="text-gray-600 mb-3 text-xs">
-                  {t("two_factor.subtitle")}
-                </p>
-                <button
-                  disabled
-                  className="w-full py-2 px-3 bg-gray-400 text-white border-[3px] border-gray-500 font-bold cursor-not-allowed text-xs"
-                  style={{ boxShadow: "3px 3px 0 0 #999" }}
-                >
-                  {t("two_factor.setup_button")}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Email Verification */}
-          <motion.div
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
-            <div className="p-3 bg-brutal-blue border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black">
-                {t("email_verification.title")}
-              </h2>
-            </div>
-
-            <div className="p-4">
-              <div className="flex flex-col md:flex-row items-start gap-3 md:gap-4">
-                <div className="mt-1 flex items-center gap-2 md:block">
-                  {securitySettings.emailVerified ? (
-                    <Check className="text-brutal-green" size={20} />
-                  ) : (
-                    <AlertCircle className="text-brutal-pink" size={20} />
-                  )}
-                  <h3 className="font-bold text-black md:hidden text-sm">
-                    {securitySettings.emailVerified
-                      ? t("email_verification.verified")
-                      : t("email_verification.not_verified")}
-                  </h3>
-                </div>
-
-                <div className="w-full">
-                  <h3 className="font-bold text-black mb-1 hidden md:block text-sm">
-                    {securitySettings.emailVerified
-                      ? t("email_verification.verified")
-                      : t("email_verification.not_verified")}
-                  </h3>
-                  <p className="text-xs text-gray-600 mb-3">
-                    {securitySettings.emailVerified
-                      ? t("email_verification.verified_desc")
-                      : t("email_verification.not_verified_desc")}
-                  </p>
-
-                  {!securitySettings.emailVerified && (
-                    <button
-                      onClick={() => sendVerificationEmail()}
-                      disabled={isLoadingSettings}
-                      className="w-full md:w-auto py-1.5 px-3 bg-black text-white border-[2px] border-black rounded-lg text-xs hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[2px_2px_0_0_#000]"
-                    >
-                      {isLoadingSettings ? (
-                        <>
-                          <div className="w-2.5 h-2.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                          {t("email_verification.sending")}
-                        </>
-                      ) : (
-                        t("email_verification.send_button")
-                      )}
-                    </button>
-                  )}
-                </div>
-              </div>
+            <div className="p-6 pointer-events-none">
+              <p className="text-gray-400 mb-4 text-sm">
+                {t("two_factor.subtitle")}
+              </p>
+              <button
+                disabled
+                className="w-full py-3 px-4 bg-[#1A1C1E] text-gray-500 border border-site-border rounded-lg font-bold cursor-not-allowed text-sm"
+              >
+                {t("two_factor.setup_button")}
+              </button>
             </div>
           </motion.div>
         </div>
 
         {/* Right Column (1/3 width on large screens) */}
-        <div className="xl:col-span-1 space-y-4">
+        <div className="xl:col-span-1 space-y-6">
           {/* Additional Settings */}
           <motion.div
-            className="bg-white border-[3px] border-black"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.3 }}
           >
-            <div className="p-3 bg-brutal-yellow border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black">
+            <div className="p-4 bg-[#1A1C1E]/50 border-b border-site-border">
+              <h2 className="text-base font-bold text-white flex items-center">
+                <Settings size={18} className="text-site-accent mr-2" />
                 {t("additional_settings.title")}
               </h2>
             </div>
 
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-site-border">
               {/* Login Notifications */}
-              <div className="p-3 flex flex-col justify-between items-start gap-3">
+              <div className="p-4 flex flex-col justify-between items-start gap-4">
                 <div>
-                  <h3 className="font-bold text-black text-sm">
+                  <h3 className="font-bold text-white text-sm">
                     {t("additional_settings.login_notifications")}
                   </h3>
-                  <p className="text-xs text-gray-600 mt-0.5">
+                  <p className="text-sm text-gray-400 mt-1">
                     {t("additional_settings.login_notifications_desc")}
                   </p>
                 </div>
-                <div className="self-end">
+                <div className="self-end mt-2 md:mt-0">
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
@@ -704,7 +636,7 @@ export default function SecurityPage() {
                       }
                       className="sr-only peer"
                     />
-                    <div className="relative w-12 h-6 bg-gray-200 border-[2px] border-black peer-checked:bg-brutal-green transition-colors after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border-[2px] after:border-black after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-6 shadow-[2px_2px_0_0_#000]"></div>
+                    <div className="relative w-11 h-6 bg-[#1A1C1E] border border-site-border rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-400 peer-checked:after:bg-[#212328] after:border-gray-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent peer-checked:border-site-accent"></div>
                   </label>
                 </div>
               </div>
@@ -713,70 +645,68 @@ export default function SecurityPage() {
 
           {/* Recent Devices */}
           <motion.div
-            className="bg-white border-[3px] border-black"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.4 }}
           >
-            <div className="p-3 bg-brutal-pink border-b-[3px] border-black flex flex-col justify-between items-start gap-2">
-              <h2 className="text-base font-bold text-black">
+            <div className="p-4 bg-[#1A1C1E]/50 border-b border-site-border flex flex-col justify-between items-start gap-3">
+              <h2 className="text-base font-bold text-white flex items-center">
+                <Laptop size={18} className="text-site-accent mr-2" />
                 {t("recent_devices.title")}
               </h2>
               <button
                 onClick={logoutAllDevices}
                 disabled={isLoadingSettings}
-                className="w-full justify-center text-xs text-black hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 font-medium border-[2px] border-black p-1.5 bg-white shadow-[2px_2px_0_0_#000]"
+                className="w-full justify-center text-xs text-[#1A1C1E] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 font-bold border border-site-accent/50 p-2.5 bg-site-accent shadow-accent-glow rounded-lg hover:scale-[1.02] transition-all"
               >
                 {isLoadingSettings ? (
                   <>
-                    <div className="w-2.5 h-2.5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                    <div className="w-3 h-3 border-2 border-[#1A1C1E]/30 border-t-[#1A1C1E] rounded-full animate-spin"></div>
                     {t("recent_devices.processing")}
                   </>
                 ) : (
                   <>
-                    <LogOut size={12} />
+                    <LogOut size={14} />
                     {t("recent_devices.logout_all")}
                   </>
                 )}
               </button>
             </div>
 
-            <div className="divide-y divide-gray-200 max-h-[300px] overflow-y-auto">
+            <div className="divide-y divide-site-border max-h-[300px] overflow-y-auto custom-scrollbar">
               {securitySettings.recentDevices.map((device) => (
-                <div key={device.id} className="p-3 flex flex-col gap-2">
-                  <div className="flex gap-2 w-full">
-                    <div className="flex-shrink-0">
+                <div key={device.id} className="p-4 flex flex-col gap-3 hover:bg-[#212328]/5 transition-colors">
+                  <div className="flex gap-3 w-full items-start">
+                    <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-[#1A1C1E] border border-site-border flex items-center justify-center">
                       {device.os.toLowerCase().includes("windows") && (
-                        <Laptop className="text-brutal-blue" size={20} />
+                        <Laptop className="text-site-accent" size={16} />
                       )}
                       {device.os.toLowerCase().includes("ios") && (
-                        <Smartphone className="text-brutal-blue" size={20} />
+                        <Smartphone className="text-site-accent" size={16} />
+                      )}
+                      {!device.os.toLowerCase().includes("windows") && !device.os.toLowerCase().includes("ios") && (
+                        <Globe className="text-site-accent" size={16} />
                       )}
                     </div>
                     <div className="w-full">
                       <div className="flex justify-between items-start">
-                        <h3 className="font-bold text-black text-sm">
+                        <h3 className="font-bold text-white text-sm">
                           {device.name}
                         </h3>
-                        {device.isCurrent ? (
-                          <span className="text-[10px] bg-brutal-green border-[1px] border-black text-black px-1.5 py-0.5 font-bold">
-                            {t("recent_devices.current_badge")}
-                          </span>
-                        ) : null}
+                        <div className="flex text-[10px] text-gray-500 gap-1.5 font-mono">
+                          <span>{device.browser}</span>
+                          <span>•</span>
+                          <span>{device.os}</span>
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-600 flex flex-wrap items-center gap-x-2 gap-y-1 mt-0.5">
-                        <span>{device.browser}</span>
-                        <span>•</span>
-                        <span>{device.os}</span>
-                      </div>
-                      <div className="flex flex-col gap-0.5 mt-1.5 text-[10px] text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <Globe size={10} />
+                      <div className="flex flex-col gap-1 mt-1.5 text-xs text-gray-400">
+                        <div className="flex items-center gap-1.5">
+                          <Globe size={12} className="opacity-70" />
                           {device.location}
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Clock size={10} />
+                        <div className="flex items-center gap-1.5">
+                          <Clock size={12} className="opacity-70" />
                           {new Date(device.lastActive).toLocaleDateString()}
                         </div>
                       </div>
@@ -791,31 +721,31 @@ export default function SecurityPage() {
         {/* Full width row for Suspicious Activity */}
         {securitySettings.suspiciousActivities.length > 0 && (
           <motion.div
-            className="xl:col-span-3 bg-white border-[3px] border-black"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="xl:col-span-3 bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.5 }}
           >
-            <div className="p-3 bg-red-100 border-b-[3px] border-black">
-              <h2 className="text-base font-bold text-black">
+            <div className="p-4 bg-[#1A1C1E]/50 border-b border-site-border flex items-center">
+              <AlertTriangle size={18} className="text-red-500 mr-2" />
+              <h2 className="text-base font-bold text-white">
                 {t("suspicious_activity.title")}
               </h2>
             </div>
 
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-site-border">
               {securitySettings.suspiciousActivities.map((activity) => (
                 <div
                   key={activity.id}
-                  className="p-3 md:p-4 hover:bg-gray-50 transition-colors"
+                  className="p-4 md:p-5 hover:bg-[#212328]/5 transition-colors"
                 >
-                  <div className="flex gap-3 md:gap-4">
+                  <div className="flex gap-3 md:gap-4 items-start">
                     {/* Icon Column */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 mt-0.5">
                       <div
-                        className={`w-10 h-10 rounded-full border-[2px] border-black flex items-center justify-center ${activity.suspicious && !activity.resolved
-                            ? "bg-red-100 text-red-600"
-                            : "bg-brutal-green/20 text-brutal-green"
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${activity.suspicious && !activity.resolved
+                          ? "bg-red-500/10 text-red-500 border border-red-500/30/20"
+                          : "bg-green-500/10 text-green-400 border border-green-500/30/20"
                           }`}
                       >
                         {activity.suspicious && !activity.resolved ? (
@@ -828,42 +758,42 @@ export default function SecurityPage() {
 
                     {/* Content Column */}
                     <div className="flex-grow min-w-0">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                      <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-3 md:gap-4">
                         <div className="flex-grow">
-                          <h3 className="font-bold text-black text-sm md:text-base break-words leading-tight">
+                          <h3 className="font-bold text-white text-sm md:text-base leading-snug">
                             {activity.description}
                           </h3>
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-xs text-gray-600">
-                            <span className="flex items-center gap-1">
-                              <Clock size={14} />
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-xs text-gray-400">
+                            <span className="flex items-center gap-1.5">
+                              <Clock size={14} className="opacity-70" />
                               {new Date(activity.timestamp).toLocaleString()}
                             </span>
-                            <span className="flex items-center gap-1">
-                              <Globe size={14} />
+                            <span className="flex items-center gap-1.5">
+                              <Globe size={14} className="opacity-70" />
                               {activity.location === "Admin Panel"
                                 ? t("suspicious_activity.admin_location")
                                 : activity.location}
                             </span>
-                            <span className="flex items-center gap-1 font-mono bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 text-xs">
-                              <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                            <span className="flex items-center gap-1.5 font-mono bg-[#1A1C1E] px-2 py-0.5 rounded-md border border-site-border text-xs text-gray-300">
+                              <div className="w-1.5 h-1.5 rounded-full bg-site-accent"></div>
                               {activity.ip}
                             </span>
                           </div>
                         </div>
 
                         {/* Status/Action Column */}
-                        <div className="flex-shrink-0 mt-1 md:mt-0">
+                        <div className="flex-shrink-0 mt-2 xl:mt-0">
                           {activity.suspicious && !activity.resolved ? (
                             <button
                               onClick={() => resolveActivity(activity.id)}
-                              className="w-full md:w-auto text-xs font-bold bg-white text-black border-[2px] border-black px-3 py-1.5 hover:bg-brutal-blue hover:text-white transition-all shadow-[2px_2px_0_0_#000] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-2"
+                              className="w-full xl:w-auto text-sm font-bold bg-[#1A1C1E] text-white border border-site-border rounded-lg px-4 py-2 hover:bg-site-accent hover:text-[#1A1C1E] hover:border-site-accent/50 transition-all flex items-center justify-center gap-2"
                             >
-                              <Check size={14} />
+                              <Check size={16} />
                               {t("suspicious_activity.confirm_button")}
                             </button>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full border border-green-200 whitespace-nowrap">
-                              <CheckCircle size={10} />
+                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-green-400 bg-green-500/10 px-3 py-1 rounded-md border border-green-500/30/20 whitespace-nowrap">
+                              <CheckCircle size={12} />
                               {t("suspicious_activity.resolved_badge")}
                             </span>
                           )}

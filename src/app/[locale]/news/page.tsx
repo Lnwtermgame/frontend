@@ -8,10 +8,10 @@ import { cmsApi, NewsArticle, NewsArticleListItem } from "@/lib/services";
 import { useTranslations } from "next-intl";
 
 const categoryColors: Record<string, string> = {
-  general: "bg-gray-100 text-gray-700",
+  general: "bg-[#1A1C1E] text-gray-700",
   promotion: "bg-pink-100 text-pink-700",
   update: "bg-blue-100 text-blue-700",
-  event: "bg-yellow-100 text-yellow-700",
+  event: "bg-yellow-500/10 text-yellow-400",
 };
 
 export default function NewsPage() {
@@ -58,7 +58,7 @@ export default function NewsPage() {
       <div className="page-container">
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-brutal-pink" />
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-pink-500" />
             <p className="text-gray-600">{tCommon("loading")}</p>
           </div>
         </div>
@@ -75,8 +75,8 @@ export default function NewsPage() {
         className="mb-8"
       >
         <div className="flex items-center mb-4">
-          <Newspaper className="w-8 h-8 text-brutal-pink mr-3" />
-          <h1 className="text-3xl font-bold text-black">
+          <Newspaper className="w-8 h-8 text-pink-500 mr-3" />
+          <h1 className="text-3xl font-bold text-white">
             {t("title")}
           </h1>
         </div>
@@ -93,8 +93,8 @@ export default function NewsPage() {
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <h2 className="text-xl font-bold text-black mb-4 flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-yellow mr-2"></span>
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+            <span className="w-1.5 h-6 bg-yellow-500 mr-2"></span>
             {t("featured")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -102,9 +102,9 @@ export default function NewsPage() {
               <Link
                 key={article.id}
                 href={`/news/${article.slug}`}
-                className="group bg-white border-[3px] border-black overflow-hidden hover:shadow-[4px_4px_0_0_#FF6B9D] transition-shadow"
+                className="group bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden hover:shadow-lg shadow-pink-500/20 transition-shadow"
               >
-                <div className="aspect-video bg-gray-100 overflow-hidden">
+                <div className="aspect-video bg-[#1A1C1E] overflow-hidden">
                   {article.coverImage ? (
                     <img
                       src={article.coverImage}
@@ -112,7 +112,7 @@ export default function NewsPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <div className="w-full h-full flex items-center justify-center bg-site-border/30">
                       <Newspaper className="w-12 h-12 text-gray-400" />
                     </div>
                   )}
@@ -125,7 +125,7 @@ export default function NewsPage() {
                   >
                     {categoryLabels[article.category] || t("categories.general")}
                   </span>
-                  <h3 className="font-bold text-black line-clamp-2 group-hover:text-brutal-pink transition-colors">
+                  <h3 className="font-bold text-white line-clamp-2 group-hover:text-pink-500 transition-colors">
                     {article.title}
                   </h3>
                 </div>
@@ -141,13 +141,13 @@ export default function NewsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <h2 className="text-xl font-bold text-black mb-4 flex items-center">
-          <span className="w-1.5 h-6 bg-brutal-pink mr-2"></span>
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+          <span className="w-1.5 h-6 bg-pink-500 mr-2"></span>
           {t("all_news")}
         </h2>
 
         {articles.length === 0 ? (
-          <div className="text-center py-16 bg-white border-[3px] border-black">
+          <div className="text-center py-16 bg-[#212328] border border-site-border/30 rounded-[16px]">
             <Newspaper className="w-16 h-16 mx-auto text-gray-300 mb-4" />
             <p className="text-gray-600">{t("no_news")}</p>
           </div>
@@ -162,11 +162,11 @@ export default function NewsPage() {
               >
                 <Link
                   href={`/news/${article.slug}`}
-                  className="block bg-white border-[3px] border-black p-4 hover:shadow-[4px_4px_0_0_#000] transition-shadow"
+                  className="block bg-[#212328] border border-site-border/30 rounded-[16px] p-4 hover:shadow-lg transition-shadow"
                 >
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Cover */}
-                    <div className="w-full sm:w-32 h-40 sm:h-24 bg-gray-100 flex-shrink-0 border-[2px] border-gray-200 overflow-hidden">
+                    <div className="w-full sm:w-32 h-40 sm:h-24 bg-[#1A1C1E] flex-shrink-0 border-[2px] border-gray-200 overflow-hidden">
                       {article.coverImage ? (
                         <img
                           src={article.coverImage}
@@ -192,12 +192,12 @@ export default function NewsPage() {
                           {categoryLabels[article.category] || t("categories.general")}
                         </span>
                         {article.isFeatured && (
-                          <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase bg-yellow-100 text-yellow-700">
+                          <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase bg-yellow-500/10 text-yellow-400">
                             {t("featured_badge")}
                           </span>
                         )}
                       </div>
-                      <h3 className="font-bold text-black mb-1 line-clamp-1 hover:text-brutal-pink transition-colors">
+                      <h3 className="font-bold text-white mb-1 line-clamp-1 hover:text-pink-500 transition-colors">
                         {article.title}
                       </h3>
                       <p className="text-sm text-gray-600 line-clamp-2 mb-2">

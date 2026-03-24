@@ -157,37 +157,37 @@ export default function OrderDetailsPage() {
         switch (s) {
             case "COMPLETED":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-brutal-green text-black">
+                    <span className="inline-flex items-center px-3 py-1 border border-green-500/30/20 rounded-full text-sm font-bold bg-green-500/10 text-green-500">
                         <CheckCircle className="w-4 h-4 mr-1.5" /> {tCommon("member")}
                     </span>
                 );
             case "PENDING":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-brutal-yellow text-black">
+                    <span className="inline-flex items-center px-3 py-1 border border-yellow-500/30/20 rounded-full text-sm font-bold bg-yellow-500/10 text-yellow-500">
                         <Clock className="w-4 h-4 mr-1.5" /> {t("payment.status_pending")}
                     </span>
                 );
             case "PROCESSING":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-brutal-blue text-black">
+                    <span className="inline-flex items-center px-3 py-1 border border-blue-500/20 rounded-full text-sm font-bold bg-blue-500/10 text-blue-500">
                         <RefreshCw className="w-4 h-4 mr-1.5 animate-spin" /> {t("delivery.statuses.processing")}
                     </span>
                 );
             case "CANCELLED":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-gray-300 text-black">
+                    <span className="inline-flex items-center px-3 py-1 border border-red-500/30/20 rounded-full text-sm font-bold bg-red-500/10 text-red-500">
                         <XCircle className="w-4 h-4 mr-1.5" /> Cancelled
                     </span>
                 );
             case "FAILED":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-red-100 text-red-700">
+                    <span className="inline-flex items-center px-3 py-1 border border-red-500/30/20 rounded-full text-sm font-bold bg-red-500/10 text-red-500">
                         <AlertCircle className="w-4 h-4 mr-1.5" /> Failed
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border-[2px] border-black text-sm font-bold bg-gray-100 text-black">
+                    <span className="inline-flex items-center px-3 py-1 border border-gray-600 rounded-full text-sm font-bold bg-gray-800 text-gray-300">
                         {status}
                     </span>
                 );
@@ -199,31 +199,31 @@ export default function OrderDetailsPage() {
         switch (status) {
             case "COMPLETED":
                 return (
-                    <span className="inline-flex items-center text-sm text-brutal-green font-medium">
+                    <span className="inline-flex items-center text-sm text-green-500 font-medium">
                         <CheckCircle className="w-4 h-4 mr-1" /> {t("delivery.statuses.completed")}
                     </span>
                 );
             case "PENDING":
                 return (
-                    <span className="inline-flex items-center text-sm text-gray-600 font-medium">
+                    <span className="inline-flex items-center text-sm text-yellow-500 font-medium">
                         <Clock className="w-4 h-4 mr-1" /> {t("delivery.statuses.pending")}
                     </span>
                 );
             case "PROCESSING":
                 return (
-                    <span className="inline-flex items-center text-sm text-brutal-blue font-medium">
+                    <span className="inline-flex items-center text-sm text-blue-500 font-medium">
                         <RefreshCw className="w-4 h-4 mr-1 animate-spin" /> {t("delivery.statuses.processing")}
                     </span>
                 );
             case "FAILED":
                 return (
-                    <span className="inline-flex items-center text-sm text-red-600 font-medium">
+                    <span className="inline-flex items-center text-sm text-red-500 font-medium">
                         <XCircle className="w-4 h-4 mr-1" /> {t("delivery.statuses.failed")}
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center text-sm text-gray-600 font-medium">
+                    <span className="inline-flex items-center text-sm text-gray-400 font-medium">
                         {status}
                     </span>
                 );
@@ -282,8 +282,8 @@ export default function OrderDetailsPage() {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="animate-pulse flex flex-col items-center">
-                    <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-                    <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
+                    <div className="w-16 h-16 border-4 border-[var(--site-accent)] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="mt-4 text-gray-400">{tCommon("loading")}</p>
                 </div>
             </div>
         );
@@ -293,9 +293,9 @@ export default function OrderDetailsPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="flex flex-col items-center">
-                    <Loader2 className="w-12 h-12 animate-spin text-black" />
-                    <p className="mt-4 text-gray-600">{t("loading")}</p>
+                <div className="animate-pulse flex flex-col items-center">
+                    <div className="w-16 h-16 border-4 border-[var(--site-accent)] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="mt-4 text-gray-400">{t("loading")}</p>
                 </div>
             </div>
         );
@@ -305,14 +305,14 @@ export default function OrderDetailsPage() {
     if (!order) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
-                <h2 className="text-xl font-bold text-black mb-2">{t("error_not_found")}</h2>
-                <p className="text-gray-600 mb-4">
+                <AlertCircle className="w-16 h-16 text-gray-500 mb-4" />
+                <h2 className="text-xl font-bold text-white mb-2">{t("error_not_found")}</h2>
+                <p className="text-gray-400 mb-6">
                     {t("error_not_found_desc")}
                 </p>
                 <Link
                     href="/dashboard/orders"
-                    className="px-4 py-2 bg-black text-white font-medium border-[3px] border-black hover:bg-gray-800 transition-colors"
+                    className="px-6 py-2.5 bg-[var(--site-accent)] hover:bg-[#5AA1AB] text-white rounded-lg font-medium transition-colors"
                 >
                     {t("back_to_orders")}
                 </Link>
@@ -323,58 +323,57 @@ export default function OrderDetailsPage() {
     return (
         <div>
             {/* Page Header */}
-            <div className="relative mb-4">
+            <div className="relative mb-6">
                 <div className="flex items-center gap-3 mb-2">
                     <Link
                         href="/dashboard/orders"
-                        className="p-1.5 -ml-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-black transition-colors border-[2px] border-transparent hover:border-black"
+                        className="p-1.5 -ml-1.5 rounded-lg hover:bg-[#212328]/5 text-gray-400 hover:text-white transition-colors border border-transparent hover:border-site-border"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </Link>
                     <motion.h2
-                        className="text-lg font-bold text-black relative flex items-center"
+                        className="text-xl font-bold text-white relative flex items-center"
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                     >
-                        <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
+                        <span className="w-1.5 h-5 bg-[var(--site-accent)] mr-2 rounded-full shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
                         {t("title")}
                     </motion.h2>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-gray-600 ml-8">
+                <div className="flex items-center gap-2 text-sm text-gray-400 ml-8">
                     <span>
                         {t("order_id_label")}:{" "}
-                        <span className="text-black font-mono font-bold">
+                        <span className="text-white font-mono font-semibold">
                             {order.orderNumber}
                         </span>
                     </span>
-                    <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+                    <span className="w-1 h-1 bg-[#181A1D]0 rounded-full"></span>
                     <span>{formatDate(order.createdAt)}</span>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="lg:col-span-2 space-y-6">
                     {/* Order Status & Items */}
                     <motion.div
-                        className="bg-white border-[3px] border-black overflow-hidden"
-                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <div className="p-3 border-b-[3px] border-black flex justify-between items-center bg-brutal-yellow">
-                            <h3 className="font-bold text-black flex items-center gap-2 text-sm">
-                                <Package className="h-4 w-4" />
+                        <div className="p-4 border-b border-site-border flex justify-between items-center bg-[#1A1C1E]">
+                            <h3 className="font-bold text-white flex items-center gap-2 text-base">
+                                <Package className="h-5 w-5 text-[var(--site-accent)]" />
                                 {t("items.title")}
                             </h3>
                             {getStatusBadge(order.status)}
                         </div>
 
-                        <div className="divide-y divide-gray-200">
+                        <div className="divide-y divide-site-border">
                             {order.items.map((item) => (
-                                <div key={item.id} className="p-3">
-                                    <div className="flex flex-col sm:flex-row gap-3">
-                                        <div className="h-16 w-16 border-[2px] border-black bg-gray-100 flex-shrink-0">
+                                <div key={item.id} className="p-4">
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <div className="h-20 w-20 rounded-lg border border-site-border bg-[#1A1C1E] flex-shrink-0 overflow-hidden">
                                             <img
                                                 src={
                                                     item.product?.imageUrl ||
@@ -388,14 +387,14 @@ export default function OrderDetailsPage() {
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start mb-1">
                                                 <div>
-                                                    <h4 className="font-bold text-black text-base">
+                                                    <h4 className="font-semibold text-white text-base">
                                                         {item.product?.name
                                                             ? item.productType?.name
                                                                 ? `${item.product.name} - ${item.productType.name}`
                                                                 : item.product.name
                                                             : "Product"}
                                                     </h4>
-                                                    <p className="text-gray-600 text-xs font-bold">
+                                                    <p className="text-gray-400 text-sm font-medium mt-1">
                                                         {t("items.quantity")} {item.quantity}
                                                     </p>
                                                     {item.playerInfo &&
@@ -403,18 +402,18 @@ export default function OrderDetailsPage() {
                                                         getDisplayPlayerInfo(
                                                             item.playerInfo as Record<string, unknown>,
                                                         ).length > 0 && (
-                                                            <div className="mt-2 p-2 bg-brutal-gray border border-black/20 text-xs">
-                                                                <p className="text-gray-600 text-[10px] mb-1 font-bold">
+                                                            <div className="mt-3 p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-xs">
+                                                                <p className="text-gray-500 text-[10px] mb-2 font-bold uppercase tracking-wider">
                                                                     {t("items.account_info")}
                                                                 </p>
                                                                 {getDisplayPlayerInfo(
                                                                     item.playerInfo as Record<string, unknown>,
                                                                 ).map(({ label, value }) => (
                                                                     <div key={label} className="flex gap-2">
-                                                                        <span className="text-gray-600 capitalize font-medium">
+                                                                        <span className="text-gray-400 capitalize font-medium">
                                                                             {label}:
                                                                         </span>
-                                                                        <span className="font-mono font-bold">
+                                                                        <span className="font-mono text-white font-medium">
                                                                             {value}
                                                                         </span>
                                                                     </div>
@@ -422,15 +421,15 @@ export default function OrderDetailsPage() {
                                                             </div>
                                                         )}
                                                 </div>
-                                                <p className="font-bold text-black text-sm">
+                                                <p className="font-bold text-[var(--site-accent)] text-lg">
                                                     {formatPrice(item.priceAtPurchase)}
                                                 </p>
                                             </div>
 
                                             {/* Delivery Status */}
                                             {deliveryStatus && (
-                                                <div className="mt-2 flex items-center gap-2">
-                                                    <span className="text-xs text-gray-600 font-bold">
+                                                <div className="mt-3 flex items-center gap-2">
+                                                    <span className="text-sm text-gray-400 font-medium">
                                                         {t("items.delivery_status")}
                                                     </span>
                                                     {getDeliveryStatusBadge(item.fulfillStatus)}
@@ -441,11 +440,12 @@ export default function OrderDetailsPage() {
                                             {item.fulfillStatus === "COMPLETED" &&
                                                 item.pinCodes &&
                                                 item.pinCodes.length > 0 && (
-                                                    <div className="mt-3 bg-brutal-green/20 border-[2px] border-black rounded-lg p-3">
-                                                        <p className="text-[10px] text-black uppercase font-black mb-1">
+                                                    <div className="mt-4 bg-green-500/5 border border-green-500/30/20 rounded-xl p-4">
+                                                        <p className="text-xs text-green-500 uppercase font-bold mb-3 tracking-wider flex items-center gap-2">
+                                                            <CheckCircle size={14} />
                                                             {t("items.digital_codes")}
                                                         </p>
-                                                        <div className="space-y-2">
+                                                        <div className="space-y-3">
                                                             {item.pinCodes.map((card: any, idx: number) => {
                                                                 const codeValue =
                                                                     card.card_number || card.code || "";
@@ -457,147 +457,155 @@ export default function OrderDetailsPage() {
                                                                 return (
                                                                     <div
                                                                         key={idx}
-                                                                        className="bg-white p-2 border-[2px] border-black"
+                                                                        className="bg-[#1A1C1E] p-3 rounded-lg border border-site-border"
                                                                     >
                                                                         {/* card_number from SEAGM */}
                                                                         {codeValue && (
-                                                                            <div className="flex items-center gap-2 group mb-1">
-                                                                                <span className="text-[10px] text-gray-600 min-w-[40px] font-bold">
+                                                                            <div className="flex items-center gap-3 group mb-2">
+                                                                                <span className="text-xs text-gray-500 min-w-[50px] font-medium">
                                                                                     {t("items.code_label")}
                                                                                 </span>
-                                                                                <code
-                                                                                    className={`flex-1 font-mono text-black text-xs tracking-wider break-all select-none ${!isRevealed ? "blur-sm hover:blur-none" : ""}`}
-                                                                                >
-                                                                                    {codeValue}
-                                                                                </code>
-                                                                                <button
-                                                                                    onClick={() =>
-                                                                                        toggleCodeVisibility(codeId)
-                                                                                    }
-                                                                                    className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                                                                    title={
-                                                                                        isRevealed ? t("items.hide_code") : t("items.show_code")
-                                                                                    }
-                                                                                >
-                                                                                    {isRevealed ? (
-                                                                                        <EyeOff size={14} />
-                                                                                    ) : (
-                                                                                        <Eye size={14} />
-                                                                                    )}
-                                                                                </button>
-                                                                                <button
-                                                                                    onClick={() =>
-                                                                                        copyToClipboard(codeValue)
-                                                                                    }
-                                                                                    className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                                                                    title="Copy Code"
-                                                                                >
-                                                                                    {copiedCode === codeValue ? (
-                                                                                        <Check
-                                                                                            size={14}
-                                                                                            className="text-brutal-green"
-                                                                                        />
-                                                                                    ) : (
-                                                                                        <Copy size={14} />
-                                                                                    )}
-                                                                                </button>
+                                                                                <div className="flex-1 flex items-center bg-[#222427] border border-site-border rounded-md overflow-hidden">
+                                                                                    <code
+                                                                                        className={`flex-1 px-3 py-2 font-mono text-white text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
+                                                                                    >
+                                                                                        {codeValue}
+                                                                                    </code>
+                                                                                    <button
+                                                                                        onClick={() =>
+                                                                                            toggleCodeVisibility(codeId)
+                                                                                        }
+                                                                                        className="p-2.5 text-gray-400 hover:text-white hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        title={
+                                                                                            isRevealed ? t("items.hide_code") : t("items.show_code")
+                                                                                        }
+                                                                                    >
+                                                                                        {isRevealed ? (
+                                                                                            <EyeOff size={16} />
+                                                                                        ) : (
+                                                                                            <Eye size={16} />
+                                                                                        )}
+                                                                                    </button>
+                                                                                    <button
+                                                                                        onClick={() =>
+                                                                                            copyToClipboard(codeValue)
+                                                                                        }
+                                                                                        className="p-2.5 text-gray-400 hover:text-[var(--site-accent)] hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        title="Copy Code"
+                                                                                    >
+                                                                                        {copiedCode === codeValue ? (
+                                                                                            <Check
+                                                                                                size={16}
+                                                                                                className="text-green-500"
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <Copy size={16} />
+                                                                                        )}
+                                                                                    </button>
+                                                                                </div>
                                                                             </div>
                                                                         )}
                                                                         {/* card_pin from SEAGM */}
                                                                         {pinValue && (
-                                                                            <div className="flex items-center gap-2 group">
-                                                                                <span className="text-[10px] text-gray-600 min-w-[40px] font-bold">
+                                                                            <div className="flex items-center gap-3 group">
+                                                                                <span className="text-xs text-gray-500 min-w-[50px] font-medium">
                                                                                     {t("items.pin_label")}
                                                                                 </span>
-                                                                                <code
-                                                                                    className={`flex-1 font-mono text-black text-xs tracking-wider break-all select-none ${!isRevealed ? "blur-sm hover:blur-none" : ""}`}
-                                                                                >
-                                                                                    {pinValue}
-                                                                                </code>
-                                                                                <button
-                                                                                    onClick={() =>
-                                                                                        toggleCodeVisibility(codeId)
-                                                                                    }
-                                                                                    className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                                                                    title={
-                                                                                        isRevealed ? "Hide PIN" : "Show PIN"
-                                                                                    }
-                                                                                >
-                                                                                    {isRevealed ? (
-                                                                                        <EyeOff size={14} />
-                                                                                    ) : (
-                                                                                        <Eye size={14} />
-                                                                                    )}
-                                                                                </button>
-                                                                                <button
-                                                                                    onClick={() =>
-                                                                                        copyToClipboard(pinValue)
-                                                                                    }
-                                                                                    className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                                                                    title="Copy PIN"
-                                                                                >
-                                                                                    {copiedCode === pinValue ? (
-                                                                                        <Check
-                                                                                            size={14}
-                                                                                            className="text-brutal-green"
-                                                                                        />
-                                                                                    ) : (
-                                                                                        <Copy size={14} />
-                                                                                    )}
-                                                                                </button>
+                                                                                <div className="flex-1 flex items-center bg-[#222427] border border-site-border rounded-md overflow-hidden">
+                                                                                    <code
+                                                                                        className={`flex-1 px-3 py-2 font-mono text-white text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
+                                                                                    >
+                                                                                        {pinValue}
+                                                                                    </code>
+                                                                                    <button
+                                                                                        onClick={() =>
+                                                                                            toggleCodeVisibility(codeId)
+                                                                                        }
+                                                                                        className="p-2.5 text-gray-400 hover:text-white hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        title={
+                                                                                            isRevealed ? "Hide PIN" : "Show PIN"
+                                                                                        }
+                                                                                    >
+                                                                                        {isRevealed ? (
+                                                                                            <EyeOff size={16} />
+                                                                                        ) : (
+                                                                                            <Eye size={16} />
+                                                                                        )}
+                                                                                    </button>
+                                                                                    <button
+                                                                                        onClick={() =>
+                                                                                            copyToClipboard(pinValue)
+                                                                                        }
+                                                                                        className="p-2.5 text-gray-400 hover:text-[var(--site-accent)] hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        title="Copy PIN"
+                                                                                    >
+                                                                                        {copiedCode === pinValue ? (
+                                                                                            <Check
+                                                                                                size={16}
+                                                                                                className="text-green-500"
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <Copy size={16} />
+                                                                                        )}
+                                                                                    </button>
+                                                                                </div>
                                                                             </div>
                                                                         )}
                                                                         {/* serial number if exists */}
                                                                         {card.serial && (
-                                                                            <div className="flex items-center gap-2 group mt-1 pt-1 border-t border-gray-200">
-                                                                                <span className="text-[10px] text-gray-600 min-w-[40px] font-bold">
+                                                                            <div className="flex items-center gap-3 group mt-3 pt-3 border-t border-site-border">
+                                                                                <span className="text-xs text-gray-500 min-w-[50px] font-medium">
                                                                                     {t("items.serial_label")}
                                                                                 </span>
-                                                                                <code className="flex-1 font-mono text-black text-xs tracking-wider break-all">
-                                                                                    {card.serial}
-                                                                                </code>
-                                                                                <button
-                                                                                    onClick={() =>
-                                                                                        copyToClipboard(card.serial)
-                                                                                    }
-                                                                                    className="p-1 hover:bg-gray-100 text-gray-600 hover:text-black transition-colors shrink-0"
-                                                                                    title="Copy Serial"
-                                                                                >
-                                                                                    {copiedCode === card.serial ? (
-                                                                                        <Check
-                                                                                            size={14}
-                                                                                            className="text-brutal-green"
-                                                                                        />
-                                                                                    ) : (
-                                                                                        <Copy size={14} />
-                                                                                    )}
-                                                                                </button>
+                                                                                <div className="flex-1 flex items-center justify-between">
+                                                                                    <code className="font-mono text-gray-300 text-xs tracking-wider break-all">
+                                                                                        {card.serial}
+                                                                                    </code>
+                                                                                    <button
+                                                                                        onClick={() =>
+                                                                                            copyToClipboard(card.serial)
+                                                                                        }
+                                                                                        className="p-1.5 text-gray-500 hover:text-[var(--site-accent)] transition-colors rounded-md hover:bg-[#212328]/5"
+                                                                                        title="Copy Serial"
+                                                                                    >
+                                                                                        {copiedCode === card.serial ? (
+                                                                                            <Check
+                                                                                                size={14}
+                                                                                                className="text-green-500"
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <Copy size={14} />
+                                                                                        )}
+                                                                                    </button>
+                                                                                </div>
                                                                             </div>
                                                                         )}
                                                                         {/* expiration date if exists */}
                                                                         {card.expired && (
-                                                                            <div className="mt-1 pt-1 border-t border-gray-200">
-                                                                                <span className="text-[10px] text-gray-500 font-medium">
-                                                                                    {t("items.expired_label")} {card.expired}
-                                                                                </span>
+                                                                            <div className="mt-2 text-xs text-gray-500">
+                                                                                {t("items.expired_label")} <span className="text-gray-400">{card.expired}</span>
                                                                             </div>
                                                                         )}
                                                                     </div>
                                                                 );
                                                             })}
                                                         </div>
-                                                        <p className="text-[10px] text-gray-600 mt-2 flex items-center gap-1 font-medium">
-                                                            <AlertCircle size={10} />
-                                                            {t("items.usage_hint")}
-                                                        </p>
+                                                        <div className="mt-3 flex items-start gap-2 p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
+                                                            <div className="mt-0.5">
+                                                                <AlertCircle size={14} className="text-blue-400" />
+                                                            </div>
+                                                            <p className="text-xs text-blue-200 leading-relaxed font-medium">
+                                                                {t("items.usage_hint")}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 )}
 
                                             {/* Failed Status */}
                                             {item.fulfillStatus === "FAILED" && (
-                                                <div className="mt-3 bg-red-50 border-[2px] border-red-500 rounded-lg p-3">
-                                                    <p className="text-xs text-red-700 flex items-center gap-2 font-bold">
-                                                        <AlertCircle size={14} />
+                                                <div className="mt-4 bg-red-500/10 border border-red-500/30/20 rounded-xl p-4">
+                                                    <p className="text-sm text-red-400 flex items-center gap-2 font-medium">
+                                                        <AlertCircle size={16} />
                                                         {t("items.delivery_failed")}
                                                     </p>
                                                 </div>
@@ -611,61 +619,60 @@ export default function OrderDetailsPage() {
 
                     {/* Payment Info */}
                     <motion.div
-                        className="bg-white border-[3px] border-black overflow-hidden"
-                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                     >
-                        <div className="p-3 border-b-[3px] border-black bg-brutal-blue">
-                            <h3 className="font-bold text-black flex items-center gap-2 text-sm">
-                                <CreditCard className="h-4 w-4" />
+                        <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
+                            <h3 className="font-bold text-white flex items-center gap-2 text-base">
+                                <CreditCard className="h-5 w-5 text-[var(--site-accent)]" />
                                 {t("payment.title")}
                             </h3>
                         </div>
 
-                        <div className="p-3 space-y-2">
-                            <div className="flex justify-between text-xs font-medium">
-                                <span className="text-gray-600">{t("payment.subtotal")}</span>
-                                <span className="text-black">
+                        <div className="p-4 space-y-3">
+                            <div className="flex justify-between text-sm font-medium">
+                                <span className="text-gray-400">{t("payment.subtotal")}</span>
+                                <span className="text-white">
                                     {formatPrice(order.totalAmount)}
                                 </span>
                             </div>
                             {order.discountAmount > 0 && (
-                                <div className="flex justify-between text-xs font-medium">
-                                    <span className="text-gray-600">{t("payment.discount")}</span>
-                                    <span className="text-green-600">
+                                <div className="flex justify-between text-sm font-medium">
+                                    <span className="text-gray-400">{t("payment.discount")}</span>
+                                    <span className="text-green-400">
                                         -{formatPrice(order.discountAmount)}
                                     </span>
                                 </div>
                             )}
-                            <div className="border-t-[2px] border-black my-2 pt-2 flex justify-between items-center">
-                                <span className="font-bold text-black text-sm">
+                            <div className="border-t border-site-border my-3 pt-3 flex justify-between items-center">
+                                <span className="font-bold text-white text-base">
                                     {t("payment.total")}
                                 </span>
-                                <span className="font-black text-lg text-black">
+                                <span className="font-black text-xl text-[var(--site-accent)]">
                                     {formatPrice(order.finalAmount)}
                                 </span>
                             </div>
 
                             {order.payment && (
-                                <div className="bg-gray-100 rounded-lg p-2 mt-3 text-xs flex items-center gap-2 border-[2px] border-black">
-                                    <div className="p-1.5 bg-brutal-blue border-[2px] border-black">
-                                        <CreditCard size={14} className="text-black" />
+                                <div className="bg-[#1A1C1E] border border-site-border rounded-lg p-3 mt-4 text-sm flex items-center gap-3">
+                                    <div className="p-2 bg-[#222427] border border-site-border rounded-lg">
+                                        <CreditCard size={18} className="text-[var(--site-accent)]" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-600 text-[10px] font-bold">{t("payment.method")}</p>
-                                        <p className="text-black font-bold">
+                                        <p className="text-gray-500 text-xs font-semibold uppercase">{t("payment.method")}</p>
+                                        <p className="text-white font-medium">
                                             {getPaymentMethodDisplay(order.payment.paymentMethod)}
                                         </p>
                                     </div>
                                     <div className="ml-auto">
                                         <span
-                                            className={`px-1.5 py-0.5 text-[10px] font-bold border-[2px] border-black ${order.payment.status === "COMPLETED"
-                                                ? "bg-brutal-green text-black"
+                                            className={`px-2.5 py-1 text-xs font-bold rounded-full border ${order.payment.status === "COMPLETED"
+                                                ? "bg-green-500/10 border-green-500/30/20 text-green-500"
                                                 : order.payment.status === "PENDING"
-                                                    ? "bg-brutal-yellow text-black"
-                                                    : "bg-gray-300 text-black"
+                                                    ? "bg-yellow-500/10 border-yellow-500/30/20 text-yellow-500"
+                                                    : "bg-gray-800 border-gray-600 text-gray-300"
                                                 }`}
                                         >
                                             {order.payment.status === "COMPLETED"
@@ -682,39 +689,38 @@ export default function OrderDetailsPage() {
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {/* Order Actions */}
                     {order.status === "PENDING" && (
                         <motion.div
-                            className="bg-white border-[3px] border-black overflow-hidden"
-                            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                            className="bg-[#222427] border border-red-500/30/20 rounded-xl overflow-hidden"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
                         >
-                            <div className="p-3 border-b-[3px] border-black bg-red-50">
-                                <h3 className="font-bold text-red-700 flex items-center gap-2 text-sm">
-                                    <AlertCircle className="h-4 w-4" />
+                            <div className="p-4 border-b border-red-500/30/20 bg-red-500/5">
+                                <h3 className="font-bold text-red-400 flex items-center gap-2 text-base">
+                                    <AlertCircle className="h-5 w-5" />
                                     {t("actions.cancel")}
                                 </h3>
                             </div>
-                            <div className="p-3">
-                                <p className="text-xs text-gray-600 mb-3 font-medium">
+                            <div className="p-4">
+                                <p className="text-sm text-gray-400 mb-4 font-medium">
                                     {t("actions.cancel_hint")}
                                 </p>
                                 <button
                                     onClick={handleCancelOrder}
                                     disabled={isCancelling}
-                                    className="w-full flex items-center justify-center gap-2 p-2 border-[2px] border-red-500 text-red-600 hover:bg-red-50 transition-colors text-xs font-bold disabled:opacity-50"
+                                    className="w-full flex items-center justify-center gap-2 p-3 border border-red-500/30/50 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors text-sm font-bold disabled:opacity-50"
                                 >
                                     {isCancelling ? (
                                         <>
-                                            <Loader2 size={14} className="animate-spin" />
+                                            <Loader2 size={16} className="animate-spin" />
                                             {t("actions.cancelling")}
                                         </>
                                     ) : (
                                         <>
-                                            <XCircle size={14} />
+                                            <XCircle size={16} />
                                             {t("actions.cancel")}
                                         </>
                                     )}
@@ -725,48 +731,47 @@ export default function OrderDetailsPage() {
 
                     {/* Customer Info */}
                     <motion.div
-                        className="bg-white border-[3px] border-black overflow-hidden"
-                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <div className="p-3 border-b-[3px] border-black bg-brutal-pink">
-                            <h3 className="font-bold text-black flex items-center gap-2 text-sm">
-                                <User className="h-4 w-4" />
+                        <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
+                            <h3 className="font-bold text-white flex items-center gap-2 text-base">
+                                <User className="h-5 w-5 text-purple-400" />
                                 {t("customer.title")}
                             </h3>
                         </div>
-                        <div className="p-3 space-y-3">
-                            <div className="flex items-start gap-2">
-                                <div className="mt-0.5">
-                                    <User size={14} className="text-gray-600" />
+                        <div className="p-4 space-y-4">
+                            <div className="flex items-start gap-3">
+                                <div className="mt-0.5 p-2 bg-[#1A1C1E] border border-site-border rounded-lg">
+                                    <User size={16} className="text-purple-400" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-gray-600 font-bold">{t("customer.username")}</p>
-                                    <p className="text-xs text-black font-bold">
+                                    <p className="text-xs text-gray-500 font-semibold uppercase">{t("customer.username")}</p>
+                                    <p className="text-sm text-white font-medium mt-0.5">
                                         {order.user?.username || user?.username || "-"}
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-2">
-                                <div className="mt-0.5">
-                                    <Mail size={14} className="text-gray-600" />
+                            <div className="flex items-start gap-3">
+                                <div className="mt-0.5 p-2 bg-[#1A1C1E] border border-site-border rounded-lg">
+                                    <Mail size={16} className="text-purple-400" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-gray-600 font-bold">{t("customer.email")}</p>
-                                    <p className="text-xs text-black font-bold">
+                                    <p className="text-xs text-gray-500 font-semibold uppercase">{t("customer.email")}</p>
+                                    <p className="text-sm text-white font-medium mt-0.5">
                                         {order.user?.email || user?.email || "-"}
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-2">
-                                <div className="mt-0.5">
-                                    <Calendar size={14} className="text-gray-600" />
+                            <div className="flex items-start gap-3">
+                                <div className="mt-0.5 p-2 bg-[#1A1C1E] border border-site-border rounded-lg">
+                                    <Calendar size={16} className="text-purple-400" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-gray-600 font-bold">{t("customer.date")}</p>
-                                    <p className="text-xs text-black font-bold">
+                                    <p className="text-xs text-gray-500 font-semibold uppercase">{t("customer.date")}</p>
+                                    <p className="text-sm text-white font-medium mt-0.5">
                                         {formatDate(order.createdAt)}
                                     </p>
                                 </div>
@@ -777,30 +782,29 @@ export default function OrderDetailsPage() {
                     {/* Delivery Info */}
                     {deliveryStatus && (
                         <motion.div
-                            className="bg-white border-[3px] border-black overflow-hidden"
-                            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
                         >
-                            <div className="p-3 border-b-[3px] border-black bg-brutal-green">
-                                <h3 className="font-bold text-black flex items-center gap-2 text-sm">
-                                    <MapPin className="h-4 w-4" />
+                            <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
+                                <h3 className="font-bold text-white flex items-center gap-2 text-base">
+                                    <MapPin className="h-5 w-5 text-green-400" />
                                     {t("delivery.title")}
                                 </h3>
                             </div>
-                            <div className="p-3">
-                                <div className="space-y-2">
+                            <div className="p-4">
+                                <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-gray-600 font-bold">{t("delivery.status_summary")}</span>
+                                        <span className="text-sm text-gray-400 font-medium">{t("delivery.status_summary")}</span>
                                         {getDeliveryStatusBadge(deliveryStatus.status)}
                                     </div>
                                     {deliveryStatus.completedAt && (
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-gray-600 font-bold">
+                                        <div className="flex justify-between items-center bg-[#1A1C1E] p-3 rounded-lg border border-site-border mt-2">
+                                            <span className="text-xs text-gray-500 font-semibold uppercase">
                                                 {t("delivery.completed_at")}
                                             </span>
-                                            <span className="text-xs font-bold">
+                                            <span className="text-sm text-white font-medium">
                                                 {formatDate(deliveryStatus.completedAt)}
                                             </span>
                                         </div>
@@ -812,30 +816,29 @@ export default function OrderDetailsPage() {
 
                     {/* Quick Actions */}
                     <motion.div
-                        className="bg-white border-[3px] border-black overflow-hidden"
-                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
                     >
-                        <div className="p-3 border-b-[3px] border-black bg-gray-100">
-                            <h3 className="font-bold text-black text-sm">{t("actions.title")}</h3>
+                        <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
+                            <h3 className="font-bold text-white text-base">{t("actions.title")}</h3>
                         </div>
-                        <div className="p-2 space-y-2">
+                        <div className="p-4 space-y-3">
                             <Link
                                 href="/support"
-                                className="w-full flex items-center gap-2 p-2 border-[2px] border-black hover:bg-gray-100 text-black transition-colors text-xs font-bold"
+                                className="w-full flex items-center gap-2 p-3 bg-[#1A1C1E] hover:bg-[#212328]/5 border border-site-border rounded-lg text-white transition-colors text-sm font-medium focus:border-[var(--site-accent)] focus:outline-none"
                             >
-                                <AlertCircle size={16} />
+                                <AlertCircle size={18} className="text-gray-400" />
                                 {t("actions.report_issue")}
                             </Link>
                         </div>
                     </motion.div>
 
-                    <div className="text-center">
+                    <div className="text-center mt-6">
                         <Link
                             href="/support"
-                            className="text-xs text-black underline hover:no-underline font-bold"
+                            className="text-sm text-gray-400 hover:text-white underline hover:no-underline font-medium transition-colors"
                         >
                             {t("actions.need_help")}
                         </Link>

@@ -21,26 +21,26 @@ export function ProductDescription({
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => (
-            <h1 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4 thai-font flex items-start md:items-center gap-2 mt-5 md:mt-6 first:mt-0 leading-tight">
-              <span className="w-1.5 h-6 bg-brutal-pink flex-shrink-0 mt-0.5 md:mt-0"></span>
+            <h1 className="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4 thai-font flex items-start md:items-center gap-2 mt-5 md:mt-6 first:mt-0 leading-tight">
+              <span className="w-1.5 h-6 bg-pink-500 flex-shrink-0 mt-0.5 md:mt-0"></span>
               <span>{children}</span>
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-lg md:text-xl font-bold text-black mb-2 md:mb-3 thai-font flex items-start md:items-center gap-2 mt-4 md:mt-5 first:mt-0 leading-tight">
-              <span className="w-1.5 h-5 bg-brutal-pink flex-shrink-0 mt-1 md:mt-0"></span>
+            <h2 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 thai-font flex items-start md:items-center gap-2 mt-4 md:mt-5 first:mt-0 leading-tight">
+              <span className="w-1.5 h-5 bg-pink-500 flex-shrink-0 mt-1 md:mt-0"></span>
               <span>{children}</span>
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-base md:text-lg font-bold text-black mb-2 thai-font flex items-start md:items-center gap-2 mt-3 md:mt-4 first:mt-0 leading-tight">
-              <span className="w-1.5 h-4 bg-brutal-pink flex-shrink-0 mt-1 md:mt-0"></span>
+            <h3 className="text-base md:text-lg font-bold text-white mb-2 thai-font flex items-start md:items-center gap-2 mt-3 md:mt-4 first:mt-0 leading-tight">
+              <span className="w-1.5 h-4 bg-pink-500 flex-shrink-0 mt-1 md:mt-0"></span>
               <span>{children}</span>
             </h3>
           ),
           h4: ({ children }) => (
-            <h4 className="text-sm md:text-base font-bold text-black mb-2 thai-font flex items-start md:items-center gap-2 mt-2 md:mt-3 first:mt-0 leading-tight">
-              <span className="w-1.5 h-4 bg-brutal-pink flex-shrink-0 mt-1 md:mt-0"></span>
+            <h4 className="text-sm md:text-base font-bold text-white mb-2 thai-font flex items-start md:items-center gap-2 mt-2 md:mt-3 first:mt-0 leading-tight">
+              <span className="w-1.5 h-4 bg-pink-500 flex-shrink-0 mt-1 md:mt-0"></span>
               <span>{children}</span>
             </h4>
           ),
@@ -61,7 +61,7 @@ export function ProductDescription({
           ),
           li: ({ children }) => <li className="pl-1">{children}</li>,
           strong: ({ children }) => (
-            <strong className="font-bold text-black">{children}</strong>
+            <strong className="font-bold text-white">{children}</strong>
           ),
         }}
       >

@@ -77,27 +77,27 @@ export default function AdminPromotionCreate() {
         {/* Header */}
         <div className="flex items-center mb-4">
           <Link href="/admin/promotions">
-            <button className="mr-3 p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-gray-200 transition-colors">
+            <button className="mr-3 p-1.5 bg-[#1A1C1E] border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
               <ChevronLeft className="h-4 w-4" />
             </button>
           </Link>
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-brutal-purple mr-2"></span>
-            <h1 className="text-xl font-bold text-black">สร้างโปรโมชั่น</h1>
+            <span className="w-1.5 h-5 bg-purple-500 mr-2"></span>
+            <h1 className="text-xl font-bold text-white">สร้างโปรโมชั่น</h1>
           </div>
         </div>
 
         {/* Form Container */}
         <motion.div
-          className="bg-white border-2 border-black overflow-hidden"
-          style={{ boxShadow: "2px 2px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-2 border-black bg-gray-50">
-            <h3 className="text-base font-semibold text-black flex items-center">
-              <Tag className="mr-2 h-4 w-4 text-brutal-purple" />
+          <div className="p-3 border-b-2 border-site-border/50 bg-[#181A1D]">
+            <h3 className="text-base font-semibold text-white flex items-center">
+              <Tag className="mr-2 h-4 w-4 text-purple-400" />
               โปรโมชั่นใหม่
             </h3>
           </div>
@@ -110,8 +110,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="title"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     ชื่อโปรโมชั่น <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -119,7 +118,7 @@ export default function AdminPromotionCreate() {
                     id="title"
                     name="title"
                     required
-                    className="bg-white border-2 border-gray-300 text-black px-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                    className="bg-[#212328] border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                     placeholder="เช่น ลด 30% ฤดูร้อน"
                     value={formData.title}
                     onChange={handleChange}
@@ -130,8 +129,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="type"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     ประเภทโปรโมชั่น <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -142,7 +140,7 @@ export default function AdminPromotionCreate() {
                       id="type"
                       name="type"
                       required
-                      className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-black focus:outline-none"
+                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-site-accent focus:outline-none"
                       value={formData.type}
                       onChange={handleChange}
                     >
@@ -161,8 +159,7 @@ export default function AdminPromotionCreate() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-gray-500"
-                      >
+                        className="text-gray-500">
                         <path d="M6 9l6 6 6-6" />
                       </svg>
                     </div>
@@ -173,8 +170,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="code"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     รหัสโปรโมชั่น <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -182,7 +178,7 @@ export default function AdminPromotionCreate() {
                     id="code"
                     name="code"
                     required
-                    className="bg-white border-2 border-gray-300 text-black px-3 py-2 w-full text-sm focus:border-black focus:outline-none font-mono"
+                    className="bg-[#212328] border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none font-mono"
                     placeholder="เช่น SUMMER30"
                     value={formData.code}
                     onChange={handleChange}
@@ -196,8 +192,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="discount"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     จำนวนส่วนลด <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -209,7 +204,7 @@ export default function AdminPromotionCreate() {
                       id="discount"
                       name="discount"
                       required
-                      className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เช่น 30"
                       value={formData.discount}
                       onChange={handleChange}
@@ -221,8 +216,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="minPurchase"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     ยอดซื้อขั้นต่ำ (ไม่บังคับ)
                   </label>
                   <div className="relative">
@@ -233,7 +227,7 @@ export default function AdminPromotionCreate() {
                       type="text"
                       id="minPurchase"
                       name="minPurchase"
-                      className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เช่น 20"
                       value={formData.minPurchase}
                       onChange={handleChange}
@@ -252,8 +246,7 @@ export default function AdminPromotionCreate() {
                   <div>
                     <label
                       htmlFor="startDate"
-                      className="block text-xs font-medium text-black mb-1.5"
-                    >
+                      className="block text-xs font-medium text-white mb-1.5">
                       วันที่เริ่ม <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -265,7 +258,7 @@ export default function AdminPromotionCreate() {
                         id="startDate"
                         name="startDate"
                         required
-                        className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                        className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                         value={formData.startDate}
                         onChange={handleChange}
                       />
@@ -274,8 +267,7 @@ export default function AdminPromotionCreate() {
                   <div>
                     <label
                       htmlFor="endDate"
-                      className="block text-xs font-medium text-black mb-1.5"
-                    >
+                      className="block text-xs font-medium text-white mb-1.5">
                       วันที่สิ้นสุด <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -287,7 +279,7 @@ export default function AdminPromotionCreate() {
                         id="endDate"
                         name="endDate"
                         required
-                        className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                        className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                         value={formData.endDate}
                         onChange={handleChange}
                       />
@@ -299,8 +291,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="usageLimit"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     จำกัดการใช้ (ไม่บังคับ)
                   </label>
                   <div className="relative">
@@ -311,7 +302,7 @@ export default function AdminPromotionCreate() {
                       type="number"
                       id="usageLimit"
                       name="usageLimit"
-                      className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
                       value={formData.usageLimit}
                       onChange={handleChange}
@@ -326,8 +317,7 @@ export default function AdminPromotionCreate() {
                 <div>
                   <label
                     htmlFor="maxDiscount"
-                    className="block text-xs font-medium text-black mb-1.5"
-                  >
+                    className="block text-xs font-medium text-white mb-1.5">
                     ส่วนลดสูงสุด (ไม่บังคับ)
                   </label>
                   <div className="relative">
@@ -338,7 +328,7 @@ export default function AdminPromotionCreate() {
                       type="text"
                       id="maxDiscount"
                       name="maxDiscount"
-                      className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เช่น 50"
                       value={formData.maxDiscount}
                       onChange={handleChange}
@@ -357,12 +347,11 @@ export default function AdminPromotionCreate() {
                     name="isActive"
                     checked={formData.isActive}
                     onChange={(e) => handleChange(e as any)}
-                    className="w-4 h-4 border-2 border-black rounded text-brutal-purple focus:ring-black"
+                    className="w-4 h-4 border border-site-border/30 rounded-[8px] rounded text-purple-400 focus:ring-site-accent/50"
                   />
                   <label
                     htmlFor="isActive"
-                    className="text-xs font-medium text-black"
-                  >
+                    className="text-xs font-medium text-white">
                     เปิดใช้งานโปรโมชั่นทันที
                   </label>
                 </div>
@@ -375,12 +364,11 @@ export default function AdminPromotionCreate() {
                     name="applyToAll"
                     checked={formData.applyToAll}
                     onChange={(e) => handleChange(e as any)}
-                    className="w-4 h-4 border-2 border-black rounded text-brutal-purple focus:ring-black"
+                    className="w-4 h-4 border border-site-border/30 rounded-[8px] rounded text-purple-400 focus:ring-site-accent/50"
                   />
                   <label
                     htmlFor="applyToAll"
-                    className="text-xs font-medium text-black"
-                  >
+                    className="text-xs font-medium text-white">
                     ใช้กับสินค้าและเกมทั้งหมด
                   </label>
                 </div>
@@ -391,15 +379,14 @@ export default function AdminPromotionCreate() {
             <div className="mt-4">
               <label
                 htmlFor="description"
-                className="block text-xs font-medium text-black mb-1.5"
-              >
+                className="block text-xs font-medium text-white mb-1.5">
                 รายละเอียด (ไม่บังคับ)
               </label>
               <textarea
                 id="description"
                 name="description"
                 rows={3}
-                className="bg-white border-2 border-gray-300 text-black px-3 py-2 w-full text-sm focus:border-black focus:outline-none"
+                className="bg-[#212328] border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                 placeholder="อธิบายรายละเอียดโปรโมชั่น..."
                 value={formData.description}
                 onChange={handleChange}
@@ -411,9 +398,7 @@ export default function AdminPromotionCreate() {
               <Link href="/admin/promotions">
                 <button
                   type="button"
-                  className="px-4 py-2 border-2 border-black bg-white text-black hover:bg-gray-100 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm"
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                >
+                  className="px-4 py-2 border border-site-border/30 rounded-[8px] bg-[#212328] text-white hover:bg-[#212328]/5 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm">
                   <X className="h-4 w-4 mr-2" />
                   ยกเลิก
                 </button>
@@ -421,9 +406,7 @@ export default function AdminPromotionCreate() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-black text-white border-2 border-black hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className={`px-4 py-2 bg-black text-white border border-site-border/30 rounded-[8px] hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังสร้าง..." : "สร้างโปรโมชั่น"}
               </button>

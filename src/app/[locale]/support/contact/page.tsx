@@ -117,8 +117,8 @@ export default function ContactPage() {
     <div className="page-container bg-transparent">
       {/* Hero Section */}
       <motion.div
-        className="bg-white border-[3px] border-black p-8 mb-8"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 mb-8"
+        
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -130,10 +130,10 @@ export default function ContactPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex items-center justify-center mb-4">
-              <div className="bg-brutal-blue p-3 border-[3px] border-black mr-3">
-                <Headphones className="h-8 w-8 text-black" />
+              <div className="bg-site-accent p-3 border border-site-border rounded-[12px] mr-3">
+                <Headphones className="h-8 w-8 text-white" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-black text-black uppercase">
+              <h1 className="text-3xl md:text-4xl font-black text-white uppercase">
                 {t("title")}
               </h1>
             </div>
@@ -148,29 +148,29 @@ export default function ContactPage() {
         {/* Main content - Contact form */}
         <div className="lg:col-span-2">
           <div
-            className="bg-white border-[3px] border-black p-6 md:p-8"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8"
+            
           >
             <div className="flex items-center mb-6">
-              <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-              <h2 className="text-2xl font-black text-black uppercase">{t("form.title")}</h2>
+              <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
+              <h2 className="text-2xl font-black text-white uppercase">{t("form.title")}</h2>
             </div>
 
             {formStatus === "success" ? (
               <motion.div
-                className="bg-brutal-green border-[3px] border-black p-6 text-center"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                className="bg-green-500 border border-site-border rounded-[12px] p-6 text-center"
+                
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <CheckCircle size={48} className="mx-auto text-black mb-4" />
-                <h3 className="text-xl font-black text-black mb-2 uppercase">
+                <CheckCircle size={48} className="mx-auto text-white mb-4" />
+                <h3 className="text-xl font-black text-white mb-2 uppercase">
                   {t("form.success")}
                 </h3>
                 <button
                   onClick={() => setFormStatus("idle")}
-                  className="bg-black text-white border-[3px] border-black px-6 py-3 font-black hover:bg-gray-800 transition-colors uppercase"
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  className="bg-black text-white border border-site-border rounded-[12px] px-6 py-3 font-black hover:bg-gray-800 transition-colors uppercase"
+                  
                 >
                   Send Another Message
                 </button>
@@ -192,7 +192,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -211,7 +211,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -231,7 +231,7 @@ export default function ContactPage() {
                       value={formData.category}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
                     >
                       <option value="" disabled>
                         Select category
@@ -257,7 +257,7 @@ export default function ContactPage() {
                       name="orderId"
                       value={formData.orderId}
                       onChange={handleInputChange}
-                      className="w-full py-3 px-4 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
                       placeholder="Optional"
                     />
                   </div>
@@ -277,7 +277,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     rows={6}
-                    className="w-full py-3 px-4 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors resize-none font-bold"
+                    className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors resize-none font-bold"
                     placeholder="Describe your issue"
                   ></textarea>
                 </div>
@@ -285,8 +285,8 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={formStatus === "submitting"}
-                  className={`bg-black text-white border-[3px] border-black px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase ${formStatus === "submitting" ? "opacity-70 cursor-not-allowed" : ""}`}
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                  className={`bg-black text-white border border-site-border rounded-[12px] px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase ${formStatus === "submitting" ? "opacity-70 cursor-not-allowed" : ""}`}
+                  
                 >
                   {formStatus === "submitting" ? (
                     <>
@@ -306,13 +306,13 @@ export default function ContactPage() {
 
           {/* FAQs Preview */}
           <div
-            className="mt-8 bg-white border-[3px] border-black p-6 md:p-8"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="mt-8 bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8"
+            
           >
             <div className="flex items-center mb-6">
-              <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
-              <HelpCircle className="text-black mr-3" />
-              <h2 className="text-2xl font-black text-black uppercase">
+              <span className="w-1.5 h-5 bg-yellow-500 mr-2"></span>
+              <HelpCircle className="text-white mr-3" />
+              <h2 className="text-2xl font-black text-white uppercase">
                 {tFaq("title")}
               </h2>
             </div>
@@ -321,11 +321,11 @@ export default function ContactPage() {
               {faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className={`border-[2px] border-black overflow-hidden ${expandedFaqs.includes(index) ? "bg-brutal-gray" : "bg-white"}`}
+                  className={`border border-site-border overflow-hidden ${expandedFaqs.includes(index) ? "bg-[#2A2C30]" : "bg-[#1A1C20]"}`}
                 >
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="w-full flex justify-between items-center p-4 text-left font-black text-black focus:outline-none uppercase text-sm"
+                    className="w-full flex justify-between items-center p-4 text-left font-black text-white focus:outline-none uppercase text-sm"
                   >
                     <span>{faq.question}</span>
                     {expandedFaqs.includes(index) ? (
@@ -347,7 +347,7 @@ export default function ContactPage() {
             <div className="mt-6 text-center">
               <Link
                 href="/support/faq"
-                className="text-black hover:underline inline-flex items-center font-black uppercase text-sm"
+                className="text-white hover:underline inline-flex items-center font-black uppercase text-sm"
               >
                 {tFaq("all")}
                 <ChevronDown className="ml-1" size={16} />
@@ -359,23 +359,23 @@ export default function ContactPage() {
         {/* Sidebar - Contact info */}
         <div>
           <div
-            className="bg-white border-[3px] border-black p-6 sticky top-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 sticky top-4"
+            
           >
             <div className="flex items-center mb-6">
-              <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-              <h2 className="text-xl font-black text-black uppercase">
+              <span className="w-1.5 h-5 bg-pink-500 mr-2"></span>
+              <h2 className="text-xl font-black text-white uppercase">
                 {t("title")}
               </h2>
             </div>
 
             <div className="space-y-6">
               <div className="flex items-start">
-                <div className="bg-brutal-yellow p-3 border-[2px] border-black mr-4 shadow-[2px_2px_0_0_#000]">
-                  <Clock className="text-black" size={20} />
+                <div className="bg-yellow-500 p-3 border border-site-border mr-4 shadow-md">
+                  <Clock className="text-white" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-black font-black uppercase text-xs mb-1">Support Hours</h3>
+                  <h3 className="text-white font-black uppercase text-xs mb-1">Support Hours</h3>
                   <p className="text-gray-600 font-bold text-xs">
                     Mon - Fri: 9:00 - 22:00
                     <br />
@@ -387,14 +387,14 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start">
-                <div className="bg-brutal-blue p-3 border-[2px] border-black mr-4 shadow-[2px_2px_0_0_#000]">
-                  <Mail className="text-black" size={20} />
+                <div className="bg-site-accent p-3 border border-site-border mr-4 shadow-md">
+                  <Mail className="text-white" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-black font-black uppercase text-xs mb-1">Email Support</h3>
+                  <h3 className="text-white font-black uppercase text-xs mb-1">Email Support</h3>
                   <a
                     href={`mailto:${supportEmail}`}
-                    className="text-black hover:underline font-bold text-sm block"
+                    className="text-white hover:underline font-bold text-sm block"
                   >
                     {supportEmail}
                   </a>
@@ -402,11 +402,11 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start">
-                <div className="bg-brutal-green p-3 border-[2px] border-black mr-4 shadow-[2px_2px_0_0_#000]">
-                  <MessageSquare className="text-black" size={20} />
+                <div className="bg-green-500 p-3 border border-site-border mr-4 shadow-md">
+                  <MessageSquare className="text-white" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-black font-black uppercase text-xs mb-1">Live Chat</h3>
+                  <h3 className="text-white font-black uppercase text-xs mb-1">Live Chat</h3>
                   <p className="text-gray-600 font-bold text-xs">
                     Available during support hours via the chat icon below.
                   </p>
@@ -414,14 +414,14 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start">
-                <div className="bg-brutal-pink p-3 border-[2px] border-black mr-4 shadow-[2px_2px_0_0_#000]">
-                  <Phone className="text-black" size={20} />
+                <div className="bg-pink-500 p-3 border border-site-border mr-4 shadow-md">
+                  <Phone className="text-white" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-black font-black uppercase text-xs mb-1">Phone Support</h3>
+                  <h3 className="text-white font-black uppercase text-xs mb-1">Phone Support</h3>
                   <a
                     href={`tel:${supportPhone}`}
-                    className="text-black hover:underline font-bold text-sm"
+                    className="text-white hover:underline font-bold text-sm"
                   >
                     {supportPhone}
                   </a>
@@ -429,20 +429,20 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start">
-                <div className="bg-brutal-yellow p-3 border-[2px] border-black mr-4 shadow-[2px_2px_0_0_#000]">
-                  <Globe className="text-black" size={20} />
+                <div className="bg-yellow-500 p-3 border border-site-border mr-4 shadow-md">
+                  <Globe className="text-white" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-black font-black uppercase text-xs mb-1">{t("social.title")}</h3>
+                  <h3 className="text-white font-black uppercase text-xs mb-1">{t("social.title")}</h3>
                   <div className="flex space-x-3 mt-2">
                     <a
                       href={facebookUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="bg-brutal-gray hover:bg-brutal-yellow p-2 border-[2px] border-black transition-colors shadow-[2px_2px_0_0_#000]"
+                      className="bg-[#2A2C30] hover:bg-yellow-500 p-2 border border-site-border transition-colors shadow-md"
                     >
                       <svg
-                        className="w-5 h-5 text-black"
+                        className="w-5 h-5 text-white"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
@@ -453,7 +453,7 @@ export default function ContactPage() {
                       href={lineUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="bg-brutal-gray hover:bg-brutal-green p-2 border-[2px] border-black transition-colors shadow-[2px_2px_0_0_#000]"
+                      className="bg-[#2A2C30] hover:bg-green-500 p-2 border border-site-border transition-colors shadow-md"
                     >
                       <span className="font-black text-xs">LINE</span>
                     </a>
@@ -462,10 +462,10 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="mt-8 bg-brutal-yellow border-[3px] border-black p-4 shadow-[4px_4px_0_0_#000]">
+            <div className="mt-8 bg-yellow-500 border border-site-border rounded-[12px] p-4 shadow-md">
               <div className="flex items-center">
-                <AlertCircle size={18} className="text-black mr-2" />
-                <span className="text-black font-black uppercase text-xs">Important</span>
+                <AlertCircle size={18} className="text-white mr-2" />
+                <span className="text-white font-black uppercase text-xs">Important</span>
               </div>
               <p className="mt-2 text-gray-700 text-xs font-bold leading-relaxed uppercase">
                 For fastest support response, please provide your order ID and

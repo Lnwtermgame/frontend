@@ -306,19 +306,17 @@ export default function AdminPaymentsPage() {
             <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h2 className="text-xl font-black text-black thai-font">
+                        <h2 className="text-xl font-black text-white thai-font">
                             Payment Gateways & Options
                         </h2>
-                        <p className="text-xs text-gray-600 thai-font">
+                        <p className="text-xs text-gray-400 thai-font">
                             จัดการผู้ให้บริการชำระเงินและช่องทางรับเงินทั้งหมด
                         </p>
                     </div>
                     <button
                         onClick={() => fetchAll(false)}
                         disabled={refreshing}
-                        className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100 disabled:opacity-60"
-                        style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    >
+                        className="inline-flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 text-xs font-semibold hover:bg-[#212328]/5 disabled:opacity-60">
                         {refreshing ? (
                             <Loader2 className="h-3 w-3 animate-spin" />
                         ) : (
@@ -330,27 +328,25 @@ export default function AdminPaymentsPage() {
 
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
-                        <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
+                        <Loader2 className="h-6 w-6 animate-spin text-pink-400" />
                     </div>
                 ) : (
                     <>
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="rounded-none border-[3px] border-black bg-white overflow-hidden"
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
-                            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
-                                <h3 className="text-sm font-semibold text-black flex items-center thai-font">
-                                    <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-                                    <CreditCard className="mr-2 h-4 w-4 text-brutal-pink" />
+                            className="rounded-none border border-site-border/30 rounded-[12px] bg-[#212328] overflow-hidden">
+                            <div className="p-3 border-b-[2px] border-site-border/50 flex justify-between items-center bg-[#181A1D]">
+                                <h3 className="text-sm font-semibold text-white flex items-center thai-font">
+                                    <span className="w-1.5 h-4 bg-pink-500 mr-2"></span>
+                                    <CreditCard className="mr-2 h-4 w-4 text-pink-400" />
                                     Payment Gateways
                                 </h3>
                             </div>
                             <div className="p-3 space-y-3">
                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
                                     <input
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="ชื่อ Gateway"
                                         value={gatewayForm.name}
                                         onChange={(e) =>
@@ -361,7 +357,7 @@ export default function AdminPaymentsPage() {
                                         }
                                     />
                                     <input
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Provider (e.g. feelfreepay)"
                                         value={gatewayForm.provider}
                                         onChange={(e) =>
@@ -374,7 +370,7 @@ export default function AdminPaymentsPage() {
                                     <input
                                         type="number"
                                         step="0.01"
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Gateway Fee %"
                                         value={gatewayForm.feePercent}
                                         onChange={(e) =>
@@ -387,7 +383,7 @@ export default function AdminPaymentsPage() {
                                     <input
                                         type="number"
                                         step="0.01"
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Flat Fee"
                                         value={gatewayForm.flatFee}
                                         onChange={(e) =>
@@ -397,7 +393,7 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
+                                    <label className="flex items-center gap-2 border border-site-border/30 rounded-[8px] px-2 py-1.5 font-medium text-sm">
                                         <input
                                             type="checkbox"
                                             checked={gatewayForm.isActive}
@@ -415,8 +411,7 @@ export default function AdminPaymentsPage() {
                                     <button
                                         onClick={handleSaveGateway}
                                         disabled={savingGateway}
-                                        className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
-                                    >
+                                        className="inline-flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60">
                                         {savingGateway ? (
                                             <Loader2 className="h-3 w-3 animate-spin" />
                                         ) : (
@@ -427,44 +422,43 @@ export default function AdminPaymentsPage() {
                                     {editingGatewayId && (
                                         <button
                                             onClick={resetGatewayForm}
-                                            className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
-                                        >
+                                            className="inline-flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 text-xs font-semibold hover:bg-[#212328]/5">
                                             <XCircle className="h-3 w-3" />
                                             ยกเลิก
                                         </button>
                                     )}
                                 </div>
 
-                                <div className="overflow-x-auto border-2 border-black">
+                                <div className="overflow-x-auto border border-site-border/30 rounded-[8px]">
                                     <table className="w-full min-w-[720px] text-xs">
-                                        <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                        <thead className="bg-[#181A1D] text-left border-b-2 border-site-border/50">
                                             <tr>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Gateway</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Provider</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Fee %</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Flat Fee</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Options</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Status</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Actions</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Gateway</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Provider</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Fee %</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Flat Fee</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Options</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Status</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-200">
+                                        <tbody className="divide-y divide-site-border/30">
                                             {gateways.map((gateway) => (
-                                                <tr key={gateway.id} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-3 py-2 font-bold text-black text-xs">
+                                                <tr key={gateway.id} className="hover:bg-[#212328]/5 transition-colors">
+                                                    <td className="px-3 py-2 font-bold text-white text-xs">
                                                         {gateway.name}
                                                     </td>
-                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-600">{gateway.provider}</td>
+                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-400">{gateway.provider}</td>
                                                     <td className="px-3 py-2 font-medium">{gateway.feePercent}%</td>
                                                     <td className="px-3 py-2 font-medium">฿{gateway.flatFee}</td>
                                                     <td className="px-3 py-2 font-medium">{gateway.optionCount}</td>
                                                     <td className="px-3 py-2">
                                                         {gateway.isActive ? (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-700 bg-green-100 border-green-300 flex items-center gap-1 w-fit">
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-400 bg-green-500/10 border-green-300 flex items-center gap-1 w-fit">
                                                                 <CheckCircle2 className="h-3 w-3" /> Active
                                                             </span>
                                                         ) : (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-600 bg-gray-100 border-gray-300 flex items-center gap-1 w-fit">
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-400 bg-[#1A1C1E] border-gray-300 flex items-center gap-1 w-fit">
                                                                 <XCircle className="h-3 w-3" /> Inactive
                                                             </span>
                                                         )}
@@ -473,14 +467,12 @@ export default function AdminPaymentsPage() {
                                                         <div className="flex gap-2">
                                                             <button
                                                                 onClick={() => handleEditGateway(gateway)}
-                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                            >
+                                                                className="rounded-none border border-site-border/50 px-2 py-0.5 font-medium hover:bg-[#212328]/5">
                                                                 แก้ไข
                                                             </button>
                                                             <button
                                                                 onClick={() => toggleGateway(gateway)}
-                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                            >
+                                                                className="rounded-none border border-site-border/50 px-2 py-0.5 font-medium hover:bg-[#212328]/5">
                                                                 {gateway.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                                                             </button>
                                                         </div>
@@ -496,20 +488,18 @@ export default function AdminPaymentsPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="rounded-none border-[3px] border-black bg-white overflow-hidden"
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
-                            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
-                                <h3 className="text-sm font-semibold text-black flex items-center thai-font">
-                                    <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
-                                    <Settings className="mr-2 h-4 w-4 text-brutal-blue" />
+                            className="rounded-none border border-site-border/30 rounded-[12px] bg-[#212328] overflow-hidden">
+                            <div className="p-3 border-b-[2px] border-site-border/50 flex justify-between items-center bg-[#181A1D]">
+                                <h3 className="text-sm font-semibold text-white flex items-center thai-font">
+                                    <span className="w-1.5 h-4 bg-site-accent mr-2"></span>
+                                    <Settings className="mr-2 h-4 w-4 text-site-accent" />
                                     Payment Options
                                 </h3>
                             </div>
                             <div className="p-3 space-y-3">
                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
                                     <select
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         value={optionForm.gatewayId}
                                         onChange={(e) =>
                                             setOptionForm((prev) => ({
@@ -526,7 +516,7 @@ export default function AdminPaymentsPage() {
                                         ))}
                                     </select>
                                     <input
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Option Code (e.g. PROMPTPAY_DEFAULT)"
                                         value={optionForm.code}
                                         onChange={(e) =>
@@ -534,7 +524,7 @@ export default function AdminPaymentsPage() {
                                         }
                                     />
                                     <input
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Label"
                                         value={optionForm.label}
                                         onChange={(e) =>
@@ -545,7 +535,7 @@ export default function AdminPaymentsPage() {
                                         }
                                     />
                                     <select
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         value={optionForm.method}
                                         onChange={(e) =>
                                             setOptionForm((prev) => ({
@@ -563,7 +553,7 @@ export default function AdminPaymentsPage() {
                                     <input
                                         type="number"
                                         step="0.01"
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Surcharge %"
                                         value={optionForm.surchargePercent}
                                         onChange={(e) =>
@@ -576,7 +566,7 @@ export default function AdminPaymentsPage() {
                                     <input
                                         type="number"
                                         step="0.01"
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Flat Fee"
                                         value={optionForm.flatFee}
                                         onChange={(e) =>
@@ -589,7 +579,7 @@ export default function AdminPaymentsPage() {
                                     <input
                                         type="number"
                                         step="0.01"
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Min Amount (optional)"
                                         value={optionForm.minAmount}
                                         onChange={(e) =>
@@ -602,7 +592,7 @@ export default function AdminPaymentsPage() {
                                     <input
                                         type="number"
                                         step="0.01"
-                                        className="border-2 border-black px-2 py-1.5 text-sm"
+                                        className="border border-site-border/30 rounded-[8px] px-2 py-1.5 text-sm"
                                         placeholder="Max Amount (optional)"
                                         value={optionForm.maxAmount}
                                         onChange={(e) =>
@@ -612,7 +602,7 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <label className="flex items-center gap-2 border-2 border-black px-2 py-1.5 font-medium text-sm">
+                                    <label className="flex items-center gap-2 border border-site-border/30 rounded-[8px] px-2 py-1.5 font-medium text-sm">
                                         <input
                                             type="checkbox"
                                             checked={optionForm.isActive}
@@ -631,8 +621,7 @@ export default function AdminPaymentsPage() {
                                     <button
                                         onClick={handleSaveOption}
                                         disabled={savingOption}
-                                        className="inline-flex items-center gap-2 border-[2px] border-black bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
-                                    >
+                                        className="inline-flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60">
                                         {savingOption ? (
                                             <Loader2 className="h-3 w-3 animate-spin" />
                                         ) : editingOptionId ? (
@@ -645,33 +634,32 @@ export default function AdminPaymentsPage() {
                                     {editingOptionId && (
                                         <button
                                             onClick={resetOptionForm}
-                                            className="inline-flex items-center gap-2 border-[2px] border-black bg-white px-3 py-1.5 text-xs font-semibold hover:bg-gray-100"
-                                        >
+                                            className="inline-flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 text-xs font-semibold hover:bg-[#212328]/5">
                                             <XCircle className="h-3 w-3" />
                                             ยกเลิก
                                         </button>
                                     )}
                                 </div>
 
-                                <div className="overflow-x-auto border-2 border-black">
+                                <div className="overflow-x-auto border border-site-border/30 rounded-[8px]">
                                     <table className="w-full min-w-[900px] text-xs">
-                                        <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                        <thead className="bg-[#181A1D] text-left border-b-2 border-site-border/50">
                                             <tr>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Code</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Label</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Gateway</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Method</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Surcharge %</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Flat Fee</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Range</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Status</th>
-                                                <th className="px-3 py-2 thai-font text-gray-600 font-semibold">Actions</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Code</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Label</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Gateway</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Method</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Surcharge %</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Flat Fee</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Range</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Status</th>
+                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-200">
+                                        <tbody className="divide-y divide-site-border/30">
                                             {options.map((option) => (
-                                                <tr key={option.id} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-3 py-2 font-mono text-[11px] font-bold text-black">
+                                                <tr key={option.id} className="hover:bg-[#212328]/5 transition-colors">
+                                                    <td className="px-3 py-2 font-mono text-[11px] font-bold text-white">
                                                         {option.code}
                                                     </td>
                                                     <td className="px-3 py-2 font-medium">{option.label}</td>
@@ -679,21 +667,21 @@ export default function AdminPaymentsPage() {
                                                         {gatewayNameMap[option.gatewayId] ||
                                                             option.gateway.name}
                                                     </td>
-                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-600">{option.method}</td>
+                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-400">{option.method}</td>
                                                     <td className="px-3 py-2 font-medium">
                                                         {option.surchargePercent}%
                                                     </td>
                                                     <td className="px-3 py-2 font-medium">฿{option.flatFee}</td>
-                                                    <td className="px-3 py-2 font-medium text-gray-600 text-[11px]">
+                                                    <td className="px-3 py-2 font-medium text-gray-400 text-[11px]">
                                                         {option.minAmount ?? "-"} - {option.maxAmount ?? "-"}
                                                     </td>
                                                     <td className="px-3 py-2">
                                                         {option.isActive ? (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-700 bg-green-100 border-green-300 flex items-center gap-1 w-fit">
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-400 bg-green-500/10 border-green-300 flex items-center gap-1 w-fit">
                                                                 <CheckCircle2 className="h-3 w-3" /> Active
                                                             </span>
                                                         ) : (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-600 bg-gray-100 border-gray-300 flex items-center gap-1 w-fit">
+                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-400 bg-[#1A1C1E] border-gray-300 flex items-center gap-1 w-fit">
                                                                 <XCircle className="h-3 w-3" /> Inactive
                                                             </span>
                                                         )}
@@ -702,14 +690,12 @@ export default function AdminPaymentsPage() {
                                                         <div className="flex gap-2">
                                                             <button
                                                                 onClick={() => handleEditOption(option)}
-                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                            >
+                                                                className="rounded-none border border-site-border/50 px-2 py-0.5 font-medium hover:bg-[#212328]/5">
                                                                 แก้ไข
                                                             </button>
                                                             <button
                                                                 onClick={() => toggleOption(option)}
-                                                                className="rounded-none border border-black px-2 py-0.5 font-medium hover:bg-gray-100"
-                                                            >
+                                                                className="rounded-none border border-site-border/50 px-2 py-0.5 font-medium hover:bg-[#212328]/5">
                                                                 {option.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                                                             </button>
                                                         </div>
@@ -725,14 +711,12 @@ export default function AdminPaymentsPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="rounded-none border-[3px] border-black bg-white overflow-hidden"
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
-                            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
+                            className="rounded-none border border-site-border/30 rounded-[12px] bg-[#212328] overflow-hidden">
+                            <div className="p-3 border-b-[2px] border-site-border/50 flex justify-between items-center bg-[#181A1D]">
                                 <div>
-                                    <h3 className="text-sm font-semibold text-black flex items-center thai-font">
-                                        <span className="w-1.5 h-4 bg-brutal-green mr-2"></span>
-                                        <ShieldCheck className="mr-2 h-4 w-4 text-brutal-green" />
+                                    <h3 className="text-sm font-semibold text-white flex items-center thai-font">
+                                        <span className="w-1.5 h-4 bg-green-500 mr-2"></span>
+                                        <ShieldCheck className="mr-2 h-4 w-4 text-green-400" />
                                         Security Monitoring
                                     </h3>
                                     <p className="text-[10px] text-gray-500 mt-1 thai-font ml-3">
@@ -743,28 +727,27 @@ export default function AdminPaymentsPage() {
                             <div className="p-3">
                                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                                     <div className="space-y-2">
-                                        <h4 className="font-semibold text-black text-xs flex items-center thai-font">
-                                            <Activity className="mr-1.5 h-3.5 w-3.5 text-gray-600" />
+                                        <h4 className="font-semibold text-white text-xs flex items-center thai-font">
+                                            <Activity className="mr-1.5 h-3.5 w-3.5 text-gray-400" />
                                             Payment Audit Logs
                                         </h4>
-                                        <div className="max-h-[300px] overflow-auto border-2 border-black">
+                                        <div className="max-h-[300px] overflow-auto border border-site-border/30 rounded-[8px]">
                                             <table className="w-full min-w-[760px] text-[10px]">
-                                                <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                                <thead className="bg-[#181A1D] text-left border-b-2 border-site-border/50">
                                                     <tr>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Time</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Severity</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Event</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Order</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Status</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Message</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Time</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Severity</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Event</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Order</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Status</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Message</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody className="divide-y divide-gray-200">
+                                                <tbody className="divide-y divide-site-border/30">
                                                     {auditLogs.map((log) => (
                                                         <tr
                                                             key={log.id}
-                                                            className="hover:bg-gray-50 transition-colors align-top"
-                                                        >
+                                                            className="hover:bg-[#212328]/5 transition-colors align-top">
                                                             <td className="px-2 py-1.5 whitespace-nowrap">
                                                                 {new Date(log.createdAt).toLocaleString()}
                                                             </td>
@@ -786,8 +769,7 @@ export default function AdminPaymentsPage() {
                                                         <tr>
                                                             <td
                                                                 colSpan={6}
-                                                                className="px-2 py-4 text-center text-gray-500"
-                                                            >
+                                                                className="px-2 py-4 text-center text-gray-500">
                                                                 No audit logs
                                                             </td>
                                                         </tr>
@@ -798,26 +780,25 @@ export default function AdminPaymentsPage() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h4 className="font-semibold text-black text-xs flex items-center thai-font">
-                                            <FileCode2 className="mr-1.5 h-3.5 w-3.5 text-gray-600" />
+                                        <h4 className="font-semibold text-white text-xs flex items-center thai-font">
+                                            <FileCode2 className="mr-1.5 h-3.5 w-3.5 text-gray-400" />
                                             Webhook Nonce Store
                                         </h4>
-                                        <div className="max-h-[300px] overflow-auto border-2 border-black">
+                                        <div className="max-h-[300px] overflow-auto border border-site-border/30 rounded-[8px]">
                                             <table className="w-full min-w-[680px] text-[10px]">
-                                                <thead className="bg-gray-50 text-left border-b-2 border-black">
+                                                <thead className="bg-[#181A1D] text-left border-b-2 border-site-border/50">
                                                     <tr>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Created</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Provider</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Nonce Hash</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-600 font-semibold">Expires</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Created</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Provider</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Nonce Hash</th>
+                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Expires</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody className="divide-y divide-gray-200">
+                                                <tbody className="divide-y divide-site-border/30">
                                                     {webhookNonces.map((item) => (
                                                         <tr
                                                             key={item.id}
-                                                            className="hover:bg-gray-50 transition-colors align-top"
-                                                        >
+                                                            className="hover:bg-[#212328]/5 transition-colors align-top">
                                                             <td className="px-2 py-1.5 whitespace-nowrap">
                                                                 {new Date(item.createdAt).toLocaleString()}
                                                             </td>
@@ -834,8 +815,7 @@ export default function AdminPaymentsPage() {
                                                         <tr>
                                                             <td
                                                                 colSpan={4}
-                                                                className="px-2 py-4 text-center text-gray-500"
-                                                            >
+                                                                className="px-2 py-4 text-center text-gray-500">
                                                                 No nonce records
                                                             </td>
                                                         </tr>

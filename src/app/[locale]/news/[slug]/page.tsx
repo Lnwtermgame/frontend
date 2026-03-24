@@ -21,10 +21,10 @@ import { cmsApi, NewsArticle } from "@/lib/services";
 import { useTranslations } from "next-intl";
 
 const categoryColors: Record<string, string> = {
-  general: "bg-gray-100 text-gray-700",
+  general: "bg-[#1A1C1E] text-gray-700",
   promotion: "bg-pink-100 text-pink-700",
   update: "bg-blue-100 text-blue-700",
-  event: "bg-yellow-100 text-yellow-700",
+  event: "bg-yellow-500/10 text-yellow-400",
 };
 
 const markdownSchema = {
@@ -127,7 +127,7 @@ export default function NewsArticlePage() {
       <div className="page-container">
         <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-brutal-pink" />
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-pink-500" />
             <p className="text-gray-600">{tCommon("loading")}</p>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function NewsArticlePage() {
       <div className="page-container">
         <div className="max-w-4xl mx-auto text-center py-16">
           <Newspaper className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-          <h1 className="text-2xl font-bold text-black mb-2">
+          <h1 className="text-2xl font-bold text-white mb-2">
             {error === "not_found" ? t("error_not_found") : t("error_loading")}
           </h1>
           <p className="text-gray-600 mb-6">
@@ -148,7 +148,7 @@ export default function NewsArticlePage() {
           </p>
           <Link
             href="/news"
-            className="inline-flex items-center px-6 py-3 bg-black text-white border-[3px] border-black hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-black text-white border border-site-border/30 rounded-[12px] hover:bg-gray-800 transition-colors"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -173,7 +173,7 @@ export default function NewsArticlePage() {
         {/* Back Link - Outside white box */}
         <Link
           href="/news"
-          className="inline-flex items-center text-gray-600 hover:text-black mb-6"
+          className="inline-flex items-center text-gray-600 hover:text-white mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
           {t("back_to_news")}
@@ -183,7 +183,7 @@ export default function NewsArticlePage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10"
+          className="bg-[#212328] rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10"
         >
           {/* Article Header */}
           <div className="mb-8">
@@ -194,13 +194,13 @@ export default function NewsArticlePage() {
                 {category}
               </span>
               {article.isFeatured && (
-                <span className="inline-block px-3 py-1 text-sm font-medium bg-yellow-100 text-yellow-700">
+                <span className="inline-block px-3 py-1 text-sm font-medium bg-yellow-500/10 text-yellow-400">
                   {t("featured_badge")}
                 </span>
               )}
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold text-black mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {article.title}
             </h1>
 
@@ -219,7 +219,7 @@ export default function NewsArticlePage() {
           {/* Cover Image */}
           {article.coverImage && (
             <div className="mb-8">
-              <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden">
+              <div className="aspect-video bg-[#1A1C1E] rounded-xl overflow-hidden">
                 <img
                   src={article.coverImage}
                   alt={article.title}
@@ -248,22 +248,22 @@ export default function NewsArticlePage() {
                   </ol>
                 ),
                 h2: ({ children }) => (
-                  <h2 className="text-2xl font-bold text-black mt-8 mb-3">
+                  <h2 className="text-2xl font-bold text-white mt-8 mb-3">
                     {children}
                   </h2>
                 ),
                 h3: ({ children }) => (
-                  <h3 className="text-xl font-bold text-black mt-6 mb-2">
+                  <h3 className="text-xl font-bold text-white mt-6 mb-2">
                     {children}
                   </h3>
                 ),
                 strong: ({ children }) => (
-                  <strong className="font-bold text-black">{children}</strong>
+                  <strong className="font-bold text-white">{children}</strong>
                 ),
                 a: ({ children, href }) => (
                   <a
                     href={href}
-                    className="text-brutal-blue hover:underline"
+                    className="text-site-accent hover:underline"
                     target={href?.startsWith("http") ? "_blank" : undefined}
                     rel={
                       href?.startsWith("http")
@@ -277,7 +277,7 @@ export default function NewsArticlePage() {
                 code: ({ children, className }) => {
                   const isInline = !className;
                   return isInline ? (
-                    <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono">
+                    <code className="bg-[#1A1C1E] px-1.5 py-0.5 rounded text-sm font-mono">
                       {children}
                     </code>
                   ) : (
@@ -305,20 +305,20 @@ export default function NewsArticlePage() {
                 ),
                 table: ({ children }) => (
                   <div className="overflow-x-auto">
-                    <table className="w-full border-[3px] border-black border-collapse">
+                    <table className="w-full border border-site-border/30 rounded-[12px] border-collapse">
                       {children}
                     </table>
                   </div>
                 ),
                 thead: ({ children }) => (
-                  <thead className="bg-gray-100">{children}</thead>
+                  <thead className="bg-[#1A1C1E]">{children}</thead>
                 ),
                 tbody: ({ children }) => <tbody>{children}</tbody>,
                 tr: ({ children }) => (
                   <tr className="border-b-[2px] border-black">{children}</tr>
                 ),
                 th: ({ children }) => (
-                  <th className="border-[2px] border-black p-3 text-left text-black font-bold">
+                  <th className="border-[2px] border-black p-3 text-left text-white font-bold">
                     {children}
                   </th>
                 ),
@@ -341,7 +341,7 @@ export default function NewsArticlePage() {
                 {article.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="px-2 py-1 bg-gray-100 text-gray-700 text-sm border border-gray-300 rounded"
+                    className="px-2 py-1 bg-[#1A1C1E] text-gray-700 text-sm border border-gray-300 rounded"
                   >
                     {tag}
                   </span>
@@ -370,7 +370,7 @@ export default function NewsArticlePage() {
                         href={source}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-brutal-blue hover:underline flex items-center"
+                        className="text-sm text-site-accent hover:underline flex items-center"
                       >
                         {new URL(source).hostname}
                         <ExternalLink className="w-3 h-3 ml-1" />
@@ -399,7 +399,7 @@ export default function NewsArticlePage() {
             transition={{ delay: 0.2 }}
             className="mt-12"
           >
-            <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+            <h2 className="text-xl font-bold text-white mb-4 flex items-center">
               <Newspaper className="w-5 h-5 mr-2" />
               {t("other_news")}
             </h2>
@@ -408,9 +408,9 @@ export default function NewsArticlePage() {
                 <Link
                   key={news.id}
                   href={`/news/${news.slug}`}
-                  className="group bg-white border-[2px] border-gray-200 hover:border-black p-4 rounded-xl transition-colors"
+                  className="group bg-[#212328] border-[2px] border-gray-200 hover:border-black p-4 rounded-xl transition-colors"
                 >
-                  <h3 className="font-bold text-black text-sm line-clamp-2 group-hover:text-brutal-pink transition-colors">
+                  <h3 className="font-bold text-white text-sm line-clamp-2 group-hover:text-pink-500 transition-colors">
                     {news.title}
                   </h3>
                   <p className="text-xs text-gray-500 mt-2">

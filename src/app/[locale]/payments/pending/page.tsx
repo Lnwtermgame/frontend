@@ -158,8 +158,8 @@ function PendingPaymentContent() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-brutal-beige flex flex-col items-center justify-center p-4">
-        <Loader2 className="w-16 h-16 text-black animate-spin mb-4" />
+      <div className="min-h-screen bg-[#121316] flex flex-col items-center justify-center p-4">
+        <Loader2 className="w-16 h-16 text-white animate-spin mb-4" />
         <h2 className="text-2xl font-bold font-display">{t("loading")}</h2>
       </div>
     );
@@ -167,14 +167,14 @@ function PendingPaymentContent() {
 
   if (status === "completed") {
     return (
-      <div className="min-h-screen bg-brutal-beige flex items-center justify-center p-4">
-        <div className="bg-white border-4 border-black p-10 rounded-xl shadow-[8px_8px_0_0_#000] text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
+      <div className="min-h-screen bg-[#121316] flex items-center justify-center p-4">
+        <div className="bg-[#212328] border-4 border-black p-10 rounded-xl shadow-lg text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
           <CheckCircle className="w-20 h-20 mx-auto text-green-500 mb-6" />
-          <h1 className="text-3xl font-bold mb-3 text-black font-display">
+          <h1 className="text-3xl font-bold mb-3 text-white font-display">
             {t("payment_success")}
           </h1>
           <p className="text-gray-600 mb-6 font-medium">{t("redirecting")}</p>
-          <Loader2 className="w-8 h-8 mx-auto animate-spin text-brutal-blue" />
+          <Loader2 className="w-8 h-8 mx-auto animate-spin text-site-accent" />
         </div>
       </div>
     );
@@ -182,8 +182,8 @@ function PendingPaymentContent() {
 
   if (status === "failed") {
     return (
-      <div className="min-h-screen bg-brutal-beige flex items-center justify-center p-4">
-        <div className="bg-white border-4 border-black p-10 rounded-xl shadow-[8px_8px_0_0_#000] text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
+      <div className="min-h-screen bg-[#121316] flex items-center justify-center p-4">
+        <div className="bg-[#212328] border-4 border-black p-10 rounded-xl shadow-lg text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
           <XCircle className="w-20 h-20 mx-auto text-red-500 mb-6" />
           <h1 className="text-3xl font-bold mb-3 font-display">
             {t("payment_failed")}
@@ -200,7 +200,7 @@ function PendingPaymentContent() {
             </button>
             <button
               onClick={() => router.push("/dashboard/orders/")}
-              className="bg-white text-black px-6 py-4 rounded-lg font-bold border-2 border-black hover:bg-gray-50 transition-colors uppercase tracking-wider"
+              className="bg-[#212328] text-white px-6 py-4 rounded-lg font-bold border-2 border-black hover:bg-[#181A1D] transition-colors uppercase tracking-wider"
             >
               {t("view_orders")}
             </button>
@@ -215,11 +215,11 @@ function PendingPaymentContent() {
   const isTimeCritical = countdown < 120; // less than 2 mins
 
   return (
-    <div className="min-h-screen bg-brutal-beige flex items-center justify-center p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-[#121316] flex items-center justify-center p-4 md:p-8 font-sans">
       <div className="max-w-4xl w-full">
         {/* Header Section */}
         <div className="text-center mb-4">
-          <h1 className="text-3xl md:text-4xl font-bold font-display tracking-tight text-black mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold font-display tracking-tight text-white mb-2">
             การชำระเงิน
           </h1>
           <p className="text-base text-gray-600 font-medium">
@@ -228,39 +228,39 @@ function PendingPaymentContent() {
         </div>
 
         {/* Main Card */}
-        <div className="bg-white border-4 border-black rounded-xl shadow-[6px_6px_0_0_#000] overflow-hidden flex flex-col md:flex-row max-w-3xl mx-auto">
+        <div className="bg-[#212328] border-4 border-black rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row max-w-3xl mx-auto">
 
           {/* Left Column: Details & Timer */}
-          <div className="p-5 md:p-6 md:w-1/2 flex flex-col justify-between border-b-4 md:border-b-0 md:border-r-4 border-black bg-gray-50/50">
+          <div className="p-5 md:p-6 md:w-1/2 flex flex-col justify-between border-b-4 md:border-b-0 md:border-r-4 border-black bg-[#181A1D]/50">
             <div>
-              <div className="flex items-center gap-2 mb-4 text-brutal-blue">
+              <div className="flex items-center gap-2 mb-4 text-site-accent">
                 <ShieldCheck className="w-5 h-5" />
                 <span className="font-bold text-base">รายการที่ปลอดภัย</span>
               </div>
 
               <div className="space-y-4">
-                <div className="bg-white p-4 rounded-xl border-2 border-gray-200">
+                <div className="bg-[#212328] p-4 rounded-xl border-2 border-gray-200">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                     {t("order_id")}
                   </p>
-                  <p className="font-mono text-base font-semibold text-black break-all">
+                  <p className="font-mono text-base font-semibold text-white break-all">
                     {orderId}
                   </p>
                 </div>
 
                 {referenceNo && (
-                  <div className="bg-white p-4 rounded-xl border-2 border-gray-200 flex justify-between items-center group">
+                  <div className="bg-[#212328] p-4 rounded-xl border-2 border-gray-200 flex justify-between items-center group">
                     <div>
                       <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                         {t("reference_no")}
                       </p>
-                      <p className="font-mono text-base font-semibold text-black">
+                      <p className="font-mono text-base font-semibold text-white">
                         {referenceNo}
                       </p>
                     </div>
                     <button
                       onClick={copyReferenceNo}
-                      className="p-3 rounded-lg bg-gray-100 border-2 border-transparent hover:border-black transition-all text-black"
+                      className="p-3 rounded-lg bg-[#1A1C1E] border-2 border-transparent hover:border-black transition-all text-white"
                       title="คัดลอก"
                     >
                       {copied ? (
@@ -279,7 +279,7 @@ function PendingPaymentContent() {
                 {t("time_remaining")}
               </p>
               <div
-                className={`text-4xl md:text-5xl font-black font-mono text-center transition-colors duration-300 ${isTimeCritical ? "text-red-500 animate-pulse" : "text-black"}`}
+                className={`text-4xl md:text-5xl font-black font-mono text-center transition-colors duration-300 ${isTimeCritical ? "text-red-500 animate-pulse" : "text-white"}`}
               >
                 {formatCountdown(countdown)}
               </div>
@@ -287,12 +287,12 @@ function PendingPaymentContent() {
           </div>
 
           {/* Right Column: QR Code or Status */}
-          <div className="p-5 md:p-6 md:w-1/2 flex flex-col items-center justify-center bg-white relative">
+          <div className="p-5 md:p-6 md:w-1/2 flex flex-col items-center justify-center bg-[#212328] relative">
 
             {/* Status Indicator Bar */}
             <div className="absolute top-0 left-0 right-0 bg-blue-50 border-b-2 border-black px-3 py-2 flex items-center justify-center gap-2">
-              <RefreshCcw className="w-4 h-4 text-brutal-blue animate-spin" />
-              <span className="font-bold text-brutal-blue text-xs tracking-wide">
+              <RefreshCcw className="w-4 h-4 text-site-accent animate-spin" />
+              <span className="font-bold text-site-accent text-xs tracking-wide">
                 รอการชำระเงิน... กำลังตรวจสอบ
               </span>
             </div>
@@ -319,8 +319,8 @@ function PendingPaymentContent() {
               ) : (
                 // External redirect fallback (Rare case or direct URL redirect)
                 <div className="text-center py-12">
-                  <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-black">
-                    <Clock className="w-10 h-10 text-black" />
+                  <div className="w-24 h-24 bg-[#1A1C1E] rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-black">
+                    <Clock className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-3">
                     กำลังรอดำเนินการ...
@@ -335,7 +335,7 @@ function PendingPaymentContent() {
         </div>
 
         <div className="text-center mt-8 text-sm font-medium text-gray-500">
-          มีปัญหาการชำระเงิน? <a href="#" className="underline font-bold text-black border-b border-transparent hover:border-black">ติดต่อแอดมิน</a>
+          มีปัญหาการชำระเงิน? <a href="#" className="underline font-bold text-white border-b border-transparent hover:border-black">ติดต่อแอดมิน</a>
         </div>
       </div>
     </div>
@@ -347,8 +347,8 @@ export default function PendingPaymentPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-brutal-beige flex items-center justify-center">
-          <Loader2 className="w-10 h-10 animate-spin text-black" />
+        <div className="min-h-screen bg-[#121316] flex items-center justify-center">
+          <Loader2 className="w-10 h-10 animate-spin text-white" />
         </div>
       }
     >

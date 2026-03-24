@@ -23,23 +23,36 @@ const PublicSettingsContext = createContext<PublicSettingsContextValue | null>(
   null,
 );
 
+const SETTINGS_CACHE_KEY = "public_settings_cache";
+
 export function PublicSettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<PublicSiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadSettings = useCallback(async () => {
     try {
-      setLoading(true);
       const response = await publicSettingsApi.getPublicSettings();
       setSettings(response.data);
+      // Persist to localStorage for instant restore next time
+      try {
+        localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(response.data));
+      } catch { /* quota exceeded — ignore */ }
     } catch {
-      setSettings(null);
+      // keep existing settings if we have them
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // On mount: restore from cache first (instant), then fetch fresh data
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
+      if (cached) {
+        setSettings(JSON.parse(cached));
+        setLoading(false); // cached data available — no skeleton needed
+      }
+    } catch { /* ignore parse errors */ }
     loadSettings();
   }, [loadSettings]);
 

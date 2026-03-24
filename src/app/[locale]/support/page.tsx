@@ -48,14 +48,14 @@ export default function SupportPage() {
   // Support category tiles
   const supportCategories = [
     {
-      icon: <HelpCircle className="h-6 w-6 text-black" />,
+      icon: <HelpCircle className="h-6 w-6 text-white" />,
       title: t("categories.faq.title"),
       description: t("categories.faq.description"),
       link: "/support/faq",
       isExternal: false,
     },
     {
-      icon: <PanelRight className="h-6 w-6 text-black" />,
+      icon: <PanelRight className="h-6 w-6 text-white" />,
       title: t("categories.tickets.title"),
       description: t("categories.tickets.description"),
       link: "/support/tickets",
@@ -73,16 +73,16 @@ export default function SupportPage() {
     <div className="page-container bg-transparent">
       {/* Hero Section */}
       <div
-        className="bg-white border-[3px] border-black p-8 mb-8"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 mb-8"
+        
       >
         <div className="max-w-3xl mx-auto text-center">
           <div>
             <div className="flex items-center justify-center mb-4">
-              <div className="bg-brutal-blue p-3 border-[3px] border-black mr-3">
-                <Headphones className="h-8 w-8 text-black" />
+              <div className="bg-site-accent p-3 border border-site-border rounded-[12px] mr-3">
+                <Headphones className="h-8 w-8 text-white" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-black">
+              <h1 className="text-3xl md:text-4xl font-bold text-white">
                 {t("title")}
               </h1>
             </div>
@@ -96,27 +96,27 @@ export default function SupportPage() {
       {/* Support Options */}
       <section className="mb-12">
         <div className="flex items-center mb-6">
-          <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-          <h2 className="text-2xl font-bold text-black">{t("contact_methods")}</h2>
+          <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
+          <h2 className="text-2xl font-bold text-white">{t("contact_methods")}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {visibleSupportCategories.map((category, index) => (
             <div
               key={index}
-              className="bg-white border-[3px] border-black overflow-hidden group hover:-translate-y-1 transition-transform"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#1A1C20] border border-site-border rounded-[16px] overflow-hidden group hover:-translate-y-0.5 transition-transform"
+              
             >
               <Link href={category.link} className="block p-6">
                 <div className="flex items-start">
-                  <div className="bg-brutal-yellow p-3 border-[3px] border-black">
+                  <div className="bg-yellow-500 p-3 border border-site-border rounded-[12px]">
                     {category.icon}
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-black font-bold text-lg">
+                    <h3 className="text-white font-bold text-lg">
                       {category.title}
                     </h3>
                     <p className="text-gray-600 mt-1">{category.description}</p>
-                    <div className="flex items-center mt-3 text-black group-hover:text-gray-700 transition-colors">
+                    <div className="flex items-center mt-3 text-white group-hover:text-gray-700 transition-colors">
                       <span className="text-sm font-medium">{t("visit")}</span>
                       <ChevronRight size={16} className="ml-1" />
                     </div>
@@ -132,12 +132,12 @@ export default function SupportPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
           <div
-            className="bg-white border-[3px] border-black p-6 md:p-8"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8"
+            
           >
             <div className="flex items-center mb-4">
-              <Clock className="text-black mr-3" />
-              <h2 className="text-xl font-bold text-black">{t("working_hours.title")}</h2>
+              <Clock className="text-white mr-3" />
+              <h2 className="text-xl font-bold text-white">{t("working_hours.title")}</h2>
             </div>
 
             <div className="space-y-4">
@@ -145,14 +145,14 @@ export default function SupportPage() {
                 <h3 className="text-gray-600 font-medium mb-2">
                   {t("working_hours.mon_fri")}
                 </h3>
-                <p className="text-black">{t("working_hours.time_mon_fri")}</p>
+                <p className="text-white">{t("working_hours.time_mon_fri")}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-600 font-medium mb-2">
                   {t("working_hours.sat_sun")}
                 </h3>
-                <p className="text-black">{t("working_hours.time_sat_sun")}</p>
+                <p className="text-white">{t("working_hours.time_sat_sun")}</p>
               </div>
 
               <p className="text-gray-600 text-sm">{t("working_hours.timezone")}</p>
@@ -160,8 +160,8 @@ export default function SupportPage() {
 
             <div className="mt-6 border-t-2 border-gray-200 pt-6">
               <div className="flex items-center">
-                <AlertCircle size={18} className="text-black mr-2" />
-                <span className="text-black font-medium">
+                <AlertCircle size={18} className="text-white mr-2" />
+                <span className="text-white font-medium">
                   {t("urgent_help.title")}
                 </span>
               </div>
@@ -175,17 +175,17 @@ export default function SupportPage() {
         {/* Popular FAQ Topics - dynamic from API */}
         <div className="lg:col-span-2">
           <div
-            className="bg-white border-[3px] border-black p-6 md:p-8"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8"
+            
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center">
-                <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-                <h2 className="text-xl font-bold text-black">{t("common_issues.title")}</h2>
+                <span className="w-1.5 h-5 bg-pink-500 mr-2"></span>
+                <h2 className="text-xl font-bold text-white">{t("common_issues.title")}</h2>
               </div>
               <Link
                 href="/support/faq"
-                className="text-sm font-medium text-black hover:text-gray-600 flex items-center transition-colors"
+                className="text-sm font-medium text-white hover:text-gray-600 flex items-center transition-colors"
               >
                 {t("visit")}
                 <ChevronRight size={14} className="ml-0.5" />
@@ -202,15 +202,15 @@ export default function SupportPage() {
                   <Link
                     key={article.id}
                     href={`/support/faq`}
-                    className="bg-brutal-gray hover:bg-gray-200 border-[2px] border-black p-4 flex justify-between items-center transition-colors group"
+                    className="bg-[#2A2C30] hover:bg-site-border/30 border border-site-border p-4 flex justify-between items-center transition-colors group"
                   >
-                    <span className="text-black text-sm line-clamp-1 flex-1">{article.title}</span>
+                    <span className="text-white text-sm line-clamp-1 flex-1">{article.title}</span>
                     <div className="flex items-center gap-2 ml-2 shrink-0">
                       <span className="text-[10px] text-gray-500 flex items-center">
                         <Eye size={10} className="mr-0.5" />
                         {article.viewCount || 0}
                       </span>
-                      <ChevronRight size={18} className="text-gray-600 group-hover:text-black transition-colors" />
+                      <ChevronRight size={18} className="text-gray-600 group-hover:text-white transition-colors" />
                     </div>
                   </Link>
                 ))}

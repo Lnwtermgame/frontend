@@ -121,27 +121,27 @@ export default async function CmsPage({ params }: CmsPageProps) {
 
   return (
     <div className="page-container">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10">
+      <div className="max-w-4xl mx-auto bg-[#212328] rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             {page.title}
           </h1>
-          <div className="h-1 w-20 bg-brutal-pink"></div>
+          <div className="h-1 w-20 bg-pink-500"></div>
         </div>
 
         {/* Content */}
         <article
           className="prose prose-lg max-w-none
-            prose-headings:text-black prose-headings:font-bold
+            prose-headings:text-white prose-headings:font-bold
             prose-p:text-gray-700
-            prose-a:text-brutal-blue prose-a:no-underline hover:prose-a:underline
-            prose-strong:text-black
+            prose-a:text-site-accent prose-a:no-underline hover:prose-a:underline
+            prose-strong:text-white
             prose-ul:text-gray-700 prose-ol:text-gray-700
-            prose-li:marker:text-brutal-pink
-            prose-blockquote:border-l-4 prose-blockquote:border-brutal-pink prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4
+            prose-li:marker:text-pink-500
+            prose-blockquote:border-l-4 prose-blockquote:border-pink-500 prose-blockquote:bg-[#181A1D] prose-blockquote:py-2 prose-blockquote:px-4
             prose-table:border-[3px] prose-table:border-black
-            prose-th:bg-gray-100 prose-th:border-[2px] prose-th:border-black prose-th:p-3
+            prose-th:bg-[#1A1C1E] prose-th:border-[2px] prose-th:border-black prose-th:p-3
             prose-td:border-[2px] prose-td:border-black prose-td:p-3"
         >
           <ReactMarkdown
@@ -160,12 +160,12 @@ export default async function CmsPage({ params }: CmsPageProps) {
                 <ol className="list-decimal pl-6 mb-4 space-y-1">{children}</ol>
               ),
               h2: ({ children }) => (
-                <h2 className="text-2xl font-bold text-black mt-8 mb-3">
+                <h2 className="text-2xl font-bold text-white mt-8 mb-3">
                   {children}
                 </h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-xl font-bold text-black mt-6 mb-2">
+                <h3 className="text-xl font-bold text-white mt-6 mb-2">
                   {children}
                 </h3>
               ),

@@ -11,10 +11,10 @@ export default function DirectTopupPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-transparent flex items-center justify-center">
-          <div className="flex items-center gap-3">
-            <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
-            <span className="text-gray-900 font-bold">{t("loading")}</span>
+        <div className="min-h-[60vh] bg-transparent flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-10 h-10 text-site-accent animate-spin" />
+            <span className="text-gray-400 font-medium tracking-wide uppercase text-sm">{t("loading")}</span>
           </div>
         </div>
       }

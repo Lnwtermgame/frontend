@@ -142,16 +142,16 @@ const getOrderStatusKey = (status: string): string => {
 const getOrderStatusClassName = (status: string) => {
   switch (status) {
     case "COMPLETED":
-      return "bg-green-100 text-green-700 border-green-500";
+      return "bg-green-500/10 text-green-400 border-green-500/30/30";
     case "PENDING":
-      return "bg-yellow-100 text-yellow-700 border-yellow-500";
+      return "bg-yellow-500/10 text-yellow-400 border-yellow-500/30/30";
     case "PROCESSING":
-      return "bg-blue-100 text-blue-700 border-blue-500";
+      return "bg-[#181A1D]0/10 text-blue-400 border-blue-500/30";
     case "CANCELLED":
     case "FAILED":
-      return "bg-red-100 text-red-700 border-red-500";
+      return "bg-red-500/10 text-red-400 border-red-500/30/30";
     default:
-      return "bg-gray-100 text-gray-700 border-gray-500";
+      return "bg-[#1A1C1E] text-gray-300 border-gray-500";
   }
 };
 
@@ -333,8 +333,8 @@ export default function AdminAnalyticsPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-white border-[2px] border-black p-2"
-      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+      className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2"
+      
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -345,7 +345,7 @@ export default function AdminAnalyticsPage() {
         </div>
         <div
           className={`flex items-center text-[9px] font-medium ${
-            change >= 0 ? "text-green-600" : "text-red-600"
+            change>= 0 ? "text-green-600" : "text-red-600"
           }`}
         >
           {change >= 0 ? (
@@ -356,8 +356,8 @@ export default function AdminAnalyticsPage() {
           {formatPercent(change)}%
         </div>
       </div>
-      <h3 className="text-gray-600 text-[9px] font-medium">{title}</h3>
-      <p className="text-base font-bold text-black mt-0.5">{value}</p>
+      <h3 className="text-gray-400 text-[9px] font-medium">{title}</h3>
+      <p className="text-base font-bold text-white mt-0.5">{value}</p>
     </motion.div>
   );
 
@@ -365,7 +365,7 @@ export default function AdminAnalyticsPage() {
     return (
       <AdminLayout title="วิเคราะห์">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -375,7 +375,7 @@ export default function AdminAnalyticsPage() {
     return (
       <AdminLayout title="วิเคราะห์">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -386,15 +386,14 @@ export default function AdminAnalyticsPage() {
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center">
-            <span className="w-1.5 h-3.5 bg-brutal-pink mr-2"></span>
-            <h1 className="text-base font-bold text-black">วิเคราะห์</h1>
+            <span className="w-1.5 h-3.5 bg-pink-500 mr-2"></span>
+            <h1 className="text-base font-bold text-white">วิเคราะห์</h1>
           </div>
           <div className="flex items-center gap-2">
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-white border-[2px] border-gray-300 text-black px-2 py-1 text-[10px] focus:border-black focus:outline-none"
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white px-2 py-1 text-[10px] focus:border-site-accent focus:outline-none">
               <option value="24h">24 ชั่วโมง</option>
               <option value="7d">7 วัน</option>
               <option value="30d">30 วัน</option>
@@ -402,18 +401,14 @@ export default function AdminAnalyticsPage() {
             </select>
             <button
               onClick={fetchAnalyticsData}
-              className="bg-white text-black border-[2px] border-black px-2 py-1 text-[10px] hover:bg-gray-50 transition-colors flex items-center font-medium"
-              style={{ boxShadow: "1px 1px 0 0 #000000" }}
-            >
+              className="bg-[#212328] text-white border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-[10px] hover:bg-[#212328]/5 transition-colors flex items-center font-medium">
               <RefreshCw className="h-3 w-3 mr-1" />
               รีเฟรช
             </button>
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="bg-black text-white border-[2px] border-black px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70"
-              style={{ boxShadow: "1px 1px 0 0 #000000" }}
-            >
+              className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70">
               <Download className="h-3 w-3 mr-1" />
               {isExporting ? "กำลังส่งออก..." : "ส่งออก"}
             </button>
@@ -421,7 +416,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {error && (
-          <div className="bg-red-100 border-[2px] border-red-500 text-red-700 px-3 py-2 text-[10px]">
+          <div className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 text-red-400 px-3 py-2 text-[10px]">
             ไม่สามารถโหลดข้อมูลได้: {error}
           </div>
         )}
@@ -432,43 +427,43 @@ export default function AdminAnalyticsPage() {
             value={formatCurrency(statValues.revenue.current)}
             change={statValues.revenue.change}
             icon={DollarSign}
-            color="bg-brutal-pink"
+            color="bg-pink-500"
           />
           <StatCard
             title="คำสั่งซื้อ"
             value={statValues.orders.current.toLocaleString()}
             change={statValues.orders.change}
             icon={ShoppingCart}
-            color="bg-brutal-yellow"
+            color="bg-orange-500/10"
           />
           <StatCard
             title="ลูกค้าใหม่"
             value={statValues.customers.current.toLocaleString()}
             change={statValues.customers.change}
             icon={Users}
-            color="bg-brutal-blue"
+            color="bg-site-accent"
           />
           <StatCard
             title="สินค้าทั้งหมด"
             value={statValues.products.current.toLocaleString()}
             change={statValues.products.change}
             icon={Package}
-            color="bg-brutal-green"
+            color="bg-green-500"
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           <motion.div
-            className="lg:col-span-2 bg-white border-[2px] border-black p-2"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+            className="lg:col-span-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2"
+            
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
-                <BarChart3 className="h-3 w-3 text-brutal-pink mr-1.5" />
-                <h3 className="text-xs font-semibold text-black">ยอดขาย</h3>
+                <BarChart3 className="h-3 w-3 text-pink-400 mr-1.5" />
+                <h3 className="text-xs font-semibold text-white">ยอดขาย</h3>
               </div>
             </div>
             <div className="h-40 flex items-end justify-between gap-2">
@@ -483,10 +478,9 @@ export default function AdminAnalyticsPage() {
                 return (
                   <div
                     key={item.key}
-                    className="flex-1 h-full flex flex-col items-center justify-end"
-                  >
+                    className="flex-1 h-full flex flex-col items-center justify-end">
                     <div
-                      className={`w-full bg-brutal-pink transition-all duration-500 ${
+                      className={`w-full bg-pink-500 transition-all duration-500 ${
                         item.revenue > 0 ? "min-h-[2px]" : ""
                       }`}
                       style={{ height: `${height}%` }}
@@ -507,38 +501,36 @@ export default function AdminAnalyticsPage() {
           </motion.div>
 
           <motion.div
-            className="bg-white border-[2px] border-black p-2"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+            className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2"
+            
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
             <div className="flex items-center mb-2">
-              <Package className="h-3 w-3 text-brutal-blue mr-1.5" />
-              <h3 className="text-xs font-semibold text-black">สินค้าขายดี</h3>
+              <Package className="h-3 w-3 text-site-accent mr-1.5" />
+              <h3 className="text-xs font-semibold text-white">สินค้าขายดี</h3>
             </div>
             <div className="space-y-1.5">
               {topProducts.map((product, index) => (
                 <div
                   key={product.id}
-                  className="flex items-center justify-between p-1.5 bg-gray-50 border-[1px] border-gray-200"
-                >
+                  className="flex items-center justify-between p-1.5 bg-[#181A1D] border-[1px] border-site-border/30">
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
                         index === 0
-                          ? "bg-yellow-400 text-black"
+                          ? "bg-yellow-400 text-white"
                           : index === 1
-                            ? "bg-gray-300 text-black"
+                            ? "bg-gray-300 text-white"
                             : index === 2
-                              ? "bg-orange-300 text-black"
-                              : "bg-gray-200 text-gray-600"
-                      }`}
-                    >
+                              ? "bg-orange-300 text-white"
+                              : "bg-site-border/30 text-gray-400"
+                      }`}>
                       {index + 1}
                     </span>
                     <div>
-                      <p className="text-[10px] font-medium text-black">
+                      <p className="text-[10px] font-medium text-white">
                         {product.name}
                       </p>
                       <p className="text-[8px] text-gray-500">
@@ -546,7 +538,7 @@ export default function AdminAnalyticsPage() {
                       </p>
                     </div>
                   </div>
-                  <span className="text-[9px] font-semibold text-black">
+                  <span className="text-[9px] font-semibold text-white">
                     {formatCurrency(product.revenue)}
                   </span>
                 </div>
@@ -561,69 +553,68 @@ export default function AdminAnalyticsPage() {
         </div>
 
         <motion.div
-          className="bg-white border-[2px] border-black overflow-hidden"
-          style={{ boxShadow: "2px 2px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <div className="p-2 border-b-[2px] border-black bg-gray-50">
+          <div className="p-2 border-b-[2px] border-site-border/50 bg-[#181A1D]">
             <div className="flex items-center">
-              <Calendar className="h-3 w-3 text-brutal-purple mr-1.5" />
-              <h3 className="text-xs font-semibold text-black">
+              <Calendar className="h-3 w-3 text-purple-400 mr-1.5" />
+              <h3 className="text-xs font-semibold text-white">
                 กิจกรรมล่าสุด
               </h3>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b-[1px] border-gray-200">
+              <thead className="bg-[#181A1D] border-b-[1px] border-site-border/30">
                 <tr>
-                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-white">
                     วันที่
                   </th>
-                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-white">
                     รายการ
                   </th>
-                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-white">
                     ลูกค้า
                   </th>
-                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-black">
+                  <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-white">
                     สถานะ
                   </th>
-                  <th className="text-right py-1.5 px-2 text-[9px] font-semibold text-black">
+                  <th className="text-right py-1.5 px-2 text-[9px] font-semibold text-white">
                     จำนวน
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-site-border/30">
                 {data.recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="py-1.5 px-2 text-[9px] text-gray-600">
+                  <tr key={order.id} className="hover:bg-[#212328]/5">
+                    <td className="py-1.5 px-2 text-[9px] text-gray-400">
                       {new Date(order.createdAt).toLocaleDateString("th-TH")}
                     </td>
-                    <td className="py-1.5 px-2 text-[9px] text-black font-medium">
+                    <td className="py-1.5 px-2 text-[9px] text-white font-medium">
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="underline decoration-transparent hover:decoration-black transition-all"
+                        className="underline decoration-transparent hover:decoration-white transition-all"
                         title={`ดูรายละเอียดคำสั่งซื้อ ${order.orderNumber}`}
                       >
                         คำสั่งซื้อ #{order.orderNumber}
                       </Link>
                     </td>
-                    <td className="py-1.5 px-2 text-[9px] text-gray-600">
+                    <td className="py-1.5 px-2 text-[9px] text-gray-400">
                       {order.user.username}
                     </td>
                     <td className="py-1.5 px-2">
                       <span
                         className={`px-1 py-0.5 text-[8px] font-medium rounded-full border-[1px] ${getOrderStatusClassName(
                           order.status,
-                        )}`}
-                      >
+                        )}`}>
                         {t(`orders.status.${getOrderStatusKey(order.status)}`)}
                       </span>
                     </td>
-                    <td className="py-1.5 px-2 text-[9px] text-black text-right font-medium">
+                    <td className="py-1.5 px-2 text-[9px] text-white text-right font-medium">
                       {formatCurrency(order.finalAmount)}
                     </td>
                   </tr>
@@ -632,8 +623,7 @@ export default function AdminAnalyticsPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-3 px-2 text-center text-[9px] text-gray-500"
-                    >
+                      className="py-3 px-2 text-center text-[9px] text-gray-500">
                       {t("dashboard.no_data")}
                     </td>
                   </tr>

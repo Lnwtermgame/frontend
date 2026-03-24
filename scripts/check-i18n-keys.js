@@ -85,10 +85,10 @@ function extractKeysFromSource(content) {
   const keys = new Set();
 
   // Match t("key") or t('key') - but not t("key.something" + variable)
-  const singleQuoteRegex = /t\(\s*['"]([^'"$+{}]+)['"]\s*[,\)]/g;
+  const singleQuoteRegex = /(?:^|[^\w])t\(\s*['"]([^'"$+{}]+)['"]\s*[,\)]/g;
 
   // Match t(`key`) for template literals without variables
-  const templateRegex = /t\(\s*`([^${}`]+)`\s*\)/g;
+  const templateRegex = /(?:^|[^\w])t\(\s*`([^${}`]+)`\s*\)/g;
 
   // Match rich() calls too
   const richRegex = /rich\(\s*['"]([^'"$+{}]+)['"]\s*[,\)]/g;

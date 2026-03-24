@@ -245,11 +245,11 @@ export function SmartSearchBar({
     switch (type) {
       case "game":
         return (
-          <Gamepad2 size={16} className="text-brutal-pink" aria-hidden="true" />
+          <Gamepad2 size={16} className="text-pink-500" aria-hidden="true" />
         );
       case "coupon":
         return (
-          <Tag size={16} className="text-brutal-yellow" aria-hidden="true" />
+          <Tag size={16} className="text-yellow-500" aria-hidden="true" />
         );
       case "history":
         return <Clock size={16} className="text-gray-400" aria-hidden="true" />;
@@ -297,7 +297,7 @@ export function SmartSearchBar({
               }
             }}
             onKeyDown={handleKeyDown}
-            className="bg-white w-full border-[2px] border-gray-300 rounded-xl pl-11 pr-10 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+            className="bg-[#212328] w-full border-[2px] border-gray-300 rounded-xl pl-11 pr-10 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
             aria-expanded={isDropdownOpen}
           />
           {query && (
@@ -309,7 +309,7 @@ export function SmartSearchBar({
             >
               <X
                 size={18}
-                className="text-gray-400 hover:text-black transition-colors"
+                className="text-gray-400 hover:text-white transition-colors"
               />
             </button>
           )}
@@ -319,7 +319,7 @@ export function SmartSearchBar({
       {/* Dropdown Results */}
       {isDropdownOpen && (query.trim() || recentSearches.length > 0) && (
         <div
-          className="absolute mt-2 w-full bg-white border-[3px] border-black rounded-xl z-50 overflow-hidden transition-opacity duration-200"
+          className="absolute mt-2 w-full bg-[#212328] border border-site-border/30 rounded-[16px] rounded-xl z-50 overflow-hidden transition-opacity duration-200"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <div className="p-1 max-h-80 overflow-y-auto">
@@ -328,7 +328,7 @@ export function SmartSearchBar({
               <div className="p-4 flex items-center justify-center">
                 <Loader2
                   size={24}
-                  className="text-brutal-pink animate-spin"
+                  className="text-pink-500 animate-spin"
                 />
               </div>
             )}
@@ -360,13 +360,13 @@ export function SmartSearchBar({
                   >
                     <div
                       className={cn(
-                        "px-3 py-2 flex items-center hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors",
+                        "px-3 py-2 flex items-center hover:bg-yellow-500/30 rounded-lg mx-1 cursor-pointer transition-colors",
                         index === selectedResultIndex &&
-                        "bg-brutal-yellow/30",
+                        "bg-yellow-500/30",
                       )}
                     >
                       {result.image ? (
-                        <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-gray-100 flex-shrink-0 border-[2px] border-black">
+                        <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-[#1A1C1E] flex-shrink-0 border-[2px] border-black">
                           <img
                             src={result.image}
                             alt={result.title}
@@ -375,14 +375,14 @@ export function SmartSearchBar({
                         </div>
                       ) : (
                         <div
-                          className="h-10 w-10 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
+                          className="h-10 w-10 rounded-lg bg-[#1A1C1E] border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
                           aria-hidden="true"
                         >
                           {getIconForResult(result.type)}
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm text-black font-bold truncate thai-font">
+                        <div className="text-sm text-white font-bold truncate thai-font">
                           {result.title}
                         </div>
                         {result.subtitle && (
@@ -406,21 +406,21 @@ export function SmartSearchBar({
                 {recentSearches.map((search, index) => (
                   <div
                     key={`recent-${index}`}
-                    className="px-3 py-2 hover:bg-brutal-yellow/30 rounded-lg mx-1 cursor-pointer transition-colors flex items-center justify-between"
+                    className="px-3 py-2 hover:bg-yellow-500/30 rounded-lg mx-1 cursor-pointer transition-colors flex items-center justify-between"
                     onClick={() => {
                       setQuery(search);
                       performSearch(search);
                     }}
                   >
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-lg bg-brutal-gray border-[2px] border-black flex items-center justify-center mr-2">
+                      <div className="w-8 h-8 rounded-lg bg-[#1A1C1E] border-[2px] border-black flex items-center justify-center mr-2">
                         <Clock
                           size={14}
                           className="text-gray-500"
                           aria-hidden="true"
                         />
                       </div>
-                      <span className="text-sm text-black font-medium">
+                      <span className="text-sm text-white font-medium">
                         {search}
                       </span>
                     </div>
@@ -442,7 +442,7 @@ export function SmartSearchBar({
                           );
                         }
                       }}
-                      className="text-gray-400 hover:text-brutal-pink transition-colors"
+                      className="text-gray-400 hover:text-pink-500 transition-colors"
                       aria-label={t("aria_label_remove_history")}
                     >
                       <X size={14} aria-hidden="true" />
@@ -464,7 +464,7 @@ export function SmartSearchBar({
                   router.push(`/games?search=${encodeURIComponent(query)}`);
                   setIsDropdownOpen(false);
                 }}
-                className="text-sm text-black hover:text-brutal-pink font-bold w-full text-center thai-font transition-colors"
+                className="text-sm text-white hover:text-pink-500 font-bold w-full text-center thai-font transition-colors"
               >
                 {t("view_all_results_for", { query })}
               </button>

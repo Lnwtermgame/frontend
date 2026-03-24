@@ -173,7 +173,7 @@ export default function CheckoutPage() {
     return (
       <div className="page-container flex items-center justify-center bg-transparent h-96">
         <div className="flex flex-col items-center">
-          <Loader2 className="w-12 h-12 text-brutal-pink animate-spin" />
+          <Loader2 className="w-12 h-12 text-pink-500 animate-spin" />
           <p className="mt-4 text-gray-600">{t("loading")}</p>
         </div>
       </div>
@@ -184,11 +184,11 @@ export default function CheckoutPage() {
     return (
       <div className="page-container flex items-center justify-center bg-transparent h-[calc(100vh-200px)]">
         <div
-          className="bg-white border-[3px] border-black p-8 text-center max-w-md w-full mx-4"
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-8 text-center max-w-md w-full mx-4"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <ShoppingCart className="mx-auto text-gray-600 w-12 h-12 mb-4" />
-          <h2 className="text-2xl font-black text-black mb-2">
+          <h2 className="text-2xl font-black text-white mb-2">
             {t("empty_cart")}
           </h2>
           <p className="text-gray-600 mb-6">
@@ -210,8 +210,8 @@ export default function CheckoutPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-black text-black flex items-center">
-            <span className="w-2 h-6 bg-brutal-pink mr-3"></span>
+          <h1 className="text-2xl font-black text-white flex items-center">
+            <span className="w-2 h-6 bg-pink-500 mr-3"></span>
             {t("title")}
           </h1>
           <p className="text-gray-600 ml-5">
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
         </div>
         <Link
           href="/games"
-          className="text-gray-600 hover:text-black transition-colors flex items-center gap-2 font-medium"
+          className="text-gray-600 hover:text-white transition-colors flex items-center gap-2 font-medium"
         >
           <ChevronLeft className="w-5 h-5" />
           {t("continue_shopping")}
@@ -235,12 +235,12 @@ export default function CheckoutPage() {
               key={item.productId}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border-[3px] border-black p-4 md:p-6"
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4 md:p-6"
               style={{ boxShadow: "4px 4px 0 0 #000000" }}
             >
               {/* Item Header */}
               <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
-                <div className="w-20 h-20 bg-gray-100 border-2 border-gray-200 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
+                <div className="w-20 h-20 bg-[#1A1C1E] border-2 border-gray-200 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                   {item.image ? (
                     <img
                       src={item.image}
@@ -256,13 +256,13 @@ export default function CheckoutPage() {
                 <div className="flex-1 w-full text-center sm:text-left">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-lg font-bold text-black line-clamp-1">
+                      <h3 className="text-lg font-bold text-white line-clamp-1">
                         {item.name}
                       </h3>
                       <span
                         className={`inline-flex items-center gap-1 text-sm mt-1 font-medium ${item.productType === "DIRECT_TOPUP"
-                            ? "text-brutal-pink"
-                            : "text-brutal-blue"
+                            ? "text-pink-500"
+                            : "text-site-accent"
                           }`}
                       >
                         {item.productType === "DIRECT_TOPUP" ? (
@@ -308,7 +308,7 @@ export default function CheckoutPage() {
               <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t-2 border-gray-200 gap-4">
                 <div className="flex items-center gap-4">
                   <span className="text-gray-600 font-bold">{t("quantity")}</span>
-                  <div className="flex items-center border-[2px] border-black bg-white">
+                  <div className="flex items-center border-[2px] border-black bg-[#212328]">
                     <button
                       type="button"
                       onClick={() =>
@@ -316,11 +316,11 @@ export default function CheckoutPage() {
                       }
                       disabled={item.quantity <= 1}
                       aria-label="Decrease quantity"
-                      className="px-3 py-1 text-black hover:bg-gray-100 disabled:opacity-50 transition-colors border-r border-gray-300"
+                      className="px-3 py-1 text-white hover:bg-[#1A1C1E] disabled:opacity-50 transition-colors border-r border-gray-300"
                     >
                       <Minus className="w-4 h-4" aria-hidden="true" />
                     </button>
-                    <span className="px-4 text-black font-bold min-w-[3rem] text-center">
+                    <span className="px-4 text-white font-bold min-w-[3rem] text-center">
                       {item.quantity}
                     </span>
                     <button
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
                         updateQuantity(item.productId, item.quantity + 1)
                       }
                       aria-label="Increase quantity"
-                      className="px-3 py-1 text-black hover:bg-gray-100 transition-colors border-l border-gray-300"
+                      className="px-3 py-1 text-white hover:bg-[#1A1C1E] transition-colors border-l border-gray-300"
                     >
                       <Plus className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -340,7 +340,7 @@ export default function CheckoutPage() {
                     {t("total")}
                   </span>
                   <div>
-                    <span className="text-2xl font-black text-black block">
+                    <span className="text-2xl font-black text-white block">
                       ฿{(item.price * item.quantity).toFixed(2)}
                     </span>
                     {item.quantity > 1 && (
@@ -358,11 +358,11 @@ export default function CheckoutPage() {
         {/* Order Summary */}
         <div className="lg:col-span-1">
           <div
-            className="bg-white border-[3px] border-black p-6 sticky top-24"
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6 sticky top-24"
             style={{ boxShadow: "4px 4px 0 0 #000000" }}
           >
-            <h2 className="text-xl font-black text-black mb-6 flex items-center">
-              <span className="w-1.5 h-5 bg-brutal-yellow mr-2"></span>
+            <h2 className="text-xl font-black text-white mb-6 flex items-center">
+              <span className="w-1.5 h-5 bg-yellow-500 mr-2"></span>
               {t("order_summary")}
             </h2>
 
@@ -375,7 +375,7 @@ export default function CheckoutPage() {
                   <span className="text-gray-600 truncate max-w-[60%]">
                     {item.name} x {item.quantity}
                   </span>
-                  <span className="text-black font-bold">
+                  <span className="text-white font-bold">
                     ฿{(item.price * item.quantity).toFixed(2)}
                   </span>
                 </div>
@@ -384,10 +384,10 @@ export default function CheckoutPage() {
 
             <div className="border-t-2 border-gray-200 pt-4 mb-6">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold text-black">
+                <span className="text-lg font-bold text-white">
                   {t("grand_total")}
                 </span>
-                <span className="text-2xl font-black text-brutal-pink">
+                <span className="text-2xl font-black text-pink-500">
                   ฿{getTotalPrice().toFixed(2)}
                 </span>
               </div>
@@ -433,7 +433,7 @@ export default function CheckoutPage() {
             <div className="mt-4 text-center">
               <p className="text-gray-500 text-xs">
                 {t("terms_agreement")}{" "}
-                <Link href="/terms" className="underline hover:text-black">
+                <Link href="/terms" className="underline hover:text-white">
                   {t("terms_of_service")}
                 </Link>
               </p>

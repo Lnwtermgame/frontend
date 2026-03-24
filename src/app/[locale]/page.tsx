@@ -1,915 +1,555 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
+import { useState, useEffect } from "react";
+import { Link } from "@/i18n/routing";
 import {
-  Gamepad2,
-  Search,
-  Clock,
-  Zap,
-  Sparkles,
-  ChevronRight,
-  ChevronLeft,
-  CreditCard,
+  Flame, ChevronRight, ChevronLeft, Zap, Gift,
   ShieldCheck,
-  Headphones,
-  Gift,
-  Star,
-  Flame,
-  Loader2,
+  Award, Headphones, PackageOpen, Newspaper, Tag,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { productApi, Product } from "@/lib/services/product-api";
-import { cmsApi, NewsArticleListItem } from "@/lib/services/cms-api";
-import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { useTranslations } from "next-intl";
+import { usePublicSettings } from "@/lib/context/public-settings-context";
+import { cmsApi, type NewsArticle } from "@/lib/services/cms-api";
+import { productApi, type Product } from "@/lib/services/product-api";
 
-interface FeaturedProduct {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  publisher: string;
-  mainImage: string;
-  price: number;
-  originalPrice?: number;
-  discountPercent?: number;
-  region: string;
-  autoDelivery: boolean;
-  salesCount: number;
-  isBestseller: boolean;
-  isFeatured: boolean;
-  productType: "CARD" | "DIRECT_TOPUP" | "MOBILE_RECHARGE";
-}
-
-function getCategoryIcon(category: string) {
-  const key = category?.toLowerCase() || "";
-  if (key.includes("popular") || key.includes("hot"))
-    return <Flame size={14} className="text-brutal-pink" />;
-  if (key.includes("fps") || key.includes("shooter"))
-    return <Gamepad2 size={14} className="text-brutal-blue" />;
-  if (key.includes("moba"))
-    return <Gamepad2 size={14} className="text-brutal-green" />;
-  if (key.includes("card") || key.includes("gift"))
-    return <CreditCard size={14} className="text-brutal-yellow" />;
-  return <Gamepad2 size={14} className="text-gray-500" />;
-}
-
-function transformProductToFeatured(product: Product): FeaturedProduct {
-  const types = product.types || [];
-
-  const validPrices = types
-    .filter((t) => t.displayPrice && Number(t.displayPrice) > 0)
-    .map((t) => Number(t.displayPrice));
-  const startingPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0;
-
-  const originPrices = types
-    .filter((t) => t.originPrice && Number(t.originPrice) > 0)
-    .map((t) => Number(t.originPrice));
-  const originalPrice =
-    originPrices.length > 0 ? Math.max(...originPrices) : undefined;
-
-  const discountRates = types
-    .map((t) =>
-      typeof t.discountRate === "number" ? Number(t.discountRate) : undefined,
-    )
-    .filter((v): v is number => v !== undefined && !Number.isNaN(v));
-  const discountPercent =
-    discountRates.length > 0 ? Math.max(...discountRates) : undefined;
-
-  const category = product.category?.name || product.category?.slug || "Game";
-  const publisher =
-    product.gameDetails?.publisher ||
-    product.gameDetails?.developer ||
-    category;
-  const region = product.gameDetails?.region || "Global";
-
-  return {
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-    category,
-    publisher,
-    mainImage:
-      product.imageUrl ||
-      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
-    price: startingPrice,
-    originalPrice:
-      originalPrice && originalPrice > startingPrice
-        ? originalPrice
-        : undefined,
-    discountPercent,
-    region,
-    autoDelivery: product.gameDetails?.autoDelivery ?? true,
-    salesCount: product.salesCount || 0,
-    isBestseller: product.isBestseller || false,
-    isFeatured: product.isFeatured || false,
-    productType: product.productType,
-  };
-}
-
-const QUICK_ACTION_ICON_MAP = {
-  "credit-card": CreditCard,
-  gift: Gift,
-  star: Star,
-  headphones: Headphones,
-} as const;
-const QUICK_ACTION_COLOR_MAP = {
-  yellow: "bg-brutal-yellow",
-  pink: "bg-brutal-pink",
-  green: "bg-brutal-green",
-  blue: "bg-brutal-blue",
-} as const;
-const TRUST_BADGE_ICON_MAP = {
-  shield: ShieldCheck,
-  headphones: Headphones,
-  zap: Zap,
-} as const;
+const gameImg = (label: string, bg: string, fg: string, w = 500, h = 500) =>
+  `https://placehold.co/${w}x${h}/${bg}/${fg}?text=${encodeURIComponent(label)}&font=montserrat`;
 
 export default function HomePage() {
-  const t = useTranslations("Home");
+  const t = useTranslations();
+  const { settings, loading: settingsLoading } = usePublicSettings();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [activeCategory, setActiveCategory] = useState("all");
-  const { settings: publicSettings, loading: settingsLoading } =
-    usePublicSettings();
-  const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>(
-    [],
-  );
-  const [newsArticles, setNewsArticles] = useState<NewsArticleListItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [newsItems, setNewsItems] = useState<NewsArticle[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [discountedProducts, setDiscountedProducts] = useState<Array<{
+    id: string; slug: string; name: string; typeName: string;
+    discount: number; img: string;
+  }>>([]);
+  const [dealsLoading, setDealsLoading] = useState(true);
 
-  const heroSlides = useMemo(() => {
-    if (publicSettings?.homepage?.heroSlides?.length) {
-      return publicSettings.homepage.heroSlides;
-    }
-    return [
-      {
-        id: "hero-default-1",
-        title: t("hero.default_1_title"),
-        subtitle: t("hero.default_1_subtitle"),
-        image: "https://placehold.co/1200x400/FFD93D/000000?text=Promotion",
-        link: "/promotions/1",
-        color: "yellow",
-        badgeText: t("hero.badge_promo"),
-      },
-      {
-        id: "hero-default-2",
-        title: t("hero.default_2_title"),
-        subtitle: t("hero.default_2_subtitle"),
-        image: "https://placehold.co/1200x400/FF6B9D/ffffff?text=Extra+Credit",
-        link: "/promotions/2",
-        color: "pink",
-        badgeText: t("hero.badge_promo"),
-      },
+  const defaultSlides = [
+    {
+      id: "1",
+      title: "Zenless Zone Zero",
+      subtitle: t("hero_zzz_subtitle"),
+      highlightText: t("hero_zzz_highlight_text"),
+      highlight: "30%",
+      image: "https://placehold.co/800x600/FFFFFF/000000?text=ZZZ+Character+Art",
+      btnText: t("hero_btn_text"),
+      href: "/games/zzz",
+      bgRight: "md:bg-gradient-to-r md:from-[#141517] md:to-[#222427]",
+    },
+    {
+      id: "2",
+      title: "Genshin Impact",
+      subtitle: t("hero_genshin_subtitle"),
+      highlightText: t("hero_genshin_highlight_text"),
+      highlight: "20%",
+      image: "https://placehold.co/800x600/FFFFFF/000000?text=Genshin+Character+Art",
+      btnText: t("hero_btn_text"),
+      href: "/games/genshin",
+      bgRight: "md:bg-gradient-to-r md:from-[#141517] md:to-[#222427]",
+    },
+  ];
+
+  const heroSlides = settings?.homepage?.heroSlides?.length
+    ? settings.homepage.heroSlides.map((slide) => {
+      let gradientClass = "md:bg-gradient-to-r md:from-[#141517] md:to-[#222427]";
+      if (slide.color === "yellow") gradientClass = "md:bg-gradient-to-r md:from-[#1A180E] md:to-[#2F2913]";
+      if (slide.color === "blue") gradientClass = "md:bg-gradient-to-r md:from-[#0E1528] md:to-[#172445]";
+      if (slide.color === "pink") gradientClass = "md:bg-gradient-to-r md:from-[#280E1A] md:to-[#45172D]";
+      if (slide.color === "green") gradientClass = "md:bg-gradient-to-r md:from-[#0E281A] md:to-[#17452D]";
+
+      return {
+        id: slide.id,
+        title: slide.title,
+        subtitle: slide.subtitle || "",
+        highlightText: slide.badgeText ? "HOT" : "",
+        highlight: slide.badgeText || "",
+        image: slide.image,
+        btnText: settings.homepage.sectionLabels?.heroButtonText || t("hero_btn_text"),
+        href: slide.link || "/games",
+        bgRight: gradientClass,
+      };
+    })
+    : defaultSlides;
+
+
+
+  const dealColors = [
+    "from-[#3D252E] via-[#2C2D30] to-[#2C2D30]", "from-[#244357] via-[#2C2D30] to-[#2C2D30]",
+    "from-[#3B452A] via-[#2C2D30] to-[#2C2D30]", "from-[#3A3C40] via-[#2C2D30] to-[#2C2D30]",
+    "from-[#284852] via-[#2C2D30] to-[#2C2D30]", "from-[#1A3A73] via-[#2C2D30] to-[#2C2D30]",
+    "from-[#284A63] via-[#2C2D30] to-[#2C2D30]", "from-[#413B63] via-[#2C2D30] to-[#2C2D30]",
+    "from-[#1E3E6E] via-[#2C2D30] to-[#2C2D30]", "from-[#2E3A28] via-[#2C2D30] to-[#2C2D30]",
+  ];
+
+
+
+
+  // Icon map for trust badges from settings
+  const trustIconMap: Record<string, React.ComponentType<any>> = {
+    shield: ShieldCheck,
+    headphones: Headphones,
+    zap: Zap,
+    award: Award,
+  };
+
+  const trustItems = settings?.homepage?.trustBadges?.length
+    ? settings.homepage.trustBadges.map((badge) => ({
+      icon: trustIconMap[badge.icon] || ShieldCheck,
+      title: badge.title,
+      desc: badge.description || "",
+    }))
+    : [
+      { icon: ShieldCheck, title: t("trust_secure_title"), desc: t("trust_secure_desc") },
+      { icon: Zap, title: t("trust_fast_title"), desc: t("trust_fast_desc") },
+      { icon: Award, title: t("trust_price_title"), desc: t("trust_price_desc") },
+      { icon: Headphones, title: t("trust_support_title"), desc: t("trust_support_desc") },
     ];
-  }, [publicSettings, t]);
-
-  const categoryTabs = useMemo(
-    () =>
-      publicSettings?.homepage?.categoryTabs?.length
-        ? publicSettings.homepage.categoryTabs
-        : [
-          { id: "all", label: t("categories.all"), icon: "gamepad" as const },
-          { id: "hot", label: t("categories.hot"), icon: "flame" as const },
-          { id: "cards", label: t("categories.cards"), icon: "card" as const },
-        ],
-    [publicSettings, t],
-  );
-
-  const quickActions = useMemo(
-    () =>
-      publicSettings?.homepage?.quickActions?.length
-        ? publicSettings.homepage.quickActions
-        : [
-          {
-            id: "qa-default-1",
-            icon: "credit-card" as const,
-            label: t("quick_actions.topup"),
-            href: "/games",
-            color: "yellow" as const,
-          },
-          {
-            id: "qa-default-2",
-            icon: "gift" as const,
-            label: t("quick_actions.cards"),
-            href: "/card",
-            color: "pink" as const,
-          },
-          {
-            id: "qa-default-3",
-            icon: "star" as const,
-            label: t("quick_actions.promo"),
-            href: "/?promo=true",
-            color: "green" as const,
-          },
-          {
-            id: "qa-default-4",
-            icon: "headphones" as const,
-            label: t("quick_actions.support"),
-            href: "/support",
-            color: "blue" as const,
-          },
-        ],
-    [publicSettings, t],
-  );
-
-  const trustBadges = useMemo(
-    () =>
-      publicSettings?.homepage?.trustBadges?.length
-        ? publicSettings.homepage.trustBadges
-        : [
-          {
-            id: "tb-default-1",
-            icon: "shield" as const,
-            title: t("trust.secure_title"),
-            description: t("trust.secure_desc"),
-          },
-          {
-            id: "tb-default-2",
-            icon: "headphones" as const,
-            title: t("trust.support_title"),
-            description: t("trust.support_desc"),
-          },
-          {
-            id: "tb-default-3",
-            icon: "zap" as const,
-            title: t("trust.delivery_title"),
-            description: t("trust.delivery_desc"),
-          },
-        ],
-    [publicSettings, t],
-  );
-
-  const promoCards = useMemo(
-    () =>
-      publicSettings?.homepage?.promoCards?.length
-        ? publicSettings.homepage.promoCards
-        : [
-          {
-            id: "promo-1",
-            badge: "Latest",
-            title: t("promo.ai_title"),
-            description: t("promo.ai_desc"),
-            ctaText: t("promo.ai_cta"),
-            href: "/support",
-            theme: "blue" as const,
-          },
-          {
-            id: "promo-2",
-            badge: "HOT",
-            title: t("promo.extra_credits_title"),
-            description: t("promo.extra_credits_desc"),
-            ctaText: t("promo.extra_credits_cta"),
-            href: "/promotions",
-            theme: "pink" as const,
-          },
-        ],
-    [publicSettings, t],
-  );
-
-  const sectionLabels = useMemo(
-    () => ({
-      featuredProductsTitle:
-        publicSettings?.homepage.sectionLabels?.featuredProductsTitle ||
-        t("sections.featured"),
-      specialsTitle:
-        publicSettings?.homepage.sectionLabels?.specialsTitle || t("sections.specials"),
-      newsTitle: publicSettings?.homepage.sectionLabels?.newsTitle || t("sections.news"),
-      viewAllText:
-        publicSettings?.homepage.sectionLabels?.viewAllText || t("sections.view_all"),
-      heroButtonText:
-        publicSettings?.homepage.sectionLabels?.heroButtonText || t("sections.details"),
-    }),
-    [publicSettings, t],
-  );
 
 
-
-  const promotionsEnabled = publicSettings?.features.enablePromotions ?? true;
-  const supportTicketsEnabled =
-    publicSettings?.features.enableSupportTickets ?? true;
-  const visibleQuickActions = useMemo(
-    () =>
-      quickActions.filter((action) => {
-        if (
-          !promotionsEnabled &&
-          (action.icon === "star" || action.href.includes("promo"))
-        ) {
-          return false;
-        }
-        if (!supportTicketsEnabled && action.href.startsWith("/support")) {
-          return false;
-        }
-        return true;
-      }),
-    [quickActions, promotionsEnabled, supportTicketsEnabled],
-  );
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    }, 6000);
+    return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        setLoading(true);
-
-        const response = await productApi.getBestsellerProducts(20);
-
-        if (response.success && response.data) {
-          const transformed = response.data
-            .filter(
-              (p) =>
-                p.productType === "DIRECT_TOPUP" || p.productType === "CARD",
-            )
-            .map(transformProductToFeatured);
-          setFeaturedProducts(transformed.slice(0, 12));
-        }
-      } catch (error) {
-        console.error("Failed to fetch featured products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
-
-  // Fetch news from CMS API
+  // Fetch real news articles from CMS
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await cmsApi.getNewsArticles(1, 6);
+        setNewsLoading(true);
+        const response = await cmsApi.getRecentNews(8);
         if (response.success && response.data) {
-          setNewsArticles(response.data);
+          setNewsItems(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch news:", error);
+        console.error("[HomePage] Failed to fetch news:", error);
+      } finally {
+        setNewsLoading(false);
       }
     };
-
     fetchNews();
   }, []);
 
-  const nextSlide = () =>
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-  const prevSlide = () =>
-    setCurrentSlide(
-      (prev) => (prev - 1 + heroSlides.length) % heroSlides.length,
-    );
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setProductsLoading(true);
+        const response = await productApi.getProducts({
+          isActive: true,
+          limit: 100,
+          sortBy: "salesCount",
+          sortOrder: "desc",
+        });
+        if (response.success && response.data) {
+          const directTopUp = response.data.filter((p) =>
+            p.productType === "DIRECT_TOPUP"
+          );
+          setProducts(directTopUp.slice(0, 12));
+        }
+      } catch (error) {
+        console.error("[HomePage] Failed to fetch products:", error);
+      } finally {
+        setProductsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-  const filteredProducts = featuredProducts.filter((product) => {
-    if (activeCategory === "all") return true;
-    if (activeCategory === "hot")
-      return product.isBestseller || product.discountPercent !== undefined;
-    if (activeCategory === "cards") return product.productType === "CARD";
-    return true;
-  });
+  // Fetch discounted products from API
+  useEffect(() => {
+    const fetchDeals = async () => {
+      try {
+        setDealsLoading(true);
+        const response = await productApi.getProducts({ isActive: true, limit: 50 });
+        if (response.success && response.data) {
+          const deals = response.data
+            .map((p) => {
+              // Find the type with the best discount
+              const discountedType = p.types
+                ?.filter((t) => t.discountRate != null && t.discountRate > 0)
+                .sort((a, b) => (b.discountRate || 0) - (a.discountRate || 0))[0];
+              if (!discountedType) return null;
+              return {
+                id: p.id,
+                slug: p.slug,
+                name: p.name,
+                typeName: discountedType.name,
+                discount: discountedType.discountRate!,
+                img: p.imageUrl || gameImg(p.name.substring(0, 6), "1A1C20", "555555"),
+              };
+            })
+            .filter(Boolean) as typeof discountedProducts;
+          // Sort by highest discount first
+          deals.sort((a, b) => b.discount - a.discount);
+          setDiscountedProducts(deals.slice(0, 10));
+        }
+      } catch (error) {
+        console.error("[HomePage] Failed to fetch deals:", error);
+      } finally {
+        setDealsLoading(false);
+      }
+    };
+    fetchDeals();
+  }, []);
 
-  if (settingsLoading || loading) {
+  const slide = heroSlides[currentSlide];
+
+  const isPageReady = !settingsLoading && !newsLoading && !productsLoading && !dealsLoading;
+
+  // ═══════ GLOBAL LOADING SKELETON ═══════
+  if (!isPageReady) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center px-4">
-        <div
-          className="w-full max-w-md border-[3px] border-black bg-white p-8 text-center"
-          style={{ boxShadow: "6px 6px 0 0 #000000" }}
-        >
-          <div className="mx-auto mb-4 flex w-fit items-center gap-2">
-            <motion.div
-              className="h-3 w-3 rounded-full bg-brutal-pink border-[2px] border-black"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 0.6, repeat: Infinity }}
-            />
-            <motion.div
-              className="h-3 w-3 rounded-full bg-brutal-yellow border-[2px] border-black"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: 0.12 }}
-            />
-            <motion.div
-              className="h-3 w-3 rounded-full bg-brutal-blue border-[2px] border-black"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: 0.24 }}
-            />
+      <div className="space-y-6 py-6 pb-20 animate-pulse">
+        {/* Hero skeleton */}
+        <div className="w-full h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#1A1C20] rounded-[16px]" />
+
+
+
+        {/* Special offers skeleton */}
+        <div className="bg-[#1A1C20] border border-site-border p-5 md:p-6 rounded-[16px]">
+          <div className="h-6 w-40 bg-[#2A2C30] rounded mb-6" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-[16px] gap-y-[20px]">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-[80px] bg-[#2A2C30] rounded-[14px]" />
+            ))}
           </div>
-          <p className="text-base font-black text-black">{t("loading")}</p>
+        </div>
+
+        {/* Games skeleton */}
+        <div className="pt-16 pb-6">
+          <div className="h-5 w-32 bg-[#2A2C30] rounded mb-6" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-[32px]">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i}>
+                <div className="w-full aspect-square bg-[#2A2C30] rounded-[16px] mb-3" />
+                <div className="h-4 bg-[#2A2C30] rounded w-3/4 mx-auto" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* News skeleton */}
+        <div className="pt-16 pb-6">
+          <div className="h-5 w-24 bg-[#2A2C30] rounded mb-6" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[32px]">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <div className="w-full aspect-[16/9] bg-[#2A2C30] rounded-[8px] mb-3" />
+                <div className="h-4 bg-[#2A2C30] rounded w-3/4 mb-2" />
+                <div className="h-3 bg-[#2A2C30] rounded w-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Trust badges skeleton */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-20">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="py-6 px-4 bg-[#1A1C20] border border-site-border rounded-[16px] flex flex-col items-center">
+              <div className="w-14 h-14 rounded-full bg-[#2A2C30] mb-4" />
+              <div className="h-4 w-24 bg-[#2A2C30] rounded mb-2" />
+              <div className="h-3 w-32 bg-[#2A2C30] rounded" />
+            </div>
+          ))}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-8">
-      {/* Hero Slider */}
-      <section className="relative w-full overflow-hidden">
-        <div className="relative aspect-[16/9] md:aspect-[24/8] lg:aspect-[32/10] w-full max-w-7xl mx-auto overflow-hidden md:border-[4px] border-black bg-zinc-100 md:shadow-[8px_8px_0_0_#000]">
-          {heroSlides.map(
-            (slide, index) =>
-              index === currentSlide && (
-                <motion.div
-                  key={slide.id}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
+    <div className="space-y-6 py-6 pb-20 animate-[fadeIn_0.3s_ease-in-out]">
+      {/* ════════════════ HERO SLIDER ════════════════ */}
+      <section className="relative w-full overflow-hidden bg-[#16181A] isolate ring-1 ring-[#16181A]/50 ring-inset" style={{ borderRadius: 16 }}>
+        <div
+          className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {heroSlides.map((slide) => (
+            <div key={slide.id} className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden">
+
+              {/* Left Side: Text Wrapper */}
+              <div
+                className="absolute left-0 top-0 bottom-0 w-[90%] sm:w-[80%] md:w-[45%] z-10 pointer-events-none md:drop-shadow-[15px_0_20px_rgba(0,0,0,0.85)]"
+              >
+                <div
+                  className={`w-full h-full flex flex-col justify-center pl-7 sm:pl-10 md:pl-20 pr-1 md:pr-10 relative pointer-events-auto bg-transparent md:bg-[#16181A] ${slide.bgRight} md:[clip-path:polygon(0_0,100%_0,calc(100%-15px)_100%,0_100%)] [text-shadow:-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000,1px_1px_0_#000,0_4px_8px_#000] md:[text-shadow:none]`}
                 >
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/40 md:to-transparent" />
-
-                  <div className="absolute inset-0 flex items-end md:items-center">
-                    <div className="w-full p-5 md:p-12 lg:p-16">
-                      <div className="max-w-xl">
-                        <motion.div
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ delay: 0.2 }}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] md:text-xs font-black mb-3 border-[2px] border-black uppercase tracking-wider ${slide.color === "pink"
-                            ? "bg-brutal-pink text-white"
-                            : "bg-brutal-yellow text-black"
-                            }`}
-                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
-                          <Zap size={12} className="fill-current" />
-                          {slide.badgeText || "Promotion"}
-                        </motion.div>
-
-                        <motion.h2
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ delay: 0.3 }}
-                          className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-white mb-1.5 leading-tight drop-shadow-[3px_3px_0_rgba(0,0,0,0.8)]"
-                        >
-                          {slide.title}
-                        </motion.h2>
-
-                        <motion.p
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ delay: 0.4 }}
-                          className="text-white/90 text-xs md:text-base lg:text-lg mb-4 font-bold max-w-md line-clamp-2 md:line-clamp-none"
-                        >
-                          {slide.subtitle}
-                        </motion.p>
-
-                        <motion.div
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ delay: 0.5 }}
-                        >
-                          <Link href={slide.link || "/promotions"}>
-                            <Button
-                              size="sm"
-                              className={`font-black text-xs md:text-base px-5 py-2.5 h-auto border-[3px] border-black group/hero transition-all ${slide.color === "pink"
-                                ? "bg-white text-black hover:bg-zinc-100"
-                                : "bg-brutal-yellow text-black hover:bg-yellow-400"
-                                }`}
-                              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                            >
-                              {sectionLabels.heroButtonText}
-                              <ChevronRight
-                                size={16}
-                                className="ml-1.5 group-hover/hero:translate-x-1 transition-transform"
-                              />
-                            </Button>
-                          </Link>
-                        </motion.div>
-                      </div>
+                  <h2 className="text-[14px] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-tight text-white font-bold mb-1 md:mb-2 md:drop-shadow-sm leading-tight">{slide.title}</h2>
+                  <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-4 mb-2 sm:mb-4 md:mb-6">
+                    <span className="text-[11px] sm:text-sm md:text-lg lg:text-xl text-gray-200">{slide.subtitle}</span>
+                    <div className="flex items-end text-site-accent">
+                      <span className="text-[10px] sm:text-xs md:text-sm lg:text-base mr-1 sm:mr-2 mb-0.5 sm:mb-1 text-white">{slide.highlightText}</span>
+                      <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none">{slide.highlight}</span>
                     </div>
                   </div>
-                </motion.div>
-              ),
-          )}
+                  <Link
+                    href={slide.href}
+                    className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors shadow-accent-glow font-bold text-xs sm:text-sm md:text-base pointer-events-auto mt-1 [text-shadow:none]"
+                  >
+                    {slide.btnText}
+                  </Link>
+                </div>
+              </div>
 
-          {/* Slider Pagination */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-3 z-10 md:left-auto md:right-8 md:bottom-8 md:translate-x-0">
-            {heroSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 border-[2px] border-black transition-all ${index === currentSlide
-                  ? "bg-brutal-yellow scale-125 rotate-45"
-                  : "bg-white/50 hover:bg-white"
-                  }`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Actions - Mobile */}
-      <section className="px-4 pt-6 pb-2 md:hidden">
-        <div className="grid grid-cols-4 gap-3">
-          {visibleQuickActions.map((action) => {
-            const ActionIcon =
-              QUICK_ACTION_ICON_MAP[action.icon as keyof typeof QUICK_ACTION_ICON_MAP] ||
-              QUICK_ACTION_ICON_MAP["credit-card"];
-            const actionColor =
-              QUICK_ACTION_COLOR_MAP[action.color as keyof typeof QUICK_ACTION_COLOR_MAP] ||
-              QUICK_ACTION_COLOR_MAP.yellow;
-            return (
-              <Link key={action.id || action.label} href={action.href}>
-                <motion.div
-                  className={`flex flex-col items-center justify-center aspect-square ${actionColor} border-[3px] border-black rounded-none`}
-                  style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                  whileTap={{
-                    scale: 0.95,
-                    x: 2,
-                    y: 2,
-                    boxShadow: "0px 0px 0 0 #000",
+              {/* Right Side: Image at original position with gradient blend on left edge */}
+              <div className="w-[65%] md:w-[60%] h-full absolute right-0 top-0 bottom-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="w-full h-full object-cover object-center"
+                />
+                {/* Gradient overlay on left edge of image for smooth blending */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: `linear-gradient(to right, #16181A 0%, rgba(22,24,26,0.6) 15%, transparent 35%)`,
                   }}
-                >
-                  <ActionIcon size={24} className="text-black mb-1.5" />
-                  <span className="text-[11px] font-black text-black text-center leading-tight">
-                    {action.label}
-                  </span>
-                </motion.div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+                />
 
-      <div className="container mx-auto px-4 mt-4 md:mt-10">
-        {/* Search Bar - Mobile */}
-        <section className="md:hidden">
-          <div className="relative group">
-            <div className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition-transform group-focus-within:translate-x-1.5 group-focus-within:translate-y-1.5" />
-            <Input
-              placeholder={t("sections.featured")}
-              icon={<Search size={20} className="text-black" />}
-              className="relative bg-white border-[3px] border-black rounded-none h-14 text-base font-bold placeholder:text-zinc-500 focus-visible:ring-0 focus-visible:border-brutal-pink transition-colors"
-            />
-          </div>
-        </section>
+              </div>
 
-        {/* Featured Promotion Cards */}
-        {promotionsEnabled && (
-          <section className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6 md:mb-8">
-            {promoCards.slice(0, 3).map((card, index) => {
-              const isPrimary = index === 0;
-              const cardClass =
-                card.theme === "pink"
-                  ? "bg-brutal-pink text-white"
-                  : card.theme === "yellow"
-                    ? "bg-brutal-yellow text-black"
-                    : card.theme === "green"
-                      ? "bg-brutal-green text-black"
-                      : "bg-brutal-blue text-white";
-
-              const badgeClass =
-                card.theme === "yellow" || card.theme === "green"
-                  ? "bg-black text-white"
-                  : "bg-white text-black";
-
-              const btnClass =
-                card.theme === "yellow" || card.theme === "green"
-                  ? "bg-black text-white hover:bg-zinc-800"
-                  : "bg-white text-black hover:bg-zinc-100";
-
-              return (
-                <motion.div
-                  key={card.id}
-                  className={`${isPrimary
-                    ? "md:col-span-7 lg:col-span-8"
-                    : "md:col-span-5 lg:col-span-4"
-                    } ${cardClass} border-[3px] border-black p-6 sm:p-8 relative overflow-hidden group min-h-[220px] md:min-h-[260px] flex flex-col justify-between`}
-                  style={{ boxShadow: "8px 8px 0 0 #000000" }}
-                  whileHover={{
-                    y: -4,
-                    x: -2,
-                    boxShadow: "10px 10px 0 0 #000000",
-                  }}
-                >
-                  <div className="relative z-10">
-                    {card.badge && (
-                      <div
-                        className={`inline-flex items-center gap-1.5 ${badgeClass} text-[10px] md:text-xs uppercase tracking-widest px-2.5 py-1 font-black border-[2px] border-black mb-4 self-start shadow-[2px_2px_0_0_#000]`}
-                      >
-                        <Sparkles size={14} />
-                        {card.badge}
-                      </div>
-                    )}
-                    <h3
-                      className={`font-black text-2xl sm:text-3xl md:text-4xl mb-3 leading-[1.1] ${card.theme === "yellow" || card.theme === "green"
-                        ? "text-black"
-                        : "text-white"
-                        } drop-shadow-[2px_2px_0_rgba(0,0,0,0.3)]`}
-                    >
-                      {card.title}
-                    </h3>
-                    {card.description && (
-                      <p
-                        className={`text-sm md:text-base mb-6 max-w-md font-bold leading-relaxed ${card.theme === "yellow" || card.theme === "green"
-                          ? "text-black/80"
-                          : "text-white/90"
-                          }`}
-                      >
-                        {card.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="relative z-10 flex items-center justify-between mt-auto">
-                    <Link href={card.href || "/promotions"}>
-                      <Button
-                        className={`${btnClass} border-[3px] border-black font-black text-sm md:text-base px-6 py-3 h-auto flex items-center gap-2 group/btn transition-all`}
-                        style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                      >
-                        {card.ctaText || t("sections.details")}
-                        <ChevronRight
-                          size={18}
-                          className="group-hover/btn:translate-x-1 transition-transform"
-                        />
-                      </Button>
-                    </Link>
-                  </div>
-
-                  {/* Decorative Elements */}
-                  <div className="absolute right-[-30px] bottom-[-30px] opacity-10 group-hover:opacity-20 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 ease-out">
-                    <Gamepad2 size={isPrimary ? 240 : 180} />
-                  </div>
-                  <div className="absolute top-6 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Zap size={60} />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </section>
-        )}
-
-        {/* Categories - Horizontal Scroll */}
-        {promotionsEnabled && (
-          <section className="mb-3 md:mb-4">
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-              {categoryTabs.map((category) => (
-                <motion.button
-                  key={category.id}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold whitespace-nowrap border-[3px] transition-all flex-shrink-0 ${activeCategory === category.id
-                    ? "bg-brutal-yellow border-black text-black"
-                    : "bg-white border-gray-300 text-gray-700 hover:border-black"
-                    }`}
-                  style={
-                    activeCategory === category.id
-                      ? { boxShadow: "3px 3px 0 0 #000000" }
-                      : undefined
-                  }
-                  onClick={() => setActiveCategory(category.id)}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {category.icon === "flame" ? (
-                    <Flame size={16} />
-                  ) : category.icon === "card" ? (
-                    <CreditCard size={16} />
-                  ) : (
-                    <Gamepad2 size={16} />
-                  )}
-                  <span>{category.label}</span>
-                </motion.button>
-              ))}
             </div>
-          </section>
-        )}
+          ))}
+        </div>
+        {/* Navigation Arrows */}
+        <button
+          onClick={() => setCurrentSlide((p) => (p - 1 + heroSlides.length) % heroSlides.length)}
+          className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 w-8 md:w-10 h-8 md:h-10 bg-black/60 border border-white/20 hover:bg-black/90 hover:scale-110 flex items-center justify-center text-white transition-all duration-200 z-10 backdrop-blur-sm rounded-full"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
+        </button>
+        <button
+          onClick={() => setCurrentSlide((p) => (p + 1) % heroSlides.length)}
+          className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 w-8 md:w-10 h-8 md:h-10 bg-black/60 border border-white/20 hover:bg-black/90 hover:scale-110 flex items-center justify-center text-white transition-all duration-200 z-10 backdrop-blur-sm rounded-full"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+        </button>
+        {/* Slide Dots */}
+        <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2.5">
+          {heroSlides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              className={`h-2 md:h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "w-8 md:w-10 bg-site-accent shadow-accent-glow" : "w-2 md:w-2.5 bg-white/50 hover:bg-white border border-white/10"}`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </section>
 
-        {/* Featured Games - From Database */}
-        <section className="mt-4 md:mt-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
-              <span className="w-1.5 h-5 sm:h-6 bg-brutal-pink mr-2"></span>
-              {sectionLabels.featuredProductsTitle}
-              <span className="ml-2 text-sm font-normal text-gray-500">
-                ({filteredProducts.length})
-              </span>
+
+
+
+      {/* ════════════════ SPECIAL OFFERS ════════════════ */}
+      <section className="bg-[#1A1C20] border border-site-border p-5 md:p-6 rounded-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-[20px] md:text-[22px] font-extrabold text-white mb-1 tracking-wide flex items-center gap-2">
+              <Tag size={20} className="text-[#A3E635]" />
+              {t("special_offers")}
             </h2>
-            <Link
-              href="/games"
-              className="text-brutal-pink text-sm font-bold hover:underline flex items-center"
-            >
-              {sectionLabels.viewAllText}
-              <ChevronRight size={16} />
-            </Link>
+            <p className="text-[12px] md:text-[13px] text-[#A1A1AA] font-normal">
+              {t("special_offers_subtitle")}
+            </p>
           </div>
+          <Link href="/games" className="shrink-0 bg-black hover:bg-[#181818] border border-[#444] hover:border-site-accent text-white text-[12px] md:text-[13px] font-bold px-5 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5">
+            {t("view_all")} <ChevronRight size={14} />
+          </Link>
+        </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {discountedProducts.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center py-10 text-[#555]">
+              <Tag size={32} className="mb-3 text-[#444]" />
+              <p className="text-sm">{t("no_deals")}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
-                >
-                  <Link href={`/games/${product.slug}`}>
-                    <div
-                      className="relative overflow-hidden bg-white border-[3px] border-black transition-all hover:-translate-y-1 group"
-                      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            discountedProducts.map((deal, idx) => (
+              <Link key={deal.id} href={`/games/${deal.slug}`} className="group relative pl-[30px]">
+                {/* Floating Game Icon */}
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-[60px] h-[60px] rounded-2xl overflow-hidden shadow-lg border-[3px] border-[#1A1C20] bg-[#2A2C30] transition-transform duration-300 group-hover:scale-110">
+                  <img
+                    src={(deal as any).imageUrl || gameImg(deal.name.substring(0, 6), "1A1C20", "555555")}
+                    alt={deal.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Card Body */}
+                <div className={`h-full flex flex-col justify-between rounded-xl overflow-hidden bg-gradient-to-r ${dealColors[idx % dealColors.length]} ring-1 ring-transparent ring-inset group-hover:ring-site-accent/40 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_12px_32px_rgba(0,0,0,0.6)]`}>
+                  <div className="pl-[42px] pr-3 pt-3 pb-2 h-[52px]">
+                    <p className="text-white text-[13px] font-bold line-clamp-1 leading-snug" title={deal.typeName}>{deal.typeName}</p>
+                    <p className="text-[#9CA3AF] text-[11px] font-medium line-clamp-1 mt-0.5" title={deal.name}>{deal.name}</p>
+                  </div>
+                  <div className="pl-[42px] pr-3 pb-2.5 flex items-center gap-3">
+                    <span className="bg-site-accent text-white px-2 py-[2px] rounded-[5px] text-[10px] font-bold tracking-wide whitespace-nowrap shrink-0 shadow-sm">
+                      {t("promotion_badge")}
+                    </span>
+                    <span
+                      className={`text-[13px] font-black shrink-0 ${Number(deal.discount) < 0 ? "text-red-400" : "text-[#4ADE80]"}`}
+                      title={Number(deal.discount) < 0 ? "ราคาเพิ่มขึ้นจากมาตรฐาน" : "ประหยัดกว่า"}
                     >
-                      {product.discountPercent && (
-                        <div
-                          className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
-                          style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                        >
-                          -{product.discountPercent}%
-                        </div>
-                      )}
-
-                      <div className="relative aspect-square w-full overflow-hidden">
-                        <img
-                          src={product.mainImage}
-                          alt={product.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
-
-                        {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div
-                            className="bg-brutal-yellow text-black px-3 py-1.5 text-xs sm:text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform"
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                          >
-                            {t("sections.details")}
-                          </div>
-                        </div>
-
-                        {/* Auto delivery icon */}
-                        {product.autoDelivery && (
-                          <div
-                            className="absolute bottom-2 right-2 z-10"
-                            title="Auto Delivery"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 512 512"
-                              className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
-                              role="img"
-                              aria-label="Auto Delivery"
-                            >
-                              <g clipRule="evenodd" fillRule="evenodd">
-                                <circle
-                                  cx="256"
-                                  cy="256"
-                                  r="256"
-                                  fill="#ffc107"
-                                />
-                                <path
-                                  fill="#fff"
-                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="p-2 sm:p-2.5">
-                        <p className="text-gray-900 text-[10px] sm:text-xs font-bold line-clamp-1 mb-1 group-hover:text-brutal-pink transition-colors">
-                          {product.name}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            {getCategoryIcon(product.category)}
-                            <span className="text-gray-500 text-[8px] sm:text-[10px] ml-1 truncate max-w-[40px] sm:max-w-[60px]">
-                              {product.publisher}
-                            </span>
-                          </div>
-                          {product.price > 0 ? (
-                            <div className="text-[10px] sm:text-xs text-black font-black">
-                              ฿{product.price}
-                            </div>
-                          ) : product.isBestseller ? (
-                            <>
-                              <Flame
-                                size={14}
-                                className="text-brutal-pink sm:hidden"
-                              />
-                              <div className="hidden sm:block text-[8px] sm:text-[10px] font-bold text-white bg-brutal-pink px-1.5 py-0.5 border border-black">
-                                HOT
-                              </div>
-                            </>
-                          ) : (
-                            <div className="text-[8px] sm:text-[10px] font-bold text-gray-500 truncate max-w-[50px]">
-                              {product.publisher}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+                      {Number(deal.discount) > 0 ? `-${deal.discount}%` : `${deal.discount}%`}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))
           )}
+        </div>
+      </section>
 
-          {!loading && filteredProducts.length === 0 && (
-            <div className="text-center py-12">
-              <Gamepad2 size={48} className="mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500 font-bold">No games found</p>
-            </div>
-          )}
-        </section>
-
-        {/* Trust Badges */}
-        <section className="grid grid-cols-3 gap-2 sm:gap-4 mt-section">
-          {trustBadges.map((badge, i) => {
-            const BadgeIcon =
-              TRUST_BADGE_ICON_MAP[badge.icon as keyof typeof TRUST_BADGE_ICON_MAP] || TRUST_BADGE_ICON_MAP.shield;
-            const badgeThemes = [
-              { bg: 'bg-emerald-50', icon: 'text-emerald-600' },
-              { bg: 'bg-pink-50', icon: 'text-pink-500' },
-              { bg: 'bg-teal-50', icon: 'text-teal-600' },
-            ];
-            const theme = badgeThemes[i % badgeThemes.length];
-            return (
-              <div
-                key={badge.id || i}
-                className={`${theme.bg} border-[2px] border-black p-3 sm:p-4 text-center`}
-                style={{ boxShadow: "3px 3px 0 0 #000000" }}
-              >
-                <BadgeIcon size={24} className={`mx-auto ${theme.icon} mb-2`} />
-                <p className="text-xs sm:text-sm font-bold text-black">
-                  {badge.title}
-                </p>
-                <p className="text-[10px] sm:text-xs text-gray-600 hidden sm:block">
-                  {badge.description}
-                </p>
-              </div>
-            );
-          })}
-        </section>
-
-        {/* News Section */}
-        <section className="mt-section">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg sm:text-xl font-black text-black flex items-center">
-              <span className="w-1.5 h-5 sm:h-6 bg-brutal-blue mr-2"></span>
-              {sectionLabels.newsTitle}
+      {/* ════════════════ ALL GAMES SECTION ════════════════ */}
+      <section className="pt-12 pb-8">
+        <div className="flex flex-col mb-6 relative">
+          <div className="flex flex-col relative z-10 w-fit">
+            <h2 className="text-[20px] md:text-[22px] font-bold text-white leading-none mb-1">
+              {t("popular_games")}
             </h2>
-            <Link
-              href="/news"
-              className="text-brutal-pink text-sm font-bold hover:underline flex items-center"
-            >
-              {sectionLabels.viewAllText}
-              <ChevronRight size={16} />
+            <p className="text-[10px] md:text-[11px] text-[#666] uppercase font-bold tracking-widest leading-none">
+              GAME TOP-UP POPULAR
+            </p>
+          </div>
+          <div className="absolute right-0 bottom-0 text-right">
+            <Link href="/games" className="text-[12px] text-site-accent hover:text-white transition-colors tracking-wide flex items-center gap-0.5 font-semibold">
+              {t("view_all")} <ChevronRight size={14} />
             </Link>
           </div>
+          <div className="h-[1px] w-full bg-[#33353B] mt-3 opacity-50" />
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {newsArticles.length > 0
-              ? newsArticles.map((item) => (
-                <Link key={item.id} href={`/news/${item.slug}`}>
-                  <motion.div
-                    className="bg-white border-[3px] border-black border-t-[4px] border-t-brutal-blue overflow-hidden hover:-translate-y-1 transition-all h-full"
-                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                    whileHover={{ scale: 1.01 }}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-8">
+          {products.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center py-12 text-[#555]">
+              <PackageOpen size={36} className="mb-3 text-[#444]" />
+              <p className="text-sm">{t("no_products")}</p>
+            </div>
+          ) : (
+            products.map((game, index) => (
+              <Link key={game.id} href={`/games/${game.slug}`}>
+                <div className="group flex flex-col items-center cursor-pointer relative">
+                  {/* HOT Badge - overflows the card */}
+                  {(index === 0 || index === 2 || (game as any).isHot) && (
+                    <img
+                      src="https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69c1fc7f0020f8ff7e7a/view?project=698c7ca4000555520e6b"
+                      alt="HOT"
+                      className="absolute -top-3 -left-3 z-20 h-[44px] w-auto drop-shadow-[0_2px_8px_rgba(255,51,102,0.5)] pointer-events-none"
+                    />
+                  )}
+                  <div className="relative w-full aspect-square mb-3 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_12px_32px_-8px_rgba(103,176,186,0.2)] rounded-2xl overflow-hidden bg-[#2A2C30] ring-1 ring-white/5 group-hover:ring-site-accent/30">
+                    <img
+                      src={game.imageUrl || gameImg(game.name.substring(0, 6), "1A1C20", "555555")}
+                      alt={game.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <h3
+                    className="text-[14px] text-center text-white font-bold leading-[1.35] line-clamp-2 w-full px-1 group-hover:text-site-accent transition-colors"
+                    title={game.name}
                   >
-                    <div className="relative aspect-video">
-                      <img
-                        src={
-                          (item as any).featuredImage ||
-                          (item as any).imageUrl ||
-                          (item as any).coverImage ||
-                          "https://placehold.co/600x400?text=News"
-                        }
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute top-2 left-2 bg-brutal-blue text-white text-[10px] font-bold px-2 py-1 border-[2px] border-black">
-                        {(item.category as any)?.name ||
-                          (item.category as any) ||
-                          "News"}
-                      </div>
-                    </div>
-                    <div className="p-3 sm:p-4">
-                      <p className="text-[10px] text-gray-500 mb-1 font-bold">
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </p>
-                      <h3 className="text-sm sm:text-base font-black text-black line-clamp-2 leading-snug">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </motion.div>
-                </Link>
-              ))
-              : (
-                <div className="col-span-full text-center py-12">
-                  <Clock size={48} className="mx-auto text-brutal-blue/40 mb-4" />
-                  <p className="text-gray-600 font-bold">ยังไม่มีข่าวสาร</p>
-                  <p className="text-gray-500 text-sm mt-1">ติดตามข่าวสารและโปรโมชั่นได้เร็วๆ นี้</p>
+                    {game.name}
+                  </h3>
+                  {game.gameDetails?.autoDelivery ? (
+                    <span className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full whitespace-nowrap">
+                      <Zap size={10} /> {t("status_instant")}
+                    </span>
+                  ) : (
+                    <span className="mt-1.5 inline-flex items-center text-[10px] font-medium text-[#888] px-2 py-0.5 rounded-full bg-white/5 whitespace-nowrap">
+                      {t("status_30_60_mins")}
+                    </span>
+                  )}
                 </div>
-              )}
+              </Link>
+            ))
+          )}
+        </div>
+      </section>
+
+      {/* ════════════════ NEWS CATEGORY (ข่าวสาร) ════════════════ */}
+      <section className="pt-12 pb-8">
+        <div className="flex items-end justify-between mb-6">
+          <div className="flex flex-col">
+            <h2 className="text-[20px] md:text-[22px] font-bold text-white leading-none mb-1">
+              {t("news_title")}
+            </h2>
+            <p className="text-[10px] md:text-[11px] text-[#666] uppercase font-bold tracking-widest leading-none">
+              NEWS
+            </p>
           </div>
-        </section>
-      </div>
-    </div>
+
+          <Link href="/news" className="text-[12px] text-site-accent hover:text-white transition-colors mb-0.5 tracking-wide flex items-center gap-0.5 font-semibold">
+            {t("view_all")} <ChevronRight size={14} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-8">
+          {newsLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="w-full aspect-[16/9] bg-[#2A2C30] rounded-lg mb-3" />
+                <div className="h-4 bg-[#2A2C30] rounded w-3/4 mb-2" />
+                <div className="h-3 bg-[#2A2C30] rounded w-full" />
+              </div>
+            ))
+          ) : newsItems.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center py-12 text-[#555]">
+              <Newspaper size={36} className="mb-3 text-[#444]" />
+              <p className="text-sm">{t("no_news")}</p>
+            </div>
+          ) : (
+            newsItems.map((news) => (
+              <Link key={news.id} href={`/news/${news.slug}`}>
+                <div className="group flex flex-col cursor-pointer bg-transparent h-full">
+                  <div className="relative w-full aspect-[16/9] overflow-hidden rounded-lg mb-3 bg-[#2A2C30] ring-1 ring-white/5">
+                    {news.coverImage ? (
+                      <img
+                        src={news.coverImage}
+                        alt={news.title}
+                        className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-[1.05]"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[#555] text-sm">
+                        <Newspaper size={24} />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-[15px] text-white font-bold leading-[1.4] break-words line-clamp-2 mb-1.5 group-hover:text-site-accent transition-colors">
+                    {news.title}
+                  </h3>
+                  <p className="text-[12px] text-[#888] font-normal leading-[1.6] line-clamp-2 pr-2">
+                    {news.excerpt}
+                  </p>
+                </div>
+              </Link>
+            ))
+          )}
+        </div>
+      </section >
+
+      {/* ════════════════ TRUST BADGES ════════════════ */}
+      < section className="flex flex-wrap justify-center gap-5 mt-16" >
+        {
+          trustItems.map((tItem) => (
+            <div key={tItem.title} className="flex flex-col items-center text-center py-6 px-5 bg-site-surface border border-site-border w-[calc(50%-10px)] lg:w-[calc(25%-15px)] min-w-[160px] rounded-2xl hover:border-site-accent/30 transition-colors duration-200">
+              <div className="w-14 h-14 rounded-full bg-site-accent/10 border border-site-accent/20 flex items-center justify-center mb-4">
+                <tItem.icon size={24} className="text-site-accent" />
+              </div>
+              <p className="text-[15px] font-bold text-white mb-1">{tItem.title}</p>
+              <p className="text-[12px] text-[#888] leading-snug">{tItem.desc}</p>
+            </div>
+          ))
+        }
+      </section >
+    </div >
   );
 }

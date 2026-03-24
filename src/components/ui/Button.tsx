@@ -3,22 +3,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap text-base font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95",
+  "inline-flex items-center justify-center whitespace-nowrap text-base font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gaming-dark disabled:pointer-events-none disabled:opacity-50 active:scale-95 rounded-lg",
   {
     variants: {
       variant: {
         default:
-          "bg-brutal-yellow text-black border-[3px] border-black shadow-brutal-mobile hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#000]",
+          "bg-site-accent text-white border-none hover:bg-site-accent-hover shadow-accent-glow",
         primary:
-          "bg-brutal-pink text-white border-[3px] border-black shadow-brutal-mobile hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#000]",
+          "bg-site-accent text-white border-none hover:bg-site-accent-hover shadow-accent-glow",
         secondary:
-          "bg-white text-black border-[3px] border-black shadow-brutal-mobile hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#000]",
+          "bg-[#212328]/5 text-white border border-site-border hover:bg-[#212328]/10",
         outline:
-          "border-[3px] border-black bg-transparent hover:bg-gray-100 text-black",
-        ghost: "hover:bg-gray-100 hover:text-gray-900",
-        link: "text-primary underline-offset-4 hover:underline",
+          "border border-site-border bg-transparent hover:bg-[#212328]/5 text-white",
+        ghost: "hover:bg-[#212328]/10 hover:text-white text-gray-400",
+        link: "text-blue-400 underline-offset-4 hover:underline",
         danger:
-          "bg-red-500 text-white border-[3px] border-black shadow-brutal-mobile hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#000]",
+          "bg-red-500 text-white border border-red-400 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(239,68,68,0.3)]",
       },
       size: {
         default: "h-12 px-6 py-3 w-full sm:w-auto", // Mobile first: h-12, w-full
@@ -44,8 +44,8 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
 }

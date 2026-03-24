@@ -16,6 +16,7 @@ import {
   DeliveryStatus,
 } from "../services/delivery-api";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 type DeliveryContextType = {
   deliveries: OrderDeliveryStatus[];
@@ -33,6 +34,7 @@ export const DeliveryContext = createContext<DeliveryContextType | undefined>(
 );
 
 export function DeliveryProvider({ children }: { children: ReactNode }) {
+  const t = useTranslations();
   const { user } = useAuth();
   const [deliveries, setDeliveries] = useState<OrderDeliveryStatus[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -95,12 +97,12 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
       try {
         const result = await deliveryApi.resendDelivery(orderId, itemId);
         if (result.success) {
-          toast.success(result.message || "ส่งข้อมูลใหม่สำเร็จ");
+          toast.success(result.message || t("resend_success"));
           // Refresh deliveries to get updated state
           await fetchDeliveries();
           return true;
         }
-        toast.error(result.error || "ไม่สามารถส่งข้อมูลใหม่ได้");
+        toast.error(result.error || t("resend_error"));
         return false;
       } catch (err) {
         const message = deliveryApi.getErrorMessage(err);
@@ -122,7 +124,7 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
       try {
         const result = await deliveryApi.cancelDelivery(orderId);
         if (result.success) {
-          toast.success(result.message || "ยกเลิกการจัดส่งสำเร็จ");
+          toast.success(result.message || t("cancel_delivery_success"));
           // Refresh deliveries to get updated state
           await fetchDeliveries();
           return true;

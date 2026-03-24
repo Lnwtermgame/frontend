@@ -148,12 +148,12 @@ export default function NotificationsPage() {
       : filter === "unread"
         ? notifications.filter((n) => !n.isRead)
         : notifications.filter((n) => {
-            if (filter === "order") return n.type === "ORDER";
-            if (filter === "payment") return n.type === "PAYMENT";
-            if (filter === "promotion") return n.type === "PROMOTION";
-            if (filter === "system") return n.type === "SYSTEM";
-            return true;
-          });
+          if (filter === "order") return n.type === "ORDER";
+          if (filter === "payment") return n.type === "PAYMENT";
+          if (filter === "promotion") return n.type === "PROMOTION";
+          if (filter === "system") return n.type === "SYSTEM";
+          return true;
+        });
 
   // Get notification link based on type and data
   const getNotificationLink = (notification: Notification): string => {
@@ -170,15 +170,15 @@ export default function NotificationsPage() {
   const renderIcon = (type: string) => {
     switch (type) {
       case "ORDER":
-        return <ShoppingBag className="text-brutal-blue" size={16} />;
+        return <ShoppingBag className="text-blue-500" size={16} />;
       case "PAYMENT":
-        return <CreditCard className="text-brutal-green" size={16} />;
+        return <CreditCard className="text-green-500" size={16} />;
       case "PROMOTION":
-        return <Megaphone className="text-brutal-pink" size={16} />;
+        return <Megaphone className="text-[var(--site-accent)]" size={16} />;
       case "SYSTEM":
-        return <Info className="text-brutal-yellow" size={16} />;
+        return <Info className="text-yellow-500" size={16} />;
       default:
-        return <Bell className="text-gray-600" size={16} />;
+        return <Bell className="text-gray-400" size={16} />;
     }
   };
 
@@ -186,15 +186,15 @@ export default function NotificationsPage() {
   const getIconBg = (type: string) => {
     switch (type) {
       case "ORDER":
-        return "bg-brutal-blue/20 border-brutal-blue";
+        return "bg-blue-500/10 border border-blue-500/20";
       case "PAYMENT":
-        return "bg-brutal-green/20 border-brutal-green";
+        return "bg-green-500/10 border border-green-500/30/20";
       case "PROMOTION":
-        return "bg-brutal-pink/20 border-brutal-pink";
+        return "bg-[var(--site-accent)]/10 border border-[var(--site-accent)]/20";
       case "SYSTEM":
-        return "bg-brutal-yellow/20 border-brutal-yellow";
+        return "bg-yellow-500/10 border border-yellow-500/30/20";
       default:
-        return "bg-gray-100 border-gray-300";
+        return "bg-[#1A1C1E] border border-site-border";
     }
   };
 
@@ -203,8 +203,8 @@ export default function NotificationsPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
+          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -213,23 +213,23 @@ export default function NotificationsPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="relative mb-4">
+      <div className="relative mb-6">
         <div className="flex justify-between items-start">
           <div>
             <motion.h2
-              className="text-lg font-bold text-gray-900 mb-1 relative flex items-center"
+              className="text-2xl font-bold text-white mb-2 relative flex items-center"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
+              <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
               {t("title")}
               {unreadCount > 0 && (
-                <span className="ml-2 bg-brutal-pink text-white text-[10px] px-1.5 py-0.5 border-2 border-black font-bold">
+                <span className="ml-3 bg-[var(--site-accent)]/10 text-[var(--site-accent)] border border-[var(--site-accent)]/20 rounded-md text-xs px-2 py-0.5 font-bold">
                   {t("unread_badge", { count: unreadCount })}
                 </span>
               )}
             </motion.h2>
-            <p className="text-gray-600 text-xs relative">
+            <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
               {t("subtitle")}
             </p>
           </div>
@@ -239,8 +239,7 @@ export default function NotificationsPage() {
               <motion.button
                 onClick={markAllAsRead}
                 whileHover={{ y: -2 }}
-                className="text-[10px] text-gray-700 hover:text-black transition-colors bg-white border-[2px] border-black px-2 py-1 font-medium"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                className="text-xs text-white hover:text-[var(--site-accent)] transition-colors bg-[#222427] border border-site-border rounded-lg px-3 py-1.5 font-medium hover:border-[var(--site-accent)]/50"
               >
                 {t("mark_all_read")}
               </motion.button>
@@ -250,150 +249,128 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
         <button
           onClick={() => setFilter("all")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
-            filter === "all"
-              ? "bg-black text-white border-black"
-              : "bg-white border-black text-gray-700 hover:bg-gray-50"
-          }`}
-          style={filter === "all" ? { boxShadow: "2px 2px 0 0 #000000" } : {}}
+          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "all"
+              ? "bg-[#222427] text-white border-site-border shadow-sm"
+              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
+            }`}
         >
           {t("filters.all")}
         </button>
         <button
           onClick={() => setFilter("unread")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
-            filter === "unread"
-              ? "bg-brutal-pink text-white border-black"
-              : "bg-white border-black text-gray-700 hover:bg-gray-50"
-          }`}
-          style={
-            filter === "unread" ? { boxShadow: "2px 2px 0 0 #000000" } : {}
-          }
+          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "unread"
+              ? "bg-[#222427] text-white border-site-border shadow-sm"
+              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
+            }`}
         >
           {t("filters.unread")}
         </button>
         <button
           onClick={() => setFilter("order")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
-            filter === "order"
-              ? "bg-brutal-blue text-white border-black"
-              : "bg-white border-black text-gray-700 hover:bg-gray-50"
-          }`}
-          style={filter === "order" ? { boxShadow: "2px 2px 0 0 #000000" } : {}}
+          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "order"
+              ? "bg-[#222427] text-white border-site-border shadow-sm"
+              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
+            }`}
         >
           {t("filters.order")}
         </button>
         <button
           onClick={() => setFilter("payment")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
-            filter === "payment"
-              ? "bg-brutal-green text-white border-black"
-              : "bg-white border-black text-gray-700 hover:bg-gray-50"
-          }`}
-          style={
-            filter === "payment" ? { boxShadow: "2px 2px 0 0 #000000" } : {}
-          }
+          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "payment"
+              ? "bg-[#222427] text-white border-site-border shadow-sm"
+              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
+            }`}
         >
           {t("filters.payment")}
         </button>
         <button
           onClick={() => setFilter("promotion")}
-          className={`px-2.5 py-1 border-[2px] text-xs font-bold whitespace-nowrap transition-all ${
-            filter === "promotion"
-              ? "bg-brutal-yellow text-black border-black"
-              : "bg-white border-black text-gray-700 hover:bg-gray-50"
-          }`}
-          style={
-            filter === "promotion" ? { boxShadow: "2px 2px 0 0 #000000" } : {}
-          }
+          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "promotion"
+              ? "bg-[#222427] text-white border-site-border shadow-sm"
+              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
+            }`}
         >
           {t("filters.promotion")}
         </button>
       </div>
 
       {/* Notifications List */}
-      <div className="space-y-2">
-        <AnimatePresence>
+      <div className="space-y-3">
+        <AnimatePresence mode="popLayout">
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+            <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
+              <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
             </div>
           ) : filteredNotifications.length > 0 ? (
-            filteredNotifications.map((notification, index) => (
+            filteredNotifications.map((notification) => (
               <motion.div
                 key={notification.id}
                 layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -20, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                whileHover={{ y: -2 }}
-                className={`bg-white border-[2px] border-black relative group overflow-hidden ${
-                  !notification.isRead ? "border-l-brutal-pink" : ""
-                }`}
-                style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                className={`bg-[#222427] border border-site-border shadow-ocean rounded-xl relative group overflow-hidden transition-all hover:border-[var(--site-accent)]/50 ${!notification.isRead ? "before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[var(--site-accent)]" : ""
+                  }`}
               >
-                {!notification.isRead && (
-                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-brutal-pink border-l-[2px] border-b-[2px] border-black z-10"></div>
-                )}
-
                 <Link
                   href={getNotificationLink(notification)}
-                  className="p-3 flex items-start gap-3 cursor-pointer hover:bg-gray-50 transition-colors block"
+                  className="p-4 sm:p-5 flex items-start gap-4 cursor-pointer block"
                 >
                   <div
-                    className={`p-2 border-[2px] border-black flex-shrink-0 ${getIconBg(notification.type)}`}
+                    className={`p-2.5 rounded-xl flex-shrink-0 shadow-sm ${getIconBg(notification.type)}`}
                   >
                     {renderIcon(notification.type)}
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-0.5">
+                  <div className="flex-1 min-w-0 pr-8 sm:pr-0">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-0.5 gap-1 sm:gap-2">
                       <h3
-                        className={`font-bold text-sm truncate pr-2 ${!notification.isRead ? "text-black" : "text-gray-700"}`}
+                        className={`font-semibold text-sm sm:text-base truncate ${!notification.isRead ? "text-white" : "text-gray-300"}`}
                       >
                         {notification.title}
                       </h3>
-                      <span className="text-[10px] text-gray-600 flex-shrink-0 flex items-center gap-1 font-bold">
-                        <Clock size={10} />
+                      <span className="text-xs text-gray-500 flex-shrink-0 flex items-center gap-1.5 font-medium">
+                        <Clock size={12} className="opacity-70" />
                         {new Date(notification.createdAt).toLocaleDateString()}
                       </span>
                     </div>
 
                     <p
-                      className={`text-xs mb-1.5 line-clamp-2 ${!notification.isRead ? "text-gray-800" : "text-gray-600"}`}
+                      className={`text-xs sm:text-sm mb-2 line-clamp-2 ${!notification.isRead ? "text-gray-300" : "text-gray-500"}`}
                     >
                       {notification.message}
                     </p>
 
-                    <div className="flex justify-between items-center mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-[10px] text-brutal-blue font-bold hover:underline">
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-xs text-[var(--site-accent)] font-medium hover:underline inline-flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
                         {t("view_details")}
                       </span>
+                    </div>
 
-                      <div className="flex gap-1.5">
-                        {!notification.isRead && (
-                          <button
-                            onClick={(e) => markAsRead(notification.id, e)}
-                            className="p-1 border-[2px] border-black bg-brutal-green text-white hover:bg-brutal-green/80 transition-colors"
-                            title={t("mark_read")}
-                          >
-                            <Check size={12} />
-                          </button>
-                        )}
+                    {/* Action Buttons - Absolute visible on hover */}
+                    <div className="absolute right-4 top-4 sm:top-1/2 sm:-translate-y-1/2 flex flex-col sm:flex-row gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      {!notification.isRead && (
                         <button
-                          onClick={(e) =>
-                            deleteNotification(notification.id, e)
-                          }
-                          className="p-1 border-[2px] border-black bg-brutal-pink text-white hover:bg-brutal-pink/80 transition-colors"
-                          title={t("delete")}
+                          onClick={(e) => markAsRead(notification.id, e)}
+                          className="p-2 rounded-lg bg-[#1A1C1E] border border-site-border text-gray-400 hover:text-white hover:border-green-500/30/50 hover:bg-green-500/10 transition-all shadow-sm"
+                          title={t("mark_read")}
                         >
-                          <Trash2 size={12} />
+                          <Check size={16} />
                         </button>
-                      </div>
+                      )}
+                      <button
+                        onClick={(e) =>
+                          deleteNotification(notification.id, e)
+                        }
+                        className="p-2 rounded-lg bg-[#1A1C1E] border border-site-border text-gray-400 hover:text-white hover:border-red-500/30/50 hover:bg-red-500/10 transition-all shadow-sm"
+                        title={t("delete")}
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </div>
                 </Link>
@@ -403,16 +380,15 @@ export default function NotificationsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white border-[3px] border-black p-8 text-center"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-12 text-center"
             >
-              <div className="w-12 h-12 bg-gray-100 border-[2px] border-black flex items-center justify-center mx-auto mb-3">
-                <Bell size={24} className="text-gray-400" />
+              <div className="w-16 h-16 bg-[#1A1C1E] border border-site-border rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bell size={28} className="text-gray-500" />
               </div>
-              <h3 className="text-base font-bold text-black mb-1">
+              <h3 className="text-lg font-bold text-white mb-2">
                 {t("empty_title")}
               </h3>
-              <p className="text-gray-600 text-xs font-bold">
+              <p className="text-gray-400 text-sm max-w-sm mx-auto">
                 {filter !== "all"
                   ? t("empty_filter_desc")
                   : t("empty_desc")}
@@ -423,10 +399,10 @@ export default function NotificationsPage() {
       </div>
 
       {/* Preferences Link */}
-      <div className="mt-4 text-center">
+      <div className="mt-8 text-center flex justify-center">
         <Link
           href="/dashboard/notifications/preferences"
-          className="text-gray-600 hover:text-black text-xs font-bold transition-colors inline-flex items-center border-b border-transparent hover:border-black"
+          className="text-gray-400 hover:text-white text-sm font-medium transition-colors inline-flex items-center px-4 py-2 rounded-lg bg-[#222427] border border-site-border hover:border-[var(--site-accent)]/50"
         >
           {t("manage_settings")}
         </Link>

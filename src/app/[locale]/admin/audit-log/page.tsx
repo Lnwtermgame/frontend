@@ -18,13 +18,13 @@ interface AuditLogEntry {
 }
 
 const SEVERITY_STYLES = {
-    INFO: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", badge: "bg-blue-100" },
-    WARN: { bg: "bg-yellow-50", text: "text-yellow-700", border: "border-yellow-200", badge: "bg-yellow-100" },
-    ALERT: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200", badge: "bg-red-100" },
+    INFO: { bg: "bg-[#181A1D]", text: "text-blue-400", border: "border-blue-200", badge: "bg-[#181A1D]0/10" },
+    WARN: { bg: "bg-yellow-50", text: "text-yellow-400", border: "border-yellow-200", badge: "bg-yellow-500/10" },
+    ALERT: { bg: "bg-red-500/5", text: "text-red-400", border: "border-red-200", badge: "bg-red-500/10" },
 };
 
 export default function AdminAuditLogPage() {
-    const t = useTranslations("Admin");
+    const t = useTranslations();
     const [logs, setLogs] = useState<AuditLogEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<string>("ALL");
@@ -67,8 +67,8 @@ export default function AdminAuditLogPage() {
     return (
         <div className="page-container">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-black">{t("audit_log", { defaultMessage: "Audit Log" })}</h1>
-                <p className="text-gray-600 text-sm mt-1">Payment and order audit trail</p>
+                <h1 className="text-2xl font-bold text-white">{t("audit_log", { defaultMessage: "Audit Log" })}</h1>
+                <p className="text-gray-400 text-sm mt-1">Payment and order audit trail</p>
             </div>
 
             {/* Filters */}
@@ -85,11 +85,10 @@ export default function AdminAuditLogPage() {
                         <button
                             key={sev}
                             onClick={() => { setFilter(sev); setPage(1); }}
-                            className={`px-3 py-1.5 text-xs font-bold border-2 border-black transition-all ${filter === sev
-                                    ? "bg-brutal-yellow shadow-[2px_2px_0_0_#000] -translate-x-[1px] -translate-y-[1px]"
-                                    : "bg-white hover:bg-gray-50"
-                                }`}
-                        >
+                            className={`px-3 py-1.5 text-xs font-bold border border-site-border/30 rounded-[8px] transition-all ${filter === sev
+                                    ? "bg-orange-500/10 shadow-lg -translate-x-[1px] -translate-y-[1px]"
+                                    : "bg-[#212328] hover:bg-[#212328]/5"
+                                }`}>
                             {sev}
                         </button>
                     ))}
@@ -101,7 +100,7 @@ export default function AdminAuditLogPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b-[3px] border-black bg-gray-50">
+                            <tr className="border-b-[3px] border-site-border/50 bg-[#181A1D]">
                                 <th className="px-4 py-3 text-left font-bold">Time</th>
                                 <th className="px-4 py-3 text-left font-bold">Severity</th>
                                 <th className="px-4 py-3 text-left font-bold">Event</th>
@@ -128,7 +127,7 @@ export default function AdminAuditLogPage() {
                                 filteredLogs.map((log) => {
                                     const style = SEVERITY_STYLES[log.severity] || SEVERITY_STYLES.INFO;
                                     return (
-                                        <tr key={log.id} className={`border-b border-gray-200 hover:bg-gray-50 transition-colors`}>
+                                        <tr key={log.id} className={`border-b border-site-border/30 hover:bg-[#212328]/5 transition-colors`}>
                                             <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500 font-mono">
                                                 {new Date(log.createdAt).toLocaleString("th-TH")}
                                             </td>
@@ -142,7 +141,7 @@ export default function AdminAuditLogPage() {
                                             <td className="px-4 py-3 max-w-xs truncate" title={log.message}>
                                                 {log.message}
                                             </td>
-                                            <td className="px-4 py-3 font-mono text-xs text-brutal-pink">
+                                            <td className="px-4 py-3 font-mono text-xs text-pink-400">
                                                 {log.orderId ? log.orderId.slice(0, 12) + "…" : "—"}
                                             </td>
                                             <td className="px-4 py-3 text-xs">
@@ -170,16 +169,14 @@ export default function AdminAuditLogPage() {
                 <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page <= 1}
-                    className="btn-brutal text-xs disabled:opacity-40 disabled:cursor-not-allowed"
-                >
+                    className="btn-brutal text-xs disabled:opacity-40 disabled:cursor-not-allowed">
                     ← Previous
                 </button>
-                <span className="text-sm text-gray-600">Page {page}</span>
+                <span className="text-sm text-gray-400">Page {page}</span>
                 <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={filteredLogs.length < perPage}
-                    className="btn-brutal text-xs disabled:opacity-40 disabled:cursor-not-allowed"
-                >
+                    className="btn-brutal text-xs disabled:opacity-40 disabled:cursor-not-allowed">
                     Next →
                 </button>
             </div>

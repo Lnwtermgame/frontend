@@ -132,12 +132,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   AUTHENTICATION: "bg-purple-100 text-purple-700 border-purple-300",
-  ORDER: "bg-blue-100 text-blue-700 border-blue-300",
-  PAYMENT: "bg-green-100 text-green-700 border-green-300",
+  ORDER: "bg-[#181A1D]0/10 text-blue-400 border-blue-300",
+  PAYMENT: "bg-green-500/10 text-green-400 border-green-300",
   PROMOTION: "bg-pink-100 text-pink-700 border-pink-300",
   SUPPORT: "bg-orange-100 text-orange-700 border-orange-300",
-  SYSTEM: "bg-gray-100 text-gray-700 border-gray-300",
-  GENERAL: "bg-yellow-100 text-yellow-700 border-yellow-300",
+  SYSTEM: "bg-[#1A1C1E] text-gray-300 border-gray-300",
+  GENERAL: "bg-yellow-500/10 text-yellow-400 border-yellow-300",
 };
 
 export default function AdminEmailPage() {
@@ -411,7 +411,7 @@ export default function AdminEmailPage() {
     return (
       <AdminLayout title="จัดการอีเมล">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -424,22 +424,19 @@ export default function AdminEmailPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
-        >
+          className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-black flex items-center gap-2">
-              <Mail className="h-5 w-5 text-brutal-pink" />
+            <h1 className="text-xl font-bold text-white flex items-center gap-2">
+              <Mail className="h-5 w-5 text-pink-400" />
               จัดการอีเมล
             </h1>
-            <p className="text-gray-600 mt-1 text-sm">
+            <p className="text-gray-400 mt-1 text-sm">
               จัดการเทมเพลตอีเมล อีเวนต์ และดูสถิติ
             </p>
           </div>
           <button
             onClick={fetchAllData}
-            className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-white hover:bg-gray-50 font-bold text-sm"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
+            className="flex items-center gap-2 px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] hover:bg-[#212328]/5 font-bold text-sm">
             <RefreshCw className="h-3.5 w-3.5" />
             รีเฟรช
           </button>
@@ -450,13 +447,11 @@ export default function AdminEmailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`p-3 border-[2px] border-black flex items-center gap-3 ${
+            className={`p-3 border border-site-border/30 rounded-[12px] shadow-sm flex items-center gap-3 ${
               smtpConfig.configured
                 ? "bg-green-50 border-green-300"
-                : "bg-red-50 border-red-300"
-            }`}
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
+                : "bg-red-500/5 border-red-300"
+            }`}>
             {smtpConfig.configured ? (
               <CheckCircle className="h-4 w-4 text-green-600" />
             ) : (
@@ -469,7 +464,7 @@ export default function AdminEmailPage() {
                   : "SMTP ยังไม่ได้กำหนดค่า"}
               </p>
               {smtpConfig.configured && (
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-gray-400">
                   {smtpConfig.smtp.host}:{smtpConfig.smtp.port} •{" "}
                   {smtpConfig.smtp.from}
                 </p>
@@ -483,8 +478,7 @@ export default function AdminEmailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-4 gap-3"
-          >
+            className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <StatCard
               title="ส่งแล้ว"
               value={stats.totalSent.toLocaleString()}
@@ -516,8 +510,7 @@ export default function AdminEmailPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="border-b-[2px] border-black"
-        >
+          className="border-b-[2px] border-site-border/50">
           <div className="flex gap-0 flex-wrap">
             {[
               {
@@ -549,12 +542,11 @@ export default function AdminEmailPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabType)}
-                className={`flex items-center gap-2 px-4 py-2 font-bold text-sm border-[2px] border-b-0 transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 font-bold text-sm border border-site-border/30 rounded-[12px] shadow-sm border-b-0 transition-all ${
                   activeTab === tab.id
-                    ? "bg-brutal-yellow border-black -mb-[2px]"
-                    : "bg-white border-gray-300 hover:border-gray-400"
-                }`}
-              >
+                    ? "bg-orange-500/10 border-site-border/50 -mb-[2px]"
+                    : "bg-[#212328] border-gray-300 hover:border-gray-400"
+                }`}>
                 {tab.icon}
                 {tab.label}
               </button>
@@ -570,8 +562,7 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-3"
-            >
+              className="space-y-3">
               {/* Toolbar */}
               <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
                 <div className="flex flex-1 gap-2">
@@ -582,14 +573,13 @@ export default function AdminEmailPage() {
                       placeholder="ค้นหาเทมเพลต..."
                       value={templateSearch}
                       onChange={(e) => setTemplateSearch(e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
+                      className="w-full pl-9 pr-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                     />
                   </div>
                   <select
                     value={templateCategory}
                     onChange={(e) => setTemplateCategory(e.target.value)}
-                    className="px-3 py-1.5 border-[2px] border-black bg-white focus:outline-none text-sm"
-                  >
+                    className="px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] focus:outline-none text-sm">
                     <option value="">ทุกหมวดหมู่</option>
                     {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
                       <option key={key} value={key}>
@@ -602,17 +592,14 @@ export default function AdminEmailPage() {
                   {templates.length === 0 && (
                     <button
                       onClick={handleSeedTemplates}
-                      className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 font-bold text-sm"
-                    >
+                      className="flex items-center gap-2 px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#1A1C1E] hover:bg-site-border/30 font-bold text-sm">
                       <RefreshCw className="h-3.5 w-3.5" />
                       สร้างเทมเพลตเริ่มต้น
                     </button>
                   )}
                   <button
                     onClick={() => router.push("/admin/email/new")}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
-                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                  >
+                    className="flex items-center gap-2 px-3 py-1.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold text-sm">
                     <Plus className="h-3.5 w-3.5" />
                     สร้างเทมเพลต
                   </button>
@@ -622,16 +609,15 @@ export default function AdminEmailPage() {
               {/* Templates List */}
               {isLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
+                  <Loader2 className="h-6 w-6 animate-spin text-pink-400" />
                 </div>
               ) : filteredTemplates.length === 0 ? (
-                <div className="text-center py-8 bg-white border-[2px] border-black">
+                <div className="text-center py-8 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
                   <FileText className="h-10 w-10 mx-auto text-gray-300 mb-3" />
                   <p className="text-gray-500 mb-3 text-sm">ไม่พบเทมเพลต</p>
                   <button
                     onClick={handleSeedTemplates}
-                    className="px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
-                  >
+                    className="px-3 py-1.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold text-sm">
                     สร้างเทมเพลตเริ่มต้น
                   </button>
                 </div>
@@ -642,9 +628,7 @@ export default function AdminEmailPage() {
                       key={template.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white border-[2px] border-black p-3 hover:shadow-lg transition-shadow"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                    >
+                      className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-3 hover:shadow-lg transition-shadow">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1.5">
@@ -654,8 +638,7 @@ export default function AdminEmailPage() {
                             <span
                               className={`px-1.5 py-0.5 text-[10px] font-bold border-[1px] ${
                                 CATEGORY_COLORS[template.category]
-                              }`}
-                            >
+                              }`}>
                               {CATEGORY_LABELS[template.category]}
                             </span>
                             {template.isSystem && (
@@ -664,13 +647,13 @@ export default function AdminEmailPage() {
                               </span>
                             )}
                             {!template.isActive && (
-                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 border-[1px] border-red-300">
+                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500/10 text-red-400 border-[1px] border-red-300">
                                 ปิดใช้งาน
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-600 text-xs mb-1.5">
-                            <code className="bg-gray-100 px-1 py-0.5 rounded text-brutal-pink">
+                          <p className="text-gray-400 text-xs mb-1.5">
+                            <code className="bg-[#1A1C1E] px-1 py-0.5 rounded text-pink-400">
                               {template.code}
                             </code>
                             {" • "}
@@ -680,8 +663,7 @@ export default function AdminEmailPage() {
                             {template.placeholders.map((p) => (
                               <span
                                 key={p}
-                                className="px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-600 border border-gray-200"
-                              >
+                                className="px-1.5 py-0.5 text-[10px] bg-[#1A1C1E] text-gray-400 border border-site-border/30">
                                 {`{{${p}}}`}
                               </span>
                             ))}
@@ -692,14 +674,14 @@ export default function AdminEmailPage() {
                             onClick={() =>
                               router.push(`/admin/email/${template.id}`)
                             }
-                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5"
                             title="แก้ไข"
                           >
                             <Edit className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => handleDuplicateTemplate(template.id)}
-                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5"
                             title="คัดลอก"
                           >
                             <Copy className="h-3.5 w-3.5" />
@@ -708,7 +690,7 @@ export default function AdminEmailPage() {
                             onClick={() =>
                               router.push(`/admin/email/${template.id}/preview`)
                             }
-                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5"
                             title="ดูตัวอย่าง"
                           >
                             <Eye className="h-3.5 w-3.5" />
@@ -720,10 +702,10 @@ export default function AdminEmailPage() {
                                 template.isActive,
                               )
                             }
-                            className={`p-1.5 border-[2px] border-black ${
+                            className={`p-1.5 border border-site-border/30 rounded-[12px] shadow-sm ${
                               template.isActive
-                                ? "bg-green-100 hover:bg-green-200"
-                                : "bg-gray-100 hover:bg-gray-200"
+                                ? "bg-green-500/10 hover:bg-green-200"
+                                : "bg-[#1A1C1E] hover:bg-site-border/30"
                             }`}
                             title={
                               template.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"
@@ -738,7 +720,7 @@ export default function AdminEmailPage() {
                           {!template.isSystem && (
                             <button
                               onClick={() => handleDeleteTemplate(template.id)}
-                              className="p-1.5 border-[2px] border-black hover:bg-red-100 text-red-600"
+                              className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-red-500/100/10 text-red-600"
                               title="ลบ"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -759,8 +741,7 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-3"
-            >
+              className="space-y-3">
               {/* Toolbar */}
               <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
                 <div className="relative flex-1 max-w-md">
@@ -770,24 +751,21 @@ export default function AdminEmailPage() {
                     placeholder="ค้นหาอีเวนต์..."
                     value={eventSearch}
                     onChange={(e) => setEventSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
+                    className="w-full pl-9 pr-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                   />
                 </div>
                 <div className="flex gap-2">
                   {events.length === 0 && (
                     <button
                       onClick={handleSeedEvents}
-                      className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-gray-100 hover:bg-gray-200 font-bold text-sm"
-                    >
+                      className="flex items-center gap-2 px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#1A1C1E] hover:bg-site-border/30 font-bold text-sm">
                       <RefreshCw className="h-3.5 w-3.5" />
                       สร้างอีเวนต์เริ่มต้น
                     </button>
                   )}
                   <button
                     onClick={() => router.push("/admin/email/events/new")}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
-                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                  >
+                    className="flex items-center gap-2 px-3 py-1.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold text-sm">
                     <Plus className="h-3.5 w-3.5" />
                     สร้างอีเวนต์
                   </button>
@@ -797,16 +775,15 @@ export default function AdminEmailPage() {
               {/* Events List */}
               {isLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
+                  <Loader2 className="h-6 w-6 animate-spin text-pink-400" />
                 </div>
               ) : filteredEvents.length === 0 ? (
-                <div className="text-center py-8 bg-white border-[2px] border-black">
+                <div className="text-center py-8 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
                   <Bell className="h-10 w-10 mx-auto text-gray-300 mb-3" />
                   <p className="text-gray-500 mb-3 text-sm">ไม่พบอีเวนต์</p>
                   <button
                     onClick={handleSeedEvents}
-                    className="px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
-                  >
+                    className="px-3 py-1.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold text-sm">
                     สร้างอีเวนต์เริ่มต้น
                   </button>
                 </div>
@@ -817,25 +794,23 @@ export default function AdminEmailPage() {
                       key={event.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white border-[2px] border-black p-3 hover:shadow-lg transition-shadow"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                    >
+                      className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-3 hover:shadow-lg transition-shadow">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1.5">
                             <h3 className="font-bold text-base">{event.name}</h3>
                             {!event.isActive && (
-                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 border-[1px] border-red-300">
+                              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500/10 text-red-400 border-[1px] border-red-300">
                                 ปิดใช้งาน
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-600 text-xs mb-1.5">
-                            <code className="bg-gray-100 px-1 py-0.5 rounded text-brutal-pink">
+                          <p className="text-gray-400 text-xs mb-1.5">
+                            <code className="bg-[#1A1C1E] px-1 py-0.5 rounded text-pink-400">
                               {event.code}
                             </code>
                             {" → "}
-                            <code className="bg-gray-100 px-1 py-0.5 rounded text-brutal-blue">
+                            <code className="bg-[#1A1C1E] px-1 py-0.5 rounded text-site-accent">
                               {event.triggerEvent}
                             </code>
                           </p>
@@ -854,7 +829,7 @@ export default function AdminEmailPage() {
                             onClick={() =>
                               router.push(`/admin/email/events/${event.id}`)
                             }
-                            className="p-1.5 border-[2px] border-black hover:bg-gray-100"
+                            className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5"
                             title="แก้ไข"
                           >
                             <Edit className="h-3.5 w-3.5" />
@@ -863,10 +838,10 @@ export default function AdminEmailPage() {
                             onClick={() =>
                               handleToggleEvent(event.id, event.isActive)
                             }
-                            className={`p-1.5 border-[2px] border-black ${
+                            className={`p-1.5 border border-site-border/30 rounded-[12px] shadow-sm ${
                               event.isActive
-                                ? "bg-green-100 hover:bg-green-200"
-                                : "bg-gray-100 hover:bg-gray-200"
+                                ? "bg-green-500/10 hover:bg-green-200"
+                                : "bg-[#1A1C1E] hover:bg-site-border/30"
                             }`}
                             title={event.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                           >
@@ -878,7 +853,7 @@ export default function AdminEmailPage() {
                           </button>
                           <button
                             onClick={() => handleDeleteEvent(event.id)}
-                            className="p-1.5 border-[2px] border-black hover:bg-red-100 text-red-600"
+                            className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-red-500/100/10 text-red-600"
                             title="ลบ"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -909,8 +884,7 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-4"
-            >
+              className="space-y-4">
               <EmailBrandingSection
                 branding={branding}
                 onSave={handleSaveBranding}
@@ -925,9 +899,7 @@ export default function AdminEmailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-white border-[2px] border-black p-4"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 การตั้งค่า SMTP
@@ -940,7 +912,7 @@ export default function AdminEmailPage() {
                       <label className="block text-xs font-bold mb-1">
                         Host
                       </label>
-                      <p className="p-2 bg-gray-100 border-[1px] border-gray-200 text-sm">
+                      <p className="p-2 bg-[#1A1C1E] border-[1px] border-site-border/30 text-sm">
                         {smtpConfig.smtp.host}
                       </p>
                     </div>
@@ -948,7 +920,7 @@ export default function AdminEmailPage() {
                       <label className="block text-xs font-bold mb-1">
                         Port
                       </label>
-                      <p className="p-2 bg-gray-100 border-[1px] border-gray-200 text-sm">
+                      <p className="p-2 bg-[#1A1C1E] border-[1px] border-site-border/30 text-sm">
                         {smtpConfig.smtp.port}
                       </p>
                     </div>
@@ -956,7 +928,7 @@ export default function AdminEmailPage() {
                       <label className="block text-xs font-bold mb-1">
                         From Email
                       </label>
-                      <p className="p-2 bg-gray-100 border-[1px] border-gray-200 text-sm">
+                      <p className="p-2 bg-[#1A1C1E] border-[1px] border-site-border/30 text-sm">
                         {smtpConfig.smtp.from}
                       </p>
                     </div>
@@ -1015,10 +987,10 @@ function EmailLogsSection() {
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      PENDING: "bg-gray-100 text-gray-700 border-gray-300",
-      SENT: "bg-blue-100 text-blue-700 border-blue-300",
-      DELIVERED: "bg-green-100 text-green-700 border-green-300",
-      FAILED: "bg-red-100 text-red-700 border-red-300",
+      PENDING: "bg-[#1A1C1E] text-gray-300 border-gray-300",
+      SENT: "bg-[#181A1D]0/10 text-blue-400 border-blue-300",
+      DELIVERED: "bg-green-500/10 text-green-400 border-green-300",
+      FAILED: "bg-red-500/10 text-red-400 border-red-300",
       BOUNCED: "bg-orange-100 text-orange-700 border-orange-300",
       OPENED: "bg-purple-100 text-purple-700 border-purple-300",
       CLICKED: "bg-pink-100 text-pink-700 border-pink-300",
@@ -1044,17 +1016,15 @@ function EmailLogsSection() {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-brutal-pink" />
+        <Loader2 className="h-6 w-6 animate-spin text-pink-400" />
       </div>
     );
   }
 
   return (
     <div
-      className="bg-white border-[2px] border-black"
-      style={{ boxShadow: "3px 3px 0 0 #000000" }}
-    >
-      <div className="p-3 border-b-[2px] border-black bg-gray-50">
+      className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+      <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
         <h3 className="font-bold flex items-center gap-2 text-base">
           <Clock className="h-4 w-4" />
           ประวัติการส่งอีเมล
@@ -1070,7 +1040,7 @@ function EmailLogsSection() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b-[1px] border-gray-200 bg-gray-50">
+              <tr className="border-b-[1px] border-site-border/30 bg-[#181A1D]">
                 <th className="text-left p-2 font-bold text-sm">ผู้รับ</th>
                 <th className="text-left p-2 font-bold text-sm">หัวข้อ</th>
                 <th className="text-left p-2 font-bold text-sm">สถานะ</th>
@@ -1081,8 +1051,7 @@ function EmailLogsSection() {
               {logs.map((log) => (
                 <tr
                   key={log.id}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
+                  className="border-b border-gray-100 hover:bg-[#212328]/5">
                   <td className="p-2 text-xs">{log.recipient}</td>
                   <td className="p-2 text-xs max-w-xs truncate">
                     {log.subject}
@@ -1091,8 +1060,7 @@ function EmailLogsSection() {
                     <span
                       className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold border-[1px] ${getStatusBadge(
                         log.status,
-                      )}`}
-                    >
+                      )}`}>
                       {getStatusIcon(log.status)}
                       {log.status}
                     </span>
@@ -1108,22 +1076,20 @@ function EmailLogsSection() {
       )}
 
       {totalPages > 1 && (
-        <div className="p-3 border-t-[2px] border-gray-200 flex justify-center gap-2">
+        <div className="p-3 border-t-[2px] border-site-border/30 flex justify-center gap-2">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 border-[2px] border-black disabled:opacity-50 text-sm"
-          >
+            className="px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm disabled:opacity-50 text-sm">
             ก่อนหน้า
           </button>
-          <span className="px-3 py-1.5 bg-gray-100 border-[2px] border-black text-sm">
+          <span className="px-3 py-1.5 bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm text-sm">
             {page} / {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1.5 border-[2px] border-black disabled:opacity-50 text-sm"
-          >
+            className="px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm disabled:opacity-50 text-sm">
             ถัดไป
           </button>
         </div>
@@ -1141,9 +1107,9 @@ interface StatCardProps {
 }
 
 const statColorClasses = {
-  blue: "bg-blue-100 text-blue-700 border-blue-300",
-  green: "bg-green-100 text-green-700 border-green-300",
-  red: "bg-red-100 text-red-700 border-red-300",
+  blue: "bg-[#181A1D]0/10 text-blue-400 border-blue-300",
+  green: "bg-green-500/10 text-green-400 border-green-300",
+  red: "bg-red-500/10 text-red-400 border-red-300",
   pink: "bg-pink-100 text-pink-700 border-pink-300",
 };
 
@@ -1219,13 +1185,13 @@ function EmailBrandingSection({
           type="color"
           value={value}
           onChange={(e) => update(field, e.target.value)}
-          className="w-8 h-8 border-[2px] border-black cursor-pointer"
+          className="w-8 h-8 border border-site-border/30 rounded-[12px] shadow-sm cursor-pointer"
         />
         <input
           type="text"
           value={value}
           onChange={(e) => update(field, e.target.value)}
-          className="flex-1 px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-xs font-mono"
+          className="flex-1 px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-xs font-mono"
         />
       </div>
     </div>
@@ -1235,9 +1201,7 @@ function EmailBrandingSection({
     <div className="space-y-4">
       {/* Logo & Branding */}
       <div
-        className="bg-white border-[2px] border-black p-4"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Image className="h-4 w-4" />
           โลโก้และแบรนด์
@@ -1250,10 +1214,10 @@ function EmailBrandingSection({
               value={form.logoUrl || ""}
               onChange={(e) => update("logoUrl", e.target.value || null)}
               placeholder="https://example.com/logo.png"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
             {form.logoUrl && (
-              <div className="mt-2 p-3 bg-gray-50 border-[2px] border-gray-200 flex items-center justify-center">
+              <div className="mt-2 p-3 bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30 flex items-center justify-center">
                 <img
                   src={form.logoUrl}
                   alt="Logo preview"
@@ -1278,7 +1242,7 @@ function EmailBrandingSection({
                 type="text"
                 value={form.siteName || ""}
                 onChange={(e) => update("siteName", e.target.value)}
-                className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+                className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -1292,7 +1256,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoWidth", parseInt(e.target.value))
                   }
-                  className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+                  className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
                 />
               </div>
               <div>
@@ -1305,7 +1269,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoHeight", parseInt(e.target.value))
                   }
-                  className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+                  className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
                 />
               </div>
             </div>
@@ -1324,9 +1288,7 @@ function EmailBrandingSection({
 
       {/* Colors */}
       <div
-        className="bg-white border-[2px] border-black p-4"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Palette className="h-4 w-4" />
           สีของอีเมล
@@ -1362,9 +1324,7 @@ function EmailBrandingSection({
 
       {/* Header Settings */}
       <div
-        className="bg-white border-[2px] border-black p-4"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
         <h2 className="text-lg font-bold mb-4">ตั้งค่า Header</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ColorInput
@@ -1386,7 +1346,7 @@ function EmailBrandingSection({
               value={form.headerText || ""}
               onChange={(e) => update("headerText", e.target.value || null)}
               placeholder="เช่น Lnwtermgame - บริการเติมเกมออนไลน์"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1424,8 +1384,7 @@ function EmailBrandingSection({
             {!form.logoUrl && !form.headerText && (
               <p
                 style={{ color: form.headerTextColor || "#ffffff" }}
-                className="font-bold text-base"
-              >
+                className="font-bold text-base">
                 {form.siteName || "Lnwtermgame"}
               </p>
             )}
@@ -1435,9 +1394,7 @@ function EmailBrandingSection({
 
       {/* Footer Settings */}
       <div
-        className="bg-white border-[2px] border-black p-4"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
         <h2 className="text-lg font-bold mb-4">ตั้งค่า Footer</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ColorInput
@@ -1459,7 +1416,7 @@ function EmailBrandingSection({
               value={form.footerText || ""}
               onChange={(e) => update("footerText", e.target.value || null)}
               placeholder="ข้อความแสดงใน Footer"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1471,7 +1428,7 @@ function EmailBrandingSection({
               value={form.copyrightText || ""}
               onChange={(e) => update("copyrightText", e.target.value || null)}
               placeholder={`© ${new Date().getFullYear()} Lnwtermgame. All rights reserved.`}
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1503,9 +1460,7 @@ function EmailBrandingSection({
 
       {/* Social Links */}
       <div
-        className="bg-white border-[2px] border-black p-4"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Globe className="h-4 w-4" />
           โซเชียลมีเดียและข้อมูลติดต่อ
@@ -1518,7 +1473,7 @@ function EmailBrandingSection({
               value={form.facebookUrl || ""}
               onChange={(e) => update("facebookUrl", e.target.value || null)}
               placeholder="https://facebook.com/..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1528,7 +1483,7 @@ function EmailBrandingSection({
               value={form.lineUrl || ""}
               onChange={(e) => update("lineUrl", e.target.value || null)}
               placeholder="https://line.me/..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1538,7 +1493,7 @@ function EmailBrandingSection({
               value={form.discordUrl || ""}
               onChange={(e) => update("discordUrl", e.target.value || null)}
               placeholder="https://discord.gg/..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1548,7 +1503,7 @@ function EmailBrandingSection({
               value={form.twitterUrl || ""}
               onChange={(e) => update("twitterUrl", e.target.value || null)}
               placeholder="https://twitter.com/..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1558,7 +1513,7 @@ function EmailBrandingSection({
               value={form.youtubeUrl || ""}
               onChange={(e) => update("youtubeUrl", e.target.value || null)}
               placeholder="https://youtube.com/..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1568,12 +1523,12 @@ function EmailBrandingSection({
               value={form.instagramUrl || ""}
               onChange={(e) => update("instagramUrl", e.target.value || null)}
               placeholder="https://instagram.com/..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
 
-        <hr className="my-4 border-gray-200" />
+        <hr className="my-4 border-site-border/30" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
@@ -1585,7 +1540,7 @@ function EmailBrandingSection({
               value={form.supportEmail || ""}
               onChange={(e) => update("supportEmail", e.target.value || null)}
               placeholder="support@example.com"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1597,7 +1552,7 @@ function EmailBrandingSection({
               value={form.supportPhone || ""}
               onChange={(e) => update("supportPhone", e.target.value || null)}
               placeholder="02-xxx-xxxx"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1607,7 +1562,7 @@ function EmailBrandingSection({
               value={form.websiteUrl || ""}
               onChange={(e) => update("websiteUrl", e.target.value || null)}
               placeholder="https://www.example.com"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1619,12 +1574,12 @@ function EmailBrandingSection({
               value={form.unsubscribeUrl || ""}
               onChange={(e) => update("unsubscribeUrl", e.target.value || null)}
               placeholder="https://www.example.com/unsubscribe"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
 
-        <hr className="my-4 border-gray-200" />
+        <hr className="my-4 border-site-border/30" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
@@ -1634,7 +1589,7 @@ function EmailBrandingSection({
               value={form.companyName || ""}
               onChange={(e) => update("companyName", e.target.value || null)}
               placeholder="บริษัท ตัวอย่าง จำกัด"
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1646,7 +1601,7 @@ function EmailBrandingSection({
               value={form.companyAddress || ""}
               onChange={(e) => update("companyAddress", e.target.value || null)}
               placeholder="123 ถนนตัวอย่าง แขวง/ตำบล..."
-              className="w-full px-2 py-1.5 border-[2px] border-gray-300 focus:border-black focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1654,9 +1609,7 @@ function EmailBrandingSection({
 
       {/* Tracking */}
       <div
-        className="bg-white border-[2px] border-black p-4"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
         <h2 className="text-lg font-bold mb-3">การติดตาม</h2>
         <div className="flex flex-wrap gap-4">
           <label className="flex items-center gap-2 cursor-pointer">
@@ -1685,9 +1638,7 @@ function EmailBrandingSection({
         <button
           onClick={() => onSave(form)}
           disabled={isSaving}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-brutal-pink text-white border-[2px] border-black font-bold disabled:opacity-50 text-sm"
-          style={{ boxShadow: "2px 2px 0 0 #000000" }}
-        >
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold disabled:opacity-50 text-sm">
           {isSaving ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
@@ -1698,9 +1649,7 @@ function EmailBrandingSection({
         <button
           onClick={handlePreview}
           disabled={isLoadingPreview}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-white border-[2px] border-black font-bold hover:bg-gray-50 disabled:opacity-50 text-sm"
-          style={{ boxShadow: "2px 2px 0 0 #000000" }}
-        >
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm font-bold hover:bg-[#212328]/5 disabled:opacity-50 text-sm">
           {isLoadingPreview ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
@@ -1713,25 +1662,22 @@ function EmailBrandingSection({
       {/* Email Preview */}
       {previewHtml && (
         <div
-          className="bg-white border-[2px] border-black"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-        >
-          <div className="p-3 border-b-[2px] border-black bg-gray-50 flex items-center justify-between">
+          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+          <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D] flex items-center justify-between">
             <h3 className="font-bold flex items-center gap-2 text-sm">
               <Eye className="h-4 w-4" />
               ตัวอย่างอีเมล
             </h3>
             <button
               onClick={() => setPreviewHtml("")}
-              className="p-1 hover:bg-gray-200 rounded"
-            >
+              className="p-1 hover:bg-site-border/30 rounded">
               <XCircle className="h-3.5 w-3.5" />
             </button>
           </div>
           <div className="p-3">
             <iframe
               srcDoc={previewHtml}
-              className="w-full border-[1px] border-gray-200 rounded"
+              className="w-full border-[1px] border-site-border/30 rounded"
               style={{ minHeight: 600 }}
               title="Email Preview"
             />
@@ -1746,12 +1692,10 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className={`p-3 border-[2px] ${statColorClasses[color]}`}
-      style={{ boxShadow: "2px 2px 0 0 #000000" }}
-    >
+      className={`p-3 border border-site-border/30 rounded-[12px] shadow-sm ${statColorClasses[color]}`}>
       <div className="flex items-center justify-between">
         <span className="font-medium text-sm">{title}</span>
-        <span className="p-1.5 bg-white border-[1px] border-black">{icon}</span>
+        <span className="p-1.5 bg-[#212328] border-[1px] border-site-border/50">{icon}</span>
       </div>
       <div className="text-xl font-bold mt-1">{value}</div>
     </motion.div>

@@ -86,16 +86,14 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 bottom-0 left-0 w-[80%] max-w-sm bg-white z-50 border-r-[3px] border-black flex flex-col lg:hidden"
-            style={{ boxShadow: "4px 0 0 0 rgba(0,0,0,0.1)" }}
+            className="fixed top-0 bottom-0 left-0 w-[80%] max-w-sm bg-gaming-dark z-50 border-r border-zinc-800/30 flex flex-col lg:hidden shadow-2xl"
           >
             {/* Header */}
-            <div className="h-16 flex items-center justify-between px-4 border-b-[3px] border-black bg-brutal-yellow">
-              <span className="font-black text-xl">MENU</span>
+            <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-800/30">
+              <span className="font-black text-xl text-white">MENU</span>
               <button
                 onClick={onClose}
-                className="w-10 h-10 bg-white border-[2px] border-black flex items-center justify-center hover:bg-gray-100 active:translate-y-0.5 transition-all"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                className="w-10 h-10 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-[#212328]/10 transition-all"
               >
                 <X size={24} />
               </button>
@@ -106,11 +104,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               {/* User Section */}
               {isAuthenticated ? (
                 <div
-                  className="bg-gray-50 border-[2px] border-black p-4 space-y-3"
-                  style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                  className="glass-card rounded-xl p-4 space-y-3"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-white border-[2px] border-black flex items-center justify-center overflow-hidden">
+                    <div className="w-12 h-12 rounded-full border-2 border-zinc-600 flex items-center justify-center overflow-hidden">
                       <img
                         src={
                           user?.avatar ||
@@ -121,16 +118,16 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold truncate">{user?.username}</p>
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="font-bold truncate text-white">{user?.username}</p>
+                      <p className="text-xs text-zinc-500 truncate">
                         {user?.email}
                       </p>
                     </div>
                   </div>
 
                   {user?.isPremium && (
-                    <div className="bg-brutal-yellow border border-black px-2 py-1 text-xs font-bold inline-flex items-center">
-                      <Star size={12} className="mr-1 fill-black" /> Premium
+                    <div className="bg-gaming-btn rounded-lg px-2 py-1 text-xs font-bold inline-flex items-center text-white">
+                      <Star size={12} className="mr-1 fill-white" /> Premium
                     </div>
                   )}
 
@@ -138,14 +135,14 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                     <Link
                       href="/dashboard/account"
                       onClick={onClose}
-                      className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50"
+                      className="text-xs border border-zinc-700 bg-[#212328]/5 rounded-lg p-2 text-center text-zinc-300 hover:bg-[#212328]/10 transition-colors"
                     >
                       {tNav("account")}
                     </Link>
                     <Link
                       href="/dashboard/orders"
                       onClick={onClose}
-                      className="text-xs border border-black bg-white p-2 text-center hover:bg-gray-50"
+                      className="text-xs border border-zinc-700 bg-[#212328]/5 rounded-lg p-2 text-center text-zinc-300 hover:bg-[#212328]/10 transition-colors"
                     >
                       {tNav("orders")}
                     </Link>
@@ -155,7 +152,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 <Link
                   href="/login"
                   onClick={onClose}
-                  className="flex items-center justify-center w-full bg-brutal-pink text-white font-bold py-3 border-[3px] border-black shadow-brutal-mobile active:translate-y-[2px] active:shadow-none transition-all"
+                  className="flex items-center justify-center w-full bg-gaming-btn text-white font-bold py-3 rounded-xl border border-blue-500 active:scale-95 transition-all"
                 >
                   <User size={20} className="mr-2" />
                   {tNav("login")} / {tNav("register")}
@@ -177,16 +174,16 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       href={item.href}
                       onClick={onClose}
                       className={cn(
-                        "flex items-center p-3 border-[2px] border-black transition-all active:translate-y-[2px]",
+                        "flex items-center p-3 rounded-xl transition-all",
                         isActive
-                          ? "bg-brutal-blue text-black font-bold shadow-brutal-mobile"
-                          : "bg-white hover:bg-gray-50",
+                          ? "bg-gaming-btn text-white font-bold"
+                          : "text-zinc-400 hover:bg-[#212328]/5 hover:text-white",
                       )}
                     >
                       <span
                         className={cn(
                           "mr-3",
-                          isActive ? "text-black" : "text-gray-500",
+                          isActive ? "text-white" : "text-zinc-500",
                         )}
                       >
                         {item.icon}
@@ -201,10 +198,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
             {/* Footer / Logout */}
             {isAuthenticated && (
-              <div className="p-4 border-t-[3px] border-black bg-gray-50">
+              <div className="p-4 border-t border-zinc-800/30">
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center w-full py-3 text-red-500 font-bold border-[2px] border-red-500 hover:bg-red-50 transition-colors"
+                  className="flex items-center justify-center w-full py-3 text-red-400 font-bold border border-red-500/30/30 rounded-xl hover:bg-red-500/10 transition-colors"
                 >
                   <LogOut size={20} className="mr-2" />
                   {tUserMenu("logout")}

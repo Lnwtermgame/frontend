@@ -193,7 +193,7 @@ export default function OAuthProvidersPage() {
     return (
       <AdminLayout title="OAuth Providers">
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="h-8 w-8 text-brutal-pink animate-spin" />
+          <RefreshCw className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -205,12 +205,12 @@ export default function OAuthProvidersPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-yellow mr-2"></span>
+            <span className="w-1.5 h-6 bg-orange-500/10 mr-2"></span>
             <div>
-              <h1 className="text-2xl font-bold text-black">
+              <h1 className="text-2xl font-bold text-white">
                 จัดการ OAuth Providers
               </h1>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-400 text-sm">
                 เปิด/ปิด การล็อกอินภายนอก (Google, Discord, ฯลฯ)
               </p>
             </div>
@@ -219,9 +219,7 @@ export default function OAuthProvidersPage() {
             <button
               onClick={fetchProviders}
               disabled={loading}
-              className="bg-white text-black border-[3px] border-black px-4 py-2 hover:bg-gray-50 transition-colors flex items-center font-medium disabled:opacity-60"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-[#212328] text-white border border-site-border/30 rounded-[12px] px-4 py-2 hover:bg-[#212328]/5 transition-colors flex items-center font-medium disabled:opacity-60">
               <RefreshCw
                 className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
               />
@@ -229,9 +227,7 @@ export default function OAuthProvidersPage() {
             </button>
             <button
               onClick={handleCreateNew}
-              className="bg-brutal-pink text-white border-[3px] border-black px-4 py-2 hover:opacity-90 transition-colors flex items-center font-medium"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-pink-500 text-white border border-site-border/30 rounded-[12px] px-4 py-2 hover:opacity-90 transition-colors flex items-center font-medium">
               <Plus className="w-4 h-4 mr-2" />
               เพิ่ม Provider
             </button>
@@ -239,13 +235,13 @@ export default function OAuthProvidersPage() {
         </div>
 
         {/* Info Banner */}
-        <div className="bg-brutal-blue border-[3px] border-black p-4 flex items-start gap-3">
-          <Info className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
+        <div className="bg-site-accent border border-site-border/30 rounded-[12px] p-4 flex items-start gap-3">
+          <Info className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-bold text-black">
+            <h3 className="font-bold text-white">
               การตั้งค่า OAuth ผ่าน Environment Variables
             </h3>
-            <p className="text-sm text-black mt-1">
+            <p className="text-sm text-white mt-1">
               ข้อมูลรับรอง (Client ID, Client Secret) ถูกย้ายไปอยู่ในไฟล์{" "}
               <code>.env</code> แล้ว ไม่จำเป็นต้องตั้งค่าในนี้อีกต่อไป
               หน้านี้ใช้สำหรับเปิด/ปิดการใช้งาน Provider เท่านั้น
@@ -256,17 +252,13 @@ export default function OAuthProvidersPage() {
         {/* Stats Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div
-            className="bg-white border-[3px] border-black p-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <p className="text-gray-600 text-xs mb-1">ทั้งหมด</p>
-            <p className="text-2xl font-black text-black">{providers.length}</p>
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
+            <p className="text-gray-400 text-xs mb-1">ทั้งหมด</p>
+            <p className="text-2xl font-black text-white">{providers.length}</p>
           </div>
           <div
-            className="bg-white border-[3px] border-black p-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <p className="text-gray-600 text-xs mb-1">เปิดใช้งาน</p>
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
+            <p className="text-gray-400 text-xs mb-1">เปิดใช้งาน</p>
             <p className="text-2xl font-black text-green-600">
               {providers.filter((p) => p.isEnabled).length}
             </p>
@@ -276,22 +268,20 @@ export default function OAuthProvidersPage() {
         {/* Providers Grid */}
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <RefreshCw className="h-8 w-8 text-brutal-pink animate-spin" />
+            <RefreshCw className="h-8 w-8 text-pink-400 animate-spin" />
           </div>
         ) : providers.length === 0 ? (
-          <div className="text-center py-12 bg-white border-[3px] border-black">
+          <div className="text-center py-12 bg-[#212328] border border-site-border/30 rounded-[16px]">
             <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-black mb-2">
+            <h3 className="text-lg font-bold text-white mb-2">
               ยังไม่มี OAuth Provider
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-400 mb-4">
               เพิ่ม Provider เพื่อเปิดใช้งานการล็อกอินภายนอก
             </p>
             <button
               onClick={handleCreateNew}
-              className="bg-brutal-pink text-white border-[3px] border-black px-6 py-2 hover:opacity-90 transition-colors font-medium"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-pink-500 text-white border border-site-border/30 rounded-[12px] px-6 py-2 hover:opacity-90 transition-colors font-medium">
               <Plus className="w-4 h-4 inline mr-2" />
               เพิ่ม Provider
             </button>
@@ -303,11 +293,9 @@ export default function OAuthProvidersPage() {
                 key={provider.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white border-[3px] border-black overflow-hidden"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
-              >
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
                 {/* Provider Header */}
-                <div className="p-4 border-b-[3px] border-black bg-gray-50">
+                <div className="p-4 border-b-[3px] border-site-border/50 bg-[#181A1D]">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       {provider.iconUrl ? (
@@ -317,12 +305,12 @@ export default function OAuthProvidersPage() {
                           className="w-10 h-10 object-contain"
                         />
                       ) : (
-                        <div className="w-10 h-10 bg-gray-200 border-[2px] border-black flex items-center justify-center">
+                        <div className="w-10 h-10 bg-site-border/30 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center">
                           <Globe className="w-5 h-5 text-gray-500" />
                         </div>
                       )}
                       <div>
-                        <h3 className="font-bold text-black">
+                        <h3 className="font-bold text-white">
                           {provider.displayName}
                         </h3>
                         <p className="text-xs text-gray-500 font-mono">
@@ -332,13 +320,13 @@ export default function OAuthProvidersPage() {
                     </div>
                     <button
                       onClick={() => handleToggle(provider)}
-                      className={`relative w-14 h-8 border-[3px] border-black transition-colors ${
+                      className={`relative w-14 h-8 border border-site-border/30 rounded-[12px] transition-colors ${
                         provider.isEnabled ? "bg-green-500" : "bg-gray-300"
                       }`}
                       title={provider.isEnabled ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                     >
                       <span
-                        className={`absolute top-0.5 w-5 h-5 bg-white border-[2px] border-black transition-transform ${
+                        className={`absolute top-0.5 w-5 h-5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm transition-transform ${
                           provider.isEnabled ? "left-7" : "left-0.5"
                         }`}
                       />
@@ -351,40 +339,37 @@ export default function OAuthProvidersPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-500">สถานะ</span>
                     <span
-                      className={`px-2 py-0.5 text-xs font-bold border-[2px] ${
+                      className={`px-2 py-0.5 text-xs font-bold border border-site-border/30 rounded-[12px] shadow-sm ${
                         provider.isEnabled
-                          ? "bg-green-100 text-green-700 border-green-500"
-                          : "bg-gray-100 text-gray-600 border-gray-400"
-                      }`}
-                    >
+                          ? "bg-green-500/10 text-green-400 border-green-500/30/30"
+                          : "bg-[#1A1C1E] text-gray-400 border-gray-400"
+                      }`}>
                       {provider.isEnabled ? "เปิดใช้งาน" : "ปิดใช้งาน"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-500">ลำดับ</span>
-                    <span className="text-xs font-mono bg-gray-100 px-2 py-0.5">
+                    <span className="text-xs font-mono bg-[#1A1C1E] px-2 py-0.5">
                       {provider.sortOrder}
                     </span>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="p-4 border-t-[3px] border-black flex gap-2">
+                <div className="p-4 border-t-[3px] border-site-border/50 flex gap-2">
                   <button
                     onClick={() => handleEdit(provider)}
-                    className="flex-1 py-2 text-sm bg-white text-black border-[2px] border-black hover:bg-gray-100 transition-colors font-medium flex items-center justify-center gap-2"
-                  >
+                    className="flex-1 py-2 text-sm bg-[#212328] text-white border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors font-medium flex items-center justify-center gap-2">
                     <Pencil className="w-4 h-4" /> แก้ไข
                   </button>
                   <button
                     onClick={() => handleDelete(provider)}
                     disabled={provider.isEnabled}
-                    className={`py-2 px-4 text-sm border-[2px] border-black transition-colors flex items-center justify-center ${
+                    className={`py-2 px-4 text-sm border border-site-border/30 rounded-[12px] shadow-sm transition-colors flex items-center justify-center ${
                       provider.isEnabled
                         ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                        : "bg-red-100 text-red-700 hover:bg-red-200"
-                    }`}
-                  >
+                        : "bg-red-500/10 text-red-400 hover:bg-red-200"
+                    }`}>
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -399,11 +384,9 @@ export default function OAuthProvidersPage() {
           createPortal(
             <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
               <div
-                className="bg-white border-[3px] border-black w-full max-w-lg max-h-[90vh] overflow-y-auto my-8"
-                style={{ boxShadow: "8px 8px 0 0 #000000" }}
-              >
-                <div className="flex items-center justify-between p-4 border-b-[3px] border-black bg-brutal-yellow sticky top-0 z-10">
-                  <h2 className="text-xl font-bold text-black flex items-center gap-2">
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-lg max-h-[90vh] overflow-y-auto my-8">
+                <div className="flex items-center justify-between p-4 border-b-[3px] border-site-border/50 bg-orange-500/10 sticky top-0 z-10">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
                     <Globe className="w-5 h-5" />
                     {editingProvider
                       ? `แก้ไข ${editingProvider.displayName}`
@@ -411,8 +394,7 @@ export default function OAuthProvidersPage() {
                   </h2>
                   <button
                     onClick={() => setShowModal(false)}
-                    className="p-2 text-black hover:bg-black/10 transition-colors border-[2px] border-black"
-                  >
+                    className="p-2 text-white hover:bg-black/10 transition-colors border border-site-border/30 rounded-[12px] shadow-sm">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -420,8 +402,8 @@ export default function OAuthProvidersPage() {
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                   {/* Preset buttons (for new providers) */}
                   {!editingProvider && (
-                    <div className="bg-gray-50 border-[2px] border-black p-4">
-                      <label className="block text-sm font-bold text-black mb-3 flex items-center gap-2">
+                    <div className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-4">
+                      <label className="block text-sm font-bold text-white mb-3 flex items-center gap-2">
                         <Globe className="w-4 h-4" /> เลือกจาก Template
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -431,8 +413,7 @@ export default function OAuthProvidersPage() {
                               key={presetName}
                               type="button"
                               onClick={() => handlePresetSelect(presetName)}
-                              className="px-3 py-2 text-sm bg-white text-black border-[2px] border-black hover:bg-brutal-yellow transition-colors font-medium"
-                            >
+                              className="px-3 py-2 text-sm bg-[#212328] text-white border border-site-border/30 rounded-[12px] shadow-sm hover:bg-orange-500/10 transition-colors font-medium">
                               {DEFAULT_OAUTH_CONFIGS[presetName].displayName}
                             </button>
                           ),
@@ -442,13 +423,13 @@ export default function OAuthProvidersPage() {
                   )}
 
                   {/* Basic Info */}
-                  <div className="bg-white border-[2px] border-black p-4">
-                    <h3 className="text-sm font-bold text-black mb-4 flex items-center gap-2">
+                  <div className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
+                    <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
                       <Globe className="w-4 h-4" /> ข้อมูลพื้นฐาน
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold text-black mb-2">
+                        <label className="block text-xs font-bold text-white mb-2">
                           Provider Name *
                         </label>
                         <input
@@ -459,14 +440,14 @@ export default function OAuthProvidersPage() {
                           }
                           placeholder="google, discord, facebook"
                           disabled={!!editingProvider}
-                          className="w-full px-3 py-2 border-[2px] border-black bg-white text-black disabled:opacity-50 disabled:bg-gray-100 text-sm"
+                          className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] text-white disabled:opacity-50 disabled:bg-[#1A1C1E] text-sm"
                         />
                         <p className="text-xs text-gray-500 mt-1">
                           ใช้ตัวพิมพ์เล็ก ไม่มีช่องว่าง (ต้องตรงกับชื่อใน .env)
                         </p>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-black mb-2">
+                        <label className="block text-xs font-bold text-white mb-2">
                           Display Name *
                         </label>
                         <input
@@ -479,7 +460,7 @@ export default function OAuthProvidersPage() {
                             })
                           }
                           placeholder="Google, Discord, Facebook"
-                          className="w-full px-3 py-2 border-[2px] border-black bg-white text-black text-sm"
+                          className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] text-white text-sm"
                         />
                         <p className="text-xs text-gray-500 mt-1">
                           ชื่อที่แสดงให้ผู้ใช้เห็น
@@ -489,13 +470,13 @@ export default function OAuthProvidersPage() {
                   </div>
 
                   {/* Display Settings */}
-                  <div className="bg-white border-[2px] border-black p-4">
-                    <h3 className="text-sm font-bold text-black mb-4 flex items-center gap-2">
+                  <div className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
+                    <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
                       <Image className="w-4 h-4" /> การตั้งค่าการแสดงผล
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold text-black mb-2 flex items-center gap-1">
+                        <label className="block text-xs font-bold text-white mb-2 flex items-center gap-1">
                           <Image className="w-4 h-4" /> Icon URL
                         </label>
                         <input
@@ -508,14 +489,14 @@ export default function OAuthProvidersPage() {
                             })
                           }
                           placeholder="/brand-icons/google.svg"
-                          className="w-full px-3 py-2 border-[2px] border-black bg-white text-black font-mono text-sm"
+                          className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] text-white font-mono text-sm"
                         />
                         <p className="text-xs text-gray-500 mt-1">
                           ไอคอนที่แสดงบนหน้า Login (ใช้ path หรือ URL)
                         </p>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-black mb-2 flex items-center gap-1">
+                        <label className="block text-xs font-bold text-white mb-2 flex items-center gap-1">
                           <SortAsc className="w-4 h-4" /> Sort Order
                         </label>
                         <input
@@ -527,7 +508,7 @@ export default function OAuthProvidersPage() {
                               sortOrder: parseInt(e.target.value) || 0,
                             })
                           }
-                          className="w-full px-3 py-2 border-[2px] border-black bg-white text-black text-sm"
+                          className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] text-white text-sm"
                         />
                         <p className="text-xs text-gray-500 mt-1">
                           ตัวเลขน้อยแสดงก่อน
@@ -537,38 +518,36 @@ export default function OAuthProvidersPage() {
                   </div>
 
                   {/* Credentials Info */}
-                  <div className="bg-brutal-blue border-[2px] border-black p-4">
-                    <h3 className="text-sm font-bold text-black mb-3 flex items-center gap-2">
+                  <div className="bg-site-accent border border-site-border/30 rounded-[12px] shadow-sm p-4">
+                    <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
                       <Info className="w-4 h-4" /> การตั้งค่าข้อมูลรับรอง
                     </h3>
-                    <p className="text-sm text-black mb-3">
+                    <p className="text-sm text-white mb-3">
                       ข้อมูลรับรอง (Client ID, Client Secret)
                       ถูกย้ายไปอยู่ในไฟล์
-                      <code className="bg-white/50 px-1 py-0.5 border border-black mx-1">
+                      <code className="bg-[#212328]/50 px-1 py-0.5 border border-site-border/50 mx-1">
                         services/frontend/.env
                       </code>{" "}
                       แล้ว
                     </p>
-                    <ul className="text-xs text-black space-y-1 list-disc list-inside">
+                    <ul className="text-xs text-white space-y-1 list-disc list-inside">
                       <li>DISCORD_CLIENT_ID / DISCORD_CLIENT_SECRET</li>
                       <li>GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET</li>
                     </ul>
                   </div>
 
                   {/* Submit Buttons */}
-                  <div className="flex justify-end gap-3 pt-6 border-t-[3px] border-black bg-gray-50 -mx-6 px-6 -mb-6">
+                  <div className="flex justify-end gap-3 pt-6 border-t-[3px] border-site-border/50 bg-[#181A1D] -mx-6 px-6 -mb-6">
                     <button
                       type="button"
                       onClick={() => setShowModal(false)}
-                      className="px-6 py-2 text-black border-[2px] border-black hover:bg-gray-100 transition-colors font-medium"
-                    >
+                      className="px-6 py-2 text-white border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors font-medium">
                       ยกเลิก
                     </button>
                     <button
                       type="submit"
                       disabled={saving}
-                      className="flex items-center gap-2 px-6 py-2 bg-brutal-green text-black border-[2px] border-black hover:opacity-90 disabled:opacity-50 transition-colors font-bold"
-                    >
+                      className="flex items-center gap-2 px-6 py-2 bg-green-500 text-white border border-site-border/30 rounded-[12px] shadow-sm hover:opacity-90 disabled:opacity-50 transition-colors font-bold">
                       {saving ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
                       ) : (

@@ -196,8 +196,8 @@ export default function CouponsPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
+          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -211,105 +211,103 @@ export default function CouponsPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="relative mb-4">
+      <div className="relative mb-6">
         <motion.h2
-          className="text-lg font-bold text-black mb-1 relative flex items-center"
+          className="text-2xl font-bold text-white mb-2 relative flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
+          <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
           {t("title")}
         </motion.h2>
-        <p className="text-gray-600 text-xs relative font-bold">
+        <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
           {t("subtitle", { count: activeCouponCount })}
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
-        <div className="relative w-full sm:w-64">
+      <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+        <div className="relative w-full sm:w-72">
           <input
             type="text"
             placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black pl-8 transition-all"
+            className="w-full bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] pl-10 transition-all placeholder-gray-500"
           />
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
 
         <div className="relative w-full sm:w-auto ml-auto">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="appearance-none w-full bg-white border-[2px] border-gray-300 px-3 py-1.5 pr-8 text-xs text-black focus:outline-none focus:border-black transition-all cursor-pointer"
+            className="appearance-none w-full sm:w-48 bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 pr-10 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] transition-all cursor-pointer"
           >
             <option value="all">{t("filter.all")}</option>
             <option value="active">{t("filter.active")}</option>
             <option value="used">{t("filter.used")}</option>
             <option value="expired">{t("filter.expired")}</option>
           </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 pointer-events-none" />
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+            <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
+              <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
             </div>
           ) : filteredCoupons.length === 0 ? (
             <motion.div
-              className="bg-white border-[3px] border-black p-6 text-center"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-8 text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Ticket className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-              <h2 className="text-lg font-bold text-black mb-1">
+              <div className="w-16 h-16 bg-[#1A1C1E] rounded-full border border-site-border flex items-center justify-center mx-auto mb-4">
+                <Ticket className="h-8 w-8 text-gray-500" />
+              </div>
+              <h2 className="text-xl font-bold text-white mb-2">
                 {t("no_coupons")}
               </h2>
-              <p className="text-gray-600 text-xs mb-4 font-bold">
+              <p className="text-gray-400 text-sm mb-6 max-w-sm mx-auto">
                 {searchTerm
                   ? t("no_search_results", { query: searchTerm })
                   : t("no_coupons_desc")}
               </p>
               <Link
                 href="/games"
-                className="bg-black text-white border-[3px] border-black px-3 py-1.5 text-xs font-bold inline-flex items-center hover:bg-gray-800 transition-all"
-                style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all shadow-[0_0_15px_rgba(103,176,186,0.3)] text-sm"
               >
                 {t("start_shopping")}
               </Link>
             </motion.div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {filteredCoupons.map((coupon, index) => {
                 const status = getCouponStatus(coupon);
                 return (
                   <motion.div
                     key={coupon.userCouponId || coupon.id}
-                    className="bg-white border-[3px] border-black overflow-hidden"
-                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                    className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    whileHover={{ y: -2 }}
                   >
                     <div
-                      className="p-3 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
+                      className="p-4 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-[#1A1C1E]/50 transition-colors"
                       onClick={() => toggleCouponExpansion(coupon.id)}
                     >
-                      <div className="flex items-center mb-2 sm:mb-0">
-                        <div className="h-10 w-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center mr-3">
-                          <Ticket className="h-5 w-5 text-black" />
+                      <div className="flex items-center mb-3 sm:mb-0">
+                        <div className="h-12 w-12 bg-[#1A1C1E] border border-site-border rounded-lg flex items-center justify-center mr-4 shrink-0 text-[var(--site-accent)]">
+                          <Ticket className="h-6 w-6" />
                         </div>
                         <div>
-                          <div className="text-black font-bold text-base">
+                          <div className="text-white font-semibold text-base mb-1">
                             {coupon.description ||
                               `${tCommon("member")} ${coupon.discountPercentage}%`}
                           </div>
-                          <div className="text-gray-600 text-xs font-bold">
+                          <div className="text-gray-400 text-sm">
                             {coupon.minPurchase
                               ? t("details.min_purchase", { amount: formatCurrency(coupon.minPurchase) })
                               : t("details.no_min_purchase")}
@@ -317,14 +315,14 @@ export default function CouponsPage() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
-                        <div className="mr-3">
+                        <div className="mr-4">
                           <span
-                            className={`text-[10px] px-2 py-0.5 border-[2px] border-black inline-flex items-center font-bold
+                            className={`px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide border
                             ${status === "active"
-                                ? "bg-brutal-green text-black"
+                                ? "bg-green-500/10 text-green-500 border-green-500/30/20"
                                 : status === "used"
-                                  ? "bg-gray-300 text-black"
-                                  : "bg-gray-200 text-gray-600"
+                                  ? "bg-[#181A1D]0/10 text-gray-400 border-gray-500/20"
+                                  : "bg-red-500/10 text-red-500 border-red-500/30/20"
                               }`}
                           >
                             {status === "active"
@@ -334,57 +332,59 @@ export default function CouponsPage() {
                                 : t("status.expired")}
                           </span>
                         </div>
-                        {expandedCoupons.includes(coupon.id) ? (
-                          <ChevronUp className="h-4 w-4 text-gray-600" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 text-gray-600" />
-                        )}
+                        <div className="p-1.5 rounded-lg bg-[#1A1C1E] border border-site-border">
+                          {expandedCoupons.includes(coupon.id) ? (
+                            <ChevronUp className="h-4 w-4 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-gray-400" />
+                          )}
+                        </div>
                       </div>
                     </div>
 
                     {expandedCoupons.includes(coupon.id) && (
-                      <div className="p-3 border-t-[2px] border-black bg-gray-50">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          <div className="bg-white p-3 border-[2px] border-black">
-                            <h3 className="text-black text-xs font-bold mb-2 flex items-center gap-1.5">
-                              <Clock size={12} className="text-black" />{" "}
+                      <div className="p-4 border-t border-site-border bg-[#1A1C1E]/50">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-[#1A1C1E] p-4 rounded-xl border border-site-border">
+                            <h3 className="text-white text-sm font-semibold mb-3 flex items-center gap-2">
+                              <Clock size={14} className="text-[var(--site-accent)]" />{" "}
                               {t("details.title")}
                             </h3>
-                            <div className="space-y-1.5 text-xs">
-                              <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                <span className="text-gray-600 font-bold">
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
+                                <span className="text-gray-400">
                                   {t("details.discount")}
                                 </span>
-                                <span className="text-black font-bold">
+                                <span className="text-[var(--site-accent)] font-semibold">
                                   {coupon.discountPercentage}%
                                 </span>
                               </div>
                               {coupon.maxDiscount && (
-                                <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                  <span className="text-gray-600 font-bold">
+                                <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
+                                  <span className="text-gray-400">
                                     {t("details.max_discount")}
                                   </span>
-                                  <span className="text-black font-bold">
+                                  <span className="text-white font-medium">
                                     {formatCurrency(coupon.maxDiscount)}
                                   </span>
                                 </div>
                               )}
-                              <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                <span className="text-gray-600 font-bold">
+                              <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
+                                <span className="text-gray-400">
                                   {t("details.valid_until")}
                                 </span>
                                 <span
-                                  className={`font-bold ${status === "expired" ? "text-red-600" : "text-black"}`}
+                                  className={`font-medium ${status === "expired" ? "text-red-500" : "text-white"}`}
                                 >
                                   {new Date(coupon.endDate).toLocaleDateString()}
                                 </span>
                               </div>
                               {coupon.isUsed && coupon.usedAt && (
-                                <div className="flex justify-between p-1.5 border-b border-gray-200">
-                                  <span className="text-gray-600 font-bold">
+                                <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
+                                  <span className="text-gray-400">
                                     {t("details.used_at")}
                                   </span>
-                                  <span className="text-black font-bold">
+                                  <span className="text-white font-medium">
                                     {new Date(coupon.usedAt).toLocaleDateString()}
                                   </span>
                                 </div>
@@ -392,9 +392,9 @@ export default function CouponsPage() {
                             </div>
                           </div>
 
-                          <div className="bg-white p-3 border-[2px] border-black">
-                            <div className="flex justify-between items-center mb-2">
-                              <h3 className="text-black text-xs font-bold">
+                          <div className="bg-[#1A1C1E] p-4 rounded-xl border border-site-border flex flex-col justify-center">
+                            <div className="flex justify-between items-center mb-3">
+                              <h3 className="text-white text-sm font-semibold">
                                 {t("add_coupon")}
                               </h3>
                               {status === "active" && (
@@ -403,31 +403,31 @@ export default function CouponsPage() {
                                     e.stopPropagation();
                                     copyToClipboard(coupon.code, coupon.id);
                                   }}
-                                  className="text-[10px] text-black underline font-bold flex items-center transition-colors"
+                                  className="text-xs text-[var(--site-accent)] hover:text-white font-medium flex items-center transition-colors"
                                 >
                                   {copiedCode === coupon.id ? (
                                     <>
-                                      <Check className="h-3 w-3 mr-1" />
+                                      <Check className="h-3.5 w-3.5 mr-1" />
                                       {t("details.copied")}
                                     </>
                                   ) : (
                                     <>
-                                      <Copy className="h-3 w-3 mr-1" />
+                                      <Copy className="h-3.5 w-3.5 mr-1" />
                                       {t("details.copy_code")}
                                     </>
                                   )}
                                 </button>
                               )}
                             </div>
-                            <div className="p-2 bg-gray-100 border-[2px] border-black font-mono text-black text-xs select-all text-center tracking-wider font-bold">
+                            <div className="p-3 bg-[#222427] border border-site-border rounded-lg font-mono text-[var(--site-accent)] text-lg select-all text-center tracking-widest font-bold">
                               {coupon.code}
                             </div>
 
                             {status === "active" && (
-                              <div className="mt-3 text-center">
+                              <div className="mt-4">
                                 <Link
                                   href="/games"
-                                  className="w-full bg-brutal-blue border-[2px] border-black hover:bg-brutal-blue/80 text-black inline-flex items-center justify-center text-xs py-1.5 transition-all font-bold"
+                                  className="w-full rounded-lg bg-[#222427] border border-site-border hover:border-[var(--site-accent)]/50 hover:bg-[#2A2D31] text-white inline-flex items-center justify-center text-sm py-2.5 transition-all shadow-sm font-medium"
                                 >
                                   {t("details.use_now")}
                                 </Link>
@@ -444,21 +444,19 @@ export default function CouponsPage() {
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <motion.div
-            className="bg-white border-[3px] border-black p-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-3 flex items-center gap-2 text-sm">
-              <Plus size={16} className="text-black" /> {t("add_coupon")}
+            <h2 className="text-white font-bold mb-4 flex items-center gap-2 text-base">
+              <Plus size={18} className="text-[var(--site-accent)]" /> {t("add_coupon")}
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div>
-                <label className="block text-xs text-gray-600 mb-1.5 font-bold">
+                <label className="block text-sm text-gray-400 mb-2 font-medium">
                   {t("code_label")}
                 </label>
                 <div className="flex gap-2">
@@ -471,30 +469,30 @@ export default function CouponsPage() {
                       setErrorMessage("");
                     }}
                     onKeyPress={(e) => e.key === "Enter" && handleClaimCoupon()}
-                    className="flex-1 bg-white border-[2px] border-gray-300 px-3 py-1.5 text-xs text-black focus:outline-none focus:border-black transition-all"
+                    className="flex-1 min-w-0 bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] transition-all placeholder-gray-500"
                   />
                   <button
                     onClick={handleClaimCoupon}
-                    className="bg-black border-[2px] border-black text-white px-3 py-1.5 flex items-center hover:bg-gray-800 transition-all"
-                    style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                    className="bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/80 text-white rounded-lg px-3 flex items-center justify-center transition-all shadow-[0_0_10px_rgba(103,176,186,0.2)]"
                   >
-                    <Plus className="h-3.5 w-3.5" />
+                    <Plus className="h-5 w-5" />
                   </button>
                 </div>
                 {errorMessage && (
                   <motion.div
-                    className={`mt-2 text-[10px] flex items-start p-1.5 border-[2px] ${errorMessage.includes(t("validating")) || errorMessage.includes("กำลัง")
-                      ? "text-yellow-700 bg-yellow-50 border-yellow-500"
-                      : "text-red-600 bg-red-50 border-red-500"
+                    className={`mt-3 text-xs flex items-start p-2.5 rounded-lg border ${errorMessage.includes(t("validating")) || errorMessage.includes("กำลัง")
+                      ? "text-yellow-500 bg-yellow-500/10 border-yellow-500/30/20"
+                      : "text-red-500 bg-red-500/10 border-red-500/30/20"
                       }`}
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                   >
-                    <AlertCircle className="h-3 w-3 mt-0.5 mr-1 flex-shrink-0" />
-                    <span className="font-bold">{errorMessage}</span>
+                    <AlertCircle className="h-4 w-4 mt-0.5 mr-2 flex-shrink-0" />
+                    <span className="font-medium">{errorMessage}</span>
                   </motion.div>
                 )}
-                <p className="text-gray-600 text-[10px] mt-1.5 font-bold">
+                <p className="text-gray-500 text-xs mt-3 flex items-center gap-1.5">
+                  <AlertCircle className="h-3 w-3 text-[var(--site-accent)]" />
                   {t("expiry_hint")}
                 </p>
               </div>
@@ -503,53 +501,51 @@ export default function CouponsPage() {
 
           {/* How to Use Section */}
           <motion.div
-            className="bg-white border-[3px] border-black p-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            whileHover={{ y: -2 }}
           >
-            <h2 className="text-black font-bold mb-3 text-sm">
+            <h2 className="text-white font-bold mb-4 flex items-center gap-2 text-base">
               {t("how_to_use.title")}
             </h2>
-            <div className="space-y-3">
-              <div className="flex">
-                <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <div className="h-6 w-6 rounded-full bg-[#1A1C1E] border border-site-border text-[var(--site-accent)] flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
                   1
                 </div>
-                <div>
-                  <p className="text-gray-600 text-xs font-bold">
+                <div className="mt-0.5">
+                  <p className="text-gray-300 text-sm">
                     {t("how_to_use.step1")}
                   </p>
                 </div>
               </div>
 
-              <div className="flex">
-                <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">
+              <div className="flex items-start">
+                <div className="h-6 w-6 rounded-full bg-[#1A1C1E] border border-site-border text-[var(--site-accent)] flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
                   2
                 </div>
-                <div>
-                  <p className="text-gray-600 text-xs font-bold">
+                <div className="mt-0.5">
+                  <p className="text-gray-300 text-sm">
                     {t("how_to_use.step2")}
                   </p>
                 </div>
               </div>
 
-              <div className="flex">
-                <div className="h-5 w-5 bg-brutal-blue border-[2px] border-black text-black flex items-center justify-center mr-2 flex-shrink-0 text-[10px] font-bold">
+              <div className="flex items-start">
+                <div className="h-6 w-6 rounded-full bg-[#1A1C1E] border border-site-border text-[var(--site-accent)] flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
                   3
                 </div>
-                <div>
-                  <p className="text-gray-600 text-xs font-bold">
+                <div className="mt-0.5">
+                  <p className="text-gray-300 text-sm">
                     {t("how_to_use.step3")}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center mt-2 pt-2 border-t-[2px] border-black">
-                <Clock className="h-3.5 w-3.5 text-gray-600 mr-1.5" />
-                <span className="text-gray-600 text-[10px] font-bold">
+              <div className="flex items-start mt-6 pt-4 border-t border-site-border">
+                <Clock className="h-4 w-4 text-gray-500 mr-2 mt-0.5" />
+                <span className="text-gray-500 text-xs leading-relaxed">
                   {t("expiry_hint")}
                 </span>
               </div>

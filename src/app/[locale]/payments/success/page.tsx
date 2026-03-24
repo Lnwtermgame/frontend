@@ -161,15 +161,15 @@ function PaymentSuccessPageContent() {
 
     return (
         <main className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-transparent">
-            <div className="pointer-events-none absolute -left-24 top-20 h-56 w-56 rounded-full border-[3px] border-black bg-brutal-yellow/70" />
-            <div className="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full border-[3px] border-black bg-brutal-blue/60" />
+            <div className="pointer-events-none absolute -left-24 top-20 h-56 w-56 rounded-full border border-site-border/30 rounded-[12px] bg-yellow-500/70" />
+            <div className="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full border border-site-border/30 rounded-[12px] bg-site-accent/60" />
 
             <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
-                <section className="w-full overflow-hidden border-[3px] border-black bg-white shadow-[8px_8px_0_0_#000000]">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-black bg-gray-50 px-4 py-3 sm:px-6">
+                <section className="w-full overflow-hidden border border-site-border/30 rounded-[12px] bg-[#212328] shadow-[8px_8px_0_0_#000000]">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-black bg-[#181A1D] px-4 py-3 sm:px-6">
                         <Link
                             href="/games"
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 transition-colors hover:text-black"
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 transition-colors hover:text-white"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             {t("back_home")}
@@ -185,12 +185,12 @@ function PaymentSuccessPageContent() {
                         <div className="space-y-6 p-5 sm:p-7">
                             <div className="flex items-start gap-4">
                                 <div
-                                    className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[3px] border-black ${statusConfig.accent}`}
+                                    className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-site-border/30 rounded-[12px] ${statusConfig.accent}`}
                                 >
                                     {statusConfig.icon}
                                 </div>
                                 <div className="space-y-2">
-                                    <h1 className="text-2xl font-extrabold text-black sm:text-3xl">
+                                    <h1 className="text-2xl font-extrabold text-white sm:text-3xl">
                                         {statusConfig.title}
                                     </h1>
                                     <p className="max-w-xl text-sm text-gray-700 sm:text-base font-bold">
@@ -201,21 +201,21 @@ function PaymentSuccessPageContent() {
 
                             <div className="grid gap-3 sm:grid-cols-2">
                                 {orderId && (
-                                    <div className="rounded-xl border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
+                                    <div className="rounded-xl border-2 border-black bg-[#212328] p-3 shadow-lg">
                                         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                                             {t("order_number")}
                                         </p>
-                                        <p className="mt-1 break-all text-sm font-bold text-black">
+                                        <p className="mt-1 break-all text-sm font-bold text-white">
                                             {orderId}
                                         </p>
                                     </div>
                                 )}
                                 {referenceNo && (
-                                    <div className="rounded-xl border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
+                                    <div className="rounded-xl border-2 border-black bg-[#212328] p-3 shadow-lg">
                                         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                                             Reference No.
                                         </p>
-                                        <p className="mt-1 break-all text-sm font-bold text-black">
+                                        <p className="mt-1 break-all text-sm font-bold text-white">
                                             {referenceNo}
                                         </p>
                                     </div>
@@ -243,21 +243,21 @@ function PaymentSuccessPageContent() {
 
                         <aside className="border-t-[3px] border-black bg-gradient-to-b from-white to-gray-50 p-5 sm:p-7 lg:border-l-[3px] lg:border-t-0">
                             <div className="space-y-4">
-                                <p className="inline-flex items-center gap-2 border-2 border-black bg-brutal-yellow px-3 py-1 text-xs font-bold uppercase tracking-wide text-black shadow-[2px_2px_0_0_#000]">
+                                <p className="inline-flex items-center gap-2 border-2 border-black bg-yellow-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-lg">
                                     <Sparkles className="h-3.5 w-3.5" />
                                     Payment Flow
                                 </p>
-                                <h2 className="text-lg font-extrabold text-black">
+                                <h2 className="text-lg font-extrabold text-white">
                                     {statusConfig.panelTitle}
                                 </h2>
 
                                 <div className="space-y-3 text-sm text-gray-700">
-                                    <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
-                                        <ReceiptText className="mt-0.5 h-4 w-4 shrink-0 text-black" />
+                                    <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-[#212328] p-3 shadow-lg">
+                                        <ReceiptText className="mt-0.5 h-4 w-4 shrink-0 text-white" />
                                         <p className="font-bold">{t("delivery_notice")}</p>
                                     </div>
-                                    <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-white p-3 shadow-[2px_2px_0_0_#000]">
-                                        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-black" />
+                                    <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-[#212328] p-3 shadow-lg">
+                                        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-white" />
                                         <p className="font-bold">Secure payment powered by FeelFreePay</p>
                                     </div>
                                 </div>
@@ -281,8 +281,8 @@ export default function PaymentSuccessPage() {
 
 function PaymentLoadingFallback() {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-brutal-gray">
-            <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+        <div className="flex min-h-screen items-center justify-center bg-[#1A1C1E]">
+            <Loader2 className="h-8 w-8 animate-spin text-pink-500" />
         </div>
     );
 }

@@ -62,27 +62,27 @@ export default function TicketsPage() {
   const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
     OPEN: {
       label: t("status.open"),
-      color: "bg-brutal-blue border-black text-black",
+      color: "bg-site-accent border-black text-white",
     },
     IN_PROGRESS: {
       label: t("status.pending"),
-      color: "bg-brutal-yellow border-black text-black",
+      color: "bg-yellow-500 border-black text-white",
     },
     WAITING_USER: {
       label: t("status.waiting_user"),
-      color: "bg-brutal-pink border-black text-black",
+      color: "bg-pink-500 border-black text-white",
     },
     WAITING_ADMIN: {
       label: t("status.waiting_admin"),
-      color: "bg-brutal-blue border-black text-black",
+      color: "bg-site-accent border-black text-white",
     },
     RESOLVED: {
       label: t("status.resolved"),
-      color: "bg-brutal-green border-black text-black",
+      color: "bg-green-500 border-black text-white",
     },
     CLOSED: {
       label: t("status.closed"),
-      color: "bg-gray-300 border-black text-black",
+      color: "bg-gray-300 border-black text-white",
     },
   };
 
@@ -207,10 +207,10 @@ export default function TicketsPage() {
     return (
       <div className="page-container bg-transparent">
         <div
-          className="mx-auto max-w-2xl border-[3px] border-black bg-white p-8 text-center"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="mx-auto max-w-2xl border border-site-border rounded-[12px] bg-[#1A1C20] p-8 text-center"
+          
         >
-          <h1 className="text-2xl font-black text-black">
+          <h1 className="text-2xl font-black text-white">
             {t("disabled.title")}
           </h1>
           <p className="mt-3 text-sm text-gray-600">
@@ -219,7 +219,7 @@ export default function TicketsPage() {
           <div className="mt-6">
             <Link
               href="/support/contact"
-              className="inline-flex border-[3px] border-black bg-brutal-yellow px-4 py-2 font-bold text-black"
+              className="inline-flex border border-site-border rounded-[12px] bg-yellow-500 px-4 py-2 font-bold text-white"
             >
               {t("disabled.cta")}
             </Link>
@@ -233,8 +233,8 @@ export default function TicketsPage() {
     <div className="page-container bg-transparent">
       {/* Header */}
       <motion.div
-        className="bg-white border-[3px] border-black p-6 md:p-8 mb-8"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8 mb-8"
+        
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -244,24 +244,24 @@ export default function TicketsPage() {
             <div className="flex items-center mb-2">
               <Link
                 href="/support"
-                className="text-gray-600 hover:text-black mr-4 flex items-center font-medium"
+                className="text-gray-600 hover:text-white mr-4 flex items-center font-medium"
               >
                 <ArrowLeft size={18} className="mr-1" />
                 {t("back")}
               </Link>
-              <div className="bg-brutal-blue p-2 border-[3px] border-black mr-3">
-                <MessageSquare className="h-6 w-6 text-black" />
+              <div className="bg-site-accent p-2 border border-site-border rounded-[12px] mr-3">
+                <MessageSquare className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-black">
+              <h1 className="text-2xl md:text-3xl font-black uppercase text-white">
                 {t("title")}
               </h1>
             </div>
-            <p className="text-gray-600">{t("subtitle")}</p>
+            <p className="text-gray-600 font-bold uppercase text-xs">{t("subtitle")}</p>
           </div>
           <button
             onClick={() => setShowNewTicketModal(true)}
-            className="bg-black text-white border-[3px] border-black px-6 py-3 rounded-lg font-medium flex items-center justify-center hover:bg-gray-800 transition-colors"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-black text-white border border-site-border rounded-[12px] px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs"
+            
           >
             <Plus size={18} className="mr-2" />
             {t("create_new")}
@@ -274,14 +274,14 @@ export default function TicketsPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-pink-500 border border-site-border rounded-[12px] p-4 mb-6 flex items-center"
+          
         >
-          <AlertCircle className="text-black mr-3" size={20} />
-          <span className="text-black">{error}</span>
+          <AlertCircle className="text-white mr-3" size={20} />
+          <span className="text-white">{error}</span>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-black hover:text-gray-700"
+            className="ml-auto text-white hover:text-gray-700"
           >
             <X size={18} />
           </button>
@@ -292,8 +292,8 @@ export default function TicketsPage() {
         {/* Ticket List */}
         <div className="lg:col-span-1">
           <div
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] overflow-hidden"
+            
           >
             {/* Filter Tabs */}
             <div className="p-4 border-b-[3px] border-black">
@@ -311,9 +311,9 @@ export default function TicketsPage() {
                     onClick={() =>
                       setStatusFilter(status as TicketStatus | "ALL")
                     }
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border-[2px] transition-colors ${statusFilter === status
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-gray-700 border-black hover:bg-brutal-gray"
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase border transition-colors ${statusFilter === status
+                      ? "bg-black text-white border-black"
+                      : "bg-[#1A1C20] text-gray-700 border-black hover:bg-[#2A2C30]"
                       }`}
                   >
                     {status === "ALL"
@@ -329,7 +329,7 @@ export default function TicketsPage() {
               {isLoading ? (
                 <div className="p-8 text-center">
                   <Loader2
-                    className="animate-spin mx-auto text-black mb-3"
+                    className="animate-spin mx-auto text-white mb-3"
                     size={32}
                   />
                   <p className="text-gray-600">{tCommon("loading")}</p>
@@ -340,7 +340,7 @@ export default function TicketsPage() {
                   <p className="text-gray-600 mb-2">{t("no_tickets")}</p>
                   <button
                     onClick={() => setShowNewTicketModal(true)}
-                    className="text-black hover:underline font-medium"
+                    className="text-white hover:underline font-medium"
                   >
                     {t("create_new")}
                   </button>
@@ -350,29 +350,29 @@ export default function TicketsPage() {
                   <button
                     key={ticket.id}
                     onClick={() => loadTicketDetail(ticket.id)}
-                    className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-brutal-gray transition-colors ${selectedTicket?.id === ticket.id
-                        ? "bg-brutal-yellow border-l-4 border-l-black"
-                        : ""
+                    className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-[#2A2C30] transition-colors ${selectedTicket?.id === ticket.id
+                      ? "bg-yellow-500 border-l-4 border-l-black"
+                      : ""
                       }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <span className="text-xs text-gray-600">
+                      <span className="text-xs text-gray-600 font-black uppercase">
                         {ticket.ticketNumber}
                       </span>
                       <span
-                        className={`text-xs px-2 py-0.5 rounded-full border-[2px] ${statusLabels[ticket.status].color}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-full border font-black uppercase shadow-sm ${statusLabels[ticket.status].color}`}
                       >
                         {statusLabels[ticket.status].label}
                       </span>
                     </div>
-                    <h4 className="text-black font-medium text-sm mb-1 line-clamp-1">
+                    <h4 className="text-white font-bold text-sm mb-1 uppercase line-clamp-1">
                       {ticket.subject}
                     </h4>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-600">
+                      <span className="text-[10px] text-gray-600 font-black uppercase">
                         {categoryLabels[ticket.category]}
                       </span>
-                      <span className="text-xs text-gray-600">
+                      <span className="text-[10px] text-gray-600 font-black uppercase">
                         {new Date(ticket.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -389,12 +389,12 @@ export default function TicketsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white border-[3px] border-black overflow-hidden h-full flex flex-col"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#1A1C20] border border-site-border rounded-[16px] overflow-hidden h-full flex flex-col"
+              
             >
               {isDetailLoading ? (
                 <div className="flex-1 flex items-center justify-center p-8">
-                  <Loader2 className="animate-spin text-black" size={32} />
+                  <Loader2 className="animate-spin text-white" size={32} />
                 </div>
               ) : (
                 <>
@@ -402,16 +402,16 @@ export default function TicketsPage() {
                   <div className="p-6 border-b-[3px] border-black">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-xs text-gray-600 font-black uppercase">
                           {selectedTicket.ticketNumber}
                         </span>
-                        <h2 className="text-xl font-bold text-black mt-1">
+                        <h2 className="text-xl font-black uppercase text-white mt-1">
                           {selectedTicket.subject}
                         </h2>
                       </div>
                       <div className="flex items-center gap-2">
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium border-[2px] ${statusLabels[selectedTicket.status].color}`}
+                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border shadow-sm ${statusLabels[selectedTicket.status].color}`}
                         >
                           {statusLabels[selectedTicket.status].label}
                         </span>
@@ -420,7 +420,7 @@ export default function TicketsPage() {
                         ) && (
                             <button
                               onClick={handleCloseTicket}
-                              className="p-2 text-gray-600 hover:text-black hover:bg-brutal-gray transition-colors"
+                              className="p-2 text-gray-600 hover:text-white hover:bg-[#2A2C30] transition-colors"
                               title={t("detail.closed_notice")}
                             >
                               <X size={18} />
@@ -428,7 +428,7 @@ export default function TicketsPage() {
                           )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <div className="flex flex-wrap gap-4 text-[10px] text-gray-600 font-black uppercase">
                       <div className="flex items-center">
                         <Tag size={14} className="mr-1.5" />
                         {categoryLabels[selectedTicket.category]}
@@ -444,7 +444,7 @@ export default function TicketsPage() {
                       {selectedTicket.orderId && (
                         <Link
                           href={`/dashboard/orders/${selectedTicket.orderId}`}
-                          className="text-black hover:underline flex items-center font-medium"
+                          className="text-white hover:underline flex items-center font-medium"
                         >
                           <FileText size={14} className="mr-1.5" />
                           {t("order_ref_label", { id: selectedTicket.orderId })}
@@ -457,21 +457,21 @@ export default function TicketsPage() {
                   <div className="flex-1 p-6 overflow-y-auto max-h-[500px] space-y-4">
                     {/* Initial Message */}
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-brutal-blue border-[2px] border-black flex items-center justify-center flex-shrink-0">
-                        <User size={16} className="text-black" />
+                      <div className="w-8 h-8 bg-site-accent border border-site-border flex items-center justify-center flex-shrink-0">
+                        <User size={16} className="text-white" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-black font-medium text-sm">
+                          <span className="text-white font-black uppercase text-[10px]">
                             {t("user_you")}
                           </span>
-                          <span className="text-xs text-gray-600">
+                          <span className="text-[10px] text-gray-600 font-black uppercase">
                             {new Date(
                               selectedTicket.createdAt,
                             ).toLocaleString()}
                           </span>
                         </div>
-                        <div className="bg-brutal-gray border-[2px] border-black p-3 text-gray-700">
+                        <div className="bg-[#2A2C30] border border-site-border p-3 text-white font-bold uppercase text-xs">
                           {selectedTicket.description}
                         </div>
                       </div>
@@ -481,42 +481,42 @@ export default function TicketsPage() {
                     {selectedTicket.messages.map((message) => (
                       <div key={message.id} className="flex gap-4">
                         <div
-                          className={`w-8 h-8 border-[2px] border-black flex items-center justify-center flex-shrink-0 ${message.sender === "admin"
-                              ? "bg-brutal-green"
-                              : message.sender === "system"
-                                ? "bg-gray-300"
-                                : "bg-brutal-blue"
+                          className={`w-8 h-8 border border-site-border flex items-center justify-center flex-shrink-0 ${message.sender === "admin"
+                            ? "bg-green-500"
+                            : message.sender === "system"
+                              ? "bg-gray-300"
+                              : "bg-site-accent"
                             }`}
                         >
                           {message.sender === "admin" ? (
-                            <span className="text-black text-xs font-bold">
+                            <span className="text-white text-xs font-bold">
                               S
                             </span>
                           ) : message.sender === "system" ? (
-                            <span className="text-black text-xs">@</span>
+                            <span className="text-white text-xs">@</span>
                           ) : (
-                            <User size={16} className="text-black" />
+                            <User size={16} className="text-white" />
                           )}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-black font-medium text-sm">
+                            <span className="text-white font-black uppercase text-[10px]">
                               {message.sender === "admin"
                                 ? message.senderName || t("support_team")
                                 : message.sender === "system"
                                   ? t("system")
                                   : t("user_you")}
                             </span>
-                            <span className="text-xs text-gray-600">
+                            <span className="text-[10px] font-black uppercase text-gray-600">
                               {new Date(message.createdAt).toLocaleString()}
                             </span>
                           </div>
                           <div
-                            className={`p-3 border-[2px] border-black ${message.sender === "admin"
-                                ? "bg-brutal-green text-black"
-                                : message.sender === "system"
-                                  ? "bg-gray-200 text-black"
-                                  : "bg-brutal-gray text-gray-700"
+                            className={`p-3 border border-site-border font-bold uppercase text-xs ${message.sender === "admin"
+                              ? "bg-green-500 text-white"
+                              : message.sender === "system"
+                                ? "bg-[#1A1C20] text-white"
+                                : "bg-[#2A2C30] text-white"
                               }`}
                           >
                             {message.content}
@@ -535,13 +535,13 @@ export default function TicketsPage() {
                           value={replyMessage}
                           onChange={(e) => setReplyMessage(e.target.value)}
                           placeholder={t("detail.reply") + "..."}
-                          className="flex-1 py-2 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                          className="flex-1 py-2 px-4 bg-[#1A1C20] border border-site-border text-white font-bold uppercase placeholder-gray-500 focus:outline-none focus:bg-[#2A2C30] transition-colors text-xs"
                         />
                         <button
                           type="submit"
                           disabled={isSendingReply || !replyMessage.trim()}
-                          className="bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 font-medium flex items-center hover:bg-gray-800 transition-colors"
-                          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                          className="bg-black text-white border border-site-border rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 font-black uppercase flex items-center hover:bg-gray-800 transition-colors text-[10px]"
+                          
                         >
                           {isSendingReply ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -560,11 +560,11 @@ export default function TicketsPage() {
             </motion.div>
           ) : (
             <div
-              className="bg-white border-[3px] border-black p-12 text-center h-full flex flex-col items-center justify-center"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
+              className="bg-[#1A1C20] border border-site-border rounded-[16px] p-12 text-center h-full flex flex-col items-center justify-center"
+              
             >
               <MessageSquare className="text-gray-300 mb-4" size={64} />
-              <h3 className="text-xl font-bold text-black mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 {t("select_ticket")}
               </h3>
               <p className="text-gray-600 max-w-sm">
@@ -588,20 +588,20 @@ export default function TicketsPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white border-[3px] border-black w-full max-w-lg max-h-[90vh] overflow-y-auto"
-              style={{ boxShadow: "8px 8px 0 0 #000000" }}
+              className="bg-[#1A1C20] border border-site-border rounded-[16px] w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              
             >
               <div className="p-6 border-b-[3px] border-black">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-                    <h2 className="text-xl font-bold text-black">
+                    <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
+                    <h2 className="text-xl font-black uppercase text-white">
                       {t("create.title")}
                     </h2>
                   </div>
                   <button
                     onClick={() => setShowNewTicketModal(false)}
-                    className="text-gray-600 hover:text-black"
+                    className="text-gray-600 hover:text-white"
                   >
                     <X size={24} />
                   </button>
@@ -610,7 +610,7 @@ export default function TicketsPage() {
 
               <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-500 mb-2 font-black uppercase text-[10px]">
                     {t("create.category")}
                   </label>
                   <select
@@ -621,7 +621,7 @@ export default function TicketsPage() {
                         category: e.target.value as TicketCategory,
                       })
                     }
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black focus:outline-none focus:border-black transition-colors"
+                    className="w-full xl:w-2/3 py-2.5 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold uppercase text-xs"
                   >
                     {Object.entries(categoryLabels).map(([value, label]) => (
                       <option key={value} value={value}>
@@ -632,7 +632,7 @@ export default function TicketsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-500 mb-2 font-black uppercase text-[10px]">
                     {t("create.description")}
                   </label>
                   <input
@@ -643,12 +643,12 @@ export default function TicketsPage() {
                     }
                     placeholder={t("create.subject_placeholder")}
                     required
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                    className="w-full py-2.5 px-4 bg-[#1A1C20] border border-site-border text-white font-bold uppercase placeholder-gray-500 focus:outline-none focus:bg-[#2A2C30] transition-colors text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-500 mb-2 font-black uppercase text-[10px]">
                     {t("create.description_label")}
                   </label>
                   <textarea
@@ -662,12 +662,12 @@ export default function TicketsPage() {
                     placeholder={t("create.description_placeholder")}
                     required
                     rows={5}
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors resize-none"
+                    className="w-full py-2.5 px-4 bg-[#1A1C20] border border-site-border text-white font-bold uppercase placeholder-gray-500 focus:outline-none focus:bg-[#2A2C30] transition-colors text-xs resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">
+                  <label className="block text-gray-500 mb-2 font-black uppercase text-[10px]">
                     {t("create.order_ref")}
                   </label>
                   <input
@@ -680,7 +680,7 @@ export default function TicketsPage() {
                       })
                     }
                     placeholder={t("create.order_ref_placeholder")}
-                    className="w-full py-2.5 px-4 bg-white border-[2px] border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors"
+                    className="w-full py-2.5 px-4 bg-[#1A1C20] border border-site-border text-white font-bold uppercase placeholder-gray-500 focus:outline-none focus:bg-[#2A2C30] transition-colors text-xs"
                   />
                 </div>
 
@@ -688,7 +688,7 @@ export default function TicketsPage() {
                   <button
                     type="button"
                     onClick={() => setShowNewTicketModal(false)}
-                    className="flex-1 py-2.5 px-4 border-[3px] border-black text-black hover:bg-brutal-gray transition-colors font-medium"
+                    className="flex-1 py-2.5 px-4 border border-site-border rounded-[12px] text-white hover:bg-[#2A2C30] transition-colors font-black uppercase text-xs"
                   >
                     {t("create.cancel")}
                   </button>
@@ -699,8 +699,8 @@ export default function TicketsPage() {
                       !newTicket.subject.trim() ||
                       !newTicket.description.trim()
                     }
-                    className="flex-1 py-2.5 px-4 bg-black text-white border-[3px] border-black disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors"
-                    style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                    className="flex-1 py-2.5 px-4 bg-black text-white border border-site-border rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed font-black uppercase text-xs hover:bg-gray-800 transition-colors"
+                    
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">

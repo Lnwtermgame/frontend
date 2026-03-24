@@ -188,8 +188,8 @@ export default function SeagmSyncPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-white border-[3px] border-black p-6"
-      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+      
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -204,14 +204,14 @@ export default function SeagmSyncPage() {
         </div>
       </div>
 
-      <h3 className="text-lg font-semibold text-black mb-2">{title}</h3>
-      <p className="text-gray-600 text-sm mb-6">{description}</p>
+      <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+      <p className="text-gray-400 text-sm mb-6">{description}</p>
 
       <button
         onClick={onClick}
         disabled={isLoading}
-        className={`w-full py-2 px-4 font-medium transition-all flex items-center justify-center gap-2 border-[3px] border-black ${isLoading
-          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+        className={`w-full py-2 px-4 font-medium transition-all flex items-center justify-center gap-2 border border-site-border/30 rounded-[12px] ${isLoading
+          ? "bg-site-border/30 text-gray-500 cursor-not-allowed"
           : "bg-black text-white hover:bg-gray-800"
           }`}
         style={{ boxShadow: isLoading ? "none" : "4px 4px 0 0 #000000" }}
@@ -230,18 +230,18 @@ export default function SeagmSyncPage() {
       </button>
 
       {result && (
-        <div className="mt-4 pt-4 border-t-[2px] border-gray-200 space-y-2">
+        <div className="mt-4 pt-4 border-t-[2px] border-site-border/30 space-y-2">
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
             สินค้า (เกม)
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">สร้างใหม่</span>
+            <span className="text-gray-400">สร้างใหม่</span>
             <span className="text-green-600 font-medium">
               +{result.productsCreated}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">อัปเดต</span>
+            <span className="text-gray-400">อัปเดต</span>
             <span className="text-blue-600 font-medium">
               {result.productsUpdated}
             </span>
@@ -250,19 +250,19 @@ export default function SeagmSyncPage() {
             ประเภทสินค้า (ตัวเลือก)
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">สร้างใหม่</span>
+            <span className="text-gray-400">สร้างใหม่</span>
             <span className="text-green-600 font-medium">
               +{result.productTypesCreated}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">อัปเดต</span>
+            <span className="text-gray-400">อัปเดต</span>
             <span className="text-blue-600 font-medium">
               {result.productTypesUpdated}
             </span>
           </div>
           {result.errors.length > 0 && (
-            <div className="mt-2 p-2 bg-red-100 border-[2px] border-black">
+            <div className="mt-2 p-2 bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm">
               <div className="flex items-center gap-2 text-red-600 text-sm">
                 <AlertCircle className="w-4 h-4" />
                 <span>{result.errors.length} ข้อผิดพลาด</span>
@@ -280,23 +280,21 @@ export default function SeagmSyncPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-purple mr-2"></span>
+            <span className="w-1.5 h-6 bg-purple-500 mr-2"></span>
             <div>
-              <h1 className="text-2xl font-bold text-black">ซิงค์ SEAGM</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-2xl font-bold text-white">ซิงค์ SEAGM</h1>
+              <p className="text-gray-400 mt-1">
                 ซิงค์สินค้าจาก SEAGM API ไปยังฐานข้อมูลภายใน
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div
-              className="bg-white border-[3px] border-black px-4 py-2 flex items-center gap-3"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
-              <Database className="w-5 h-5 text-brutal-purple" />
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] px-4 py-2 flex items-center gap-3">
+              <Database className="w-5 h-5 text-purple-400" />
               <div>
                 <p className="text-xs text-gray-500">ขนาดแคช</p>
-                <p className="text-black font-medium">
+                <p className="text-white font-medium">
                   {cacheStats?.size ?? 0} รายการ
                 </p>
               </div>
@@ -306,15 +304,15 @@ export default function SeagmSyncPage() {
 
         {/* Environment Toggle */}
         <motion.div
-          className="bg-white border-[3px] border-black p-5"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-5"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-black mb-1">
+              <h2 className="text-lg font-semibold text-white mb-1">
                 เลือก Environment
               </h2>
               <p className="text-sm text-gray-500">
@@ -327,9 +325,9 @@ export default function SeagmSyncPage() {
               <button
                 onClick={() => setSelectedEnv("sandbox")}
                 disabled={isAnySyncing}
-                className={`flex items-center gap-2 px-5 py-2.5 font-medium border-[3px] border-black transition-all ${selectedEnv === "sandbox"
+                className={`flex items-center gap-2 px-5 py-2.5 font-medium border border-site-border/30 rounded-[12px] transition-all ${selectedEnv === "sandbox"
                   ? "bg-emerald-500 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
+                  : "bg-[#212328] text-gray-400 hover:bg-[#212328]/5"
                   } ${isAnySyncing ? "opacity-50 cursor-not-allowed" : ""}`}
                 style={{
                   boxShadow:
@@ -346,9 +344,9 @@ export default function SeagmSyncPage() {
               <button
                 onClick={() => setSelectedEnv("production")}
                 disabled={isAnySyncing}
-                className={`flex items-center gap-2 px-5 py-2.5 font-medium border-[3px] border-black transition-all ${selectedEnv === "production"
-                  ? "bg-red-500 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
+                className={`flex items-center gap-2 px-5 py-2.5 font-medium border border-site-border/30 rounded-[12px] transition-all ${selectedEnv === "production"
+                  ? "bg-red-500/50 text-white"
+                  : "bg-[#212328] text-gray-400 hover:bg-[#212328]/5"
                   } ${isAnySyncing ? "opacity-50 cursor-not-allowed" : ""}`}
                 style={{
                   boxShadow:
@@ -365,16 +363,15 @@ export default function SeagmSyncPage() {
 
           {/* Environment Info Bar */}
           <div
-            className={`mt-4 p-3 border-[2px] border-black flex items-center gap-3 ${selectedEnv === "production"
-              ? "bg-red-50"
+            className={`mt-4 p-3 border border-site-border/30 rounded-[12px] shadow-sm flex items-center gap-3 ${selectedEnv === "production"
+              ? "bg-red-500/5"
               : "bg-emerald-50"
-              }`}
-          >
+              }`}>
             {selectedEnv === "production" ? (
               <>
                 <Shield className="w-5 h-5 text-red-600 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-red-700">
+                  <p className="text-sm font-medium text-red-400">
                     Production Mode — openapi.seagm.com
                   </p>
                   <p className="text-xs text-red-600">
@@ -444,28 +441,28 @@ export default function SeagmSyncPage() {
 
         {/* Info Section */}
         <motion.div
-          className="bg-white border-[3px] border-black p-6"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <h2 className="text-lg font-semibold text-black mb-4">
+          <h2 className="text-lg font-semibold text-white mb-4">
             ระบบซิงค์ SEAGM ทำงานอย่างไร
           </h2>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-400 mb-4">
             ระบบซิงค์ใหม่ใช้โครงสร้างสองระดับเพื่อจัดระเบียบข้อมูล SEAGM
             ได้ดีขึ้น:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-blue-100 flex items-center justify-center flex-shrink-0 border-[2px] border-blue-500">
+                <div className="w-8 h-8 bg-[#181A1D]0/10 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-blue-500/30">
                   <Box className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
-                  <h4 className="text-black font-medium">สินค้า (เกม)</h4>
-                  <p className="text-sm text-gray-600">
+                  <h4 className="text-white font-medium">สินค้า (เกม)</h4>
+                  <p className="text-sm text-gray-400">
                     แต่ละเกมเก็บเป็นสินค้าพร้อมข้อมูลพื้นฐาน: ชื่อ รหัส โหมด
                     (บัตร/เติมเงิน) ภูมิภาค ตัวอย่าง: &quot;PUBG Mobile UC (MY)&quot;
                     ด้วยรหัส &quot;pubg-mobile-uc-top-up&quot;
@@ -473,14 +470,14 @@ export default function SeagmSyncPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-orange-100 flex items-center justify-center flex-shrink-0 border-[2px] border-orange-500">
+                <div className="w-8 h-8 bg-orange-100 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-orange-500">
                   <Layers className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
-                  <h4 className="text-black font-medium">
+                  <h4 className="text-white font-medium">
                     ประเภทสินค้า (ตัวเลือก)
                   </h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-400">
                     แต่ละเกมมีหลายประเภทแทนตัวเลือกราคาที่แตกต่างกัน ตัวอย่าง:
                     PUBG Mobile มี 60 UC (35฿) 325 UC (165฿) 660 UC (325฿) ฯลฯ
                   </p>
@@ -489,12 +486,12 @@ export default function SeagmSyncPage() {
             </div>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-green-100 flex items-center justify-center flex-shrink-0 border-[2px] border-green-500">
+                <div className="w-8 h-8 bg-green-500/10 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-green-500/30/30">
                   <CreditCard className="w-4 h-4 text-green-600" />
                 </div>
                 <div>
-                  <h4 className="text-black font-medium">โหมดบัตร</h4>
-                  <p className="text-sm text-gray-600">
+                  <h4 className="text-white font-medium">โหมดบัตร</h4>
+                  <p className="text-sm text-gray-400">
                     บัตรของขวัญพร้อมรหัส PIN
                     แต่ละประเภทมีสต็อกและราคาเป็นของตัวเอง ลูกค้าได้รับรหัส PIN
                     หลังการซื้อ
@@ -502,12 +499,12 @@ export default function SeagmSyncPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-purple-100 flex items-center justify-center flex-shrink-0 border-[2px] border-purple-500">
+                <div className="w-8 h-8 bg-purple-100 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-purple-500">
                   <Zap className="w-4 h-4 text-purple-600" />
                 </div>
                 <div>
-                  <h4 className="text-black font-medium">โหมดเติมเงิน</h4>
-                  <p className="text-sm text-gray-600">
+                  <h4 className="text-white font-medium">โหมดเติมเงิน</h4>
+                  <p className="text-sm text-gray-400">
                     เติมเงินเข้าบัญชีโดยตรงต้องการรหัสผู้เล่น ใช้ได้ที่
                     /games/[gameCode] พร้อม ตัวเลือกราคาทั้งหมดให้เลือก
                   </p>
@@ -519,20 +516,20 @@ export default function SeagmSyncPage() {
 
         {/* Error Handling Info */}
         <motion.div
-          className="bg-white border-[3px] border-black p-6"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <h2 className="text-lg font-semibold text-black mb-4">
+          <h2 className="text-lg font-semibold text-white mb-4">
             การจัดการรหัสข้อผิดพลาด 10406
           </h2>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-400 mb-4">
             เมื่อ SEAGM ส่งคืนรหัสข้อผิดพลาด 10406 (พารามิเตอร์ที่จำเป็นขาดหาย)
             ระบบจะ:
           </p>
-          <ol className="space-y-2 text-sm text-gray-600 list-decimal list-inside">
+          <ol className="space-y-2 text-sm text-gray-400 list-decimal list-inside">
             <li>ล้างข้อมูลฟิลด์ที่แคชไว้สำหรับสินค้านั้น</li>
             <li>ดึงข้อกำหนดฟิลด์ใหม่จาก SEAGM API</li>
             <li>ลองส่งคำสั่งซื้ออีกครั้งด้วยฟิลด์ที่อัปเดต</li>

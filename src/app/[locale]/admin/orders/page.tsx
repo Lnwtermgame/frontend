@@ -19,12 +19,12 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { useTranslations } from "next-intl";
 
 const statusStyles: Record<string, string> = {
-  PENDING: "text-yellow-700 bg-yellow-100 border-yellow-300",
-  PROCESSING: "text-blue-700 bg-blue-100 border-blue-300",
-  COMPLETED: "text-green-700 bg-green-100 border-green-300",
-  FAILED: "text-red-700 bg-red-100 border-red-300",
-  CANCELLED: "text-red-700 bg-red-100 border-red-300",
-  REFUNDED: "text-gray-700 bg-gray-100 border-gray-300",
+  PENDING: "text-yellow-400 bg-yellow-500/10 border-yellow-300",
+  PROCESSING: "text-blue-400 bg-[#181A1D]0/10 border-blue-300",
+  COMPLETED: "text-green-400 bg-green-500/10 border-green-300",
+  FAILED: "text-red-400 bg-red-500/10 border-red-300",
+  CANCELLED: "text-red-400 bg-red-500/10 border-red-300",
+  REFUNDED: "text-gray-300 bg-[#1A1C1E] border-gray-300",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -141,8 +141,8 @@ export default function AdminOrders() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-3 justify-between">
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-brutal-pink mr-2"></span>
-            <h1 className="text-xl font-bold text-black">{t("orders.subtitle")}</h1>
+            <span className="w-1.5 h-5 bg-pink-500 mr-2"></span>
+            <h1 className="text-xl font-bold text-white">{t("orders.subtitle")}</h1>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <div className="relative w-full sm:max-w-xs">
@@ -152,13 +152,13 @@ export default function AdminOrders() {
               <input
                 type="text"
                 placeholder={t("orders.search_placeholder")}
-                className="bg-white border-[2px] border-gray-300 text-black pl-9 pr-3 py-1.5 w-full focus:ring-2 focus:ring-black focus:border-black focus:outline-none text-sm"
+                className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white pl-9 pr-3 py-1.5 w-full focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <select
-              className="bg-white border-[2px] border-gray-300 text-black px-3 py-1.5 w-full sm:w-auto focus:border-black focus:outline-none text-sm"
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white px-3 py-1.5 w-full sm:w-auto focus:border-site-accent focus:outline-none text-sm"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
@@ -175,34 +175,34 @@ export default function AdminOrders() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-3 py-2 text-sm">
+          <div className="bg-red-500/10 border border-red-500/30/30 rounded-[12px] text-red-400 px-3 py-2 text-sm">
             {error}
           </div>
         )}
 
         {/* Orders Table */}
         <motion.div
-          className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-[2px] border-black bg-gray-50">
-            <h3 className="text-base font-semibold text-black flex items-center">
-              <Package className="mr-2 h-4 w-4 text-brutal-pink" />
+          <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
+            <h3 className="text-base font-semibold text-white flex items-center">
+              <Package className="mr-2 h-4 w-4 text-pink-400" />
               {t("orders.title")}
             </h3>
           </div>
           <div className="overflow-x-auto">
             {loading ? (
               <div className="flex items-center justify-center py-10">
-                <Loader2 className="h-6 w-6 text-brutal-pink animate-spin" />
+                <Loader2 className="h-6 w-6 text-pink-400 animate-spin" />
               </div>
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="text-gray-600 text-xs border-b border-gray-200">
+                  <tr className="text-gray-400 text-xs border-b border-site-border/30">
                     <th className="px-3 py-2 text-left">{t("orders.order_id")}</th>
                     <th className="px-3 py-2 text-left">{t("orders.customer")}</th>
                     <th className="px-3 py-2 text-left">{t("orders.product")}</th>
@@ -212,18 +212,17 @@ export default function AdminOrders() {
                     <th className="px-3 py-2 text-left">{t("orders.actions")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-site-border/30">
                   {filteredOrders.length > 0 ? (
                     filteredOrders.map((order) => (
                       <tr
                         key={order.id}
-                        className="text-xs hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="px-3 py-3 font-medium text-black">
+                        className="text-xs hover:bg-[#212328]/5 transition-colors">
+                        <td className="px-3 py-3 font-medium text-white">
                           #{order.id.slice(0, 8)}
                         </td>
                         <td className="px-3 py-3">
-                          <div className="text-black font-medium">
+                          <div className="text-white font-medium">
                             {order.user?.username || "-"}
                           </div>
                           <div className="text-[10px] text-gray-500">
@@ -231,7 +230,7 @@ export default function AdminOrders() {
                           </div>
                         </td>
                         <td className="px-3 py-3">
-                          <div className="text-gray-700">
+                          <div className="text-gray-300">
                             {order.items[0]?.product?.name || order.items[0]?.productName || `${order.items.length} ${t("order_detail.items")}`}
                           </div>
                           {order.items[0]?.productType?.name && (
@@ -245,7 +244,7 @@ export default function AdminOrders() {
                             </div>
                           )}
                         </td>
-                        <td className="px-3 py-3 font-medium text-black">
+                        <td className="px-3 py-3 font-medium text-white">
                           {order.totalAmount.toFixed(2)} ฿
                         </td>
                         <td className="px-3 py-3">
@@ -255,8 +254,7 @@ export default function AdminOrders() {
                               handleUpdateStatus(order.id, e.target.value)
                             }
                             className={`px-1.5 py-0.5 text-[10px] border-[1px] cursor-pointer font-medium focus:outline-none ${statusStyles[order.status] || statusStyles.PENDING
-                              }`}
-                          >
+                              }`}>
                             <option value="PENDING">{t("orders.status.pending")}</option>
                             <option value="PROCESSING">{t("orders.status.processing")}</option>
                             <option value="COMPLETED">{t("orders.status.completed")}</option>
@@ -272,7 +270,7 @@ export default function AdminOrders() {
                         </td>
                         <td className="px-3 py-3">
                           <Link href={`/admin/orders/${order.id}`}>
-                            <button className="p-1.5 bg-gray-100 border-[1px] border-gray-300 text-black hover:bg-brutal-pink hover:text-white hover:border-black transition-colors">
+                            <button className="p-1.5 bg-[#1A1C1E] border-[1px] border-gray-300 text-white hover:bg-pink-500 hover:text-white hover:border-site-border/50 transition-colors">
                               <Eye className="h-3 w-3" />
                             </button>
                           </Link>
@@ -296,7 +294,7 @@ export default function AdminOrders() {
 
           {/* Pagination */}
           {!loading && pagination.totalPages > 1 && (
-            <div className="p-3 border-t border-gray-200 flex justify-between items-center">
+            <div className="p-3 border-t border-site-border/30 flex justify-between items-center">
               <div className="text-xs text-gray-500">
                 {t("common.showing")} {filteredOrders.length} {t("common.from")} {pagination.total} {t("orders.title")}
               </div>
@@ -306,11 +304,10 @@ export default function AdminOrders() {
                     setPagination((p) => ({ ...p, page: p.page - 1 }))
                   }
                   disabled={pagination.page === 1}
-                  className="px-2 py-0.5 text-xs bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors disabled:opacity-50 font-medium"
-                >
+                  className="px-2 py-0.5 text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white hover:bg-[#212328]/5 transition-colors disabled:opacity-50 font-medium">
                   ก่อนหน้า
                 </button>
-                <span className="px-2 py-0.5 text-xs bg-brutal-pink text-white border-[2px] border-black font-medium">
+                <span className="px-2 py-0.5 text-xs bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-medium">
                   {pagination.page}
                 </span>
                 <button
@@ -318,8 +315,7 @@ export default function AdminOrders() {
                     setPagination((p) => ({ ...p, page: p.page + 1 }))
                   }
                   disabled={pagination.page >= pagination.totalPages}
-                  className="px-2 py-0.5 text-xs bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors disabled:opacity-50 font-medium"
-                >
+                  className="px-2 py-0.5 text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white hover:bg-[#212328]/5 transition-colors disabled:opacity-50 font-medium">
                   ถัดไป
                 </button>
               </div>

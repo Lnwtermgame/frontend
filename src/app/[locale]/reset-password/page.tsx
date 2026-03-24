@@ -132,7 +132,7 @@ function ResetPasswordContent() {
     "bg-orange-500",
     "bg-yellow-500",
     "bg-green-500",
-    "bg-brutal-green",
+    "bg-site-accent shadow-accent-glow",
   ];
 
   if (isInvalid) {
@@ -143,28 +143,28 @@ function ResetPasswordContent() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white border-[3px] border-black shadow-[6px_6px_0_0_#000]">
-            <div className="bg-brutal-pink border-b-[3px] border-black p-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-black border-[3px] border-black flex items-center justify-center">
-                  <XCircle size={24} className="text-white" />
+          <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
+            <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
+              <div className="flex items-center gap-4 relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30/20 flex items-center justify-center shrink-0 shadow-sm">
+                  <XCircle size={24} className="text-red-500" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-black">
+                  <h1 className="text-xl font-bold text-white tracking-tight">
                     {t("error_invalid_link")}
                   </h1>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 text-center">
-              <p className="text-gray-600 mb-6">
+            <div className="p-8 text-center relative z-10">
+              <p className="text-gray-400 text-sm mb-8 leading-relaxed">
                 {t("error_invalid_link_desc")}
               </p>
 
               <Link
                 href="/forgot-password"
-                className="inline-flex items-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
+                className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm"
               >
                 <ArrowLeft size={18} />
                 {t("error_get_new_link")}
@@ -183,27 +183,27 @@ function ResetPasswordContent() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-white border-[3px] border-black shadow-[6px_6px_0_0_#000]">
+        <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
           {/* Header */}
-          <div className="bg-brutal-yellow border-b-[3px] border-black p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-black border-[3px] border-black flex items-center justify-center">
-                <Lock size={24} className="text-white" />
+          <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-site-accent/10 border border-site-accent/20 flex items-center justify-center shrink-0 shadow-sm">
+                <Lock size={24} className="text-site-accent" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-black">
+                <h1 className="text-xl font-bold text-white mb-1 tracking-tight">
                   {t("title")}
                 </h1>
-                <p className="text-sm text-gray-700 uppercase">Reset Password</p>
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Reset Password</p>
               </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 relative z-10">
             {!isSuccess ? (
               <>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
                   {t("subtitle")}
                 </p>
 
@@ -211,7 +211,7 @@ function ResetPasswordContent() {
                   {/* New Password */}
                   <div className="space-y-1.5">
                     <label
-                      className="text-sm font-bold text-gray-700"
+                      className="text-sm font-bold text-gray-300"
                       htmlFor="newPassword"
                     >
                       {t("new_password")}
@@ -232,7 +232,7 @@ function ResetPasswordContent() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                       >
                         {showPassword ? (
                           <EyeOff size={18} />
@@ -249,9 +249,9 @@ function ResetPasswordContent() {
                           {[0, 1, 2, 3, 4].map((i) => (
                             <div
                               key={i}
-                              className={`h-1 flex-1 border border-black ${i < passwordStrength
-                                  ? strengthColors[passwordStrength - 1]
-                                  : "bg-gray-200"
+                              className={`h-1 flex-1 rounded-full ${i < passwordStrength
+                                ? strengthColors[passwordStrength - 1]
+                                : "bg-[#1A1C1E] border border-site-border"
                                 }`}
                             />
                           ))}
@@ -269,7 +269,7 @@ function ResetPasswordContent() {
                   {/* Confirm Password */}
                   <div className="space-y-1.5">
                     <label
-                      className="text-sm font-bold text-gray-700"
+                      className="text-sm font-bold text-gray-300"
                       htmlFor="confirmPassword"
                     >
                       {t("confirm_password")}
@@ -292,7 +292,7 @@ function ResetPasswordContent() {
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                       >
                         {showConfirmPassword ? (
                           <EyeOff size={18} />
@@ -306,8 +306,8 @@ function ResetPasswordContent() {
                     {confirmPassword && (
                       <p
                         className={`text-xs mt-1 ${newPassword === confirmPassword
-                            ? "text-brutal-green"
-                            : "text-brutal-pink"
+                          ? "text-site-accent"
+                          : "text-red-500"
                           }`}
                       >
                         {newPassword === confirmPassword
@@ -319,7 +319,7 @@ function ResetPasswordContent() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-brutal-blue text-white hover:bg-black"
+                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent hover:shadow-accent-glow font-bold mt-2"
                     disabled={
                       isSubmitting ||
                       newPassword !== confirmPassword ||
@@ -329,32 +329,32 @@ function ResetPasswordContent() {
                     size="lg"
                   >
                     {!isSubmitting && (
-                      <>
+                      <div className="flex items-center justify-center">
                         {t("reset_button")}
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </>
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </div>
                     )}
                   </Button>
                 </form>
               </>
             ) : (
-              <div className="text-center py-4">
-                <div className="w-16 h-16 bg-brutal-green border-[3px] border-black flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle size={32} className="text-black" />
+              <div className="text-center py-6">
+                <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/30/20 flex items-center justify-center mx-auto mb-5 shadow-sm">
+                  <CheckCircle size={32} className="text-green-500" />
                 </div>
-                <h2 className="text-lg font-bold text-black mb-2">
+                <h2 className="text-xl font-bold text-white mb-2 tracking-tight">
                   {t("success_title")}
                 </h2>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
                   {t("success_desc")}
                 </p>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-xs text-gray-500 mb-8 max-w-[280px] mx-auto">
                   {t("redirect_hint")}
                 </p>
 
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
+                  className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] shadow-accent-glow transition-all"
                 >
                   {t("login_now")}
                   <ArrowRight size={18} />
@@ -363,12 +363,12 @@ function ResetPasswordContent() {
             )}
 
             {!isSuccess && (
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-8 pt-6 border-t border-site-border flex justify-center">
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white font-medium transition-colors hover:bg-[#212328]/5 py-2 px-4 rounded-lg"
                 >
-                  <ArrowLeft size={18} />
+                  <ArrowLeft size={16} />
                   {t("back_to_login")}
                 </Link>
               </div>
@@ -385,13 +385,13 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-transparent flex items-center justify-center">
+        <div className="min-h-[60vh] bg-transparent flex items-center justify-center">
           <div className="text-center">
             <Loader2
-              size={48}
-              className="animate-spin mx-auto mb-4 text-brutal-blue"
+              size={40}
+              className="animate-spin mx-auto mb-4 text-site-accent"
             />
-            <p className="text-gray-600">{t("loading")}</p>
+            <p className="text-gray-400 font-medium text-sm">{t("loading")}</p>
           </div>
         </div>
       }

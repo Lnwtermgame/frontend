@@ -131,57 +131,57 @@ function VerifyEmailContent() {
   // Status configurations for different states
   const statusConfig = {
     loading: {
-      icon: <Loader2 size={48} className="animate-spin text-brutal-blue" />,
+      icon: <Loader2 size={40} className="animate-spin text-site-accent" />,
       title: t("loading"),
       message: t("loading_desc"),
-      bgColor: "bg-gray-100",
-      textColor: "text-gray-600",
+      bgColor: "bg-site-accent/10 border-site-accent/20",
+      textColor: "text-white",
     },
     success: {
-      icon: <CheckCircle size={48} className="text-black" />,
+      icon: <CheckCircle size={40} className="text-green-500" />,
       title: t("success_title"),
       message: message,
-      bgColor: "bg-brutal-green",
-      textColor: "text-black",
+      bgColor: "bg-green-500/10 border-green-500/30/20",
+      textColor: "text-white",
       showCountdown: true,
     },
     already_verified: {
-      icon: <CheckCircle size={48} className="text-black" />,
+      icon: <CheckCircle size={40} className="text-blue-500" />,
       title: t("already_verified_title"),
       message: message || t("already_verified_title"),
-      bgColor: "bg-brutal-yellow",
-      textColor: "text-black",
+      bgColor: "bg-blue-500/10 border-blue-500/20",
+      textColor: "text-white",
       showCountdown: true,
     },
     expired: {
-      icon: <Clock size={48} className="text-black" />,
+      icon: <Clock size={40} className="text-red-500" />,
       title: t("expired_title"),
       message: message || t("expired_title"),
-      bgColor: "bg-brutal-pink",
-      textColor: "text-black",
+      bgColor: "bg-red-500/10 border-red-500/30/20",
+      textColor: "text-white",
       showResend: true,
     },
     invalid_token: {
-      icon: <AlertTriangle size={48} className="text-black" />,
+      icon: <AlertTriangle size={40} className="text-red-500" />,
       title: t("invalid_token_title"),
       message: message || t("invalid_token_title"),
-      bgColor: "bg-brutal-pink",
-      textColor: "text-black",
+      bgColor: "bg-red-500/10 border-red-500/30/20",
+      textColor: "text-white",
       showResend: true,
     },
     invalid_link: {
-      icon: <XCircle size={48} className="text-black" />,
+      icon: <XCircle size={40} className="text-red-500" />,
       title: t("invalid_link_title"),
       message: message || t("invalid_link_title"),
-      bgColor: "bg-brutal-pink",
-      textColor: "text-black",
+      bgColor: "bg-red-500/10 border-red-500/30/20",
+      textColor: "text-white",
     },
     error: {
-      icon: <XCircle size={48} className="text-black" />,
+      icon: <XCircle size={40} className="text-red-500" />,
       title: t("error_title"),
       message: message || t("error_title"),
-      bgColor: "bg-brutal-pink",
-      textColor: "text-black",
+      bgColor: "bg-red-500/10 border-red-500/30/20",
+      textColor: "text-white",
     },
   };
 
@@ -198,54 +198,56 @@ function VerifyEmailContent() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-white border-[3px] border-black shadow-[8px_8px_0_0_#000]">
+        <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
           {/* Header */}
-          <div className="bg-brutal-yellow border-b-[3px] border-black p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-black border-[3px] border-black flex items-center justify-center">
-                <Mail size={24} className="text-white" />
+          <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-site-accent/10 border border-site-accent/20 flex items-center justify-center shrink-0 shadow-sm">
+                <Mail size={24} className="text-site-accent" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-black uppercase tracking-tight">
+                <h1 className="text-xl font-bold text-white tracking-tight mb-1">
                   {t("title")}
                 </h1>
-                <p className="text-sm text-gray-700 uppercase font-medium">Email Verification</p>
+                <p className="text-xs text-gray-400 uppercase font-medium tracking-wider">Email Verification</p>
               </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
-            <div className="text-center py-4">
+          <div className="p-8 relative z-10">
+            <div className="text-center">
               {/* Icon */}
               <div
-                className={`w-20 h-20 ${currentStatus.bgColor} border-[3px] border-black flex items-center justify-center mx-auto mb-4`}
+                className={`w-20 h-20 ${currentStatus.bgColor} border rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm`}
               >
                 {currentStatus.icon}
               </div>
 
               {/* Title */}
               <h2
-                className={`text-lg font-bold ${currentStatus.textColor} mb-2`}
+                className={`text-xl font-bold ${currentStatus.textColor} mb-3 tracking-tight`}
               >
                 {currentStatus.title}
               </h2>
 
               {/* Message */}
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
                 {currentStatus.message}
               </p>
 
               {/* Email display */}
               {email && status !== "loading" && (
-                <p className="text-sm text-gray-500 mb-4 font-mono bg-gray-100 p-2 border border-gray-300">
-                  {decodeURIComponent(email)}
-                </p>
+                <div className="mb-6">
+                  <span className="font-mono text-sm bg-[#1A1C1E] text-site-accent px-4 py-2 border border-site-border rounded-lg inline-block break-all">
+                    {decodeURIComponent(email)}
+                  </span>
+                </div>
               )}
 
               {/* Countdown for success states */}
               {showCountdown && (
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-xs text-gray-500 mb-6 font-medium">
                   {t("redirect_hint", { seconds: countdown })}
                 </p>
               )}
@@ -255,20 +257,20 @@ function VerifyEmailContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mb-4 p-3 bg-brutal-green border-[2px] border-black"
+                  className="mb-6 p-4 rounded-lg bg-green-500/10 border border-green-500/30/20"
                 >
-                  <p className="text-sm text-black">
+                  <p className="text-sm font-medium text-green-500">
                     {t("resend_success")}
                   </p>
                 </motion.div>
               )}
 
               {/* Actions */}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 mt-4">
                 {status === "success" && (
                   <Link
                     href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] shadow-accent-glow transition-all"
                   >
                     {t("go_to_account")}
                     <ArrowRight size={18} />
@@ -278,7 +280,7 @@ function VerifyEmailContent() {
                 {status === "already_verified" && (
                   <Link
                     href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 bg-brutal-yellow text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-black hover:text-white transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-600 hover:scale-[1.02] transition-all shadow-sm"
                   >
                     {t("go_to_account")}
                     <ArrowRight size={18} />
@@ -290,22 +292,22 @@ function VerifyEmailContent() {
                     <button
                       onClick={handleResend}
                       disabled={isResending || resendSuccess}
-                      className="inline-flex items-center justify-center gap-2 bg-brutal-yellow text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-brutal-blue hover:text-white transition-colors disabled:opacity-50"
+                      className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-[#1A1C1E] disabled:hover:border-site-border"
                     >
                       {isResending ? (
                         <>
-                          <Loader2 size={18} className="animate-spin" />
-                          {t("sending")}
+                          <Loader2 size={18} className="animate-spin text-site-accent" />
+                          <span className="text-gray-300">{t("sending")}</span>
                         </>
                       ) : (
                         <>
-                          <RefreshCw size={18} />
+                          <RefreshCw size={18} className="text-site-accent" />
                           {t("resend_button")}
                         </>
                       )}
                     </button>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 mt-2">
                       {t("spam_hint")}
                     </p>
                   </>
@@ -314,17 +316,17 @@ function VerifyEmailContent() {
                 {status === "invalid_link" && (
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center gap-2 bg-brutal-blue text-white px-6 py-3 border-[3px] border-black font-bold hover:bg-black transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm"
                   >
                     {t("go_to_login")}
-                    <ArrowRight size={18} />
+                    <ArrowRight size={18} className="text-site-accent" />
                   </Link>
                 )}
 
                 {status === "error" && !showResendButton && (
                   <Link
                     href="/support"
-                    className="inline-flex items-center justify-center gap-2 bg-gray-200 text-black px-6 py-3 border-[3px] border-black font-bold hover:bg-gray-300 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm"
                   >
                     {t("contact_support")}
                   </Link>
@@ -334,7 +336,7 @@ function VerifyEmailContent() {
                 {["expired", "invalid_token", "error"].includes(status) && (
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 border-[2px] border-gray-300 font-bold hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full mt-2 text-sm text-gray-400 hover:text-white font-medium transition-colors hover:bg-[#212328]/5 py-2 px-4 rounded-lg"
                   >
                     {t("back_to_login")}
                   </Link>
@@ -354,13 +356,13 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-transparent flex items-center justify-center">
+        <div className="min-h-[60vh] bg-transparent flex items-center justify-center">
           <div className="text-center">
             <Loader2
-              size={48}
-              className="animate-spin mx-auto mb-4 text-brutal-blue"
+              size={40}
+              className="animate-spin mx-auto mb-4 text-site-accent"
             />
-            <p className="text-gray-600">{t("loading")}</p>
+            <p className="text-gray-400 font-medium text-sm">{t("loading")}</p>
           </div>
         </div>
       }

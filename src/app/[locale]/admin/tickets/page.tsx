@@ -529,8 +529,8 @@ function AdminTicketsPageContent() {
 
   if (!isInitialized || !isAdmin) {
     return isMonitorMode ? (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="flex h-64 items-center justify-center rounded border-[3px] border-black bg-white">
+      <div className="min-h-screen bg-[#181A1D] p-4">
+        <div className="flex h-64 items-center justify-center rounded border border-site-border/30 rounded-[12px] bg-[#212328]">
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       </div>
@@ -546,8 +546,8 @@ function AdminTicketsPageContent() {
   const content = (
     <div className={isMonitorMode ? "space-y-4 p-4" : "space-y-4"}>
       {isMonitorMode && (
-        <div className="flex items-center justify-between rounded border-[2px] border-black bg-white px-3 py-2 text-sm">
-          <span className="font-medium text-black">
+        <div className="flex items-center justify-between rounded border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-2 text-sm">
+          <span className="font-medium text-white">
             หน้าต่างมอนิเตอร์ทิกเก็ต
           </span>
           <Link href="/admin/tickets" className="text-blue-600 hover:underline">
@@ -557,12 +557,12 @@ function AdminTicketsPageContent() {
       )}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-black">จัดการทิกเก็ต</h1>
+          <h1 className="text-2xl font-bold text-white">จัดการทิกเก็ต</h1>
           <div className="flex items-center gap-2">
             {!isMonitorMode && (
               <button
                 onClick={openMonitorWindow}
-                className="border-[2px] border-black bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-100"
+                className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#212328]/5"
                 title="เปิดหน้าต่างมอนิเตอร์แบบป๊อปอัป"
               >
                 เปิดหน้าต่างมอนิเตอร์
@@ -582,7 +582,7 @@ function AdminTicketsPageContent() {
         </div>
 
         {error && (
-          <div className="flex items-center border-[3px] border-red-500 bg-red-100 p-3 text-red-700">
+          <div className="flex items-center border border-red-500/30/30 rounded-[12px] bg-red-500/10 p-3 text-red-400">
             <AlertCircle className="mr-2" size={16} />
             {error}
           </div>
@@ -616,23 +616,22 @@ function AdminTicketsPageContent() {
                 setStatus(item.key);
                 setPage(1);
               }}
-              className={`border-[2px] p-2 text-sm ${status === item.key
-                  ? "border-black bg-yellow-100"
-                  : "border-gray-300 bg-white"
-                }`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm p-2 text-sm ${status === item.key
+                  ? "border-site-border/50 bg-yellow-500/10"
+                  : "border-gray-300 bg-[#212328]"
+                }`}>
               <div className="font-bold">{item.value}</div>
               <div className="text-xs">{item.label}</div>
             </button>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-2 border-[3px] border-black bg-white p-3 md:grid-cols-2 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-2 border border-site-border/30 rounded-[12px] bg-[#212328] p-3 md:grid-cols-2 lg:grid-cols-6">
           <input
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
             placeholder="ค้นหาจากเลขทิกเก็ต หัวข้อ หรือผู้ใช้"
-            className="border-[2px] border-gray-300 px-2 py-1.5"
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5"
           />
 
           <select
@@ -641,8 +640,7 @@ function AdminTicketsPageContent() {
               setPriority(event.target.value);
               setPage(1);
             }}
-            className="border-[2px] border-gray-300 px-2 py-1.5"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
             <option value="ALL">ทุกระดับความสำคัญ</option>
             <option value="LOW">ต่ำ</option>
             <option value="MEDIUM">ปานกลาง</option>
@@ -656,8 +654,7 @@ function AdminTicketsPageContent() {
               setCategory(event.target.value);
               setPage(1);
             }}
-            className="border-[2px] border-gray-300 px-2 py-1.5"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
             <option value="ALL">{t("tickets.categories.all")}</option>
             {Object.entries(categoryKeyMap).map(([key, value]) => (
               <option key={key} value={key}>
@@ -672,8 +669,7 @@ function AdminTicketsPageContent() {
               setAssigneeFilter(event.target.value);
               setPage(1);
             }}
-            className="border-[2px] border-gray-300 px-2 py-1.5"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
             <option value="ALL">{t("tickets.all_assignees")}</option>
             <option value="UNASSIGNED">{t("tickets.unassigned")}</option>
             {admins.map((admin) => (
@@ -694,8 +690,7 @@ function AdminTicketsPageContent() {
                 | "status",
               )
             }
-            className="border-[2px] border-gray-300 px-2 py-1.5"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
             <option value="updatedAt">เรียงตามเวลาอัปเดต</option>
             <option value="createdAt">เรียงตามเวลาสร้าง</option>
             <option value="priority">เรียงตามความสำคัญ</option>
@@ -708,14 +703,13 @@ function AdminTicketsPageContent() {
               onChange={(event) =>
                 setSortOrder(event.target.value as "asc" | "desc")
               }
-              className="flex-1 border-[2px] border-gray-300 px-2 py-1.5"
-            >
+              className="flex-1 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
               <option value="desc">ใหม่ไปเก่า</option>
               <option value="asc">เก่าไปใหม่</option>
             </select>
             <button
               onClick={loadTickets}
-              className="border-[2px] border-black px-3"
+              className="border border-site-border/30 rounded-[12px] shadow-sm px-3"
               title="รีเฟรชทันที"
             >
               <RefreshCcw size={14} />
@@ -728,8 +722,7 @@ function AdminTicketsPageContent() {
               setLimit(Number(event.target.value));
               setPage(1);
             }}
-            className="border-[2px] border-gray-300 px-2 py-1.5"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
             <option value={20}>20 / หน้า</option>
             <option value={50}>50 / หน้า</option>
             <option value={100}>100 / หน้า</option>
@@ -742,7 +735,7 @@ function AdminTicketsPageContent() {
               setCreatedFrom(event.target.value);
               setPage(1);
             }}
-            className="border-[2px] border-gray-300 px-2 py-1.5"
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5"
           />
 
           <input
@@ -752,26 +745,23 @@ function AdminTicketsPageContent() {
               setCreatedTo(event.target.value);
               setPage(1);
             }}
-            className="border-[2px] border-gray-300 px-2 py-1.5"
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5"
           />
 
           <div className="flex gap-2 lg:col-span-2">
             <button
               onClick={() => setQueuePreset("ALL")}
-              className={`border-[2px] px-3 py-1.5 text-sm ${status === "ALL" ? "border-black bg-yellow-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${status === "ALL" ? "border-site-border/50 bg-yellow-500/10" : "border-gray-300"}`}>
               คิวทั้งหมด
             </button>
             <button
               onClick={() => setQueuePreset("WAITING_ADMIN")}
-              className={`border-[2px] px-3 py-1.5 text-sm ${status === "WAITING_ADMIN" ? "border-black bg-yellow-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${status === "WAITING_ADMIN" ? "border-site-border/50 bg-yellow-500/10" : "border-gray-300"}`}>
               ต้องตอบกลับ
             </button>
             <button
               onClick={() => setQueuePreset("UNASSIGNED")}
-              className={`border-[2px] px-3 py-1.5 text-sm ${assigneeFilter === "UNASSIGNED" ? "border-black bg-yellow-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${assigneeFilter === "UNASSIGNED" ? "border-site-border/50 bg-yellow-500/10" : "border-gray-300"}`}>
               คิวยังไม่มอบหมาย
             </button>
           </div>
@@ -782,8 +772,7 @@ function AdminTicketsPageContent() {
                 setSlaPreset("ALL");
                 setPage(1);
               }}
-              className={`border-[2px] px-3 py-1.5 text-sm ${slaPreset === "ALL" ? "border-black bg-yellow-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${slaPreset === "ALL" ? "border-site-border/50 bg-yellow-500/10" : "border-gray-300"}`}>
               SLA ทั้งหมด
             </button>
             <button
@@ -791,8 +780,7 @@ function AdminTicketsPageContent() {
                 setSlaPreset("SLA_8");
                 setPage(1);
               }}
-              className={`border-[2px] px-3 py-1.5 text-sm ${slaPreset === "SLA_8" ? "border-black bg-yellow-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${slaPreset === "SLA_8" ? "border-site-border/50 bg-yellow-500/10" : "border-gray-300"}`}>
               SLA &gt; 8h
             </button>
             <button
@@ -800,8 +788,7 @@ function AdminTicketsPageContent() {
                 setSlaPreset("SLA_24");
                 setPage(1);
               }}
-              className={`border-[2px] px-3 py-1.5 text-sm ${slaPreset === "SLA_24" ? "border-black bg-yellow-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${slaPreset === "SLA_24" ? "border-site-border/50 bg-yellow-500/10" : "border-gray-300"}`}>
               SLA &gt; 24h
             </button>
           </div>
@@ -809,69 +796,62 @@ function AdminTicketsPageContent() {
           <div className="flex gap-2 lg:col-span-2">
             <button
               onClick={() => setAutoRefresh((prev) => !prev)}
-              className={`border-[2px] px-3 py-1.5 text-sm ${autoRefresh ? "border-black bg-green-100" : "border-gray-300"}`}
-            >
+              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm ${autoRefresh ? "border-site-border/50 bg-green-500/10" : "border-gray-300"}`}>
               รีเฟรชอัตโนมัติ 30 วินาที: {autoRefresh ? "เปิด" : "ปิด"}
             </button>
             <button
               onClick={resetFilters}
-              className="border-[2px] border-gray-400 px-3 py-1.5 text-sm"
-            >
+              className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm">
               รีเซ็ตตัวกรอง
             </button>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-[3px] border-black bg-white p-3">
+        <div className="flex flex-wrap items-center gap-2 border border-site-border/30 rounded-[12px] bg-[#212328] p-3">
           <button
             onClick={toggleSelectAllVisible}
-            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm"
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm"
             disabled={tickets.length === 0}
           >
             {allVisibleSelected ? "ยกเลิกเลือกทั้งหน้า" : "เลือกทั้งหน้า"}
           </button>
 
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-300">
             เลือกรายการ: {selectedIds.length}
           </span>
 
           <button
             onClick={() => runBulkUpdate({ status: "IN_PROGRESS" })}
             disabled={selectedIds.length === 0 || bulkUpdating}
-            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50">
             {bulkUpdating ? "กำลังดำเนินการ..." : "เปลี่ยนเป็นกำลังดำเนินการ"}
           </button>
 
           <button
             onClick={() => runBulkUpdate({ status: "RESOLVED" })}
             disabled={selectedIds.length === 0 || bulkUpdating}
-            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50">
             เปลี่ยนเป็นแก้ไขแล้ว
           </button>
 
           <button
             onClick={() => runBulkUpdate({ priority: "URGENT" })}
             disabled={selectedIds.length === 0 || bulkUpdating}
-            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50">
             เปลี่ยนเป็นเร่งด่วน
           </button>
 
           <button
             onClick={() => runBulkUpdate({ assignedTo: null })}
             disabled={selectedIds.length === 0 || bulkUpdating}
-            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50">
             ยกเลิกมอบหมาย
           </button>
 
           <select
             value={bulkAssigneeId}
             onChange={(event) => setBulkAssigneeId(event.target.value)}
-            className="border-[2px] border-gray-400 px-2 py-1.5 text-sm"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-2 py-1.5 text-sm">
             <option value="">เลือกแอดมิน</option>
             {admins.map((admin) => (
               <option key={admin.id} value={admin.id}>
@@ -885,16 +865,14 @@ function AdminTicketsPageContent() {
             disabled={
               selectedIds.length === 0 || bulkUpdating || !bulkAssigneeId
             }
-            className="border-[2px] border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
+            className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-3 py-1.5 text-sm disabled:opacity-50">
             มอบหมายแบบกลุ่ม
           </button>
 
           <button
             onClick={exportCsv}
             disabled={exporting}
-            className="ml-auto flex items-center gap-2 border-[2px] border-black px-3 py-1.5 text-sm disabled:opacity-50"
-          >
+            className="ml-auto flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 text-sm disabled:opacity-50">
             {exporting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -905,7 +883,7 @@ function AdminTicketsPageContent() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-          <div className="border-[3px] border-black bg-white xl:col-span-1">
+          <div className="border border-site-border/30 rounded-[12px] bg-[#212328] xl:col-span-1">
             <div className="max-h-[640px] overflow-y-auto">
               {loading ? (
                 <div className="p-8 text-center">
@@ -915,8 +893,7 @@ function AdminTicketsPageContent() {
                 tickets.map((ticket) => (
                   <div
                     key={ticket.id}
-                    className={`border-b p-3 ${selectedTicket?.id === ticket.id ? "border-l-4 border-l-black bg-gray-100" : "hover:bg-gray-50"}`}
-                  >
+                    className={`border-b p-3 ${selectedTicket?.id === ticket.id ? "border-l-4 border-l-black bg-[#1A1C1E]" : "hover:bg-[#212328]/5"}`}>
                     <div className="mb-2 flex items-start gap-2">
                       <input
                         type="checkbox"
@@ -926,21 +903,20 @@ function AdminTicketsPageContent() {
                       />
                       <button
                         onClick={() => loadDetail(ticket.id)}
-                        className="min-w-0 flex-1 text-left"
-                      >
+                        className="min-w-0 flex-1 text-left">
                         <div className="text-xs text-gray-500">
                           {ticket.ticketNumber}
                         </div>
-                        <div className="line-clamp-2 text-sm font-medium text-black">
+                        <div className="line-clamp-2 text-sm font-medium text-white">
                           {ticket.subject}
                         </div>
-                        <div className="mt-1 text-xs text-gray-600">
+                        <div className="mt-1 text-xs text-gray-400">
                           {t(`tickets.status.${statusKeyMap[ticket.status]}`)} | {ticket.priority} |{" "}
                           {new Date(ticket.updatedAt).toLocaleString()}
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-xs">
                           {ticket.assignedTo && (
-                            <span className="rounded border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-gray-700">
+                            <span className="rounded border border-gray-300 bg-[#1A1C1E] px-1.5 py-0.5 text-gray-300">
                               @
                               {adminNameById.get(ticket.assignedTo) ??
                                 ticket.assignedTo}
@@ -952,7 +928,7 @@ function AdminTicketsPageContent() {
                             </span>
                           )}
                           {getSlaLevel(ticket) === "24h" && (
-                            <span className="rounded border border-red-300 bg-red-100 px-1.5 py-0.5 text-red-800">
+                            <span className="rounded border border-red-300 bg-red-500/10 px-1.5 py-0.5 text-red-800">
                               SLA &gt; 24h
                             </span>
                           )}
@@ -972,28 +948,26 @@ function AdminTicketsPageContent() {
               )}
             </div>
 
-            <div className="flex items-center justify-between border-t-[2px] border-gray-200 p-3">
+            <div className="flex items-center justify-between border-t-[2px] border-site-border/30 p-3">
               <button
                 onClick={() => setPage((prev) => Math.max(1, prev - 1))}
                 disabled={page <= 1}
-                className="border-[2px] border-gray-300 px-2 py-1 text-sm disabled:opacity-50"
-              >
+                className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1 text-sm disabled:opacity-50">
                 ก่อนหน้า
               </button>
-              <span className="text-xs text-gray-600">
+              <span className="text-xs text-gray-400">
                 หน้า {page}/{Math.max(totalPages, 1)}
               </span>
               <button
                 onClick={() => setPage((prev) => prev + 1)}
                 disabled={page >= totalPages}
-                className="border-[2px] border-gray-300 px-2 py-1 text-sm disabled:opacity-50"
-              >
+                className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1 text-sm disabled:opacity-50">
                 ถัดไป
               </button>
             </div>
           </div>
 
-          <div className="border-[3px] border-black bg-white xl:col-span-2">
+          <div className="border border-site-border/30 rounded-[12px] bg-[#212328] xl:col-span-2">
             {!selectedTicket ? (
               <div className="h-full p-10 text-center text-gray-500">
                 เลือกทิกเก็ตเพื่อดูรายละเอียด
@@ -1008,10 +982,10 @@ function AdminTicketsPageContent() {
                   <div className="text-sm text-gray-500">
                     {selectedTicket.ticketNumber}
                   </div>
-                  <h2 className="text-xl font-bold text-black">
+                  <h2 className="text-xl font-bold text-white">
                     {selectedTicket.subject}
                   </h2>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-400">
                     {selectedTicket.user?.username ||
                       selectedTicket.user?.email}{" "}
                     |{" "}
@@ -1039,8 +1013,7 @@ function AdminTicketsPageContent() {
                       })
                     }
                     disabled={updating}
-                    className="border-[2px] border-gray-300 px-2 py-1.5"
-                  >
+                    className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
                     {Object.entries(statusKeyMap).map(([key, value]) => (
                       <option key={key} value={key}>
                         {t(`tickets.status.${value}`)}
@@ -1056,8 +1029,7 @@ function AdminTicketsPageContent() {
                       })
                     }
                     disabled={updating}
-                    className="border-[2px] border-gray-300 px-2 py-1.5"
-                  >
+                    className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
                     <option value="LOW">ต่ำ</option>
                     <option value="MEDIUM">ปานกลาง</option>
                     <option value="HIGH">สูง</option>
@@ -1074,8 +1046,7 @@ function AdminTicketsPageContent() {
                       })
                     }
                     disabled={updating}
-                    className="border-[2px] border-gray-300 px-2 py-1.5"
-                  >
+                    className="border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-2 py-1.5">
                     <option value="">ยังไม่มอบหมาย</option>
                     {admins.map((admin) => (
                       <option key={admin.id} value={admin.id}>
@@ -1083,13 +1054,13 @@ function AdminTicketsPageContent() {
                       </option>
                     ))}
                   </select>
-                  <div className="flex items-center text-xs text-gray-600">
+                  <div className="flex items-center text-xs text-gray-400">
                     คีย์ลัด: `J/K` เลื่อนรายการ | `R` โฟกัสช่องตอบกลับ |
                     `Ctrl+Enter` ส่งข้อความ
                   </div>
                 </div>
 
-                <div className="border-[2px] border-gray-200 bg-gray-50 p-3 text-gray-700">
+                <div className="border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30 bg-[#181A1D] p-3 text-gray-300">
                   {selectedTicket.description}
                 </div>
 
@@ -1097,18 +1068,17 @@ function AdminTicketsPageContent() {
                   {selectedTicket.messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`border-[2px] p-3 ${message.sender === "admin"
+                      className={`border border-site-border/30 rounded-[12px] shadow-sm p-3 ${message.sender === "admin"
                           ? "border-green-300 bg-green-50"
                           : message.sender === "system"
-                            ? "border-gray-300 bg-gray-50"
-                            : "border-gray-300 bg-white"
-                        }`}
-                    >
+                            ? "border-gray-300 bg-[#181A1D]"
+                            : "border-gray-300 bg-[#212328]"
+                        }`}>
                       <div className="mb-1 text-xs text-gray-500">
                         {message.senderName || message.sender} |{" "}
                         {new Date(message.createdAt).toLocaleString()}
                       </div>
-                      <div className="text-sm text-gray-800">
+                      <div className="text-sm text-gray-200">
                         {message.content}
                       </div>
                     </div>
@@ -1123,13 +1093,12 @@ function AdminTicketsPageContent() {
                         ref={replyInputRef}
                         value={reply}
                         onChange={(event) => setReply(event.target.value)}
-                        className="flex-1 border-[2px] border-gray-300 px-3 py-2"
+                        className="flex-1 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-3 py-2"
                         placeholder="พิมพ์ข้อความตอบกลับลูกค้า"
                       />
                       <button
                         disabled={sending || !reply.trim()}
-                        className="border-[2px] border-black bg-black px-3 py-2 text-white disabled:opacity-50"
-                      >
+                        className="border border-site-border/30 rounded-[12px] shadow-sm bg-black px-3 py-2 text-white disabled:opacity-50">
                         {sending ? (
                           <Loader2 size={16} className="animate-spin" />
                         ) : (
@@ -1140,7 +1109,7 @@ function AdminTicketsPageContent() {
                   )}
 
                 {selectedIds.length > 0 && (
-                  <div className="flex items-center gap-2 border-[2px] border-green-300 bg-green-50 p-2 text-sm text-green-900">
+                  <div className="flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm border-green-300 bg-green-50 p-2 text-sm text-green-900">
                     <CheckCheck size={16} />
                     เลือกไว้สำหรับการจัดการแบบกลุ่ม {selectedIds.length} รายการ
                   </div>
@@ -1154,7 +1123,7 @@ function AdminTicketsPageContent() {
   );
 
   return isMonitorMode ? (
-    <div className="min-h-screen bg-gray-50">{content}</div>
+    <div className="min-h-screen bg-[#181A1D]">{content}</div>
   ) : (
     <AdminLayout title="ตั๋วซัพพอร์ต">{content}</AdminLayout>
   );
@@ -1173,7 +1142,7 @@ function AdminTicketsLoadingFallback() {
   return (
     <AdminLayout title="ตั๋วซัพพอร์ต">
       <div className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+        <Loader2 className="h-8 w-8 animate-spin text-pink-400" />
       </div>
     </AdminLayout>
   );

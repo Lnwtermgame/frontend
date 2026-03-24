@@ -59,7 +59,7 @@ export function Sheet({
         {/* Sheet */}
         <div
           className={cn(
-            "fixed bg-white z-[70] border-black shadow-2xl flex flex-col transition-transform duration-300",
+            "fixed bg-[#212328] z-[70] border-black shadow-2xl flex flex-col transition-transform duration-300",
               sideClasses[side],
               className,
             )}
@@ -70,7 +70,7 @@ export function Sheet({
             )}
 
             {/* Header */}
-            <div className="p-4 flex items-center justify-between border-b-[2px] border-gray-100 flex-shrink-0 bg-white">
+            <div className="p-4 flex items-center justify-between border-b-[2px] border-gray-100 flex-shrink-0 bg-[#212328]">
               {title ? (
                 <h2 className="font-black text-xl line-clamp-1">{title}</h2>
               ) : (
@@ -78,7 +78,7 @@ export function Sheet({
               )}
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-[#1A1C1E] rounded-full transition-colors"
                 aria-label="Close"
               >
                 <X size={24} />

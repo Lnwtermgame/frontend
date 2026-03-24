@@ -18,17 +18,20 @@ import { CartProvider } from "@/lib/context/cart-context";
 import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
 import { NextAuthProvider } from "@/components/providers/nextauth-provider";
 import { cn } from "@/lib/utils";
-import { MainLayout } from "@/components/layout/MainLayout";
+import MainLayout from "@/components/layout/MainLayout";
 import { TawkTo } from "@/components/tawk-to";
 import { CookieNotice } from "@/components/cookie/CookieNotice";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
-// Import Noto Sans Thai for Thai language support
-import "@fontsource/noto-sans-thai/300.css";
-import "@fontsource/noto-sans-thai/400.css";
-import "@fontsource/noto-sans-thai/500.css";
-import "@fontsource/noto-sans-thai/700.css";
+import { Kanit } from "next/font/google";
+
+const kanit = Kanit({
+  weight: ["300", "400", "500", "700"],
+  subsets: ["thai", "latin"],
+  variable: "--font-kanit",
+  display: "swap",
+});
 
 // Import Noto Sans SC for Chinese language support
 import "@fontsource/noto-sans-sc/300.css";
@@ -54,7 +57,7 @@ import "@fontsource/noto-sans-devanagari/400.css";
 import "@fontsource/noto-sans-devanagari/500.css";
 import "@fontsource/noto-sans-devanagari/700.css";
 
-// Import Poppins for English language and generic text
+// We keep Poppins for English generic text
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
@@ -240,7 +243,7 @@ export default async function RootLayout(
   );
 
   return (
-    <html lang={locale} style={{ colorScheme: "light" }}>
+    <html lang={locale} style={{ colorScheme: "dark" }}>
       <head>
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (
@@ -253,7 +256,7 @@ export default async function RootLayout(
         <HomeJsonLd />
         <BreadcrumbJsonLd />
       </head>
-      <body className={cn("min-h-screen bg-brutal-gray font-sans antialiased")}>
+      <body className={cn(`min-h-screen bg-site-bg text-site-text font-sans antialiased ${kanit.variable}`)}>
         <ReactGrabInit />
         <NextIntlClientProvider messages={messages}>
           <NextAuthProvider>
@@ -277,22 +280,22 @@ export default async function RootLayout(
                           toastOptions={{
                             duration: 4000,
                             style: {
-                              background: "#FFFFFF",
-                              color: "#1f2937",
-                              border: "3px solid #000000",
-                              boxShadow: "4px 4px 0 0 #000000",
-                              borderRadius: "8px",
+                              background: "#1E2130",
+                              color: "#FFFFFF",
+                              border: "1px solid rgba(255,255,255,0.08)",
+                              boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                              borderRadius: "12px",
                               padding: "12px 16px",
                             },
                             success: {
                               iconTheme: {
-                                primary: "#95E1D3",
-                                secondary: "#000000",
+                                primary: "#5498D2",
+                                secondary: "#FFFFFF",
                               },
                             },
                             error: {
                               iconTheme: {
-                                primary: "#FF6B9D",
+                                primary: "#EF4444",
                                 secondary: "#FFFFFF",
                               },
                             },

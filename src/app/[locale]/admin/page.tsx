@@ -89,17 +89,17 @@ export default function AdminDashboard() {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return "text-green-600 bg-green-100 border-green-200";
+        return "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
       case "PENDING":
-        return "text-yellow-600 bg-yellow-100 border-yellow-200";
+        return "text-yellow-400 bg-yellow-500/10 border-yellow-500/30/20";
       case "PROCESSING":
-        return "text-blue-600 bg-blue-100 border-blue-200";
+        return "text-blue-400 bg-blue-500/10 border-blue-500/20";
       case "CANCELLED":
-        return "text-red-600 bg-red-100 border-red-200";
+        return "text-red-400 bg-red-500/10 border-red-500/30/20";
       case "FAILED":
-        return "text-red-600 bg-red-100 border-red-200";
+        return "text-red-400 bg-red-500/10 border-red-500/30/20";
       default:
-        return "text-gray-600 bg-gray-100 border-gray-200";
+        return "text-gray-400 bg-[#212328]/5 border-white/10";
     }
   };
 
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
     return (
       <AdminLayout title="แดชบอร์ดผู้ดูแลระบบ">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-500 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
     return (
       <AdminLayout title="แดชบอร์ดผู้ดูแลระบบ">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-500 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
     <AdminLayout title="แดชบอร์ดผู้ดูแลระบบ">
       <div className="space-y-4">
         {error && (
-          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-3 py-2 text-sm">
+          <div className="bg-red-500/10 border border-red-500/30/30 rounded-[12px] text-red-400 px-3 py-2 text-sm">
             {error}
           </div>
         )}
@@ -236,24 +236,23 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Orders & Popular Products */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Recent Orders */}
           <motion.div
-            className="bg-white border-[3px] border-black  overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            className="bg-[#212328] rounded-[16px] border border-white/5 overflow-hidden shadow-lg flex flex-col"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
-              <h3 className="text-sm font-semibold text-black flex items-center thai-font">
-                <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
-                <Activity className="mr-2 h-4 w-4 text-brutal-pink" />
+            <div className="px-4 py-3.5 border-b border-white/5 flex justify-between items-center bg-[#181A1D]/50">
+              <h3 className="text-[13px] font-bold text-white flex items-center tracking-wide">
+                <div className="w-1.5 h-4 bg-site-accent rounded-full mr-2.5"></div>
+                <Activity className="mr-2 h-4 w-4 text-site-accent" />
                 คำสั่งซื้อล่าสุด
               </h3>
               <Link
                 href="/admin/orders"
-                className="text-[10px] text-black hover:text-brutal-pink transition-colors font-medium"
+                className="text-[11px] text-gray-400 hover:text-white transition-colors font-medium"
               >
                 ดูทั้งหมด →
               </Link>
@@ -261,50 +260,50 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="text-gray-600 text-[10px] border-b border-gray-200">
-                    <th className="px-3 py-2 text-left">เลขที่</th>
-                    <th className="px-3 py-2 text-left thai-font">ผู้ใช้</th>
-                    <th className="px-3 py-2 text-left thai-font">จำนวน</th>
-                    <th className="px-3 py-2 text-left thai-font">สถานะ</th>
-                    <th className="px-3 py-2 text-left thai-font">วันที่</th>
+                  <tr className="text-gray-400 text-[11px] border-b border-white/5 bg-[#181A1D]/30 w-full">
+                    <th className="px-4 py-3 text-left font-medium tracking-wider">เลขที่</th>
+                    <th className="px-4 py-3 text-left font-medium tracking-wider">ผู้ใช้</th>
+                    <th className="px-4 py-3 text-left font-medium tracking-wider">จำนวน</th>
+                    <th className="px-4 py-3 text-left font-medium tracking-wider">สถานะ</th>
+                    <th className="px-4 py-3 text-left font-medium tracking-wider">วันที่</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-white/5">
                   {data.recentOrders.length > 0 ? (
                     data.recentOrders.map((order) => (
                       <tr
                         key={order.id}
-                        className="text-[10px] hover:bg-gray-50 transition-colors"
+                        className="text-[11px] hover:bg-[#212328]/5 transition-colors group"
                       >
-                        <td className="px-3 py-2 font-mono">
+                        <td className="px-4 py-3 font-mono">
                           <Link
                             href={`/admin/orders?id=${order.id}`}
-                            className="text-brutal-pink hover:underline font-medium"
+                            className="text-site-accent hover:text-white transition-colors font-medium"
                           >
                             {order.orderNumber}
                           </Link>
                         </td>
-                        <td className="px-3 py-2">
+                        <td className="px-4 py-3">
                           <div>
-                            <div className="text-black font-medium">
+                            <div className="text-white font-medium">
                               {order.user.username}
                             </div>
-                            <div className="text-[9px] text-gray-500">
+                            <div className="text-[10px] text-gray-500 mt-0.5">
                               {order.user.email}
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 text-black font-medium">
+                        <td className="px-4 py-3 text-white font-bold">
                           {formatCurrency(order.finalAmount)}
                         </td>
-                        <td className="px-3 py-2">
+                        <td className="px-4 py-3">
                           <span
-                            className={`px-2 py-1 rounded text-xs border-[1px] font-medium whitespace-nowrap ${getStatusStyle(order.status)}`}
+                            className={`px-2.5 py-1 rounded-md text-[10px] font-bold whitespace-nowrap border ${getStatusStyle(order.status)}`}
                           >
                             {getStatusText(order.status)}
                           </span>
                         </td>
-                        <td className="px-3 py-2 text-gray-500 text-[9px]">
+                        <td className="px-4 py-3 text-gray-400 text-[10px]">
                           {formatDate(order.createdAt)}
                         </td>
                       </tr>
@@ -313,7 +312,7 @@ export default function AdminDashboard() {
                     <tr>
                       <td
                         colSpan={5}
-                        className="px-3 py-4 text-center text-gray-500 text-[10px]"
+                        className="px-4 py-8 text-center text-gray-500 text-[12px]"
                       >
                         ไม่มีคำสั่งซื้อล่าสุด
                       </td>
@@ -326,21 +325,20 @@ export default function AdminDashboard() {
 
           {/* Popular Products */}
           <motion.div
-            className="bg-white border-[3px] border-black  overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            className="bg-[#212328] rounded-[16px] border border-white/5 overflow-hidden shadow-lg flex flex-col"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
-            <div className="p-3 border-b-[2px] border-black flex justify-between items-center bg-gray-50">
-              <h3 className="text-sm font-semibold text-black flex items-center thai-font">
-                <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
-                <TrendingUp className="mr-2 h-4 w-4 text-brutal-blue" />
+            <div className="px-4 py-3.5 border-b border-white/5 flex justify-between items-center bg-[#181A1D]/50">
+              <h3 className="text-[13px] font-bold text-white flex items-center tracking-wide">
+                <div className="w-1.5 h-4 bg-site-accent rounded-full mr-2.5"></div>
+                <TrendingUp className="mr-2 h-4 w-4 text-site-accent" />
                 สินค้าขายดี
               </h3>
               <Link
                 href="/admin/products"
-                className="text-[10px] text-black hover:text-brutal-pink transition-colors font-medium"
+                className="text-[11px] text-gray-400 hover:text-white transition-colors font-medium"
               >
                 ดูทั้งหมด →
               </Link>
@@ -355,20 +353,20 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={product.id}
-                        className="relative flex items-center space-x-3 p-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 overflow-hidden"
+                        className="relative flex items-center space-x-3.5 p-2.5 rounded-xl hover:bg-[#212328]/5 transition-colors border border-transparent hover:border-white/5 overflow-hidden group"
                       >
                         {/* Revenue percentage bar */}
                         {revenuePercent > 0 && (
                           <div
-                            className="absolute left-0 top-0 bottom-0 bg-brutal-blue/10"
+                            className="absolute left-0 top-0 bottom-0 bg-site-accent/5 pointer-events-none"
                             style={{ width: `${revenuePercent}%` }}
                           />
                         )}
-                        <div className="relative flex items-center space-x-3 w-full">
-                          <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-brutal-yellow border-[2px] border-black rounded text-black font-bold text-[10px]">
+                        <div className="relative flex items-center space-x-3.5 w-full">
+                          <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[#1A1C1E] rounded-md text-gray-400 font-bold text-[11px] group-hover:text-site-accent transition-colors">
                             {index + 1}
                           </div>
-                          <div className="flex-shrink-0 w-8 h-8 bg-white border-[2px] border-black overflow-hidden">
+                          <div className="flex-shrink-0 w-9 h-9 bg-[#1A1C1E] rounded-lg overflow-hidden border border-white/10">
                             {product.imageUrl ? (
                               <img
                                 src={product.imageUrl}
@@ -376,24 +374,24 @@ export default function AdminDashboard() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                              <div className="w-full h-full flex items-center justify-center text-gray-500">
                                 <Package className="h-4 w-4" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-medium text-black truncate">
+                            <p className="text-[12px] font-bold text-white truncate">
                               {product.name}
                             </p>
-                            <p className="text-[9px] text-gray-500">
-                              ขายแล้ว {product.salesCount.toLocaleString()} ชิ้น
+                            <p className="text-[10px] text-gray-400 mt-0.5">
+                              ขายแล้ว <span className="text-gray-300 font-medium">{product.salesCount.toLocaleString()}</span> ชิ้น
                             </p>
                           </div>
                           <div className="text-right flex-shrink-0">
-                            <p className="text-[10px] font-bold text-black">
+                            <p className="text-[12px] font-bold text-white">
                               {product.revenue ? formatCurrency(product.revenue) : formatPrice(getMinPrice(product.types))}
                             </p>
-                            <p className="text-[9px] text-green-600 font-medium">
+                            <p className="text-[10px] text-emerald-400 font-medium mt-0.5">
                               {revenuePercent > 0 ? `${revenuePercent.toFixed(1)}% ของรายได้` : `${product.salesCount.toLocaleString()} ชิ้น`}
                             </p>
                           </div>
@@ -459,10 +457,10 @@ interface StatsCardProps {
 }
 
 const colorClasses = {
-  blue: "bg-brutal-blue",
-  purple: "bg-brutal-purple",
-  emerald: "bg-brutal-green",
-  rose: "bg-brutal-pink",
+  blue: "bg-blue-500/10 text-blue-400",
+  purple: "bg-purple-500/10 text-purple-400",
+  emerald: "bg-emerald-500/10 text-emerald-400",
+  rose: "bg-rose-500/10 text-rose-400",
 };
 
 function StatsCard({
@@ -476,34 +474,33 @@ function StatsCard({
 }: StatsCardProps) {
   return (
     <motion.div
-      className="bg-white border-[3px] border-black p-3 flex flex-col"
-      style={{ boxShadow: "3px 3px 0 0 #000000" }}
+      className="bg-[#212328] rounded-[16px] border border-white/5 p-4 flex flex-col shadow-lg"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
     >
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-medium text-gray-600 thai-font">
+        <span className="text-[12px] font-medium text-gray-400 tracking-wide">
           {title}
         </span>
-        <span className={`p-1 text-white ${colorClasses[color]}`}>{icon}</span>
+        <span className={`p-1.5 rounded-lg ${colorClasses[color]}`}>{icon}</span>
       </div>
 
-      <div className="mt-1.5">
-        <span className="text-lg font-bold text-black">{value}</span>
-        {subtitle && <p className="text-[9px] text-gray-500 mt-0.5">{subtitle}</p>}
-        <div className="flex items-center mt-1">
+      <div className="mt-2">
+        <span className="text-xl font-bold text-white">{value}</span>
+        {subtitle && <p className="text-[10px] text-gray-400 mt-1">{subtitle}</p>}
+        <div className="flex items-center mt-1.5">
           <span
-            className={`text-[9px] flex items-center font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}
+            className={`text-[10px] flex items-center font-bold ${isPositive ? "text-emerald-400" : "text-rose-400"}`}
           >
             {isPositive ? (
-              <ArrowUpRight className="h-2.5 w-2.5 mr-0.5" />
+              <ArrowUpRight className="h-3 w-3 mr-0.5" />
             ) : (
-              <ArrowDownRight className="h-2.5 w-2.5 mr-0.5" />
+              <ArrowDownRight className="h-3 w-3 mr-0.5" />
             )}
             {change}%
           </span>
-          <span className="text-[9px] text-gray-500 ml-1 thai-font">
+          <span className="text-[10px] text-gray-500 ml-1.5">
             เทียบกับเดือนที่แล้ว
           </span>
         </div>
@@ -521,10 +518,10 @@ interface QuickStatCardProps {
 }
 
 const quickStatColorClasses = {
-  orange: "bg-orange-100 border-orange-300 text-orange-700",
-  red: "bg-red-100 border-red-300 text-red-700",
-  yellow: "bg-yellow-100 border-yellow-300 text-yellow-700",
-  blue: "bg-blue-100 border-blue-300 text-blue-700",
+  orange: "bg-[#212328] border-orange-500/20 text-orange-400",
+  red: "bg-[#212328] border-red-500/30/20 text-red-400",
+  yellow: "bg-[#212328] border-yellow-500/30/20 text-yellow-400",
+  blue: "bg-[#212328] border-blue-500/20 text-blue-400",
 };
 
 function QuickStatCard({
@@ -537,18 +534,17 @@ function QuickStatCard({
   return (
     <Link href={link}>
       <motion.div
-        className={`p-2.5 border-[2px] ${quickStatColorClasses[color]} flex items-center justify-between hover:opacity-80 transition-opacity`}
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
+        className={`p-3 border rounded-[16px] ${quickStatColorClasses[color]} flex items-center justify-between hover:bg-[#212328]/5 transition-colors shadow-lg`}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <div className="flex items-center space-x-2">
-          {icon}
-          <span className="text-[10px] font-medium thai-font text-black">
+        <div className="flex items-center space-x-2.5">
+          <div className="p-1.5 rounded-lg bg-[#212328]/5">{icon}</div>
+          <span className="text-[11px] font-bold tracking-wide">
             {title}
           </span>
         </div>
-        <span className="text-base font-bold text-black">
+        <span className="text-lg font-bold text-white">
           {value.toLocaleString()}
         </span>
       </motion.div>
@@ -567,20 +563,19 @@ function QuickLinkCard({ title, description, icon, href }: QuickLinkCardProps) {
   return (
     <Link href={href}>
       <motion.div
-        className="bg-white border-[3px] border-black p-2.5 hover:border-brutal-pink transition-colors"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
+        className="bg-[#212328] rounded-[16px] border border-white/5 p-3.5 hover:border-site-accent/50 transition-colors shadow-lg"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <div className="flex items-start space-x-2">
-          <div className="p-1 bg-brutal-yellow border-[2px] border-black text-black">
+        <div className="flex items-start space-x-3">
+          <div className="p-2 bg-[#212328]/5 rounded-xl text-site-accent shrink-0">
             {icon}
           </div>
           <div>
-            <h4 className="text-[10px] font-medium text-black thai-font">
+            <h4 className="text-[11px] font-bold text-white tracking-wide">
               {title}
             </h4>
-            <p className="text-[9px] text-gray-500 mt-0.5">{description}</p>
+            <p className="text-[10px] text-gray-400 mt-1">{description}</p>
           </div>
         </div>
       </motion.div>

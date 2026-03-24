@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { useState, useRef, useEffect, useTransition } from "react";
 import { createPortal } from "react-dom";
@@ -27,6 +27,7 @@ const languages = [
 
 export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwitcherProps) {
   const locale = useLocale();
+  const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -59,24 +60,23 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
   if (variant === "mobile") {
     return (
       <div className={cn("space-y-3", className)}>
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">Language / ภาษา</p>
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">{t("language_selector")}</p>
 
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center justify-between p-3 border-[2px] bg-white border-black transition-all active:translate-y-[2px]"
-          style={{ boxShadow: "2px 2px 0 0 #000" }}
+          className="w-full flex items-center justify-between p-3 bg-[#212328] border border-site-border/30 rounded-[12px] hover:bg-white/5 transition-all text-white"
         >
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 border border-black overflow-hidden shrink-0">
+            <div className="w-6 h-6 rounded-sm overflow-hidden shrink-0 shadow-sm">
               <img
                 src={getFlagUrl(currentLanguage.flagCode)}
                 alt={currentLanguage.label}
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="font-bold uppercase">{currentLanguage.label}</span>
+            <span className="font-bold uppercase text-[13px] tracking-wide">{currentLanguage.label}</span>
           </div>
-          <ChevronDown size={20} className="text-gray-500" />
+          <ChevronDown size={18} className="text-gray-400" />
         </button>
 
         {mounted && createPortal(
@@ -94,14 +94,13 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="relative w-full max-w-sm bg-white border-[3px] border-black p-5 max-h-[85vh] overflow-y-auto flex flex-col"
-                  style={{ boxShadow: "8px 8px 0 0 #000" }}
+                  className="relative w-full max-w-sm bg-[#212328] border border-site-border/30 rounded-[16px] p-5 max-h-[85vh] overflow-y-auto flex flex-col shadow-2xl"
                 >
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-black text-xl uppercase tracking-tight">Select Language</h3>
+                  <div className="flex justify-between items-center mb-6 border-b border-site-border/30 pb-4">
+                    <h3 className="font-bold text-[15px] uppercase tracking-wide text-white">Select Language</h3>
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="p-1 hover:bg-gray-100 transition-colors"
+                      className="p-1 hover:bg-[#1A1C1E] transition-colors"
                     >
                       <span className="text-2xl font-bold leading-none block w-6 h-6 text-center">&times;</span>
                     </button>
@@ -112,20 +111,20 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
                         key={lang.code}
                         onClick={() => handleLanguageChange(lang.code)}
                         className={cn(
-                          "flex flex-col items-center justify-center p-4 border-[2px] transition-all active:translate-y-[2px]",
+                          "flex flex-col items-center justify-center p-4 border rounded-[12px] transition-all",
                           locale === lang.code
-                            ? "bg-brutal-yellow border-black font-bold shadow-[2px_2px_0_0_#000]"
-                            : "bg-white border-gray-200 hover:border-black text-gray-600"
+                            ? "bg-site-accent/10 border-site-accent shadow-sm"
+                            : "bg-[#181A1D] border-site-border/30 hover:border-site-border hover:bg-[#292B30] text-gray-400"
                         )}
                       >
-                        <div className="w-10 h-10 mb-2 border border-black overflow-hidden shrink-0">
+                        <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0 shadow-sm">
                           <img
                             src={getFlagUrl(lang.flagCode)}
                             alt={lang.label}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <span className="text-xs uppercase font-bold">{lang.label}</span>
+                        <span className={cn("text-[11px] uppercase font-bold tracking-wide", locale === lang.code ? "text-site-accent" : "text-gray-400")}>{lang.label}</span>
                       </button>
                     ))}
                   </div>
@@ -143,20 +142,19 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
     <div className={cn("relative", className)} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-gray-50 border-[3px] border-black transition-all active:translate-y-[2px] active:translate-x-[2px]"
-        style={{ boxShadow: isOpen ? "none" : "3px 3px 0 0 #000000" }}
+        className="flex items-center gap-2 px-3 py-1.5 bg-transparent hover:bg-white/5 rounded-full transition-colors group cursor-pointer"
       >
-        <div className="w-5 h-5 border border-black overflow-hidden shrink-0">
+        <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity">
           <img
             src={getFlagUrl(currentLanguage.flagCode)}
             alt={currentLanguage.label}
             className="w-full h-full object-cover"
           />
         </div>
-        <span className="text-sm font-bold uppercase">{currentLanguage.label}</span>
+        <span className="text-[12px] text-gray-300 font-medium group-hover:text-white transition-colors uppercase tabular-nums tracking-wide">{currentLanguage.code} {currentLanguage.label}</span>
         <ChevronDown
           size={14}
-          className={cn("text-gray-500 transition-transform duration-200", isOpen && "rotate-180")}
+          className={cn("text-gray-500 transition-transform duration-200 group-hover:text-gray-300", isOpen && "rotate-180")}
         />
       </button>
 
@@ -167,32 +165,31 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-40 bg-white border-[3px] border-black z-50 overflow-hidden"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="absolute right-0 mt-2 w-48 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-2xl z-50 overflow-hidden"
           >
-            <div className="p-1">
+            <div className="p-2 space-y-1">
               {languages.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageChange(lang.code)}
                   className={cn(
-                    "w-full flex items-center justify-between px-3 py-2 text-sm transition-colors",
+                    "w-full flex items-center justify-between px-3 py-2 text-[13px] rounded-lg transition-colors border border-transparent",
                     locale === lang.code
-                      ? "bg-brutal-yellow/20 font-bold text-black"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-site-accent/10 border-site-accent/30 font-medium text-site-accent"
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
                   )}
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border border-black overflow-hidden shrink-0">
+                  <div className="flex items-center gap-3">
+                    <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90">
                       <img
                         src={getFlagUrl(lang.flagCode)}
                         alt={lang.label}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <span>{lang.label}</span>
+                    <span className="tracking-wide uppercase font-medium">{lang.label}</span>
                   </div>
-                  {locale === lang.code && <Check size={14} className="text-black" />}
+                  {locale === lang.code && <Check size={14} className="text-site-accent" />}
                 </button>
               ))}
             </div>

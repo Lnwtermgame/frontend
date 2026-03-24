@@ -187,12 +187,12 @@ export default function AdminProducts() {
 
   const getProductTypeIcon = (productType: string) => {
     if (productType === "CARD") {
-      return <CreditCard className="w-4 h-4 text-brutal-blue" />;
+      return <CreditCard className="w-4 h-4 text-site-accent" />;
     }
     if ((productType as any) === "MOBILE_RECHARGE") {
-      return <Smartphone className="w-4 h-4 text-brutal-green" />;
+      return <Smartphone className="w-4 h-4 text-green-400" />;
     }
-    return <Gamepad2 className="w-4 h-4 text-brutal-orange" />; // DIRECT_TOPUP
+    return <Gamepad2 className="w-4 h-4 text-orange-500" />; // DIRECT_TOPUP
   };
 
   const getProductTypeLabel = (productType: string) => {
@@ -296,9 +296,9 @@ export default function AdminProducts() {
 
   const getStatusStyles = (product: Product | AdminProduct) => {
     if (!product.isActive) {
-      return "text-gray-700 bg-gray-100 border-gray-300";
+      return "text-gray-300 bg-[#1A1C1E] border-gray-300";
     }
-    return "text-green-700 bg-green-100 border-green-300";
+    return "text-green-400 bg-green-500/10 border-green-300";
   };
 
   const getStatusText = (product: Product | AdminProduct) => {
@@ -685,12 +685,12 @@ export default function AdminProducts() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center">
-          <span className="w-1.5 h-6 bg-brutal-blue mr-2"></span>
-          <h1 className="text-xl font-bold text-black">จัดการสินค้า</h1>
+          <span className="w-1.5 h-6 bg-site-accent mr-2"></span>
+          <h1 className="text-xl font-bold text-white">จัดการสินค้า</h1>
         </div>
 
         {/* Actions Bar */}
-        <div className="bg-white border-[2px] border-black p-3" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+        <div className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-3">
           <div className="flex flex-col lg:flex-row gap-3 justify-between items-start lg:items-center">
             {/* Search */}
             <div className="relative w-full lg:max-w-xs">
@@ -700,7 +700,7 @@ export default function AdminProducts() {
               <input
                 type="text"
                 placeholder="ค้นหาสินค้า..."
-                className="bg-gray-50 border-[2px] border-black text-black pl-9 pr-3 py-1.5 w-full focus:ring-2 focus:ring-brutal-blue/50 focus:border-black focus:outline-none text-sm"
+                className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm text-white pl-9 pr-3 py-1.5 w-full focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -711,32 +711,24 @@ export default function AdminProducts() {
               <AIGenerateAllButton products={products} categories={categories} />
               <button
                 onClick={() => setIsBulkPriceModalOpen(true)}
-                className="bg-brutal-yellow border-[2px] border-black text-black flex items-center justify-center gap-2 px-3 py-1.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_0_#000] transition-all font-medium text-sm"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className="bg-orange-500/10 border border-site-border/30 rounded-[12px] shadow-sm text-white flex items-center justify-center gap-2 px-3 py-1.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-lg transition-all font-medium text-sm">
                 <Settings className="h-4 w-4" />
                 <span>ตั้งราคาทั้งหมด</span>
               </button>
               <button
                 onClick={() => setIsExportModalOpen(true)}
-                className="bg-brutal-green border-[2px] border-black text-black flex items-center justify-center gap-2 px-3 py-1.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_0_#000] transition-all font-medium text-sm"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className="bg-green-500 border border-site-border/30 rounded-[12px] shadow-sm text-white flex items-center justify-center gap-2 px-3 py-1.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-lg transition-all font-medium text-sm">
                 <Download className="h-4 w-4" />
                 <span>Export ข้อมูล</span>
               </button>
               <button
                 onClick={handleSyncSeagm}
-                className="bg-white border-[2px] border-black text-black flex items-center justify-center gap-2 px-3 py-1.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_0_#000] transition-all font-medium text-sm"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white flex items-center justify-center gap-2 px-3 py-1.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-lg transition-all font-medium text-sm">
                 <RefreshCw className="h-4 w-4" />
                 <span>ซิงค์ SEAGM</span>
               </button>
               <button
-                className="bg-black text-white border-[2px] border-black flex items-center justify-center gap-2 px-3 py-1.5 hover:bg-gray-800 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_0_#000] transition-all font-bold text-sm"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center gap-2 px-3 py-1.5 hover:bg-gray-800 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-lg transition-all font-bold text-sm">
                 <Plus className="h-4 w-4" />
                 <span>เพิ่มสินค้า</span>
               </button>
@@ -746,37 +738,36 @@ export default function AdminProducts() {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-100 border-[2px] border-black text-red-700 px-3 py-2 text-sm" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+          <div className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm text-red-400 px-3 py-2 text-sm">
             {error}
           </div>
         )}
 
         {/* Products Table */}
         <motion.div
-          className="bg-white border-[2px] border-black overflow-hidden"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-[2px] border-black bg-gray-50">
+          <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
             <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-              <h3 className="text-sm font-bold text-black flex items-center gap-2">
-                <div className="p-1 bg-brutal-blue/10 border-[1px] border-black">
-                  <Package className="h-3.5 w-3.5 text-brutal-blue" />
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <div className="p-1 bg-site-accent/10 border-[1px] border-site-border/50">
+                  <Package className="h-3.5 w-3.5 text-site-accent" />
                 </div>
                 รายการสินค้า
                 <span className="text-xs font-normal text-gray-500 ml-1">({filteredProducts.length})</span>
               </h3>
 
               <div className="flex flex-wrap gap-2">
-                <div className="flex items-center gap-2 bg-white border-[2px] border-black px-2 py-1 text-xs">
-                  <span className="font-bold text-gray-700">หมวดหมู่:</span>
+                <div className="flex items-center gap-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-xs">
+                  <span className="font-bold text-gray-300">หมวดหมู่:</span>
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="bg-transparent outline-none text-gray-800 cursor-pointer"
-                  >
+                    className="bg-transparent outline-none text-gray-200 cursor-pointer">
                     <option value="all">ทุกหมวดหมู่</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
@@ -786,13 +777,12 @@ export default function AdminProducts() {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-2 bg-white border-[2px] border-black px-2 py-1 text-xs">
-                  <span className="font-bold text-gray-700">ประเภท:</span>
+                <div className="flex items-center gap-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-xs">
+                  <span className="font-bold text-gray-300">ประเภท:</span>
                   <select
                     value={productTypeFilter}
                     onChange={(e) => setProductTypeFilter(e.target.value)}
-                    className="bg-transparent outline-none text-gray-800 cursor-pointer"
-                  >
+                    className="bg-transparent outline-none text-gray-200 cursor-pointer">
                     <option value="all">ทั้งหมด</option>
                     <option value="DIRECT_TOPUP">เติมเกม</option>
                     <option value="MOBILE_RECHARGE">เติมเงินมือถือ</option>
@@ -800,13 +790,12 @@ export default function AdminProducts() {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-2 bg-white border-[2px] border-black px-2 py-1 text-xs">
-                  <span className="font-bold text-gray-700">สถานะ:</span>
+                <div className="flex items-center gap-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-xs">
+                  <span className="font-bold text-gray-300">สถานะ:</span>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="bg-transparent outline-none text-gray-800 cursor-pointer"
-                  >
+                    className="bg-transparent outline-none text-gray-200 cursor-pointer">
                     <option value="all">ทั้งหมด</option>
                     <option value="active">เปิดขาย</option>
                     <option value="inactive">ปิดขาย</option>
@@ -818,21 +807,21 @@ export default function AdminProducts() {
           <div className="overflow-x-auto">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 gap-3">
-                <Loader2 className="h-8 w-8 text-brutal-blue animate-spin" />
+                <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
                 <span className="text-sm text-gray-500 font-medium">กำลังโหลดสินค้า...</span>
               </div>
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="text-gray-500 text-[11px] uppercase tracking-wider border-b-[2px] border-gray-200 bg-gray-50">
+                  <tr className="text-gray-500 text-[11px] uppercase tracking-wider border-b-[2px] border-site-border/30 bg-[#181A1D]">
                     <th className="px-3 py-2.5 text-center font-bold w-10">
                       <button
                         onClick={toggleSelectAll}
-                        className="p-0.5 hover:bg-gray-200 transition-colors"
+                        className="p-0.5 hover:bg-site-border/30 transition-colors"
                         title={selectedIds.size === filteredProducts.length ? "ยกเลิกเลือกทั้งหมด" : "เลือกทั้งหมด"}
                       >
                         {selectedIds.size > 0 && selectedIds.size === filteredProducts.length ? (
-                          <CheckSquare className="w-4 h-4 text-brutal-blue" />
+                          <CheckSquare className="w-4 h-4 text-site-accent" />
                         ) : (
                           <Square className="w-4 h-4" />
                         )}
@@ -851,23 +840,21 @@ export default function AdminProducts() {
                     filteredProducts.map((product) => (
                       <tr
                         key={product.id}
-                        className={`text-sm transition-colors group ${selectedIds.has(product.id) ? "bg-brutal-blue/10" : "hover:bg-brutal-blue/5"}`}
-                      >
+                        className={`text-sm transition-colors group ${selectedIds.has(product.id) ? "bg-site-accent/10" : "hover:bg-site-accent/5"}`}>
                         <td className="px-3 py-2.5 text-center">
                           <button
                             onClick={() => toggleSelect(product.id)}
-                            className="p-0.5 hover:bg-gray-200 transition-colors"
-                          >
+                            className="p-0.5 hover:bg-site-border/30 transition-colors">
                             {selectedIds.has(product.id) ? (
-                              <CheckSquare className="w-4 h-4 text-brutal-blue" />
+                              <CheckSquare className="w-4 h-4 text-site-accent" />
                             ) : (
                               <Square className="w-4 h-4 text-gray-400" />
                             )}
                           </button>
                         </td>
-                        <td className="px-4 py-2.5 font-medium text-black">
+                        <td className="px-4 py-2.5 font-medium text-white">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 border-[2px] border-black bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                            <div className="w-9 h-9 border border-site-border/30 rounded-[12px] shadow-sm bg-[#1A1C1E] flex items-center justify-center overflow-hidden flex-shrink-0">
                               {product.imageUrl ? (
                                 <img
                                   src={product.imageUrl}
@@ -879,7 +866,7 @@ export default function AdminProducts() {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <div className="text-black font-semibold text-sm truncate max-w-[200px]">
+                              <div className="text-white font-semibold text-sm truncate max-w-[200px]">
                                 {product.name}
                               </div>
                               <div className="text-[10px] text-gray-400 font-mono truncate max-w-[200px]">
@@ -889,29 +876,27 @@ export default function AdminProducts() {
                           </div>
                         </td>
                         <td className="px-4 py-2.5">
-                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 border-[1px] border-gray-200 bg-gray-50 text-xs">
+                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 border-[1px] border-site-border/30 bg-[#181A1D] text-xs">
                             {getProductTypeIcon(product.productType)}
-                            <span className="text-gray-700 font-medium">
+                            <span className="text-gray-300 font-medium">
                               {getProductTypeLabel(product.productType)}
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-2.5 text-gray-600 text-xs font-medium">
+                        <td className="px-4 py-2.5 text-gray-400 text-xs font-medium">
                           {product.category?.name || <span className="text-gray-300">—</span>}
                         </td>
                         <td className="px-4 py-2.5">
                           <button
                             onClick={() => openPriceModal(product)}
-                            className="inline-flex items-center gap-1.5 text-xs text-brutal-blue hover:text-black transition-colors font-semibold px-2 py-1 border-[1px] border-transparent hover:border-black hover:bg-brutal-blue/10"
-                          >
+                            className="inline-flex items-center gap-1.5 text-xs text-site-accent hover:text-white transition-colors font-semibold px-2 py-1 border-[1px] border-transparent hover:border-site-border/50 hover:bg-site-accent/10">
                             <DollarSign className="h-3.5 w-3.5" />
                             <span>จัดการราคา</span>
                           </button>
                         </td>
                         <td className="px-4 py-2.5">
                           <span
-                            className={`px-2 py-0.5 text-[10px] border-[2px] font-bold ${getStatusStyles(product)}`}
-                          >
+                            className={`px-2 py-0.5 text-[10px] border border-site-border/30 rounded-[12px] shadow-sm font-bold ${getStatusStyles(product)}`}>
                             {getStatusText(product)}
                           </span>
                         </td>
@@ -919,19 +904,19 @@ export default function AdminProducts() {
                           <div className="flex space-x-1">
                             <button
                               onClick={() => openImageModal(product)}
-                              className="p-1.5 bg-white border-[2px] border-black text-gray-600 hover:bg-brutal-blue hover:text-white transition-all" style={{ boxShadow: "1px 1px 0 0 #000" }}
+                              className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-gray-400 hover:bg-site-accent hover:text-white transition-all" 
                               title="แก้ไขรูปภาพ"
                             >
                               <ImageIcon className="h-3 w-3" />
                             </button>
                             <Link href={`/admin/products/${product.id}/edit`}>
-                              <button className="p-1.5 bg-white border-[2px] border-black text-gray-600 hover:bg-brutal-yellow hover:text-black transition-all" style={{ boxShadow: "1px 1px 0 0 #000" }} title="แก้ไขสินค้า">
+                              <button className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-gray-400 hover:bg-orange-500/10 hover:text-white transition-all"  title="แก้ไขสินค้า">
                                 <Edit className="h-3 w-3" />
                               </button>
                             </Link>
                             <button
                               onClick={() => handleDeleteProduct(product.id)}
-                              className="p-1.5 bg-white border-[2px] border-black text-gray-600 hover:bg-brutal-pink hover:text-white transition-all" style={{ boxShadow: "1px 1px 0 0 #000" }}
+                              className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-gray-400 hover:bg-pink-500 hover:text-white transition-all" 
                               title="ลบสินค้า"
                             >
                               <Trash2 className="h-3 w-3" />
@@ -957,7 +942,7 @@ export default function AdminProducts() {
           </div>
           {/* Pagination */}
           {!loading && pagination.totalPages > 1 && (
-            <div className="p-3 border-t-[2px] border-black flex justify-between items-center bg-gray-50">
+            <div className="p-3 border-t-[2px] border-site-border/50 flex justify-between items-center bg-[#181A1D]">
               <div className="text-xs text-gray-500 font-medium">
                 หน้า {pagination.page} จาก {pagination.totalPages} • แสดง {filteredProducts.length} รายการ
               </div>
@@ -967,12 +952,10 @@ export default function AdminProducts() {
                     setPagination((p) => ({ ...p, page: p.page - 1 }))
                   }
                   disabled={pagination.page === 1}
-                  className="px-3 py-1 text-xs bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium"
-                  style={{ boxShadow: "1px 1px 0 0 #000" }}
-                >
+                  className="px-3 py-1 text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium">
                   ก่อนหน้า
                 </button>
-                <span className="px-3 py-1 text-xs bg-brutal-blue text-white border-[2px] border-black font-bold">
+                <span className="px-3 py-1 text-xs bg-site-accent text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold">
                   {pagination.page}
                 </span>
                 <button
@@ -980,9 +963,7 @@ export default function AdminProducts() {
                     setPagination((p) => ({ ...p, page: p.page + 1 }))
                   }
                   disabled={pagination.page >= pagination.totalPages}
-                  className="px-3 py-1 text-xs bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium"
-                  style={{ boxShadow: "1px 1px 0 0 #000" }}
-                >
+                  className="px-3 py-1 text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium">
                   ถัดไป
                 </button>
               </div>
@@ -1008,18 +989,16 @@ export default function AdminProducts() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border-[3px] border-black w-full max-w-4xl max-h-[80vh] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-              >
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-4xl max-h-[80vh] overflow-hidden shadow-lg">
                 {/* Modal Header */}
-                <div className="p-5 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
+                <div className="p-5 border-b-[3px] border-site-border/50 bg-site-accent flex items-center justify-between">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
                     จัดการราคา: {selectedProduct.name}
                   </h3>
                   <button
                     onClick={closePriceModal}
-                    className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
-                  >
+                    className="p-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
@@ -1029,9 +1008,9 @@ export default function AdminProducts() {
                   {editingTypes.length > 0 ? (
                     <div className="space-y-4">
                       {/* Fast Pricing Options */}
-                      <div className="bg-gray-50 border-[2px] border-black p-4 mb-4">
-                        <h4 className="text-sm font-bold text-black mb-3 flex items-center gap-2">
-                          <Zap className="h-4 w-4 text-brutal-orange" />
+                      <div className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-4 mb-4">
+                        <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-orange-500" />
                           ตั้งราคาแบบด่วน
                         </h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -1039,11 +1018,10 @@ export default function AdminProducts() {
                             <button
                               key={option.key}
                               onClick={() => applyPricingOption(option.key)}
-                              className={`p-3 border-[2px] text-left transition-all ${selectedPricingOption === option.key
-                                ? "bg-brutal-blue text-white border-black"
-                                : "bg-white text-black border-gray-300 hover:border-black"
-                                }`}
-                            >
+                              className={`p-3 border border-site-border/30 rounded-[12px] shadow-sm text-left transition-all ${selectedPricingOption === option.key
+                                ? "bg-site-accent text-white border-site-border/50"
+                                : "bg-[#212328] text-white border-gray-300 hover:border-site-border/50"
+                                }`}>
                               <div className="font-medium text-sm">
                                 {option.label}
                               </div>
@@ -1051,15 +1029,14 @@ export default function AdminProducts() {
                                 className={`text-xs mt-1 ${selectedPricingOption === option.key
                                   ? "text-blue-100"
                                   : "text-gray-500"
-                                  }`}
-                              >
+                                  }`}>
                                 {option.description}
                               </div>
                             </button>
                           ))}
                         </div>
                         {selectedPricingOption && (
-                          <div className="mt-3 text-xs text-gray-600 bg-white p-2 border border-gray-200">
+                          <div className="mt-3 text-xs text-gray-400 bg-[#212328] p-2 border border-site-border/30">
                             <span className="font-medium">หมายเหตุ:</span>{" "}
                             ราคาจะถูกคำนวณใหม่ทั้งหมดตามตัวเลือกที่เลือก
                             คุณสามารถแก้ไขราคาแต่ละรายการได้ภายหลัง
@@ -1068,7 +1045,7 @@ export default function AdminProducts() {
                       </div>
 
                       {/* Header Row */}
-                      <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600 border-b-2 border-gray-200 pb-2">
+                      <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-400 border-b-2 border-site-border/30 pb-2">
                         <div className="col-span-3">ประเภท</div>
                         <div className="col-span-2 text-right">ต้นทุน</div>
                         <div className="col-span-2 text-right">ราคา SEAGM</div>
@@ -1099,10 +1076,9 @@ export default function AdminProducts() {
                         return (
                           <div
                             key={type.id}
-                            className="grid grid-cols-12 gap-4 items-center py-3 border-b border-gray-100"
-                          >
+                            className="grid grid-cols-12 gap-4 items-center py-3 border-b border-gray-100">
                             <div className="col-span-3">
-                              <div className="font-medium text-black">
+                              <div className="font-medium text-white">
                                 {type.name}
                               </div>
                               <div className="text-xs text-gray-500">
@@ -1110,14 +1086,14 @@ export default function AdminProducts() {
                               </div>
                             </div>
                             <div className="col-span-2 text-right text-sm">
-                              <span className="text-gray-600">
+                              <span className="text-gray-400">
                                 {costPrice > 0
                                   ? `฿${costPrice.toFixed(2)}`
                                   : "-"}
                               </span>
                             </div>
                             <div className="col-span-2 text-right text-sm">
-                              <span className="text-gray-600">
+                              <span className="text-gray-400">
                                 ฿{seagmPrice.toFixed(2)}
                               </span>
                             </div>
@@ -1133,18 +1109,18 @@ export default function AdminProducts() {
                                   onChange={(e) =>
                                     handlePriceChange(type.id, e.target.value)
                                   }
-                                  className="w-full text-right bg-gray-50 border-[2px] border-black pl-6 pr-3 py-2 text-sm focus:ring-2 focus:ring-brutal-blue/50 outline-none"
+                                  className="w-full text-right bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm pl-6 pr-3 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
                                   placeholder={seagmPrice.toString()}
                                 />
                               </div>
                             </div>
                             <div className="col-span-2 text-right">
                               <span
-                                className={`text-sm font-medium ${profitPercent > 0
+                                className={`text-sm font-medium ${profitPercent> 0
                                   ? "text-green-600"
                                   : profitPercent < 0
                                     ? "text-red-600"
-                                    : "text-gray-600"
+                                    : "text-gray-400"
                                   }`}
                               >
                                 {profitPercent > 0 ? "+" : ""}
@@ -1173,17 +1149,15 @@ export default function AdminProducts() {
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                <div className="p-5 border-t-[3px] border-site-border/50 bg-[#181A1D] flex justify-end gap-3">
                   <button
                     onClick={closePriceModal}
-                    className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
-                  >
+                    className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium">
                     ยกเลิก
                   </button>
                   <button
                     onClick={saveSellingPrices}
-                    className="px-4 py-2 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
-                  >
+                    className="px-4 py-2 bg-site-accent border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-blue-600 transition-colors font-medium shadow-sm">
                     บันทึกราคา
                   </button>
                 </div>
@@ -1209,32 +1183,30 @@ export default function AdminProducts() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border-[3px] border-black w-full max-w-2xl overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-              >
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-2xl overflow-hidden shadow-lg">
                 {/* Modal Header */}
-                <div className="p-5 border-b-[3px] border-black bg-brutal-yellow flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-black flex items-center gap-2">
+                <div className="p-5 border-b-[3px] border-site-border/50 bg-orange-500/10 flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <Settings className="h-5 w-5" />
                     ตั้งราคาสินค้าทั้งหมด
                   </h3>
                   <button
                     onClick={() => setIsBulkPriceModalOpen(false)}
-                    className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
-                  >
+                    className="p-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
 
                 {/* Modal Content */}
                 <div className="p-5">
-                  <div className="mb-4 p-4 bg-red-50 border-[2px] border-red-300">
-                    <p className="text-sm text-red-700 font-medium">
+                  <div className="mb-4 p-4 bg-red-500/5 border border-site-border/30 rounded-[12px] shadow-sm border-red-300">
+                    <p className="text-sm text-red-400 font-medium">
                       ⚠️ คำเตือน: การกระทำนี้จะเปลี่ยนแปลงราคาขายของ{" "}
                       <strong>ทุกประเภทสินค้า</strong> ในระบบตามกลยุทธ์ที่เลือก
                     </p>
                   </div>
 
-                  <h4 className="text-sm font-bold text-black mb-3">
+                  <h4 className="text-sm font-bold text-white mb-3">
                     เลือกกลยุทธ์การตั้งราคา:
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
@@ -1242,13 +1214,12 @@ export default function AdminProducts() {
                       <button
                         key={option.key}
                         onClick={() => setBulkPricingStrategy(option.key)}
-                        className={`p-4 border-[2px] text-left transition-all ${bulkPricingStrategy === option.key
-                          ? "bg-brutal-yellow text-black border-black"
-                          : "bg-white text-black border-gray-300 hover:border-black"
-                          }`}
-                      >
+                        className={`p-4 border border-site-border/30 rounded-[12px] shadow-sm text-left transition-all ${bulkPricingStrategy === option.key
+                          ? "bg-orange-500/10 text-white border-site-border/50"
+                          : "bg-[#212328] text-white border-gray-300 hover:border-site-border/50"
+                          }`}>
                         <div className="font-medium">{option.label}</div>
-                        <div className="text-xs mt-1 text-gray-600">
+                        <div className="text-xs mt-1 text-gray-400">
                           {option.description}
                         </div>
                       </button>
@@ -1257,8 +1228,8 @@ export default function AdminProducts() {
 
                   {/* Custom percent input */}
                   {bulkPricingStrategy === "custom" && (
-                    <div className="mb-4 p-4 bg-gray-50 border-[2px] border-black">
-                      <label className="block text-sm font-medium text-black mb-2">
+                    <div className="mb-4 p-4 bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm">
+                      <label className="block text-sm font-medium text-white mb-2">
                         บวกกี่ % จากต้นทุน?
                       </label>
                       <div className="flex items-center gap-2">
@@ -1267,10 +1238,10 @@ export default function AdminProducts() {
                           step="0.1"
                           value={customPercent}
                           onChange={(e) => setCustomPercent(e.target.value)}
-                          className="w-32 text-right bg-white border-[2px] border-black px-3 py-2 text-sm focus:ring-2 focus:ring-brutal-blue/50 outline-none"
+                          className="w-32 text-right bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-3 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
                           placeholder="10"
                         />
-                        <span className="text-gray-600">%</span>
+                        <span className="text-gray-400">%</span>
                       </div>
                       <p className="text-xs text-gray-500 mt-2">
                         ตัวอย่าง: 10 = บวก 10% จากต้นทุน, -5 = ลบ 5% จากต้นทุน
@@ -1280,11 +1251,11 @@ export default function AdminProducts() {
 
                   {/* Preview info */}
                   {bulkPricingStrategy && (
-                    <div className="p-4 bg-blue-50 border-[2px] border-blue-300">
+                    <div className="p-4 bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm border-blue-300">
                       <h5 className="text-sm font-medium text-blue-800 mb-2">
                         📊 สูตรการคำนวณ:
                       </h5>
-                      <ul className="text-xs text-blue-700 space-y-1">
+                      <ul className="text-xs text-blue-400 space-y-1">
                         {bulkPricingStrategy === "mid" && (
                           <li>• ราคาขาย = (ต้นทุน + ราคา SEAGM) ÷ 2</li>
                         )}
@@ -1311,18 +1282,16 @@ export default function AdminProducts() {
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                <div className="p-5 border-t-[3px] border-site-border/50 bg-[#181A1D] flex justify-end gap-3">
                   <button
                     onClick={() => setIsBulkPriceModalOpen(false)}
-                    className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
-                  >
+                    className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium">
                     ยกเลิก
                   </button>
                   <button
                     onClick={executeBulkPricing}
                     disabled={!bulkPricingStrategy || isBulkUpdating}
-                    className="px-4 py-2 bg-yellow-400 border-[2px] border-black text-black hover:bg-yellow-500 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
+                    className="px-4 py-2 bg-yellow-400 border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-yellow-500 transition-colors font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     {isBulkUpdating && (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     )}
@@ -1352,17 +1321,15 @@ export default function AdminProducts() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border-[3px] border-black w-full max-w-xl overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-              >
-                <div className="p-5 border-b-[3px] border-black bg-brutal-blue flex items-center justify-between">
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-xl overflow-hidden shadow-lg">
+                <div className="p-5 border-b-[3px] border-site-border/50 bg-site-accent flex items-center justify-between">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <ImageIcon className="h-5 w-5" />
                     เปลี่ยนโลโก้สินค้า: {imageUpdatingProduct.name}
                   </h3>
                   <button
                     onClick={closeImageModal}
-                    className="p-2 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors"
-                  >
+                    className="p-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
@@ -1371,26 +1338,24 @@ export default function AdminProducts() {
                   <div className="flex flex-wrap gap-3">
                     <button
                       onClick={() => handleTargetChange("logo")}
-                      className={`px-4 py-2 border-[2px] text-sm font-medium transition-all ${imageTarget === "logo"
-                        ? "bg-brutal-blue text-white border-black"
-                        : "bg-white text-black border-gray-300 hover:border-black"
-                        }`}
-                    >
+                      className={`px-4 py-2 border border-site-border/30 rounded-[12px] shadow-sm text-sm font-medium transition-all ${imageTarget === "logo"
+                        ? "bg-site-accent text-white border-site-border/50"
+                        : "bg-[#212328] text-white border-gray-300 hover:border-site-border/50"
+                        }`}>
                       โลโก้ (รายการสินค้า)
                     </button>
                     <button
                       onClick={() => handleTargetChange("cover")}
-                      className={`px-4 py-2 border-[2px] text-sm font-medium transition-all ${imageTarget === "cover"
-                        ? "bg-brutal-blue text-white border-black"
-                        : "bg-white text-black border-gray-300 hover:border-black"
-                        }`}
-                    >
+                      className={`px-4 py-2 border border-site-border/30 rounded-[12px] shadow-sm text-sm font-medium transition-all ${imageTarget === "cover"
+                        ? "bg-site-accent text-white border-site-border/50"
+                        : "bg-[#212328] text-white border-gray-300 hover:border-site-border/50"
+                        }`}>
                       หน้าปก (หน้ารายละเอียด)
                     </button>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-300">
                       {imageTarget === "logo"
                         ? "ลิงก์โลโก้สินค้า"
                         : "ลิงก์รูปภาพหน้าปก"}
@@ -1404,7 +1369,7 @@ export default function AdminProducts() {
                           setImageError(false);
                         }}
                         placeholder="https://..."
-                        className="w-full bg-gray-50 border-[2px] border-black pl-4 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brutal-blue/50 outline-none transition-all"
+                        className="w-full bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm pl-4 pr-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 outline-none transition-all"
                       />
                     </div>
                     <p className="text-xs text-gray-500">
@@ -1423,8 +1388,7 @@ export default function AdminProducts() {
                             imageUrlInput.trim()
                           )
                         }
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-brutal-blue text-white border-[2px] border-black font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] shadow-sm font-medium shadow-lg hover:shadow-lg hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         {isUploadingImage ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -1443,8 +1407,7 @@ export default function AdminProducts() {
                           onChange={(e) =>
                             setCopySourceProductId(e.target.value)
                           }
-                          className="bg-white border-[2px] border-black px-3 py-2 text-sm text-gray-800"
-                        >
+                          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-3 py-2 text-sm text-gray-200">
                           <option value="">เลือกสินค้าที่จะคัดลอก</option>
                           {products
                             .filter((p) => p.id !== imageUpdatingProduct.id)
@@ -1458,8 +1421,7 @@ export default function AdminProducts() {
                           type="button"
                           onClick={copyImageFromOtherProduct}
                           disabled={!copySourceProductId}
-                          className="px-4 py-2 bg-white border-[2px] border-black text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
+                          className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-sm font-medium hover:bg-[#212328]/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                           คัดลอกจากสินค้าอื่น
                         </button>
                       </div>
@@ -1467,7 +1429,7 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
                       {imageTarget === "logo"
                         ? "ดูตัวอย่างโลโก้"
                         : "ดูตัวอย่างหน้าปก"}
@@ -1476,8 +1438,7 @@ export default function AdminProducts() {
                       className={`${imageTarget === "logo"
                         ? "aspect-square max-w-[180px]"
                         : "aspect-video max-w-[260px]"
-                        } border-[3px] border-dashed border-gray-400 bg-gray-50 flex items-center justify-center overflow-hidden relative group/preview`}
-                    >
+                        } border-2 border-dashed border-site-border/50 rounded-[12px] bg-[#181A1D] flex items-center justify-center overflow-hidden relative group/preview`}>
                       {imageUrlInput && !imageError ? (
                         <img
                           src={imageUrlInput}
@@ -1499,18 +1460,16 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
-                <div className="p-5 border-t-[3px] border-black bg-gray-50 flex justify-end gap-3">
+                <div className="p-5 border-t-[3px] border-site-border/50 bg-[#181A1D] flex justify-end gap-3">
                   <button
                     onClick={closeImageModal}
-                    className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium"
-                  >
+                    className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium">
                     ยกเลิก
                   </button>
                   <button
                     onClick={saveImageUrl}
                     disabled={isSavingImage}
-                    className="px-4 py-2 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium shadow-[2px_2px_0_0_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
+                    className="px-4 py-2 bg-site-accent border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-blue-600 transition-colors font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     {isSavingImage && (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     )}
@@ -1535,8 +1494,7 @@ export default function AdminProducts() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white border-[3px] border-black px-6 py-3 flex items-center gap-4 shadow-[6px_6px_0_0_rgba(59,130,246,0.5)]"
-          >
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white border border-site-border/30 rounded-[12px] px-6 py-3 flex items-center gap-4 shadow-lg">
             <span className="text-sm font-bold">
               เลือกแล้ว {selectedIds.size} รายการ
             </span>
@@ -1546,8 +1504,7 @@ export default function AdminProducts() {
             <button
               onClick={() => handleBulkToggleActive(true)}
               disabled={isBulkToggling}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-sm font-medium border-[2px] border-white hover:bg-green-600 transition-colors disabled:opacity-50"
-            >
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-sm font-medium border border-site-border/30 rounded-[12px] shadow-sm border-white hover:bg-green-600 transition-colors disabled:opacity-50">
               <ToggleRight className="w-4 h-4" />
               เปิดขาย
             </button>
@@ -1555,8 +1512,7 @@ export default function AdminProducts() {
             <button
               onClick={() => handleBulkToggleActive(false)}
               disabled={isBulkToggling}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600 text-white text-sm font-medium border-[2px] border-white hover:bg-gray-700 transition-colors disabled:opacity-50"
-            >
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600 text-white text-sm font-medium border border-site-border/30 rounded-[12px] shadow-sm border-white hover:bg-gray-700 transition-colors disabled:opacity-50">
               <ToggleLeft className="w-4 h-4" />
               ปิดขาย
             </button>
@@ -1564,8 +1520,7 @@ export default function AdminProducts() {
             <button
               onClick={handleBulkDelete}
               disabled={isBulkDeleting}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white text-sm font-medium border-[2px] border-white hover:bg-red-600 transition-colors disabled:opacity-50"
-            >
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/50 text-white text-sm font-medium border border-site-border/30 rounded-[12px] shadow-sm border-white hover:bg-red-600 transition-colors disabled:opacity-50">
               {isBulkDeleting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
@@ -1578,8 +1533,7 @@ export default function AdminProducts() {
 
             <button
               onClick={clearSelection}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-gray-300 text-sm font-medium hover:text-white transition-colors"
-            >
+              className="flex items-center gap-1.5 px-3 py-1.5 text-gray-300 text-sm font-medium hover:text-white transition-colors">
               <X className="w-4 h-4" />
               ยกเลิก
             </button>

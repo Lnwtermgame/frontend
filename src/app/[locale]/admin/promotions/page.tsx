@@ -54,22 +54,22 @@ export default function AdminPromotions() {
       case "cashback":
         return "text-emerald-700 border-emerald-500 bg-emerald-100";
       case "discount":
-        return "text-blue-700 border-blue-500 bg-blue-100";
+        return "text-blue-400 border-blue-500/30 bg-[#181A1D]0/10";
       default:
-        return "text-gray-700 border-gray-500 bg-gray-100";
+        return "text-gray-300 border-gray-500 bg-[#1A1C1E]";
     }
   };
 
   const getStatusStyles = (status: string) => {
     switch (status) {
       case "active":
-        return "text-green-700 bg-green-100 border-green-300";
+        return "text-green-400 bg-green-500/10 border-green-300";
       case "scheduled":
         return "text-amber-700 bg-amber-100 border-amber-300";
       case "expired":
-        return "text-gray-700 bg-gray-100 border-gray-300";
+        return "text-gray-300 bg-[#1A1C1E] border-gray-300";
       default:
-        return "text-gray-700 bg-gray-100 border-gray-300";
+        return "text-gray-300 bg-[#1A1C1E] border-gray-300";
     }
   };
 
@@ -105,8 +105,8 @@ export default function AdminPromotions() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-3 justify-between">
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-brutal-purple mr-2"></span>
-            <h1 className="text-xl font-bold text-black">จัดการโปรโมชั่น</h1>
+            <span className="w-1.5 h-5 bg-purple-500 mr-2"></span>
+            <h1 className="text-xl font-bold text-white">จัดการโปรโมชั่น</h1>
           </div>
           {/* Search and Filter */}
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
@@ -117,7 +117,7 @@ export default function AdminPromotions() {
               <input
                 type="text"
                 placeholder="ค้นหาโปรโมชั่นหรือรหัส..."
-                className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -127,7 +127,7 @@ export default function AdminPromotions() {
                 <Info className="h-4 w-4 text-gray-500" />
               </div>
               <select
-                className="bg-white border-2 border-gray-300 text-black pl-9 pr-3 py-1.5 w-full appearance-none text-sm focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-1.5 w-full appearance-none text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none"
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
@@ -147,8 +147,7 @@ export default function AdminPromotions() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-gray-500"
-                >
+                  className="text-gray-500">
                   <path d="M6 9l6 6 6-6" />
                 </svg>
               </div>
@@ -159,18 +158,14 @@ export default function AdminPromotions() {
           <div className="flex flex-col sm:flex-row gap-2">
             <Link href="/admin/promotions/settings">
               <button
-                className="bg-white border-2 border-black text-black w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-100 transition-colors font-medium"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className="bg-[#212328] border border-site-border/30 rounded-[16px] text-white w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-[#212328]/5 transition-colors font-medium">
                 <Settings className="h-4 w-4" />
                 <span>ตั้งค่า</span>
               </button>
             </Link>
             <Link href="/admin/promotions/create">
               <button
-                className="bg-black text-white border-2 border-black w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
+                className="bg-black text-white border border-site-border/30 rounded-[8px] w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium">
                 <Plus className="h-4 w-4" />
                 <span>สร้างโปรโมชั่น</span>
               </button>
@@ -180,23 +175,23 @@ export default function AdminPromotions() {
 
         {/* Promotions Table */}
         <motion.div
-          className="bg-white border-2 border-black overflow-hidden"
-          style={{ boxShadow: "2px 2px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-2 border-black bg-gray-50">
-            <h3 className="text-base font-semibold text-black flex items-center">
-              <span className="w-1.5 h-5 bg-brutal-purple mr-2"></span>
-              <Tag className="mr-2 h-4 w-4 text-brutal-purple" />
+          <div className="p-3 border-b-2 border-site-border/50 bg-[#181A1D]">
+            <h3 className="text-base font-semibold text-white flex items-center">
+              <span className="w-1.5 h-5 bg-purple-500 mr-2"></span>
+              <Tag className="mr-2 h-4 w-4 text-purple-400" />
               รายการโปรโมชั่น
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-gray-600 text-xs border-b border-gray-200">
+                <tr className="text-gray-400 text-xs border-b border-site-border/30">
                   <th className="px-3 py-2 text-left">โปรโมชั่น</th>
                   <th className="px-3 py-2 text-left">รหัส</th>
                   <th className="px-3 py-2 text-left">ประเภท</th>
@@ -207,35 +202,33 @@ export default function AdminPromotions() {
                   <th className="px-3 py-2 text-left">การดำเนินการ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-site-border/30">
                 {filteredPromotions.length > 0 ? (
                   filteredPromotions.map((promotion) => (
                     <tr
                       key={promotion.id}
-                      className="text-sm hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-3 py-2 font-medium text-black">
+                      className="text-sm hover:bg-[#212328]/5 transition-colors">
+                      <td className="px-3 py-2 font-medium text-white">
                         {promotion.title}
                       </td>
                       <td className="px-3 py-2">
-                        <span className="font-mono bg-gray-100 border-2 border-gray-300 px-1.5 py-0.5 text-black text-xs">
+                        <span className="font-mono bg-[#1A1C1E] border-2 border-gray-300 px-1.5 py-0.5 text-white text-xs">
                           {promotion.code}
                         </span>
                       </td>
                       <td className="px-3 py-2">
                         <span
-                          className={`border-2 px-1.5 py-0.5 text-[10px] font-medium ${getPromotionTypeStyles(promotion.type)}`}
-                        >
+                          className={`border-2 px-1.5 py-0.5 text-[10px] font-medium ${getPromotionTypeStyles(promotion.type)}`}>
                           {getPromotionTypeText(promotion.type)}
                         </span>
                       </td>
-                      <td className="px-3 py-2 text-black font-medium">
+                      <td className="px-3 py-2 text-white font-medium">
                         {promotion.discount}
                       </td>
-                      <td className="px-3 py-2 text-black">
+                      <td className="px-3 py-2 text-white">
                         {promotion.usageCount}
                       </td>
-                      <td className="px-3 py-2 text-gray-600 text-xs">
+                      <td className="px-3 py-2 text-gray-400 text-xs">
                         <div className="flex items-center">
                           <Calendar className="h-3 w-3 mr-1 text-gray-500" />
                           <span className="text-[10px]">
@@ -251,20 +244,19 @@ export default function AdminPromotions() {
                       </td>
                       <td className="px-3 py-2">
                         <span
-                          className={`px-1.5 py-0.5 text-[10px] border-2 font-medium ${getStatusStyles(promotion.status)}`}
-                        >
+                          className={`px-1.5 py-0.5 text-[10px] border-2 font-medium ${getStatusStyles(promotion.status)}`}>
                           {getStatusText(promotion.status)}
                         </span>
                       </td>
                       <td className="px-3 py-2">
                         <div className="flex space-x-1">
-                          <button className="p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors">
+                          <button className="p-1.5 bg-[#1A1C1E] border-2 border-gray-300 text-white hover:bg-site-accent hover:text-white hover:border-site-border/50 transition-colors">
                             <Edit className="h-3.5 w-3.5" />
                           </button>
-                          <button className="p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-brutal-purple hover:text-white hover:border-black transition-colors">
+                          <button className="p-1.5 bg-[#1A1C1E] border-2 border-gray-300 text-white hover:bg-purple-500 hover:text-white hover:border-site-border/50 transition-colors">
                             <ExternalLink className="h-3.5 w-3.5" />
                           </button>
-                          <button className="p-1.5 bg-gray-100 border-2 border-gray-300 text-black hover:bg-red-500 hover:text-white hover:border-black transition-colors">
+                          <button className="p-1.5 bg-[#1A1C1E] border-2 border-gray-300 text-white hover:bg-red-500/100 hover:text-white hover:border-site-border/50 transition-colors">
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
@@ -284,18 +276,18 @@ export default function AdminPromotions() {
               </tbody>
             </table>
           </div>
-          <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+          <div className="p-4 border-t border-site-border/30 flex justify-between items-center">
             <div className="text-sm text-gray-500">
               แสดง {filteredPromotions.length} จาก {promotions.length} โปรโมชั่น
             </div>
             <div className="flex space-x-1">
-              <button className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors font-medium">
+              <button className="px-3 py-1 text-sm bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white hover:bg-[#212328]/5 transition-colors font-medium">
                 ก่อนหน้า
               </button>
-              <button className="px-3 py-1 text-sm bg-brutal-purple text-white border-[2px] border-black font-medium">
+              <button className="px-3 py-1 text-sm bg-purple-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-medium">
                 1
               </button>
-              <button className="px-3 py-1 text-sm bg-white border-[2px] border-gray-300 text-black hover:bg-gray-100 transition-colors font-medium">
+              <button className="px-3 py-1 text-sm bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white hover:bg-[#212328]/5 transition-colors font-medium">
                 ถัดไป
               </button>
             </div>
@@ -310,16 +302,14 @@ export default function AdminPromotions() {
           transition={{ duration: 0.4 }}
         >
           <div
-            className="bg-white border-2 border-black p-4"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-black text-base font-medium">ใช้งานอยู่</h3>
-              <div className="p-1.5 bg-green-100 border-2 border-green-500 text-green-700">
+              <h3 className="text-white text-base font-medium">ใช้งานอยู่</h3>
+              <div className="p-1.5 bg-green-500/10 border-2 border-green-500/30/30 text-green-400">
                 <Clock className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-2 text-2xl font-bold text-black">
+            <div className="mt-2 text-2xl font-bold text-white">
               {
                 promotions.filter((p: Promotion) => p.status === "active")
                   .length
@@ -331,16 +321,14 @@ export default function AdminPromotions() {
           </div>
 
           <div
-            className="bg-white border-2 border-black p-4"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-black text-base font-medium">กำหนดเวลา</h3>
+              <h3 className="text-white text-base font-medium">กำหนดเวลา</h3>
               <div className="p-1.5 bg-amber-100 border-2 border-amber-500 text-amber-700">
                 <Calendar className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-2 text-2xl font-bold text-black">
+            <div className="mt-2 text-2xl font-bold text-white">
               {
                 promotions.filter((p: Promotion) => p.status === "scheduled")
                   .length
@@ -352,16 +340,14 @@ export default function AdminPromotions() {
           </div>
 
           <div
-            className="bg-white border-2 border-black p-4"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-black text-base font-medium">ใช้ทั้งหมด</h3>
-              <div className="p-1.5 bg-blue-100 border-2 border-blue-500 text-blue-700">
+              <h3 className="text-white text-base font-medium">ใช้ทั้งหมด</h3>
+              <div className="p-1.5 bg-[#181A1D]0/10 border-2 border-blue-500/30 text-blue-400">
                 <Tag className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-2 text-2xl font-bold text-black">
+            <div className="mt-2 text-2xl font-bold text-white">
               {promotions.reduce(
                 (total: number, p: Promotion) => total + p.usageCount,
                 0,

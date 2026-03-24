@@ -48,8 +48,7 @@ export function CookieNotice({ isTawkEnabled }: CookieNoticeProps) {
 
   return (
     <aside
-      className="fixed left-3 right-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[70] border-[3px] border-black bg-white p-4 sm:left-4 sm:right-auto sm:bottom-4 sm:w-[26rem]"
-      style={{ boxShadow: "6px 6px 0 0 #000000" }}
+      className="fixed left-3 right-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[70] rounded-2xl border border-white/10 bg-[#0f1115]/95 backdrop-blur-xl p-5 shadow-2xl sm:left-4 sm:right-auto sm:bottom-4 sm:w-[26rem]"
       role="dialog"
       aria-live="polite"
       aria-label={t("title")}
@@ -58,35 +57,40 @@ export function CookieNotice({ isTawkEnabled }: CookieNoticeProps) {
         type="button"
         onClick={dismiss}
         aria-label={t("ariaClose")}
-        className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center border-2 border-black bg-white hover:bg-gray-100"
+        className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-[#212328]/10 hover:text-white"
       >
-        <X size={16} />
+        <X size={18} />
       </button>
 
-      <h3 className="pr-9 text-sm font-black sm:text-base">{t("title")}</h3>
-      <p className="mt-2 text-xs text-gray-700 sm:text-sm">
+      <h3 className="pr-9 text-sm font-bold text-white sm:text-base">{t("title")}</h3>
+      <p className="mt-2 text-xs text-gray-400 sm:text-sm">
         {t("description")}
       </p>
 
-      <ul className="mt-2 space-y-1 text-xs text-gray-800 sm:text-sm">
+      <ul className="mt-3 space-y-1.5 text-xs text-gray-400 sm:text-sm">
         {items.map((item, index) => (
-          <li key={index}>- {item}</li>
+          <li key={index} className="flex items-start">
+            <span className="mr-2 mt-0.5 text-[10px] text-site-accent">●</span>
+            <span>{item}</span>
+          </li>
         ))}
-        <li>- {isTawkEnabled ? t("tawkItem") : t("noTawkItem")}</li>
+        <li className="flex items-start">
+          <span className="mr-2 mt-0.5 text-[10px] text-site-accent">●</span>
+          <span>{isTawkEnabled ? t("tawkItem") : t("noTawkItem")}</span>
+        </li>
       </ul>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
         <button
           type="button"
           onClick={dismiss}
-          className="h-10 border-[3px] border-black bg-brutal-yellow px-4 text-sm font-bold text-black"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+          className="h-10 rounded-[6px] bg-site-accent px-5 text-sm font-bold tracking-wide text-white transition-colors hover:bg-site-accent-hover shadow-accent-glow"
         >
           {t("acknowledge")}
         </button>
         <Link
           href="/privacy"
-          className="inline-flex h-10 items-center justify-center border-[2px] border-black bg-white px-4 text-sm font-semibold hover:bg-gray-50"
+          className="inline-flex h-10 items-center justify-center rounded-[6px] border border-white/10 bg-[#212328]/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-[#212328]/10"
         >
           {t("privacy")}
         </Link>

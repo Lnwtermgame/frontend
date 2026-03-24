@@ -13,7 +13,7 @@ export default function MobileRechargePage() {
       fallback={
         <div className="min-h-screen bg-transparent flex items-center justify-center">
           <div className="flex items-center gap-3">
-            <Loader2 className="w-8 h-8 text-brutal-green animate-spin" />
+            <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
             <span className="text-gray-900 font-bold">{t("loading")}</span>
           </div>
         </div>

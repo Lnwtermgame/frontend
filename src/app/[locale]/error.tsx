@@ -21,7 +21,7 @@ export default function Error({
         <div className="min-h-[60vh] flex items-center justify-center px-4 py-16">
             <div className="text-center max-w-lg">
                 {/* Error icon */}
-                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 border-[3px] border-black bg-brutal-pink"
+                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 border border-site-border/30 rounded-[12px] bg-pink-500"
                     style={{ boxShadow: "4px 4px 0 0 #000" }}>
                     <svg
                         className="w-10 h-10 text-white"
@@ -39,7 +39,7 @@ export default function Error({
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl sm:text-3xl font-bold text-black mb-3">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                     {t("generic.title", { defaultMessage: "Something Went Wrong" })}
                 </h1>
 
@@ -59,7 +59,7 @@ export default function Error({
 
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-                    <button onClick={reset} className="btn-brutal-pink w-full sm:w-auto">
+                    <button onClick={reset} className="btn-pink-500 w-full sm:w-auto">
                         {t("generic.tryAgain", { defaultMessage: "Try Again" })}
                     </button>
                     <button

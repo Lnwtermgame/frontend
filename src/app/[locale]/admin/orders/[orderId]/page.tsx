@@ -29,33 +29,33 @@ const statusConfig: Record<
   { color: string; bgColor: string; icon: React.ReactNode }
 > = {
   PENDING: {
-    color: "text-yellow-700",
-    bgColor: "bg-yellow-100",
+    color: "text-yellow-400",
+    bgColor: "bg-yellow-500/10",
     icon: <Clock className="h-5 w-5" />,
   },
   PROCESSING: {
-    color: "text-blue-700",
-    bgColor: "bg-blue-100",
+    color: "text-blue-400",
+    bgColor: "bg-[#181A1D]0/10",
     icon: <Truck className="h-5 w-5" />,
   },
   COMPLETED: {
-    color: "text-green-700",
-    bgColor: "bg-green-100",
+    color: "text-green-400",
+    bgColor: "bg-green-500/10",
     icon: <CheckCircle className="h-5 w-5" />,
   },
   FAILED: {
-    color: "text-red-700",
-    bgColor: "bg-red-100",
+    color: "text-red-400",
+    bgColor: "bg-red-500/10",
     icon: <XCircle className="h-5 w-5" />,
   },
   CANCELLED: {
-    color: "text-red-700",
-    bgColor: "bg-red-100",
+    color: "text-red-400",
+    bgColor: "bg-red-500/10",
     icon: <XCircle className="h-5 w-5" />,
   },
   REFUNDED: {
-    color: "text-gray-700",
-    bgColor: "bg-gray-100",
+    color: "text-gray-300",
+    bgColor: "bg-[#1A1C1E]",
     icon: <XCircle className="h-5 w-5" />,
   },
 };
@@ -65,18 +65,18 @@ const fulfillStatusConfig: Record<
   { color: string; bgColor: string }
 > = {
   PENDING: {
-    color: "text-yellow-700",
-    bgColor: "bg-yellow-100",
+    color: "text-yellow-400",
+    bgColor: "bg-yellow-500/10",
   },
   PROCESSING: {
-    color: "text-blue-700",
-    bgColor: "bg-blue-100",
+    color: "text-blue-400",
+    bgColor: "bg-[#181A1D]0/10",
   },
   COMPLETED: {
-    color: "text-green-700",
-    bgColor: "bg-green-100",
+    color: "text-green-400",
+    bgColor: "bg-green-500/10",
   },
-  FAILED: { color: "text-red-700", bgColor: "bg-red-100" },
+  FAILED: { color: "text-red-400", bgColor: "bg-red-500/10" },
 };
 
 const statusKeyMap: Record<string, string> = {
@@ -174,8 +174,8 @@ export default function OrderViewPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center">
-          <Loader2 className="h-12 w-12 text-brutal-pink animate-spin" />
-          <p className="mt-4 text-gray-600 font-medium">
+          <Loader2 className="h-12 w-12 text-pink-400 animate-spin" />
+          <p className="mt-4 text-gray-400 font-medium">
             กำลังโหลดข้อมูลคำสั่งซื้อ...
           </p>
         </div>
@@ -189,19 +189,15 @@ export default function OrderViewPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-100 border-[3px] border-red-500 p-6 text-center"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
-        >
+          className="bg-red-500/10 border border-red-500/30/30 rounded-[12px] p-6 text-center">
           <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />
-          <h2 className="text-xl font-bold text-black mb-2">ไม่พบคำสั่งซื้อ</h2>
+          <h2 className="text-xl font-bold text-white mb-2">ไม่พบคำสั่งซื้อ</h2>
           <p className="text-red-600 mb-4">
             {error || "ไม่พบข้อมูลคำสั่งซื้อที่ระบุ"}
           </p>
           <Link
             href="/admin/orders"
-            className="inline-flex items-center bg-brutal-blue hover:bg-brutal-blue/90 text-white px-6 py-2 font-bold border-[3px] border-black transition-all hover:-translate-y-0.5"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
+            className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-site-border/30 rounded-[12px] transition-all hover:-translate-y-0.5">
             <ArrowLeft size={18} className="mr-2" />
             {t("order_detail.back_to_orders")}
           </Link>
@@ -219,18 +215,16 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/orders"
-            className="p-1.5 bg-white border-[3px] border-black hover:bg-gray-100 transition-colors"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
+            className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[16px] hover:bg-[#212328]/5 transition-colors">
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
-            <h1 className="text-xl font-black text-black flex items-center gap-2">
-              <Package className="h-5 w-5 text-brutal-pink" />
+            <h1 className="text-xl font-black text-white flex items-center gap-2">
+              <Package className="h-5 w-5 text-pink-400" />
               {t("order_detail.title")} #
               {order.orderNumber || order.id.slice(-8).toUpperCase()}
             </h1>
-            <p className="text-gray-600 text-xs">
+            <p className="text-gray-400 text-xs">
               {t("order_detail.subtitle")}
             </p>
           </div>
@@ -239,9 +233,7 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchOrder}
-            className="flex items-center gap-2 px-3 py-1.5 bg-brutal-yellow border-[3px] border-black font-bold hover:bg-brutal-yellow/90 transition-all hover:-translate-y-0.5 text-sm"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
+            className="flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 border border-site-border/30 rounded-[12px] font-bold hover:bg-orange-500/10/90 transition-all hover:-translate-y-0.5 text-sm">
             <RefreshCw className="h-3 w-3" />
             {t("common.refresh")}
           </button>
@@ -252,25 +244,22 @@ export default function OrderViewPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${status.bgColor} border-[3px] border-black p-3 flex items-center justify-between print:hidden`}
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-      >
+        className={`${status.bgColor} border border-site-border/30 rounded-[12px] p-3 flex items-center justify-between print:hidden`}>
         <div className="flex items-center gap-2">
           <div
-            className={`p-1.5 bg-white border-[2px] border-black ${status.color}`}
-          >
+            className={`p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm ${status.color}`}>
             {status.icon}
           </div>
           <div>
-            <p className="text-xs text-gray-600">{t("order_detail.order_status")}</p>
+            <p className="text-xs text-gray-400">{t("order_detail.order_status")}</p>
             <p className={`text-base font-bold ${status.color}`}>
               {t(`orders.status.${statusKeyMap[order.status] || order.status.toLowerCase()}`)}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-xs text-gray-600">{t("order_detail.order_date")}</p>
-          <p className="font-bold text-black text-sm">{formatDate(order.createdAt)}</p>
+          <p className="text-xs text-gray-400">{t("order_detail.order_date")}</p>
+          <p className="font-bold text-white text-sm">{formatDate(order.createdAt)}</p>
         </div>
       </motion.div>
 
@@ -283,16 +272,14 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
-            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2 text-base">
-                <Package className="h-4 w-4 text-brutal-blue" />
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
+            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+                <Package className="h-4 w-4 text-site-accent" />
                 {t("order_detail.items")}
               </h2>
             </div>
-            <div className="divide-y-[2px] divide-gray-200">
+            <div className="divide-y-[2px] divide-site-border/30">
               {order.items.map((item, index) => {
                 const itemFulfillStatus =
                   fulfillStatusConfig[item.fulfillStatus] || fulfillStatusConfig.PENDING;
@@ -301,37 +288,36 @@ export default function OrderViewPage() {
                 return (
                   <div
                     key={item.id}
-                    className="p-3 flex items-center justify-between"
-                  >
+                    className="p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       {item.product?.imageUrl ? (
                         <img
                           src={item.product.imageUrl}
                           alt={productName}
-                          className="w-10 h-10 object-cover border-[2px] border-black"
+                          className="w-10 h-10 object-cover border border-site-border/30 rounded-[12px] shadow-sm"
                         />
                       ) : (
-                        <div className="w-10 h-10 bg-brutal-gray border-[2px] border-black flex items-center justify-center font-bold text-gray-600 text-xs">
+                        <div className="w-10 h-10 bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center font-bold text-gray-400 text-xs">
                           {index + 1}
                         </div>
                       )}
                       <div>
-                        <p className="font-bold text-black text-sm">
+                        <p className="font-bold text-white text-sm">
                           {productName}
                         </p>
                         {productTypeName && (
-                          <p className="text-xs text-brutal-blue font-semibold">
+                          <p className="text-xs text-site-accent font-semibold">
                             {productTypeName}
                             {item.productType?.parValue ? ` (${item.productType.parValue} ${item.productType.currency || ''})`.trim() : ''}
                           </p>
                         )}
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-gray-400">
                           จำนวน: {item.quantity} | ราคา:{" "}
                           {formatPrice(item.priceAtPurchase || item.price || 0)}
                         </p>
                         {item.playerInfo &&
                           Object.keys(item.playerInfo).length > 0 && (
-                            <div className="mt-1 text-[10px] text-gray-500 bg-gray-100 p-1.5 border border-gray-300">
+                            <div className="mt-1 text-[10px] text-gray-500 bg-[#1A1C1E] p-1.5 border border-gray-300">
                               {Object.entries(item.playerInfo).map(
                                 ([key, value]) => (
                                   <div key={key}>
@@ -345,8 +331,7 @@ export default function OrderViewPage() {
                     </div>
                     <div className="text-right space-y-1">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}
-                      >
+                        className={`inline-flex items-center px-2 py-0.5 border border-site-border/30 rounded-[12px] shadow-sm text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}>
                         {t(`orders.status.${statusKeyMap[item.fulfillStatus] || item.fulfillStatus.toLowerCase()}`)}
                       </span>
                       <p className="text-xs text-gray-500 font-mono">
@@ -364,30 +349,28 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
-            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2 text-base">
-                <CreditCard className="h-4 w-4 text-brutal-green" />
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
+            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+                <CreditCard className="h-4 w-4 text-green-400" />
                 สรุปการชำระเงิน
               </h2>
             </div>
             <div className="p-3 space-y-2">
-              <div className="flex justify-between text-gray-600 text-sm">
+              <div className="flex justify-between text-gray-400 text-sm">
                 <span>ยอดรวมสินค้า</span>
                 <span>{formatPrice(order.totalAmount)}</span>
               </div>
-              <div className="flex justify-between text-gray-600 text-sm">
+              <div className="flex justify-between text-gray-400 text-sm">
                 <span>ส่วนลด</span>
                 <span className="text-green-600">
                   -{formatPrice(order.discountAmount)}
                 </span>
               </div>
-              <div className="border-t-[2px] border-gray-200 pt-2">
-                <div className="flex justify-between text-lg font-bold text-black">
+              <div className="border-t-[2px] border-site-border/30 pt-2">
+                <div className="flex justify-between text-lg font-bold text-white">
                   <span>ยอดสุทธิ</span>
-                  <span className="text-brutal-pink">
+                  <span className="text-pink-400">
                     {formatPrice(order.finalAmount)}
                   </span>
                 </div>
@@ -403,12 +386,10 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
-            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2 text-base">
-                <User className="h-4 w-4 text-brutal-purple" />
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
+            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+                <User className="h-4 w-4 text-purple-400" />
                 ข้อมูลลูกค้า
               </h2>
             </div>
@@ -416,19 +397,19 @@ export default function OrderViewPage() {
               {order.user ? (
                 <>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center">
-                      <User className="h-5 w-5 text-black" />
+                    <div className="w-10 h-10 bg-orange-500/10 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center">
+                      <User className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-black text-sm">
+                      <p className="font-bold text-white text-sm">
                         {order.user.username || "ไม่ระบุชื่อ"}
                       </p>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-gray-400">
                         ID: {order.user.id.slice(-8).toUpperCase()}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600 bg-gray-50 p-2 border border-gray-200">
+                  <div className="flex items-center gap-2 text-gray-400 bg-[#181A1D] p-2 border border-site-border/30">
                     <Mail className="h-3 w-3" />
                     <span className="text-xs">{order.user.email}</span>
                   </div>
@@ -446,34 +427,32 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
-            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black flex items-center gap-2 text-base">
-                <FileText className="h-4 w-4 text-brutal-yellow" />
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
+            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+                <FileText className="h-4 w-4 text-orange-400" />
                 ข้อมูลคำสั่งซื้อ
               </h2>
             </div>
             <div className="p-3 space-y-2">
               <div className="flex items-center gap-2 text-xs">
                 <Tag className="h-3 w-3 text-gray-400" />
-                <span className="text-gray-600">รหัสคำสั่งซื้อ:</span>
-                <span className="font-mono font-bold text-black">
+                <span className="text-gray-400">รหัสคำสั่งซื้อ:</span>
+                <span className="font-mono font-bold text-white">
                   {order.id}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <Calendar className="h-3 w-3 text-gray-400" />
-                <span className="text-gray-600">สร้างเมื่อ:</span>
-                <span className="font-bold text-black">
+                <span className="text-gray-400">สร้างเมื่อ:</span>
+                <span className="font-bold text-white">
                   {formatDate(order.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <RefreshCw className="h-3 w-3 text-gray-400" />
-                <span className="text-gray-600">อัปเดตล่าสุด:</span>
-                <span className="font-bold text-black">
+                <span className="text-gray-400">อัปเดตล่าสุด:</span>
+                <span className="font-bold text-white">
                   {formatDate(order.updatedAt)}
                 </span>
               </div>
@@ -485,23 +464,20 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white border-[3px] border-black overflow-hidden"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-          >
-            <div className="p-3 border-b-[3px] border-black bg-brutal-gray">
-              <h2 className="font-bold text-black text-base">จัดการคำสั่งซื้อ</h2>
+            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
+            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+              <h2 className="font-bold text-white text-base">จัดการคำสั่งซื้อ</h2>
             </div>
             <div className="p-3 space-y-3">
               {/* Status Update */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                <label className="block text-xs font-medium text-gray-300 mb-1.5">
                   อัปเดตสถานะ
                 </label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-white border-[2px] border-black px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-brutal-blue text-sm"
-                >
+                  className="w-full bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-site-accent text-sm">
                   <option value="PENDING">รอดำเนินการ</option>
                   <option value="PROCESSING">กำลังดำเนินการ</option>
                   <option value="COMPLETED">สำเร็จ</option>
@@ -513,7 +489,7 @@ export default function OrderViewPage() {
               <button
                 onClick={handleUpdateStatus}
                 disabled={updating || selectedStatus === order.status}
-                className="w-full py-1.5 bg-brutal-blue hover:bg-brutal-blue/90 text-white font-bold border-[2px] border-black transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="w-full py-1.5 bg-site-accent hover:bg-site-accent/90 text-white font-bold border border-site-border/30 rounded-[12px] shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 style={{
                   boxShadow:
                     updating || selectedStatus === order.status
@@ -536,7 +512,7 @@ export default function OrderViewPage() {
                 <button
                   onClick={handleFulfill}
                   disabled={updating}
-                  className="w-full py-1.5 bg-brutal-green hover:bg-brutal-green/90 text-black font-bold border-[2px] border-black transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
+                  className="w-full py-1.5 bg-green-500 hover:bg-green-500/90 text-white font-bold border border-site-border/30 rounded-[12px] shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
                   style={{
                     boxShadow: updating ? "none" : "2px 2px 0 0 #000000",
                   }}
@@ -557,9 +533,7 @@ export default function OrderViewPage() {
                 order.status === "PROCESSING") && (
                   <button
                     onClick={() => setSelectedStatus("CANCELLED")}
-                    className="w-full py-1.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold border-[2px] border-red-500 transition-all hover:-translate-y-0.5 text-sm"
-                    style={{ boxShadow: "2px 2px 0 0 #ef4444" }}
-                  >
+                    className="w-full py-1.5 bg-red-500/10 hover:bg-red-200 text-red-400 font-bold border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 transition-all hover:-translate-y-0.5 text-sm">
                     ยกเลิกคำสั่งซื้อ
                   </button>
                 )}

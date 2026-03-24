@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, Check } from "lucide-react";
 
 const selectTriggerVariants = cva(
-  "flex w-full items-center justify-between bg-white border-[2px] border-gray-300 px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:outline-none focus:border-black disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+  "flex w-full items-center justify-between bg-[#212328] border-[2px] border-gray-300 px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:outline-none focus:border-black disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
   {
     variants: {
       size: {
@@ -13,7 +13,7 @@ const selectTriggerVariants = cva(
         lg: "h-14",
       },
       error: {
-        true: "border-red-500",
+        true: "border-red-500/30",
         false: "",
       },
     },
@@ -121,7 +121,7 @@ export function Select({
 
         {isOpen && (
           <div
-            className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto bg-white border-[2px] border-black shadow-lg transition-opacity duration-150"
+            className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto bg-[#212328] border-[2px] border-black shadow-lg transition-opacity duration-150"
           >
             {options.map((option) => (
               <button
@@ -129,14 +129,14 @@ export function Select({
                 type="button"
                 onClick={() => handleSelect(option.value)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 py-2.5 text-left text-base hover:bg-gray-100 transition-colors",
+                  "w-full flex items-center justify-between px-3 py-2.5 text-left text-base hover:bg-[#1A1C1E] transition-colors",
                   String(option.value) === String(value) &&
-                    "bg-brutal-yellow/20 font-bold",
+                    "bg-yellow-500/20 font-bold",
                 )}
               >
                 <span className="truncate mr-2">{option.label}</span>
                 {String(option.value) === String(value) && (
-                  <Check size={16} className="text-black flex-shrink-0" />
+                  <Check size={16} className="text-white flex-shrink-0" />
                 )}
               </button>
             ))}

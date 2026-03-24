@@ -225,9 +225,20 @@ class AdminSettingsApiService {
   getErrorMessage(error: unknown): string {
     if (error && typeof error === "object" && "response" in error) {
       const axiosError = error as {
-        response?: { data?: { error?: { message?: string } } };
+        response?: { data?: { error?: { message?: string; details?: Record<string, string> } } };
       };
-      return axiosError.response?.data?.error?.message || "เกิดข้อผิดพลาด";
+      const errObj = axiosError.response?.data?.error;
+      const message = errObj?.message || "เกิดข้อผิดพลาด";
+
+      // Append field-level validation details if present
+      if (errObj?.details && typeof errObj.details === "object") {
+        const detailLines = Object.entries(errObj.details)
+          .map(([field, msg]) => `• ${field}: ${msg}`)
+          .join("\n");
+        return `${message}\n${detailLines}`;
+      }
+
+      return message;
     }
     if (error instanceof Error) {
       return error.message;

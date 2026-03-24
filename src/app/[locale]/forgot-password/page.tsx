@@ -55,27 +55,27 @@ function ForgotPasswordContent() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-white border-[3px] border-black shadow-[6px_6px_0_0_#000]">
+        <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
           {/* Header */}
-          <div className="bg-brutal-yellow border-b-[3px] border-black p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-black border-[3px] border-black flex items-center justify-center">
-                <Mail size={24} className="text-white" />
+          <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-site-accent/10 border border-site-accent/20 flex items-center justify-center shrink-0 shadow-sm">
+                <Mail size={24} className="text-site-accent" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-black">
+                <h1 className="text-xl font-bold text-white mb-1 tracking-tight">
                   {t("title")}
                 </h1>
-                <p className="text-sm text-gray-700 uppercase">Reset Password</p>
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Reset Password</p>
               </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 relative z-10">
             {!isSuccess ? (
               <>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
                   {t("subtitle")}
                 </p>
 
@@ -95,36 +95,36 @@ function ForgotPasswordContent() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-brutal-blue text-white hover:bg-black"
+                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent hover:shadow-accent-glow font-bold"
                     disabled={isSubmitting}
                     isLoading={isSubmitting}
                     size="lg"
                   >
                     {!isSubmitting && (
-                      <>
-                        <Send className="mr-2 h-5 w-5" />
+                      <div className="flex items-center justify-center">
+                        <Send className="mr-2 h-4 w-4" />
                         {t("send_link")}
-                      </>
+                      </div>
                     )}
                   </Button>
                 </form>
               </>
             ) : (
-              <div className="text-center py-4">
-                <div className="w-16 h-16 bg-brutal-green border-[3px] border-black flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle size={32} className="text-black" />
+              <div className="text-center py-6">
+                <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/30/20 flex items-center justify-center mx-auto mb-5 shadow-sm">
+                  <CheckCircle size={32} className="text-green-500" />
                 </div>
-                <h2 className="text-lg font-bold text-black mb-2">
+                <h2 className="text-xl font-bold text-white mb-2 tracking-tight">
                   {t("success_title")}
                 </h2>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
                   {t("success_desc")}
-                  <br />
-                  <span className="font-mono bg-gray-100 px-2 py-1 border border-gray-300">
+                  <br className="mb-2" />
+                  <span className="font-mono text-xs bg-[#1A1C1E] text-site-accent px-3 py-1.5 border border-site-border rounded-lg inline-block mt-2">
                     {email}
                   </span>
                 </p>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-xs text-gray-500 mb-8 max-w-[280px] mx-auto">
                   {t("spam_hint")}
                 </p>
 
@@ -133,19 +133,19 @@ function ForgotPasswordContent() {
                     setIsSuccess(false);
                     setEmail("");
                   }}
-                  className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors text-sm"
+                  className="text-site-accent hover:text-white font-bold transition-colors text-sm hover:underline underline-offset-4"
                 >
                   {t("resend_email")}
                 </button>
               </div>
             )}
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-8 pt-6 border-t border-site-border flex justify-center">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white font-medium transition-colors hover:bg-[#212328]/5 py-2 px-4 rounded-lg"
               >
-                <ArrowLeft size={18} />
+                <ArrowLeft size={16} />
                 {t("back_to_login")}
               </Link>
             </div>
@@ -161,13 +161,13 @@ export default function ForgotPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-transparent flex items-center justify-center">
+        <div className="min-h-[60vh] bg-transparent flex items-center justify-center">
           <div className="text-center">
             <Loader2
-              size={48}
-              className="animate-spin mx-auto mb-4 text-brutal-blue"
+              size={40}
+              className="animate-spin mx-auto mb-4 text-site-accent"
             />
-            <p className="text-gray-600">{t("loading")}</p>
+            <p className="text-gray-400 font-medium text-sm">{t("loading")}</p>
           </div>
         </div>
       }

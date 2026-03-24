@@ -149,28 +149,28 @@ export default function NotificationPreferencesPage() {
       title: t("channels.email"),
       description: t("channels.email_desc"),
       icon: <Mail className="h-4 w-4" />,
-      accent: "bg-brutal-blue",
+      accent: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     },
     {
       key: "pushNotifications" as const,
       title: t("channels.web"),
       description: t("channels.web_desc"),
       icon: <Bell className="h-4 w-4" />,
-      accent: "bg-brutal-pink",
+      accent: "bg-[var(--site-accent)]/10 text-[var(--site-accent)] border-[var(--site-accent)]/20",
     },
     {
       key: "orderUpdates" as const,
       title: t("types.orders"),
       description: t("types.orders_desc"),
       icon: <Globe className="h-4 w-4" />,
-      accent: "bg-brutal-green",
+      accent: "bg-green-500/10 text-green-500 border-green-500/30/20",
     },
     {
       key: "promotions" as const,
       title: t("types.promotions"),
       description: t("types.promotions_desc"),
       icon: <Check className="h-4 w-4" />,
-      accent: "bg-brutal-yellow",
+      accent: "bg-yellow-500/10 text-yellow-500 border-yellow-500/30/20",
     },
   ];
 
@@ -179,8 +179,8 @@ export default function NotificationPreferencesPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">{tCommon("loading")}</p>
+          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -189,70 +189,67 @@ export default function NotificationPreferencesPage() {
   return (
     <div>
       {/* Page header with back navigation */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-6">
         <Link
           href="/dashboard/notifications"
-          className="mr-3 text-gray-600 hover:text-black transition-colors border-[2px] border-gray-300 hover:border-black p-1 shadow-[2px_2px_0_0_#000]"
+          className="mr-4 text-gray-400 hover:text-white transition-colors border border-site-border hover:border-[var(--site-accent)]/50 p-1.5 rounded-lg bg-[#222427] shadow-sm"
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <motion.h2
-            className="text-lg font-bold text-gray-900 flex items-center"
+            className="text-2xl font-bold text-white flex items-center mb-1"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <span className="w-1.5 h-4 bg-brutal-blue mr-2"></span>
+            <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
             {t("title")}
           </motion.h2>
-          <p className="text-gray-600 text-xs font-bold">
+          <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
             {t("subtitle")}
           </p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
+          <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
         </div>
       ) : (
         <motion.div
-          className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#222427] border border-site-border shadow-ocean rounded-xl overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="p-4 border-b-[3px] border-black bg-gray-50">
-            <h3 className="text-base font-bold text-black flex items-center">
-              <Bell size={16} className="text-brutal-blue mr-2" />
+          <div className="p-4 sm:p-5 border-b border-site-border bg-[#1A1C1E]">
+            <h3 className="text-base font-bold text-white flex items-center">
+              <Bell size={18} className="text-[var(--site-accent)] mr-2.5" />
               {t("title")}
             </h3>
           </div>
 
-          <div className="p-4">
+          <div className="p-4 sm:p-5">
             {/* Push Notification Status */}
             {isPushSupported && (
               <motion.div
-                whileHover={{ y: -2 }}
-                className="flex flex-col md:flex-row md:items-center justify-between p-3 bg-white border-[2px] border-black hover:bg-gray-50 transition-colors mb-3 gap-3"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#1A1C1E] border border-site-border rounded-xl mb-4 gap-4"
               >
-                <div className="flex items-start md:items-center">
-                  <div className="h-8 w-8 min-w-[2rem] border-[2px] border-black flex items-center justify-center mr-3 text-white bg-brutal-pink shrink-0">
-                    <Smartphone className="h-4 w-4" />
+                <div className="flex items-start md:items-center w-full md:w-auto">
+                  <div className="h-10 w-10 min-w-[2.5rem] bg-[var(--site-accent)]/10 border border-[var(--site-accent)]/20 rounded-lg flex items-center justify-center mr-4 text-[var(--site-accent)] shrink-0 shadow-sm">
+                    <Smartphone className="h-5 w-5" />
                   </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                      <h4 className="text-black font-bold text-sm">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <h4 className="text-white font-semibold text-sm">
                         {t("channels.web")}
                       </h4>
                       {isPushSubscribed && (
-                        <span className="text-[10px] bg-brutal-green text-white px-1.5 py-0.5 border border-black font-bold uppercase">
+                        <span className="text-[10px] bg-green-500/10 text-green-500 px-2 py-0.5 border border-green-500/30/20 rounded-md font-bold uppercase tracking-wider">
                           Enabled
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-600 text-xs font-bold">
+                    <p className="text-gray-400 text-xs font-medium pr-2 md:pr-0">
                       {isPushSubscribed
                         ? "Push notifications are currently enabled"
                         : "Enable push notifications to receive updates on your device"}
@@ -260,61 +257,57 @@ export default function NotificationPreferencesPage() {
                   </div>
                 </div>
                 {isPushSubscribed ? (
-                  <motion.button
+                  <button
                     onClick={handleUnsubscribePush}
                     disabled={isSubscribing}
-                    whileHover={{ y: -2 }}
-                    className="flex items-center justify-center bg-brutal-pink hover:bg-red-600 text-white px-3 py-1.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-[2px_2px_0_0_#000]"
+                    className="flex items-center justify-center bg-[#222427] hover:bg-red-500/10 text-gray-300 hover:text-red-500 hover:border-red-500/30/50 px-4 py-2 border border-site-border rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-sm shrink-0"
                   >
                     {isSubscribing ? (
-                      <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="w-3.5 h-3.5 border-2 border-red-500/30 border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
-                      <X className="h-3 w-3 mr-2" />
+                      <X className="h-3.5 w-3.5 mr-2" />
                     )}
                     Disable
-                  </motion.button>
+                  </button>
                 ) : (
-                  <motion.button
+                  <button
                     onClick={handleSubscribePush}
                     disabled={isSubscribing}
-                    whileHover={{ y: -2 }}
-                    className="flex items-center justify-center bg-brutal-green hover:bg-green-600 text-white px-3 py-1.5 border-[2px] border-black font-bold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-[2px_2px_0_0_#000]"
+                    className="flex items-center justify-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-4 py-2 border border-transparent rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-[0_0_15px_rgba(103,176,186,0.3)] shrink-0"
                   >
                     {isSubscribing ? (
-                      <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
-                      <Bell className="h-3 w-3 mr-2" />
+                      <Bell className="h-3.5 w-3.5 mr-2" />
                     )}
                     Enable
-                  </motion.button>
+                  </button>
                 )}
               </motion.div>
             )}
 
             <div className="space-y-3">
               {preferenceItems.map((item) => (
-                <motion.div
+                <div
                   key={item.key}
-                  whileHover={{ y: -2 }}
-                  className="flex flex-col md:flex-row md:items-center justify-between p-3 bg-white border-[2px] border-black hover:bg-gray-50 transition-colors gap-3"
-                  style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                  className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#1A1C1E] border border-site-border rounded-xl transition-colors hover:border-[var(--site-accent)]/30 gap-4"
                 >
                   <div className="flex items-start md:items-center">
                     <div
-                      className={`h-8 w-8 min-w-[2rem] border-[2px] border-black flex items-center justify-center mr-3 text-white ${item.accent} shrink-0`}
+                      className={`h-10 w-10 min-w-[2.5rem] border ${item.accent} rounded-lg flex items-center justify-center mr-4 shrink-0 shadow-sm`}
                     >
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-black font-bold mb-0.5 md:mb-0 text-sm">
+                      <h4 className="text-white font-semibold mb-1 md:mb-0.5 text-sm">
                         {item.title}
                       </h4>
-                      <p className="text-gray-600 text-xs font-bold">
+                      <p className="text-gray-400 text-xs font-medium pr-6 md:pr-0">
                         {item.description}
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-end md:block mt-1 md:mt-0">
+                  <div className="flex justify-end md:block mt-2 md:mt-0 shrink-0">
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -322,33 +315,31 @@ export default function NotificationPreferencesPage() {
                         onChange={() => togglePreference(item.key)}
                         className="sr-only peer"
                       />
-                      <div className="relative w-12 h-6 bg-gray-200 border-[2px] border-black peer-checked:bg-brutal-green transition-colors after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border-[2px] after:border-black after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-6 shadow-[1px_1px_0_0_#000]"></div>
+                      <div className="relative w-11 h-6 bg-[#222427] border border-site-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-[#212328] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--site-accent)] peer-checked:border-[var(--site-accent)] shadow-inner"></div>
                     </label>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
-            <div className="mt-4 pt-4 border-t-[2px] border-gray-200 flex justify-end">
-              <motion.button
+            <div className="mt-6 pt-5 border-t border-site-border flex justify-end">
+              <button
                 onClick={savePreferences}
                 disabled={isSaving}
-                whileHover={{ y: -2 }}
-                className="flex items-center bg-black hover:bg-gray-800 text-white px-4 py-2 border-[2px] border-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase"
-                style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                className="flex items-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase shadow-[0_0_15px_rgba(103,176,186,0.2)]"
               >
                 {isSaving ? (
                   <>
-                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
                     {t("saving")}
                   </>
                 ) : (
                   <>
-                    <Save className="h-3 w-3 mr-2" />
+                    <Save className="h-4 w-4 mr-2" />
                     {t("save_button")}
                   </>
                 )}
-              </motion.button>
+              </button>
             </div>
           </div>
         </motion.div>

@@ -191,7 +191,7 @@ export default function FaqPage() {
     const category = getCategoryById(categoryId);
     if (!category?.icon) {
       return (
-        <span className="bg-brutal-gray p-1.5 border-[2px] border-black text-black">
+        <span className="bg-[#2A2C30] p-1.5 border border-site-border text-white">
           ?
         </span>
       );
@@ -203,16 +203,16 @@ export default function FaqPage() {
     <div className="page-container bg-transparent">
       {/* Hero Section */}
       <div
-        className="bg-white border-[3px] border-black p-8 mb-8"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 mb-8"
+        
       >
         <div className="max-w-3xl mx-auto text-center">
           <div>
             <div className="flex items-center justify-center mb-4">
-              <div className="bg-brutal-yellow p-3 border-[3px] border-black mr-3">
-                <HelpCircle className="h-8 w-8 text-black" />
+              <div className="bg-yellow-500 p-3 border border-site-border rounded-[12px] mr-3">
+                <HelpCircle className="h-8 w-8 text-white" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-black text-black uppercase">
+              <h1 className="text-3xl md:text-4xl font-black text-white uppercase">
                 {t("title")}
               </h1>
             </div>
@@ -228,7 +228,7 @@ export default function FaqPage() {
                   placeholder={t("search_placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-3 px-5 pl-12 bg-white border-[2px] border-black text-black focus:outline-none focus:bg-brutal-gray transition-colors font-bold"
+                  className="w-full py-3 px-5 pl-12 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
                 />
                 <Search
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -236,7 +236,7 @@ export default function FaqPage() {
                 />
                 {isSearching && (
                   <Loader2
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black animate-spin"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white animate-spin"
                     size={18}
                   />
                 )}
@@ -249,13 +249,13 @@ export default function FaqPage() {
       {/* Error Message */}
       {error && (
         <div
-          className="bg-brutal-pink border-[3px] border-black p-4 mb-6 flex items-center shadow-[4px_4px_0_0_#000]"
+          className="bg-pink-500 border border-site-border rounded-[12px] p-4 mb-6 flex items-center shadow-md"
         >
-          <AlertCircle className="text-black mr-3" size={20} />
-          <span className="text-black font-black uppercase">{error}</span>
+          <AlertCircle className="text-white mr-3" size={20} />
+          <span className="text-white font-black uppercase">{error}</span>
           <button
             onClick={loadArticles}
-            className="ml-auto text-black hover:text-gray-700 flex items-center font-black uppercase text-xs"
+            className="ml-auto text-white hover:text-gray-700 flex items-center font-black uppercase text-xs"
           >
             <Clock size={16} className="mr-1" />
             Retry
@@ -267,7 +267,7 @@ export default function FaqPage() {
       <div className="mb-6">
         <Link
           href="/support"
-          className="text-black hover:text-gray-700 transition-colors inline-flex items-center font-black uppercase text-xs"
+          className="text-white hover:text-gray-700 transition-colors inline-flex items-center font-black uppercase text-xs"
         >
           <ArrowLeft size={18} className="mr-1" />
           {t("back_to_faq")}
@@ -278,12 +278,12 @@ export default function FaqPage() {
         {/* Sidebar - Categories */}
         <div className="lg:col-span-1">
           <div
-            className="bg-white border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000]"
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] overflow-hidden shadow-md"
           >
-            <div className="p-4 bg-brutal-gray border-b-[3px] border-black font-black uppercase text-xs">
-              <h3 className="text-black flex items-center">
+            <div className="p-4 bg-[#2A2C30] border-b-[3px] border-black font-black uppercase text-xs">
+              <h3 className="text-white flex items-center">
                 <Filter size={16} className="mr-2" />
-                {t("categories")}
+                {t("categories._base")}
               </h3>
             </div>
             <div className="p-2">
@@ -293,11 +293,11 @@ export default function FaqPage() {
                   setExpandedArticle(null);
                 }}
                 className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === null
-                  ? "bg-brutal-yellow border-[2px] border-black text-black"
-                  : "text-gray-700 hover:bg-brutal-gray"
+                  ? "bg-yellow-500 border border-site-border text-white"
+                  : "text-gray-700 hover:bg-[#2A2C30]"
                   }`}
               >
-                <span className="bg-brutal-gray border-[2px] border-black p-1 text-black mr-3">
+                <span className="bg-[#2A2C30] border border-site-border p-1 text-white mr-3">
                   All
                 </span>
                 {t("all")}
@@ -314,8 +314,8 @@ export default function FaqPage() {
                     setExpandedArticle(null);
                   }}
                   className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === category.id
-                    ? "bg-brutal-yellow border-[2px] border-black text-black"
-                    : "text-gray-700 hover:bg-brutal-gray"
+                    ? "bg-yellow-500 border border-site-border text-white"
+                    : "text-gray-700 hover:bg-[#2A2C30]"
                     }`}
                 >
                   <span className="mr-3 text-lg">{category.icon || "📄"}</span>
@@ -330,24 +330,24 @@ export default function FaqPage() {
 
           {/* Need help CTA */}
           <div
-            className="bg-white border-[3px] border-black p-5 mt-6 shadow-[4px_4px_0_0_#000]"
+            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-5 mt-6 shadow-md"
           >
             <div className="flex items-center mb-4">
-              <div className="bg-brutal-green p-2 border-[2px] border-black mr-2">
-                <MessageSquare size={20} className="text-black" />
+              <div className="bg-green-500 p-2 border border-site-border mr-2">
+                <MessageSquare size={20} className="text-white" />
               </div>
-              <h3 className="text-black font-black uppercase text-sm">
-                Need Help?
+              <h3 className="text-white font-black uppercase text-sm">
+                {t("need_help.title")}
               </h3>
             </div>
             <p className="text-gray-600 text-xs font-bold mb-4 uppercase">
-              Can't find what you're looking for?
+              {t("need_help.description")}
             </p>
             <Link
               href="/support/tickets"
-              className="bg-black text-white border-[3px] border-black w-full py-2 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs shadow-[3px_3px_0_0_#000]"
+              className="bg-black text-white border border-site-border rounded-[12px] w-full py-2 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs shadow-md"
             >
-              Contact Support
+              {t("need_help.contact_support")}
             </Link>
           </div>
         </div>
@@ -357,10 +357,10 @@ export default function FaqPage() {
           {/* Loading */}
           {isLoading ? (
             <div
-              className="bg-white border-[3px] border-black p-12 text-center shadow-[4px_4px_0_0_#000]"
+              className="bg-[#1A1C20] border border-site-border rounded-[16px] p-12 text-center shadow-md"
             >
               <Loader2
-                className="animate-spin mx-auto text-black mb-4"
+                className="animate-spin mx-auto text-white mb-4"
                 size={48}
               />
               <p className="text-gray-600 font-bold uppercase">{tCommon("loading")}</p>
@@ -370,9 +370,9 @@ export default function FaqPage() {
               {articles.map((article) => (
                 <div
                   key={article.id}
-                  className={`border-[3px] border-black overflow-hidden shadow-[4px_4px_0_0_#000] transition-colors duration-200 ${expandedArticle === article.id
-                    ? "bg-brutal-gray"
-                    : "bg-white"
+                  className={`border border-site-border rounded-[12px] overflow-hidden shadow-md transition-colors duration-200 ${expandedArticle === article.id
+                    ? "bg-[#2A2C30]"
+                    : "bg-[#1A1C20]"
                     }`}
                 >
                   <button
@@ -381,7 +381,7 @@ export default function FaqPage() {
                         expandedArticle === article.id ? null : article.id,
                       )
                     }
-                    className="w-full text-left p-5 font-black text-black focus:outline-none flex justify-between items-center uppercase text-sm"
+                    className="w-full text-left p-5 font-black text-white focus:outline-none flex justify-between items-center uppercase text-sm"
                   >
                     <div className="flex items-center gap-3">
                       {article.isPinned && (
@@ -407,7 +407,7 @@ export default function FaqPage() {
                       >
                         <div className="px-5 pb-5">
                           <div className="border-t-[3px] border-black pt-4 text-gray-700">
-                            <div className="prose prose-sm max-w-none text-black font-bold">
+                            <div className="prose prose-sm max-w-none text-white font-bold">
                               <ReactMarkdown
                                 remarkPlugins={[remarkGfm]}
                                 components={{
@@ -422,11 +422,11 @@ export default function FaqPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mt-4">
-                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
+                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-[#1A1C20] border border-site-border font-black uppercase">
                                 <Eye size={12} />
                                 {article.viewCount}
                               </div>
-                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white border-[2px] border-black font-black uppercase">
+                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-[#1A1C20] border border-site-border font-black uppercase">
                                 <Tag size={12} />
                                 {article.categoryName}
                               </div>
@@ -441,9 +441,9 @@ export default function FaqPage() {
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => handleVote(article.id, true)}
-                                  className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === true
-                                    ? "bg-brutal-green text-black"
-                                    : "bg-white hover:bg-brutal-green"
+                                  className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border border-site-border shadow-md active:translate-y-[1px] transition-colors ${userVotes[article.id] === true
+                                    ? "bg-green-500 text-white"
+                                    : "bg-[#1A1C20] hover:bg-green-500"
                                     }`}
                                 >
                                   <ThumbsUp size={12} className="mr-1" />
@@ -451,9 +451,9 @@ export default function FaqPage() {
                                 </button>
                                 <button
                                   onClick={() => handleVote(article.id, false)}
-                                  className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border-[2px] border-black shadow-[2px_2px_0_0_#000] active:translate-y-[1px] transition-colors ${userVotes[article.id] === false
-                                    ? "bg-brutal-pink text-black"
-                                    : "bg-white hover:bg-brutal-pink"
+                                  className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border border-site-border shadow-md active:translate-y-[1px] transition-colors ${userVotes[article.id] === false
+                                    ? "bg-pink-500 text-white"
+                                    : "bg-[#1A1C20] hover:bg-pink-500"
                                     }`}
                                 >
                                   <ThumbsDown size={12} className="mr-1" />
@@ -471,10 +471,10 @@ export default function FaqPage() {
             </div>
           ) : (
             <div
-              className="bg-white border-[3px] border-black p-8 text-center shadow-[4px_4px_0_0_#000]"
+              className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 text-center shadow-md"
             >
               <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-black text-black mb-2 uppercase">
+              <h3 className="text-xl font-black text-white mb-2 uppercase">
                 {t("no_results", { query: searchQuery })}
               </h3>
               <button
@@ -482,9 +482,9 @@ export default function FaqPage() {
                   setSearchQuery("");
                   setSelectedCategory(null);
                 }}
-                className="bg-black text-white border-[3px] border-black px-6 py-2 font-black hover:bg-gray-800 transition-colors uppercase text-xs shadow-[3px_3px_0_0_#000]"
+                className="bg-black text-white border border-site-border rounded-[12px] px-6 py-2 font-black hover:bg-gray-800 transition-colors uppercase text-xs shadow-md"
               >
-                View All
+                {t("view_all")}
               </button>
             </div>
           )}

@@ -111,8 +111,8 @@ export default function FavoritePage() {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-3 text-gray-600 text-sm">{tCommon("loading")}</p>
+          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -121,39 +121,39 @@ export default function FavoritePage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="relative mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-1 relative flex items-center">
-          <span className="w-1.5 h-4 bg-brutal-pink mr-2"></span>
+      <div className="relative mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2 relative flex items-center">
+          <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
           {t("title")}
         </h2>
-        <p className="text-gray-600 text-xs relative">
+        <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
           {t("subtitle")}
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-2 mb-4">
-        <div className="relative w-full sm:w-64">
+      <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+        <div className="relative w-full sm:w-72">
           <input
             type="text"
             placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white px-3 py-1.5 text-xs text-black border-[2px] border-gray-300 focus:outline-none focus:border-black pl-8 transition-all"
+            className="w-full bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] pl-10 transition-all placeholder-gray-500"
           />
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
 
-        <div className="ml-auto text-xs text-gray-600 font-bold">
+        <div className="ml-auto text-sm text-gray-400 font-medium">
           {t("found_items", { count: filteredFavorites.length })}
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <div className="w-6 h-6 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
+          <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
         </div>
       ) : filteredFavorites.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredFavorites.map((item) => {
             // Discount is not available in public API
             const maxDiscount = 0;
@@ -163,15 +163,11 @@ export default function FavoritePage() {
               <motion.div
                 key={item.id}
                 whileHover={{ y: -4 }}
-                className="bg-white border-[3px] border-black overflow-hidden group relative flex flex-col"
-                style={{ boxShadow: "4px 4px 0 0 #000000" }}
+                className="bg-[#222427] border border-site-border rounded-xl overflow-hidden group relative flex flex-col shadow-ocean"
               >
-                <div className="relative aspect-square border-b-[3px] border-black overflow-hidden">
+                <div className="relative aspect-square border-b border-site-border overflow-hidden bg-[#1A1C1E]">
                   {showDiscount && (
-                    <div
-                      className="absolute top-2 left-2 z-10 bg-brutal-pink px-2 py-1 text-[10px] font-bold text-white border-[2px] border-black"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    >
+                    <div className="absolute top-2 left-2 z-10 bg-[var(--site-accent)] px-2.5 py-1 text-[10px] font-bold text-white rounded-md">
                       -{maxDiscount}%
                     </div>
                   )}
@@ -179,8 +175,7 @@ export default function FavoritePage() {
                   <div className="absolute top-2 right-2 z-10">
                     <button
                       onClick={(e) => removeFavorite(item.id, e)}
-                      className="w-7 h-7 bg-white border-[2px] border-black text-black hover:bg-red-500 hover:text-white flex items-center justify-center transition-all"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                      className="w-8 h-8 bg-black/50 backdrop-blur-sm border border-site-border/50 rounded-full text-white hover:bg-red-500 hover:border-red-500/30 hover:text-white flex items-center justify-center transition-all shadow-sm"
                       title={t("remove_success")}
                     >
                       <Trash2 size={14} />
@@ -194,41 +189,39 @@ export default function FavoritePage() {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                      <Package size={24} className="text-gray-300" />
+                    <div className="w-full h-full bg-[#1A1C1E] flex items-center justify-center">
+                      <Package size={24} className="text-gray-600" />
                     </div>
                   )}
                 </div>
 
-                <div className="p-2.5 flex flex-col flex-1">
-                  <h3 className="text-black text-xs font-bold mb-1 line-clamp-1 group-hover:text-brutal-blue transition-colors">
+                <div className="p-3.5 flex flex-col flex-1">
+                  <h3 className="text-white text-sm font-semibold mb-1 line-clamp-1 group-hover:text-[var(--site-accent)] transition-colors">
                     {item.product.name}
                   </h3>
-                  <p className="text-gray-500 text-xs font-bold mb-2 text-right">
+                  <p className="text-[var(--site-accent)] text-xs font-medium mb-3">
                     {item.product.types && item.product.types.length > 0
                       ? `${t("starting_at")} ${formatPrice(getMinPrice(item.product.types))}`
                       : t("view_more")}
                   </p>
 
-                  <div className="mt-auto flex gap-2">
-                    <Link
-                      href={`/games/${item.product.slug}`}
-                      className="flex-1 bg-white hover:bg-gray-50 text-black border-[2px] border-black py-1 flex items-center justify-center text-[10px] font-bold transition-all"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
-                    >
-                      <ExternalLink size={10} className="mr-1" />
-                      {t("view_more")}
-                    </Link>
+                  <div className="mt-auto flex flex-col gap-2">
                     <motion.button
                       onClick={() => toast.success(t("added_to_cart"))}
                       whileHover={{ y: -1 }}
                       whileTap={{ y: 0 }}
-                      className="flex-1 bg-brutal-blue hover:bg-brutal-blue/90 text-white border-[2px] border-black py-1 flex items-center justify-center text-[10px] font-bold transition-all"
-                      style={{ boxShadow: "2px 2px 0 0 #000000" }}
+                      className="w-full bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white py-2 rounded-lg flex items-center justify-center text-xs font-semibold transition-all shadow-[0_0_10px_rgba(103,176,186,0.2)]"
                     >
-                      <ShoppingCart size={10} className="mr-1" />
+                      <ShoppingCart size={14} className="mr-1.5" />
                       {t("buy_now")}
                     </motion.button>
+                    <Link
+                      href={`/games/${item.product.slug}`}
+                      className="w-full bg-[#1A1C1E] hover:bg-[#2A2D31] text-white border border-site-border py-2 rounded-lg flex items-center justify-center text-xs font-medium transition-all"
+                    >
+                      <ExternalLink size={12} className="mr-1.5" />
+                      {t("view_more")}
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -239,24 +232,22 @@ export default function FavoritePage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border-[3px] border-black p-6 text-center"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-8 text-center"
         >
-          <div className="w-12 h-12 bg-gray-100 border-[3px] border-black flex items-center justify-center mx-auto mb-3">
-            <Heart size={24} className="text-gray-400" />
+          <div className="w-16 h-16 bg-[#1A1C1E] border border-site-border rounded-full flex items-center justify-center mx-auto mb-4">
+            <Heart size={28} className="text-gray-500" />
           </div>
-          <h2 className="text-base font-bold text-black mb-1">
+          <h2 className="text-xl font-bold text-white mb-2">
             {t("no_favorites")}
           </h2>
-          <p className="text-gray-600 text-xs max-w-md mx-auto mb-4 font-bold">
+          <p className="text-gray-400 text-sm max-w-sm mx-auto mb-6">
             {searchTerm
               ? t("no_search_results", { query: searchTerm })
               : t("no_favorites_desc")}
           </p>
           <Link
             href="/"
-            className="bg-black hover:bg-gray-800 text-white px-4 py-2 border-[3px] border-black text-xs font-bold inline-flex items-center transition-all hover:-translate-y-0.5"
-            style={{ boxShadow: "3px 3px 0 0 #000000" }}
+            className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all shadow-[0_0_15px_rgba(103,176,186,0.3)] text-sm"
           >
             {t("start_shopping")}
           </Link>

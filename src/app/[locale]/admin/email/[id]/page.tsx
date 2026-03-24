@@ -285,7 +285,7 @@ export default function EmailTemplateEditorPage() {
     return (
       <AdminLayout title="แก้ไขเทมเพลต">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -295,7 +295,7 @@ export default function EmailTemplateEditorPage() {
     return (
       <AdminLayout title="แก้ไขเทมเพลต">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -308,21 +308,19 @@ export default function EmailTemplateEditorPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
-        >
+          className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push("/admin/email")}
-              className="p-1.5 border-[2px] border-black hover:bg-gray-100"
-            >
+              className="p-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5">
               <ArrowLeft className="h-4 w-4" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-black flex items-center gap-2">
-                <Mail className="h-5 w-5 text-brutal-pink" />
+              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <Mail className="h-5 w-5 text-pink-400" />
                 {isNew ? "สร้างเทมเพลตใหม่" : `แก้ไข: ${formData.name}`}
               </h1>
-              <p className="text-gray-600 mt-0.5 text-xs">
+              <p className="text-gray-400 mt-0.5 text-xs">
                 สร้างและแก้ไขเทมเพลตอีเมลพร้อม placeholder
               </p>
             </div>
@@ -330,18 +328,14 @@ export default function EmailTemplateEditorPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePreview}
-              className="flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-white hover:bg-gray-50 font-bold text-sm"
-              style={{ boxShadow: "2px 2px 0 0 #000000" }}
-            >
+              className="flex items-center gap-2 px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] hover:bg-[#212328]/5 font-bold text-sm">
               <Eye className="h-3.5 w-3.5" />
               ดูตัวอย่าง
             </button>
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-3 py-1.5 bg-brutal-pink text-white border-[2px] border-black font-bold text-sm"
-              style={{ boxShadow: "2px 2px 0 0 #000000" }}
-            >
+              className="flex items-center gap-2 px-3 py-1.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold text-sm">
               {isSaving ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
@@ -359,10 +353,8 @@ export default function EmailTemplateEditorPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border-[2px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              <div className="p-3 border-b-[2px] border-black bg-gray-50">
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+              <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
                 <h2 className="font-bold flex items-center gap-2 text-base">
                   <FileText className="h-4 w-4" />
                   ข้อมูลเทมเพลต
@@ -385,7 +377,7 @@ export default function EmailTemplateEditorPage() {
                       }
                       disabled={!isNew}
                       placeholder="เช่น order_confirmation"
-                      className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink disabled:bg-gray-100 text-sm"
+                      className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:bg-[#1A1C1E] text-sm"
                     />
                     <p className="text-[10px] text-gray-500 mt-0.5">
                       ตัวพิมพ์เล็ก ตัวเลข และ _ เท่านั้น แก้ไขไม่ได้หลังสร้าง
@@ -400,8 +392,7 @@ export default function EmailTemplateEditorPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                       }
-                      className="w-full px-3 py-2 border-[2px] border-black focus:outline-none bg-white text-sm"
-                    >
+                      className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none bg-[#212328] text-sm">
                       {CATEGORY_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
                           {opt.label}
@@ -422,7 +413,7 @@ export default function EmailTemplateEditorPage() {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     placeholder="เช่น อีเมลยืนยันคำสั่งซื้อ"
-                    className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
+                    className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                   />
                 </div>
 
@@ -437,7 +428,7 @@ export default function EmailTemplateEditorPage() {
                       setFormData({ ...formData, subject: e.target.value })
                     }
                     placeholder="เช่น ยืนยันคำสั่งซื้อ #{{orderNumber}}"
-                    className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
+                    className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                   />
                   <p className="text-[10px] text-gray-500 mt-0.5">
                     รองรับ placeholder เช่น {`{{orderNumber}}`}
@@ -455,7 +446,7 @@ export default function EmailTemplateEditorPage() {
                     }
                     placeholder="อธิบายว่าเทมเพลตนี้ใช้เมื่อไหร่..."
                     rows={2}
-                    className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink resize-none text-sm"
+                    className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none text-sm"
                   />
                 </div>
 
@@ -480,28 +471,25 @@ export default function EmailTemplateEditorPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white border-[2px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              <div className="p-3 border-b-[2px] border-black bg-gray-50 flex items-center justify-between">
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+              <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D] flex items-center justify-between">
                 <h2 className="font-bold flex items-center gap-2 text-base">
                   <Code className="h-4 w-4" />
                   เนื้อหา HTML
                 </h2>
                 <button
                   onClick={() => setShowVariableHelper(!showVariableHelper)}
-                  className={`flex items-center gap-1 px-2 py-0.5 text-xs border-[2px] border-black ${showVariableHelper
-                      ? "bg-brutal-yellow"
-                      : "bg-white hover:bg-gray-100"
-                    }`}
-                >
+                  className={`flex items-center gap-1 px-2 py-0.5 text-xs border border-site-border/30 rounded-[12px] shadow-sm ${showVariableHelper
+                      ? "bg-orange-500/10"
+                      : "bg-[#212328] hover:bg-[#212328]/5"
+                    }`}>
                   <Sparkles className="h-3 w-3" />
                   ตัวแปร
                 </button>
               </div>
 
               {showVariableHelper && (
-                <div className="p-3 border-b-[2px] border-gray-200 bg-blue-50">
+                <div className="p-3 border-b-[2px] border-site-border/30 bg-[#181A1D]">
                   <p className="text-xs font-bold mb-1.5 flex items-center gap-2">
                     <Info className="h-3.5 w-3.5" />
                     คลิกเพื่อแทรก placeholder:
@@ -511,7 +499,7 @@ export default function EmailTemplateEditorPage() {
                       <button
                         key={p.name}
                         onClick={() => insertPlaceholder(p.name)}
-                        className="px-1.5 py-0.5 text-[10px] bg-white border-[1px] border-black hover:bg-brutal-yellow transition-colors"
+                        className="px-1.5 py-0.5 text-[10px] bg-[#212328] border-[1px] border-site-border/50 hover:bg-orange-500/10 transition-colors"
                         title={p.description}
                       >
                         {`{{${p.name}}}`}
@@ -530,7 +518,7 @@ export default function EmailTemplateEditorPage() {
                   }
                   placeholder="เขียน HTML สำหรับอีเมล..."
                   rows={20}
-                  className="w-full px-3 py-2 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink font-mono text-xs resize-none"
+                  className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 font-mono text-xs resize-none"
                 />
               </div>
             </motion.div>
@@ -543,10 +531,8 @@ export default function EmailTemplateEditorPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white border-[2px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              <div className="p-3 border-b-[2px] border-black bg-gray-50">
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+              <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
                 <h2 className="font-bold flex items-center gap-2 text-base">
                   <Send className="h-4 w-4" />
                   ส่งทดสอบ
@@ -562,14 +548,13 @@ export default function EmailTemplateEditorPage() {
                     value={testEmail}
                     onChange={(e) => setTestEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="w-full px-3 py-1.5 border-[2px] border-black focus:outline-none focus:ring-2 focus:ring-brutal-pink text-sm"
+                    className="w-full px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                   />
                 </div>
                 <button
                   onClick={handleSendTest}
                   disabled={isSendingTest || !testEmail}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-brutal-blue text-white border-[2px] border-black font-bold disabled:opacity-50 text-sm"
-                >
+                  className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-site-accent text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold disabled:opacity-50 text-sm">
                   {isSendingTest ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   ) : (
@@ -585,10 +570,8 @@ export default function EmailTemplateEditorPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white border-[2px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              <div className="p-3 border-b-[2px] border-black bg-gray-50">
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+              <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
                 <h2 className="font-bold flex items-center gap-2 text-base">
                   <Eye className="h-4 w-4" />
                   ค่าตัวอย่างสำหรับดูตัวอย่าง
@@ -609,7 +592,7 @@ export default function EmailTemplateEditorPage() {
                           [key]: e.target.value,
                         })
                       }
-                      className="w-full px-2 py-1.5 border-[1px] border-gray-300 focus:outline-none focus:border-black text-xs"
+                      className="w-full px-2 py-1.5 border-[1px] border-gray-300 focus:outline-none focus:border-site-accent text-xs"
                     />
                   </div>
                 ))}
@@ -621,10 +604,8 @@ export default function EmailTemplateEditorPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white border-[2px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              <div className="p-3 border-b-[2px] border-black bg-gray-50">
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+              <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
                 <h2 className="font-bold text-base">Placeholders ที่ใช้</h2>
               </div>
               <div className="p-3">
@@ -633,8 +614,7 @@ export default function EmailTemplateEditorPage() {
                     {formData.placeholders.map((p) => (
                       <span
                         key={p}
-                        className="px-1.5 py-0.5 text-[10px] bg-gray-100 border border-gray-200"
-                      >
+                        className="px-1.5 py-0.5 text-[10px] bg-[#1A1C1E] border border-site-border/30">
                         {`{{${p}}}`}
                       </span>
                     ))}
@@ -656,25 +636,22 @@ export default function EmailTemplateEditorPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white border-[2px] border-black max-w-4xl w-full max-h-[90vh] overflow-hidden"
-            style={{ boxShadow: "6px 6px 0 0 #000000" }}
-          >
-            <div className="p-3 border-b-[2px] border-black bg-gray-50 flex items-center justify-between">
+            className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D] flex items-center justify-between">
               <h2 className="font-bold flex items-center gap-2 text-base">
                 <Eye className="h-4 w-4" />
                 ตัวอย่างอีเมล
               </h2>
               <button
                 onClick={() => setShowPreview(false)}
-                className="px-3 py-1.5 border-[2px] border-black hover:bg-gray-100 text-sm"
-              >
+                className="px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 text-sm">
                 ปิด
               </button>
             </div>
             <div className="p-3 overflow-auto max-h-[calc(90vh-60px)]">
               <iframe
                 title="Email Preview"
-                className="w-full min-h-[500px] border border-gray-200 bg-white"
+                className="w-full min-h-[500px] border border-site-border/30 bg-[#212328]"
                 sandbox=""
                 srcDoc={previewHtml}
               />

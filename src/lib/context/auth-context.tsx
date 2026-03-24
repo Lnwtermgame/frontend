@@ -10,6 +10,7 @@ import {
   useMemo,
   useRef,
 } from "react";
+import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { authApi, User } from "../services/auth-api";
@@ -97,6 +98,7 @@ function getTokenRemainingTime(token: string): number {
 const AUTH_STORAGE_VERSION = "3";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const t = useTranslations();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [storageVersion, setStorageVersion] = useState<string | null>(null);
@@ -185,7 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Keep isSessionChecked = true so the UI shows the logged-out state
     // (login button) instead of being stuck on a loading spinner.
     setIsSessionChecked(true);
-  }, [setToken, setUser, setIsSessionChecked]);
+  }, [setToken, setUser, setIsSessionChecked, t]);
 
   // Schedule token refresh
   const scheduleTokenRefresh = useCallback((expiresIn: number) => {
@@ -201,7 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         performTokenRefresh();
       }, refreshDelay);
     }
-  }, []);
+  }, [t]);
 
   // Perform token refresh
   const performTokenRefresh = useCallback(async () => {
@@ -226,7 +228,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearAuth();
         // Redirect to login so user isn't stuck on a broken page
         if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-          toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
+          toast.error(t("session_expired"));
           sessionStorage.setItem("session_expired", "true");
           window.location.href = "/login?session_expired=true";
         }
@@ -235,12 +237,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("[Auth] Token refresh error:", err);
       clearAuth();
       if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-        toast.error("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง");
+        toast.error(t("session_expired"));
         sessionStorage.setItem("session_expired", "true");
         window.location.href = "/login?session_expired=true";
       }
     }
-  }, [setToken, clearAuth, scheduleTokenRefresh]);
+  }, [setToken, clearAuth, scheduleTokenRefresh, t]);
 
   // Hydration check
   useEffect(() => {
@@ -397,7 +399,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
           scheduleTokenRefresh(remainingTime);
           hasSyncedNextAuthRef.current = true;
-          toast.success("เข้าสู่ระบบสำเร็จ!");
+          toast.success(t("login_success"));
         }
       }
     } else if (
@@ -451,10 +453,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(response.data.tokens.accessToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
-        toast.success("เข้าสู่ระบบสำเร็จ!");
+        toast.success(t("login_success"));
         return true;
       } else {
-        toast.error(response.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        toast.error(response.message || t("invalid_email_password"));
         return false;
       }
     } catch (err) {
@@ -466,7 +468,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoggingInRef.current = false;
       console.log("[Auth] Login completed");
     }
-  }, [scheduleTokenRefresh]);
+  }, [scheduleTokenRefresh, t]);
 
   // Register with API
   const register = useCallback(async (
@@ -494,10 +496,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(response.data.tokens.accessToken);
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
-        toast.success("สร้างบัญชีสำเร็จ!");
+        toast.success(t("register_success"));
         return true;
       } else {
-        toast.error(response.message || "ไม่สามารถสร้างบัญชีได้");
+        toast.error(response.message || t("register_error"));
         return false;
       }
     } catch (err) {
@@ -507,7 +509,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [scheduleTokenRefresh]);
+  }, [scheduleTokenRefresh, t]);
 
   // Logout with API
   const logout = useCallback(async () => {
@@ -526,13 +528,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       hasSyncedNextAuthRef.current = false;
       // Mark session as checked so UI doesn't get stuck in loading state
       setIsSessionChecked(true);
-      toast.success("ออกจากระบบสำเร็จ");
+      toast.success(t("logout_success"));
       // Redirect to login page after logout
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
     }
-  }, [token, nextAuthStatus, clearAuth]);
+  }, [token, nextAuthStatus, clearAuth, t]);
 
   // Update profile
   const updateProfile = useCallback(async (data: {
@@ -546,10 +548,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.success) {
         setUser(response.data);
-        toast.success("อัปเดตโปรไฟล์สำเร็จ");
+        toast.success(t("profile_update_success"));
         return true;
       } else {
-        toast.error(response.message || "ไม่สามารถอัปเดตโปรไฟล์ได้");
+        toast.error(response.message || t("profile_update_error"));
         return false;
       }
     } catch (err) {
@@ -559,7 +561,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   // Change password
   const changePassword = useCallback(async (
@@ -575,7 +577,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         newPassword,
       });
       console.log("[AuthContext] Change password response:", response);
-      toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
+      toast.success(t("password_change_success"));
       return true;
     } catch (err) {
       console.error("[AuthContext] Change password error:", err);
@@ -585,7 +587,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   /**
    * @deprecated Use NextAuth signIn() instead. Legacy OAuth flow is deprecated.
@@ -615,11 +617,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         scheduleTokenRefresh(response.data.tokens.expiresIn);
         setAccessToken(response.data.tokens.accessToken);
         toast.success(
-          response.data.isNewUser ? "สร้างบัญชีสำเร็จ!" : "เข้าสู่ระบบสำเร็จ!",
+          response.data.isNewUser ? t("register_success") : t("login_success"),
         );
         return true;
       } else {
-        toast.error(response.message || "ไม่สามารถเข้าสู่ระบบได้");
+        toast.error(response.message || t("login_error"));
         return false;
       }
     } catch (err) {
@@ -629,7 +631,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [scheduleTokenRefresh]);
+  }, [scheduleTokenRefresh, t]);
 
   const contextValue = useMemo(() => ({
     user,

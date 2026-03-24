@@ -12,14 +12,14 @@ export default function NotFound() {
             <div className="text-center max-w-lg">
                 {/* Big 404 badge */}
                 <div className="inline-flex items-center justify-center mb-6">
-                    <span className="text-[120px] sm:text-[160px] font-extrabold leading-none text-black select-none"
-                        style={{ textShadow: "6px 6px 0 var(--brutal-pink)" }}>
+                    <span className="text-[120px] sm:text-[160px] font-extrabold leading-none text-white select-none"
+                        style={{ textShadow: "6px 6px 0 var(--pink-500)" }}>
                         404
                     </span>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl sm:text-3xl font-bold text-black mb-3">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                     {t("notFound.title", { defaultMessage: "Page Not Found" })}
                 </h1>
 
@@ -34,7 +34,7 @@ export default function NotFound() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <button
                         onClick={() => router.push("/")}
-                        className="btn-brutal-pink w-full sm:w-auto"
+                        className="btn-pink-500 w-full sm:w-auto"
                     >
                         {t("notFound.goHome", { defaultMessage: "← Go Home" })}
                     </button>

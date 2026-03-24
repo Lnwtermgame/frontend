@@ -1,566 +1,185 @@
+/* Custom Fonts (Manrope via Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════
+   Dark Theme — ชาร์โคล & นีออน
+   Clean · Professional · High Contrast
+   ══════════════════════════════════════ */
+
+:root {
+  --site-accent: #67B0BA;
+  --site-accent-hover: #5A9AA3;
+  --site-accent-glow: rgba(103, 176, 186, 0.4);
+}
+
 @layer base {
-  :root {
-    --font-sans:
-      "Poppins", "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-thai: "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
-    --font-cn: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-    --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
-    --font-kr: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    --font-hi: "Noto Sans Devanagari", "Mangal", "Arial Unicode MS", sans-serif;
-
-    /* Neo-Brutalism Lite - Light Theme Base */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 15%;
-
-    --primary: 340 100% 71%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 47 100% 62%;
-    --secondary-foreground: 240 10% 15%;
-
-    --accent: 174 62% 55%;
-    --accent-foreground: 240 10% 15%;
-
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 340 100% 71%;
-
-    --radius: 0;
-
-    /* Neo-Brutalism Specific */
-    --brutal-pink: #ff6b9d;
-    --brutal-yellow: #ffd93d;
-    --brutal-blue: #4ecdc4;
-    --brutal-green: #95e1d3;
-    --brutal-black: #000000;
-    --brutal-white: #ffffff;
-    --brutal-gray: #f9fafb;
-    --brutal-dark: #1a1a2e;
-
-    /* Trust/Payment section colors (clean, professional) */
-    --trust-bg: #ffffff;
-    --trust-text: #1f2937;
-    --trust-muted: #6b7280;
-    --trust-border: #e5e7eb;
-
-    /* Semantic Spacing Scale (4pt base) */
-    --space-xs: 0.25rem;
-    /* 4px */
-    --space-sm: 0.5rem;
-    /* 8px */
-    --space-md: 1rem;
-    /* 16px */
-    --space-lg: 1.5rem;
-    /* 24px */
-    --space-xl: 2rem;
-    /* 32px */
-    --space-2xl: 3rem;
-    /* 48px */
-    --space-3xl: 4rem;
-    /* 64px */
-    --space-4xl: 6rem;
-    /* 96px */
-
-    /* Semantic Z-Index Scale */
-    --z-dropdown: 10;
-    --z-sticky: 20;
-    --z-overlay: 30;
-    --z-modal: 40;
-    --z-toast: 50;
-    --z-tooltip: 60;
-  }
-
-  html[lang="zh"] {
-    --font-thai: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
-    --font-sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans Thai", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
-
-  html[lang="ja"] {
-    --font-thai: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
-    --font-sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", "Noto Sans Thai", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
-
-  html[lang="hi"] {
-    --font-thai: "Noto Sans Devanagari", "Mangal", "Noto Sans Thai", "Thonburi", "Tahoma", sans-serif;
-    --font-sans: "Noto Sans Devanagari", "Mangal", "Noto Sans Thai", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
-
-  /* iOS touch optimization */
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Form elements - prevent zoom on iOS */
-  input,
-  select,
-  textarea {
-    font-size: 16px !important;
-    /* Critical: prevents iOS zoom */
-  }
-
   html {
+    scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    font-family: var(--font-sans) !important;
-    -webkit-text-size-adjust: 100%;
-    scroll-behavior: auto;
-    overflow-y: scroll;
-    overflow-x: clip;
-    overscroll-behavior-x: none;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  html[lang="th"] {
-    font-family: var(--font-thai) !important;
-  }
-
-  html[lang="zh"] {
-    font-family: var(--font-cn) !important;
-  }
-
-  html[lang="ja"] {
-    font-family: var(--font-jp) !important;
-  }
-
-  html[lang="ko"] {
-    font-family: var(--font-kr) !important;
-  }
-
-  html[lang="hi"] {
-    font-family: var(--font-hi) !important;
-  }
-
-  html[lang="en"] {
-    font-family: var(--font-sans) !important;
-  }
-
-
-  /* Thai font class for explicit targeting */
-  .thai-font {
-    font-family: var(--font-thai) !important;
-  }
-
-  /* Ensure Thai characters are displayed with Thai font */
-  .thai-font * {
-    font-family: var(--font-thai) !important;
-  }
-
-  * {
-    @apply border-border;
-  }
-
-  /* Thai font settings moved from layout.tsx inline style */
-  @font-face {
-    font-family: "Noto Sans Thai";
-    font-style: normal;
-    font-weight: 400;
-    font-display: block;
-    src: url("/fonts/noto-sans-thai-regular.ttf") format("truetype");
   }
 
   body {
-    background-color: oklch(97.5% 0.005 180);
-    color: #1f2937;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    font-feature-settings:
-      "rlig" 1,
-      "calt" 1;
+    @apply bg-site-bg text-site-text font-sans;
     min-height: 100vh;
-    @apply overflow-x-hidden;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
-    overscroll-behavior-x: none;
-    position: relative;
   }
 
-  /* Foundation layout guard rails for mobile overflow */
-  #__next,
-  [data-nextjs-scroll-focus-boundary] {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
+  /* Custom scrollbar — dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
   }
 
-  img,
-  video,
-  canvas,
-  iframe {
-    max-width: 100%;
+  ::-webkit-scrollbar-track {
+    background: #16181A;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-site-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-site-accent;
+  }
+
+  /* ─── Global text contrast fix ───
+     Many legacy pages use text-black, text-gray-*, bg-white etc.
+     Override them to neutral shades. */
+  .text-black {
+    color: #F8F9FA !important;
+  }
+
+  .text-gray-900,
+  .text-gray-800 {
+    color: #F8F9FA !important;
+  }
+
+  .text-gray-700 {
+    color: #E5E7EB !important;
+  }
+
+  .text-gray-600 {
+    color: #D1D5DB !important;
+  }
+
+  .text-gray-500 {
+    color: #9CA3AF !important;
+  }
+
+  .text-gray-400 {
+    color: #9CA3AF !important;
+  }
+
+  .text-gray-300 {
+    color: #D1D5DB !important;
+  }
+
+  .text-slate-900,
+  .text-slate-800 {
+    color: #F8F9FA !important;
+  }
+
+  .text-slate-700 {
+    color: #E5E7EB !important;
+  }
+
+  .text-slate-600 {
+    color: #D1D5DB !important;
+  }
+
+  .text-slate-500 {
+    color: #9CA3AF !important;
+  }
+
+  /* Background overrides — SEAGM dark grays */
+  .bg-white {
+    background-color: #222427 !important;
+  }
+
+  .bg-gray-50,
+  .bg-gray-100 {
+    background-color: #222427 !important;
+  }
+
+  .bg-gray-200 {
+    background-color: #292B2E !important;
+  }
+
+  .bg-gray-900,
+  .bg-gray-800 {
+    background-color: #16181A !important;
+  }
+
+  .bg-slate-50,
+  .bg-slate-100 {
+    background-color: #222427 !important;
+  }
+
+  .bg-slate-900,
+  .bg-slate-800 {
+    background-color: #16181A !important;
+  }
+
+  /* Border overrides */
+  .border-black {
+    border-color: #33353B !important;
+  }
+
+  .border-gray-200,
+  .border-gray-300 {
+    border-color: #33353B !important;
+  }
+
+  .border-slate-200,
+  .border-slate-300 {
+    border-color: #33353B !important;
+  }
+
+  /* Box shadow override — subtle */
+  [style*="boxShadow"][style*="#000000"],
+  [style*="box-shadow"][style*="#000000"] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: var(--site-accent-glow);
+    color: #F8F9FA;
   }
 }
 
 @layer components {
 
-  /* Touch targets - WCAG 2.5.5 */
-  .touch-target {
-    @apply min-h-[48px] min-w-[48px];
+  /* The ONE container class used everywhere */
+  .site-container {
+    @apply max-w-[1200px] mx-auto px-4 sm:px-6;
   }
 
-  .touch-target-lg {
-    @apply min-h-[56px] min-w-[56px];
+  /* The ONE card class */
+  .site-card {
+    @apply bg-site-surface border border-site-border;
+    border-radius: 16px;
   }
 
-  /* Safe area support (iPhone notch/Dynamic Island) */
-  .safe-area-top {
-    padding-top: env(safe-area-inset-top);
+  /* The ONE button */
+  .site-btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-site-accent hover:bg-site-accent-hover text-site-bg text-sm font-semibold rounded-lg transition-colors;
   }
 
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
+  /* The ONE input */
+  .site-input {
+    @apply w-full h-10 px-4 bg-site-surface border border-site-border rounded-lg text-sm text-site-text placeholder-site-dim transition-colors focus:outline-none focus:border-site-accent;
   }
 
-  .safe-area-x {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-
-  /* Neo-Brutalism mobile variants */
-  .brutal-shadow-mobile {
-    box-shadow: 2px 2px 0 0 #000;
-  }
-
-  .brutal-border-mobile {
-    @apply border-2 border-black;
-  }
-
-  /* Container system */
-  .container-mobile {
-    @apply w-full px-4 mx-auto;
-    max-width: 100%;
-  }
-
-  /* Scroll snap for mobile carousels */
-  .snap-x-mandatory {
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .snap-center {
-    scroll-snap-align: center;
-  }
-
-  /* ========================================
-     NEO-BRUTALISM LITE - CTA COMPONENTS
-     Use these for hero, browsing, cards, badges
-     ======================================== */
-
-  /* Brutalist Button - Primary CTA */
-  .btn-brutal {
-    @apply relative font-bold text-base px-6 py-3 border-[3px] border-black bg-brutal-yellow text-black;
-    @apply transition-all duration-150 ease-out;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .btn-brutal:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-brutal:active {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* Brutalist Button - Pink variant */
-  .btn-brutal-pink {
-    @apply relative font-bold text-base px-6 py-3 border-[3px] border-black bg-brutal-pink text-white;
-    @apply transition-all duration-150 ease-out;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .btn-brutal-pink:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-brutal-pink:active {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* Brutalist Button - Blue variant */
-  .btn-brutal-blue {
-    @apply relative font-bold text-base px-6 py-3 border-[3px] border-black bg-brutal-blue text-black;
-    @apply transition-all duration-150 ease-out;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .btn-brutal-blue:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-brutal-blue:active {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* Brutalist Button - Green variant */
-  .btn-brutal-green {
-    @apply relative font-bold text-base px-6 py-3 border-[3px] border-black bg-brutal-green text-black;
-    @apply transition-all duration-150 ease-out;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .btn-brutal-green:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-brutal-green:active {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* Brutalist Button - White/Dark variant */
-  .btn-brutal-dark {
-    @apply relative font-bold text-base px-6 py-3 border-[3px] border-black bg-brutal-dark text-white;
-    @apply transition-all duration-150 ease-out;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .btn-brutal-dark:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-brutal-dark:active {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* Brutalist Card - For game cards, promo cards */
-  .card-brutal {
-    @apply relative bg-white border-[3px] border-black overflow-hidden;
-    box-shadow: 4px 4px 0 0 #000000;
-    @apply transition-all duration-150 ease-out;
-  }
-
-  .card-brutal:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  /* Brutalist Badge - HOT, SALE, NEW */
-  .badge-brutal {
-    @apply inline-flex items-center px-3 py-1 border-[2px] border-black font-bold text-xs uppercase tracking-wide;
-  }
-
-  .badge-brutal-pink {
-    @apply badge-brutal bg-brutal-pink text-white;
-  }
-
-  .badge-brutal-yellow {
-    @apply badge-brutal bg-brutal-yellow text-black;
-  }
-
-  .badge-brutal-blue {
-    @apply badge-brutal bg-brutal-blue text-black;
-  }
-
-  .badge-brutal-green {
-    @apply badge-brutal bg-brutal-green text-black;
-  }
-
-  /* Brutalist Category Button */
-  .category-brutal {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 border-[3px] border-black bg-white font-semibold text-sm;
-    @apply transition-all duration-150 ease-out;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .category-brutal:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .category-brutal.active {
-    @apply bg-brutal-yellow;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .category-brutal:active {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* ========================================
-     CLEAN COMPONENTS - For Trust/Payment
-     Keep these professional, no brutalist borders
-     ======================================== */
-
-  /* Clean Button - For payment/checkout */
-  .btn-clean {
-    @apply font-semibold px-6 py-3 bg-gray-900 text-white;
-    @apply transition-all duration-200 ease-out;
-    @apply hover:bg-gray-800 hover:shadow-lg;
-    @apply active:scale-95;
-  }
-
-  .btn-clean-primary {
-    @apply btn-clean bg-brutal-pink hover:bg-[#ff5a8f];
-  }
-
-  .btn-clean-secondary {
-    @apply btn-clean bg-white text-gray-900 border border-gray-300 hover:bg-gray-50;
-  }
-
-  /* Clean Card - For order summary, payment forms */
-  .card-clean {
-    @apply bg-white border border-gray-200 shadow-sm;
-    @apply transition-shadow duration-200;
-    @apply hover:shadow-md;
-  }
-
-  /* Clean Input - For forms, search */
-  .input-clean {
-    @apply w-full bg-white border border-gray-300 px-4 py-2.5 text-gray-900;
-    @apply focus:outline-none focus:ring-2 focus:ring-brutal-pink/50 focus:border-brutal-pink;
-    @apply placeholder:text-gray-400;
-    @apply transition-all duration-200;
-  }
-
-  /* Clean Input Dark - For dark backgrounds */
-  .input-clean-dark {
-    @apply w-full bg-gray-800/50 border border-gray-700 px-4 py-2.5 text-white;
-    @apply focus:outline-none focus:ring-2 focus:ring-brutal-blue/50 focus:border-brutal-blue;
-    @apply placeholder:text-gray-500;
-  }
-
-  /* ========================================
-     NAVIGATION COMPONENTS
-     ======================================== */
-
-  .nav-item {
-    @apply flex items-center space-x-2 p-2.5 transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100;
-  }
-
-  .nav-item.active {
-    @apply bg-brutal-yellow text-black font-bold border-[2px] border-black;
-    box-shadow: 3px 3px 0 0 #000000;
-  }
-
-  /* ========================================
-     LEGACY CLASSES (Dark Theme)
-     Kept for backward compatibility during transition
-     ======================================== */
-
-  .btn-primary {
-    @apply bg-brutal-pink hover:bg-[#ff5a8f] text-white font-bold py-2 px-4 border-[3px] border-black;
-    box-shadow: 4px 4px 0 0 #000000;
-    @apply transition-all duration-150;
-  }
-
-  .btn-primary:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-900 font-medium py-2 px-4 border-[3px] border-black;
-    box-shadow: 4px 4px 0 0 #000000;
-    @apply transition-all duration-150;
-  }
-
-  .btn-secondary:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .btn-outline {
-    @apply border-[3px] border-black text-black hover:bg-gray-100 font-medium py-2 px-4;
-    @apply transition-all duration-150;
-  }
-
-  .btn-accent {
-    @apply bg-brutal-yellow text-black font-bold py-2 px-4 border-[3px] border-black;
-    box-shadow: 4px 4px 0 0 #000000;
-    @apply transition-all duration-150;
-  }
-
-  .btn-cart {
-    @apply bg-brutal-blue hover:bg-[#3dbdb5] text-black font-bold py-2 px-4 w-full border-[3px] border-black;
-    box-shadow: 4px 4px 0 0 #000000;
-    @apply transition-all duration-150;
-  }
-
-  .card {
-    @apply bg-white p-4 border-[3px] border-black;
-    box-shadow: 4px 4px 0 0 #000000;
-  }
-
-  .card-hover {
-    @apply transition-all duration-150;
-  }
-
-  .card-hover:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .game-card {
-    @apply overflow-hidden relative bg-white border-[3px] border-black;
-    box-shadow: 4px 4px 0 0 #000000;
-    @apply transition-all duration-150;
-  }
-
-  .game-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 #000000;
-  }
-
-  .page-container {
-    @apply container mx-auto px-4 py-8 max-w-screen-xl;
-  }
-
-  /* Legacy glass classes - simplified for light theme */
-  .glass {
-    @apply bg-white border border-gray-200 shadow-sm;
-    backdrop-filter: none;
-  }
-
-  .glass-card {
-    @apply bg-white border border-gray-200 shadow-sm;
-    backdrop-filter: none;
-  }
-
-  /* Custom scrollbar for light theme */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #f1f5f9;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 0;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+  /* Section heading */
+  .site-heading {
+    @apply text-lg md:text-xl font-bold text-white flex items-center gap-2;
   }
 }
 
 @layer utilities {
-
-  /* Hide scrollbar but keep functionality */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -569,92 +188,30 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+}
 
-  /* Line clamp for text truncation */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+/* Slide-in animation for mobile drawer */
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
   }
 
-  /* GPU acceleration for animations */
-  .gpu-accelerate {
-    transform: translateZ(0);
-    will-change: transform;
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-in.slide-in-from-left {
+  animation: slideInFromLeft 0.25s ease-out;
+}
+
+/* Fade-in animation for page content reveal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
 
-  /* Mobile Utils */
-  .touch-target {
-    @apply min-h-[48px] min-w-[48px];
-  }
-
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  .shadow-brutal-mobile {
-    box-shadow: 2px 2px 0 0 #000000;
-  }
-
-  /* Hide scrollbar utility */
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Fix react-hot-toast blocking react-grab */
-  [data-rht-toaster] {
-    pointer-events: none !important;
-  }
-
-  [data-rht-toaster]>* {
-    pointer-events: auto !important;
-  }
-
-  /* Prevent overflow in flex/grid containers */
-  .min-w-0 {
-    min-width: 0;
-  }
-
-  /* Container query helpers for responsive grids */
-  .grid-auto-fit {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  }
-
-  /* Brutalist text styles */
-  .text-brutal-shadow {
-    text-shadow: 3px 3px 0 #000000;
-  }
-
-  .text-brutal-shadow-sm {
-    text-shadow: 2px 2px 0 #000000;
-  }
-
-  /* Focus outline for accessibility */
-  .focus-brutal:focus {
-    @apply outline-none ring-2 ring-brutal-pink ring-offset-2 ring-offset-white;
-  }
-
-  /* Hover lift effect */
-  .hover-lift {
-    @apply transition-transform duration-150;
-  }
-
-  .hover-lift:hover {
-    transform: translate(-2px, -2px);
-  }
-
-  /* Neo-brutalism grid background */
-  .bg-brutal-grid {
-    background-color: var(--brutal-gray);
-    background-image:
-      linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-    background-size: 32px 32px;
+  to {
+    opacity: 1;
   }
 }

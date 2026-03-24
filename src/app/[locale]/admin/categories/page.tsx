@@ -222,21 +222,19 @@ export default function AdminCategories() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-brutal-blue mr-2"></span>
-            <h1 className="text-lg font-bold text-black">จัดการหมวดหมู่</h1>
+            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
+            <h1 className="text-lg font-bold text-white">จัดการหมวดหมู่</h1>
           </div>
           <button
             onClick={openCreateModal}
-            className="bg-black text-white border-[2px] border-black flex items-center gap-1.5 px-2.5 py-1 hover:bg-gray-800 transition-colors font-medium"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
+            className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm flex items-center gap-1.5 px-2.5 py-1 hover:bg-gray-800 transition-colors font-medium">
             <Plus className="h-3.5 w-3.5" />
             <span className="text-xs">เพิ่มหมวดหมู่</span>
           </button>
         </div>
 
         {/* Info Banner */}
-        <div className="bg-blue-50 border-[1px] border-blue-300 p-2 flex items-start gap-2">
+        <div className="bg-[#181A1D] border-[1px] border-blue-300 p-2 flex items-start gap-2">
           <AlertCircle className="w-3.5 h-3.5 text-blue-600 mt-0.5 shrink-0" />
           <div className="text-[10px] text-blue-800">
             <p className="font-medium mb-0.5">
@@ -252,22 +250,22 @@ export default function AdminCategories() {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-100 border-[2px] border-red-500 text-red-700 px-3 py-2 text-xs">
+          <div className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 text-red-400 px-3 py-2 text-xs">
             {error}
           </div>
         )}
 
         {/* Categories Table */}
         <motion.div
-          className="bg-white border-[2px] border-black overflow-hidden"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-[2px] border-black bg-gray-50">
-            <h3 className="text-sm font-semibold text-black flex items-center">
-              <Layers className="mr-2 h-3.5 w-3.5 text-brutal-blue" />
+          <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
+            <h3 className="text-sm font-semibold text-white flex items-center">
+              <Layers className="mr-2 h-3.5 w-3.5 text-site-accent" />
               รายการหมวดหมู่
               <span className="ml-2 text-[10px] font-normal text-gray-500">
                 ({categories.length} หมวดหมู่)
@@ -278,12 +276,12 @@ export default function AdminCategories() {
           <div className="overflow-x-auto">
             {loading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-5 w-5 text-brutal-pink animate-spin" />
+                <Loader2 className="h-5 w-5 text-pink-400 animate-spin" />
               </div>
             ) : categories.length > 0 ? (
               <table className="w-full">
                 <thead>
-                  <tr className="text-gray-600 text-[10px] border-b border-gray-200">
+                  <tr className="text-gray-400 text-[10px] border-b border-site-border/30">
                     <th className="px-3 py-1.5 text-center w-8">#</th>
                     <th className="px-3 py-1.5 text-left">ชื่อหมวดหมู่</th>
                     <th className="px-3 py-1.5 text-left">Slug</th>
@@ -293,36 +291,35 @@ export default function AdminCategories() {
                     <th className="px-3 py-1.5 text-left">การดำเนินการ</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-site-border/30">
                   {categories.map((category, index) => (
                     <tr
                       key={category.id}
-                      className="text-[10px] hover:bg-gray-50 transition-colors"
-                    >
+                      className="text-[10px] hover:bg-[#212328]/5 transition-colors">
                       <td className="px-3 py-2 text-center">
                         <GripVertical className="w-2.5 h-2.5 text-gray-300 mx-auto" />
                       </td>
                       <td className="px-3 py-2">
-                        <div className="font-medium text-black">
+                        <div className="font-medium text-white">
                           {category.name}
                         </div>
                       </td>
                       <td className="px-3 py-2">
-                        <code className="px-1 py-0.5 text-[9px] bg-gray-100 border border-gray-200 text-gray-700">
+                        <code className="px-1 py-0.5 text-[9px] bg-[#1A1C1E] border border-site-border/30 text-gray-300">
                           {category.slug}
                         </code>
                       </td>
                       <td className="px-3 py-2">
-                        <p className="text-gray-600 text-[9px] max-w-xs truncate">
+                        <p className="text-gray-400 text-[9px] max-w-xs truncate">
                           {category.description || "-"}
                         </p>
                       </td>
                       <td className="px-3 py-2 text-center">
                         <span
                           className={`inline-flex items-center gap-1 px-1 py-0.5 text-[9px] font-medium border ${
-                            (category.productCount || 0) > 0
-                              ? "bg-blue-50 text-blue-700 border-blue-300"
-                              : "bg-gray-50 text-gray-500 border-gray-300"
+                            (category.productCount || 0)> 0
+                              ? "bg-[#181A1D] text-blue-400 border-blue-300"
+                              : "bg-[#181A1D] text-gray-500 border-gray-300"
                           }`}
                         >
                           <Package className="w-2.5 h-2.5" />
@@ -334,7 +331,7 @@ export default function AdminCategories() {
                           <button
                             onClick={() => moveCategory(index, "up")}
                             disabled={index === 0}
-                            className="p-0.5 text-gray-400 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
                             title="ขึ้น"
                           >
                             <svg
@@ -357,7 +354,7 @@ export default function AdminCategories() {
                           <button
                             onClick={() => moveCategory(index, "down")}
                             disabled={index === categories.length - 1}
-                            className="p-0.5 text-gray-400 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-0.5 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
                             title="ลง"
                           >
                             <svg
@@ -380,14 +377,14 @@ export default function AdminCategories() {
                         <div className="flex space-x-1">
                           <button
                             onClick={() => openEditModal(category)}
-                            className="p-1 bg-gray-100 border-[1px] border-gray-300 text-black hover:bg-brutal-blue hover:text-white hover:border-black transition-colors"
+                            className="p-1 bg-[#1A1C1E] border-[1px] border-gray-300 text-white hover:bg-site-accent hover:text-white hover:border-site-border/50 transition-colors"
                             title="แก้ไข"
                           >
                             <Edit className="h-2.5 w-2.5" />
                           </button>
                           <button
                             onClick={() => handleDelete(category)}
-                            className="p-1 bg-gray-100 border-[1px] border-gray-300 text-black hover:bg-red-500 hover:text-white hover:border-black transition-colors"
+                            className="p-1 bg-[#1A1C1E] border-[1px] border-gray-300 text-white hover:bg-red-500/100 hover:text-white hover:border-site-border/50 transition-colors"
                             title="ลบ"
                           >
                             <Trash2 className="h-2.5 w-2.5" />
@@ -404,7 +401,7 @@ export default function AdminCategories() {
                 <p className="font-medium text-xs">ยังไม่มีหมวดหมู่</p>
                 <p className="text-[10px] mt-1">
                   รัน{" "}
-                  <code className="px-1 py-0.5 bg-gray-100 border border-gray-200 text-[10px]">
+                  <code className="px-1 py-0.5 bg-[#1A1C1E] border border-site-border/30 text-[10px]">
                     npm run db:seed
                   </code>{" "}
                   เพื่อสร้างหมวดหมู่เริ่มต้น
@@ -415,8 +412,8 @@ export default function AdminCategories() {
         </motion.div>
 
         {/* Seed Info */}
-        <div className="bg-gray-50 border-[1px] border-gray-300 p-3">
-          <h4 className="text-xs font-bold text-gray-700 mb-1.5">
+        <div className="bg-[#181A1D] border-[1px] border-gray-300 p-3">
+          <h4 className="text-xs font-bold text-gray-300 mb-1.5">
             คำสั่ง Seed หมวดหมู่:
           </h4>
           <code className="block px-2 py-1.5 bg-black text-green-400 text-xs font-mono">
@@ -441,12 +438,12 @@ export default function AdminCategories() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white border-[2px] border-black w-full max-w-lg overflow-hidden"
-              style={{ boxShadow: "6px 6px 0 0 #000000" }}
+              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm w-full max-w-lg overflow-hidden"
+              
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="p-3 border-b-[2px] border-black bg-brutal-blue flex items-center justify-between">
+              <div className="p-3 border-b-[2px] border-site-border/50 bg-site-accent flex items-center justify-between">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Layers className="h-3.5 w-3.5" />
                   {editingCategory ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่ใหม่"}
@@ -454,8 +451,7 @@ export default function AdminCategories() {
                 <button
                   onClick={closeModal}
                   disabled={isSaving}
-                  className="p-1 bg-white border-[2px] border-black hover:bg-gray-100 transition-colors disabled:opacity-50"
-                >
+                  className="p-1 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors disabled:opacity-50">
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -464,14 +460,14 @@ export default function AdminCategories() {
               <div className="p-3 space-y-2.5">
                 {/* Name */}
                 <div>
-                  <label className="block text-xs font-bold text-black mb-1">
+                  <label className="block text-xs font-bold text-white mb-1">
                     ชื่อหมวดหมู่ <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    className="w-full bg-white border-[2px] border-black px-2 py-1 text-xs focus:ring-2 focus:ring-brutal-blue/50 outline-none"
+                    className="w-full bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-xs focus:ring-2 focus:ring-site-accent/50 outline-none"
                     placeholder="เช่น Steam, PlayStation"
                     disabled={isSaving}
                   />
@@ -479,7 +475,7 @@ export default function AdminCategories() {
 
                 {/* Slug */}
                 <div>
-                  <label className="block text-xs font-bold text-black mb-1">
+                  <label className="block text-xs font-bold text-white mb-1">
                     Slug <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -488,7 +484,7 @@ export default function AdminCategories() {
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, slug: e.target.value }))
                     }
-                    className="w-full bg-gray-50 border-[2px] border-gray-400 px-2 py-1 text-xs font-mono focus:ring-2 focus:ring-brutal-blue/50 outline-none"
+                    className="w-full bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-2 py-1 text-xs font-mono focus:ring-2 focus:ring-site-accent/50 outline-none"
                     placeholder="steam"
                     disabled={isSaving}
                   />
@@ -499,7 +495,7 @@ export default function AdminCategories() {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-xs font-bold text-black mb-1">
+                  <label className="block text-xs font-bold text-white mb-1">
                     คำอธิบาย
                   </label>
                   <textarea
@@ -511,7 +507,7 @@ export default function AdminCategories() {
                       }))
                     }
                     rows={3}
-                    className="w-full bg-white border-[2px] border-gray-400 px-2 py-1 text-xs focus:ring-2 focus:ring-brutal-blue/50 outline-none resize-none"
+                    className="w-full bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-400 px-2 py-1 text-xs focus:ring-2 focus:ring-site-accent/50 outline-none resize-none"
                     placeholder="คำอธิบายหมวดหมู่ - ใช้ประกอบกับ AI Generate"
                     disabled={isSaving}
                   />
@@ -523,20 +519,17 @@ export default function AdminCategories() {
               </div>
 
               {/* Modal Footer */}
-              <div className="p-3 border-t-[2px] border-black bg-gray-50 flex justify-end gap-2">
+              <div className="p-3 border-t-[2px] border-site-border/50 bg-[#181A1D] flex justify-end gap-2">
                 <button
                   onClick={closeModal}
                   disabled={isSaving}
-                  className="px-2.5 py-1 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors font-medium text-xs disabled:opacity-50"
-                >
+                  className="px-2.5 py-1 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium text-xs disabled:opacity-50">
                   ยกเลิก
                 </button>
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="px-2.5 py-1 bg-brutal-blue border-[2px] border-black text-white hover:bg-blue-600 transition-colors font-medium flex items-center gap-1.5 text-xs disabled:opacity-50"
-                  style={{ boxShadow: "1px 1px 0 0 rgba(0,0,0,1)" }}
-                >
+                  className="px-2.5 py-1 bg-site-accent border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-blue-600 transition-colors font-medium flex items-center gap-1.5 text-xs disabled:opacity-50">
                   {isSaving ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
                   ) : (

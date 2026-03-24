@@ -6,7 +6,7 @@ export default function Loading() {
                 <div className="relative w-16 h-16">
                     {/* Outer ring */}
                     <div
-                        className="absolute inset-0 border-[3px] border-black bg-brutal-yellow animate-spin"
+                        className="absolute inset-0 border border-site-border/30 rounded-[12px] bg-yellow-500 animate-spin"
                         style={{
                             boxShadow: "3px 3px 0 0 #000",
                             animationDuration: "1s",
@@ -15,7 +15,7 @@ export default function Loading() {
                     />
                     {/* Inner ring */}
                     <div
-                        className="absolute inset-2 border-[3px] border-black bg-brutal-pink animate-spin"
+                        className="absolute inset-2 border border-site-border/30 rounded-[12px] bg-pink-500 animate-spin"
                         style={{
                             boxShadow: "2px 2px 0 0 #000",
                             animationDuration: "1.5s",
@@ -24,12 +24,12 @@ export default function Loading() {
                         }}
                     />
                     {/* Center dot */}
-                    <div className="absolute inset-[18px] border-[2px] border-black bg-white" />
+                    <div className="absolute inset-[18px] border-[2px] border-black bg-[#212328]" />
                 </div>
 
                 {/* Loading text with typing dots */}
                 <div className="flex items-center gap-1">
-                    <span className="text-sm font-bold text-black tracking-wide uppercase">
+                    <span className="text-sm font-bold text-white tracking-wide uppercase">
                         Loading
                     </span>
                     <span className="flex gap-0.5">

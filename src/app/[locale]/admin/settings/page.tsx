@@ -177,6 +177,76 @@ const createTrustBadge = (): TrustBadgeItem => ({
   icon: "shield",
 });
 
+// ── UI Helper sub-components (outside main component to prevent focus loss) ──
+
+const SectionCard = ({ title, description, accent = "bg-pink-500", icon, children }: { title: string; description?: string; accent?: string; icon?: ReactNode; children: ReactNode }) => (
+  <div className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden">
+    <div className="p-4 border-b-[2px] border-site-border/30 bg-[#181A1D]">
+      <h2 className="text-base font-bold text-white flex items-center">
+        <span className={`w-1.5 h-5 ${accent} mr-2`}></span>
+        {icon && <span className="mr-2 text-gray-400">{icon}</span>}
+        {title}
+      </h2>
+      {description && <p className="text-xs text-gray-500 mt-1 ml-3.5">{description}</p>}
+    </div>
+    <div className="p-5 space-y-4">{children}</div>
+  </div>
+);
+
+const FormField = ({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) => (
+  <div>
+    <label className="block text-sm font-semibold text-gray-300 mb-1.5">{label}</label>
+    {children}
+    {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
+  </div>
+);
+
+const FormRow = ({ children }: { children: ReactNode }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>
+);
+
+const ToggleField = ({ label, description, checked, onChange }: { label: string; description?: string; checked: boolean; onChange: (v: boolean) => void }) => (
+  <label className="flex items-center justify-between p-3 bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30 hover:border-site-border/50 transition-colors cursor-pointer">
+    <div>
+      <span className="text-sm font-semibold text-white">{label}</span>
+      {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
+    </div>
+    <div className={`relative w-11 h-6 rounded-full border border-site-border/30 rounded-[12px] shadow-sm transition-colors shrink-0 ml-4 ${checked ? 'bg-green-500' : 'bg-gray-300'}`}>
+      <div className={`absolute top-[2px] w-4 h-4 bg-[#212328] border-[1px] border-site-border/50 rounded-full transition-transform ${checked ? 'left-[22px]' : 'left-[2px]'}`} />
+      <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+    </div>
+  </label>
+);
+
+const ItemCard = ({ index, label, onRemove, draggable: isDraggable, onDragStart, onDragOver, onDrop, children }: {
+  index: number; label: string; onRemove: () => void; draggable?: boolean;
+  onDragStart?: () => void; onDragOver?: (e: React.DragEvent) => void; onDrop?: () => void; children: ReactNode;
+}) => (
+  <div
+    draggable={isDraggable}
+    onDragStart={onDragStart}
+    onDragOver={onDragOver}
+    onDrop={onDrop}
+    className="border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30 bg-[#212328] p-4 hover:border-site-border/50 transition-colors">
+    <div className="mb-3 flex items-center justify-between">
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500">
+        {isDraggable && <GripVertical size={14} className="text-gray-400" />}
+        {label} #{index + 1}
+      </span>
+      <button onClick={onRemove} className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-1 transition-colors" title="ลบ">
+        <X size={16} />
+      </button>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{children}</div>
+  </div>
+);
+
+const AddButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
+  <button onClick={onClick} className="inline-flex items-center gap-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 text-sm font-bold hover:bg-orange-500/10 transition-colors">
+    <Plus size={14} /> {label}
+  </button>
+);
+
 function parseCsv(value: string): string[] {
   return value
     .split(",")
@@ -583,78 +653,9 @@ export default function AdminSettingsPage() {
     }));
   };
 
-  // ── UI Helper sub-components ──────────────────────────────
-  const inputCls = "w-full border-[2px] border-gray-300 px-3 py-2 text-sm focus:border-black focus:ring-2 focus:ring-black focus:outline-none transition-colors";
+  // ── CSS classes ──────────────────────────────
+  const inputCls = "w-full border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-3 py-2 text-sm focus:border-site-accent focus:ring-2 focus:ring-site-accent/50 focus:outline-none transition-colors";
   const selectCls = inputCls;
-
-  const SectionCard = ({ title, description, accent = "bg-brutal-pink", icon, children }: { title: string; description?: string; accent?: string; icon?: ReactNode; children: ReactNode }) => (
-    <div className="bg-white border-[2px] border-black" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
-      <div className="p-4 border-b-[2px] border-gray-200 bg-gray-50">
-        <h2 className="text-base font-bold text-black flex items-center">
-          <span className={`w-1.5 h-5 ${accent} mr-2`}></span>
-          {icon && <span className="mr-2 text-gray-600">{icon}</span>}
-          {title}
-        </h2>
-        {description && <p className="text-xs text-gray-500 mt-1 ml-3.5">{description}</p>}
-      </div>
-      <div className="p-5 space-y-4">{children}</div>
-    </div>
-  );
-
-  const FormField = ({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) => (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label}</label>
-      {children}
-      {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
-    </div>
-  );
-
-  const FormRow = ({ children }: { children: ReactNode }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>
-  );
-
-  const ToggleField = ({ label, description, checked, onChange }: { label: string; description?: string; checked: boolean; onChange: (v: boolean) => void }) => (
-    <label className="flex items-center justify-between p-3 bg-gray-50 border-[2px] border-gray-200 hover:border-black transition-colors cursor-pointer">
-      <div>
-        <span className="text-sm font-semibold text-black">{label}</span>
-        {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
-      </div>
-      <div className={`relative w-11 h-6 rounded-full border-[2px] border-black transition-colors shrink-0 ml-4 ${checked ? 'bg-brutal-green' : 'bg-gray-300'}`}>
-        <div className={`absolute top-[2px] w-4 h-4 bg-white border-[1px] border-black rounded-full transition-transform ${checked ? 'left-[22px]' : 'left-[2px]'}`} />
-        <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-      </div>
-    </label>
-  );
-
-  const ItemCard = ({ index, label, onRemove, draggable: isDraggable, onDragStart, onDragOver, onDrop, children }: {
-    index: number; label: string; onRemove: () => void; draggable?: boolean;
-    onDragStart?: () => void; onDragOver?: (e: React.DragEvent) => void; onDrop?: () => void; children: ReactNode;
-  }) => (
-    <div
-      draggable={isDraggable}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      className="border-[2px] border-gray-200 bg-white p-4 hover:border-black transition-colors"
-    >
-      <div className="mb-3 flex items-center justify-between">
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500">
-          {isDraggable && <GripVertical size={14} className="text-gray-400" />}
-          {label} #{index + 1}
-        </span>
-        <button onClick={onRemove} className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 transition-colors" title="ลบ">
-          <X size={16} />
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{children}</div>
-    </div>
-  );
-
-  const AddButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
-    <button onClick={onClick} className="inline-flex items-center gap-1.5 border-[2px] border-black bg-white px-3 py-1.5 text-sm font-bold hover:bg-brutal-yellow transition-colors" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
-      <Plus size={14} /> {label}
-    </button>
-  );
 
   const tabs = [
     { id: 'general', label: 'ทั่วไป & SEO', icon: <Settings2 size={16} /> },
@@ -668,11 +669,11 @@ export default function AdminSettingsPage() {
     <AdminLayout title="ตั้งค่าเว็บไซต์">
       <div className="space-y-4">
         {/* ── Header & Actions ── */}
-        <div className="bg-white border-[2px] border-black p-4" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
+        <div className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="flex items-center gap-2 text-xl font-black text-black">
-                <div className="w-8 h-8 bg-brutal-pink border-[2px] border-black flex items-center justify-center" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+              <h1 className="flex items-center gap-2 text-xl font-black text-white">
+                <div className="w-8 h-8 bg-pink-500 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center">
                   <Settings2 className="h-4 w-4 text-white" />
                 </div>
                 Site Settings CMS
@@ -680,18 +681,18 @@ export default function AdminSettingsPage() {
               <p className="text-xs text-gray-500 mt-1 ml-10">แก้ไข Draft → Preview → Publish เป็น Live</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <button onClick={loadSettings} disabled={loading || saving || publishing} className="flex items-center gap-1.5 border-[2px] border-black bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+              <button onClick={loadSettings} disabled={loading || saving || publishing} className="flex items-center gap-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 text-sm font-medium hover:bg-[#212328]/5 transition-colors disabled:opacity-50">
                 <RefreshCcw size={14} /> โหลดใหม่
               </button>
-              <button onClick={resetDraft} disabled={resetting || saving || publishing} className="flex items-center gap-1.5 border-[2px] border-red-500 bg-white px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #ef4444" }}>
+              <button onClick={resetDraft} disabled={resetting || saving || publishing} className="flex items-center gap-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 bg-[#212328] px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors disabled:opacity-50">
                 {resetting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCcw size={14} />}
                 {resetting ? "กำลังรีเซ็ต..." : "รีเซ็ต Draft"}
               </button>
-              <button onClick={saveSettings} disabled={!hasChanges || saving || loading || publishing} className="flex items-center gap-1.5 border-[2px] border-black bg-black px-3 py-1.5 text-sm font-bold text-white hover:bg-gray-800 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+              <button onClick={saveSettings} disabled={!hasChanges || saving || loading || publishing} className="flex items-center gap-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-black px-3 py-1.5 text-sm font-bold text-white hover:bg-gray-800 transition-colors disabled:opacity-50">
                 {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save size={14} />}
                 Save Draft
               </button>
-              <button onClick={publishSettings} disabled={publishing || saving || !isDraftDirty} className="flex items-center gap-1.5 border-[2px] border-black bg-brutal-green px-3 py-1.5 text-sm font-bold text-black hover:brightness-95 transition-colors disabled:opacity-50" style={{ boxShadow: "2px 2px 0 0 #000000" }}>
+              <button onClick={publishSettings} disabled={publishing || saving || !isDraftDirty} className="flex items-center gap-1.5 border border-site-border/30 rounded-[12px] shadow-sm bg-green-500 px-3 py-1.5 text-sm font-bold text-white hover:brightness-95 transition-colors disabled:opacity-50">
                 {publishing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload size={14} />}
                 Publish Live
               </button>
@@ -699,14 +700,14 @@ export default function AdminSettingsPage() {
           </div>
 
           {/* Status bar */}
-          <div className="mt-3 pt-3 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-600">
+          <div className="mt-3 pt-3 border-t border-site-border/30 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-400">
             <div className="flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-brutal-yellow border border-black"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-orange-500/10 border border-site-border/50"></span>
               <span className="font-semibold">Draft:</span>
               {updatedAt ? new Date(updatedAt).toLocaleString("th-TH") : "-"} โดย {updatedBy || "-"}
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-brutal-green border border-black"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-green-500 border border-site-border/50"></span>
               <span className="font-semibold">Live:</span>
               {publishedAt ? new Date(publishedAt).toLocaleString("th-TH") : "-"} โดย {publishedBy || "-"}
             </div>
@@ -715,19 +716,19 @@ export default function AdminSettingsPage() {
 
         {/* ── Alerts ── */}
         {error && (
-          <div className="border-[2px] border-red-400 bg-red-50 p-3 text-sm text-red-700 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500 shrink-0"></span> {error}
+          <div className="border border-site-border/30 rounded-[12px] shadow-sm border-red-400 bg-red-500/5 p-3 text-sm text-red-400 flex items-start gap-2">
+            <span className="w-2 h-2 rounded-full bg-red-500/50 shrink-0 mt-1.5"></span> <span className="whitespace-pre-line">{error}</span>
           </div>
         )}
         {success && (
-          <div className="border-[2px] border-green-400 bg-green-50 p-3 text-sm text-green-700 flex items-center gap-2">
+          <div className="border border-site-border/30 rounded-[12px] shadow-sm border-green-400 bg-green-50 p-3 text-sm text-green-400 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 shrink-0"></span> {success}
           </div>
         )}
 
         {loading ? (
-          <div className="flex h-64 items-center justify-center bg-white border-[2px] border-black" style={{ boxShadow: "4px 4px 0 0 #000000" }}>
-            <Loader2 className="h-8 w-8 animate-spin text-brutal-pink" />
+          <div className="flex h-64 items-center justify-center bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">
+            <Loader2 className="h-8 w-8 animate-spin text-pink-400" />
           </div>
         ) : (
           <>
@@ -737,9 +738,9 @@ export default function AdminSettingsPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`whitespace-nowrap flex items-center gap-2 border-[2px] border-black px-4 py-2 text-sm font-bold transition-all ${activeTab === tab.id
-                      ? 'bg-brutal-yellow text-black'
-                      : 'bg-white text-gray-600 hover:bg-gray-100 hover:text-black'
+                  className={`whitespace-nowrap flex items-center gap-2 border border-site-border/30 rounded-[12px] shadow-sm px-4 py-2 text-sm font-bold transition-all ${activeTab === tab.id
+                    ? 'bg-orange-500/10 text-white'
+                    : 'bg-[#212328] text-gray-400 hover:bg-[#212328]/5 hover:text-white'
                     }`}
                   style={activeTab === tab.id ? { boxShadow: "3px 3px 0 0 #000000" } : { boxShadow: "2px 2px 0 0 #000000" }}
                 >
@@ -749,7 +750,7 @@ export default function AdminSettingsPage() {
               ))}
             </div>
 
-            
+
             {/* ── Tab Content ── */}
             <div className="space-y-6 mt-4">
               {activeTab === 'general' && (
@@ -773,7 +774,7 @@ export default function AdminSettingsPage() {
                     </FormRow>
                   </SectionCard>
 
-                  <SectionCard title="Branding & Colors" description="Site appearance, logos and colors" icon={<Palette />} accent="bg-brutal-yellow">
+                  <SectionCard title="Branding & Colors" description="Site appearance, logos and colors" icon={<Palette />} accent="bg-orange-500/10">
                     <FormRow>
                       <FormField label="Logo URL">
                         <input className={inputCls} placeholder="Logo URL" value={settings.branding.logoUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, logoUrl: e.target.value } }))} />
@@ -785,20 +786,20 @@ export default function AdminSettingsPage() {
                     <FormRow>
                       <FormField label="Primary Color">
                         <div className="flex gap-2">
-                          <input type="color" className="h-9 w-12 border-[2px] border-gray-300 p-0 cursor-pointer" value={settings.branding.primaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
+                          <input type="color" className="h-9 w-12 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 p-0 cursor-pointer" value={settings.branding.primaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
                           <input className={inputCls} placeholder="#FF6B9D" value={settings.branding.primaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
                         </div>
                       </FormField>
                       <FormField label="Secondary Color">
                         <div className="flex gap-2">
-                          <input type="color" className="h-9 w-12 border-[2px] border-gray-300 p-0 cursor-pointer" value={settings.branding.secondaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
+                          <input type="color" className="h-9 w-12 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 p-0 cursor-pointer" value={settings.branding.secondaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
                           <input className={inputCls} placeholder="#95E1D3" value={settings.branding.secondaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
                         </div>
                       </FormField>
                     </FormRow>
                   </SectionCard>
 
-                  <SectionCard title="SEO Settings" description="Search engine optimization metadata" icon={<Megaphone />} accent="bg-brutal-green">
+                  <SectionCard title="SEO Settings" description="Search engine optimization metadata" icon={<Megaphone />} accent="bg-green-500">
                     <FormField label="Meta Title">
                       <input className={inputCls} placeholder="Meta title" value={settings.seo.metaTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaTitle: e.target.value } }))} />
                     </FormField>
@@ -814,7 +815,7 @@ export default function AdminSettingsPage() {
 
               {activeTab === 'landing' && (
                 <div className="grid grid-cols-1 gap-6">
-                  <SectionCard title="Landing Header" description="Top section of the homepage" icon={<LayoutGrid />} accent="bg-brutal-pink">
+                  <SectionCard title="Landing Header" description="Top section of the homepage" icon={<LayoutGrid />} accent="bg-pink-500">
                     <FormField label="Hero Title">
                       <input className={inputCls} placeholder="Hero title" value={settings.homepage.heroTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroTitle: e.target.value } }))} />
                     </FormField>
@@ -827,11 +828,11 @@ export default function AdminSettingsPage() {
                         <input className={inputCls} placeholder="Announcement text" value={settings.homepage.announcementText || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, announcementText: e.target.value } }))} />
                       </FormField>
                     </div>
-                    <div className="h-[1px] w-full bg-gray-200 my-2"></div>
+                    <div className="h-[1px] w-full bg-site-border/30 my-2"></div>
                     <FormField label="Featured Category Slugs" hint="Comma-separated list of category slugs to feature.">
                       <input className={inputCls} placeholder="hot, popular, new" value={toCsv(settings.homepage.featuredCategorySlugs)} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, featuredCategorySlugs: parseCsv(e.target.value) } }))} />
                     </FormField>
-                    <h3 className="font-bold text-sm text-gray-700 pt-2 border-t-[1px] border-gray-200 mt-2">Section Labels</h3>
+                    <h3 className="font-bold text-sm text-gray-300 pt-2 border-t-[1px] border-site-border/30 mt-2">Section Labels</h3>
                     <FormRow>
                       <FormField label="Featured Products Title"><input className={inputCls} value={settings.homepage.sectionLabels.featuredProductsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, featuredProductsTitle: e.target.value } } }))} /></FormField>
                       <FormField label="Specials Title"><input className={inputCls} value={settings.homepage.sectionLabels.specialsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, specialsTitle: e.target.value } } }))} /></FormField>
@@ -843,7 +844,7 @@ export default function AdminSettingsPage() {
                     <FormField label="Hero Button Text"><input className={inputCls} value={settings.homepage.sectionLabels.heroButtonText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, heroButtonText: e.target.value } } }))} /></FormField>
                   </SectionCard>
 
-                  <SectionCard title="Category Tabs" description="Navigation tabs on homepage" icon={<Tag />} accent="bg-brutal-yellow">
+                  <SectionCard title="Category Tabs" description="Navigation tabs on homepage" icon={<Tag />} accent="bg-orange-500/10">
                     <div className="mb-4">
                       <AddButton onClick={addCategoryTab} label="Add Category Tab" />
                     </div>
@@ -860,7 +861,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <SectionCard title="Quick Actions" description="Fast links for users" icon={<ExternalLink />} accent="bg-brutal-green">
+                  <SectionCard title="Quick Actions" description="Fast links for users" icon={<ExternalLink />} accent="bg-green-500">
                     <div className="mb-4">
                       <AddButton onClick={addQuickAction} label="Add Quick Action" />
                     </div>
@@ -919,7 +920,7 @@ export default function AdminSettingsPage() {
 
               {activeTab === 'events' && (
                 <div className="grid grid-cols-1 gap-6">
-                  <SectionCard title="Hero Slides" description="Main banner carousel" icon={<Eye />} accent="bg-brutal-pink">
+                  <SectionCard title="Hero Slides" description="Main banner carousel" icon={<Eye />} accent="bg-pink-500">
                     <div className="mb-4">
                       <AddButton onClick={addHeroSlide} label="Add Hero Slide" />
                     </div>
@@ -937,7 +938,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <SectionCard title="News Items" description="Recent news and updates (Drag to Reorder)" icon={<Type />} accent="bg-brutal-yellow">
+                  <SectionCard title="News Items" description="Recent news and updates (Drag to Reorder)" icon={<Type />} accent="bg-orange-500/10">
                     <div className="mb-4">
                       <AddButton onClick={() => addBlockItem("newsItems")} label="Add News Item" />
                     </div>
@@ -954,7 +955,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <SectionCard title="Seasonal Events" description="Special event promotions (Drag to Reorder)" icon={<Calendar />} accent="bg-brutal-green">
+                  <SectionCard title="Seasonal Events" description="Special event promotions (Drag to Reorder)" icon={<Calendar />} accent="bg-green-500">
                     <div className="mb-4">
                       <AddButton onClick={() => addBlockItem("seasonalEvents")} label="Add Event" />
                     </div>
@@ -980,7 +981,7 @@ export default function AdminSettingsPage() {
 
               {activeTab === 'features' && (
                 <div className="grid grid-cols-1 gap-6">
-                  <SectionCard title="System Features" description="Enable or disable main system modules" icon={<Settings2 />} accent="bg-brutal-pink">
+                  <SectionCard title="System Features" description="Enable or disable main system modules" icon={<Settings2 />} accent="bg-pink-500">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <ToggleField label="Enable Promotions" description="Show promotion pages and banners" checked={settings.features.enablePromotions} onChange={(v) => setSettings((s) => ({ ...s, features: { ...s.features, enablePromotions: v } }))} />
                       <ToggleField label="Enable Support Tickets" description="Allow users to create tickets" checked={settings.features.enableSupportTickets} onChange={(v) => setSettings((s) => ({ ...s, features: { ...s.features, enableSupportTickets: v } }))} />
@@ -996,7 +997,7 @@ export default function AdminSettingsPage() {
                     )}
                   </SectionCard>
 
-                  <SectionCard title="Commerce Config" description="Rules for purchases and checkouts" icon={<ShoppingCart />} accent="bg-brutal-yellow">
+                  <SectionCard title="Commerce Config" description="Rules for purchases and checkouts" icon={<ShoppingCart />} accent="bg-orange-500/10">
                     <ToggleField label="Allow Guest Checkout" description="Users can buy without logging in" checked={settings.commerce.allowGuestCheckout} onChange={(v) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, allowGuestCheckout: v } }))} />
                     <div className="mt-4">
                       <FormRow>
@@ -1010,7 +1011,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <SectionCard title="Social Media Links" description="External community links" icon={<Globe />} accent="bg-brutal-green">
+                  <SectionCard title="Social Media Links" description="External community links" icon={<Globe />} accent="bg-green-500">
                     <FormRow>
                       <FormField label="Facebook URL"><input className={inputCls} value={settings.social.facebookUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, facebookUrl: e.target.value } }))} /></FormField>
                       <FormField label="LINE URL"><input className={inputCls} value={settings.social.lineUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, lineUrl: e.target.value } }))} /></FormField>
@@ -1022,27 +1023,27 @@ export default function AdminSettingsPage() {
 
               {activeTab === 'system' && (
                 <div className="grid grid-cols-1 gap-6">
-                  <SectionCard title="Permissions" description="Admin user roles" icon={<Users />} accent="bg-brutal-pink">
-                    <div className="overflow-x-auto border-[2px] border-black">
+                  <SectionCard title="Permissions" description="Admin user roles" icon={<Users />} accent="bg-pink-500">
+                    <div className="overflow-x-auto border border-site-border/30 rounded-[12px] shadow-sm">
                       <table className="min-w-full border-collapse text-sm">
-                        <thead className="bg-gray-100">
-                          <tr className="border-b-[2px] border-black text-left">
-                            <th className="px-3 py-3 border-r-[2px] border-black">Admin</th>
-                            <th className="px-3 py-3 border-r-[2px] border-black">Email</th>
-                            <th className="px-3 py-3 border-r-[2px] border-black text-center">Read</th>
+                        <thead className="bg-[#1A1C1E]">
+                          <tr className="border-b-[2px] border-site-border/50 text-left">
+                            <th className="px-3 py-3 border-r-[2px] border-site-border/50">Admin</th>
+                            <th className="px-3 py-3 border-r-[2px] border-site-border/50">Email</th>
+                            <th className="px-3 py-3 border-r-[2px] border-site-border/50 text-center">Read</th>
                             <th className="px-3 py-3 text-center">Write</th>
                           </tr>
                         </thead>
                         <tbody>
                           {permissions.map((item, i) => (
-                            <tr key={item.adminId} className={`${i !== permissions.length - 1 ? "border-b-[2px] border-black" : ""}`}>
-                              <td className="px-3 py-3 border-r-[2px] border-black font-semibold">{item.username}</td>
-                              <td className="px-3 py-3 border-r-[2px] border-black text-gray-600">{item.email}</td>
-                              <td className="px-3 py-3 border-r-[2px] border-black text-center">
-                                <input type="checkbox" className="w-5 h-5 accent-brutal-pink cursor-pointer border-[2px] border-black" checked={item.read} onChange={(e) => updatePermission(item.adminId, "read", e.target.checked)} />
+                            <tr key={item.adminId} className={`${i !== permissions.length - 1 ? "border-b-[2px] border-site-border/50" : ""}`}>
+                              <td className="px-3 py-3 border-r-[2px] border-site-border/50 font-semibold">{item.username}</td>
+                              <td className="px-3 py-3 border-r-[2px] border-site-border/50 text-gray-400">{item.email}</td>
+                              <td className="px-3 py-3 border-r-[2px] border-site-border/50 text-center">
+                                <input type="checkbox" className="w-5 h-5 accent-pink-500 cursor-pointer border border-site-border/30 rounded-[12px] shadow-sm" checked={item.read} onChange={(e) => updatePermission(item.adminId, "read", e.target.checked)} />
                               </td>
                               <td className="px-3 py-3 text-center">
-                                <input type="checkbox" className="w-5 h-5 accent-brutal-pink cursor-pointer border-[2px] border-black" checked={item.write} onChange={(e) => updatePermission(item.adminId, "write", e.target.checked)} />
+                                <input type="checkbox" className="w-5 h-5 accent-pink-500 cursor-pointer border border-site-border/30 rounded-[12px] shadow-sm" checked={item.write} onChange={(e) => updatePermission(item.adminId, "write", e.target.checked)} />
                               </td>
                             </tr>
                           ))}
@@ -1051,16 +1052,16 @@ export default function AdminSettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <SectionCard title="Preview Draft vs Live" description="Compare current changes to live data" icon={<History />} accent="bg-brutal-yellow">
+                  <SectionCard title="Preview Draft vs Live" description="Compare current changes to live data" icon={<History />} accent="bg-orange-500/10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="border-[2px] border-black bg-white">
-                        <div className="bg-gray-100 p-2 border-b-[2px] border-black font-bold flex items-center justify-between">
+                      <div className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328]">
+                        <div className="bg-[#1A1C1E] p-2 border-b-[2px] border-site-border/50 font-bold flex items-center justify-between">
                           <span>Draft Promo</span>
-                          <span className="bg-brutal-yellow border-[2px] border-black px-2 text-xs rounded-full">{settings.homepage.promoCards.length} items</span>
+                          <span className="bg-orange-500/10 border border-site-border/30 rounded-[12px] shadow-sm px-2 text-xs rounded-full">{settings.homepage.promoCards.length} items</span>
                         </div>
                         <div className="p-3 space-y-2">
                           {settings.homepage.promoCards.slice(0, 3).map((item) => (
-                            <div key={item.id} className="rounded border-[2px] border-gray-300 p-2 text-sm bg-gray-50">
+                            <div key={item.id} className="rounded border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 p-2 text-sm bg-[#181A1D]">
                               <p className="font-bold">{item.title || "(no title)"}</p>
                               <p className="text-xs text-gray-500 truncate">{item.ctaText || "-"}</p>
                             </div>
@@ -1069,14 +1070,14 @@ export default function AdminSettingsPage() {
                         </div>
                       </div>
 
-                      <div className="border-[2px] border-black bg-white">
-                        <div className="bg-brutal-green text-black p-2 border-b-[2px] border-black font-bold flex items-center justify-between">
+                      <div className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328]">
+                        <div className="bg-green-500 text-white p-2 border-b-[2px] border-site-border/50 font-bold flex items-center justify-between">
                           <span>Live Promo</span>
-                          <span className="bg-white border-[2px] border-black px-2 text-xs rounded-full">{liveSettings.homepage.promoCards.length} items</span>
+                          <span className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 text-xs rounded-full">{liveSettings.homepage.promoCards.length} items</span>
                         </div>
                         <div className="p-3 space-y-2">
                           {liveSettings.homepage.promoCards.slice(0, 3).map((item) => (
-                            <div key={item.id} className="rounded border-[2px] border-gray-300 p-2 text-sm bg-gray-50">
+                            <div key={item.id} className="rounded border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 p-2 text-sm bg-[#181A1D]">
                               <p className="font-bold">{item.title || "(no title)"}</p>
                               <p className="text-xs text-gray-500 truncate">{item.ctaText || "-"}</p>
                             </div>
@@ -1087,18 +1088,18 @@ export default function AdminSettingsPage() {
                     </div>
                   </SectionCard>
 
-                  <SectionCard title="Audit Log" description="Item-level diff on publish actions" icon={<History />} accent="bg-brutal-green">
+                  <SectionCard title="Audit Log" description="Item-level diff on publish actions" icon={<History />} accent="bg-green-500">
                     <div className="space-y-3">
                       {auditLogs.map((log) => (
-                        <div key={log.id} className="border-[2px] border-black bg-white p-3 hover:bg-gray-50 transition-colors">
+                        <div key={log.id} className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] p-3 hover:bg-[#212328]/5 transition-colors">
                           <div className="flex items-center justify-between mb-2 pb-2 border-b-[2px] border-gray-100">
                             <span className="text-xs font-bold bg-black text-white px-2 py-1 uppercase">{log.action}</span>
-                            <span className="text-xs font-medium text-gray-600">{new Date(log.createdAt).toLocaleString("th-TH")}</span>
+                            <span className="text-xs font-medium text-gray-400">{new Date(log.createdAt).toLocaleString("th-TH")}</span>
                           </div>
                           <div className="text-sm font-semibold mb-2">By: {log.actor?.username || log.actorId || "system"}</div>
                           {flattenDiff(log.diff).length > 0 ? (
-                            <div className="bg-gray-100 p-3 border-[2px] border-gray-200">
-                              <ul className="list-disc space-y-1 pl-5 text-xs text-gray-700 font-mono">
+                            <div className="bg-[#1A1C1E] p-3 border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30">
+                              <ul className="list-disc space-y-1 pl-5 text-xs text-gray-300 font-mono">
                                 {flattenDiff(log.diff).map((line, idx) => (
                                   <li key={`${log.id}-${idx}`}>{line}</li>
                                 ))}
@@ -1110,19 +1111,19 @@ export default function AdminSettingsPage() {
                         </div>
                       ))}
                       {auditLogs.length === 0 && (
-                        <div className="text-center py-6 text-sm text-gray-500 font-medium border-[2px] border-dashed border-gray-300">
+                        <div className="text-center py-6 text-sm text-gray-500 font-medium border border-site-border/30 rounded-[12px] shadow-sm border-dashed border-gray-300">
                           No audit logs found
                         </div>
                       )}
                     </div>
-                    
+
                     {auditTotalPages > 1 && (
                       <div className="flex items-center justify-between text-sm mt-4 font-bold">
-                        <button className="border-[2px] border-black bg-white px-3 py-1.5 hover:bg-brutal-yellow transition-colors disabled:opacity-50 disabled:hover:bg-white" disabled={auditPage <= 1} onClick={() => loadAuditLogs(Math.max(1, auditPage - 1))}>
+                        <button className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 hover:bg-orange-500/10 transition-colors disabled:opacity-50 disabled:hover:bg-[#212328]" disabled={auditPage <= 1} onClick={() => loadAuditLogs(Math.max(1, auditPage - 1))}>
                           Prev
                         </button>
                         <span>Page {auditPage} of {auditTotalPages}</span>
-                        <button className="border-[2px] border-black bg-white px-3 py-1.5 hover:bg-brutal-yellow transition-colors disabled:opacity-50 disabled:hover:bg-white" disabled={auditPage >= auditTotalPages} onClick={() => loadAuditLogs(auditPage + 1)}>
+                        <button className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] px-3 py-1.5 hover:bg-orange-500/10 transition-colors disabled:opacity-50 disabled:hover:bg-[#212328]" disabled={auditPage >= auditTotalPages} onClick={() => loadAuditLogs(auditPage + 1)}>
                           Next
                         </button>
                       </div>
@@ -1131,7 +1132,7 @@ export default function AdminSettingsPage() {
                 </div>
               )}
             </div>
-</>
+          </>
         )}
       </div>
     </AdminLayout>

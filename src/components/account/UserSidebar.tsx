@@ -44,32 +44,33 @@ const NavItem = memo(function NavItem({
         href={href}
         onClick={onClick}
         className={cn(
-          "flex items-center gap-2.5 px-3 py-2.5 relative overflow-hidden transition-all thai-font group border-[2px]",
+          "flex items-center gap-3 px-4 py-3 relative overflow-hidden transition-all thai-font group rounded-xl",
           isActive
-            ? "bg-brutal-yellow text-black font-bold border-black"
-            : "bg-white border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50",
+            ? "bg-site-accent/10 border-l-[3px] border-site-accent text-site-accent font-bold"
+            : "bg-transparent border-transparent text-gray-400 hover:text-white hover:bg-[#212328]/5",
         )}
-        style={isActive ? { boxShadow: "3px 3px 0 0 #000000" } : undefined}
       >
         <span
           className={cn(
-            "flex items-center justify-center relative z-10 w-7 h-7 border-[2px] border-black",
+            "flex items-center justify-center relative w-8 h-8 rounded-lg transition-colors",
             isActive
-              ? `bg-white ${color}`
-              : "bg-gray-100 text-gray-400 group-hover:bg-white group-hover:text-black",
+              ? "bg-site-accent text-[#1A1C1E]"
+              : "bg-[#1A1C1E] text-gray-400 group-hover:text-site-accent",
           )}
-          style={isActive ? { boxShadow: "2px 2px 0 0 #000000" } : {}}
         >
           {icon}
         </span>
-        <span className="text-xs font-bold relative z-10 thai-font">
+        <span className={cn(
+          "text-sm relative z-10 thai-font",
+          isActive ? "font-bold text-site-accent" : "font-medium"
+        )}>
           {label}
         </span>
 
         {isActive && (
           <motion.div
             layoutId="active-indicator"
-            className="absolute right-2 w-2 h-2 bg-black rounded-full"
+            className="absolute right-3 w-1.5 h-1.5 bg-site-accent rounded-full shadow-[0_0_8px_rgba(103,176,186,0.8)]"
             initial={false}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
@@ -94,72 +95,68 @@ const UserSidebar = memo(function UserSidebar({
       {
         href: "/dashboard/account",
         label: t("my_account"),
-        icon: <User className="w-4 h-4" />,
-        color: "text-brutal-blue",
+        icon: <User className="w-[18px] h-[18px]" />,
+        color: "",
       },
       {
         href: "/dashboard/orders",
         label: t("my_orders"),
-        icon: <ShoppingCart className="w-4 h-4" />,
-        color: "text-brutal-pink",
+        icon: <ShoppingCart className="w-[18px] h-[18px]" />,
+        color: "",
       },
       {
         href: "/dashboard/invoice",
         label: t("my_invoices"),
-        icon: <FileText className="w-4 h-4" />,
-        color: "text-brutal-green",
+        icon: <FileText className="w-[18px] h-[18px]" />,
+        color: "",
       },
       {
         href: "/dashboard/coupons",
         label: t("my_coupons"),
-        icon: <Ticket className="w-4 h-4" />,
-        color: "text-brutal-yellow",
+        icon: <Ticket className="w-[18px] h-[18px]" />,
+        color: "",
       },
       {
         href: "/dashboard/favorite",
         label: t("favorite"),
-        icon: <Heart className="w-4 h-4" />,
-        color: "text-brutal-pink",
+        icon: <Heart className="w-[18px] h-[18px]" />,
+        color: "",
       },
       {
         href: "/dashboard/credits",
         label: t("credits"),
-        icon: <DollarSign className="w-4 h-4" />,
-        color: "text-brutal-green",
+        icon: <DollarSign className="w-[18px] h-[18px]" />,
+        color: "",
       },
       {
         href: "/dashboard/notifications",
         label: t("notifications"),
-        icon: <Bell className="w-4 h-4" />,
-        color: "text-brutal-blue",
+        icon: <Bell className="w-[18px] h-[18px]" />,
+        color: "",
       },
     ],
     [t],
   );
 
   const renderSidebarContent = (className?: string) => (
-    <div className={cn("w-full flex flex-col", className)}>
-      <div className="p-4 border-b-[3px] border-black bg-brutal-yellow flex items-center justify-between">
-        <h3 className="text-black font-black text-sm thai-font flex items-center">
-          <div
-            className="w-7 h-7 bg-white border-[2px] border-black flex items-center justify-center mr-2.5"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
-          >
-            <LayoutGrid className="w-3.5 h-3.5 text-black" />
+    <div className={cn("w-full flex flex-col h-full bg-[#222427] rounded-xl overflow-hidden shadow-ocean border border-site-border", className)}>
+      <div className="p-5 border-b border-site-border bg-[#1A1C1E]/50 flex items-center justify-between">
+        <h3 className="text-white font-bold text-base thai-font flex items-center">
+          <div className="w-8 h-8 rounded-lg bg-site-accent/10 flex items-center justify-center mr-3">
+            <LayoutGrid className="w-4 h-4 text-site-accent" />
           </div>
           {t("menu")}
         </h3>
         {onClose && (
           <button
             onClick={onClose}
-            className="lg:hidden w-7 h-7 bg-white border-[2px] border-black flex items-center justify-center hover:bg-brutal-gray transition-colors"
-            style={{ boxShadow: "2px 2px 0 0 #000000" }}
+            className="lg:hidden w-8 h-8 rounded-lg bg-[#212328]/5 flex items-center justify-center hover:bg-[#212328]/10 transition-colors text-gray-400 hover:text-white"
           >
-            <X className="w-3.5 h-3.5 text-black" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
-      <div className="p-3 space-y-1.5 flex-1 overflow-y-auto">
+      <div className="p-3 space-y-1 flex-1 overflow-y-auto w-full">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
 
@@ -182,10 +179,7 @@ const UserSidebar = memo(function UserSidebar({
   return (
     <>
       {/* Desktop Sidebar */}
-      <div
-        className="hidden lg:block w-full overflow-hidden bg-white border-[3px] border-black sticky top-24 self-start"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
-      >
+      <div className="hidden lg:block w-full sticky top-24 self-start">
         {renderSidebarContent()}
       </div>
 
@@ -199,7 +193,7 @@ const UserSidebar = memo(function UserSidebar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="lg:hidden fixed inset-0 bg-black/50 z-40"
+              className="lg:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
               onClick={onClose}
             />
 
@@ -209,8 +203,7 @@ const UserSidebar = memo(function UserSidebar({
               animate={{ x: 0 }}
               exit={{ x: -300 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 max-w-[80vw] bg-white border-r-[3px] border-black z-50"
-              style={{ boxShadow: "4px 0 0 0 #000000" }}
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-[280px] max-w-[85vw] p-4 z-50 bg-[#16181A]"
             >
               {renderSidebarContent("h-full")}
             </motion.div>
@@ -248,33 +241,26 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className="lg:hidden fixed bottom-20 right-4 z-30 w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-lg"
-        style={{ boxShadow: "3px 3px 0 0 #000000" }}
+        className="lg:hidden fixed bottom-20 right-4 z-30 w-14 h-14 rounded-full bg-site-accent text-[#1A1C1E] flex items-center justify-center shadow-accent-glow hover:scale-105 active:scale-95 transition-all"
       >
-        <Menu className="w-5 h-5 text-black" />
+        <Menu className="w-6 h-6" />
       </button>
 
       {/* Active Page Indicator - Mobile Only */}
-      <div className="lg:hidden mb-4">
-        <div
-          className="bg-white border-[3px] border-black p-3"
-          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-        >
+      <div className="lg:hidden mb-6">
+        <div className="bg-[#222427] border border-site-border p-4 rounded-xl shadow-ocean">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div
-                className="w-8 h-8 bg-brutal-yellow border-[2px] border-black flex items-center justify-center"
-                style={{ boxShadow: "2px 2px 0 0 #000000" }}
-              >
-                <LayoutGrid className="w-4 h-4 text-black" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-site-accent/10 flex items-center justify-center">
+                <LayoutGrid className="w-5 h-5 text-site-accent" />
               </div>
-              <span className="font-bold text-black text-sm">
+              <span className="font-bold text-white text-base">
                 {t("account_menu")}
               </span>
             </div>
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="px-3 py-1.5 bg-black text-white font-bold border-[2px] border-black text-xs"
+              className="px-4 py-2 bg-[#1A1C1E] text-white font-medium border border-site-border rounded-lg text-sm hover:bg-[#212328]/5 transition-colors"
             >
               {t("open_menu")}
             </button>

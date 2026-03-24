@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const inputVariants = cva(
-  "flex w-full bg-white border-[2px] border-gray-300 px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:border-black focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+  "flex w-full bg-[#1A1C1E] border border-site-border rounded-[6px] px-3 py-2 text-sm text-white ring-offset-site-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus:border-site-accent focus:shadow-accent-glow disabled:cursor-not-allowed disabled:opacity-50 transition-all",
   {
     variants: {
       size: {
@@ -12,7 +12,7 @@ const inputVariants = cva(
         lg: "h-14",
       },
       error: {
-        true: "border-red-500 focus-visible:border-red-500",
+        true: "border-red-500/30 focus-visible:border-red-500/30",
         false: "",
       },
     },
@@ -25,8 +25,8 @@ const inputVariants = cva(
 
 export interface InputProps
   extends
-    Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
-    VariantProps<typeof inputVariants> {
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+  VariantProps<typeof inputVariants> {
   label?: string;
   errorText?: string;
   icon?: React.ReactNode;
@@ -55,7 +55,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             className={cn(
-              "text-sm font-bold text-gray-700 thai-font block mb-1",
+              "text-sm font-bold text-white block mb-1.5",
               hasError && "text-red-500",
             )}
           >

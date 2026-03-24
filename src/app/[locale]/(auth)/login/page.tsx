@@ -158,7 +158,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-transparent flex items-center justify-center px-4 py-4 lg:py-12">
+    <div className="min-h-[100dvh] bg-[#16181A] flex items-center justify-center px-4 py-4 lg:py-12">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
         {/* Left Side - Branding */}
         <motion.div
@@ -168,63 +168,53 @@ function LoginContent() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0_0_#000]">
-              <Zap className="w-6 h-6 text-black" fill="currentColor" />
+            <div className="w-12 h-12 bg-[#222427] border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+              <Zap className="w-6 h-6 text-site-accent" fill="currentColor" />
             </div>
-            <span className="text-2xl font-black text-black">
+            <span className="text-2xl font-black text-white">
               {siteName}
             </span>
           </div>
 
-          <h1 className="text-4xl font-black text-black leading-tight">
-            {t("hero_title_1")} <span className="text-brutal-pink">{t("hero_title_2")}</span>
+          <h1 className="text-4xl font-black text-white leading-tight">
+            {t("hero_title_1")} <span className="text-site-accent">{t("hero_title_2")}</span>
             <br />
-            {t("hero_title_3")} <span className="text-brutal-blue">{t("hero_title_4")}</span>
+            {t("hero_title_3")} <span className="text-site-accent">{t("hero_title_4")}</span>
           </h1>
 
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-400 text-lg">
             {t("subtitle")}
           </p>
 
           {/* Feature Highlights */}
           <div className="grid grid-cols-1 gap-4 pt-4">
             <motion.div
-              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000]"
-              whileHover={{
-                scale: 1.02,
-                x: -2,
-                y: -2,
-                boxShadow: "6px 6px 0 0 #000000",
-              }}
+              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/50 transition-colors"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 bg-brutal-yellow border-[2px] border-black flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-black" />
+              <div className="w-10 h-10 bg-[#16181A] rounded-lg border border-site-border flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-site-accent" />
               </div>
               <div>
-                <h3 className="text-black font-bold">{t("vip_points")}</h3>
-                <p className="text-gray-500 text-sm">
+                <h3 className="text-white font-bold">{t("vip_points")}</h3>
+                <p className="text-gray-400 text-sm">
                   {t("vip_points_desc")}
                 </p>
               </div>
             </motion.div>
 
             <motion.div
-              className="flex items-center space-x-4 p-4 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000]"
-              whileHover={{
-                scale: 1.02,
-                x: -2,
-                y: -2,
-                boxShadow: "6px 6px 0 0 #000000",
-              }}
+              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/50 transition-colors"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-10 h-10 bg-brutal-green border-[2px] border-black flex items-center justify-center">
-                <Shield className="w-5 h-5 text-black" />
+              <div className="w-10 h-10 bg-[#16181A] rounded-lg border border-site-border flex items-center justify-center">
+                <Shield className="w-5 h-5 text-site-accent" />
               </div>
               <div>
-                <h3 className="text-black font-bold">{t("secure_100")}</h3>
-                <p className="text-gray-500 text-sm">
+                <h3 className="text-white font-bold">{t("secure_100")}</h3>
+                <p className="text-gray-400 text-sm">
                   {t("secure_100_desc")}
                 </p>
               </div>
@@ -238,41 +228,41 @@ function LoginContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="bg-white border-[3px] border-black shadow-[8px_8px_0_0_#000] p-5 lg:p-8">
+          <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl p-5 lg:p-8">
             {/* Session Expired Warning */}
             {sessionExpired && (
-              <div className="mb-4 lg:mb-6 p-3 lg:p-4 bg-yellow-100 border-[2px] border-yellow-500">
+              <div className="mb-4 lg:mb-6 p-3 lg:p-4 bg-red-500/10 border border-red-500/30/50 rounded-xl">
                 <div className="flex items-center space-x-2">
-                  <Info className="w-5 h-5 text-yellow-700" />
-                  <span className="text-yellow-800 font-bold">
+                  <Info className="w-5 h-5 text-red-400" />
+                  <span className="text-red-400 font-bold">
                     {t("session_expired")}
                   </span>
                 </div>
-                <p className="text-yellow-700 text-sm mt-1">
+                <p className="text-red-300 text-sm mt-1">
                   {t("session_expired_desc")}
                 </p>
               </div>
             )}
 
             {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center space-x-2 mb-4">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0_0_#000]">
-                <Zap className="w-4 h-4 lg:w-5 lg:h-5 text-black" fill="currentColor" />
+            <div className="lg:hidden flex items-center justify-center space-x-2 mb-6">
+              <div className="w-10 h-10 bg-[#16181A] border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+                <Zap className="w-5 h-5 text-site-accent" fill="currentColor" />
               </div>
-              <span className="text-lg lg:text-xl font-black text-black">
+              <span className="text-xl font-black text-white">
                 {siteName}
               </span>
             </div>
 
             <div className="text-center mb-4 lg:mb-8">
-              <h2 className="text-xl lg:text-2xl font-black text-black mb-1 lg:mb-2">
+              <h2 className="text-xl lg:text-2xl font-black text-white mb-2">
                 {t("title")}
               </h2>
-              <p className="text-sm lg:text-base text-gray-500">
+              <p className="text-sm lg:text-base text-gray-400">
                 {t("no_account")}{" "}
                 <Link
                   href="/register"
-                  className="text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
+                  className="text-site-accent hover:text-site-accent-hover font-bold transition-colors"
                 >
                   {t("register_now")}
                 </Link>
@@ -282,7 +272,7 @@ function LoginContent() {
             <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-5">
               <Input
                 id="email"
-                label={t("email")}
+                label={t("email._base")}
                 type="email"
                 placeholder="your@email.com"
                 value={email}
@@ -306,10 +296,10 @@ function LoginContent() {
                   icon={<Lock className="h-5 w-5" />}
                   autoComplete="current-password"
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end mt-2">
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-brutal-pink hover:text-brutal-pink/80 font-bold transition-colors"
+                    className="text-sm text-site-accent hover:text-site-accent-hover font-bold transition-colors"
                   >
                     {t("forgot_password")}
                   </Link>
@@ -336,10 +326,10 @@ function LoginContent() {
               <>
                 <div className="relative my-4 lg:my-6">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
+                    <div className="w-full border-t border-site-border"></div>
                   </div>
                   <div className="relative flex justify-center text-xs lg:text-sm">
-                    <span className="px-3 bg-white text-gray-500">
+                    <span className="px-3 bg-[#222427] text-gray-400 font-medium tracking-wide">
                       {t("or_login_with")}
                     </span>
                   </div>

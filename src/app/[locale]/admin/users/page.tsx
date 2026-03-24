@@ -211,12 +211,12 @@ export default function AdminUsersPage() {
   const roleBadge = (role: AdminUser["role"]) =>
     role === "ADMIN"
       ? "bg-purple-100 text-purple-700 border-purple-500"
-      : "bg-gray-100 text-gray-700 border-gray-500";
+      : "bg-[#1A1C1E] text-gray-300 border-gray-500";
 
   const statusBadge = (isActive: boolean) =>
     isActive
-      ? "bg-green-100 text-green-700 border-green-500"
-      : "bg-red-100 text-red-700 border-red-500";
+      ? "bg-green-500/10 text-green-400 border-green-500/30/30"
+      : "bg-red-500/10 text-red-400 border-red-500/30/30";
 
   const canGoPrev = currentPage > 1;
   const canGoNext = currentPage < meta.totalPages;
@@ -232,7 +232,7 @@ export default function AdminUsersPage() {
     return (
       <AdminLayout title="ผู้ใช้">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-brutal-pink animate-spin" />
+          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -243,15 +243,13 @@ export default function AdminUsersPage() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-brutal-yellow mr-2"></span>
-            <h1 className="text-2xl font-bold text-black">จัดการผู้ใช้</h1>
+            <span className="w-1.5 h-6 bg-orange-500/10 mr-2"></span>
+            <h1 className="text-2xl font-bold text-white">จัดการผู้ใช้</h1>
           </div>
           <button
             onClick={fetchData}
             disabled={loading || isMutating}
-            className="bg-white text-black border-[3px] border-black px-4 py-2 hover:bg-gray-50 transition-colors flex items-center font-medium disabled:opacity-60"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
+            className="bg-[#212328] text-white border border-site-border/30 rounded-[12px] px-4 py-2 hover:bg-[#212328]/5 transition-colors flex items-center font-medium disabled:opacity-60">
             <RefreshCw className="h-4 w-4 mr-2" />
             รีเฟรช
           </button>
@@ -260,47 +258,37 @@ export default function AdminUsersPage() {
         {stats && (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <div
-              className="bg-white border-[3px] border-black p-4"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
               <p className="text-xs text-gray-500">ผู้ใช้ทั้งหมด</p>
-              <p className="text-xl font-bold text-black">
+              <p className="text-xl font-bold text-white">
                 {stats.totalUsers.toLocaleString()}
               </p>
             </div>
             <div
-              className="bg-white border-[3px] border-black p-4"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
               <p className="text-xs text-gray-500">แอดมิน</p>
-              <p className="text-xl font-bold text-black">
+              <p className="text-xl font-bold text-white">
                 {stats.totalAdmins.toLocaleString()}
               </p>
             </div>
             <div
-              className="bg-white border-[3px] border-black p-4"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
               <p className="text-xs text-gray-500">ใช้งานอยู่</p>
-              <p className="text-xl font-bold text-green-700">
+              <p className="text-xl font-bold text-green-400">
                 {stats.activeUsers.toLocaleString()}
               </p>
             </div>
             <div
-              className="bg-white border-[3px] border-black p-4"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
               <p className="text-xs text-gray-500">ไม่ใช้งาน</p>
-              <p className="text-xl font-bold text-red-700">
+              <p className="text-xl font-bold text-red-400">
                 {stats.inactiveUsers.toLocaleString()}
               </p>
             </div>
             <div
-              className="bg-white border-[3px] border-black p-4"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
+              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
               <p className="text-xs text-gray-500">ใหม่เดือนนี้</p>
-              <p className="text-xl font-bold text-black">
+              <p className="text-xl font-bold text-white">
                 {stats.newThisMonth.toLocaleString()}
               </p>
             </div>
@@ -308,8 +296,8 @@ export default function AdminUsersPage() {
         )}
 
         <motion.div
-          className="bg-white border-[3px] border-black p-4"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -322,15 +310,14 @@ export default function AdminUsersPage() {
                 placeholder="ค้นหาผู้ใช้..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border-[2px] border-gray-300 text-black focus:border-black focus:outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:border-site-accent focus:outline-none"
               />
             </div>
             <div className="flex gap-3">
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-2 bg-white border-[2px] border-gray-300 text-black focus:border-black focus:outline-none"
-              >
+                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:border-site-accent focus:outline-none">
                 <option value="all">ทุกบทบาท</option>
                 <option value="user">ผู้ใช้</option>
                 <option value="admin">แอดมิน</option>
@@ -338,8 +325,7 @@ export default function AdminUsersPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 bg-white border-[2px] border-gray-300 text-black focus:border-black focus:outline-none"
-              >
+                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:border-site-accent focus:outline-none">
                 <option value="all">ทุกสถานะ</option>
                 <option value="active">ใช้งาน</option>
                 <option value="inactive">ไม่ใช้งาน</option>
@@ -349,15 +335,15 @@ export default function AdminUsersPage() {
         </motion.div>
 
         <motion.div
-          className="bg-white border-[3px] border-black overflow-hidden"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden"
+          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b-[2px] border-black">
+              <thead className="bg-[#181A1D] border-b-[2px] border-site-border/50">
                 <tr>
                   <th className="py-3 px-4 text-left">
                     <input
@@ -367,37 +353,37 @@ export default function AdminUsersPage() {
                         users.length > 0
                       }
                       onChange={toggleAllSelection}
-                      className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
+                      className="w-4 h-4 border border-site-border/30 rounded-[12px] shadow-sm text-purple-400 focus:ring-site-accent/50"
                     />
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
                     ผู้ใช้
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
                     บทบาท
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
                     สถานะ
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
                     วันที่สมัคร
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
                     คำสั่งซื้อ
                   </th>
-                  <th className="text-right py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-white">
                     ยอดใช้จ่าย
                   </th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-black">
+                  <th className="text-center py-3 px-4 text-sm font-semibold text-white">
                     จัดการ
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-site-border/30">
                 {loading && (
                   <tr>
                     <td colSpan={8} className="py-10 text-center">
-                      <div className="inline-flex items-center text-gray-600">
+                      <div className="inline-flex items-center text-gray-400">
                         <Loader2 className="h-5 w-5 animate-spin mr-2" />
                         กำลังโหลดข้อมูลผู้ใช้...
                       </div>
@@ -406,24 +392,24 @@ export default function AdminUsersPage() {
                 )}
                 {!loading &&
                   users.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
+                    <tr key={user.id} className="hover:bg-[#212328]/5">
                       <td className="py-3 px-4">
                         <input
                           type="checkbox"
                           checked={selectedUsers.includes(user.id)}
                           onChange={() => toggleUserSelection(user.id)}
-                          className="w-4 h-4 border-[2px] border-black text-brutal-purple focus:ring-black"
+                          className="w-4 h-4 border border-site-border/30 rounded-[12px] shadow-sm text-purple-400 focus:ring-site-accent/50"
                         />
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-brutal-purple flex items-center justify-center text-white font-bold">
+                          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">
                             {user.username.charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <Link
                               href={`/admin/users/${user.id}`}
-                              className="text-sm font-medium text-black hover:underline"
+                              className="text-sm font-medium text-white hover:underline"
                               title="เปิดหน้า User Manager"
                             >
                               {user.username}
@@ -436,25 +422,23 @@ export default function AdminUsersPage() {
                       </td>
                       <td className="py-3 px-4">
                         <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${roleBadge(user.role)}`}
-                        >
+                          className={`px-2 py-1 text-xs font-medium rounded-full border border-site-border/30 rounded-[12px] shadow-sm ${roleBadge(user.role)}`}>
                           {user.role === "ADMIN" ? "แอดมิน" : "ผู้ใช้"}
                         </span>
                       </td>
                       <td className="py-3 px-4">
                         <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full border-[2px] ${statusBadge(user.isActive)}`}
-                        >
+                          className={`px-2 py-1 text-xs font-medium rounded-full border border-site-border/30 rounded-[12px] shadow-sm ${statusBadge(user.isActive)}`}>
                           {user.isActive ? "ใช้งาน" : "ไม่ใช้งาน"}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">
+                      <td className="py-3 px-4 text-sm text-gray-400">
                         {formatDate(user.createdAt)}
                       </td>
-                      <td className="py-3 px-4 text-sm text-black">
+                      <td className="py-3 px-4 text-sm text-white">
                         {user.orderCount.toLocaleString()}
                       </td>
-                      <td className="py-3 px-4 text-sm text-black text-right font-medium">
+                      <td className="py-3 px-4 text-sm text-white text-right font-medium">
                         {formatCurrency(user.totalSpent)}
                       </td>
                       <td className="py-3 px-4">
@@ -462,7 +446,7 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handleToggleStatus(user)}
                             disabled={isMutating}
-                            className="p-2 text-gray-600 hover:text-brutal-blue hover:bg-blue-50 transition-colors border-[2px] border-transparent hover:border-brutal-blue disabled:opacity-50"
+                            className="p-2 text-gray-400 hover:text-site-accent hover:bg-[#212328]/5 transition-colors border border-site-border/30 rounded-[12px] shadow-sm border-transparent hover:border-site-accent disabled:opacity-50"
                             title={user.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
                           >
                             {user.isActive ? (
@@ -474,14 +458,14 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handleDeleteUser(user.id)}
                             disabled={isMutating}
-                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors border-[2px] border-transparent hover:border-red-500 disabled:opacity-50"
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-500/10 transition-colors border border-site-border/30 rounded-[12px] shadow-sm border-transparent hover:border-red-500/30/30 disabled:opacity-50"
                             title="ปิดใช้งานผู้ใช้"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
                           <Link
                             href={`/admin/users/${user.id}`}
-                            className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 transition-colors border-[2px] border-transparent hover:border-black"
+                            className="p-2 text-gray-400 hover:text-white hover:bg-[#212328]/5 transition-colors border border-site-border/30 rounded-[12px] shadow-sm border-transparent hover:border-site-border/50"
                             title="จัดการผู้ใช้แบบเต็ม"
                           >
                             <Eye className="h-4 w-4" />
@@ -494,8 +478,7 @@ export default function AdminUsersPage() {
                   <tr>
                     <td
                       colSpan={8}
-                      className="py-10 text-center text-sm text-gray-500"
-                    >
+                      className="py-10 text-center text-sm text-gray-500">
                       ไม่พบข้อมูลผู้ใช้ตามเงื่อนไขที่เลือก
                     </td>
                   </tr>
@@ -504,24 +487,22 @@ export default function AdminUsersPage() {
             </table>
           </div>
 
-          <div className="p-4 border-t-[2px] border-gray-200 flex items-center justify-between">
-            <p className="text-sm text-gray-600">{summaryText}</p>
+          <div className="p-4 border-t-[2px] border-site-border/30 flex items-center justify-between">
+            <p className="text-sm text-gray-400">{summaryText}</p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={!canGoPrev || loading}
-                className="p-2 border-[2px] border-gray-300 hover:border-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
+                className="p-2 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 hover:border-site-border/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <span className="px-4 py-2 text-sm text-black font-medium">
+              <span className="px-4 py-2 text-sm text-white font-medium">
                 หน้า {meta.page} / {Math.max(meta.totalPages, 1)}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => p + 1)}
                 disabled={!canGoNext || loading}
-                className="p-2 border-[2px] border-gray-300 hover:border-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
+                className="p-2 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 hover:border-site-border/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -530,36 +511,33 @@ export default function AdminUsersPage() {
 
         {selectedUsers.length > 0 && (
           <motion.div
-            className="bg-brutal-yellow border-[3px] border-black p-4 flex items-center justify-between"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-orange-500/10 border border-site-border/30 rounded-[12px] p-4 flex items-center justify-between"
+            
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <span className="text-black font-medium">
+            <span className="text-white font-medium">
               เลือก {selectedUsers.length} รายการ
             </span>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => handleBulkStatus(true)}
                 disabled={isMutating}
-                className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
-              >
+                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors flex items-center text-sm font-medium disabled:opacity-50">
                 <UserCheck className="h-4 w-4 mr-2" />
                 เปิดใช้งาน
               </button>
               <button
                 onClick={() => handleBulkStatus(false)}
                 disabled={isMutating}
-                className="px-4 py-2 bg-white border-[2px] border-black text-black hover:bg-gray-100 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
-              >
+                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors flex items-center text-sm font-medium disabled:opacity-50">
                 <UserX className="h-4 w-4 mr-2" />
                 ปิดใช้งาน
               </button>
               <button
                 onClick={handleBulkDelete}
                 disabled={isMutating}
-                className="px-4 py-2 bg-red-500 border-[2px] border-black text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
-              >
+                className="px-4 py-2 bg-red-500/50 border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium disabled:opacity-50">
                 <Trash2 className="h-4 w-4 mr-2" />
                 ปิดใช้งานผู้ใช้
               </button>
@@ -568,13 +546,13 @@ export default function AdminUsersPage() {
         )}
 
         {error && (
-          <div className="bg-red-100 border-[3px] border-red-500 text-red-700 px-4 py-3">
+          <div className="bg-red-500/10 border border-red-500/30/30 rounded-[12px] text-red-400 px-4 py-3">
             ไม่สามารถดำเนินการได้: {error}
           </div>
         )}
 
         {isMutating && (
-          <div className="fixed bottom-5 right-5 bg-black text-white px-4 py-2 border-[3px] border-black flex items-center z-50">
+          <div className="fixed bottom-5 right-5 bg-black text-white px-4 py-2 border border-site-border/30 rounded-[12px] flex items-center z-50">
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
             กำลังอัปเดตข้อมูลผู้ใช้...
           </div>

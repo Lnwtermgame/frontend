@@ -202,15 +202,15 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       heroIcon: (
         <Zap
           size={24}
-          className="text-brutal-yellow mr-2"
+          className="text-site-accent mr-2 drop-shadow-[0_0_8px_rgba(103,176,186,0.6)]"
           fill="currentColor"
         />
       ),
-      primaryHeaderClass: "bg-brutal-blue",
-      secondaryHeaderClass: "bg-brutal-yellow",
-      ctaBgClass: "bg-brutal-yellow text-black",
-      hoverNameClass: "group-hover:text-brutal-pink",
-      promoClass: "bg-brutal-green",
+      primaryHeaderClass: "bg-[#1A1C1E]",
+      secondaryHeaderClass: "bg-[#1A1C1E]",
+      ctaBgClass: "bg-site-accent text-[#1A1C1E]",
+      hoverNameClass: "group-hover:text-site-accent",
+      promoClass: "bg-site-accent/5 border-site-accent/20",
       promoTitle: t("games.title"),
       promoDescription: t("games.subtitle"),
     },
@@ -222,12 +222,12 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       cta: t("cta_topup"),
       primaryTitle: t("filter_category"),
       secondaryTitle: t("filter_category"),
-      heroIcon: <Smartphone size={24} className="text-brutal-green mr-2" />,
-      primaryHeaderClass: "bg-brutal-blue",
-      secondaryHeaderClass: "bg-brutal-green",
-      ctaBgClass: "bg-brutal-green text-black",
-      hoverNameClass: "group-hover:text-brutal-green",
-      promoClass: "bg-brutal-yellow",
+      heroIcon: <Smartphone size={24} className="text-site-accent mr-2" />,
+      primaryHeaderClass: "bg-[#1A1C1E]",
+      secondaryHeaderClass: "bg-[#1A1C1E]",
+      ctaBgClass: "bg-site-accent text-[#1A1C1E]",
+      hoverNameClass: "group-hover:text-site-accent",
+      promoClass: "bg-site-accent/5 border-site-accent/20",
       promoTitle: t("mobile.title"),
       promoDescription: t("mobile.subtitle"),
     },
@@ -239,12 +239,12 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       cta: t("cta_topup"),
       primaryTitle: t("filter_category"),
       secondaryTitle: t("filter_category"),
-      heroIcon: <Smartphone size={24} className="text-brutal-green mr-2" />,
-      primaryHeaderClass: "bg-brutal-blue",
-      secondaryHeaderClass: "bg-brutal-green",
-      ctaBgClass: "bg-brutal-green text-black",
-      hoverNameClass: "group-hover:text-brutal-green",
-      promoClass: "bg-brutal-yellow",
+      heroIcon: <Smartphone size={24} className="text-site-accent mr-2" />,
+      primaryHeaderClass: "bg-[#1A1C1E]",
+      secondaryHeaderClass: "bg-[#1A1C1E]",
+      ctaBgClass: "bg-site-accent text-[#1A1C1E]",
+      hoverNameClass: "group-hover:text-site-accent",
+      promoClass: "bg-site-accent/5 border-site-accent/20",
       promoTitle: t("mobile.title"),
       promoDescription: t("mobile.subtitle"),
     },
@@ -256,12 +256,12 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       cta: t("cta_buy"),
       primaryTitle: t("filter_category"),
       secondaryTitle: undefined,
-      heroIcon: <CreditCard size={24} className="text-brutal-pink mr-2" />,
-      primaryHeaderClass: "bg-brutal-yellow",
-      secondaryHeaderClass: "bg-brutal-yellow",
-      ctaBgClass: "bg-brutal-pink text-white",
-      hoverNameClass: "group-hover:text-brutal-pink",
-      promoClass: "bg-brutal-pink",
+      heroIcon: <CreditCard size={24} className="text-site-accent mr-2" />,
+      primaryHeaderClass: "bg-[#1A1C1E]",
+      secondaryHeaderClass: "bg-[#1A1C1E]",
+      ctaBgClass: "bg-site-accent text-[#1A1C1E]",
+      hoverNameClass: "group-hover:text-site-accent",
+      promoClass: "bg-site-accent/5 border-site-accent/20",
       promoTitle: t("card.title"),
       promoDescription: t("card.subtitle"),
     },
@@ -331,7 +331,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           count: items.filter((g) =>
             g.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p)),
           ).length,
-          icon: <Smartphone size={16} className="text-brutal-green" />,
+          icon: <Smartphone size={16} className="text-site-accent" />,
         },
         {
           id: "pc",
@@ -339,7 +339,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           count: items.filter((g) =>
             g.platforms.some((p) => ["PC", "Mac"].includes(p)),
           ).length,
-          icon: <Monitor size={16} className="text-brutal-blue" />,
+          icon: <Monitor size={16} className="text-white" />,
         },
         {
           id: "console",
@@ -349,7 +349,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
               ["Console", "PS4", "PS5", "Xbox"].includes(p),
             ),
           ).length,
-          icon: <Gamepad2 size={16} className="text-brutal-pink" />,
+          icon: <Gamepad2 size={16} className="text-gray-400" />,
         },
       ];
     }
@@ -367,7 +367,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           name: "AIS",
           count: items.filter((p) => p.operator.toLowerCase().includes("ais"))
             .length,
-          icon: <Smartphone size={16} className="text-brutal-blue" />,
+          icon: <Smartphone size={16} className="text-green-400" />,
           brandIcon: "ais" as const,
         },
         {
@@ -375,7 +375,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           name: "DTAC",
           count: items.filter((p) => p.operator.toLowerCase().includes("dtac"))
             .length,
-          icon: <Smartphone size={16} className="text-brutal-pink" />,
+          icon: <Smartphone size={16} className="text-blue-400" />,
           brandIcon: "dtac" as const,
         },
         {
@@ -383,7 +383,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           name: "TrueMove",
           count: items.filter((p) => p.operator.toLowerCase().includes("true"))
             .length,
-          icon: <Smartphone size={16} className="text-brutal-yellow" />,
+          icon: <Smartphone size={16} className="text-red-400" />,
           brandIcon: "true" as const,
         },
       ];
@@ -489,223 +489,182 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div
-            className="bg-white border-[3px] border-black overflow-hidden mb-4"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
+            className="bg-[#212328] rounded-[16px] overflow-hidden mb-5 border border-white/5 pb-2"
           >
             <div
-              className={`p-4 border-b-[3px] border-black ${copy.primaryHeaderClass}`}
+              className={`p-4 border-b border-white/5`}
             >
-              <h3 className="text-black font-black text-base flex items-center">
-                {mode === "mobile-recharge" || mode === "mobile" ? (
-                  <Signal size={18} className="mr-2" />
-                ) : (
-                  <Filter size={18} className="mr-2" />
-                )}
-                {copy.primaryTitle}
+              <h3 className="text-[#a1a1aa] font-medium text-[13px] tracking-wide">
+                หมวดหมู่
               </h3>
             </div>
 
-            <div className="p-3 space-y-1">
+            <div className="py-2 flex flex-col gap-0.5">
               {primaryOptions.map((option) => (
-                <motion.button
+                <button
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
-                  className={`w-full flex justify-between items-center text-left p-3 transition-all border-[2px] ${selectedPrimary === option.id
-                    ? "bg-brutal-blue border-black text-black"
-                    : "bg-white border-transparent text-gray-700 hover:border-gray-300"
+                  className={`w-full flex justify-between items-center text-left px-5 py-2.5 transition-colors group ${selectedPrimary === option.id
+                    ? "bg-[#292B30] border-l-[3px] border-site-accent text-white"
+                    : "bg-transparent border-l-[3px] border-transparent text-[#a1a1aa] hover:bg-[#292B30] hover:text-white"
                     }`}
-                  style={
-                    selectedPrimary === option.id
-                      ? { boxShadow: "3px 3px 0 0 #000000" }
-                      : undefined
-                  }
-                  whileHover={{ x: 3 }}
                 >
-                  <span className="flex items-center gap-3 text-sm font-bold">
+                  <span className="flex items-center gap-3 text-[13px] font-medium">
                     {renderOptionIcon(option, selectedPrimary === option.id)}
                     {option.name}
                   </span>
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${selectedPrimary === option.id
-                      ? "bg-white text-black"
-                      : "bg-gray-100 text-gray-600"
+                    className={`text-[12px] font-medium ${selectedPrimary === option.id
+                      ? "text-gray-300"
+                      : "text-gray-500 group-hover:text-gray-400"
                       }`}
                   >
                     {option.count}
                   </span>
-                </motion.button>
+                </button>
               ))}
             </div>
-          </div>
 
-          {copy.secondaryTitle && (
-            <div
-              className="bg-white border-[3px] border-black overflow-hidden mb-4"
-              style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            >
-              <div
-                className={`p-4 border-b-[3px] border-black ${copy.secondaryHeaderClass}`}
-              >
-                <h3 className="text-black font-black text-base flex items-center">
-                  <Globe size={18} className="mr-2" />
-                  {copy.secondaryTitle}
-                </h3>
-              </div>
-
-              <div className="p-3 space-y-1">
-                {secondaryOptions.map((option) => (
-                  <motion.button
-                    key={option.id}
-                    onClick={() => setSelectedSecondary(option.id)}
-                    className={`w-full flex justify-between items-center text-left p-3 transition-all border-[2px] ${selectedSecondary === option.id
-                      ? "bg-brutal-yellow border-black text-black"
-                      : "bg-white border-transparent text-gray-700 hover:border-gray-300"
-                      }`}
-                    style={
-                      selectedSecondary === option.id
-                        ? { boxShadow: "3px 3px 0 0 #000000" }
-                        : undefined
-                    }
-                    whileHover={{ x: 3 }}
-                  >
-                    <span className="flex items-center gap-3 text-sm font-bold">
-                      {getCountryFlagCode(option.name) && (
-                        <CountryFlag
-                          code={getCountryFlagCode(option.name)}
-                          size="M"
-                        />
-                      )}
-                      {option.name}
-                    </span>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-bold border-[2px] border-black ${selectedSecondary === option.id
-                        ? "bg-white text-black"
-                        : "bg-gray-100 text-gray-600"
-                        }`}
-                    >
-                      {option.count}
-                    </span>
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div
-            className={`${copy.promoClass} border-[3px] border-black p-4`}
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <Zap size={18} className="text-black" />
-              <span className="font-black text-black text-sm">
-                {copy.promoTitle}
-              </span>
-            </div>
-            <p className="text-black/80 text-xs mb-3">
-              {copy.promoDescription}
-            </p>
-            <button
-              className="w-full bg-black text-white px-3 py-2 text-xs font-bold border-[2px] border-black"
-              style={{ boxShadow: "3px 3px 0 0 #000000" }}
-            >
-              {copy.cta}
-            </button>
-          </div>
-        </motion.div>
-
-        <div className="flex-1 min-w-0">
-          <motion.div
-            className="bg-white border-[3px] border-black p-5"
-            style={{ boxShadow: "4px 4px 0 0 #000000" }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h1 className="text-gray-900 text-2xl font-black flex items-center">
-                  {copy.heroIcon}
-                  {copy.title}
-                </h1>
-                <p className="text-gray-500 text-sm mt-1">{copy.subtitle}</p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={copy.searchPlaceholder}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full md:w-64 bg-gray-50 border-[2px] border-gray-300 pl-10 pr-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-black transition-all"
-                  />
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            {copy.secondaryTitle && secondaryOptions.length > 0 && (
+              <>
+                <div className="mx-4 my-2 border-t border-white/5"></div>
+                <div className={`p-4 pb-2 border-white/5`}>
+                  <h3 className="text-[#a1a1aa] font-medium text-[13px] tracking-wide">
+                    {copy.secondaryTitle}
+                  </h3>
                 </div>
 
-                <button
-                  onClick={() => setIsFilterOpen(true)}
-                  className="lg:hidden bg-white text-gray-700 hover:text-black border-[2px] border-gray-300 hover:border-black text-sm px-4 py-2.5 flex items-center gap-1.5 transition-all font-bold"
-                >
-                  <Filter size={16} /> {t("filter_category")}
-                </button>
-              </div>
-            </div>
-
-            <div className="lg:hidden mt-4 -mx-5 px-5 space-y-2">
-              <div className="overflow-x-auto scrollbar-hide flex gap-2 pb-1">
-                {primaryOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => setSelectedPrimary(option.id)}
-                    className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex items-center gap-1.5 ${selectedPrimary === option.id
-                      ? "bg-brutal-blue text-black"
-                      : "bg-white text-gray-700"
-                      }`}
-                  >
-                    {renderOptionIcon(
-                      option,
-                      selectedPrimary === option.id,
-                      true,
-                    )}
-                    {option.name}
-                  </button>
-                ))}
-              </div>
-
-              {copy.secondaryTitle && secondaryOptions.length > 0 && (
-                <div className="overflow-x-auto scrollbar-hide flex gap-2 pb-1">
+                <div className="py-1 flex flex-col gap-0.5">
                   {secondaryOptions.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => setSelectedSecondary(option.id)}
-                      className={`whitespace-nowrap px-3 py-2 text-xs font-bold border-[2px] border-black transition-all flex items-center gap-1.5 ${selectedSecondary === option.id
-                        ? "bg-brutal-yellow text-black"
-                        : "bg-white text-gray-700"
+                      className={`w-full flex justify-between items-center text-left px-5 py-2.5 transition-colors group ${selectedSecondary === option.id
+                        ? "bg-[#292B30] border-l-[3px] border-site-accent text-white"
+                        : "bg-transparent border-l-[3px] border-transparent text-[#a1a1aa] hover:bg-[#292B30] hover:text-white"
                         }`}
                     >
-                      {(mode === "mobile-recharge" || mode === "mobile") &&
-                        option.id === "all" ? (
-                        <>
-                          <Globe size={14} />
-                          {option.name}
-                        </>
-                      ) : (
-                        <>
-                          {getCountryFlagCode(option.name) && (
-                            <CountryFlag
-                              code={getCountryFlagCode(option.name)}
-                              size="S"
-                            />
-                          )}
-                          {option.name}
-                        </>
-                      )}
+                      <span className="flex items-center gap-3 text-[13px] font-medium">
+                        {getCountryFlagCode(option.name) && (
+                          <CountryFlag
+                            code={getCountryFlagCode(option.name)}
+                            size="M"
+                          />
+                        )}
+                        {option.name}
+                      </span>
+                      <span
+                        className={`text-[12px] font-medium ${selectedSecondary === option.id
+                          ? "text-gray-300"
+                          : "text-gray-500 group-hover:text-gray-400"
+                          }`}
+                      >
+                        {option.count}
+                      </span>
                     </button>
                   ))}
                 </div>
-              )}
+              </>
+            )}
+          </div>
+        </motion.div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center text-[13px] text-gray-400 mb-4 sm:mb-6 pl-1 font-medium">
+            <Link href="/" className="hover:text-white transition-colors cursor-pointer">Lnwtermgame</Link>
+            <span className="mx-2">/</span>
+            <span className="text-white truncate">{copy.title}</span>
+          </div>
+
+          <motion.div
+            className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-[#212328] border border-white/5 rounded-2xl p-6 relative overflow-hidden mb-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="relative z-10">
+              <h1 className="text-white text-xl md:text-2xl font-bold flex items-center tracking-tight mb-1">
+                {copy.heroIcon}
+                {copy.title}
+              </h1>
+              <p className="text-[#a1a1aa] text-[13px] md:text-[14px] leading-relaxed max-w-lg">{copy.subtitle}</p>
+            </div>
+
+            <div className="flex items-center gap-3 relative z-10 w-full md:w-auto">
+              <div className="relative w-full md:w-80">
+                <input
+                  type="text"
+                  placeholder={copy.searchPlaceholder}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-[#181A1D] border border-transparent hover:border-white/10 text-white text-[13px] rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-site-accent transition-all placeholder:text-gray-600"
+                />
+                <Search className="absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+              </div>
+
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="lg:hidden shrink-0 bg-[#181A1D] text-gray-300 hover:text-white rounded-xl text-sm px-4 py-3 flex items-center gap-2 transition-all font-semibold"
+              >
+                <Filter size={18} />
+              </button>
             </div>
           </motion.div>
+
+          <div className="lg:hidden mt-2 -mx-5 px-5 space-y-2 mb-4">
+            <div className="overflow-x-auto scrollbar-hide flex gap-2 pb-1">
+              {primaryOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => setSelectedPrimary(option.id)}
+                  className={`whitespace-nowrap px-4 py-2 text-xs font-medium transition-all flex items-center gap-2 rounded-xl ${selectedPrimary === option.id
+                    ? "bg-[#292B30] border-b-2 border-site-accent text-white shadow-sm"
+                    : "bg-[#212328] border-b-2 border-transparent text-[#a1a1aa] hover:text-white"
+                    }`}
+                >
+                  {renderOptionIcon(
+                    option,
+                    selectedPrimary === option.id,
+                    true,
+                  )}
+                  {option.name}
+                </button>
+              ))}
+            </div>
+
+            {copy.secondaryTitle && secondaryOptions.length > 0 && (
+              <div className="overflow-x-auto scrollbar-hide flex gap-2 pb-1">
+                {secondaryOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => setSelectedSecondary(option.id)}
+                    className={`whitespace-nowrap px-4 py-2 text-xs font-medium transition-all flex items-center gap-2 rounded-xl ${selectedSecondary === option.id
+                      ? "bg-[#292B30] border-b-2 border-site-accent text-white shadow-sm"
+                      : "bg-[#212328] border-b-2 border-transparent text-[#a1a1aa] hover:text-white"
+                      }`}
+                  >
+                    {(mode === "mobile-recharge" || mode === "mobile") &&
+                      option.id === "all" ? (
+                      <>
+                        <Globe size={14} />
+                        {option.name}
+                      </>
+                    ) : (
+                      <>
+                        {getCountryFlagCode(option.name) && (
+                          <CountryFlag
+                            code={getCountryFlagCode(option.name)}
+                            size="S"
+                          />
+                        )}
+                        {option.name}
+                      </>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <motion.div
             className="mt-6 md:mt-8"
@@ -713,14 +672,14 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <h2 className="text-gray-900 text-lg font-black flex items-center mb-4">
+            <h2 className="text-white text-[15px] font-bold flex items-center mb-4 md:mb-5">
               {copy.gridTitle}
-              <span className="ml-2 text-sm font-normal text-gray-500">
-                ({filteredItems.length})
+              <span className="ml-3 text-[13px] font-medium text-[#a1a1aa] bg-[#292B30] px-2 py-0.5 rounded-full">
+                {filteredItems.length}
               </span>
             </h2>
 
-            <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
               {filteredItems.map((item, index) => (
                 <motion.div
                   key={item.id}
@@ -730,94 +689,34 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   className="min-w-0"
                 >
                   <Link href={getItemLink(mode as any, item.slug)}>
-                    <div
-                      className="relative overflow-hidden bg-white border-[2px] sm:border-[3px] border-black transition-all hover:-translate-y-1 group h-full"
-                      style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                    >
-                      {item.discountPercent ? (
-                        <div
-                          className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 z-10 bg-brutal-pink px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-white border-[2px] border-black"
-                          style={{ boxShadow: "1px 1px 0 0 #000000" }}
-                        >
-                          -{item.discountPercent}%
-                        </div>
-                      ) : null}
+                    {/* The SEAGM specific grid card design */}
+                    <div className="group flex flex-col cursor-pointer transition-all h-full bg-[#1C1E22] hover:bg-[#292B2E] rounded-[16px] p-2.5 pb-4 border border-white/5 transition-colors">
+                      <div className="relative w-full aspect-square object-cover mb-3 rounded-[12px] overflow-hidden bg-[#181A1D]">
 
-                      <div className="relative aspect-square w-full overflow-hidden">
+                        {item.discountPercent ? (
+                          <div className="absolute top-2 left-2 bg-site-accent px-1.5 py-0.5 rounded text-[10px] font-bold text-[#1A1C1E] shadow-sm z-10 transition-opacity">
+                            -{item.discountPercent}%
+                          </div>
+                        ) : null}
+
                         <img
                           src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          alt={mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
+                          className="w-full h-full object-cover text-[0px] text-transparent transition-transform duration-500 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70" />
-
-                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div
-                            className={`${copy.ctaBgClass} px-4 py-2 text-sm font-bold border-[2px] border-black translate-y-4 group-hover:translate-y-0 transition-transform`}
-                            style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                          >
-                            {copy.cta}
-                          </div>
-                        </div>
-
-                        {item.autoDelivery && (
-                          <div
-                            className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 z-10"
-                            title={tCommon("loading")}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 512 512"
-                              className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-[2px_2px_0_rgba(0,0,0,0.6)]"
-                              role="img"
-                              aria-label={tCommon("loading")}
-                            >
-                              <g clipRule="evenodd" fillRule="evenodd">
-                                <circle
-                                  cx="256"
-                                  cy="256"
-                                  r="256"
-                                  fill="#ffc107"
-                                />
-                                <path
-                                  fill="#fff"
-                                  d="M360.475 221.824 267.348 221.823l83.575-146.861-117.011-.003-82.386 194.624 102.683-.001-68.057 187.46z"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                        )}
                       </div>
 
-                      <div className="p-2 sm:p-2.5">
-                        <p
-                          className={`text-gray-900 text-[11px] sm:text-xs font-bold ${mode === "card"
-                            ? "line-clamp-2 sm:line-clamp-1"
-                            : "line-clamp-1"
-                            } mb-1 transition-colors ${copy.hoverNameClass}`}
-                        >
-                          {mode === "mobile-recharge" || mode === "mobile"
-                            ? item.operator
-                            : item.title}
-                        </p>
+                      <div className="flex flex-col flex-1 px-1 justify-between">
+                        <h3 className={`text-white text-[12px] sm:text-[13px] font-medium leading-[1.4] break-words ${mode === "card" ? "line-clamp-2" : "line-clamp-2"}`}>
+                          {mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
+                        </h3>
 
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <CountryFlag
-                              code={getCountryFlagCode(item.country)}
-                              size="S"
-                            />
-                            <span className="text-gray-500 text-[10px] ml-1 truncate max-w-[70px]">
-                              {mode === "games"
-                                ? item.publisher
-                                : mode === "card"
-                                  ? item.category
-                                  : item.country}
-                            </span>
+                        {/* SEAGM Subtitle Line: Icons + Text */}
+                        <div className="flex items-center text-[#a1a1aa] text-[10px] sm:text-[11px] mt-1.5 line-clamp-1 gap-1.5 pt-1">
+                          <div className="shrink-0 flex items-center justify-center">
+                            <CountryFlag code={getCountryFlagCode(item.country)} size="S" />
                           </div>
-                          <div className="text-xs sm:text-[13px] text-black font-black">
-                            ฿{item.price}
-                          </div>
+                          <span className="truncate">{mode === "games" ? item.publisher : mode === "card" ? item.category : item.country}</span>
                         </div>
                       </div>
                     </div>
@@ -827,18 +726,19 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             </div>
 
             {filteredItems.length === 0 && !loading && (
-              <div className="text-center py-12">
-                <Globe size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500 font-bold">{t("no_results")}</p>
-                <p className="text-gray-400 text-sm mt-1">
+              <div className="text-center py-16 bg-[#222427] border border-site-border rounded-2xl w-full">
+                <Globe size={48} className="mx-auto text-gray-600 mb-4" />
+                <p className="text-gray-300 font-bold text-lg">{t("no_results")}</p>
+                <p className="text-gray-500 text-sm mt-2 max-w-sm mx-auto">
                   {t("no_results_desc")}
                 </p>
               </div>
             )}
 
             {loading && (
-              <div className="flex items-center justify-center p-12">
-                <Loader2 className="w-8 h-8 text-brutal-pink animate-spin" />
+              <div className="flex flex-col items-center justify-center p-20 bg-[#222427] border border-site-border rounded-2xl">
+                <Loader2 className="w-10 h-10 text-site-accent animate-spin mb-4" />
+                <p className="text-gray-400 font-medium text-sm tracking-wide uppercase">{t("loading")}</p>
               </div>
             )}
           </motion.div>
@@ -861,9 +761,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     setSelectedPrimary(option.id);
                     setIsFilterOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${selectedPrimary === option.id
-                    ? "bg-brutal-blue text-black shadow-[2px_2px_0_0_#000]"
-                    : "bg-white text-gray-700"
+                  className={`w-full flex items-center justify-between p-3.5 rounded-xl border font-bold transition-all ${selectedPrimary === option.id
+                    ? "bg-[#1A1C1E] border-site-accent text-site-accent shadow-sm"
+                    : "bg-[#222427] border-site-border text-gray-400 hover:text-white"
                     }`}
                 >
                   <span className="flex items-center gap-2">
@@ -893,9 +793,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       setSelectedSecondary(option.id);
                       setIsFilterOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between p-3 border-[2px] border-black font-bold transition-all ${selectedSecondary === option.id
-                      ? "bg-brutal-yellow text-black shadow-[2px_2px_0_0_#000]"
-                      : "bg-white text-gray-700"
+                    className={`w-full flex items-center justify-between p-3.5 rounded-xl border font-bold transition-all ${selectedSecondary === option.id
+                      ? "bg-[#1A1C1E] border-site-accent text-site-accent shadow-sm"
+                      : "bg-[#222427] border-site-border text-gray-400 hover:text-white"
                       }`}
                   >
                     <span className="flex items-center gap-2">
@@ -920,7 +820,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           )}
         </div>
       </Sheet>
-    </div>
+    </div >
   );
 }
 
@@ -987,7 +887,7 @@ function renderOptionIcon(
 
   if (!option.icon) return null;
   return (
-    <span className={isActive ? "text-black" : "text-gray-500"}>
+    <span className={isActive ? "text-site-accent" : "text-gray-400 group-hover:text-gray-300"}>
       {option.icon}
     </span>
   );

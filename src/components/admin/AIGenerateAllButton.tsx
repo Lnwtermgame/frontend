@@ -320,8 +320,8 @@ export default function AIGenerateAllButton({
 
   // Start batch generation
   const startGeneration = useCallback(async () => {
-    if (!aiService.isConfigured()) {
-      toast.error("กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env");
+    if (!aiService.isConfiguredSync()) {
+      toast.error("AI service not configured. Please set LITELLM_API_KEY in your server .env file.");
       return;
     }
 
@@ -561,8 +561,8 @@ export default function AIGenerateAllButton({
     const state = productStates[index];
     if (!state) return;
 
-    if (!aiService.isConfigured()) {
-      toast.error("กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env");
+    if (!aiService.isConfiguredSync()) {
+      toast.error("AI service not configured. Please set LITELLM_API_KEY in your server .env file.");
       return;
     }
 

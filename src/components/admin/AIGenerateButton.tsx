@@ -194,7 +194,7 @@ export default function AIGenerateButton({
             timestamp: new Date(),
             type: "error",
             message:
-              "LiteLLM API key not configured. Please add NEXT_PUBLIC_LITELLM_API_KEY to your .env file.",
+              "AI service not configured. Please set LITELLM_API_KEY in your server .env file.",
           },
         ],
         isGenerating: false,
@@ -546,7 +546,7 @@ export default function AIGenerateButton({
                   <div className="flex flex-col gap-3">
                     <div className="p-3 bg-red-500/10 border-[3px] border-red-500/30">
                       <p className="text-sm text-red-600 font-medium">
-                        กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
+                        กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ server
                       </p>
                     </div>
                     <button

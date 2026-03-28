@@ -1648,7 +1648,7 @@ export default function AdminFaqPage() {
 
                       {!aiService.isConfigured() && showAIGenerate && (
                         <div className="mt-2 p-2 bg-red-500/5 border-[1px] border-red-300 text-red-400 text-[10px]">
-                          กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
+                          กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ server
                           ก่อนใช้งาน AI
                         </div>
                       )}

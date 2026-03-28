@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import AdminLayout from "@/components/layout/AdminLayout";
@@ -22,6 +22,7 @@ import {
   Calendar,
   Sparkles,
   Wand2,
+  ImagePlus,
 } from "lucide-react";
 import {
   cmsApi,
@@ -31,10 +32,12 @@ import {
   NewsCategory,
 } from "@/lib/services";
 import { aiService } from "@/lib/services/ai-api";
+import type { DDGImageResult } from "@/lib/services/ai-api";
 import type { AIModel } from "@/lib/services/ai-api";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
 import AINewsProgressPanel from "@/components/admin/AINewsProgressPanel";
+import MediaPickerPanel from "@/components/admin/MediaPickerPanel";
 import { useTranslations } from "next-intl";
 
 // Slugify helper
@@ -109,6 +112,18 @@ export default function AdminCmsNewsPage() {
     stage: string;
     message: string;
   } | null>(null);
+
+  // Media picker states
+  const [mediaImages, setMediaImages] = useState<DDGImageResult[]>([]);
+  const [mediaVideos, setMediaVideos] = useState<
+    { videoId: string; title: string; url: string }[]
+  >([]);
+  const [isSearchingMedia, setIsSearchingMedia] = useState(false);
+  const [mediaSearchQuery, setMediaSearchQuery] = useState("");
+
+  // Content textarea ref for cursor position tracking
+  const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
   // LiteLLM model selector
   const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
@@ -389,6 +404,9 @@ export default function AdminCmsNewsPage() {
     setAiGeneratedSources([]);
     setAiVariation("random");
     setAiProgress(null);
+    setMediaImages([]);
+    setMediaVideos([]);
+    setMediaSearchQuery("");
   };
 
   const handleGenerateAIContent = async () => {
@@ -478,6 +496,9 @@ export default function AdminCmsNewsPage() {
       setAiGeneratedSources(result.sources || []);
       setError(null);
       setAiProgress({ stage: "completed", message: "สร้างเสร็จสมบูรณ์!" });
+
+      // Automatically trigger media search using the generated title for better relevance
+      handleSearchMedia(result.title || aiTopic);
     } catch (err: any) {
       const elapsed = Date.now() - startTime;
       console.error(`[Generate AI Page] ========== GENERATION FAILED (${elapsed}ms) ==========`);
@@ -519,6 +540,64 @@ export default function AdminCmsNewsPage() {
 
   const getCategoryLabel = (value: string) => {
     return categories.find((c) => c.value === value) || categories[0];
+  };
+
+  // Media search handler
+  const handleSearchMedia = async (query?: string) => {
+    const searchTopic = query || mediaSearchQuery;
+    if (!searchTopic.trim()) return;
+
+    setIsSearchingMedia(true);
+    setMediaSearchQuery(searchTopic);
+    try {
+      const result = await aiService.searchMediaForNews(searchTopic);
+      setMediaImages(result.images);
+      setMediaVideos(result.videos);
+    } catch (err) {
+      console.error("[Media Search] Failed:", err);
+    } finally {
+      setIsSearchingMedia(false);
+    }
+  };
+
+  // Media insert handlers
+  const handleSetCoverImage = (url: string) => {
+    setFormData((prev) => ({ ...prev, coverImage: url }));
+  };
+
+  const handleInsertImageToContent = (url: string, alt: string) => {
+    const imageMarkdown = `\n\n![${alt.replace(/[\[\]]/g, "")}](${url})\n`;
+    const content = formData.content || "";
+    const pos = cursorPosition ?? content.length;
+    const newContent = content.slice(0, pos) + imageMarkdown + content.slice(pos);
+    setFormData((prev) => ({ ...prev, content: newContent }));
+    // Move cursor after inserted text
+    const newPos = pos + imageMarkdown.length;
+    setCursorPosition(newPos);
+    // Restore cursor in textarea
+    setTimeout(() => {
+      if (contentTextareaRef.current) {
+        contentTextareaRef.current.focus();
+        contentTextareaRef.current.setSelectionRange(newPos, newPos);
+      }
+    }, 50);
+  };
+
+  const handleInsertVideoToContent = (videoId: string, title: string) => {
+    const videoEmbed = `\n\n<div class="video-embed" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;border-radius:12px;"><iframe src="https://www.youtube.com/embed/${videoId}" title="${title.replace(/"/g, "&quot;")}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div>\n`;
+    const content = formData.content || "";
+    const pos = cursorPosition ?? content.length;
+    const newContent = content.slice(0, pos) + videoEmbed + content.slice(pos);
+    setFormData((prev) => ({ ...prev, content: newContent }));
+    // Move cursor after inserted text
+    const newPos = pos + videoEmbed.length;
+    setCursorPosition(newPos);
+    setTimeout(() => {
+      if (contentTextareaRef.current) {
+        contentTextareaRef.current.focus();
+        contentTextareaRef.current.setSelectionRange(newPos, newPos);
+      }
+    }, 50);
   };
 
   return (
@@ -1074,7 +1153,7 @@ export default function AdminCmsNewsPage() {
 
                         {!aiService.isConfigured() && showAIGenerate && (
                           <div className="mt-3 p-2 bg-red-500/5 border-[1px] border-red-300 text-red-400 text-xs">
-                            กรุณาตั้งค่า NEXT_PUBLIC_LITELLM_API_KEY ในไฟล์ .env
+                            กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ server
                             ก่อนใช้งาน AI
                           </div>
                         )}
@@ -1162,16 +1241,53 @@ export default function AdminCmsNewsPage() {
                           เนื้อหา *
                         </label>
                         <textarea
+                          ref={contentTextareaRef}
                           value={formData.content}
-                          onChange={(e) =>
-                            setFormData({ ...formData, content: e.target.value })
-                          }
-                          placeholder="เนื้อหาข่าวฉบับเต็ม (รองรับ HTML)"
+                          onChange={(e) => {
+                            setFormData({ ...formData, content: e.target.value });
+                            setCursorPosition(e.target.selectionStart);
+                          }}
+                          onClick={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
+                          onKeyUp={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
+                          placeholder="เนื้อหาข่าวฉบับเต็ม (รองรับ HTML) — คลิกตรงที่ต้องการแทรกรูป/คลิป"
                           required
                           rows={10}
                           className="w-full py-2.5 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none font-mono text-sm"
                         />
+                        {cursorPosition !== null && formData.content && (
+                          <p className="text-[10px] text-cyan-500/60 mt-1">
+                            📍 ตำแหน่ง cursor: บรรทัด {formData.content.slice(0, cursorPosition).split('\n').length} — รูป/คลิปจะแทรกที่ตำแหน่งนี้
+                          </p>
+                        )}
                       </div>
+
+                      {/* Media Picker Panel */}
+                      {(mediaImages.length > 0 || mediaVideos.length > 0 || isSearchingMedia) && (
+                        <MediaPickerPanel
+                          images={mediaImages}
+                          videos={mediaVideos}
+                          isSearching={isSearchingMedia}
+                          searchQuery={mediaSearchQuery}
+                          onSearchQueryChange={setMediaSearchQuery}
+                          onSearch={() => handleSearchMedia()}
+                          onSetCoverImage={handleSetCoverImage}
+                          onInsertImage={handleInsertImageToContent}
+                          onInsertVideo={handleInsertVideoToContent}
+                          currentCoverImage={formData.coverImage}
+                        />
+                      )}
+
+                      {/* Manual media search button when AI panel is open but no media yet */}
+                      {showAIGenerate && mediaImages.length === 0 && mediaVideos.length === 0 && !isSearchingMedia && formData.content && (
+                        <button
+                          type="button"
+                          onClick={() => handleSearchMedia(aiTopic || formData.title)}
+                          className="w-full py-2 px-4 border border-dashed border-cyan-500/30 rounded-[12px] text-cyan-400 text-xs hover:bg-cyan-500/5 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <ImagePlus className="w-3.5 h-3.5" />
+                          ค้นหารูปภาพและวิดีโอ YouTube ประกอบบทความ
+                        </button>
+                      )}
 
                       {/* AI Generated Sources Preview */}
                       {aiGeneratedSources.length > 0 && (

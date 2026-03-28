@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // DuckDuckGo image search result type (from /api/image-search)
-interface DDGImageResult {
+export interface DDGImageResult {
   image: string;
   title: string;
   height: number;
@@ -28,11 +28,8 @@ const slugify = (text: string) => {
   return `content-${Math.random().toString(36).slice(2, 8)}`;
 };
 
-// LiteLLM API configuration
-const LITELLM_API_BASE_URL =
-  process.env.NEXT_PUBLIC_LITELLM_API_URL ||
-  "http://litellm-l8k0ggssggs8k8k44kko0404.89.38.101.12.sslip.io";
-const LITELLM_API_KEY = process.env.NEXT_PUBLIC_LITELLM_API_KEY || "";
+// LiteLLM API calls are now proxied through server-side API routes
+// to avoid exposing the API key in the client bundle.
 
 
 // AI Model interface
@@ -203,11 +200,7 @@ URL: https://lnwtermgame.com
 // AI Service class with debug capabilities
 class AiService {
   private client = axios.create({
-    baseURL: LITELLM_API_BASE_URL,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${LITELLM_API_KEY}`,
-    },
+    baseURL: "/api/ai",
     timeout: 300000, // 300 seconds (5 min) timeout for long AI generation
   });
 
@@ -231,13 +224,25 @@ class AiService {
     };
   }
 
-  // Check if API key is configured
-  isConfigured(): boolean {
-    return (
-      !!LITELLM_API_KEY &&
-      LITELLM_API_KEY.length > 0 &&
-      LITELLM_API_KEY !== "your_api_key_here"
-    );
+  // Cached configuration status from server
+  private _configured: boolean | null = null;
+
+  // Check if AI is configured (queries server-side status)
+  async isConfigured(): Promise<boolean> {
+    if (this._configured !== null) return this._configured;
+    try {
+      const res = await axios.get("/api/ai/status");
+      this._configured = !!res.data?.configured;
+      return this._configured;
+    } catch {
+      this._configured = false;
+      return false;
+    }
+  }
+
+  // Synchronous check using cached value (returns false if not yet checked)
+  isConfiguredSync(): boolean {
+    return this._configured === true;
   }
 
   // Get available models from LiteLLM
@@ -248,7 +253,7 @@ class AiService {
     }
 
     try {
-      const response = await this.client.get("/v1/models");
+      const response = await this.client.get("/models");
       const models = response.data?.data || [];
       cachedModels = models.map((m: any) => ({
         id: m.id,
@@ -692,15 +697,11 @@ class AiService {
 
   // Get API configuration status for debugging
   getConfigStatus(): {
-    hasKey: boolean;
-    keyLength: number;
-    baseUrl: string;
+    configured: boolean;
     model: string;
   } {
     return {
-      hasKey: !!LITELLM_API_KEY && LITELLM_API_KEY.length > 0,
-      keyLength: LITELLM_API_KEY?.length || 0,
-      baseUrl: LITELLM_API_BASE_URL,
+      configured: this._configured === true,
       model: this.selectedModel || "default",
     };
   }
@@ -729,7 +730,7 @@ class AiService {
     return topicWords.some((word) => combined.includes(word));
   }
 
-  private async searchGameImages(
+  async searchGameImages(
     query: string,
     maxResults: number = 10,
     topic?: string,
@@ -806,10 +807,10 @@ class AiService {
   /**
    * Search for YouTube videos related to the topic, already verified as available
    */
-  private async searchYoutubeVideos(
+  async searchYoutubeVideos(
     topic: string,
-    maxResults: number = 2,
-  ): Promise<{ videoId: string; title: string }[]> {
+    maxResults: number = 6,
+  ): Promise<{ videoId: string; title: string; url: string }[]> {
     try {
       console.log("[YouTube Search] Searching:", topic);
       const response = await axios.post(
@@ -817,7 +818,11 @@ class AiService {
         { query: `${topic} game`, maxResults },
         { timeout: 30000 },
       );
-      const videos = response.data?.videos || [];
+      const videos = (response.data?.videos || []).map((v: any) => ({
+        videoId: v.videoId,
+        title: v.title || "",
+        url: v.url || `https://www.youtube.com/watch?v=${v.videoId}`,
+      }));
       console.log("[YouTube Search] Found", videos.length, "verified videos");
       return videos;
     } catch (error: any) {
@@ -954,9 +959,9 @@ class AiService {
     const configStatus = this.getConfigStatus();
     console.log("[AI Service] Config status:", configStatus);
 
-    if (!this.isConfigured()) {
+    if (!this.isConfiguredSync()) {
       const error =
-        "LiteLLM API key not configured. Please set NEXT_PUBLIC_LITELLM_API_KEY in your .env file.";
+        "AI service not configured. Please set LITELLM_API_KEY in your .env file.";
       logs.push(this.createLog("error", error, { configStatus }));
       progress = {
         ...progress,
@@ -971,8 +976,6 @@ class AiService {
 
     logs.push(
       this.createLog("info", "API configuration verified", {
-        keyLength: LITELLM_API_KEY.length,
-        baseUrl: LITELLM_API_BASE_URL,
         model: this.selectedModel || "default",
       }),
     );
@@ -1491,7 +1494,7 @@ You are an expert e-commerce content writer for Lnwtermgame. You specialize in w
         });
 
         const response = await this.client.post<ZaiChatCompletionResponse>(
-          "/v1/chat/completions",
+          "/chat",
           request,
         );
 
@@ -1565,7 +1568,7 @@ You are an expert e-commerce content writer for Lnwtermgame. You specialize in w
           console.log(`[LiteLLM Custom] Retry attempt ${attempt}/${retries}...`);
         }
         const response = await this.client.post<ZaiChatCompletionResponse>(
-          "/v1/chat/completions",
+          "/chat",
           request,
         );
         return response.data;
@@ -1639,7 +1642,7 @@ You are an expert e-commerce copywriter for Lnwtermgame with access to web searc
         );
 
         const response = await this.client.post<ZaiChatCompletionResponse>(
-          "/v1/chat/completions",
+          "/chat",
           request,
         );
 
@@ -1693,52 +1696,51 @@ You are an expert e-commerce copywriter for Lnwtermgame with access to web searc
       const errorData = error.response?.data;
 
       // Log detailed error info for debugging
-      console.error("[LiteLLM API Error]", {
+      console.error("[AI Proxy Error]", {
         status,
         errorData,
         message: error.message,
         code: error.code,
         requestUrl: error.config?.url,
-        hasApiKey: !!LITELLM_API_KEY && LITELLM_API_KEY.length > 0,
       });
 
       if (!status) {
         // Network error or no response
         if (error.code === "ECONNREFUSED" || error.code === "ENOTFOUND") {
           return new Error(
-            "Cannot connect to LiteLLM API. Please check your network connection.",
+            "Cannot connect to AI proxy. Please check your network connection.",
           );
         } else if (
           error.code === "ETIMEDOUT" ||
           error.code === "ECONNABORTED"
         ) {
           return new Error(
-            "Request to LiteLLM API timed out. Please try again.",
-          );
-        } else if (!LITELLM_API_KEY) {
-          return new Error(
-            "LiteLLM API key is missing. Please set NEXT_PUBLIC_LITELLM_API_KEY.",
+            "Request to AI service timed out. Please try again.",
           );
         } else {
           return new Error(
-            `Network error: ${error.message}. Please check your connection and API configuration.`,
+            `Network error: ${error.message}. Please check your connection.`,
           );
         }
       }
 
       if (status === 401) {
         return new Error(
-          "Invalid API key. Please check your LiteLLM API key configuration.",
+          "AI service authentication failed. Please check server configuration.",
         );
       } else if (status === 429) {
         return new Error(
           "Rate limit exceeded. Please wait a moment and try again.",
         );
       } else if (status === 500) {
-        return new Error("LiteLLM server error. Please try again later.");
+        const serverMsg =
+          typeof errorData === "object" && errorData?.error
+            ? String(errorData.error)
+            : "AI service error";
+        return new Error(serverMsg + ". Please try again later.");
       } else {
         return new Error(
-          `API Error (${status}): ${JSON.stringify(errorData) || error.message}`,
+          `API Error (${status}): ${typeof errorData === "string" ? errorData : JSON.stringify(errorData) || error.message}`,
         );
       }
     }
@@ -2224,6 +2226,62 @@ ${inferredPlatforms ? `\nคำแนะนำ: สินค้านี้อ�
 
 
   /**
+   * Search for diverse images and YouTube videos for a news topic.
+   * Returns multiple results for the admin to choose and insert.
+   */
+  async searchMediaForNews(
+    topic: string,
+  ): Promise<{
+    images: DDGImageResult[];
+    videos: { videoId: string; title: string; url: string }[];
+  }> {
+    console.log("[Media Search] Searching media for:", topic);
+
+    // Use news-focused, time-specific queries for fresh, relevant images
+    const currentYear = new Date().getFullYear();
+    const topicWords = topic.split(/\s+/).slice(0, 3).join(" "); // Use first 3 words for focused search
+    const imageQueries = [
+      `${topic} ${currentYear} news`,
+      `${topic} latest update screenshot`,
+      `${topicWords} official promo art ${currentYear}`,
+      `${topic} game announcement`,
+    ];
+
+    // Search images with all queries in parallel
+    const imagePromises = imageQueries.map((q) =>
+      this.searchGameImages(q, 5, topic).catch(() => [] as DDGImageResult[]),
+    );
+
+    // Search YouTube videos
+    const videoPromise = this.searchYoutubeVideos(topic, 8).catch(
+      () => [] as { videoId: string; title: string; url: string }[],
+    );
+
+    const [imgResults, videos] = await Promise.all([
+      Promise.all(imagePromises),
+      videoPromise,
+    ]);
+
+    // Deduplicate images by URL
+    const seenUrls = new Set<string>();
+    const allImages: DDGImageResult[] = [];
+    for (const batch of imgResults) {
+      for (const img of batch) {
+        if (!seenUrls.has(img.image)) {
+          seenUrls.add(img.image);
+          allImages.push(img);
+        }
+      }
+    }
+
+    console.log(
+      `[Media Search] Found ${allImages.length} unique images, ${videos.length} videos`,
+    );
+
+    return { images: allImages.slice(0, 16), videos: videos.slice(0, 8) };
+  }
+
+  /**
    * Generate news article content using TheNewsAPI
    * Fetches real articles and populates the form with article data
    */
@@ -2241,13 +2299,11 @@ ${inferredPlatforms ? `\nคำแนะนำ: สินค้านี้อ�
 
     try {
       // Step 1: Check LiteLLM is configured
-      if (!this.isConfigured()) {
+      if (!this.isConfiguredSync()) {
         throw new Error(
-          "LiteLLM API key not configured. Please set NEXT_PUBLIC_LITELLM_API_KEY in your .env file.",
+          "AI service not configured. Please set LITELLM_API_KEY in your server .env file.",
         );
       }
-
-      const providerLabel = newsProvider === "newsapi" ? "NewsAPI.org" : "TheNewsAPI";
 
       onProgress?.({
         stage: "preparing",
@@ -2354,42 +2410,9 @@ ${inferredPlatforms ? `\nคำแนะนำ: สินค้านี้อ�
         .filter((s) => s.startsWith("http"))
         .slice(0, 5);
 
-      // Step 5: Insert images into content body and find cover image
-      onProgress?.({
-        stage: "images",
-        message: "กำลังค้นหารูปภาพประกอบบทความ...",
-      });
-
-      try {
-        const imageResult = await this.insertImagesIntoContent(
-          result.content || "",
-          result.title || topic,
-          3, // Insert up to 3 images spread across sections
-        );
-
-        // Update content with images inserted
-        if (imageResult.content) {
-          result.content = imageResult.content;
-          console.log("[News] Images inserted into content body");
-        }
-
-        // Use cover from image search
-        if (imageResult.coverImage) {
-          result.coverImage = imageResult.coverImage;
-          console.log("[News] Cover image from search:", result.coverImage);
-        }
-      } catch (imgErr) {
-        console.warn("[News] Image insertion failed:", imgErr);
-      }
-
-      // Fallback: use TheNewsAPI article image as cover if no cover found
-      if (!result.coverImage) {
-        const articleWithImage = articles.find((a: any) => a.image_url && this.isValidImageUrl(a.image_url));
-        if (articleWithImage) {
-          result.coverImage = articleWithImage.image_url;
-          console.log("[News] Using article image as cover fallback:", result.coverImage);
-        }
-      }
+      // Note: Images and YouTube videos are no longer auto-inserted.
+      // The UI will call searchMediaForNews() separately and let the admin
+      // pick which media to insert via the MediaPickerPanel component.
 
       const elapsed = Date.now() - startTime;
       console.log(`[News] ========== COMPLETE (${elapsed}ms) ==========`);
@@ -2529,9 +2552,9 @@ SOURCES: [${articles.map((a) => a.url).filter(Boolean).join(", ")}]
   ): Promise<GeneratedEditorialContent> {
     onProgress?.({ stage: "preparing", message: "กำลังเตรียมข้อมูล..." });
 
-    if (!this.isConfigured()) {
+    if (!this.isConfiguredSync()) {
       throw new Error(
-        "LiteLLM API key not configured. Please set NEXT_PUBLIC_LITELLM_API_KEY in your .env file.",
+        "AI service not configured. Please set LITELLM_API_KEY in your server .env file.",
       );
     }
 

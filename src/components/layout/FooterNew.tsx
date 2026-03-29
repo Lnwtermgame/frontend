@@ -93,34 +93,25 @@ export default function FooterNew() {
                         </div>
                     </div>
 
-                    {/* Right Side: Facebook Widget + Social Icons */}
+                    {/* Right Side: Facebook Page Plugin + Social Icons */}
                     <div className="lg:w-1/4 flex flex-col items-start lg:items-end">
-                        {/* Facebook Widget - only show if facebookUrl is set */}
+                        {/* Facebook Page Plugin */}
                         {facebookUrl && (
-                            <a
-                                href={facebookUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-[#222427] border border-[#33353b] p-3 rounded-[8px] w-full max-w-[280px] block hover:border-site-accent/30 transition-colors group"
-                            >
-                                <div className="flex gap-3 items-center text-white">
-                                    <SocialIcon
-                                        url={facebookUrl}
-                                        style={{ width: 40, height: 40 }}
-                                        target="_blank"
-                                        as="div"
+                            <div className="w-full max-w-[280px] flex flex-col items-start lg:items-end">
+                                <div className="bg-white rounded-[6px] shadow-sm border border-[#33353b]/50 overflow-hidden w-full">
+                                    <iframe
+                                        src={`https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(facebookUrl)}&tabs=&width=280&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false`}
+                                        width="100%"
+                                        height="130"
+                                        style={{ border: "none", overflow: "hidden", display: "block", backgroundColor: "white" }}
+                                        scrolling="no"
+                                        frameBorder="0"
+                                        allowFullScreen={true}
+                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                        title="Facebook Page"
                                     />
-                                    <div>
-                                        <p className="text-[13px] font-bold leading-tight group-hover:text-site-accent transition-colors">LNWTERMGAME</p>
-                                        <p className="text-[10px] text-gray-500">Facebook Page</p>
-                                    </div>
                                 </div>
-                                <div className="flex items-center mt-2">
-                                    <span className="bg-[#1877f2] text-white text-xs px-3 py-1 flex items-center gap-1.5 rounded font-medium">
-                                        Follow Page
-                                    </span>
-                                </div>
-                            </a>
+                            </div>
                         )}
 
                         {/* Social Links Row */}

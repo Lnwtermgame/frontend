@@ -104,54 +104,84 @@ export default function Navbar() {
                             <div className="relative" ref={userMenuRef}>
                                 <div
                                     onClick={() => setShowUserMenu(!showUserMenu)}
-                                    className="flex items-center gap-2.5 bg-[#212328] px-3 py-1.5 rounded-full cursor-pointer hover:bg-site-border/30 transition-colors border border-site-border/50"
+                                    className="flex items-center gap-2.5 bg-[#181A1D] px-2 py-1.5 pr-3 rounded-full cursor-pointer hover:bg-[#212328] transition-all border border-site-border/80 shadow-sm"
                                 >
-                                    <div className="w-6 h-6 bg-[#181A1D] rounded-full flex items-center justify-center overflow-hidden border border-site-border/50">
-                                        <User size={12} className="text-gray-400" />
+                                    <div className="w-7 h-7 bg-gradient-to-br from-site-accent to-blue-600 rounded-full flex items-center justify-center overflow-hidden shadow-inner">
+                                        <span className="text-white text-[11px] font-bold">
+                                            {(user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
+                                        </span>
                                     </div>
-                                    <span className="text-white text-[12px] font-medium truncate max-w-[100px] hidden sm:block">
-                                        {user?.username || user?.name || "Player"}
-                                    </span>
-                                    <ChevronDown size={14} className="text-gray-500" />
+                                    <div className="flex flex-col">
+                                        <span className="text-[#f4f4f5] text-[12px] font-bold leading-tight truncate max-w-[100px] hidden sm:block">
+                                            {user?.username || user?.name || "Player"}
+                                        </span>
+                                        <span className="text-[#a1a1aa] text-[10px] leading-tight hidden sm:block">
+                                            {t("my_account")}
+                                        </span>
+                                    </div>
+                                    <ChevronDown size={14} className={`text-gray-400 ml-1 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
                                 </div>
                                 {/* Dropdown Menu */}
                                 {showUserMenu && (
-                                    <div className="absolute right-0 top-full mt-3 flex flex-col bg-[#212328] border border-site-border/50 rounded-[12px] shadow-2xl w-[260px] overflow-hidden z-50">
-                                        <div className="p-4 border-b border-site-border/30 flex items-center bg-[#181A1D]">
-                                            <div className="h-10 w-10 rounded-full border border-site-border/50 flex items-center justify-center mr-3 overflow-hidden bg-[#212328] shrink-0">
-                                                <span className="text-white font-bold text-lg">
-                                                    {(user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
-                                                </span>
-                                            </div>
-                                            <div className="min-w-0">
-                                                <div className="font-bold text-white text-[13px] truncate">
-                                                    {user?.username || user?.name || "Player"}
+                                    <div className="absolute right-0 top-full mt-2.5 flex flex-col bg-[#181A1D] border border-site-border/80 rounded-[12px] shadow-2xl w-[280px] overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {/* User Info Header */}
+                                        <div className="p-4 border-b border-site-border/30 bg-[#1c1e22]">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-site-accent to-blue-600 flex items-center justify-center shadow-inner shrink-0 ring-2 ring-[#181A1D]">
+                                                    <span className="text-white font-bold text-lg">
+                                                        {(user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
+                                                    </span>
                                                 </div>
-                                                <div className="text-gray-400 text-[11px] truncate">
-                                                    {user?.email || "user@example.com"}
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="font-bold text-[#f4f4f5] text-[14px] truncate">
+                                                        {user?.username || user?.name || "Player"}
+                                                    </div>
+                                                    <div className="text-[#a1a1aa] text-[12px] truncate mt-0.5">
+                                                        {user?.email || "user@example.com"}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="py-2">
+
+                                        {/* Menu Items */}
+                                        <div className="p-2 flex flex-col gap-0.5">
                                             {isAdmin && (
-                                                <Link href="/admin" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-purple-400 hover:text-purple-300 hover:bg-[#212328]/5 transition-colors font-medium">
-                                                    <Shield size={15} /> {t("admin_panel")}
+                                                <Link href="/admin" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors font-medium group">
+                                                    <div className="w-7 h-7 rounded-full bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                                                        <Shield size={14} />
+                                                    </div>
+                                                    {t("admin_panel")}
                                                 </Link>
                                             )}
-                                            <Link href="/dashboard/account" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-gray-300 hover:text-white hover:bg-[#212328]/5 transition-colors">
-                                                <User size={15} /> {t("my_account")}
+                                            <Link href="/dashboard/account" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-gray-300 hover:text-white hover:bg-[#272a30] transition-colors group">
+                                                <div className="w-7 h-7 rounded-full bg-[#212328] flex items-center justify-center group-hover:bg-[#2a2d35] transition-colors text-gray-400 group-hover:text-white">
+                                                    <User size={14} />
+                                                </div>
+                                                {t("my_account")}
                                             </Link>
-                                            <Link href="/dashboard/credits" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-gray-300 hover:text-white hover:bg-[#212328]/5 transition-colors">
-                                                <Coins size={15} /> {t("credits")}
+                                            <Link href="/dashboard/credits" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-gray-300 hover:text-white hover:bg-[#272a30] transition-colors group">
+                                                <div className="w-7 h-7 rounded-full bg-[#212328] flex items-center justify-center group-hover:bg-[#2a2d35] transition-colors text-gray-400 group-hover:text-white">
+                                                    <Coins size={14} />
+                                                </div>
+                                                {t("credits")}
                                             </Link>
-                                            <Link href="/dashboard/orders" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-gray-300 hover:text-white hover:bg-[#212328]/5 transition-colors">
-                                                <ShoppingCart size={15} /> {t("order_history")}
+                                            <Link href="/dashboard/orders" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-gray-300 hover:text-white hover:bg-[#272a30] transition-colors group">
+                                                <div className="w-7 h-7 rounded-full bg-[#212328] flex items-center justify-center group-hover:bg-[#2a2d35] transition-colors text-gray-400 group-hover:text-white">
+                                                    <ShoppingCart size={14} />
+                                                </div>
+                                                {t("order_history")}
                                             </Link>
                                         </div>
-                                        <div className="h-[1px] bg-site-border/30 w-full"></div>
-                                        <button onClick={() => { setShowUserMenu(false); handleLogout(); }} className="flex items-center gap-3 px-4 py-3.5 text-[13px] text-[#EB5757] hover:text-[#FF6B6B] hover:bg-[#212328]/5 transition-colors text-left w-full font-medium">
-                                            <LogOut size={15} /> {t("logout")}
-                                        </button>
+
+                                        {/* Logout Section */}
+                                        <div className="p-2 border-t border-site-border/30 bg-[#141517]/50">
+                                            <button onClick={() => { setShowUserMenu(false); handleLogout(); }} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-[#EB5757] hover:text-[#FF6B6B] hover:bg-red-500/10 transition-colors text-left w-full font-medium group">
+                                                <div className="w-7 h-7 rounded-full bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                                                    <LogOut size={14} />
+                                                </div>
+                                                {t("logout")}
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>

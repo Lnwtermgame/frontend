@@ -188,7 +188,7 @@ export default function SeagmSyncPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+      className="bg-site-surface border border-white/5 rounded-2xl p-6"
       
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -198,7 +198,7 @@ export default function SeagmSyncPage() {
         <div className={`p-3 ${color}`}>
           <Icon className="w-6 h-6 text-white" />
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-gray-400">
           <Clock className="w-4 h-4" />
           <span>{formatTime(lastSync)}</span>
         </div>
@@ -210,8 +210,8 @@ export default function SeagmSyncPage() {
       <button
         onClick={onClick}
         disabled={isLoading}
-        className={`w-full py-2 px-4 font-medium transition-all flex items-center justify-center gap-2 border border-site-border/30 rounded-[12px] ${isLoading
-          ? "bg-site-border/30 text-gray-500 cursor-not-allowed"
+        className={`w-full py-2 px-4 font-medium transition-all flex items-center justify-center gap-2 border border-white/5 rounded-xl ${isLoading
+          ? "bg-site-border/30 text-gray-400 cursor-not-allowed"
           : "bg-black text-white hover:bg-gray-800"
           }`}
         style={{ boxShadow: isLoading ? "none" : "4px 4px 0 0 #000000" }}
@@ -230,8 +230,8 @@ export default function SeagmSyncPage() {
       </button>
 
       {result && (
-        <div className="mt-4 pt-4 border-t-[2px] border-site-border/30 space-y-2">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+        <div className="mt-4 pt-4 border-t-[2px] border-white/5 space-y-2">
+          <div className="text-xs text-gray-400 uppercase tracking-wider mb-2">
             สินค้า (เกม)
           </div>
           <div className="flex items-center justify-between text-sm">
@@ -246,7 +246,7 @@ export default function SeagmSyncPage() {
               {result.productsUpdated}
             </span>
           </div>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mt-3 mb-2">
+          <div className="text-xs text-gray-400 uppercase tracking-wider mt-3 mb-2">
             ประเภทสินค้า (ตัวเลือก)
           </div>
           <div className="flex items-center justify-between text-sm">
@@ -262,7 +262,7 @@ export default function SeagmSyncPage() {
             </span>
           </div>
           {result.errors.length > 0 && (
-            <div className="mt-2 p-2 bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm">
+            <div className="mt-2 p-2 bg-red-500/10 border border-white/5 rounded-xl">
               <div className="flex items-center gap-2 text-red-600 text-sm">
                 <AlertCircle className="w-4 h-4" />
                 <span>{result.errors.length} ข้อผิดพลาด</span>
@@ -280,7 +280,7 @@ export default function SeagmSyncPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-purple-500 mr-2"></span>
+            <span className="w-1.5 h-6 bg-site-accent mr-2"></span>
             <div>
               <h1 className="text-2xl font-bold text-white">ซิงค์ SEAGM</h1>
               <p className="text-gray-400 mt-1">
@@ -290,10 +290,10 @@ export default function SeagmSyncPage() {
           </div>
           <div className="flex items-center gap-4">
             <div
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] px-4 py-2 flex items-center gap-3">
-              <Database className="w-5 h-5 text-purple-400" />
+              className="bg-site-surface border border-white/5 rounded-2xl px-4 py-2 flex items-center gap-3">
+              <Database className="w-5 h-5 text-site-accent" />
               <div>
-                <p className="text-xs text-gray-500">ขนาดแคช</p>
+                <p className="text-xs text-gray-400">ขนาดแคช</p>
                 <p className="text-white font-medium">
                   {cacheStats?.size ?? 0} รายการ
                 </p>
@@ -304,7 +304,7 @@ export default function SeagmSyncPage() {
 
         {/* Environment Toggle */}
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-5"
+          className="bg-site-surface border border-white/5 rounded-2xl p-5"
           
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -315,7 +315,7 @@ export default function SeagmSyncPage() {
               <h2 className="text-lg font-semibold text-white mb-1">
                 เลือก Environment
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 เลือก environment ที่ต้องการซิงค์ข้อมูลจาก SEAGM API
               </p>
             </div>
@@ -325,9 +325,9 @@ export default function SeagmSyncPage() {
               <button
                 onClick={() => setSelectedEnv("sandbox")}
                 disabled={isAnySyncing}
-                className={`flex items-center gap-2 px-5 py-2.5 font-medium border border-site-border/30 rounded-[12px] transition-all ${selectedEnv === "sandbox"
-                  ? "bg-emerald-500 text-white"
-                  : "bg-[#212328] text-gray-400 hover:bg-[#212328]/5"
+                className={`flex items-center gap-2 px-5 py-2.5 font-medium border border-white/5 rounded-xl transition-all ${selectedEnv === "sandbox"
+                  ? "bg-site-accent text-white"
+                  : "bg-site-raised text-gray-400 hover:bg-site-raised/5"
                   } ${isAnySyncing ? "opacity-50 cursor-not-allowed" : ""}`}
                 style={{
                   boxShadow:
@@ -344,9 +344,9 @@ export default function SeagmSyncPage() {
               <button
                 onClick={() => setSelectedEnv("production")}
                 disabled={isAnySyncing}
-                className={`flex items-center gap-2 px-5 py-2.5 font-medium border border-site-border/30 rounded-[12px] transition-all ${selectedEnv === "production"
+                className={`flex items-center gap-2 px-5 py-2.5 font-medium border border-white/5 rounded-xl transition-all ${selectedEnv === "production"
                   ? "bg-red-500/50 text-white"
-                  : "bg-[#212328] text-gray-400 hover:bg-[#212328]/5"
+                  : "bg-site-raised text-gray-400 hover:bg-site-raised/5"
                   } ${isAnySyncing ? "opacity-50 cursor-not-allowed" : ""}`}
                 style={{
                   boxShadow:
@@ -363,9 +363,9 @@ export default function SeagmSyncPage() {
 
           {/* Environment Info Bar */}
           <div
-            className={`mt-4 p-3 border border-site-border/30 rounded-[12px] shadow-sm flex items-center gap-3 ${selectedEnv === "production"
+            className={`mt-4 p-3 border border-white/5 rounded-xl flex items-center gap-3 ${selectedEnv === "production"
               ? "bg-red-500/5"
-              : "bg-emerald-50"
+              : "bg-site-accent/5"
               }`}>
             {selectedEnv === "production" ? (
               <>
@@ -381,12 +381,12 @@ export default function SeagmSyncPage() {
               </>
             ) : (
               <>
-                <FlaskConical className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <FlaskConical className="w-5 h-5 text-site-accent flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-emerald-700">
+                  <p className="text-sm font-medium text-site-accent">
                     Sandbox Mode — openapi.seagm.io
                   </p>
-                  <p className="text-xs text-emerald-600">
+                  <p className="text-xs text-site-accent">
                     ✓ โหมดทดสอบ ปลอดภัย ใช้ข้อมูลทดสอบจาก SEAGM
                   </p>
                 </div>
@@ -405,7 +405,7 @@ export default function SeagmSyncPage() {
             isLoading={isLoading.all}
             lastSync={lastSync.all}
             result={results.all}
-            color="bg-gradient-to-br from-purple-500 to-pink-500"
+            color="bg-gradient-to-br from-site-accent to-site-accent/80"
           />
           <SyncCard
             title="ซิงค์บัตร"
@@ -425,7 +425,7 @@ export default function SeagmSyncPage() {
             isLoading={isLoading.directTopUp}
             lastSync={lastSync.directTopUp}
             result={results.directTopUp}
-            color="bg-gradient-to-br from-orange-500 to-red-500"
+            color="bg-gradient-to-br from-site-accent to-red-500"
           />
           <SyncCard
             title="ซิงค์มือถือ"
@@ -435,13 +435,13 @@ export default function SeagmSyncPage() {
             isLoading={isLoading.mobileRecharge}
             lastSync={lastSync.mobileRecharge}
             result={results.mobileRecharge}
-            color="bg-gradient-to-br from-green-500 to-emerald-500"
+            color="bg-gradient-to-br from-site-accent to-site-accent/80"
           />
         </div>
 
         {/* Info Section */}
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+          className="bg-site-surface border border-white/5 rounded-2xl p-6"
           
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -457,7 +457,7 @@ export default function SeagmSyncPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-[#181A1D]0/10 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-blue-500/30">
+                <div className="w-8 h-8 bg-site-surface0/10 flex items-center justify-center flex-shrink-0 border border-white/5 rounded-xl border-blue-500/30">
                   <Box className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
@@ -470,8 +470,8 @@ export default function SeagmSyncPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-orange-100 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-orange-500">
-                  <Layers className="w-4 h-4 text-orange-600" />
+                <div className="w-8 h-8 bg-site-accent/10 flex items-center justify-center flex-shrink-0 border border-white/5 rounded-xl border-site-accent">
+                  <Layers className="w-4 h-4 text-site-accent" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium">
@@ -486,7 +486,7 @@ export default function SeagmSyncPage() {
             </div>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-green-500/10 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-green-500/30/30">
+                <div className="w-8 h-8 bg-green-500/10 flex items-center justify-center flex-shrink-0 border border-white/5 rounded-xl border-green-500/30/30">
                   <CreditCard className="w-4 h-4 text-green-600" />
                 </div>
                 <div>
@@ -499,8 +499,8 @@ export default function SeagmSyncPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-purple-100 flex items-center justify-center flex-shrink-0 border border-site-border/30 rounded-[12px] shadow-sm border-purple-500">
-                  <Zap className="w-4 h-4 text-purple-600" />
+                <div className="w-8 h-8 bg-site-accent/10 flex items-center justify-center flex-shrink-0 border border-white/5 rounded-xl border-site-accent">
+                  <Zap className="w-4 h-4 text-site-accent" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium">โหมดเติมเงิน</h4>
@@ -516,7 +516,7 @@ export default function SeagmSyncPage() {
 
         {/* Error Handling Info */}
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+          className="bg-site-surface border border-white/5 rounded-2xl p-6"
           
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

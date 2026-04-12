@@ -703,7 +703,7 @@ export default function AIGenerateAllButton({
     switch (status) {
       case "pending":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-[#1A1C1E] text-gray-600 border border-gray-300">
+          <span className="px-2 py-0.5 text-xs font-medium bg-site-raised text-gray-600 border border-gray-300">
             รอดำเนินการ
           </span>
         );
@@ -736,7 +736,7 @@ export default function AIGenerateAllButton({
           <span
             className={`px-2 py-0.5 text-xs font-medium border flex items-center gap-1 ${isComplete
                 ? "bg-green-50 text-green-600 border-green-300"
-                : "bg-[#1A1C1E] text-gray-500 border-gray-300"
+                : "bg-site-raised text-gray-500 border-gray-300"
               }`}
           >
             {isComplete && <CheckCircle2 className="w-3 h-3" />}
@@ -745,7 +745,7 @@ export default function AIGenerateAllButton({
         );
       case "cancelled":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-600 border border-orange-300">
+          <span className="px-2 py-0.5 text-xs font-medium bg-site-accent/10 text-site-accent border border-site-accent/30">
             ยกเลิก
           </span>
         );
@@ -792,7 +792,7 @@ export default function AIGenerateAllButton({
       <button
         onClick={handleOpen}
         disabled={products.length === 0}
-        className="bg-pink-500 border border-site-border/30 rounded-[12px] text-white flex items-center justify-center gap-2 px-4 py-2 hover:bg-pink-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-site-accent border border-site-border/30 rounded-[12px] text-white flex items-center justify-center gap-2 px-4 py-2 hover:bg-site-accent transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <Wand2 className="h-5 w-5" />
@@ -810,14 +810,14 @@ export default function AIGenerateAllButton({
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+              className="bg-site-raised border border-site-border/30 rounded-[16px] w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
               style={{ boxShadow: "8px 8px 0 0 #000000" }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-pink-500 shrink-0">
+              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-site-accent shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#212328] border-[2px] border-black">
+                  <div className="p-2 bg-site-raised border-[2px] border-black">
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -835,7 +835,7 @@ export default function AIGenerateAllButton({
                 </div>
                 <div className="flex items-center gap-2">
                   {isRunning && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#212328] border-[2px] border-black text-white text-sm font-bold">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-site-raised border-[2px] border-black text-white text-sm font-bold">
                       <Clock className="w-3.5 h-3.5" />
                       <span>{formatTime(totalElapsed)}</span>
                     </div>
@@ -852,7 +852,7 @@ export default function AIGenerateAllButton({
               </div>
 
               {/* Stats Bar */}
-              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-[#181A1D] shrink-0">
+              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-site-surface shrink-0">
                 {/* Model Selector */}
                 <div className="mb-3">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -869,7 +869,7 @@ export default function AIGenerateAllButton({
                       availableModels.length === 0 ||
                       isRunning
                     }
-                    className="w-full py-2 px-3 bg-[#212328] border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                    className="w-full py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
                   >
                     {isLoadingModels ? (
                       <option value="">กำลังโหลด models...</option>
@@ -893,7 +893,7 @@ export default function AIGenerateAllButton({
                       checked={skipComplete}
                       onChange={(e) => setSkipComplete(e.target.checked)}
                       disabled={isRunning}
-                      className="w-4 h-4 border-2 border-black text-pink-500 focus:ring-pink-500/50 cursor-pointer disabled:opacity-50"
+                      className="w-4 h-4 border-2 border-black text-site-accent focus:ring-site-accent/50 cursor-pointer disabled:opacity-50"
                     />
                     <span className="text-sm font-medium text-gray-700 group-hover:text-white transition-colors">
                       ข้ามสินค้าที่มีข้อมูลครบแล้ว
@@ -904,7 +904,7 @@ export default function AIGenerateAllButton({
                       <CheckCircle2 className="w-3 h-3" />
                       ข้อมูลครบ: {stats.completeProducts}
                     </span>
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-orange-100 text-orange-700 border border-orange-300">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-site-accent/10 text-site-accent border border-site-accent/30">
                       <AlertCircle className="w-3 h-3" />
                       ข้อมูลไม่ครบ: {stats.incompleteProducts}
                     </span>
@@ -945,7 +945,7 @@ export default function AIGenerateAllButton({
                 {/* Overall Progress Bar */}
                 <div className="h-2.5 bg-site-border/30 border-[2px] border-black overflow-hidden">
                   <motion.div
-                    className="h-full bg-pink-500"
+                    className="h-full bg-site-accent"
                     initial={{ width: "0%" }}
                     animate={{ width: `${progressPercent}%` }}
                     transition={{ duration: 0.5 }}
@@ -964,7 +964,7 @@ export default function AIGenerateAllButton({
                           : state.status === "saved"
                             ? "bg-green-50/50"
                             : state.status === "skipped" && state.isComplete
-                              ? "bg-[#181A1D]/50"
+                              ? "bg-site-surface/50"
                               : ""
                         }`}
                     >
@@ -1002,7 +1002,7 @@ export default function AIGenerateAllButton({
                             )}
                             {state.status === "pending" &&
                               !state.isComplete && (
-                                <span className="px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-600 border border-orange-300 flex items-center gap-1">
+                                <span className="px-2 py-0.5 text-xs font-medium bg-site-accent/10 text-site-accent border border-site-accent/30 flex items-center gap-1">
                                   <AlertCircle className="w-3 h-3" />
                                   ขาด {state.missingFields.length} ฟิลด์
                                 </span>
@@ -1017,7 +1017,7 @@ export default function AIGenerateAllButton({
                                 {state.missingFields.map((field) => (
                                   <span
                                     key={field}
-                                    className="px-1.5 py-0.5 text-[10px] bg-orange-50 text-orange-500 border border-orange-200"
+                                    className="px-1.5 py-0.5 text-[10px] bg-site-accent/5 text-site-accent border border-site-accent/20"
                                   >
                                     {field}
                                   </span>
@@ -1030,7 +1030,7 @@ export default function AIGenerateAllButton({
                             <div className="mt-1 flex items-center gap-2">
                               <div className="flex-1 h-1.5 bg-site-border/30 overflow-hidden">
                                 <motion.div
-                                  className="h-full bg-blue-500"
+                                  className="h-full bg-site-accent"
                                   animate={{
                                     width: `${getStageProgress(state.progress.stage)}%`,
                                   }}
@@ -1063,7 +1063,7 @@ export default function AIGenerateAllButton({
                                 onClick={() => toggleExpand(index)}
                                 className={`p-1.5 border transition-all ${state.expanded
                                     ? "text-white bg-site-border/30 border-gray-400"
-                                    : "text-gray-500 hover:text-white hover:bg-[#1A1C1E] border-transparent hover:border-gray-300"
+                                    : "text-gray-500 hover:text-white hover:bg-site-raised border-transparent hover:border-gray-300"
                                   }`}
                                 title="ดูรายละเอียด"
                               >
@@ -1108,7 +1108,7 @@ export default function AIGenerateAllButton({
                           {state.status === "pending" && isRunning && (
                             <button
                               onClick={() => skipProduct(index)}
-                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-[#1A1C1E] border border-transparent hover:border-gray-300 transition-all"
+                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-site-raised border border-transparent hover:border-gray-300 transition-all"
                               title="ข้ามสินค้านี้"
                             >
                               <SkipForward className="w-4 h-4" />
@@ -1130,8 +1130,8 @@ export default function AIGenerateAllButton({
                               ? "ข้อมูลปัจจุบัน (DB)"
                               : "ข้อมูลที่ AI สร้าง";
                             const headerColor = isShowingDbData
-                              ? "bg-cyan-100 text-cyan-800 border-cyan-300"
-                              : "bg-pink-100 text-pink-800 border-pink-300";
+                              ? "bg-site-accent/10 text-site-accent border-site-accent/30"
+                              : "bg-site-accent/10 text-site-accent border-site-accent/30";
 
                             return (
                               <motion.div
@@ -1156,7 +1156,7 @@ export default function AIGenerateAllButton({
 
                                   {/* Description */}
                                   <div
-                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-[#181A1D] border-gray-200"}`}
+                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-surface border-gray-200"}`}
                                   >
                                     <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                                       คำอธิบาย
@@ -1172,7 +1172,7 @@ export default function AIGenerateAllButton({
 
                                   {/* Short Description */}
                                   <div
-                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-[#181A1D] border-gray-200"}`}
+                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-surface border-gray-200"}`}
                                   >
                                     <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                                       คำอธิบายสั้น
@@ -1189,10 +1189,10 @@ export default function AIGenerateAllButton({
                                   {/* SEO Meta */}
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                     <div
-                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-blue-50 border-blue-200"}`}
+                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-blue-50 border-blue-200"}`}
                                     >
                                       <h5
-                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-cyan-600" : "text-blue-500"}`}
+                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
                                       >
                                         Meta Title
                                       </h5>
@@ -1205,10 +1205,10 @@ export default function AIGenerateAllButton({
                                       </p>
                                     </div>
                                     <div
-                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-blue-50 border-blue-200"}`}
+                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-blue-50 border-blue-200"}`}
                                     >
                                       <h5
-                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-cyan-600" : "text-blue-500"}`}
+                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
                                       >
                                         Meta Description
                                       </h5>
@@ -1221,10 +1221,10 @@ export default function AIGenerateAllButton({
                                       </p>
                                     </div>
                                     <div
-                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-blue-50 border-blue-200"}`}
+                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-blue-50 border-blue-200"}`}
                                     >
                                       <h5
-                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-cyan-600" : "text-blue-500"}`}
+                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
                                       >
                                         Meta Keywords
                                       </h5>
@@ -1242,10 +1242,10 @@ export default function AIGenerateAllButton({
                                   {displayData.gameDetails && (
                                     <div className="grid grid-cols-3 gap-3">
                                       <div
-                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-purple-50 border-purple-200"}`}
+                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-accent/5 border-site-accent/20"}`}
                                       >
                                         <h5
-                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-cyan-600" : "text-purple-500"}`}
+                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
                                         >
                                           Developer
                                         </h5>
@@ -1259,10 +1259,10 @@ export default function AIGenerateAllButton({
                                         </p>
                                       </div>
                                       <div
-                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-purple-50 border-purple-200"}`}
+                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-accent/5 border-site-accent/20"}`}
                                       >
                                         <h5
-                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-cyan-600" : "text-purple-500"}`}
+                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
                                         >
                                           Publisher
                                         </h5>
@@ -1276,10 +1276,10 @@ export default function AIGenerateAllButton({
                                         </p>
                                       </div>
                                       <div
-                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-cyan-50/40 border-cyan-200" : "bg-purple-50 border-purple-200"}`}
+                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-accent/5 border-site-accent/20"}`}
                                       >
                                         <h5
-                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-cyan-600" : "text-purple-500"}`}
+                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
                                         >
                                           Platforms
                                         </h5>
@@ -1290,7 +1290,7 @@ export default function AIGenerateAllButton({
                                               (p) => (
                                                 <span
                                                   key={p}
-                                                  className={`px-1.5 py-0.5 text-xs border ${isShowingDbData ? "bg-cyan-100 text-cyan-800 border-cyan-300" : "bg-purple-200 text-purple-800 border-purple-300"}`}
+                                                  className={`px-1.5 py-0.5 text-xs border ${isShowingDbData ? "bg-site-accent/10 text-site-accent border-site-accent/30" : "bg-site-accent/10 text-site-accent border-site-accent/30"}`}
                                                 >
                                                   {p}
                                                 </span>
@@ -1313,8 +1313,8 @@ export default function AIGenerateAllButton({
                                       displayData.isBestseller !==
                                       undefined) && (
                                       <div className="grid grid-cols-3 gap-3">
-                                        <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
-                                          <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <div className="border-[2px] p-3 bg-site-accent/5 border-site-accent/20">
+                                          <h5 className="text-xs font-bold text-site-accent uppercase tracking-wider mb-1 flex items-center gap-1">
                                             <Layers className="w-3 h-3" />
                                             AI หมวดหมู่
                                           </h5>
@@ -1327,20 +1327,20 @@ export default function AIGenerateAllButton({
                                               )}
                                           </p>
                                           {displayData.categorySlug && (
-                                            <p className="text-xs text-amber-500 mt-0.5">
+                                            <p className="text-xs text-site-accent mt-0.5">
                                               {displayData.categorySlug}
                                             </p>
                                           )}
                                         </div>
-                                        <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
-                                          <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <div className="border-[2px] p-3 bg-site-accent/5 border-site-accent/20">
+                                          <h5 className="text-xs font-bold text-site-accent uppercase tracking-wider mb-1 flex items-center gap-1">
                                             <Star className="w-3 h-3" />
                                             สินค้าแนะนำ
                                           </h5>
                                           <span
                                             className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isFeatured
                                                 ? "bg-yellow-200 text-yellow-800 border-yellow-400"
-                                                : "bg-[#1A1C1E] text-gray-500 border-gray-300"
+                                                : "bg-site-raised text-gray-500 border-gray-300"
                                               }`}
                                           >
                                             {displayData.isFeatured
@@ -1348,15 +1348,15 @@ export default function AIGenerateAllButton({
                                               : "ไม่ใช่"}
                                           </span>
                                         </div>
-                                        <div className="border-[2px] p-3 bg-amber-50 border-amber-200">
-                                          <h5 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <div className="border-[2px] p-3 bg-site-accent/5 border-site-accent/20">
+                                          <h5 className="text-xs font-bold text-site-accent uppercase tracking-wider mb-1 flex items-center gap-1">
                                             <TrendingUp className="w-3 h-3" />
                                             สินค้าขายดี
                                           </h5>
                                           <span
                                             className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isBestseller
                                                 ? "bg-green-200 text-green-800 border-green-400"
-                                                : "bg-[#1A1C1E] text-gray-500 border-gray-300"
+                                                : "bg-site-raised text-gray-500 border-gray-300"
                                               }`}
                                           >
                                             {displayData.isBestseller
@@ -1448,7 +1448,7 @@ export default function AIGenerateAllButton({
               </div>
 
               {/* Footer Actions */}
-              <div className="p-4 border-t-[3px] border-black bg-[#181A1D] shrink-0">
+              <div className="p-4 border-t-[3px] border-black bg-site-surface shrink-0">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   {/* Left side */}
                   <div className="flex items-center gap-2">
@@ -1458,7 +1458,7 @@ export default function AIGenerateAllButton({
                       stats.saved === 0 && (
                         <button
                           onClick={startGeneration}
-                          className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-pink-600"
+                          className="flex items-center gap-2 px-5 py-2.5 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-accent"
                           style={{ boxShadow: "4px 4px 0 0 #000000" }}
                         >
                           <Play className="w-4 h-4" />
@@ -1471,7 +1471,7 @@ export default function AIGenerateAllButton({
                       stats.pending > 0 && (
                         <button
                           onClick={startGeneration}
-                          className="flex items-center gap-2 px-4 py-2 bg-pink-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-pink-600"
+                          className="flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-accent"
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           <Play className="w-4 h-4" />
@@ -1529,7 +1529,7 @@ export default function AIGenerateAllButton({
                     {!isRunning && (
                       <button
                         onClick={handleClose}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#212328] text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-[#1A1C1E]"
+                        className="flex items-center gap-2 px-4 py-2 bg-site-raised text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-raised"
                         style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         ปิด

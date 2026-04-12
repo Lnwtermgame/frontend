@@ -153,13 +153,13 @@ export default function AdminNotificationPage() {
   const getTypeColor = (t: string) => {
     switch (t) {
       case "ORDER":
-        return "bg-[#181A1D]0/10 text-blue-400 border-blue-300";
+        return "bg-site-surface0/10 text-site-accent border-blue-300";
       case "PAYMENT":
         return "bg-green-500/10 text-green-400 border-green-300";
       case "PROMOTION":
-        return "bg-pink-100 text-pink-700 border-pink-300";
+        return "bg-site-accent/10 text-site-accent border-site-accent/30";
       default:
-        return "bg-[#1A1C1E] text-gray-300 border-gray-300";
+        return "bg-site-raised text-gray-300 border-gray-300";
     }
   };
 
@@ -167,7 +167,7 @@ export default function AdminNotificationPage() {
     return (
       <AdminLayout title="จัดการการแจ้งเตือน">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -183,7 +183,7 @@ export default function AdminNotificationPage() {
           className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <Bell className="h-5 w-5 text-pink-400" />
+              <Bell className="h-5 w-5 text-site-accent" />
               จัดการการแจ้งเตือน
             </h1>
             <p className="text-xs text-gray-400 mt-1">
@@ -230,8 +230,8 @@ export default function AdminNotificationPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[16px]">
-          <div className="p-4 border-b-[3px] border-site-border/50 bg-[#181A1D]">
+          className="bg-site-surface border border-white/5 rounded-2xl">
+          <div className="p-4 border-b-[3px] border-white/10 bg-site-surface">
             <h2 className="text-base font-bold flex items-center gap-2">
               <Send className="h-4 w-4 text-site-accent" />
               เขียนการแจ้งเตือน
@@ -249,10 +249,10 @@ export default function AdminNotificationPage() {
                   <button
                     key={t}
                     onClick={() => setType(t as any)}
-                    className={`flex items-center gap-2 px-3 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm text-xs font-medium transition-all ${
+                    className={`flex items-center gap-2 px-3 py-1.5 border border-white/5 rounded-xl text-xs font-medium transition-all ${
                       type === t
-                        ? `${getTypeColor(t)} border-site-border/50`
-                        : "bg-[#212328] border-gray-300 hover:border-gray-400"
+                        ? `${getTypeColor(t)} border-white/10`
+                        : "bg-site-raised border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     {getTypeIcon(t)}
@@ -273,7 +273,7 @@ export default function AdminNotificationPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="เช่น โปรโมชั่นพิเศษ!"
-                className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
+                className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-sm"
               />
             </div>
 
@@ -285,12 +285,12 @@ export default function AdminNotificationPage() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="เขียนข้อความที่ต้องการส่ง..."
                 rows={3}
-                className="w-full px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none text-sm"
+                className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent resize-none text-sm"
               />
             </div>
 
             {/* Target Selection */}
-            <div className="border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30 p-3">
+            <div className="border border-white/5 rounded-xl border-white/5 p-3">
               <label className="block text-xs font-bold mb-2">ผู้รับ</label>
               <div className="flex gap-4 mb-3">
                 <label className="flex items-center gap-2 cursor-pointer text-xs">
@@ -326,7 +326,7 @@ export default function AdminNotificationPage() {
                     onChange={(e) => setUserIds(e.target.value)}
                     placeholder="user-id-1, user-id-2, user-id-3"
                     rows={2}
-                    className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none text-xs font-mono"
+                    className="w-full px-2 py-1.5 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent resize-none text-xs font-mono"
                   />
                 </motion.div>
               )}
@@ -349,7 +349,7 @@ export default function AdminNotificationPage() {
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="mt-3 space-y-3 border border-site-border/30 rounded-[12px] shadow-sm border-site-border/30 p-3">
+                  className="mt-3 space-y-3 border border-white/5 rounded-xl border-white/5 p-3">
                   {/* Delivery Options */}
                   <div>
                     <label className="block text-xs font-bold mb-1">
@@ -384,7 +384,7 @@ export default function AdminNotificationPage() {
                       value={link}
                       onChange={(e) => setLink(e.target.value)}
                       placeholder="/dashboard/promotions"
-                      className="w-full px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-xs"
+                      className="w-full px-2 py-1.5 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-xs"
                     />
                   </div>
                 </motion.div>
@@ -392,13 +392,13 @@ export default function AdminNotificationPage() {
             </div>
 
             {/* Send Button */}
-            <div className="pt-3 border-t-[2px] border-site-border/30">
+            <div className="pt-3 border-t-[2px] border-white/5">
               <motion.button
                 onClick={handleSendNotification}
                 disabled={isSending || !title.trim() || !message.trim()}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 border border-site-border/30 rounded-[12px] shadow-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white px-6 py-2.5 border border-white/5 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">
                 {isSending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -421,8 +421,8 @@ export default function AdminNotificationPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#212328] border border-site-border/30 rounded-[16px]">
-            <div className="p-4 border-b-[3px] border-site-border/50 bg-[#181A1D]">
+            className="bg-site-surface border border-white/5 rounded-2xl">
+            <div className="p-4 border-b-[3px] border-white/10 bg-site-surface">
               <h2 className="text-base font-bold">สถิติตามประเภท</h2>
             </div>
             <div className="p-4">
@@ -430,7 +430,7 @@ export default function AdminNotificationPage() {
                 {Object.entries(stats.byType).map(([type, count]) => (
                   <div
                     key={type}
-                    className={`p-3 border border-site-border/30 rounded-[12px] shadow-sm ${getTypeColor(type)}`}>
+                    className={`p-3 border border-white/5 rounded-xl ${getTypeColor(type)}`}>
                     <div className="flex items-center gap-2 mb-1.5">
                       {getTypeIcon(type)}
                       <span className="font-bold text-xs">
@@ -463,9 +463,9 @@ interface StatCardProps {
 }
 
 const colorClasses = {
-  blue: "bg-[#181A1D]0/10 text-blue-400 border-blue-300",
+  blue: "bg-site-surface0/10 text-site-accent border-blue-300",
   yellow: "bg-yellow-500/10 text-yellow-400 border-yellow-300",
-  pink: "bg-pink-100 text-pink-700 border-pink-300",
+  pink: "bg-site-accent/10 text-site-accent border-site-accent/30",
   green: "bg-green-500/10 text-green-400 border-green-300",
 };
 
@@ -473,10 +473,10 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className={`p-3 border border-site-border/30 rounded-[12px] ${colorClasses[color]}`}>
+      className={`p-3 border border-white/5 rounded-xl ${colorClasses[color]}`}>
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium">{title}</span>
-        <span className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm">{icon}</span>
+        <span className="p-1.5 bg-site-surface border border-white/5 rounded-2xl">{icon}</span>
       </div>
       <div className="text-xl font-bold mt-1.5">{value}</div>
     </motion.div>

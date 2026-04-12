@@ -77,27 +77,27 @@ export default function AdminPromotionCreate() {
         {/* Header */}
         <div className="flex items-center mb-4">
           <Link href="/admin/promotions">
-            <button className="mr-3 p-1.5 bg-[#1A1C1E] border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
+            <button className="mr-3 p-1.5 bg-site-raised border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
               <ChevronLeft className="h-4 w-4" />
             </button>
           </Link>
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-purple-500 mr-2"></span>
+            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
             <h1 className="text-xl font-bold text-white">สร้างโปรโมชั่น</h1>
           </div>
         </div>
 
         {/* Form Container */}
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden"
+          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden"
           
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-2 border-site-border/50 bg-[#181A1D]">
+          <div className="p-3 border-b-2 border-white/10 bg-site-surface">
             <h3 className="text-base font-semibold text-white flex items-center">
-              <Tag className="mr-2 h-4 w-4 text-purple-400" />
+              <Tag className="mr-2 h-4 w-4 text-site-accent" />
               โปรโมชั่นใหม่
             </h3>
           </div>
@@ -118,7 +118,7 @@ export default function AdminPromotionCreate() {
                     id="title"
                     name="title"
                     required
-                    className="bg-[#212328] border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                     placeholder="เช่น ลด 30% ฤดูร้อน"
                     value={formData.title}
                     onChange={handleChange}
@@ -134,13 +134,13 @@ export default function AdminPromotionCreate() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Sparkles className="h-4 w-4 text-gray-500" />
+                      <Sparkles className="h-4 w-4 text-gray-400" />
                     </div>
                     <select
                       id="type"
                       name="type"
                       required
-                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-site-accent focus:outline-none"
                       value={formData.type}
                       onChange={handleChange}
                     >
@@ -159,7 +159,7 @@ export default function AdminPromotionCreate() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-gray-500">
+                        className="text-gray-400">
                         <path d="M6 9l6 6 6-6" />
                       </svg>
                     </div>
@@ -178,12 +178,12 @@ export default function AdminPromotionCreate() {
                     id="code"
                     name="code"
                     required
-                    className="bg-[#212328] border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none font-mono"
+                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none font-mono"
                     placeholder="เช่น SUMMER30"
                     value={formData.code}
                     onChange={handleChange}
                   />
-                  <p className="mt-1 text-[10px] text-gray-500">
+                  <p className="mt-1 text-[10px] text-gray-400">
                     รหัสตัวพิมพ์ใหญ่-เล็กมีผลและควรไม่ซ้ำกัน
                   </p>
                 </div>
@@ -197,14 +197,14 @@ export default function AdminPromotionCreate() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Percent className="h-4 w-4 text-gray-500" />
+                      <Percent className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       type="text"
                       id="discount"
                       name="discount"
                       required
-                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เช่น 30"
                       value={formData.discount}
                       onChange={handleChange}
@@ -221,19 +221,19 @@ export default function AdminPromotionCreate() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CreditCard className="h-4 w-4 text-gray-500" />
+                      <CreditCard className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       type="text"
                       id="minPurchase"
                       name="minPurchase"
-                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เช่น 20"
                       value={formData.minPurchase}
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="mt-1 text-[10px] text-gray-500">
+                  <p className="mt-1 text-[10px] text-gray-400">
                     ยอดซื้อขั้นต่ำที่ต้องการเพื่อใช้โปรโมชั่นนี้
                   </p>
                 </div>
@@ -251,14 +251,14 @@ export default function AdminPromotionCreate() {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-4 w-4 text-gray-500" />
+                        <Calendar className="h-4 w-4 text-gray-400" />
                       </div>
                       <input
                         type="date"
                         id="startDate"
                         name="startDate"
                         required
-                        className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                         value={formData.startDate}
                         onChange={handleChange}
                       />
@@ -272,14 +272,14 @@ export default function AdminPromotionCreate() {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-4 w-4 text-gray-500" />
+                        <Calendar className="h-4 w-4 text-gray-400" />
                       </div>
                       <input
                         type="date"
                         id="endDate"
                         name="endDate"
                         required
-                        className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                         value={formData.endDate}
                         onChange={handleChange}
                       />
@@ -296,19 +296,19 @@ export default function AdminPromotionCreate() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Clock className="h-4 w-4 text-gray-500" />
+                      <Clock className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       type="number"
                       id="usageLimit"
                       name="usageLimit"
-                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
                       value={formData.usageLimit}
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="mt-1 text-[10px] text-gray-500">
+                  <p className="mt-1 text-[10px] text-gray-400">
                     จำนวนครั้งสูงสุดที่สามารถใช้โปรโมชั่นนี้ได้
                   </p>
                 </div>
@@ -322,19 +322,19 @@ export default function AdminPromotionCreate() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CreditCard className="h-4 w-4 text-gray-500" />
+                      <CreditCard className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       type="text"
                       id="maxDiscount"
                       name="maxDiscount"
-                      className="bg-[#212328] border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                       placeholder="เช่น 50"
                       value={formData.maxDiscount}
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="mt-1 text-[10px] text-gray-500">
+                  <p className="mt-1 text-[10px] text-gray-400">
                     จำนวนส่วนลดสูงสุดเป็นหน่วยเงิน
                   </p>
                 </div>
@@ -347,7 +347,7 @@ export default function AdminPromotionCreate() {
                     name="isActive"
                     checked={formData.isActive}
                     onChange={(e) => handleChange(e as any)}
-                    className="w-4 h-4 border border-site-border/30 rounded-[8px] rounded text-purple-400 focus:ring-site-accent/50"
+                    className="w-4 h-4 border border-white/5 rounded-lg rounded text-site-accent focus:ring-site-accent/50"
                   />
                   <label
                     htmlFor="isActive"
@@ -364,7 +364,7 @@ export default function AdminPromotionCreate() {
                     name="applyToAll"
                     checked={formData.applyToAll}
                     onChange={(e) => handleChange(e as any)}
-                    className="w-4 h-4 border border-site-border/30 rounded-[8px] rounded text-purple-400 focus:ring-site-accent/50"
+                    className="w-4 h-4 border border-white/5 rounded-lg rounded text-site-accent focus:ring-site-accent/50"
                   />
                   <label
                     htmlFor="applyToAll"
@@ -386,7 +386,7 @@ export default function AdminPromotionCreate() {
                 id="description"
                 name="description"
                 rows={3}
-                className="bg-[#212328] border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
                 placeholder="อธิบายรายละเอียดโปรโมชั่น..."
                 value={formData.description}
                 onChange={handleChange}
@@ -398,7 +398,7 @@ export default function AdminPromotionCreate() {
               <Link href="/admin/promotions">
                 <button
                   type="button"
-                  className="px-4 py-2 border border-site-border/30 rounded-[8px] bg-[#212328] text-white hover:bg-[#212328]/5 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm">
+                  className="px-4 py-2 border border-white/5 rounded-lg bg-site-raised text-white hover:bg-site-raised/5 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm">
                   <X className="h-4 w-4 mr-2" />
                   ยกเลิก
                 </button>
@@ -406,7 +406,7 @@ export default function AdminPromotionCreate() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-black text-white border border-site-border/30 rounded-[8px] hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
+                className={`px-4 py-2 bg-black text-white border border-white/5 rounded-lg hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังสร้าง..." : "สร้างโปรโมชั่น"}
               </button>

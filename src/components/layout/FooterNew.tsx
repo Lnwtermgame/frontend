@@ -22,6 +22,13 @@ export default function FooterNew() {
     const { settings } = usePublicSettings();
     const logoUrl = settings?.branding?.logoUrl;
 
+    // Brand colors for social platforms
+    const socialBrandColors: Record<string, string> = {
+        Facebook: "#1877F2",
+        LINE: "#06C755",
+        Discord: "#5865F2",
+    };
+
     // Social links from admin settings
     const socialLinks = [
         settings?.social?.facebookUrl && { url: settings.social.facebookUrl, label: "Facebook" },
@@ -126,8 +133,7 @@ export default function FooterNew() {
                                         rel="noopener noreferrer"
                                         title={label}
                                         style={{ width: 36, height: 36 }}
-                                        bgColor="#212328"
-                                        fgColor="#9ca3af"
+                                        bgColor={socialBrandColors[label] || "#212328"}
                                         className="!transition-all !duration-200 hover:!opacity-80 hover:!scale-110"
                                     />
                                 ))}

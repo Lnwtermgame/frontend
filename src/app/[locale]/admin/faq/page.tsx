@@ -594,15 +594,15 @@ export default function AdminFaqPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-orange-500/10 mr-2"></span>
+            <span className="w-1.5 h-5 bg-site-accent/10 mr-2"></span>
             <h1 className="text-xl font-bold text-white">จัดการ FAQ</h1>
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setShowAIGenerate(!showAIGenerate)}
-              className={`border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 font-medium flex items-center transition-colors text-sm ${showAIGenerate
+              className={`border border-white/5 rounded-xl px-3 py-1.5 font-medium flex items-center transition-colors text-sm ${showAIGenerate
                 ? "bg-site-accent text-white"
-                : "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
+                : "bg-gradient-to-r from-site-accent to-site-accent/80 text-white hover:from-site-accent hover:to-site-accent/60"
                 }`}>
               <Sparkles size={16} className="mr-2" />
               AI สร้าง FAQ
@@ -619,7 +619,7 @@ export default function AdminFaqPage() {
                 });
                 setShowCategoryModal(true);
               }}
-              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 font-medium flex items-center hover:bg-[#212328]/5 transition-colors text-sm">
+              className="bg-site-surface border border-white/5 rounded-2xl px-3 py-1.5 font-medium flex items-center hover:bg-site-raised/5 transition-colors text-sm">
               <Tag size={16} className="mr-2" />
               เพิ่มหมวดหมู่
             </button>
@@ -639,7 +639,7 @@ export default function AdminFaqPage() {
                 setShowArticleModal(true);
               }}
               disabled={categories.length === 0}
-              className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm px-3 py-1.5 font-medium flex items-center hover:bg-gray-800 transition-colors disabled:opacity-50 text-sm">
+              className="bg-black text-white border border-white/5 rounded-xl px-3 py-1.5 font-medium flex items-center hover:bg-gray-800 transition-colors disabled:opacity-50 text-sm">
               <Plus size={16} className="mr-2" />
               เพิ่มบทความ
             </button>
@@ -653,7 +653,7 @@ export default function AdminFaqPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 p-3 flex items-center">
+              className="bg-red-500/10 border border-white/5 rounded-xl border-red-500/30/30 p-3 flex items-center">
               <AlertCircle className="text-red-600 mr-3" size={18} />
               <span className="text-red-400 text-sm">{error}</span>
               <button
@@ -672,10 +672,10 @@ export default function AdminFaqPage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-gradient-to-br from-purple-50 to-blue-50 border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden">
-              <div className="p-3 border-b-[2px] border-site-border/50 bg-gradient-to-r from-purple-100 to-blue-100">
+              className="bg-gradient-to-br from-site-accent/10 to-site-accent/5 border border-white/5 rounded-xl overflow-hidden">
+              <div className="p-3 border-b-[2px] border-white/10 bg-gradient-to-r from-site-accent/10 to-site-accent/5">
                 <h2 className="text-base font-bold text-white flex items-center">
-                  <Bot size={18} className="mr-2 text-purple-600" />
+                  <Bot size={18} className="mr-2 text-site-accent" />
                   AI สร้าง FAQ อัตโนมัติ
                 </h2>
               </div>
@@ -689,7 +689,7 @@ export default function AdminFaqPage() {
                       value={aiTopic}
                       onChange={(e) => setAiTopic(e.target.value)}
                       placeholder="เช่น: การเติมเกม, วิธีชำระเงิน, การสั่งซื้อ"
-                      className="w-full py-2 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-sm focus:outline-none focus:border-site-accent"
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent"
                     />
                   </div>
                   <div className="md:col-span-3">
@@ -697,7 +697,7 @@ export default function AdminFaqPage() {
                     <select
                       value={aiCategoryId}
                       onChange={(e) => setAiCategoryId(e.target.value)}
-                      className="w-full py-2 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-sm focus:outline-none focus:border-site-accent cursor-pointer">
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent cursor-pointer">
                       <option value="">เลือกหมวดหมู่...</option>
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -709,7 +709,7 @@ export default function AdminFaqPage() {
                     <select
                       value={aiCount}
                       onChange={(e) => setAiCount(Number(e.target.value))}
-                      className="w-full py-2 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-sm focus:outline-none focus:border-site-accent cursor-pointer">
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent cursor-pointer">
                       {[3, 5, 10, 15, 20].map((n) => (
                         <option key={n} value={n}>{n} ข้อ</option>
                       ))}
@@ -724,7 +724,7 @@ export default function AdminFaqPage() {
                         aiService.setModel(e.target.value);
                       }}
                       disabled={isLoadingModels}
-                      className="w-full py-2 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-sm focus:outline-none focus:border-site-accent cursor-pointer disabled:opacity-50">
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent cursor-pointer disabled:opacity-50">
                       {availableModels.map((m) => (
                         <option key={m.id} value={m.id}>{m.id}</option>
                       ))}
@@ -740,13 +740,13 @@ export default function AdminFaqPage() {
                       <button
                         type="button"
                         onClick={() => setAiLocales(SUPPORTED_LOCALES.map(l => l.code))}
-                        className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 border border-purple-300 hover:bg-purple-200 transition-colors">
+                        className="text-[10px] px-1.5 py-0.5 bg-site-accent/10 text-site-accent border border-site-accent/30 hover:bg-site-accent/20 transition-colors">
                         เลือกทั้งหมด
                       </button>
                       <button
                         type="button"
                         onClick={() => setAiLocales(["th"])}
-                        className="text-[10px] px-1.5 py-0.5 bg-[#1A1C1E] text-gray-300 border border-gray-300 hover:bg-site-border/30 transition-colors">
+                        className="text-[10px] px-1.5 py-0.5 bg-site-raised text-gray-300 border border-gray-300 hover:bg-site-border/30 transition-colors">
                         รีเซ็ต
                       </button>
                     </div>
@@ -755,9 +755,9 @@ export default function AdminFaqPage() {
                     {SUPPORTED_LOCALES.map((locale) => (
                       <label
                         key={locale.code}
-                        className={`flex items-center gap-1.5 px-2.5 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm text-xs font-medium cursor-pointer transition-colors ${aiLocales.includes(locale.code)
-                          ? "bg-purple-500 text-white"
-                          : "bg-[#212328] text-white hover:bg-[#212328]/5"
+                        className={`flex items-center gap-1.5 px-2.5 py-1.5 border border-white/5 rounded-xl text-xs font-medium cursor-pointer transition-colors ${aiLocales.includes(locale.code)
+                          ? "bg-site-accent text-white"
+                          : "bg-site-raised text-white hover:bg-site-raised/5"
                           }`}>
                         <input
                           type="checkbox"
@@ -778,10 +778,10 @@ export default function AdminFaqPage() {
                 </div>
 
                 {/* System Prompt (collapsible) */}
-                <div className="border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328]">
+                <div className="border border-white/5 rounded-xl bg-site-raised">
                   <button
                     onClick={() => setShowSystemPrompt(!showSystemPrompt)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-white hover:bg-[#212328]/5 transition-colors">
+                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-white hover:bg-site-raised/5 transition-colors">
                     <span className="flex items-center">
                       <Settings2 size={14} className="mr-1.5 text-gray-400" />
                       AI System Prompt (แก้ไขได้)
@@ -800,10 +800,10 @@ export default function AdminFaqPage() {
                             value={aiSystemPrompt}
                             onChange={(e) => setAiSystemPrompt(e.target.value)}
                             rows={6}
-                            className="w-full bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-site-accent resize-y"
+                            className="w-full bg-site-surface border border-white/5 rounded-xl border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-site-accent resize-y"
                             placeholder="กำหนด system prompt สำหรับ AI..."
                           />
-                          <p className="text-[10px] text-gray-500 mt-1">
+                          <p className="text-[10px] text-gray-400 mt-1">
                             กำหนดบทบาทและกฎของ AI เช่น โทนเสียง, ความยาวคำตอบ, รูปแบบเฉพาะของเว็บ
                           </p>
                         </div>
@@ -817,7 +817,7 @@ export default function AdminFaqPage() {
                   <button
                     onClick={handleAIGenerate}
                     disabled={isGeneratingAI || !aiTopic.trim() || !aiCategoryId}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-medium text-sm hover:from-purple-600 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    className="px-4 py-2 bg-gradient-to-r from-site-accent to-site-accent/80 text-white border border-white/5 rounded-xl font-medium text-sm hover:from-site-accent hover:to-site-accent/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     {isGeneratingAI ? (
                       <><Loader2 size={16} className="animate-spin" /> กำลังสร้าง...</>
                     ) : (
@@ -825,7 +825,7 @@ export default function AdminFaqPage() {
                     )}
                   </button>
                   {aiProgress && (
-                    <span className="text-xs text-purple-700 font-medium animate-pulse">{aiProgress}</span>
+                    <span className="text-xs text-site-accent font-medium animate-pulse">{aiProgress}</span>
                   )}
                 </div>
 
@@ -845,7 +845,7 @@ export default function AdminFaqPage() {
                         </button>
                         <button
                           onClick={() => setAiGeneratedFAQs((prev) => prev.map((f) => ({ ...f, selected: false })))}
-                          className="text-xs text-gray-500 hover:underline">
+                          className="text-xs text-gray-400 hover:underline">
                           ยกเลิกทั้งหมด
                         </button>
                       </div>
@@ -854,7 +854,7 @@ export default function AdminFaqPage() {
                     {aiGeneratedFAQs.map((faq, index) => (
                       <div
                         key={index}
-                        className={`border border-site-border/30 rounded-[12px] shadow-sm bg-[#212328] p-3 transition-all ${faq.selected
+                        className={`border border-white/5 rounded-xl bg-site-raised p-3 transition-all ${faq.selected
                           ? "border-green-500/30/30"
                           : "border-gray-300 opacity-60"
                           }`}
@@ -863,18 +863,18 @@ export default function AdminFaqPage() {
                         <div className="flex items-start gap-2">
                           <button
                             onClick={() => toggleFaqSelection(index)}
-                            className={`mt-0.5 w-5 h-5 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center flex-shrink-0 ${faq.selected ? "bg-green-500 text-white" : "bg-[#212328]"
+                            className={`mt-0.5 w-5 h-5 border border-white/5 rounded-xl flex items-center justify-center flex-shrink-0 ${faq.selected ? "bg-green-500 text-white" : "bg-site-raised"
                               }`}>
                             {faq.selected && <Check size={12} />}
                           </button>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <h4 className="text-sm font-bold text-white">{faq.title}</h4>
-                              <span className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 border border-purple-300 font-bold shrink-0">
+                              <span className="text-[10px] px-1.5 py-0.5 bg-site-accent/10 text-site-accent border border-site-accent/30 font-bold shrink-0">
                                 {SUPPORTED_LOCALES.find(l => l.code === faq.locale)?.label || faq.locale}
                               </span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-0.5 italic">{faq.excerpt}</p>
+                            <p className="text-xs text-gray-400 mt-0.5 italic">{faq.excerpt}</p>
                             <p className="text-xs text-gray-300 mt-1 line-clamp-3">{faq.content}</p>
                           </div>
                         </div>
@@ -884,7 +884,7 @@ export default function AdminFaqPage() {
                     <button
                       onClick={handleSaveGeneratedFAQs}
                       disabled={isSavingFAQs || aiGeneratedFAQs.filter((f) => f.selected).length === 0}
-                      className="w-full py-2.5 bg-green-500 text-white border border-site-border/30 rounded-[12px] shadow-sm font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      className="w-full py-2.5 bg-green-500 text-white border border-white/5 rounded-xl font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                       {isSavingFAQs ? (
                         <><Loader2 size={16} className="animate-spin" /> กำลังบันทึก...</>
                       ) : (
@@ -907,7 +907,7 @@ export default function AdminFaqPage() {
             {
               label: "หมวดหมู่",
               value: categories.length,
-              color: "bg-[#181A1D]0/10 text-blue-400 border-blue-500/30",
+              color: "bg-site-surface0/10 text-site-accent border-blue-500/30",
             },
             {
               label: "บทความทั้งหมด",
@@ -922,12 +922,12 @@ export default function AdminFaqPage() {
             {
               label: "ไม่แสดง",
               value: articles.filter((a) => !a.isActive).length,
-              color: "bg-[#1A1C1E] text-gray-300 border-gray-500",
+              color: "bg-site-raised text-gray-300 border-gray-500",
             },
           ].map((stat, index) => (
             <div
               key={index}
-              className={`p-3 text-center border border-site-border/30 rounded-[12px] shadow-sm ${stat.color}`}>
+              className={`p-3 text-center border border-white/5 rounded-xl ${stat.color}`}>
               <div className="text-xl font-bold">{stat.value}</div>
               <div className="text-[10px] mt-1 font-medium">{stat.label}</div>
             </div>
@@ -939,8 +939,8 @@ export default function AdminFaqPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden">
-          <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
+          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+          <div className="p-3 border-b-[2px] border-white/10 bg-site-surface">
             <h2 className="text-base font-bold text-white flex items-center">
               <Tag size={18} className="mr-2" />
               หมวดหมู่ ({categories.length})
@@ -948,7 +948,7 @@ export default function AdminFaqPage() {
           </div>
           <div className="p-3">
             {categories.length === 0 ? (
-              <div className="text-center py-6 text-gray-500">
+              <div className="text-center py-6 text-gray-400">
                 <Tag size={36} className="mx-auto mb-3 opacity-30" />
                 <p className="text-sm">ยังไม่มีหมวดหมู่</p>
                 <button
@@ -972,7 +972,7 @@ export default function AdminFaqPage() {
                 {categories.map((category) => (
                   <div
                     key={category.id}
-                    className="border border-site-border/30 rounded-[12px] shadow-sm p-3 hover:bg-[#212328]/5 transition-colors">
+                    className="border border-white/5 rounded-xl p-3 hover:bg-site-raised/5 transition-colors">
                     <div className="flex items-start justify-between mb-1.5">
                       <div className="flex items-center">
                         {category.icon && (
@@ -998,7 +998,7 @@ export default function AdminFaqPage() {
                     <p className="text-xs text-gray-400 mb-1.5 line-clamp-1">
                       {category.description || "ไม่มีคำอธิบาย"}
                     </p>
-                    <div className="flex items-center justify-between text-[10px] text-gray-500">
+                    <div className="flex items-center justify-between text-[10px] text-gray-400">
                       <span>Slug: {category.slug}</span>
                       <span>
                         {
@@ -1020,8 +1020,8 @@ export default function AdminFaqPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden">
-          <div className="p-3 border-b-[2px] border-site-border/50 bg-[#181A1D]">
+          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+          <div className="p-3 border-b-[2px] border-white/10 bg-site-surface">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <h2 className="text-base font-bold text-white flex items-center">
                 <HelpCircle size={18} className="mr-2" />
@@ -1039,14 +1039,14 @@ export default function AdminFaqPage() {
                     placeholder="ค้นหาบทความ..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="py-1.5 pl-8 pr-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent"
+                    className="py-1.5 pl-8 pr-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent"
                   />
                 </div>
                 {/* Category Filter */}
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
                   <option value="ALL">ทุกหมวดหมู่</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -1058,7 +1058,7 @@ export default function AdminFaqPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
                   <option value="ALL">ทุกสถานะ</option>
                   <option value="ACTIVE">แสดง</option>
                   <option value="INACTIVE">ไม่แสดง</option>
@@ -1068,7 +1068,7 @@ export default function AdminFaqPage() {
                 <select
                   value={localeFilter}
                   onChange={(e) => setLocaleFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
                   <option value="ALL">ทุกภาษา</option>
                   {SUPPORTED_LOCALES.map((loc) => (
                     <option key={loc.code} value={loc.code}>
@@ -1080,7 +1080,7 @@ export default function AdminFaqPage() {
                 <button
                   onClick={loadData}
                   disabled={isLoading}
-                  className="py-1.5 px-2 bg-[#1A1C1E] hover:bg-site-border/30 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs flex items-center transition-colors disabled:opacity-50">
+                  className="py-1.5 px-2 bg-site-raised hover:bg-site-border/30 border border-white/5 rounded-xl border-gray-300 text-white text-xs flex items-center transition-colors disabled:opacity-50">
                   <RefreshCw
                     size={12}
                     className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`}
@@ -1121,11 +1121,11 @@ export default function AdminFaqPage() {
               filteredArticles.map((article) => (
                 <div
                   key={article.id}
-                  className="p-3 hover:bg-[#212328]/5 transition-colors">
+                  className="p-3 hover:bg-site-raised/5 transition-colors">
                   <div className="flex items-start justify-between mb-1.5">
                     <div className="flex items-center gap-2">
                       {article.isPinned && (
-                        <Pin size={14} className="text-orange-400" />
+                        <Pin size={14} className="text-site-accent" />
                       )}
                       {!article.isActive && (
                         <AlertCircle size={14} className="text-gray-400" />
@@ -1152,7 +1152,7 @@ export default function AdminFaqPage() {
                     <span className="bg-site-accent/10 px-1.5 py-0.5 border-[1px] border-site-accent/30">
                       {article.categoryName}
                     </span>
-                    <span className="bg-purple-50 px-1.5 py-0.5 border-[1px] border-purple-300 text-purple-700 text-[10px] font-bold">
+                    <span className="bg-site-accent/5 px-1.5 py-0.5 border-[1px] border-site-accent/30 text-site-accent text-[10px] font-bold">
                       {SUPPORTED_LOCALES.find(l => l.code === article.locale)?.label || article.locale}
                     </span>
                     <span className="flex items-center">
@@ -1198,7 +1198,7 @@ export default function AdminFaqPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="mt-2 p-2 bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 overflow-hidden">
+                        className="mt-2 p-2 bg-site-raised border border-white/5 rounded-xl border-gray-300 overflow-hidden">
                         <p className="text-xs text-gray-300 whitespace-pre-line">
                           {article.content}
                         </p>
@@ -1233,8 +1233,8 @@ export default function AdminFaqPage() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm w-full max-w-lg max-h-[90vh] overflow-y-auto">
-                  <div className="p-4 border-b-[2px] border-site-border/50">
+                  className="bg-site-surface border border-white/5 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                  <div className="p-4 border-b-[2px] border-white/10">
                     <div className="flex items-center justify-between">
                       <h2 className="text-lg font-bold text-white">
                         {editingCategory ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}
@@ -1272,7 +1272,7 @@ export default function AdminFaqPage() {
                         }}
                         placeholder="เช่น การสั่งซื้อ, การชำระเงิน"
                         required
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1290,7 +1290,7 @@ export default function AdminFaqPage() {
                           });
                         }}
                         placeholder="จะสร้างอัตโนมัติจากชื่อหมวดหมู่"
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1307,7 +1307,7 @@ export default function AdminFaqPage() {
                         }
                         placeholder="คำอธิบายสั้น ๆ เกี่ยวกับหมวดหมู่นี้"
                         rows={3}
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
                       />
                     </div>
                     <div>
@@ -1324,7 +1324,7 @@ export default function AdminFaqPage() {
                           })
                         }
                         placeholder="เช่️ 🛒 💳 🎮"
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1341,20 +1341,20 @@ export default function AdminFaqPage() {
                           })
                         }
                         min={0}
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors text-sm"
                       />
                     </div>
                     <div className="flex gap-2 pt-3">
                       <button
                         type="button"
                         onClick={() => setShowCategoryModal(false)}
-                        className="flex-1 py-2 px-3 border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium text-sm">
+                        className="flex-1 py-2 px-3 border border-white/5 rounded-xl text-white hover:bg-site-raised/5 transition-colors font-medium text-sm">
                         ยกเลิก
                       </button>
                       <button
                         type="submit"
                         disabled={isSubmitting || !categoryForm.name.trim()}
-                        className="flex-1 py-2 px-3 bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-sm">
+                        className="flex-1 py-2 px-3 bg-black text-white border border-white/5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-sm">
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">
                             <Loader2 size={16} className="animate-spin mr-2" />
@@ -1390,8 +1390,8 @@ export default function AdminFaqPage() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <div className="p-4 border-b-[2px] border-site-border/50">
+                  className="bg-site-surface border border-white/5 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <div className="p-4 border-b-[2px] border-white/10">
                     <div className="flex items-center justify-between">
                       <h2 className="text-lg font-bold text-white">
                         {editingArticle ? "แก้ไขบทความ" : "เพิ่มบทความ"}
@@ -1421,7 +1421,7 @@ export default function AdminFaqPage() {
                           })
                         }
                         required
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors text-sm">
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors text-sm">
                         <option value="">เลือกหมวดหมู่</option>
                         {categories.map((cat) => (
                           <option key={cat.id} value={cat.id}>
@@ -1449,7 +1449,7 @@ export default function AdminFaqPage() {
                         }}
                         placeholder="หัวข้อคำถาม"
                         required
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1477,15 +1477,15 @@ export default function AdminFaqPage() {
                           });
                         }}
                         placeholder="จะสร้างอัตโนมัติจากหัวข้อ"
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
                       />
                     </div>
 
                     {/* AI Generate Section */}
-                    <div className="bg-pink-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-pink-500 p-3">
+                    <div className="bg-site-accent/10 border border-white/5 rounded-xl border-site-accent p-3">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
-                          <Sparkles className="w-4 h-4 text-pink-400 mr-2" />
+                          <Sparkles className="w-4 h-4 text-site-accent mr-2" />
                           <span className="font-medium text-white text-sm">
                             สร้างด้วย AI
                           </span>
@@ -1495,7 +1495,7 @@ export default function AdminFaqPage() {
                             type="button"
                             onClick={() => setShowAIGenerate(true)}
                             disabled={!articleForm.categoryId}
-                            className="text-xs bg-pink-500 text-white px-2 py-1 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-pink-500/80 transition-colors disabled:opacity-50">
+                            className="text-xs bg-site-accent text-white px-2 py-1 border border-white/5 rounded-xl hover:bg-site-accent/80 transition-colors disabled:opacity-50">
                             <Wand2 className="w-3 h-3 inline mr-1" />
                             เปิดใช้งาน
                           </button>
@@ -1518,7 +1518,7 @@ export default function AdminFaqPage() {
                                 value={aiTopic}
                                 onChange={(e) => setAiTopic(e.target.value)}
                                 placeholder="เช่น วิธีเติมเพชร Free Fire, ขั้นตอนสั่งซื้อสินค้า"
-                                className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent"
+                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent"
                               />
                             </div>
 
@@ -1537,7 +1537,7 @@ export default function AdminFaqPage() {
                                   isLoadingModels ||
                                   availableModels.length === 0
                                 }
-                                className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent disabled:opacity-50">
+                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent disabled:opacity-50">
                                 {isLoadingModels ? (
                                   <option value="">กำลังโหลด models...</option>
                                 ) : availableModels.length === 0 ? (
@@ -1614,7 +1614,7 @@ export default function AdminFaqPage() {
                                   !aiTopic.trim() ||
                                   !articleForm.categoryId
                                 }
-                                className="flex-1 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm py-1.5 text-sm font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
+                                className="flex-1 bg-site-accent text-white border border-white/5 rounded-xl py-1.5 text-sm font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
                                 {isGeneratingAI ? (
                                   <>
                                     <Loader2 className="w-3 h-3 animate-spin mr-2" />
@@ -1633,7 +1633,7 @@ export default function AdminFaqPage() {
                                   setShowAIGenerate(false);
                                   setAiTopic("");
                                 }}
-                                className="px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-gray-400 hover:bg-[#212328]/5 transition-colors">
+                                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-gray-400 hover:bg-site-raised/5 transition-colors">
                                 <X className="w-4 h-4" />
                               </button>
                             </div>
@@ -1669,7 +1669,7 @@ export default function AdminFaqPage() {
                         placeholder="คำตอบโดยละเอียด"
                         required
                         rows={6}
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
                       />
                     </div>
                     <div>
@@ -1686,7 +1686,7 @@ export default function AdminFaqPage() {
                         }
                         placeholder="สรุปสั้น ๆ สำหรับแสดงในรายการ (ไม่บังคับ)"
                         rows={2}
-                        className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
                       />
                     </div>
                     <div className="flex gap-4">
@@ -1725,7 +1725,7 @@ export default function AdminFaqPage() {
                       <button
                         type="button"
                         onClick={() => setShowArticleModal(false)}
-                        className="flex-1 py-2 px-3 border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium text-sm">
+                        className="flex-1 py-2 px-3 border border-white/5 rounded-xl text-white hover:bg-site-raised/5 transition-colors font-medium text-sm">
                         ยกเลิก
                       </button>
                       <button
@@ -1736,7 +1736,7 @@ export default function AdminFaqPage() {
                           !articleForm.content.trim() ||
                           !articleForm.categoryId
                         }
-                        className="flex-1 py-2 px-3 bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-sm">
+                        className="flex-1 py-2 px-3 bg-black text-white border border-white/5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-sm">
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">
                             <Loader2 size={16} className="animate-spin mr-2" />

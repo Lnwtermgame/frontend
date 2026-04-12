@@ -57,7 +57,7 @@ const getLogColor = (type: DebugLog["type"]) => {
     case "api_call":
       return "text-blue-600 bg-blue-100 border-blue-500";
     default:
-      return "text-gray-600 bg-[#1A1C1E] border-gray-300";
+      return "text-gray-600 bg-site-raised border-gray-300";
   }
 };
 
@@ -283,7 +283,7 @@ export default function AIGenerateButton({
       <button
         onClick={handleOpenModal}
         disabled={disabled || progress.isGenerating}
-        className="group relative inline-flex items-center gap-2 px-4 py-2 bg-pink-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden hover:-translate-y-0.5"
+        className="group relative inline-flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden hover:-translate-y-0.5"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         {progress.isGenerating ? (
@@ -314,14 +314,14 @@ export default function AIGenerateButton({
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-2xl max-h-[85vh] overflow-hidden"
+              className="bg-site-raised border border-site-border/30 rounded-[16px] w-full max-w-2xl max-h-[85vh] overflow-hidden"
               style={{ boxShadow: "8px 8px 0 0 #000000" }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-pink-500">
+              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-site-accent">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#212328] border-[2px] border-black">
+                  <div className="p-2 bg-site-raised border-[2px] border-black">
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -335,7 +335,7 @@ export default function AIGenerateButton({
                 </div>
                 <div className="flex items-center gap-2">
                   {progress.isGenerating && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#212328] border-[2px] border-black text-white text-sm font-bold">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-site-raised border-[2px] border-black text-white text-sm font-bold">
                       <Clock className="w-3.5 h-3.5" />
                       <span>{elapsedTime}s</span>
                     </div>
@@ -352,7 +352,7 @@ export default function AIGenerateButton({
               </div>
 
               {/* Progress Status */}
-              <div className="px-5 py-4 border-b-[2px] border-gray-200 bg-[#181A1D]">
+              <div className="px-5 py-4 border-b-[2px] border-gray-200 bg-site-surface">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm text-gray-600 font-medium">
                     สถานะ:
@@ -365,7 +365,7 @@ export default function AIGenerateButton({
                           ? "text-red-600"
                           : progress.stage === "idle"
                             ? "text-gray-500"
-                            : "text-pink-500"
+                            : "text-site-accent"
                     }`}
                   >
                     {getStageName(progress.stage)}
@@ -380,7 +380,7 @@ export default function AIGenerateButton({
                         ? "bg-red-500"
                         : progress.stage === "completed"
                           ? "bg-green-500"
-                          : "bg-pink-500"
+                          : "bg-site-accent"
                     }`}
                     initial={{ width: "0%" }}
                     animate={{
@@ -424,7 +424,7 @@ export default function AIGenerateButton({
               </div>
 
               {/* Debug Panel Toggle */}
-              <div className="px-5 py-2 border-b-[2px] border-gray-200 bg-[#1A1C1E]">
+              <div className="px-5 py-2 border-b-[2px] border-gray-200 bg-site-raised">
                 <button
                   onClick={() => setShowDebug(!showDebug)}
                   className="flex items-center gap-2 text-sm text-gray-700 hover:text-white transition-colors font-medium"
@@ -436,7 +436,7 @@ export default function AIGenerateButton({
                   ) : (
                     <ChevronDown className="w-4 h-4" />
                   )}
-                  <span className="ml-auto text-xs text-gray-500 bg-[#212328] px-2 py-0.5 border border-gray-300">
+                  <span className="ml-auto text-xs text-gray-500 bg-site-raised px-2 py-0.5 border border-gray-300">
                     {progress.logs.length} logs
                   </span>
                 </button>
@@ -451,7 +451,7 @@ export default function AIGenerateButton({
                     exit={{ height: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-5 py-3 bg-[#181A1D] max-h-64 overflow-y-auto">
+                    <div className="px-5 py-3 bg-site-surface max-h-64 overflow-y-auto">
                       {progress.logs.length === 0 ? (
                         <p className="text-sm text-gray-500 text-center py-4">
                           ยังไม่มี log - กดปุ่มสร้างเพื่อเริ่มต้น
@@ -495,7 +495,7 @@ export default function AIGenerateButton({
 
                     {/* Debug Actions */}
                     {progress.logs.length > 0 && (
-                      <div className="px-5 py-2 border-t-[2px] border-gray-200 bg-[#1A1C1E] flex items-center justify-between">
+                      <div className="px-5 py-2 border-t-[2px] border-gray-200 bg-site-raised flex items-center justify-between">
                         <button
                           onClick={copyLogs}
                           className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-white transition-colors font-medium"
@@ -513,7 +513,7 @@ export default function AIGenerateButton({
               </AnimatePresence>
 
               {/* Model Selector */}
-              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-[#181A1D]">
+              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-site-surface">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   เลือก AI Model
                 </label>
@@ -524,7 +524,7 @@ export default function AIGenerateButton({
                     aiService.setModel(e.target.value);
                   }}
                   disabled={isLoadingModels || availableModels.length === 0}
-                  className="w-full py-2 px-3 bg-[#212328] border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                  className="w-full py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
                 >
                   {isLoadingModels ? (
                     <option value="">กำลังโหลด models...</option>
@@ -541,7 +541,7 @@ export default function AIGenerateButton({
               </div>
 
               {/* Footer / Actions */}
-              <div className="p-5 border-t-[3px] border-black bg-[#212328]">
+              <div className="p-5 border-t-[3px] border-black bg-site-raised">
                 {isConfigError ? (
                   <div className="flex flex-col gap-3">
                     <div className="p-3 bg-red-500/10 border-[3px] border-red-500/30">
@@ -576,7 +576,7 @@ export default function AIGenerateButton({
                       </button>
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="flex-1 py-2.5 bg-pink-500 hover:bg-pink-500/90 text-white border border-site-border/30 rounded-[12px] font-bold transition-all"
+                        className="flex-1 py-2.5 bg-site-accent hover:bg-site-accent/90 text-white border border-site-border/30 rounded-[12px] font-bold transition-all"
                         style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         เสร็จสิ้น
@@ -601,7 +601,7 @@ export default function AIGenerateButton({
                       </button>
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="flex-1 py-2.5 bg-gray-400 hover:bg-[#181A1D]0 text-white border border-site-border/30 rounded-[12px] font-bold transition-all"
+                        className="flex-1 py-2.5 bg-gray-400 hover:bg-site-surface0 text-white border border-site-border/30 rounded-[12px] font-bold transition-all"
                         style={{ boxShadow: "3px 3px 0 0 #000000" }}
                       >
                         ปิด
@@ -611,7 +611,7 @@ export default function AIGenerateButton({
                 ) : progress.isGenerating ? (
                   <button
                     disabled
-                    className="w-full py-2.5 bg-[#1A1C1E] text-gray-500 border-[3px] border-gray-300 font-bold cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-2.5 bg-site-raised text-gray-500 border-[3px] border-gray-300 font-bold cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>กำลังดำเนินการ... ({elapsedTime}s)</span>
@@ -619,7 +619,7 @@ export default function AIGenerateButton({
                 ) : (
                   <button
                     onClick={handleStartGeneration}
-                    className="w-full py-2.5 bg-pink-500 hover:bg-pink-500/90 text-white border border-site-border/30 rounded-[12px] font-bold transition-all flex items-center justify-center gap-2"
+                    className="w-full py-2.5 bg-site-accent hover:bg-site-accent/90 text-white border border-site-border/30 rounded-[12px] font-bold transition-all flex items-center justify-center gap-2"
                     style={{ boxShadow: "4px 4px 0 0 #000000" }}
                   >
                     <Wand2 className="w-4 h-4" />

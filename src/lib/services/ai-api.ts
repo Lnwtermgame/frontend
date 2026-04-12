@@ -245,6 +245,14 @@ class AiService {
     return this._configured === true;
   }
 
+  // Ensure configuration is loaded at least once from server
+  private async ensureConfigured(): Promise<boolean> {
+    if (this._configured === null) {
+      await this.isConfigured();
+    }
+    return this._configured === true;
+  }
+
   // Get available models from LiteLLM
   async fetchModels(): Promise<AIModel[]> {
     const now = Date.now();
@@ -956,6 +964,7 @@ class AiService {
     onProgress?.(progress);
 
     // Check API configuration
+    await this.ensureConfigured();
     const configStatus = this.getConfigStatus();
     console.log("[AI Service] Config status:", configStatus);
 
@@ -2299,6 +2308,7 @@ ${inferredPlatforms ? `\nคำแนะนำ: สินค้านี้อ�
 
     try {
       // Step 1: Check LiteLLM is configured
+      await this.ensureConfigured();
       if (!this.isConfiguredSync()) {
         throw new Error(
           "AI service not configured. Please set LITELLM_API_KEY in your server .env file.",
@@ -2553,6 +2563,7 @@ SOURCES: [${articles.map((a) => a.url).filter(Boolean).join(", ")}]
   ): Promise<GeneratedEditorialContent> {
     onProgress?.({ stage: "preparing", message: "กำลังเตรียมข้อมูล..." });
 
+    await this.ensureConfigured();
     if (!this.isConfiguredSync()) {
       throw new Error(
         "AI service not configured. Please set LITELLM_API_KEY in your server .env file.",

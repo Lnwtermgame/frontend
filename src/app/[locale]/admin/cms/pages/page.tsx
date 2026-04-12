@@ -283,20 +283,28 @@ export default function AdminCmsPagesPage() {
 
   return (
     <AdminLayout title="จัดการหน้าเว็บ (CMS)">
-      <div className="space-y-3">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="w-1.5 h-4 bg-pink-500 mr-2"></span>
-            <h1 className="text-lg font-bold text-white">
-              จัดการหน้าเว็บ (CMS)
-            </h1>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-site-raised p-6 rounded-2xl border border-white/5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-site-accent/5 via-transparent to-site-accent/5 pointer-events-none" />
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-site-accent/20 to-site-accent/20 rounded-xl border border-site-accent/20 shadow-inner">
+              <FileText className="w-8 h-8 text-site-accent" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white tracking-wide mb-1">
+                จัดการหน้าเว็บ (CMS)
+              </h1>
+              <p className="text-sm text-gray-400 font-medium">
+                จัดการระบบเนื้อหาและคอนเทนต์หน้าเว็บทั้งหมด
+              </p>
+            </div>
           </div>
           <button
             onClick={openCreateModal}
-            className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm px-2.5 py-1 font-medium flex items-center hover:bg-gray-800 transition-colors">
-            <Plus size={14} className="mr-2" />
-            <span className="text-xs">เพิ่มหน้าใหม่</span>
+            className="relative z-10 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl px-5 py-2.5 font-bold flex items-center gap-2 shadow-lg shadow-accent-glow hover:shadow-accent-glow transition-all border border-site-accent/30 group shrink-0">
+            <Plus size={18} className="group-hover:scale-110 transition-transform" />
+            <span>เพิ่มหน้าใหม่</span>
           </button>
         </div>
 
@@ -304,16 +312,16 @@ export default function AdminCmsPagesPage() {
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 p-2 flex items-center">
-              <AlertCircle className="text-red-600 mr-2" size={16} />
-              <span className="text-red-400 text-xs">{error}</span>
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex items-center overflow-hidden">
+              <AlertCircle className="text-rose-400 mr-3 shrink-0" size={20} />
+              <span className="text-rose-300 text-sm font-medium">{error}</span>
               <button
                 onClick={() => setError(null)}
-                className="ml-auto text-red-600 hover:text-red-400">
-                <X size={14} />
+                className="ml-auto text-rose-400/50 hover:text-rose-400 hover:bg-rose-500/10 p-1.5 rounded-lg transition-colors">
+                <X size={16} />
               </button>
             </motion.div>
           )}
@@ -323,22 +331,29 @@ export default function AdminCmsPagesPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          className="grid grid-cols-2 md:grid-cols-4 gap-4"
+        >
           {[
             {
               label: "หน้าทั้งหมด",
               value: pages.length,
-              color: "bg-[#181A1D]0/10 text-blue-400 border-blue-500/30",
+              color: "text-site-accent",
+              bgPattern: "from-site-accent/5 to-transparent border-blue-500/10",
+              icon: <FileText className="w-5 h-5 text-site-accent/50" />
             },
             {
               label: "เผยแพร่แล้ว",
               value: pages.filter((p) => p.isPublished).length,
-              color: "bg-green-500/10 text-green-400 border-green-500/30/30",
+              color: "text-site-accent",
+              bgPattern: "from-site-accent/5 to-transparent border-site-accent/10",
+              icon: <CheckCircle className="w-5 h-5 text-site-accent/50" />
             },
             {
               label: "ฉบับร่าง",
               value: pages.filter((p) => !p.isPublished).length,
-              color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30/30",
+              color: "text-site-accent",
+              bgPattern: "from-site-accent/5 to-transparent border-site-accent/10",
+              icon: <Edit2 className="w-5 h-5 text-site-accent/50" />
             },
             {
               label: "Terms/Privacy",
@@ -350,14 +365,25 @@ export default function AdminCmsPagesPage() {
                   "privacy-policy",
                 ].includes(p.slug),
               ).length,
-              color: "bg-purple-100 text-purple-700 border-purple-500",
+              color: "text-site-accent",
+              bgPattern: "from-site-accent/5 to-transparent border-site-accent/10",
+              icon: <Sparkles className="w-5 h-5 text-site-accent/50" />
             },
           ].map((stat, index) => (
             <div
               key={index}
-              className={`p-2 text-center border border-site-border/30 rounded-[12px] shadow-sm ${stat.color}`}>
-              <div className="text-lg font-bold">{stat.value}</div>
-              <div className="text-[10px] mt-0.5 font-medium">{stat.label}</div>
+              className={`p-5 bg-site-raised border border-white/5 rounded-2xl relative overflow-hidden group`}
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgPattern} opacity-50`} />
+              <div className="relative z-10 flex flex-col">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm font-medium">{stat.label}</span>
+                  {stat.icon}
+                </div>
+                <div className={`text-3xl font-black tracking-tight ${stat.color}`}>
+                  {stat.value}
+                </div>
+              </div>
             </div>
           ))}
         </motion.div>
@@ -367,25 +393,26 @@ export default function AdminCmsPagesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2">
-          <div className="flex flex-wrap gap-2">
-            <div className="relative flex-1 min-w-[180px]">
-              <Search
-                className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={12}
-              />
-              <input
-                type="text"
-                placeholder="ค้นหาหน้า..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-1 pl-8 pr-3 bg-[#212328] border-[1px] border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent"
-              />
+          className="bg-site-raised border border-white/5 rounded-2xl p-4 flex flex-col sm:flex-row gap-4"
+        >
+          <div className="flex-1 relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
             </div>
+            <input
+              type="text"
+              placeholder="ค้นหาหน้าเว็บ (ชื่อ หรือ slug)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 bg-site-surface border border-white/5 rounded-xl text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 outline-none transition-all placeholder-gray-600 shadow-inner"
+            />
+          </div>
+          <div className="flex items-center gap-3">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+              className="bg-site-surface border border-white/5 rounded-xl px-4 py-3 text-[14px] font-medium text-gray-300 focus:ring-2 focus:ring-site-accent/50 outline-none hover:border-white/10 transition-colors cursor-pointer appearance-none min-w-[140px]"
+            >
               <option value="ALL">ทุกสถานะ</option>
               <option value="PUBLISHED">เผยแพร่แล้ว</option>
               <option value="DRAFT">ฉบับร่าง</option>
@@ -393,12 +420,10 @@ export default function AdminCmsPagesPage() {
             <button
               onClick={loadPages}
               disabled={isLoading}
-              className="py-1 px-2 bg-[#1A1C1E] hover:bg-site-border/30 border-[1px] border-gray-300 text-white text-xs flex items-center transition-colors disabled:opacity-50">
-              <RefreshCw
-                size={12}
-                className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`}
-              />
-              รีเฟรช
+              className="p-3 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-raised transition-all flex items-center gap-2 group shrink-0"
+              title="รีเฟรชข้อมูล"
+            >
+              <RefreshCw className={`h-5 w-5 ${isLoading ? "animate-spin text-site-accent" : "group-hover:rotate-180 transition-transform duration-500"}`} />
             </button>
           </div>
         </motion.div>
@@ -408,34 +433,48 @@ export default function AdminCmsPagesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden">
-          <div className="p-2 border-b-[2px] border-site-border/50 bg-[#181A1D]">
-            <h2 className="text-sm font-bold text-white flex items-center">
-              <FileText size={16} className="mr-2" />
-              รายการหน้า ({filteredPages.length})
-            </h2>
+          className="bg-site-raised border border-white/5 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden"
+        >
+          <div className="p-5 border-b border-white/5 bg-site-surface/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-site-raised rounded-xl border border-white/5">
+                <FileText className="h-5 w-5 text-gray-400" />
+              </div>
+              <div>
+                <h3 className="text-[15px] font-black text-white tracking-wide">
+                  รายการหน้าเว็บไซต์ทั้งหมด
+                </h3>
+                <p className="text-[12px] text-gray-400 font-medium">
+                  {filteredPages.length} รายการ
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="divide-y-[1px] divide-site-border/30">
+          <div className="divide-y divide-white/5 min-h-[300px]">
             {isLoading ? (
-              <div className="p-8 text-center">
-                <Loader2
-                  className="animate-spin mx-auto text-white mb-2"
-                  size={28}
-                />
-                <p className="text-gray-400 text-xs">กำลังโหลด...</p>
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
+                <p className="text-gray-400 text-sm font-medium">กำลังโหลดข้อมูล...</p>
               </div>
             ) : filteredPages.length === 0 ? (
-              <div className="p-8 text-center">
-                <FileText size={28} className="mx-auto text-gray-300 mb-2" />
-                <p className="text-gray-400 text-xs">ไม่พบหน้าเว็บ</p>
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-site-raised rounded-full flex items-center justify-center mb-4 border border-white/5 shadow-inner">
+                  <FileText className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-[16px] font-black text-white mb-2">ไม่พบหน้าเว็บ</h3>
+                <p className="text-gray-400 text-[14px] max-w-sm mb-6">
+                  ยังไม่มีหน้าเว็บที่ตรงกับเงื่อนไขการค้นหา
+                </p>
                 {searchQuery && (
                   <button
                     onClick={() => {
                       setSearchQuery("");
                       setStatusFilter("ALL");
                     }}
-                    className="text-site-accent hover:underline mt-1 text-xs">
+                    className="text-site-accent hover:text-blue-300 transition-colors font-medium text-sm flex items-center gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
                     ล้างตัวกรอง
                   </button>
                 )}
@@ -444,42 +483,52 @@ export default function AdminCmsPagesPage() {
               filteredPages.map((page) => (
                 <div
                   key={page.id}
-                  className="p-2 hover:bg-[#212328]/5 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                  className="p-5 hover:bg-site-raised/50 transition-colors group"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
                         {page.isPublished ? (
-                          <span className="inline-flex items-center px-1 py-0.5 bg-green-500/10 text-green-400 text-[10px] font-medium border border-green-500/30/30">
-                            <CheckCircle size={8} className="mr-1" />
+                          <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-black border border-site-accent/20 rounded-md">
+                            <CheckCircle size={10} className="mr-1" />
                             เผยแพร่
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-1 py-0.5 bg-[#1A1C1E] text-gray-400 text-[10px] font-medium border border-gray-400">
+                          <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-black border border-white/10 rounded-md">
                             ฉบับร่าง
                           </span>
                         )}
-                        <span className="text-[10px] text-gray-500">
+                        <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-mono border border-site-accent/20 rounded-md truncate max-w-[200px]">
                           /{page.slug}
                         </span>
-                        <span className="text-[10px] text-gray-400">
+                        <span className="text-[11px] text-gray-400 font-medium">
                           v{page.version}
                         </span>
                       </div>
-                      <h3 className="font-bold text-white mb-0.5 text-xs">
+
+                      <h3 className="font-bold text-white text-[15px] group-hover:text-site-accent transition-colors mb-1 truncate">
                         {page.title}
                       </h3>
-                      {page.metaDescription && (
-                        <p className="text-[10px] text-gray-400 line-clamp-1">
+
+                      {page.metaDescription ? (
+                        <p className="text-[13px] text-gray-400 line-clamp-1 mb-2">
                           {page.metaDescription}
                         </p>
+                      ) : (
+                        <p className="text-[13px] text-gray-600 line-clamp-1 mb-2 italic">
+                          ไม่มีคำอธิบาย Meta Description
+                        </p>
                       )}
-                      <div className="flex items-center gap-2 mt-1 text-[10px] text-gray-500">
-                        <span>
+
+                      <div className="flex items-center gap-4 text-[12px] text-gray-400 font-medium mt-2">
+                        <span className="flex items-center gap-1.5">
+                          <Edit2 className="w-3.5 h-3.5 text-site-accent" />
                           แก้ไขล่าสุด:{" "}
                           {new Date(page.updatedAt).toLocaleDateString("th-TH")}
                         </span>
                         {page.publishedAt && (
-                          <span>
+                          <span className="flex items-center gap-1.5">
+                            <CheckCircle className="w-3.5 h-3.5 text-site-accent" />
                             เผยแพร่:{" "}
                             {new Date(page.publishedAt).toLocaleDateString(
                               "th-TH",
@@ -488,30 +537,31 @@ export default function AdminCmsPagesPage() {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 ml-2">
+
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       {page.isPublished && (
                         <Link
                           href={`/${page.slug}`}
                           target="_blank"
-                          className="p-1 text-gray-400 hover:text-white hover:bg-site-border/30 transition-colors"
+                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-site-accent/30 transition-all"
                           title="ดูหน้าเว็บ"
                         >
-                          <Eye size={14} />
+                          <Eye size={16} />
                         </Link>
                       )}
                       <button
                         onClick={() => openEditModal(page)}
-                        className="p-1 text-gray-400 hover:text-white hover:bg-site-border/30 transition-colors"
+                        className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-blue-500/30 transition-all"
                         title="แก้ไข"
                       >
-                        <Edit2 size={14} />
+                        <Edit2 size={16} />
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(page.id)}
-                        className="p-1 text-red-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/30 transition-all"
                         title="ลบ"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </div>
@@ -523,20 +573,29 @@ export default function AdminCmsPagesPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="mt-2 p-2 bg-red-500/5 border-[1px] border-red-300">
-                        <p className="text-xs text-red-400 mb-2">
-                          คุณแน่ใจหรือไม่ว่าต้องการลบหน้านี้?
-                        </p>
+                        className="mt-4 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl shadow-inner flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-rose-500/20 rounded-lg shrink-0">
+                            <AlertCircle className="w-5 h-5 text-rose-400" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-rose-300">คุณแน่ใจหรือไม่ว่าต้องการลบหน้าเว็บนี้?</p>
+                            <p className="text-xs text-rose-400/80">คุณอาจจะต้องเปลี่ยนลิงก์ที่ชี้มายังหน้านี้ด้วย</p>
+                          </div>
+                        </div>
                         <div className="flex gap-2">
                           <button
                             onClick={() => setDeleteConfirm(null)}
-                            className="px-2 py-1 text-xs border-[1px] border-gray-300 text-gray-300 hover:bg-[#212328]/5">
+                            className="px-4 py-2 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all text-sm font-bold"
+                          >
                             ยกเลิก
                           </button>
                           <button
                             onClick={() => handleDelete(page.id)}
-                            className="px-2 py-1 text-xs bg-red-600 text-white border-[1px] border-red-600 hover:bg-red-700">
-                            ยืนยันการลบ
+                            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg hover:shadow-rose-500/25 transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
+                          >
+                            <Trash2 className="w-4 h-4" /> ยืนยันการลบ
                           </button>
                         </div>
                       </motion.div>
@@ -557,292 +616,317 @@ export default function AdminCmsPagesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-3"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
               style={{ zIndex: 9999 }}
             >
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div className="p-3 border-b-[2px] border-site-border/50">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-base font-bold text-white">
-                      {editingPage ? "แก้ไขหน้า" : "เพิ่มหน้าใหม่"}
-                    </h2>
-                    <button
-                      onClick={() => {
-                        setShowModal(false);
-                        setEditingPage(null);
-                        resetForm();
-                      }}
-                      className="text-gray-400 hover:text-white">
-                      <X size={18} />
-                    </button>
-                  </div>
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-site-raised border border-white/10 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
+              >
+                {/* Header */}
+                <div className="p-5 border-b border-white/5 bg-site-surface flex items-center justify-between shrink-0">
+                  <h3 className="text-[15px] font-black text-white tracking-wide flex items-center gap-2.5">
+                    <div className="p-1.5 bg-site-accent/10 rounded-lg">
+                      <FileText className="h-4 w-4 text-site-accent" />
+                    </div>
+                    {editingPage ? "แก้ไขหน้าเว็บไซต์" : "เพิ่มหน้าเว็บไซต์ใหม่"}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowModal(false);
+                      setEditingPage(null);
+                      resetForm();
+                    }}
+                    className="p-2 bg-site-raised border border-white/5 rounded-xl hover:bg-[#2a2d35] hover:border-white/10 transition-all text-gray-400"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
 
-                <form
-                  onSubmit={editingPage ? handleUpdate : handleCreate}
-                  className="p-3 space-y-2.5">
-                  {/* Slug */}
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium text-xs">
-                      URL Slug {editingPage ? "*" : ""}
-                    </label>
-                    <div className="flex items-center">
-                      <span className="px-2 py-1 bg-[#1A1C1E] border-[1px] border-r-0 border-gray-300 text-gray-500 text-xs">
-                        /
-                      </span>
-                      <input
-                        type="text"
-                        value={formData.slug}
-                        onChange={(e) =>
-                          setFormData({ ...formData, slug: e.target.value })
-                        }
-                        placeholder="terms, privacy, about"
-                        className="flex-1 py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-xs"
-                      />
-                    </div>
-                    <p className="text-[10px] text-gray-500 mt-0.5">
-                      {editingPage
-                        ? "แก้ไข URL ของหน้านี้ได้ (เฉพาะตัวพิมพ์เล็ก, ตัวเลข, และขีดกลาง)"
-                        : "จะสร้างอัตโนมัติจากชื่อถ้าไม่กรอก (เฉพาะตัวพิมพ์เล็ก, ตัวเลข, และขีดกลาง)"}
-                    </p>
-                  </div>
-
-                  {/* Title */}
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium text-xs">
-                      ชื่อหน้า *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) =>
-                        setFormData({ ...formData, title: e.target.value })
-                      }
-                      placeholder="เช่น เงื่อนไขการใช้งาน, นโยบายความเป็นส่วนตัว"
-                      required
-                      className="w-full py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-xs"
-                    />
-                  </div>
-
-                  {/* AI Generate Section */}
-                  <div className="bg-pink-500/10 border-[1px] border-pink-500 p-2">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center">
-                        <Sparkles className="w-3 h-3 text-pink-400 mr-1.5" />
-                        <span className="font-medium text-white text-xs">
-                          สร้างด้วย AI
-                        </span>
+                <div className="overflow-y-auto flex-1 custom-scrollbar">
+                  <form
+                    onSubmit={editingPage ? handleUpdate : handleCreate}
+                    className="p-6 space-y-6"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Title */}
+                      <div className="space-y-2">
+                        <label className="block text-[13px] font-bold text-gray-300">
+                          ชื่อหน้า <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.title}
+                          onChange={(e) =>
+                            setFormData({ ...formData, title: e.target.value })
+                          }
+                          placeholder="เช่น เงื่อนไขการใช้งาน, นโยบายความเป็นส่วนตัว..."
+                          required
+                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                        />
                       </div>
-                      {!showAIGenerate && (
-                        <button
-                          type="button"
-                          onClick={() => setShowAIGenerate(true)}
-                          className="text-[10px] bg-pink-500 text-white px-1.5 py-0.5 border-[1px] border-site-border/50 hover:bg-pink-500/80 transition-colors">
-                          <Wand2 className="w-2.5 h-2.5 inline mr-1" />
-                          เปิดใช้งาน
-                        </button>
-                      )}
-                    </div>
 
-                    <AnimatePresence>
-                      {showAIGenerate && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="space-y-1.5">
-                          <div>
-                            <label className="block text-gray-300 mb-0.5 text-[10px]">
-                              หัวข้อที่ต้องการให้ AI เขียน
-                            </label>
-                            <input
-                              type="text"
-                              value={aiTopic}
-                              onChange={(e) => setAiTopic(e.target.value)}
-                              placeholder="เช่น นโยบายความเป็นส่วนตัว, เงื่อนไขการใช้งาน"
-                              className="w-full py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white text-xs placeholder-gray-500 focus:outline-none focus:border-site-accent"
-                            />
-                          </div>
-
-                          {/* Model Selector */}
-                          <div>
-                            <label className="block text-gray-300 mb-0.5 text-[10px]">
-                              เลือก AI Model
-                            </label>
-                            <select
-                              value={selectedModel}
-                              onChange={(e) => {
-                                setSelectedModel(e.target.value);
-                                aiService.setModel(e.target.value);
-                              }}
-                              disabled={
-                                isLoadingModels || availableModels.length === 0
-                              }
-                              className="w-full py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent disabled:opacity-50">
-                              {isLoadingModels ? (
-                                <option value="">กำลังโหลด models...</option>
-                              ) : availableModels.length === 0 ? (
-                                <option value="">ไม่พบ model ที่ใช้ได้</option>
-                              ) : (
-                                availableModels.map((model) => (
-                                  <option key={model.id} value={model.id}>
-                                    {model.name || model.id}
-                                  </option>
-                                ))
-                              )}
-                            </select>
-                          </div>
-
-                          <div className="flex gap-1.5">
-                            <button
-                              type="button"
-                              onClick={handleGenerateAIContent}
-                              disabled={isGeneratingAI || !aiTopic.trim()}
-                              className="flex-1 bg-pink-500 text-white border-[1px] border-site-border/50 py-1 text-xs font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
-                              {isGeneratingAI ? (
-                                <>
-                                  <Loader2 className="w-2.5 h-2.5 animate-spin mr-1.5" />
-                                  กำลังสร้าง...
-                                </>
-                              ) : (
-                                <>
-                                  <Wand2 className="w-2.5 h-2.5 mr-1.5" />
-                                  สร้างเนื้อหา
-                                </>
-                              )}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setShowAIGenerate(false);
-                                setAiTopic("");
-                              }}
-                              className="px-1.5 py-1 border-[1px] border-gray-300 text-gray-400 hover:bg-[#212328]/5 transition-colors">
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {!aiService.isConfigured() && showAIGenerate && (
-                      <div className="mt-1.5 p-1.5 bg-red-500/5 border-[1px] border-red-300 text-red-400 text-[10px]">
-                        กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ server
-                        ก่อนใช้งาน AI
+                      {/* Slug */}
+                      <div className="space-y-2">
+                        <label className="block text-[13px] font-bold text-gray-300 flex items-center justify-between">
+                          <span>URL Slug <span className="text-rose-500">*</span></span>
+                          {editingPage && (
+                            <span className="text-site-accent text-[10px] flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" />
+                              เปลี่ยนอาจทำลิงก์เดิมเสีย
+                            </span>
+                          )}
+                        </label>
+                        <div className="relative flex items-center">
+                          <span className="absolute left-4 text-gray-400 font-mono text-[13px] z-10 w-4 text-center">
+                            /
+                          </span>
+                          <input
+                            type="text"
+                            value={formData.slug}
+                            onChange={(e) =>
+                              setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })
+                            }
+                            placeholder="about, terms, privacy..."
+                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner pl-9 pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-700"
+                          />
+                        </div>
+                        <p className="text-[11px] text-gray-400 font-medium mt-1">
+                          {!editingPage && "* สร้างอัตโนมัติจากชื่อ (ภาษาอังกฤษ, ตัวพิมพ์เล็ก, เลข, ขีดกลางเท่านั้น)"}
+                        </p>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium text-xs">
-                      เนื้อหา *
-                    </label>
-                    <textarea
-                      value={formData.content}
-                      onChange={(e) =>
-                        setFormData({ ...formData, content: e.target.value })
-                      }
-                      placeholder="เนื้อหาของหน้า (รองรับ HTML)"
-                      required
-                      rows={8}
-                      className="w-full py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none font-mono text-xs"
-                    />
-                  </div>
-
-                  {/* SEO */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium text-xs">
-                        Meta Title
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.metaTitle}
-                        onChange={(e) =>
-                          setFormData({ ...formData, metaTitle: e.target.value })
-                        }
-                        placeholder="Title สำหรับ SEO"
-                        className="w-full py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-xs"
-                      />
                     </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium text-xs">
-                        Meta Description
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.metaDescription}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            metaDescription: e.target.value,
-                          })
-                        }
-                        placeholder="Description สำหรับ SEO"
-                        className="w-full py-1 px-2 bg-[#212328] border-[1px] border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-xs"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Publish Status */}
-                  <div className="flex items-center">
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.isPublished}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            isPublished: e.target.checked,
-                          })
-                        }
-                        className="w-3 h-3 mr-1.5"
-                      />
-                      <span className="text-gray-300 text-xs">
-                        เผยแพร่หน้านี้
-                      </span>
-                    </label>
-                  </div>
+                    {/* AI Generate Section */}
+                    <div className="bg-site-accent/5 border border-site-accent/20 rounded-xl overflow-hidden">
+                      <div className="flex items-center justify-between p-4 bg-site-accent/5 border-b border-site-accent/10">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-site-accent/20 rounded-lg">
+                            <Sparkles className="w-4 h-4 text-site-accent" />
+                          </div>
+                          <span className="font-bold text-site-accent text-[13px]">
+                            สร้างเนื้อหาด้วย AI (Draft)
+                          </span>
+                        </div>
+                        {!showAIGenerate && (
+                          <button
+                            type="button"
+                            onClick={() => setShowAIGenerate(true)}
+                            className="text-[12px] font-bold bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white px-3 py-1.5 rounded-lg border border-site-accent/50 transition-colors flex items-center gap-1.5"
+                          >
+                            <Wand2 className="w-3.5 h-3.5" /> เปิดใช้งาน
+                          </button>
+                        )}
+                      </div>
 
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-2 border-t-[1px] border-site-border/30">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowModal(false);
-                        setEditingPage(null);
-                        resetForm();
-                      }}
-                      className="flex-1 py-1.5 px-2 border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors font-medium text-xs">
-                      ยกเลิก
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={
-                        isSubmitting ||
-                        !formData.title?.trim() ||
-                        !formData.content?.trim()
-                      }
-                      className="flex-1 py-1.5 px-2 bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-xs">
-                      {isSubmitting ? (
-                        <span className="flex items-center justify-center">
-                          <Loader2 size={14} className="animate-spin mr-1.5" />
-                          กำลังบันทึก...
-                        </span>
-                      ) : (
-                        <span className="flex items-center justify-center">
-                          <Save size={14} className="mr-1.5" />
-                          บันทึก
-                        </span>
+                      <AnimatePresence>
+                        {showAIGenerate && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="p-4 space-y-4"
+                          >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <label className="block text-gray-400 font-bold text-[12px]">
+                                  หัวข้อที่ต้องการให้ AI ช่วยร่าง
+                                </label>
+                                <input
+                                  type="text"
+                                  value={aiTopic}
+                                  onChange={(e) => setAiTopic(e.target.value)}
+                                  placeholder="เช่น นโยบายความเป็นส่วนตัว, เงื่อนไขการใช้งานระบบ..."
+                                  className="w-full py-2.5 px-3 bg-site-surface border border-white/10 rounded-xl text-[13px] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50"
+                                />
+                              </div>
+
+                              {/* Model Selector */}
+                              <div className="space-y-2">
+                                <label className="block text-gray-400 font-bold text-[12px]">
+                                  เลือก AI Model
+                                </label>
+                                <select
+                                  value={selectedModel}
+                                  onChange={(e) => {
+                                    setSelectedModel(e.target.value);
+                                    aiService.setModel(e.target.value);
+                                  }}
+                                  disabled={isLoadingModels || availableModels.length === 0}
+                                  className="w-full py-2.5 px-3 bg-site-surface border border-white/10 rounded-xl text-[13px] text-white focus:outline-none focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 disabled:opacity-50 appearance-none cursor-pointer"
+                                >
+                                  {isLoadingModels ? (
+                                    <option value="">กำลังโหลด models...</option>
+                                  ) : availableModels.length === 0 ? (
+                                    <option value="">ไม่พบ model ที่ใช้ได้</option>
+                                  ) : (
+                                    availableModels.map((model) => (
+                                      <option key={model.id} value={model.id}>
+                                        {model.name || model.id} {model.owned_by ? `(${model.owned_by})` : ""}
+                                      </option>
+                                    ))
+                                  )}
+                                </select>
+                              </div>
+                            </div>
+
+                            <div className="flex gap-2 pt-2">
+                              <button
+                                type="button"
+                                onClick={handleGenerateAIContent}
+                                disabled={isGeneratingAI || !aiTopic.trim()}
+                                className="flex-1 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl py-2.5 text-[13px] font-bold shadow-md shadow-accent-glow disabled:opacity-50 transition-all flex items-center justify-center gap-2 border border-site-accent/30"
+                              >
+                                {isGeneratingAI ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    กำลังสร้างเนื้อหา...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Wand2 className="w-4 h-4" />
+                                    ร่างเนื้อหาด้วย AI
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowAIGenerate(false);
+                                  setAiTopic("");
+                                }}
+                                className="px-4 py-2.5 bg-site-raised border border-white/5 rounded-xl text-gray-400 hover:bg-[#2a2d35] hover:text-white transition-all flex items-center justify-center"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {!aiService.isConfigured() && showAIGenerate && (
+                        <div className="m-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-[12px] font-medium flex items-center gap-2">
+                          <AlertCircle className="shrink-0 w-4 h-4" />
+                          กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ Backend ก่อนใช้งาน AI
+                        </div>
                       )}
-                    </button>
-                  </div>
-                </form>
+                    </div>
+
+                    {/* Content */}
+                    <div className="space-y-2">
+                      <label className="block text-[13px] font-bold text-gray-300">
+                        เนื้อหา <span className="text-rose-500">*</span>
+                      </label>
+                      <textarea
+                        value={formData.content}
+                        onChange={(e) =>
+                          setFormData({ ...formData, content: e.target.value })
+                        }
+                        placeholder="พิมพ์เนื้อหาของหน้าเว็บ (รองรับ HTML/Markdown)..."
+                        required
+                        rows={12}
+                        className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-gray-300 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all resize-none font-mono leading-relaxed"
+                      />
+                      <p className="text-[11px] text-gray-400 font-medium">แนะนำให้ใช้ HTML หรือ Markdown พื้นฐานในการจัดรูปแบบ</p>
+                    </div>
+
+                    {/* SEO */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                      <div className="space-y-2">
+                        <label className="block text-[13px] font-bold text-gray-300">
+                          Meta Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.metaTitle}
+                          onChange={(e) =>
+                            setFormData({ ...formData, metaTitle: e.target.value })
+                          }
+                          placeholder="Title สำหรับ SEO (Google Search)"
+                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-[13px] font-bold text-gray-300">
+                          Meta Description
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.metaDescription}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              metaDescription: e.target.value,
+                            })
+                          }
+                          placeholder="คำอธิบายสั้นๆ สำหรับ SEO"
+                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Publish Status Options */}
+                    <div className="pt-2">
+                      <label className="inline-flex items-center gap-3 cursor-pointer group">
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={formData.isPublished}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                isPublished: e.target.checked,
+                              })
+                            }
+                            className="sr-only peer"
+                          />
+                          <div className="w-10 h-6 bg-site-surface border border-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent/20 peer-checked:border-site-accent/50"></div>
+                        </div>
+                        <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">
+                          เผยแพร่หน้าเว็บ (เปิดให้ใช้งานสาธารณะ)
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Modal Actions */}
+                    <div className="flex gap-3 pt-6 border-t border-white/5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowModal(false);
+                          setEditingPage(null);
+                          resetForm();
+                        }}
+                        className="flex-1 py-3 px-4 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all font-bold text-[14px]"
+                      >
+                        ยกเลิก
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={
+                          isSubmitting ||
+                          !formData.title?.trim() ||
+                          !formData.content?.trim()
+                        }
+                        className="flex-xl py-3 px-8 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg hover:shadow-accent-glow transition-all text-[14px] font-black border border-site-accent/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            กำลังบันทึก...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-5 h-5" />
+                            บันทึกการเปลี่ยนแปลง
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </motion.div>
             </motion.div>
           )}

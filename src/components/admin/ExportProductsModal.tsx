@@ -438,7 +438,7 @@ export default function ExportProductsModal({
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-lg"
+                className="bg-site-raised border border-site-border/30 rounded-[16px] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-lg"
             >
                 {/* Header */}
                 <div className="p-4 border-b-[3px] border-black bg-site-accent flex items-center justify-between">
@@ -448,7 +448,7 @@ export default function ExportProductsModal({
                     </h3>
                     <button
                         onClick={onClose}
-                        className="p-2 bg-[#212328] border-[2px] border-black hover:bg-[#1A1C1E] transition-colors"
+                        className="p-2 bg-site-raised border-[2px] border-black hover:bg-site-raised transition-colors"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -468,7 +468,7 @@ export default function ExportProductsModal({
                                     onClick={() => setFormat("csv")}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${format === "csv"
                                         ? "bg-site-accent text-white"
-                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
+                                        : "bg-site-raised text-white hover:bg-site-raised"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -479,7 +479,7 @@ export default function ExportProductsModal({
                                     onClick={() => setFormat("json")}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${format === "json"
                                         ? "bg-site-accent text-white"
-                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
+                                        : "bg-site-raised text-white hover:bg-site-raised"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -499,7 +499,7 @@ export default function ExportProductsModal({
                                     onClick={() => setExportScope("all")}
                                     className={`px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${exportScope === "all"
                                         ? "bg-black text-white"
-                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
+                                        : "bg-site-raised text-white hover:bg-site-raised"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -509,7 +509,7 @@ export default function ExportProductsModal({
                                     onClick={() => setExportScope("filtered")}
                                     className={`px-3 py-1.5 border-[2px] border-black text-sm font-medium transition-colors ${exportScope === "filtered"
                                         ? "bg-black text-white"
-                                        : "bg-[#212328] text-white hover:bg-[#1A1C1E]"
+                                        : "bg-site-raised text-white hover:bg-site-raised"
                                         }`}
                                     style={{ boxShadow: "2px 2px 0 0 #000" }}
                                 >
@@ -555,7 +555,7 @@ export default function ExportProductsModal({
                             return (
                                 <div
                                     key={group.key}
-                                    className="border border-gray-200 bg-[#181A1D]"
+                                    className="border border-gray-200 bg-site-surface"
                                 >
                                     {/* Group header */}
                                     <div className="flex items-center gap-2 px-3 py-2">
@@ -627,7 +627,7 @@ export default function ExportProductsModal({
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t-[3px] border-black bg-[#181A1D] flex items-center justify-between">
+                <div className="p-4 border-t-[3px] border-black bg-site-surface flex items-center justify-between">
                     <span className="text-xs text-gray-500">
                         {dataSource.length} สินค้า •{" "}
                         {format === "csv" ? "CSV" : "JSON"}
@@ -635,7 +635,7 @@ export default function ExportProductsModal({
                     <div className="flex gap-2">
                         <button
                             onClick={onClose}
-                            className="px-4 py-1.5 text-sm font-medium border-[2px] border-black bg-[#212328] text-white hover:bg-[#1A1C1E] transition-colors"
+                            className="px-4 py-1.5 text-sm font-medium border-[2px] border-black bg-site-raised text-white hover:bg-site-raised transition-colors"
                             style={{ boxShadow: "2px 2px 0 0 #000" }}
                         >
                             ยกเลิก

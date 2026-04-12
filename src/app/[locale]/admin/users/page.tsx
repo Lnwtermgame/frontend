@@ -210,8 +210,8 @@ export default function AdminUsersPage() {
 
   const roleBadge = (role: AdminUser["role"]) =>
     role === "ADMIN"
-      ? "bg-purple-100 text-purple-700 border-purple-500"
-      : "bg-[#1A1C1E] text-gray-300 border-gray-500";
+      ? "bg-site-accent/10 text-site-accent border-site-accent"
+      : "bg-site-raised text-gray-300 border-gray-500";
 
   const statusBadge = (isActive: boolean) =>
     isActive
@@ -232,7 +232,7 @@ export default function AdminUsersPage() {
     return (
       <AdminLayout title="ผู้ใช้">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -243,52 +243,53 @@ export default function AdminUsersPage() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-orange-500/10 mr-2"></span>
-            <h1 className="text-2xl font-bold text-white">จัดการผู้ใช้</h1>
+            <div className="w-1.5 h-6 bg-gradient-to-b from-site-accent to-site-accent/50 rounded-full mr-3 shadow-accent-glow"></div>
+            <h1 className="text-2xl font-black text-white tracking-tight">จัดการผู้ใช้</h1>
           </div>
           <button
             onClick={fetchData}
             disabled={loading || isMutating}
-            className="bg-[#212328] text-white border border-site-border/30 rounded-[12px] px-4 py-2 hover:bg-[#212328]/5 transition-colors flex items-center font-medium disabled:opacity-60">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            รีเฟรช
+            className="bg-site-raised text-white border border-white/5 rounded-xl px-4 py-2.5 hover:bg-[#2a2d35] hover:border-white/10 transition-all flex items-center font-bold text-[13px] disabled:opacity-60"
+          >
+            <RefreshCw className="h-4 w-4 mr-2 text-gray-400" />
+            รีเฟรชข้อมูล
           </button>
         </div>
 
         {stats && (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <div
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
-              <p className="text-xs text-gray-500">ผู้ใช้ทั้งหมด</p>
-              <p className="text-xl font-bold text-white">
+            <div className="bg-site-surface border border-white/5 rounded-2xl p-5 shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-4 -top-4 w-16 h-16 bg-site-accent/10 rounded-full blur-xl group-hover:bg-site-accent/20 transition-colors"></div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 relative z-10">ผู้ใช้ทั้งหมด</p>
+              <p className="text-2xl font-black text-white relative z-10">
                 {stats.totalUsers.toLocaleString()}
               </p>
             </div>
-            <div
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
-              <p className="text-xs text-gray-500">แอดมิน</p>
-              <p className="text-xl font-bold text-white">
+            <div className="bg-site-surface border border-white/5 rounded-2xl p-5 shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-4 -top-4 w-16 h-16 bg-site-accent/10 rounded-full blur-xl group-hover:bg-site-accent/20 transition-colors"></div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 relative z-10">แอดมิน</p>
+              <p className="text-2xl font-black text-white relative z-10">
                 {stats.totalAdmins.toLocaleString()}
               </p>
             </div>
-            <div
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
-              <p className="text-xs text-gray-500">ใช้งานอยู่</p>
-              <p className="text-xl font-bold text-green-400">
+            <div className="bg-site-surface border border-white/5 rounded-2xl p-5 shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-4 -top-4 w-16 h-16 bg-site-accent/10 rounded-full blur-xl group-hover:bg-site-accent/20 transition-colors"></div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 relative z-10">ใช้งานอยู่</p>
+              <p className="text-2xl font-black text-site-accent relative z-10">
                 {stats.activeUsers.toLocaleString()}
               </p>
             </div>
-            <div
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
-              <p className="text-xs text-gray-500">ไม่ใช้งาน</p>
-              <p className="text-xl font-bold text-red-400">
+            <div className="bg-site-surface border border-white/5 rounded-2xl p-5 shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-4 -top-4 w-16 h-16 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition-colors"></div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 relative z-10">ระงับการใช้งาน</p>
+              <p className="text-2xl font-black text-rose-400 relative z-10">
                 {stats.inactiveUsers.toLocaleString()}
               </p>
             </div>
-            <div
-              className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4">
-              <p className="text-xs text-gray-500">ใหม่เดือนนี้</p>
-              <p className="text-xl font-bold text-white">
+            <div className="bg-site-surface border border-white/5 rounded-2xl p-5 shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-4 -top-4 w-16 h-16 bg-site-accent/10 rounded-full blur-xl group-hover:bg-site-accent/20 transition-colors"></div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 relative z-10">ใหม่เดือนนี้</p>
+              <p className="text-2xl font-black text-white relative z-10">
                 {stats.newThisMonth.toLocaleString()}
               </p>
             </div>
@@ -296,56 +297,56 @@ export default function AdminUsersPage() {
         )}
 
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4"
-          
+          className="bg-site-surface border border-white/5 rounded-2xl p-5 shadow-lg"
+
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="ค้นหาผู้ใช้..."
+                placeholder="ค้นหาชื่อผู้ใช้ หรืออีเมล..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:border-site-accent focus:outline-none"
+                className="w-full pl-11 pr-4 py-2.5 bg-site-raised border border-white/5 rounded-xl shadow-inner text-[13px] text-white focus:border-site-accent/50 focus:ring-1 focus:ring-site-accent/50 focus:outline-none transition-all placeholder:text-gray-400"
               />
             </div>
             <div className="flex gap-3">
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:border-site-accent focus:outline-none">
+                className="px-4 py-2.5 bg-site-raised border border-white/5 rounded-xl shadow-inner text-[13px] font-medium text-white focus:border-site-accent/50 focus:outline-none transition-all cursor-pointer">
                 <option value="all">ทุกบทบาท</option>
-                <option value="user">ผู้ใช้</option>
-                <option value="admin">แอดมิน</option>
+                <option value="user">ผู้ใช้ทั่วไป</option>
+                <option value="admin">ผู้ดูแลระบบ</option>
               </select>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:border-site-accent focus:outline-none">
+                className="px-4 py-2.5 bg-site-raised border border-white/5 rounded-xl shadow-inner text-[13px] font-medium text-white focus:border-site-accent/50 focus:outline-none transition-all cursor-pointer">
                 <option value="all">ทุกสถานะ</option>
-                <option value="active">ใช้งาน</option>
-                <option value="inactive">ไม่ใช้งาน</option>
+                <option value="active">ใช้งานปกติ</option>
+                <option value="inactive">ระงับการใช้งาน</option>
               </select>
             </div>
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden"
-          
+          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden shadow-xl"
+
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#181A1D] border-b-[2px] border-site-border/50">
-                <tr>
-                  <th className="py-3 px-4 text-left">
+              <thead className="bg-site-raised/50 border-b border-white/5">
+                <tr className="text-[11px] text-gray-400 uppercase tracking-wider">
+                  <th className="py-4 px-5 text-left w-12">
                     <input
                       type="checkbox"
                       checked={
@@ -353,101 +354,101 @@ export default function AdminUsersPage() {
                         users.length > 0
                       }
                       onChange={toggleAllSelection}
-                      className="w-4 h-4 border border-site-border/30 rounded-[12px] shadow-sm text-purple-400 focus:ring-site-accent/50"
+                      className="w-4 h-4 rounded-md border-white/10 bg-site-raised text-site-accent focus:ring-site-accent/50 focus:ring-offset-0 transition-all cursor-pointer"
                     />
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-left py-4 px-5 font-bold">
                     ผู้ใช้
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-left py-4 px-5 font-bold">
                     บทบาท
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-left py-4 px-5 font-bold">
                     สถานะ
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-left py-4 px-5 font-bold">
                     วันที่สมัคร
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-left py-4 px-5 font-bold">
                     คำสั่งซื้อ
                   </th>
-                  <th className="text-right py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-right py-4 px-5 font-bold">
                     ยอดใช้จ่าย
                   </th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-white">
+                  <th className="text-center py-4 px-5 font-bold">
                     จัดการ
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-site-border/30">
+              <tbody className="divide-y divide-white/5">
                 {loading && (
                   <tr>
-                    <td colSpan={8} className="py-10 text-center">
-                      <div className="inline-flex items-center text-gray-400">
-                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                        กำลังโหลดข้อมูลผู้ใช้...
+                    <td colSpan={8} className="py-20 text-center">
+                      <div className="inline-flex flex-col items-center justify-center text-gray-400 space-y-3">
+                        <Loader2 className="h-8 w-8 animate-spin text-site-accent" />
+                        <span className="text-[13px] font-medium tracking-wide">กำลังโหลดข้อมูลผู้ใช้...</span>
                       </div>
                     </td>
                   </tr>
                 )}
                 {!loading &&
                   users.map((user) => (
-                    <tr key={user.id} className="hover:bg-[#212328]/5">
-                      <td className="py-3 px-4">
+                    <tr key={user.id} className="hover:bg-site-raised transition-colors group">
+                      <td className="py-3 px-5">
                         <input
                           type="checkbox"
                           checked={selectedUsers.includes(user.id)}
                           onChange={() => toggleUserSelection(user.id)}
-                          className="w-4 h-4 border border-site-border/30 rounded-[12px] shadow-sm text-purple-400 focus:ring-site-accent/50"
+                          className="w-4 h-4 rounded-md border-white/10 bg-site-raised text-site-accent focus:ring-site-accent/50 focus:ring-offset-0 transition-all cursor-pointer"
                         />
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">
+                      <td className="py-3 px-5">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-10 h-10 rounded-xl bg-site-raised border border-white/5 flex items-center justify-center text-gray-300 font-bold group-hover:border-white/10 group-hover:bg-[#2a2d35] transition-all shadow-inner">
                             {user.username.charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <Link
                               href={`/admin/users/${user.id}`}
-                              className="text-sm font-medium text-white hover:underline"
+                              className="text-[13px] font-bold text-white group-hover:text-site-accent transition-colors"
                               title="เปิดหน้า User Manager"
                             >
                               {user.username}
                             </Link>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-[11px] text-gray-400 font-mono mt-0.5">
                               {user.email}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-5">
                         <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full border border-site-border/30 rounded-[12px] shadow-sm ${roleBadge(user.role)}`}>
-                          {user.role === "ADMIN" ? "แอดมิน" : "ผู้ใช้"}
+                          className={`px-2.5 py-1 text-[10px] font-bold rounded-md border tracking-wide uppercase ${roleBadge(user.role)}`}>
+                          {user.role === "ADMIN" ? "ผู้ดูแลระบบ" : "ผู้ใช้ทั่วไป"}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-5">
                         <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full border border-site-border/30 rounded-[12px] shadow-sm ${statusBadge(user.isActive)}`}>
-                          {user.isActive ? "ใช้งาน" : "ไม่ใช้งาน"}
+                          className={`px-2.5 py-1 text-[10px] font-bold rounded-md border tracking-wide ${statusBadge(user.isActive)}`}>
+                          {user.isActive ? "ใช้งานปกติ" : "ระงับการใช้งาน"}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
+                      <td className="py-3 px-5 text-[12px] text-gray-400">
                         {formatDate(user.createdAt)}
                       </td>
-                      <td className="py-3 px-4 text-sm text-white">
+                      <td className="py-3 px-5 text-[13px] font-bold text-white">
                         {user.orderCount.toLocaleString()}
                       </td>
-                      <td className="py-3 px-4 text-sm text-white text-right font-medium">
+                      <td className="py-3 px-5 text-[13px] text-white text-right font-black tracking-wide">
                         {formatCurrency(user.totalSpent)}
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center justify-center gap-2">
+                      <td className="py-3 px-5">
+                        <div className="flex items-center justify-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => handleToggleStatus(user)}
                             disabled={isMutating}
-                            className="p-2 text-gray-400 hover:text-site-accent hover:bg-[#212328]/5 transition-colors border border-site-border/30 rounded-[12px] shadow-sm border-transparent hover:border-site-accent disabled:opacity-50"
-                            title={user.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
+                            className={`p-2 rounded-lg transition-all border ${user.isActive ? "text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/20 border-transparent" : "text-gray-400 hover:text-site-accent hover:bg-site-accent/10 hover:border-site-accent/20 border-transparent"} disabled:opacity-50`}
+                            title={user.isActive ? "ระงับการใช้งาน" : "เปิดการใช้งาน"}
                           >
                             {user.isActive ? (
                               <UserX className="h-4 w-4" />
@@ -458,15 +459,15 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handleDeleteUser(user.id)}
                             disabled={isMutating}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-500/10 transition-colors border border-site-border/30 rounded-[12px] shadow-sm border-transparent hover:border-red-500/30/30 disabled:opacity-50"
-                            title="ปิดใช้งานผู้ใช้"
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent rounded-lg hover:border-red-500/20 disabled:opacity-50"
+                            title="ลบผู้ใช้ออกจากระบบ"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
                           <Link
                             href={`/admin/users/${user.id}`}
-                            className="p-2 text-gray-400 hover:text-white hover:bg-[#212328]/5 transition-colors border border-site-border/30 rounded-[12px] shadow-sm border-transparent hover:border-site-border/50"
-                            title="จัดการผู้ใช้แบบเต็ม"
+                            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 transition-all border border-transparent rounded-lg hover:border-white/10"
+                            title="ดูโปรไฟล์และจัดการข้อมูล"
                           >
                             <Eye className="h-4 w-4" />
                           </Link>
@@ -478,7 +479,7 @@ export default function AdminUsersPage() {
                   <tr>
                     <td
                       colSpan={8}
-                      className="py-10 text-center text-sm text-gray-500">
+                      className="py-16 text-center text-[13px] text-gray-400">
                       ไม่พบข้อมูลผู้ใช้ตามเงื่อนไขที่เลือก
                     </td>
                   </tr>
@@ -487,22 +488,22 @@ export default function AdminUsersPage() {
             </table>
           </div>
 
-          <div className="p-4 border-t-[2px] border-site-border/30 flex items-center justify-between">
-            <p className="text-sm text-gray-400">{summaryText}</p>
+          <div className="px-5 py-4 border-t border-white/5 flex items-center justify-between bg-site-surface">
+            <p className="text-[12px] font-bold text-gray-400 tracking-wide">{summaryText}</p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={!canGoPrev || loading}
-                className="p-2 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 hover:border-site-border/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                className="p-2 bg-site-raised border border-white/5 rounded-xl text-gray-400 hover:text-white hover:border-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <span className="px-4 py-2 text-sm text-white font-medium">
-                หน้า {meta.page} / {Math.max(meta.totalPages, 1)}
+              <span className="px-3 py-1 text-[12px] text-white font-bold bg-site-raised rounded-xl border border-white/5 shadow-inner">
+                {meta.page} / {Math.max(meta.totalPages, 1)}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => p + 1)}
                 disabled={!canGoNext || loading}
-                className="p-2 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 hover:border-site-border/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                className="p-2 bg-site-raised border border-white/5 rounded-xl text-gray-400 hover:text-white hover:border-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -511,48 +512,49 @@ export default function AdminUsersPage() {
 
         {selectedUsers.length > 0 && (
           <motion.div
-            className="bg-orange-500/10 border border-site-border/30 rounded-[12px] p-4 flex items-center justify-between"
-            
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 lg:left-[calc(50%+120px)] bg-site-surface border border-white/10 rounded-2xl p-3 flex flex-col md:flex-row items-center justify-between shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] z-50 gap-4 min-w-[320px] md:min-w-[500px]"
+
+            initial={{ opacity: 0, y: 50, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
           >
-            <span className="text-white font-medium">
-              เลือก {selectedUsers.length} รายการ
+            <span className="text-white font-bold text-[13px] tracking-wide px-3">
+              เลือก <span className="text-site-accent mx-1">{selectedUsers.length}</span> รายการ
             </span>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 w-full md:w-auto">
               <button
                 onClick={() => handleBulkStatus(true)}
                 disabled={isMutating}
-                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors flex items-center text-sm font-medium disabled:opacity-50">
+                className="flex-1 md:flex-none px-4 py-2 bg-site-accent/10 border border-site-accent/20 rounded-xl text-site-accent hover:bg-site-accent/20 transition-all flex justify-center items-center text-[12px] font-bold disabled:opacity-50">
                 <UserCheck className="h-4 w-4 mr-2" />
-                เปิดใช้งาน
+                ปกตื
               </button>
               <button
                 onClick={() => handleBulkStatus(false)}
                 disabled={isMutating}
-                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-colors flex items-center text-sm font-medium disabled:opacity-50">
+                className="flex-1 md:flex-none px-4 py-2 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 hover:bg-rose-500/20 transition-all flex justify-center items-center text-[12px] font-bold disabled:opacity-50">
                 <UserX className="h-4 w-4 mr-2" />
-                ปิดใช้งาน
+                ระงับ
               </button>
+              <div className="w-[1px] h-6 bg-white/10 md:block hidden mx-1"></div>
               <button
                 onClick={handleBulkDelete}
                 disabled={isMutating}
-                className="px-4 py-2 bg-red-500/50 border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-red-600 transition-colors flex items-center text-sm font-medium disabled:opacity-50">
+                className="flex-1 md:flex-none px-4 py-2 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400 hover:bg-red-500/30 hover:border-red-500/40 transition-all flex justify-center items-center text-[12px] font-bold disabled:opacity-50">
                 <Trash2 className="h-4 w-4 mr-2" />
-                ปิดใช้งานผู้ใช้
+                ลบ
               </button>
             </div>
           </motion.div>
         )}
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30/30 rounded-[12px] text-red-400 px-4 py-3">
+          <div className="bg-red-500/10 border border-red-500/30/30 rounded-xl text-red-400 px-4 py-3">
             ไม่สามารถดำเนินการได้: {error}
           </div>
         )}
 
         {isMutating && (
-          <div className="fixed bottom-5 right-5 bg-black text-white px-4 py-2 border border-site-border/30 rounded-[12px] flex items-center z-50">
+          <div className="fixed bottom-5 right-5 bg-black text-white px-4 py-2 border border-white/5 rounded-xl flex items-center z-50">
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
             กำลังอัปเดตข้อมูลผู้ใช้...
           </div>

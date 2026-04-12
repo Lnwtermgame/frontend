@@ -59,9 +59,9 @@ export default function AdminCmsNewsPage() {
 
   // Category options with translations
   const categories: { value: NewsCategory; label: string; color: string }[] = [
-    { value: "general", label: t("cms_news.categories.general"), color: "bg-[#1A1C1E] text-gray-300" },
-    { value: "promotion", label: t("cms_news.categories.promotion"), color: "bg-pink-100 text-pink-700" },
-    { value: "update", label: t("cms_news.categories.update"), color: "bg-[#181A1D]0/10 text-blue-400" },
+    { value: "general", label: t("cms_news.categories.general"), color: "bg-site-raised text-gray-300" },
+    { value: "promotion", label: t("cms_news.categories.promotion"), color: "bg-site-accent/10 text-site-accent" },
+    { value: "update", label: t("cms_news.categories.update"), color: "bg-site-surface0/10 text-site-accent" },
     { value: "event", label: t("cms_news.categories.event"), color: "bg-yellow-500/10 text-yellow-400" },
   ];
 
@@ -601,20 +601,28 @@ export default function AdminCmsNewsPage() {
   };
 
   return (
-    <AdminLayout title="จัดการข่าวสาร">
-      <div className="space-y-3">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="w-1.5 h-4 bg-orange-500/10 mr-2"></span>
-            <h1 className="text-lg font-bold text-white">จัดการข่าวสาร</h1>
+    <AdminLayout title={"จัดการข่าวสาร" as any}>
+      <div className="space-y-6 max-w-7xl mx-auto pb-12">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-black text-white tracking-wide flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-site-accent/20 to-site-accent/20 rounded-xl border border-white/5">
+                <Newspaper className="h-6 w-6 text-site-accent" />
+              </div>
+              จัดการข่าวสาร
+            </h1>
+            <p className="text-gray-400 text-sm mt-1 ml-14">จัดการบทความ ข้อมูล และข่าวสารทั้งหมด</p>
           </div>
-          <button
-            onClick={openCreateModal}
-            className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm px-2.5 py-1 font-medium flex items-center hover:bg-gray-800 transition-colors">
-            <Plus size={14} className="mr-1.5" />
-            <span className="text-xs">เพิ่มข่าวใหม่</span>
-          </button>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openCreateModal}
+              className="bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg hover:shadow-accent-glow flex items-center gap-2 px-5 py-2.5 transition-all font-bold text-sm">
+              <Plus className="h-4 w-4" />
+              <span>เพิ่มข่าวใหม่</span>
+            </button>
+          </div>
         </div>
 
         {/* Error Message */}
@@ -624,13 +632,15 @@ export default function AdminCmsNewsPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 p-2.5 flex items-center">
-              <AlertCircle className="text-red-600 mr-2" size={16} />
-              <span className="text-red-400 text-xs">{error}</span>
+              className="bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-400 px-4 py-3 text-sm flex items-center gap-3"
+            >
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <span className="font-medium flex-1">{error}</span>
               <button
                 onClick={() => setError(null)}
-                className="ml-auto text-red-600 hover:text-red-400">
-                <X size={14} />
+                className="p-1 hover:bg-rose-500/20 rounded-lg transition-colors text-rose-400/70 hover:text-rose-400"
+              >
+                <X className="w-4 h-4" />
               </button>
             </motion.div>
           )}
@@ -640,36 +650,58 @@ export default function AdminCmsNewsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           {[
             {
               label: "ข่าวทั้งหมด",
               value: articles.length,
-              color: "bg-[#181A1D]0/10 text-blue-400 border-blue-500/30",
+              icon: Newspaper,
+              color: "text-site-accent",
+              bg: "bg-site-accent/10",
+              border: "border-site-accent/20",
             },
             {
               label: "เผยแพร่แล้ว",
               value: articles.filter((a) => a.isPublished).length,
-              color: "bg-green-500/10 text-green-400 border-green-500/30/30",
+              icon: CheckCircle,
+              color: "text-site-accent",
+              bg: "bg-site-accent/10",
+              border: "border-site-accent/20",
             },
             {
               label: "ข่าวเด่น",
               value: articles.filter((a) => a.isFeatured).length,
-              color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30/30",
+              icon: Sparkles,
+              color: "text-site-accent",
+              bg: "bg-site-accent/10",
+              border: "border-site-accent/20",
             },
             {
               label: "ยอดเข้าชมรวม",
               value: articles
-                .reduce((sum, a) => sum + a.viewCount, 0)
+                .reduce((sum, a) => sum + (a.viewCount || 0), 0)
                 .toLocaleString(),
-              color: "bg-purple-100 text-purple-700 border-purple-500",
+              icon: Eye,
+              color: "text-site-accent",
+              bg: "bg-site-accent/10",
+              border: "border-site-accent/20",
             },
           ].map((stat, index) => (
             <div
               key={index}
-              className={`p-2.5 text-center border border-site-border/30 rounded-[12px] shadow-sm ${stat.color}`}>
-              <div className="text-lg font-bold">{stat.value}</div>
-              <div className="text-[10px] mt-0.5 font-medium">{stat.label}</div>
+              className="bg-site-raised border border-white/5 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.border} border shrink-0 relative z-10`}>
+                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+              </div>
+              <div className="relative z-10 min-w-0">
+                <p className="text-gray-400 text-sm font-medium mb-1 truncate">{stat.label}</p>
+                <div className="text-2xl font-black text-white tracking-tight">
+                  {stat.value}
+                </div>
+              </div>
             </div>
           ))}
         </motion.div>
@@ -679,25 +711,25 @@ export default function AdminCmsNewsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2.5">
-          <div className="flex flex-wrap gap-2.5">
-            <div className="relative flex-1 min-w-[180px]">
-              <Search
-                className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={12}
-              />
-              <input
-                type="text"
-                placeholder="ค้นหาข่าว..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-1 pl-8 pr-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent"
-              />
-            </div>
+          className="bg-site-raised border border-white/5 rounded-2xl p-2 gap-2 flex flex-col md:flex-row md:items-center justify-between"
+        >
+          <div className="flex-1 min-w-[200px] relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="ค้นหาชื่อข่าว..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-site-surface border-none rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:ring-2 focus:ring-site-accent/50 outline-none transition-all placeholder-gray-600"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="py-1 px-2.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+              className="bg-site-surface border border-white/5 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-site-accent/50 outline-none hover:border-white/10 transition-colors cursor-pointer appearance-none min-w-[140px]"
+            >
               <option value="ALL">ทุกหมวดหมู่</option>
               {categories.map((cat) => (
                 <option key={cat.value} value={cat.value}>
@@ -708,7 +740,8 @@ export default function AdminCmsNewsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="py-1 px-2.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+              className="bg-site-surface border border-white/5 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-site-accent/50 outline-none hover:border-white/10 transition-colors cursor-pointer appearance-none min-w-[140px]"
+            >
               <option value="ALL">ทุกสถานะ</option>
               <option value="PUBLISHED">เผยแพร่แล้ว</option>
               <option value="DRAFT">ฉบับร่าง</option>
@@ -716,12 +749,10 @@ export default function AdminCmsNewsPage() {
             <button
               onClick={loadArticles}
               disabled={isLoading}
-              className="py-1 px-2.5 bg-[#1A1C1E] hover:bg-site-border/30 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-xs flex items-center transition-colors disabled:opacity-50">
-              <RefreshCw
-                size={12}
-                className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`}
-              />
-              รีเฟรช
+              className="p-2.5 bg-site-raised border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-[#2a2d35] transition-all flex items-center gap-2 group shrink-0"
+              title="รีเฟรชข้อมูล"
+            >
+              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
             </button>
           </div>
         </motion.div>
@@ -731,27 +762,39 @@ export default function AdminCmsNewsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden">
-          <div className="p-2.5 border-b-[2px] border-site-border/50 bg-[#181A1D]">
-            <h2 className="text-sm font-bold text-white flex items-center">
-              <Newspaper size={16} className="mr-2" />
-              รายการข่าว ({articles.length})
-            </h2>
+          className="bg-site-raised border border-white/5 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden"
+        >
+          <div className="p-5 border-b border-white/5 bg-site-surface/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-site-raised rounded-xl border border-white/5">
+                <Newspaper className="h-5 w-5 text-gray-400" />
+              </div>
+              <div>
+                <h3 className="text-[15px] font-black text-white tracking-wide">
+                  รายการข่าวทั้งหมด
+                </h3>
+                <p className="text-[12px] text-gray-400 font-medium">
+                  {articles.length} รายการ
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="divide-y-[2px] divide-site-border/30">
+          <div className="divide-y divide-white/5 min-h-[300px]">
             {isLoading ? (
-              <div className="p-8 text-center">
-                <Loader2
-                  className="animate-spin mx-auto text-white mb-2"
-                  size={28}
-                />
-                <p className="text-gray-400 text-xs">กำลังโหลด...</p>
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
+                <p className="text-gray-400 text-sm font-medium">กำลังโหลดข้อมูล...</p>
               </div>
             ) : articles.length === 0 ? (
-              <div className="p-8 text-center">
-                <Newspaper size={28} className="mx-auto text-gray-300 mb-2" />
-                <p className="text-gray-400 text-xs">ไม่พบข่าว</p>
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-site-raised rounded-full flex items-center justify-center mb-4 border border-white/5 shadow-inner">
+                  <Newspaper className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-[16px] font-black text-white mb-2">ไม่พบข่าวสาร</h3>
+                <p className="text-gray-400 text-[14px] max-w-sm mb-6">
+                  คุณสามารถเพิ่มข่าวใหม่ได้เลย หรือลองเปลี่ยนเงื่อนไขการค้นหา
+                </p>
                 {searchQuery && (
                   <button
                     onClick={() => {
@@ -759,7 +802,9 @@ export default function AdminCmsNewsPage() {
                       setCategoryFilter("ALL");
                       setStatusFilter("ALL");
                     }}
-                    className="text-site-accent hover:underline mt-1.5 text-xs">
+                    className="text-site-accent hover:text-blue-300 transition-colors font-medium text-sm flex items-center gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
                     ล้างตัวกรอง
                   </button>
                 )}
@@ -770,62 +815,64 @@ export default function AdminCmsNewsPage() {
                 return (
                   <div
                     key={article.id}
-                    className="p-2.5 hover:bg-[#212328]/5 transition-colors">
-                    <div className="flex items-start gap-2.5">
+                    className="p-5 hover:bg-site-raised/50 transition-colors group"
+                  >
+                    <div className="flex items-start gap-5">
                       {/* Cover Image */}
-                      <div className="w-16 h-16 bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 flex-shrink-0 overflow-hidden">
+                      <div className="w-24 h-24 bg-site-surface border border-white/5 rounded-xl flex-shrink-0 overflow-hidden relative">
                         {article.coverImage ? (
                           <img
                             src={article.coverImage}
                             alt={article.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            <Newspaper size={16} />
+                          <div className="w-full h-full flex items-center justify-center text-gray-400 bg-site-raised">
+                            <Newspaper size={24} />
                           </div>
                         )}
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
                       </div>
 
                       {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                      <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[6rem]">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {article.isPublished ? (
-                            <span className="inline-flex items-center px-1 py-0.5 bg-green-500/10 text-green-400 text-[9px] font-medium border border-green-500/30/30">
-                              <CheckCircle size={8} className="mr-1" />
+                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-black border border-site-accent/20 rounded-md">
+                              <CheckCircle size={10} className="mr-1" />
                               เผยแพร่
                             </span>
                           ) : (
-                            <span className="inline-flex items-center px-1 py-0.5 bg-[#1A1C1E] text-gray-400 text-[9px] font-medium border border-gray-400">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-black border border-white/10 rounded-md">
                               ฉบับร่าง
                             </span>
                           )}
                           {article.isFeatured && (
-                            <span className="inline-flex items-center px-1 py-0.5 bg-yellow-500/10 text-yellow-400 text-[9px] font-medium border border-yellow-500/30/30">
-                              <Pin size={8} className="mr-1" />
+                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-black border border-site-accent/20 rounded-md">
+                              <Pin size={10} className="mr-1" />
                               เด่น
                             </span>
                           )}
                           <span
-                            className={`inline-flex items-center px-1 py-0.5 text-[9px] font-medium border ${category.color}`}>
+                            className={`inline-flex items-center px-2 py-0.5 text-[11px] font-black border border-white/5 rounded-md ${category.color}`}>
                             {category.label}
                           </span>
                         </div>
 
-                        <h3 className="font-bold text-white mb-0.5 truncate text-xs">
+                        <h3 className="font-bold text-white text-[15px] group-hover:text-site-accent transition-colors line-clamp-1 mb-1">
                           {article.title}
                         </h3>
-                        <p className="text-[10px] text-gray-400 line-clamp-2 mb-1">
+                        <p className="text-[13px] text-gray-400 line-clamp-1 mb-3">
                           {article.excerpt}
                         </p>
 
-                        <div className="flex items-center gap-2.5 text-[9px] text-gray-500">
-                          <span className="flex items-center">
-                            <Eye size={9} className="mr-1" />
+                        <div className="flex items-center gap-4 text-[12px] text-gray-400 font-medium">
+                          <span className="flex items-center bg-site-surface px-2 py-1 rounded-lg border border-white/5">
+                            <Eye size={12} className="mr-1.5 text-site-accent" />
                             {article.viewCount.toLocaleString()} views
                           </span>
-                          <span className="flex items-center">
-                            <Calendar size={9} className="mr-1" />
+                          <span className="flex items-center bg-site-surface px-2 py-1 rounded-lg border border-white/5">
+                            <Calendar size={12} className="mr-1.5 text-site-accent" />
                             {article.publishedAt
                               ? new Date(
                                 article.publishedAt,
@@ -835,39 +882,39 @@ export default function AdminCmsNewsPage() {
                               )}
                           </span>
                           {article.tags.length > 0 && (
-                            <span className="flex items-center">
-                              <Tag size={9} className="mr-1" />
-                              {article.tags.join(", ")}
-                            </span>
+                            <div className="flex items-center bg-site-surface px-2 py-1 rounded-lg border border-white/5 max-w-[200px] truncate">
+                              <Tag size={12} className="mr-1.5 text-site-accent shrink-0" />
+                              <span className="truncate">{article.tags.join(", ")}</span>
+                            </div>
                           )}
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         {article.isPublished && (
                           <Link
                             href={`/news/${article.slug}`}
                             target="_blank"
-                            className="p-1 text-gray-400 hover:text-white hover:bg-site-border/30 transition-colors"
+                            className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-site-accent/30 transition-all"
                             title="ดูหน้าเว็บ"
                           >
-                            <Eye size={14} />
+                            <Eye size={16} />
                           </Link>
                         )}
                         <button
                           onClick={() => openEditModal(article)}
-                          className="p-1 text-gray-400 hover:text-white hover:bg-site-border/30 transition-colors"
+                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-blue-500/30 transition-all"
                           title="แก้ไข"
                         >
-                          <Edit2 size={14} />
+                          <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(article.id)}
-                          className="p-1 text-red-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/30 transition-all"
                           title="ลบ"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </div>
@@ -879,20 +926,28 @@ export default function AdminCmsNewsPage() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="mt-2.5 p-2 bg-red-500/5 border border-site-border/30 rounded-[12px] shadow-sm border-red-300">
-                          <p className="text-xs text-red-400 mb-2">
-                            คุณแน่ใจหรือไม่ว่าต้องการลบข่าวนี้?
-                          </p>
-                          <div className="flex gap-1.5">
+                          className="mt-4 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl shadow-inner flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-rose-500/20 rounded-lg">
+                              <AlertCircle className="w-5 h-5 text-rose-400" />
+                            </div>
+                            <p className="text-sm font-bold text-rose-300">
+                              คุณแน่ใจหรือไม่ว่าต้องการลบข่าวนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
                             <button
                               onClick={() => setDeleteConfirm(null)}
-                              className="px-2 py-1 text-xs border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-gray-300 hover:bg-[#212328]/5">
+                              className="px-4 py-2 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all text-sm font-bold"
+                            >
                               ยกเลิก
                             </button>
                             <button
                               onClick={() => handleDelete(article.id)}
-                              className="px-2 py-1 text-xs bg-red-600 text-white border border-site-border/30 rounded-[12px] shadow-sm border-red-600 hover:bg-red-700">
-                              ยืนยันการลบ
+                              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg hover:shadow-rose-500/25 transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
+                            >
+                              <Trash2 className="w-4 h-4" /> ยืนยันการลบ
                             </button>
                           </div>
                         </motion.div>
@@ -915,89 +970,90 @@ export default function AdminCmsNewsPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                 <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-3xl max-h-[90vh] flex flex-col">
+                  initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                  className="bg-site-raised border border-white/10 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+
                   {/* Sticky Header */}
-                  <div className="sticky top-0 z-10 p-4 border-b-[3px] border-site-border/50 bg-[#212328]">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-bold text-white">
-                        {editingArticle ? "แก้ไขข่าว" : "เพิ่มข่าวใหม่"}
-                      </h2>
-                      <button
-                        onClick={() => {
-                          setShowModal(false);
-                          setEditingArticle(null);
-                          resetForm();
-                        }}
-                        className="text-gray-400 hover:text-white p-1 hover:bg-[#212328]/5 rounded transition-colors">
-                        <X size={20} />
-                      </button>
-                    </div>
+                  <div className="p-5 border-b border-white/5 bg-site-surface flex items-center justify-between shrink-0 z-10">
+                    <h3 className="text-[15px] font-black text-white tracking-wide flex items-center gap-2.5">
+                      <div className="p-1.5 bg-site-accent/10 rounded-lg">
+                        <Newspaper className="h-4 w-4 text-site-accent" />
+                      </div>
+                      {editingArticle ? "แก้ไขข่าวสาร" : "เพิ่มข่าวสารใหม่"}
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setShowModal(false);
+                        setEditingArticle(null);
+                        resetForm();
+                      }}
+                      className="p-2 bg-site-raised border border-white/5 rounded-xl hover:bg-[#2a2d35] hover:border-white/10 transition-all text-gray-400 disabled:opacity-50">
+                      <X className="h-4 w-4" />
+                    </button>
                   </div>
 
                   {/* Scrollable Content */}
-                  <div className="overflow-y-auto flex-1">
+                  <div className="overflow-y-auto flex-1 custom-scrollbar">
                     <form
                       onSubmit={editingArticle ? handleUpdate : handleCreate}
-                      className="p-4 space-y-3">
-                      {/* Slug */}
-                      <div>
-                        <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                          URL Slug *{" "}
-                          {editingArticle && (
-                            <span className="text-amber-600 text-[10px]">
-                              (ระวัง: การแก้ไขจะทำให้ลิงก์เดิมใช้ไม่ได้)
-                            </span>
-                          )}
-                        </label>
-                        <div className="flex items-center">
-                          <span className="px-3 py-1.5 bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm border-r-0 border-gray-300 text-gray-500 text-sm">
-                            /news/
-                          </span>
+                      className="p-6 space-y-6">
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Title */}
+                        <div className="space-y-2">
+                          <label className="block text-[13px] font-bold text-gray-300">
+                            หัวข้อข่าว <span className="text-rose-500">*</span>
+                          </label>
                           <input
                             type="text"
-                            value={formData.slug}
+                            value={formData.title}
                             onChange={(e) =>
-                              setFormData({ ...formData, slug: e.target.value })
+                              setFormData({ ...formData, title: e.target.value })
                             }
-                            placeholder="article-slug"
+                            placeholder="พิมพ์หัวข้อข่าวที่น่าสนใจ..."
                             required
-                            className="flex-1 py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
                           />
                         </div>
-                        <p className="text-[10px] text-gray-500 mt-1">
-                          {editingArticle
-                            ? "คำเตือน: หากแก้ไข slug ลิงก์เดิมจะใช้งานไม่ได้ ควรตั้งค่า redirect หากจำเป็น"
-                            : "จะสร้างอัตโนมัติจากชื่อถ้าไม่กรอก (ใช้ตัวพิมพ์เล็กและขีดกลางเท่านั้น)"}
-                        </p>
-                      </div>
 
-                      {/* Title */}
-                      <div>
-                        <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                          หัวข้อข่าว *
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.title}
-                          onChange={(e) =>
-                            setFormData({ ...formData, title: e.target.value })
-                          }
-                          placeholder="หัวข้อข่าว"
-                          required
-                          className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
-                        />
+                        {/* Slug */}
+                        <div className="space-y-2">
+                          <label className="block text-[13px] font-bold text-gray-300 flex items-center justify-between">
+                            <span>URL Slug <span className="text-rose-500">*</span></span>
+                            {editingArticle && (
+                              <span className="text-site-accent text-[10px] flex items-center gap-1">
+                                <AlertCircle className="w-3 h-3" />
+                                เปลี่ยนอาจทำลิงก์เดิมเสีย
+                              </span>
+                            )}
+                          </label>
+                          <div className="relative flex items-center">
+                            <span className="absolute left-4 text-gray-400 font-mono text-[13px]">/news/</span>
+                            <input
+                              type="text"
+                              value={formData.slug}
+                              onChange={(e) =>
+                                setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })
+                              }
+                              placeholder="article-slug"
+                              className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner pl-[70px] pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-700"
+                            />
+                          </div>
+                          <p className="text-[11px] text-gray-400 font-medium mt-1">
+                            {!editingArticle && "* สร้างอัตโนมัติจากชื่อ (ภาษาอังกฤษ, ตัวพิมพ์เล็ก, เลข, ขีดกลางเท่านั้น)"}
+                          </p>
+                        </div>
                       </div>
 
                       {/* AI Generate Section */}
-                      <div className="bg-pink-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-pink-500 p-3">
+                      <div className="bg-site-accent/10 border border-white/5 rounded-xl border-site-accent p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center">
-                            <Sparkles className="w-4 h-4 text-pink-400 mr-2" />
+                            <Sparkles className="w-4 h-4 text-site-accent mr-2" />
                             <span className="font-medium text-white text-sm">
                               สร้างด้วย AI
                             </span>
@@ -1006,7 +1062,7 @@ export default function AdminCmsNewsPage() {
                             <button
                               type="button"
                               onClick={() => setShowAIGenerate(true)}
-                              className="text-xs bg-pink-500 text-white px-2 py-1 border border-site-border/30 rounded-[12px] shadow-sm hover:bg-pink-500/80 transition-colors">
+                              className="text-xs bg-site-accent text-white px-2 py-1 border border-white/5 rounded-xl hover:bg-site-accent/80 transition-colors">
                               <Wand2 className="w-3 h-3 inline mr-1" />
                               เปิดใช้งาน
                             </button>
@@ -1029,9 +1085,9 @@ export default function AdminCmsNewsPage() {
                                   value={aiTopic}
                                   onChange={(e) => setAiTopic(e.target.value)}
                                   placeholder="เช่น อัปเดตระบบใหม่, โปรโมชันประจำเดือน"
-                                  className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent"
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent"
                                 />
-                                <p className="text-[10px] text-gray-500 mt-1">
+                                <p className="text-[10px] text-gray-400 mt-1">
                                   AI จะค้นหาข้อมูลจาก TheNewsAPI
                                   และสร้างเนื้อหาข่าว
                                 </p>
@@ -1045,7 +1101,7 @@ export default function AdminCmsNewsPage() {
                                 <select
                                   value={aiVariation}
                                   onChange={(e) => setAiVariation(e.target.value)}
-                                  className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent">
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent">
                                   {aiVariations.map((variation) => (
                                     <option
                                       key={variation.value}
@@ -1069,7 +1125,7 @@ export default function AdminCmsNewsPage() {
                                     aiService.setModel(e.target.value);
                                   }}
                                   disabled={isLoadingModels || availableModels.length === 0}
-                                  className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent disabled:opacity-50">
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent disabled:opacity-50">
                                   {isLoadingModels ? (
                                     <option value="">กำลังโหลด model...</option>
                                   ) : availableModels.length === 0 ? (
@@ -1082,7 +1138,7 @@ export default function AdminCmsNewsPage() {
                                     ))
                                   )}
                                 </select>
-                                <p className="text-[10px] text-gray-500 mt-1">
+                                <p className="text-[10px] text-gray-400 mt-1">
                                   เลือก model ที่ใช้สำหรับเขียนบทความข่าว
                                 </p>
                               </div>
@@ -1095,11 +1151,11 @@ export default function AdminCmsNewsPage() {
                                 <select
                                   value={newsProvider}
                                   onChange={(e) => setNewsProvider(e.target.value as "thenewsapi" | "newsapi")}
-                                  className="w-full py-1.5 px-3 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent">
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent">
                                   <option value="thenewsapi">TheNewsAPI (ค่าเริ่มต้น)</option>
                                   <option value="newsapi">NewsAPI.org (สำรอง)</option>
                                 </select>
-                                <p className="text-[10px] text-gray-500 mt-1">
+                                <p className="text-[10px] text-gray-400 mt-1">
                                   เลือกแหล่งข่าวสำรองหากโควตาเต็ม
                                 </p>
                               </div>
@@ -1109,7 +1165,7 @@ export default function AdminCmsNewsPage() {
                                   type="button"
                                   onClick={handleGenerateAIContent}
                                   disabled={isGeneratingAI || !aiTopic.trim()}
-                                  className="flex-1 bg-pink-500 text-white border border-site-border/30 rounded-[12px] shadow-sm py-1.5 text-sm font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
+                                  className="flex-1 bg-site-accent text-white border border-white/5 rounded-xl py-1.5 text-sm font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
                                   {isGeneratingAI ? (
                                     <>
                                       <Loader2 className="w-3 h-3 animate-spin mr-2" />
@@ -1129,7 +1185,7 @@ export default function AdminCmsNewsPage() {
                                     setAiTopic("");
                                     setAiProgress(null);
                                   }}
-                                  className="px-2 py-1.5 border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-gray-400 hover:bg-[#212328]/5 transition-colors">
+                                  className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-gray-400 hover:bg-site-raised/5 transition-colors">
                                   <X className="w-4 h-4" />
                                 </button>
                               </div>
@@ -1160,10 +1216,10 @@ export default function AdminCmsNewsPage() {
                       </div>
 
                       {/* Category & Cover */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-gray-300 mb-2 font-medium">
-                            หมวดหมู่ *
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="block text-[13px] font-bold text-gray-300">
+                            หมวดหมู่ <span className="text-rose-500">*</span>
                           </label>
                           <select
                             value={formData.category}
@@ -1173,7 +1229,7 @@ export default function AdminCmsNewsPage() {
                                 category: e.target.value as NewsCategory,
                               })
                             }
-                            className="w-full py-2.5 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors">
+                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all cursor-pointer appearance-none">
                             {categories.map((cat) => (
                               <option key={cat.value} value={cat.value}>
                                 {cat.label}
@@ -1181,100 +1237,106 @@ export default function AdminCmsNewsPage() {
                             ))}
                           </select>
                         </div>
-                        <div>
-                          <label className="block text-gray-300 mb-2 font-medium">
+                        <div className="space-y-2">
+                          <label className="block text-[13px] font-bold text-gray-300">
                             รูปปก (URL){" "}
                             {showAIGenerate && (
-                              <span className="text-pink-400 text-xs">
-                                (AI จะค้นหารูปให้อัตโนมัติ)
+                              <span className="text-site-accent font-normal text-[11px] ml-1">
+                                (AI ค้นหาให้อัตโนมัติ)
                               </span>
                             )}
                           </label>
-                          <input
-                            type="url"
-                            value={formData.coverImage}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                coverImage: e.target.value,
-                              })
-                            }
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full py-2.5 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors"
-                          />
-                          {formData.coverImage && (
-                            <div className="mt-2">
-                              <img
-                                src={formData.coverImage}
-                                alt="Preview"
-                                className="h-20 w-auto object-cover border border-gray-300"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).style.display =
-                                    "none";
-                                }}
-                              />
-                            </div>
-                          )}
+                          <div className="flex gap-2">
+                            <input
+                              type="url"
+                              value={formData.coverImage}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  coverImage: e.target.value,
+                                })
+                              }
+                              placeholder="https://example.com/image.jpg"
+                              className="flex-1 bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600 truncate"
+                            />
+                            {formData.coverImage && (
+                              <div className="w-12 h-[46px] rounded-xl border border-white/10 shrink-0 overflow-hidden bg-[#1D1E20]">
+                                <img
+                                  src={formData.coverImage}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display =
+                                      "none";
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
 
                       {/* Excerpt */}
-                      <div>
-                        <label className="block text-gray-300 mb-2 font-medium">
-                          บทสรุป (Excerpt) *
+                      <div className="space-y-2">
+                        <label className="block text-[13px] font-bold text-gray-300">
+                          บทสรุป (Excerpt) <span className="text-rose-500">*</span>
                         </label>
                         <textarea
                           value={formData.excerpt}
                           onChange={(e) =>
                             setFormData({ ...formData, excerpt: e.target.value })
                           }
-                          placeholder="สรุปเนื้อหาสั้นๆ (แสดงในรายการ)"
+                          placeholder="สรุปเนื้อหาสั้นๆ (แสดงในรายการ)..."
                           required
                           rows={2}
-                          className="w-full py-2.5 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none"
+                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600 resize-none leading-relaxed"
                         />
                       </div>
 
                       {/* Content */}
-                      <div>
-                        <label className="block text-gray-300 mb-2 font-medium">
-                          เนื้อหา *
+                      <div className="space-y-2">
+                        <label className="block text-[13px] font-bold text-gray-300">
+                          เนื้อหา <span className="text-rose-500">*</span>
                         </label>
-                        <textarea
-                          ref={contentTextareaRef}
-                          value={formData.content}
-                          onChange={(e) => {
-                            setFormData({ ...formData, content: e.target.value });
-                            setCursorPosition(e.target.selectionStart);
-                          }}
-                          onClick={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
-                          onKeyUp={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
-                          placeholder="เนื้อหาข่าวฉบับเต็ม (รองรับ HTML) — คลิกตรงที่ต้องการแทรกรูป/คลิป"
-                          required
-                          rows={10}
-                          className="w-full py-2.5 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none font-mono text-sm"
-                        />
-                        {cursorPosition !== null && formData.content && (
-                          <p className="text-[10px] text-cyan-500/60 mt-1">
-                            📍 ตำแหน่ง cursor: บรรทัด {formData.content.slice(0, cursorPosition).split('\n').length} — รูป/คลิปจะแทรกที่ตำแหน่งนี้
-                          </p>
-                        )}
+                        <div className="relative">
+                          <textarea
+                            ref={contentTextareaRef}
+                            value={formData.content}
+                            onChange={(e) => {
+                              setFormData({ ...formData, content: e.target.value });
+                              setCursorPosition(e.target.selectionStart);
+                            }}
+                            onClick={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
+                            onKeyUp={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
+                            placeholder="พิมพ์เนื้อหาข่าว (รองรับ Markdown/HTML)... คลิกตรงที่ต้องการแทรกรูป/คลิป"
+                            required
+                            rows={12}
+                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-gray-300 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all resize-none font-mono leading-relaxed"
+                          />
+                          {cursorPosition !== null && formData.content && (
+                            <div className="absolute -bottom-6 right-0 text-[10px] text-site-accent/80 font-medium">
+                              📍 แทรกสื่อที่บรรทัด {formData.content.slice(0, cursorPosition).split('\n').length}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       {/* Media Picker Panel */}
                       {(mediaImages.length > 0 || mediaVideos.length > 0 || isSearchingMedia) && (
-                        <MediaPickerPanel
-                          images={mediaImages}
-                          videos={mediaVideos}
-                          isSearching={isSearchingMedia}
-                          searchQuery={mediaSearchQuery}
-                          onSearchQueryChange={setMediaSearchQuery}
-                          onSearch={() => handleSearchMedia()}
-                          onSetCoverImage={handleSetCoverImage}
-                          onInsertImage={handleInsertImageToContent}
-                          onInsertVideo={handleInsertVideoToContent}
-                          currentCoverImage={formData.coverImage}
-                        />
+                        <div className="pt-4 border-t border-white/5">
+                          <MediaPickerPanel
+                            images={mediaImages}
+                            videos={mediaVideos}
+                            isSearching={isSearchingMedia}
+                            searchQuery={mediaSearchQuery}
+                            onSearchQueryChange={setMediaSearchQuery}
+                            onSearch={() => handleSearchMedia()}
+                            onSetCoverImage={handleSetCoverImage}
+                            onInsertImage={handleInsertImageToContent}
+                            onInsertVideo={handleInsertVideoToContent}
+                            currentCoverImage={formData.coverImage}
+                          />
+                        </div>
                       )}
 
                       {/* Manual media search button when AI panel is open but no media yet */}
@@ -1282,189 +1344,174 @@ export default function AdminCmsNewsPage() {
                         <button
                           type="button"
                           onClick={() => handleSearchMedia(aiTopic || formData.title)}
-                          className="w-full py-2 px-4 border border-dashed border-cyan-500/30 rounded-[12px] text-cyan-400 text-xs hover:bg-cyan-500/5 transition-colors flex items-center justify-center gap-2"
+                          className="w-full py-3 bg-site-accent/5 border border-dashed border-blue-500/30 rounded-xl text-site-accent font-bold text-[13px] hover:bg-site-accent/10 transition-colors flex items-center justify-center gap-2"
                         >
-                          <ImagePlus className="w-3.5 h-3.5" />
+                          <ImagePlus className="w-4 h-4" />
                           ค้นหารูปภาพและวิดีโอ YouTube ประกอบบทความ
                         </button>
                       )}
 
                       {/* AI Generated Sources Preview */}
                       {aiGeneratedSources.length > 0 && (
-                        <div className="bg-green-50 border border-site-border/30 rounded-[12px] shadow-sm border-green-200 p-4 rounded">
-                          <h4 className="font-medium text-green-800 mb-2">
-                            ✓ AI ค้นพบข้อมูลเพิ่มเติม
+                        <div className="bg-site-accent/10 border border-site-accent/20 p-4 rounded-xl shadow-inner">
+                          <h4 className="font-bold text-site-accent mb-2 flex items-center gap-2 text-[13px]">
+                            <CheckCircle className="w-4 h-4" /> AI สรุปข้อมูลจากแหล่งข่าวเหล่านี้
                           </h4>
-                          {aiGeneratedSources.length > 0 && (
-                            <div>
-                              <p className="text-sm text-green-400 mb-1">
-                                แหล่งข่าว:
-                              </p>
-                              <ul className="text-sm space-y-1">
-                                {aiGeneratedSources.map((source, idx) => (
-                                  <li key={idx}>
-                                    <a
-                                      href={source}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-blue-600 hover:underline">
-                                      {new URL(source).hostname}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                          <ul className="text-[12px] space-y-1 mt-2">
+                            {aiGeneratedSources.map((source, idx) => (
+                              <li key={idx} className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-site-accent/50" />
+                                <a
+                                  href={source}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-site-accent hover:text-blue-300 hover:underline truncate">
+                                  {source}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       )}
 
-                      {/* Tags */}
-                      <div>
-                        <label className="block text-gray-300 mb-2 font-medium">
-                          แท็ก{" "}
-                          {showAIGenerate && (
-                            <span className="text-pink-400 text-xs">
-                              (AI จะค้นหาและสร้างให้อัตโนมัติ)
-                            </span>
-                          )}
-                        </label>
-                        <div className="flex gap-2 mb-2">
-                          <input
-                            type="text"
-                            value={tagInput}
-                            onChange={(e) => setTagInput(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                addTag();
-                              }
-                            }}
-                            placeholder="เพิ่มแท็กแล้วกด Enter"
-                            className="flex-1 py-2 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent"
-                          />
-                          <button
-                            type="button"
-                            onClick={addTag}
-                            className="px-4 py-2 border border-site-border/30 rounded-[12px] shadow-sm bg-[#1A1C1E] hover:bg-site-border/30">
-                            เพิ่ม
-                          </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {formData.tags?.map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center px-2 py-1 bg-site-accent/10 text-site-accent text-sm border border-site-accent/30">
-                              {tag}
-                              <button
-                                type="button"
-                                onClick={() => removeTag(tag)}
-                                className="ml-1 hover:text-red-600">
-                                <X size={14} />
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Sources */}
-                      <div>
-                        <label className="block text-gray-300 mb-2 font-medium">
-                          แหล่งข่าว (Sources){" "}
-                          {showAIGenerate && (
-                            <span className="text-pink-400 text-xs">
-                              (AI จะค้นหาแหล่งข่าวให้อัตโนมัติ)
-                            </span>
-                          )}
-                        </label>
+                      {/* Tags & Sources Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                        {/* Tags */}
                         <div className="space-y-2">
-                          {formData.sources?.map((source, index) => (
-                            <div key={index} className="flex gap-2">
-                              <input
-                                type="url"
-                                value={source}
-                                onChange={(e) => {
-                                  const newSources = [
-                                    ...(formData.sources || []),
-                                  ];
-                                  newSources[index] = e.target.value;
-                                  setFormData({
-                                    ...formData,
-                                    sources: newSources,
-                                  });
-                                }}
-                                placeholder="https://example.com/news"
-                                className="flex-1 py-2 px-4 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const newSources =
-                                    formData.sources?.filter(
-                                      (_, i) => i !== index,
-                                    ) || [];
-                                  setFormData({
-                                    ...formData,
-                                    sources: newSources,
-                                  });
-                                }}
-                                className="px-3 py-2 border border-site-border/30 rounded-[12px] shadow-sm border-red-300 text-red-600 hover:bg-red-500/10">
-                                <X size={16} />
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                sources: [...(formData.sources || []), ""],
-                              });
-                            }}
-                            className="w-full py-2 px-4 border border-site-border/30 rounded-[12px] shadow-sm border-dashed border-gray-300 text-gray-400 hover:border-site-border/50 hover:text-white transition-colors">
-                            + เพิ่มแหล่งข่าว
-                          </button>
+                          <label className="block text-[13px] font-bold text-gray-300">
+                            แท็ก
+                            {showAIGenerate && (
+                              <span className="text-site-accent font-normal text-[11px] ml-1">
+                                (AI ค้นหาให้อัตโนมัติ)
+                              </span>
+                            )}
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={tagInput}
+                              onChange={(e) => setTagInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addTag();
+                                }
+                              }}
+                              placeholder="เพิ่มแท็กแล้วกด Enter..."
+                              className="flex-1 bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-2.5 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                            />
+                            <button
+                              type="button"
+                              onClick={addTag}
+                              className="px-4 py-2.5 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] transition-all text-[13px] font-bold">
+                              เพิ่ม
+                            </button>
+                          </div>
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {formData.tags?.map((tag) => (
+                              <span
+                                key={tag}
+                                className="inline-flex items-center px-2.5 py-1 bg-site-accent/10 text-site-accent text-[12px] font-medium border border-site-accent/20 rounded-lg group">
+                                {tag}
+                                <button
+                                  type="button"
+                                  onClick={() => removeTag(tag)}
+                                  className="ml-1.5 text-site-accent/50 group-hover:text-rose-400 transition-colors">
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          แหล่งข่าวจะแสดงในหน้าข่าวเพื่อความน่าเชื่อถือ
-                        </p>
+
+                        {/* Sources */}
+                        <div className="space-y-2">
+                          <label className="block text-[13px] font-bold text-gray-300">
+                            แหล่งอ้างอิง
+                            {showAIGenerate && (
+                              <span className="text-site-accent font-normal text-[11px] ml-1">
+                                (AI ค้นหาให้อัตโนมัติ)
+                              </span>
+                            )}
+                          </label>
+                          <div className="space-y-2">
+                            {formData.sources?.map((source, index) => (
+                              <div key={index} className="flex gap-2 relative group">
+                                <input
+                                  type="url"
+                                  value={source}
+                                  onChange={(e) => {
+                                    const newSources = [...(formData.sources || [])];
+                                    newSources[index] = e.target.value;
+                                    setFormData({ ...formData, sources: newSources });
+                                  }}
+                                  placeholder="https://example.com/source"
+                                  className="flex-1 bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-2.5 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600 pr-10"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newSources = formData.sources?.filter((_, i) => i !== index) || [];
+                                    setFormData({ ...formData, sources: newSources });
+                                  }}
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, sources: [...(formData.sources || []), ""] })}
+                              className="w-full py-2.5 border border-dashed border-white/10 rounded-xl text-gray-400 font-bold text-[13px] hover:bg-white/5 hover:border-white/20 hover:text-white transition-colors"
+                            >
+                              + เพิ่มแหล่งอ้างอิง
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Options */}
-                      <div className="flex flex-wrap gap-6">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.isPublished}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                isPublished: e.target.checked,
-                              })
-                            }
-                            className="w-5 h-5 mr-2"
-                          />
-                          <span className="text-gray-300">เผยแพร่</span>
+                      <div className="flex flex-wrap gap-8 py-2">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={formData.isPublished}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  isPublished: e.target.checked,
+                                })
+                              }
+                              className="sr-only peer"
+                            />
+                            <div className="w-10 h-6 bg-site-surface border border-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent/20 peer-checked:border-site-accent/50"></div>
+                          </div>
+                          <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">เผยแพร่</span>
                         </label>
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.isFeatured}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                isFeatured: e.target.checked,
-                              })
-                            }
-                            className="w-5 h-5 mr-2"
-                          />
-                          <span className="text-gray-300">
-                            ข่าวเด่น (Featured)
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={formData.isFeatured}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  isFeatured: e.target.checked,
+                                })
+                              }
+                              className="sr-only peer"
+                            />
+                            <div className="w-10 h-6 bg-site-surface border border-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent/20 peer-checked:border-site-accent/50"></div>
+                          </div>
+                          <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">
+                            รายการแนะนำ (Featured)
                           </span>
                         </label>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-3 pt-4 border-t-[2px] border-site-border/30">
+                      <div className="flex gap-3 pt-6 border-t border-white/5">
                         <button
                           type="button"
                           onClick={() => {
@@ -1472,7 +1519,7 @@ export default function AdminCmsNewsPage() {
                             setEditingArticle(null);
                             resetForm();
                           }}
-                          className="flex-1 py-2.5 px-4 border border-site-border/30 rounded-[12px] text-white hover:bg-[#212328]/5 transition-colors font-medium">
+                          className="flex-1 py-3 px-4 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all font-bold text-[14px]">
                           ยกเลิก
                         </button>
                         <button
@@ -1483,7 +1530,7 @@ export default function AdminCmsNewsPage() {
                             !formData.content?.trim() ||
                             !formData.excerpt?.trim()
                           }
-                          className="flex-1 py-2.5 px-4 bg-black text-white border border-site-border/30 rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors">
+                          className="flex-1 py-2.5 px-4 bg-black text-white border border-white/5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors">
                           {isSubmitting ? (
                             <span className="flex items-center justify-center">
                               <Loader2 size={18} className="animate-spin mr-2" />

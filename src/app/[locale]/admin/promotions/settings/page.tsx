@@ -110,9 +110,9 @@ export default function AdminPromotionSettings() {
             onChange={onChange}
           />
           <div
-            className={`w-9 h-5 rounded-full transition-colors ${checked ? "bg-purple-500" : "bg-site-border/30"}`}>
+            className={`w-9 h-5 rounded-full transition-colors ${checked ? "bg-site-accent" : "bg-site-border/30"}`}>
             <div
-              className={`h-4 w-4 rounded-full bg-[#212328] absolute left-0.5 top-0.5 transition-transform ${checked ? "translate-x-4" : ""}`}></div>
+              className={`h-4 w-4 rounded-full bg-site-raised absolute left-0.5 top-0.5 transition-transform ${checked ? "translate-x-4" : ""}`}></div>
           </div>
         </label>
       </div>
@@ -123,7 +123,7 @@ export default function AdminPromotionSettings() {
           {label}
         </label>
         {description && (
-          <p className="text-gray-500 text-[10px] mt-0.5">{description}</p>
+          <p className="text-gray-400 text-[10px] mt-0.5">{description}</p>
         )}
       </div>
     </div>
@@ -136,11 +136,11 @@ export default function AdminPromotionSettings() {
         <div className="flex items-center mb-4">
           <button
             onClick={() => router.push("/admin/promotions")}
-            className="mr-3 p-1.5 rounded-lg bg-[#1A1C1E] border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
+            className="mr-3 p-1.5 rounded-lg bg-site-raised border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
             <ChevronLeft className="h-4 w-4" />
           </button>
           <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-purple-500 mr-2"></span>
+            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
             <h1 className="text-xl font-bold text-white">ตั้งค่าโปรโมชั่น</h1>
           </div>
         </div>
@@ -157,15 +157,15 @@ export default function AdminPromotionSettings() {
 
         {/* Settings Container */}
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[16px] rounded-xl overflow-hidden"
+          className="bg-site-surface border border-white/5 rounded-2xl rounded-xl overflow-hidden"
           
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="p-3 border-b-2 border-site-border/50 bg-[#181A1D]">
+          <div className="p-3 border-b-2 border-white/10 bg-site-surface">
             <h3 className="text-base font-semibold text-white flex items-center">
-              <Settings className="mr-2 h-4 w-4 text-purple-400" />
+              <Settings className="mr-2 h-4 w-4 text-site-accent" />
               ตั้งค่าคูปองและโปรโมชั่น
             </h3>
           </div>
@@ -175,10 +175,10 @@ export default function AdminPromotionSettings() {
               {/* Coupon Display Settings */}
               <div className="lg:col-span-2">
                 <h4 className="text-white text-sm font-medium mb-2 flex items-center">
-                  <Tag className="h-3.5 w-3.5 mr-2 text-purple-400" />
+                  <Tag className="h-3.5 w-3.5 mr-2 text-site-accent" />
                   การตั้งค่าการแสดงคูปอง
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#181A1D] p-3 rounded-lg border-2 border-site-border/30">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-site-surface p-3 rounded-lg border-2 border-white/5">
                   <ToggleSwitch
                     name="showCouponsOnHomepage"
                     label="แสดงคูปองบนหน้าแรก"
@@ -209,9 +209,9 @@ export default function AdminPromotionSettings() {
                       max="30"
                       value={settings.expiringSoonDays}
                       onChange={handleChange}
-                      className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                     />
-                    <p className="text-gray-500 text-[10px] mt-1">
+                    <p className="text-gray-400 text-[10px] mt-1">
                       คูปองที่เหลือวันน้อยกว่านี้จะถูกทำเครื่องหมายว่า
                       "ใกล้หมดอายุ"
                     </p>
@@ -224,7 +224,7 @@ export default function AdminPromotionSettings() {
                 <h4 className="text-white text-sm font-medium mb-2">
                   การตั้งค่าการใช้คูปอง
                 </h4>
-                <div className="space-y-3 bg-[#181A1D] p-3 rounded-lg border-2 border-site-border/30">
+                <div className="space-y-3 bg-site-surface p-3 rounded-lg border-2 border-white/5">
                   <ToggleSwitch
                     name="allowMultipleCoupons"
                     label="อนุญาตหลายคูปอง"
@@ -248,7 +248,7 @@ export default function AdminPromotionSettings() {
                         max="10"
                         value={settings.maxCouponsPerOrder}
                         onChange={handleChange}
-                        className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                       />
                     </div>
                   )}
@@ -274,9 +274,9 @@ export default function AdminPromotionSettings() {
                       min="0"
                       value={settings.minOrderValueForCoupons}
                       onChange={handleChange}
-                      className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                     />
-                    <p className="text-gray-500 text-[10px] mt-1">
+                    <p className="text-gray-400 text-[10px] mt-1">
                       ยอดสั่งซื้อขั้นต่ำเริ่มต้นที่ต้องการเพื่อใช้คูปอง
                     </p>
                   </div>
@@ -288,7 +288,7 @@ export default function AdminPromotionSettings() {
                 <h4 className="text-white text-sm font-medium mb-2">
                   การตั้งค่าความปลอดภัย
                 </h4>
-                <div className="space-y-3 bg-[#181A1D] p-3 rounded-lg border-2 border-site-border/30">
+                <div className="space-y-3 bg-site-surface p-3 rounded-lg border-2 border-white/5">
                   <ToggleSwitch
                     name="restrictToLoggedInUsers"
                     label="จำกัดเฉพาะผู้ใช้ที่ลงชื่อเข้าใช้"
@@ -311,9 +311,9 @@ export default function AdminPromotionSettings() {
                       max="20"
                       value={settings.maxFailedAttempts}
                       onChange={handleChange}
-                      className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                     />
-                    <p className="text-gray-500 text-[10px] mt-1">
+                    <p className="text-gray-400 text-[10px] mt-1">
                       จำนวนครั้งที่ใช้คูปองผิดพลาดก่อนถูกบล็อกชั่วคราว
                     </p>
                   </div>
@@ -332,9 +332,9 @@ export default function AdminPromotionSettings() {
                       max="1440"
                       value={settings.blockDurationMinutes}
                       onChange={handleChange}
-                      className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                     />
-                    <p className="text-gray-500 text-[10px] mt-1">
+                    <p className="text-gray-400 text-[10px] mt-1">
                       ระยะเวลาบล็อกการใช้คูปองหลังจากความพยายามผิดพลาดมากเกินไป
                     </p>
                   </div>
@@ -346,7 +346,7 @@ export default function AdminPromotionSettings() {
                 <h4 className="text-white text-sm font-medium mb-2">
                   การตั้งค่าการสร้างคูปอง
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-[#181A1D] p-3 rounded-lg border-2 border-site-border/30">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-site-surface p-3 rounded-lg border-2 border-white/5">
                   <div>
                     <label
                       htmlFor="defaultCouponLength"
@@ -361,7 +361,7 @@ export default function AdminPromotionSettings() {
                       max="16"
                       value={settings.defaultCouponLength}
                       onChange={handleChange}
-                      className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                     />
                   </div>
 
@@ -388,7 +388,7 @@ export default function AdminPromotionSettings() {
                 <h4 className="text-white text-sm font-medium mb-2">
                   การตั้งค่าการแจ้งเตือน
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#181A1D] p-3 rounded-lg border-2 border-site-border/30">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-site-surface p-3 rounded-lg border-2 border-white/5">
                   <ToggleSwitch
                     name="notifyBeforeCouponExpiry"
                     label="แจ้งเตือนก่อนคูปองหมดอายุ"
@@ -412,9 +412,9 @@ export default function AdminPromotionSettings() {
                         max="30"
                         value={settings.expiryNotificationDays}
                         onChange={handleChange}
-                        className="bg-[#212328] border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
                       />
-                      <p className="text-gray-500 text-[10px] mt-1">
+                      <p className="text-gray-400 text-[10px] mt-1">
                         จำนวนวันก่อนหมดอายุที่จะส่งการแจ้งเตือน
                       </p>
                     </div>
@@ -428,13 +428,13 @@ export default function AdminPromotionSettings() {
               <button
                 type="button"
                 onClick={() => router.push("/admin/promotions")}
-                className="px-4 py-2 bg-[#212328] border border-site-border/30 rounded-[16px] text-white rounded-lg hover:bg-[#212328]/5 transition-colors font-medium text-sm">
+                className="px-4 py-2 bg-site-surface border border-white/5 rounded-2xl text-white rounded-lg hover:bg-site-raised/5 transition-colors font-medium text-sm">
                 ยกเลิก
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-black text-white border border-site-border/30 rounded-[8px] rounded-lg hover:bg-gray-800 transition-colors font-medium flex items-center text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
+                className={`px-4 py-2 bg-black text-white border border-white/5 rounded-lg rounded-lg hover:bg-gray-800 transition-colors font-medium flex items-center text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกการตั้งค่า"}
               </button>

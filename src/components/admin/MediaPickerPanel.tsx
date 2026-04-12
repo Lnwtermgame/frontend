@@ -69,12 +69,12 @@ export default function MediaPickerPanel({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-[#1A1C1E] border border-site-border/30 rounded-[12px] overflow-hidden"
+            className="bg-site-raised border border-site-border/30 rounded-[12px] overflow-hidden"
         >
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-site-border/30">
                 <div className="flex items-center gap-2">
-                    <ImagePlus className="w-4 h-4 text-cyan-400" />
+                    <ImagePlus className="w-4 h-4 text-site-accent" />
                     <span className="text-sm font-medium text-white">
                         สื่อประกอบบทความ
                     </span>
@@ -89,8 +89,8 @@ export default function MediaPickerPanel({
                         type="button"
                         onClick={() => setActiveTab("images")}
                         className={`px-2 py-1 text-xs rounded-md transition-colors ${activeTab === "images"
-                                ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
-                                : "text-gray-400 hover:text-white hover:bg-[#212328]"
+                                ? "bg-site-accent/20 text-site-accent border border-site-accent/30"
+                                : "text-gray-400 hover:text-white hover:bg-site-raised"
                             }`}
                     >
                         <Image className="w-3 h-3 inline mr-1" />
@@ -101,7 +101,7 @@ export default function MediaPickerPanel({
                         onClick={() => setActiveTab("videos")}
                         className={`px-2 py-1 text-xs rounded-md transition-colors ${activeTab === "videos"
                                 ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                                : "text-gray-400 hover:text-white hover:bg-[#212328]"
+                                : "text-gray-400 hover:text-white hover:bg-site-raised"
                             }`}
                     >
                         <Youtube className="w-3 h-3 inline mr-1" />
@@ -126,14 +126,14 @@ export default function MediaPickerPanel({
                                 }
                             }}
                             placeholder="ค้นหารูปภาพ / วิดีโอ..."
-                            className="w-full py-1.5 pl-7 pr-3 bg-[#212328] border border-site-border/30 rounded-lg text-white text-xs placeholder-gray-500 focus:outline-none focus:border-cyan-500/50"
+                            className="w-full py-1.5 pl-7 pr-3 bg-site-raised border border-site-border/30 rounded-lg text-white text-xs placeholder-gray-500 focus:outline-none focus:border-site-accent/50"
                         />
                     </div>
                     <button
                         type="button"
                         onClick={onSearch}
                         disabled={isSearching || !searchQuery.trim()}
-                        className="px-3 py-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-medium hover:bg-cyan-500/20 transition-colors disabled:opacity-50 flex items-center gap-1"
+                        className="px-3 py-1.5 bg-site-accent/10 text-site-accent border border-site-accent/30 rounded-lg text-xs font-medium hover:bg-site-accent/20 transition-colors disabled:opacity-50 flex items-center gap-1"
                     >
                         {isSearching ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -148,7 +148,7 @@ export default function MediaPickerPanel({
             {/* Loading state */}
             {isSearching && (
                 <div className="py-8 flex flex-col items-center justify-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-cyan-400 mb-2" />
+                    <Loader2 className="w-6 h-6 animate-spin text-site-accent mb-2" />
                     <p className="text-xs text-gray-400">กำลังค้นหาสื่อ...</p>
                 </div>
             )}
@@ -182,11 +182,11 @@ export default function MediaPickerPanel({
                                                     key={`img-${idx}`}
                                                     className={`group relative rounded-lg overflow-hidden border transition-all ${isCover
                                                             ? "border-green-500/50 ring-1 ring-green-500/30"
-                                                            : "border-site-border/20 hover:border-cyan-500/30"
+                                                            : "border-site-border/20 hover:border-site-accent/30"
                                                         }`}
                                                 >
                                                     {/* Thumbnail */}
-                                                    <div className="aspect-video bg-[#212328]">
+                                                    <div className="aspect-video bg-site-raised">
                                                         <img
                                                             src={img.thumbnail || img.image}
                                                             alt={img.title || `Image ${idx + 1}`}
@@ -203,7 +203,7 @@ export default function MediaPickerPanel({
                                                         </div>
                                                     )}
                                                     {isInserted && !isCover && (
-                                                        <div className="absolute top-1 left-1 bg-cyan-500/90 text-white text-[9px] px-1.5 py-0.5 rounded font-medium flex items-center gap-0.5">
+                                                        <div className="absolute top-1 left-1 bg-site-accent/90 text-white text-[9px] px-1.5 py-0.5 rounded font-medium flex items-center gap-0.5">
                                                             <Check className="w-2.5 h-2.5" />
                                                             แทรกแล้ว
                                                         </div>
@@ -226,7 +226,7 @@ export default function MediaPickerPanel({
                                                                     img.title || "image"
                                                                 )
                                                             }
-                                                            className="w-full py-1 text-[10px] font-medium bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded hover:bg-cyan-500/30 transition-colors"
+                                                            className="w-full py-1 text-[10px] font-medium bg-site-accent/20 text-site-accent border border-site-accent/30 rounded hover:bg-site-accent/30 transition-colors"
                                                         >
                                                             📝 แทรกในเนื้อหา
                                                         </button>
@@ -274,7 +274,7 @@ export default function MediaPickerPanel({
                                                         }`}
                                                 >
                                                     {/* YouTube thumbnail */}
-                                                    <div className="aspect-video bg-[#212328] relative">
+                                                    <div className="aspect-video bg-site-raised relative">
                                                         <img
                                                             src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`}
                                                             alt={video.title}
@@ -318,7 +318,7 @@ export default function MediaPickerPanel({
                                                             href={video.url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="w-full py-1.5 text-[10px] font-medium text-center bg-[#212328] text-gray-300 border border-site-border/30 rounded hover:bg-[#2a2d33] transition-colors"
+                                                            className="w-full py-1.5 text-[10px] font-medium text-center bg-site-raised text-gray-300 border border-site-border/30 rounded hover:bg-[#2a2d33] transition-colors"
                                                         >
                                                             🔗 ดูบน YouTube
                                                         </a>

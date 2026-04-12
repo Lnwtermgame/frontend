@@ -236,7 +236,7 @@ export default function AdminImagesPage() {
                     </div>
                     <div className="flex items-center gap-2">
                         <div
-                            className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-4 py-2 flex items-center gap-2 text-sm font-medium">
+                            className="bg-site-surface border border-white/5 rounded-2xl px-4 py-2 flex items-center gap-2 text-sm font-medium">
                             <FolderOpen className="w-4 h-4 text-site-accent" />
                             {total} ไฟล์
                         </div>
@@ -245,7 +245,7 @@ export default function AdminImagesPage() {
 
                 {/* Upload Section */}
                 <motion.div
-                    className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+                    className="bg-site-surface border border-white/5 rounded-2xl p-6"
 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -266,8 +266,8 @@ export default function AdminImagesPage() {
                             onDrop={handleDrop}
                             onClick={() => fileInputRef.current?.click()}
                             className={`relative border-2 border-dashed cursor-pointer transition-all p-8 flex flex-col items-center justify-center text-center ${isDragging
-                                ? "border-site-accent bg-[#181A1D]"
-                                : "border-gray-300 bg-[#181A1D] hover:border-site-border/50 hover:bg-[#212328]/5"
+                                ? "border-site-accent bg-site-surface"
+                                : "border-gray-300 bg-site-surface hover:border-white/10 hover:bg-site-raised/5"
                                 }`}>
                             {isUploading ? (
                                 <Loader2 className="w-10 h-10 text-site-accent animate-spin mb-2" />
@@ -277,7 +277,7 @@ export default function AdminImagesPage() {
                             <p className="text-sm font-medium text-white">
                                 {isDragging ? "วางไฟล์ที่นี่!" : "ลาก & วางไฟล์ หรือคลิกเพื่อเลือก"}
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">รองรับหลายไฟล์พร้อมกัน</p>
+                            <p className="text-xs text-gray-400 mt-1">รองรับหลายไฟล์พร้อมกัน</p>
                             <input
                                 ref={fileInputRef}
                                 type="file"
@@ -295,7 +295,7 @@ export default function AdminImagesPage() {
                                 <select
                                     value={folderInput}
                                     onChange={(e) => setFolderInput(e.target.value)}
-                                    className="w-full bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-3 py-2 text-sm cursor-pointer">
+                                    className="w-full bg-site-surface border border-white/5 rounded-2xl px-3 py-2 text-sm cursor-pointer">
                                     <option value="products">products</option>
                                     <option value="covers">covers</option>
                                     <option value="news">news</option>
@@ -311,13 +311,13 @@ export default function AdminImagesPage() {
                                         value={urlInput}
                                         onChange={(e) => setUrlInput(e.target.value)}
                                         placeholder="https://example.com/image.png"
-                                        className="flex-1 bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm px-3 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
+                                        className="flex-1 bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
                                         onKeyDown={(e) => e.key === "Enter" && handleUrlUpload()}
                                     />
                                     <button
                                         onClick={handleUrlUpload}
                                         disabled={!urlInput.trim() || isUploading}
-                                        className="px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] shadow-sm font-medium text-sm hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+                                        className="px-4 py-2 bg-site-accent text-white border border-white/5 rounded-xl font-medium text-sm hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
                                         {isUploading ? (
                                             <Loader2 className="w-4 h-4 animate-spin" />
                                         ) : (
@@ -333,7 +333,7 @@ export default function AdminImagesPage() {
 
                 {/* Search & Controls */}
                 <motion.div
-                    className="bg-[#212328] border border-site-border/30 rounded-[16px] p-4"
+                    className="bg-site-surface border border-white/5 rounded-2xl p-4"
 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -349,30 +349,30 @@ export default function AdminImagesPage() {
                                 onChange={(e) => setSearchInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="ค้นหาชื่อไฟล์..."
-                                className="w-full bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
+                                className="w-full bg-site-surface border border-white/5 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
                             />
                         </div>
                         <button
                             onClick={handleSearch}
-                            className="px-4 py-2 bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm font-medium text-sm hover:bg-gray-800 transition-all">
+                            className="px-4 py-2 bg-black text-white border border-white/5 rounded-xl font-medium text-sm hover:bg-gray-800 transition-all">
                             ค้นหา
                         </button>
 
                         {/* View Toggle */}
-                        <div className="flex border border-site-border/30 rounded-[12px] shadow-sm">
+                        <div className="flex border border-white/5 rounded-xl">
                             <button
                                 onClick={() => setViewMode("grid")}
                                 className={`p-2 transition-colors ${viewMode === "grid"
                                     ? "bg-black text-white"
-                                    : "bg-[#212328] text-white hover:bg-[#212328]/5"
+                                    : "bg-site-raised text-white hover:bg-site-raised/5"
                                     }`}>
                                 <Grid className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={() => setViewMode("list")}
-                                className={`p-2 border-l-[2px] border-site-border/50 transition-colors ${viewMode === "list"
+                                className={`p-2 border-l-[2px] border-white/10 transition-colors ${viewMode === "list"
                                     ? "bg-black text-white"
-                                    : "bg-[#212328] text-white hover:bg-[#212328]/5"
+                                    : "bg-site-raised text-white hover:bg-site-raised/5"
                                     }`}>
                                 <List className="w-4 h-4" />
                             </button>
@@ -382,21 +382,21 @@ export default function AdminImagesPage() {
                         <button
                             onClick={loadFiles}
                             disabled={isLoading}
-                            className="p-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors disabled:opacity-50">
+                            className="p-2 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors disabled:opacity-50">
                             <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
                         </button>
                     </div>
 
                     {/* Bulk Actions */}
                     {selectedFiles.size > 0 && (
-                        <div className="mt-3 pt-3 border-t-[2px] border-site-border/30 flex items-center gap-3">
+                        <div className="mt-3 pt-3 border-t-[2px] border-white/5 flex items-center gap-3">
                             <span className="text-sm font-medium text-white">
                                 เลือก {selectedFiles.size} ไฟล์
                             </span>
                             <button
                                 onClick={handleBulkDelete}
                                 disabled={isDeleting}
-                                className="px-3 py-1 bg-red-500/50 text-white border border-site-border/30 rounded-[12px] shadow-sm text-xs font-medium hover:bg-red-600 transition-all flex items-center gap-1 disabled:opacity-50">
+                                className="px-3 py-1 bg-red-500/50 text-white border border-white/5 rounded-xl text-xs font-medium hover:bg-red-600 transition-all flex items-center gap-1 disabled:opacity-50">
                                 {isDeleting ? (
                                     <Loader2 className="w-3 h-3 animate-spin" />
                                 ) : (
@@ -406,7 +406,7 @@ export default function AdminImagesPage() {
                             </button>
                             <button
                                 onClick={() => setSelectedFiles(new Set())}
-                                className="px-3 py-1 bg-[#212328] text-white border border-site-border/30 rounded-[12px] shadow-sm text-xs font-medium hover:bg-[#212328]/5 transition-all">
+                                className="px-3 py-1 bg-site-raised text-white border border-white/5 rounded-xl text-xs font-medium hover:bg-site-raised/5 transition-all">
                                 ยกเลิก
                             </button>
                         </div>
@@ -425,10 +425,10 @@ export default function AdminImagesPage() {
                             <span className="ml-3 text-gray-400">กำลังโหลด...</span>
                         </div>
                     ) : files.length === 0 ? (
-                        <div className="bg-[#212328] border border-site-border/30 rounded-[16px] p-12 text-center">
+                        <div className="bg-site-surface border border-white/5 rounded-2xl p-12 text-center">
                             <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                             <p className="text-lg font-bold text-white">ไม่พบไฟล์</p>
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-gray-400 mt-1">
                                 {search ? "ลองเปลี่ยนคำค้นหา" : "ยังไม่มีไฟล์ใน Storage"}
                             </p>
                         </div>
@@ -438,23 +438,23 @@ export default function AdminImagesPage() {
                             {files.map((file) => (
                                 <div
                                     key={file.id}
-                                    className={`bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm transition-all group relative overflow-hidden ${selectedFiles.has(file.id)
+                                    className={`bg-site-surface border border-white/5 rounded-2xl transition-all group relative overflow-hidden ${selectedFiles.has(file.id)
                                         ? "border-site-accent ring-2 ring-site-accent/30"
-                                        : "border-site-border/50 hover:border-site-accent"
+                                        : "border-white/10 hover:border-site-accent"
                                         }`}>
                                     {/* Checkbox */}
                                     <button
                                         onClick={() => toggleSelect(file.id)}
-                                        className={`absolute top-1 left-1 z-10 w-4 h-4 border-[1.5px] border-site-border/50 flex items-center justify-center transition-all ${selectedFiles.has(file.id)
+                                        className={`absolute top-1 left-1 z-10 w-4 h-4 border-[1.5px] border-white/10 flex items-center justify-center transition-all ${selectedFiles.has(file.id)
                                             ? "bg-site-accent text-white"
-                                            : "bg-[#212328]/80 opacity-0 group-hover:opacity-100"
+                                            : "bg-site-raised/80 opacity-0 group-hover:opacity-100"
                                             }`}>
                                         {selectedFiles.has(file.id) && <Check className="w-2.5 h-2.5" />}
                                     </button>
 
                                     {/* Preview */}
                                     <div
-                                        className="aspect-square bg-[#1A1C1E] flex items-center justify-center overflow-hidden cursor-pointer"
+                                        className="aspect-square bg-site-raised flex items-center justify-center overflow-hidden cursor-pointer"
                                         onClick={() => setPreviewFile(file)}
                                     >
                                         {isImageMime(file.mimeType) ? (
@@ -475,11 +475,11 @@ export default function AdminImagesPage() {
                                         <p className="text-[10px] font-medium text-white truncate" title={file.name}>
                                             {file.name}
                                         </p>
-                                        <p className="text-[10px] text-gray-500">{formatFileSize(file.size)}</p>
+                                        <p className="text-[10px] text-gray-400">{formatFileSize(file.size)}</p>
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex border-t border-site-border/30">
+                                    <div className="flex border-t border-white/5">
                                         <button
                                             onClick={() => handleCopyUrl(file)}
                                             className="flex-1 p-1 text-center hover:bg-site-accent hover:text-white transition-colors flex items-center justify-center"
@@ -493,7 +493,7 @@ export default function AdminImagesPage() {
                                         </button>
                                         <button
                                             onClick={() => handleDelete(file)}
-                                            className="flex-1 p-1 text-center border-l border-site-border/30 hover:bg-red-500/100 hover:text-white transition-colors flex items-center justify-center"
+                                            className="flex-1 p-1 text-center border-l border-white/5 hover:bg-red-500/100 hover:text-white transition-colors flex items-center justify-center"
                                             title="ลบ"
                                         >
                                             <Trash2 className="w-3 h-3" />
@@ -505,15 +505,15 @@ export default function AdminImagesPage() {
                     ) : (
                         /* List View */
                         <div
-                            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
+                            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
                             {/* Select All Header */}
-                            <div className="grid grid-cols-12 gap-4 px-4 py-2 bg-[#1A1C1E] border-b-[2px] border-site-border/50 text-xs font-bold text-gray-400 uppercase">
+                            <div className="grid grid-cols-12 gap-4 px-4 py-2 bg-site-raised border-b-[2px] border-white/10 text-xs font-bold text-gray-400 uppercase">
                                 <div className="col-span-1 flex items-center">
                                     <button
                                         onClick={selectAll}
-                                        className={`w-4 h-4 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center ${selectedFiles.size === files.length && files.length > 0
+                                        className={`w-4 h-4 border border-white/5 rounded-xl flex items-center justify-center ${selectedFiles.size === files.length && files.length > 0
                                             ? "bg-site-accent text-white"
-                                            : "bg-[#212328]"
+                                            : "bg-site-raised"
                                             }`}
                                     >
                                         {selectedFiles.size === files.length && files.length > 0 && (
@@ -532,18 +532,18 @@ export default function AdminImagesPage() {
                             {files.map((file) => (
                                 <div
                                     key={file.id}
-                                    className={`grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-100 items-center hover:bg-[#212328]/5 transition-colors ${selectedFiles.has(file.id) ? "bg-[#181A1D]" : ""
+                                    className={`grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-100 items-center hover:bg-site-raised/5 transition-colors ${selectedFiles.has(file.id) ? "bg-site-surface" : ""
                                         }`}>
                                     <div className="col-span-1 flex items-center">
                                         <button
                                             onClick={() => toggleSelect(file.id)}
-                                            className={`w-4 h-4 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center ${selectedFiles.has(file.id) ? "bg-site-accent text-white" : "bg-[#212328]"
+                                            className={`w-4 h-4 border border-white/5 rounded-xl flex items-center justify-center ${selectedFiles.has(file.id) ? "bg-site-accent text-white" : "bg-site-raised"
                                                 }`}>
                                             {selectedFiles.has(file.id) && <Check className="w-2.5 h-2.5" />}
                                         </button>
                                     </div>
                                     <div className="col-span-1">
-                                        <div className="w-10 h-10 border border-site-border/30 rounded-[12px] shadow-sm bg-[#1A1C1E] overflow-hidden flex items-center justify-center">
+                                        <div className="w-10 h-10 border border-white/5 rounded-xl bg-site-raised overflow-hidden flex items-center justify-center">
                                             {isImageMime(file.mimeType) ? (
                                                 <img
                                                     src={getThumbnailUrl(file.url, 80, 80)}
@@ -565,16 +565,16 @@ export default function AdminImagesPage() {
                                     <div className="col-span-1 text-xs text-gray-400">
                                         {formatFileSize(file.size)}
                                     </div>
-                                    <div className="col-span-1 text-xs text-gray-500 truncate" title={file.mimeType}>
+                                    <div className="col-span-1 text-xs text-gray-400 truncate" title={file.mimeType}>
                                         {file.mimeType.split("/")[1]}
                                     </div>
-                                    <div className="col-span-2 text-xs text-gray-500">
+                                    <div className="col-span-2 text-xs text-gray-400">
                                         {formatDate(file.createdAt)}
                                     </div>
                                     <div className="col-span-2 flex justify-end gap-1">
                                         <button
                                             onClick={() => handleCopyUrl(file)}
-                                            className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-site-accent hover:text-white transition-all"
+                                            className="p-1.5 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-accent hover:text-white transition-all"
                                             title="คัดลอกลิงก์"
 
                                         >
@@ -586,7 +586,7 @@ export default function AdminImagesPage() {
                                         </button>
                                         <button
                                             onClick={() => setPreviewFile(file)}
-                                            className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-all"
+                                            className="p-1.5 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-all"
                                             title="ดูตัวอย่าง"
 
                                         >
@@ -594,7 +594,7 @@ export default function AdminImagesPage() {
                                         </button>
                                         <button
                                             onClick={() => handleDelete(file)}
-                                            className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-red-500/100 hover:text-white transition-all"
+                                            className="p-1.5 bg-site-surface border border-white/5 rounded-2xl hover:bg-red-500/100 hover:text-white transition-all"
                                             title="ลบ"
 
                                         >
@@ -613,7 +613,7 @@ export default function AdminImagesPage() {
                         <button
                             onClick={() => setPage((p) => Math.max(0, p - 1))}
                             disabled={page === 0}
-                            className="px-3 py-1 text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium">
+                            className="px-3 py-1 text-xs bg-site-surface border border-white/5 rounded-2xl text-white hover:bg-site-raised/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium">
                             <ChevronLeft className="w-4 h-4" />
                         </button>
                         <span className="text-sm font-medium text-white">
@@ -622,15 +622,15 @@ export default function AdminImagesPage() {
                         <button
                             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                             disabled={page >= totalPages - 1}
-                            className="px-3 py-1 text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm text-white hover:bg-[#212328]/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium">
+                            className="px-3 py-1 text-xs bg-site-surface border border-white/5 rounded-2xl text-white hover:bg-site-raised/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium">
                             <ChevronRight className="w-4 h-4" />
                         </button>
 
-                        <span className="text-xs text-gray-500 ml-2">แสดง</span>
+                        <span className="text-xs text-gray-400 ml-2">แสดง</span>
                         <select
                             value={pageSize}
                             onChange={(e) => { setPageSize(Number(e.target.value)); setPage(0); }}
-                            className="text-xs bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 cursor-pointer">
+                            className="text-xs bg-site-surface border border-white/5 rounded-2xl px-2 py-1 cursor-pointer">
                             {PAGE_SIZES.map((s) => (
                                 <option key={s} value={s}>{s} ต่อหน้า</option>
                             ))}
@@ -650,19 +650,19 @@ export default function AdminImagesPage() {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full max-w-3xl overflow-hidden"
+                                    className="bg-site-surface border border-white/5 rounded-2xl w-full max-w-3xl overflow-hidden"
 
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {/* Modal Header */}
-                                    <div className="p-4 border-b-[3px] border-site-border/50 bg-site-accent flex items-center justify-between">
+                                    <div className="p-4 border-b-[3px] border-white/10 bg-site-accent flex items-center justify-between">
                                         <h3 className="text-lg font-bold text-white flex items-center gap-2 truncate">
                                             <Eye className="w-5 h-5 flex-shrink-0" />
                                             <span className="truncate">{previewFile.name}</span>
                                         </h3>
                                         <button
                                             onClick={() => setPreviewFile(null)}
-                                            className="p-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm hover:bg-[#212328]/5 transition-colors flex-shrink-0">
+                                            className="p-2 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors flex-shrink-0">
                                             <X className="h-4 w-4" />
                                         </button>
                                     </div>
@@ -671,7 +671,7 @@ export default function AdminImagesPage() {
                                     <div className="p-6">
                                         {/* Preview Image */}
                                         {isImageMime(previewFile.mimeType) ? (
-                                            <div className="bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center max-h-[50vh] overflow-hidden mb-4">
+                                            <div className="bg-site-raised border border-white/5 rounded-xl flex items-center justify-center max-h-[50vh] overflow-hidden mb-4">
                                                 <img
                                                     src={previewFile.url}
                                                     alt={previewFile.name}
@@ -679,45 +679,45 @@ export default function AdminImagesPage() {
                                                 />
                                             </div>
                                         ) : (
-                                            <div className="bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center py-12 mb-4">
+                                            <div className="bg-site-raised border border-white/5 rounded-xl flex items-center justify-center py-12 mb-4">
                                                 <FileText className="w-16 h-16 text-gray-400" />
                                             </div>
                                         )}
 
                                         {/* File Info */}
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                                            <div className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-3">
-                                                <p className="text-xs text-gray-500 font-bold">ขนาด</p>
+                                            <div className="bg-site-surface border border-white/5 rounded-xl p-3">
+                                                <p className="text-xs text-gray-400 font-bold">ขนาด</p>
                                                 <p className="font-medium text-white">{formatFileSize(previewFile.size)}</p>
                                             </div>
-                                            <div className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-3">
-                                                <p className="text-xs text-gray-500 font-bold">ประเภท</p>
+                                            <div className="bg-site-surface border border-white/5 rounded-xl p-3">
+                                                <p className="text-xs text-gray-400 font-bold">ประเภท</p>
                                                 <p className="font-medium text-white">{previewFile.mimeType}</p>
                                             </div>
-                                            <div className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-3">
-                                                <p className="text-xs text-gray-500 font-bold">สร้างเมื่อ</p>
+                                            <div className="bg-site-surface border border-white/5 rounded-xl p-3">
+                                                <p className="text-xs text-gray-400 font-bold">สร้างเมื่อ</p>
                                                 <p className="font-medium text-white">{formatDate(previewFile.createdAt)}</p>
                                             </div>
-                                            <div className="bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-3">
-                                                <p className="text-xs text-gray-500 font-bold">ID</p>
+                                            <div className="bg-site-surface border border-white/5 rounded-xl p-3">
+                                                <p className="text-xs text-gray-400 font-bold">ID</p>
                                                 <p className="font-medium text-white truncate" title={previewFile.id}>{previewFile.id}</p>
                                             </div>
                                         </div>
 
                                         {/* URL */}
-                                        <div className="mt-4 bg-[#181A1D] border border-site-border/30 rounded-[12px] shadow-sm p-3">
-                                            <p className="text-xs text-gray-500 font-bold mb-1">URL</p>
+                                        <div className="mt-4 bg-site-surface border border-white/5 rounded-xl p-3">
+                                            <p className="text-xs text-gray-400 font-bold mb-1">URL</p>
                                             <div className="flex items-center gap-2">
                                                 <input
                                                     type="text"
                                                     readOnly
                                                     value={previewFile.url}
-                                                    className="flex-1 text-xs bg-[#212328] border border-gray-300 px-2 py-1.5 text-gray-300"
+                                                    className="flex-1 text-xs bg-site-raised border border-gray-300 px-2 py-1.5 text-gray-300"
                                                     onClick={(e) => (e.target as HTMLInputElement).select()}
                                                 />
                                                 <button
                                                     onClick={() => handleCopyUrl(previewFile)}
-                                                    className="px-3 py-1.5 bg-site-accent text-white border border-site-border/30 rounded-[12px] shadow-sm text-xs font-medium hover:bg-blue-600 transition-all flex items-center gap-1">
+                                                    className="px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl text-xs font-medium hover:bg-blue-600 transition-all flex items-center gap-1">
                                                     {copiedId === previewFile.id ? (
                                                         <>
                                                             <Check className="w-3 h-3" /> คัดลอกแล้ว
@@ -733,15 +733,15 @@ export default function AdminImagesPage() {
                                     </div>
 
                                     {/* Modal Footer */}
-                                    <div className="p-4 border-t-[3px] border-site-border/50 bg-[#181A1D] flex justify-between">
+                                    <div className="p-4 border-t-[3px] border-white/10 bg-site-surface flex justify-between">
                                         <button
                                             onClick={() => handleDelete(previewFile)}
-                                            className="px-4 py-2 bg-red-500/50 text-white border border-site-border/30 rounded-[12px] shadow-sm text-sm font-medium hover:bg-red-600 transition-all flex items-center gap-1">
+                                            className="px-4 py-2 bg-red-500/50 text-white border border-white/5 rounded-xl text-sm font-medium hover:bg-red-600 transition-all flex items-center gap-1">
                                             <Trash2 className="w-4 h-4" /> ลบไฟล์
                                         </button>
                                         <button
                                             onClick={() => setPreviewFile(null)}
-                                            className="px-4 py-2 bg-[#212328] text-white border border-site-border/30 rounded-[12px] shadow-sm text-sm font-medium hover:bg-[#212328]/5 transition-all">
+                                            className="px-4 py-2 bg-site-raised text-white border border-white/5 rounded-xl text-sm font-medium hover:bg-site-raised/5 transition-all">
                                             ปิด
                                         </button>
                                     </div>

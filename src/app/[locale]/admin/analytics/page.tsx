@@ -146,12 +146,12 @@ const getOrderStatusClassName = (status: string) => {
     case "PENDING":
       return "bg-yellow-500/10 text-yellow-400 border-yellow-500/30/30";
     case "PROCESSING":
-      return "bg-[#181A1D]0/10 text-blue-400 border-blue-500/30";
+      return "bg-site-surface0/10 text-site-accent border-blue-500/30";
     case "CANCELLED":
     case "FAILED":
       return "bg-red-500/10 text-red-400 border-red-500/30/30";
     default:
-      return "bg-[#1A1C1E] text-gray-300 border-gray-500";
+      return "bg-site-raised text-gray-300 border-gray-500";
   }
 };
 
@@ -333,7 +333,7 @@ export default function AdminAnalyticsPage() {
     color: string;
   }) => (
     <motion.div
-      className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2"
+      className="bg-site-surface border border-white/5 rounded-2xl p-2"
       
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -365,7 +365,7 @@ export default function AdminAnalyticsPage() {
     return (
       <AdminLayout title="วิเคราะห์">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -375,7 +375,7 @@ export default function AdminAnalyticsPage() {
     return (
       <AdminLayout title="วิเคราะห์">
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-pink-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
       </AdminLayout>
     );
@@ -386,14 +386,14 @@ export default function AdminAnalyticsPage() {
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center">
-            <span className="w-1.5 h-3.5 bg-pink-500 mr-2"></span>
+            <span className="w-1.5 h-3.5 bg-site-accent mr-2"></span>
             <h1 className="text-base font-bold text-white">วิเคราะห์</h1>
           </div>
           <div className="flex items-center gap-2">
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm border-gray-300 text-white px-2 py-1 text-[10px] focus:border-site-accent focus:outline-none">
+              className="bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white px-2 py-1 text-[10px] focus:border-site-accent focus:outline-none">
               <option value="24h">24 ชั่วโมง</option>
               <option value="7d">7 วัน</option>
               <option value="30d">30 วัน</option>
@@ -401,14 +401,14 @@ export default function AdminAnalyticsPage() {
             </select>
             <button
               onClick={fetchAnalyticsData}
-              className="bg-[#212328] text-white border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-[10px] hover:bg-[#212328]/5 transition-colors flex items-center font-medium">
+              className="bg-site-raised text-white border border-white/5 rounded-xl px-2 py-1 text-[10px] hover:bg-site-raised/5 transition-colors flex items-center font-medium">
               <RefreshCw className="h-3 w-3 mr-1" />
               รีเฟรช
             </button>
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="bg-black text-white border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70">
+              className="bg-black text-white border border-white/5 rounded-xl px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70">
               <Download className="h-3 w-3 mr-1" />
               {isExporting ? "กำลังส่งออก..." : "ส่งออก"}
             </button>
@@ -416,7 +416,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 text-red-400 px-3 py-2 text-[10px]">
+          <div className="bg-red-500/10 border border-white/5 rounded-xl border-red-500/30/30 text-red-400 px-3 py-2 text-[10px]">
             ไม่สามารถโหลดข้อมูลได้: {error}
           </div>
         )}
@@ -427,14 +427,14 @@ export default function AdminAnalyticsPage() {
             value={formatCurrency(statValues.revenue.current)}
             change={statValues.revenue.change}
             icon={DollarSign}
-            color="bg-pink-500"
+            color="bg-site-accent"
           />
           <StatCard
             title="คำสั่งซื้อ"
             value={statValues.orders.current.toLocaleString()}
             change={statValues.orders.change}
             icon={ShoppingCart}
-            color="bg-orange-500/10"
+            color="bg-site-accent/10"
           />
           <StatCard
             title="ลูกค้าใหม่"
@@ -454,7 +454,7 @@ export default function AdminAnalyticsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           <motion.div
-            className="lg:col-span-2 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2"
+            className="lg:col-span-2 bg-site-surface border border-white/5 rounded-2xl p-2"
             
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -462,7 +462,7 @@ export default function AdminAnalyticsPage() {
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
-                <BarChart3 className="h-3 w-3 text-pink-400 mr-1.5" />
+                <BarChart3 className="h-3 w-3 text-site-accent mr-1.5" />
                 <h3 className="text-xs font-semibold text-white">ยอดขาย</h3>
               </div>
             </div>
@@ -480,20 +480,20 @@ export default function AdminAnalyticsPage() {
                     key={item.key}
                     className="flex-1 h-full flex flex-col items-center justify-end">
                     <div
-                      className={`w-full bg-pink-500 transition-all duration-500 ${
+                      className={`w-full bg-site-accent transition-all duration-500 ${
                         item.revenue > 0 ? "min-h-[2px]" : ""
                       }`}
                       style={{ height: `${height}%` }}
                       title={`${item.label}: ${formatCurrency(item.revenue)} (${item.orders.toLocaleString()} ออเดอร์)`}
                     ></div>
-                    <span className="text-[8px] text-gray-500 mt-1.5 text-center leading-tight min-h-5">
+                    <span className="text-[8px] text-gray-400 mt-1.5 text-center leading-tight min-h-5">
                       {shouldShowLabel ? item.label : ""}
                     </span>
                   </div>
                 );
               })}
               {salesChartData.length === 0 && (
-                <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-500">
+                <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">
                   ยังไม่มีข้อมูลยอดขาย
                 </div>
               )}
@@ -501,7 +501,7 @@ export default function AdminAnalyticsPage() {
           </motion.div>
 
           <motion.div
-            className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm p-2"
+            className="bg-site-surface border border-white/5 rounded-2xl p-2"
             
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -515,7 +515,7 @@ export default function AdminAnalyticsPage() {
               {topProducts.map((product, index) => (
                 <div
                   key={product.id}
-                  className="flex items-center justify-between p-1.5 bg-[#181A1D] border-[1px] border-site-border/30">
+                  className="flex items-center justify-between p-1.5 bg-site-surface border-[1px] border-white/5">
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold ${
@@ -524,7 +524,7 @@ export default function AdminAnalyticsPage() {
                           : index === 1
                             ? "bg-gray-300 text-white"
                             : index === 2
-                              ? "bg-orange-300 text-white"
+                              ? "bg-site-accent text-white"
                               : "bg-site-border/30 text-gray-400"
                       }`}>
                       {index + 1}
@@ -533,7 +533,7 @@ export default function AdminAnalyticsPage() {
                       <p className="text-[10px] font-medium text-white">
                         {product.name}
                       </p>
-                      <p className="text-[8px] text-gray-500">
+                      <p className="text-[8px] text-gray-400">
                         {product.salesCount} ขาย
                       </p>
                     </div>
@@ -544,7 +544,7 @@ export default function AdminAnalyticsPage() {
                 </div>
               ))}
               {topProducts.length === 0 && (
-                <div className="text-[10px] text-gray-500">
+                <div className="text-[10px] text-gray-400">
                   ยังไม่มีข้อมูลสินค้าขายดี
                 </div>
               )}
@@ -553,15 +553,15 @@ export default function AdminAnalyticsPage() {
         </div>
 
         <motion.div
-          className="bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm overflow-hidden"
+          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden"
           
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <div className="p-2 border-b-[2px] border-site-border/50 bg-[#181A1D]">
+          <div className="p-2 border-b-[2px] border-white/10 bg-site-surface">
             <div className="flex items-center">
-              <Calendar className="h-3 w-3 text-purple-400 mr-1.5" />
+              <Calendar className="h-3 w-3 text-site-accent mr-1.5" />
               <h3 className="text-xs font-semibold text-white">
                 กิจกรรมล่าสุด
               </h3>
@@ -569,7 +569,7 @@ export default function AdminAnalyticsPage() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#181A1D] border-b-[1px] border-site-border/30">
+              <thead className="bg-site-surface border-b-[1px] border-white/5">
                 <tr>
                   <th className="text-left py-1.5 px-2 text-[9px] font-semibold text-white">
                     วันที่
@@ -590,7 +590,7 @@ export default function AdminAnalyticsPage() {
               </thead>
               <tbody className="divide-y divide-site-border/30">
                 {data.recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-[#212328]/5">
+                  <tr key={order.id} className="hover:bg-site-raised/5">
                     <td className="py-1.5 px-2 text-[9px] text-gray-400">
                       {new Date(order.createdAt).toLocaleDateString("th-TH")}
                     </td>
@@ -623,7 +623,7 @@ export default function AdminAnalyticsPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-3 px-2 text-center text-[9px] text-gray-500">
+                      className="py-3 px-2 text-center text-[9px] text-gray-400">
                       {t("dashboard.no_data")}
                     </td>
                   </tr>

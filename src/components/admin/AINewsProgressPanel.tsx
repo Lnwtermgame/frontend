@@ -74,7 +74,7 @@ const getLogColor = (type: DebugLog["type"]) => {
     case "api_call":
       return "text-blue-600 bg-blue-100 border-blue-500";
     default:
-      return "text-gray-600 bg-[#1A1C1E] border-gray-300";
+      return "text-gray-600 bg-site-raised border-gray-300";
   }
 };
 
@@ -120,21 +120,21 @@ const getStageIcon = (stage: NewsStage) => {
 const getStageColor = (stage: NewsStage) => {
   switch (stage) {
     case "idle":
-      return "text-gray-500 bg-[#1A1C1E] border-gray-300";
+      return "text-gray-500 bg-site-raised border-gray-300";
     case "preparing":
       return "text-blue-600 bg-blue-100 border-blue-500";
     case "searching":
-      return "text-purple-600 bg-purple-100 border-purple-500";
+      return "text-site-accent bg-site-accent/10 border-site-accent";
     case "parsing":
-      return "text-orange-600 bg-orange-100 border-orange-500";
+      return "text-site-accent bg-site-accent/10 border-site-accent";
     case "images":
-      return "text-cyan-600 bg-cyan-100 border-cyan-500";
+      return "text-site-accent bg-site-accent/10 border-site-accent";
     case "completed":
       return "text-green-600 bg-green-500/10 border-green-500/30";
     case "error":
       return "text-red-600 bg-red-500/10 border-red-500/30";
     default:
-      return "text-gray-600 bg-[#1A1C1E] border-gray-300";
+      return "text-gray-600 bg-site-raised border-gray-300";
   }
 };
 
@@ -278,11 +278,11 @@ export default function AINewsProgressPanel({
   };
 
   return (
-    <div className="bg-[#212328] border border-site-border/30 rounded-[16px] w-full">
+    <div className="bg-site-raised border border-site-border/30 rounded-[16px] w-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b-[3px] border-black bg-gradient-to-r from-purple-500 to-pink-500">
+      <div className="flex items-center justify-between p-4 border-b-[3px] border-black bg-gradient-to-r from-site-accent to-site-accent/80">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-[#212328] border-[2px] border-black">
+          <div className="p-2 bg-site-raised border-[2px] border-black">
             {getStageIcon(currentStage)}
           </div>
           <div>
@@ -294,7 +294,7 @@ export default function AINewsProgressPanel({
         </div>
         <div className="flex items-center gap-2">
           {isGenerating && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#212328] border-[2px] border-black text-white text-sm font-bold">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-site-raised border-[2px] border-black text-white text-sm font-bold">
               <Clock className="w-3.5 h-3.5" />
               <span>{elapsed}s</span>
             </div>
@@ -311,7 +311,7 @@ export default function AINewsProgressPanel({
       </div>
 
       {/* Timeline */}
-      <div className="p-4 bg-[#181A1D]">
+      <div className="p-4 bg-site-surface">
         <div className="space-y-2">
           {NEWS_STAGES.filter((s) => s.key !== "error").map((stage, index) => {
             const status = getStageStatus(stage.key);
@@ -330,8 +330,8 @@ export default function AINewsProgressPanel({
                   className={`flex items-center justify-center w-10 h-10 border-[2px] shrink-0 ${status === "completed"
                     ? "bg-green-500 border-green-600 text-white"
                     : status === "current"
-                      ? "bg-purple-500 border-purple-600 text-white animate-pulse"
-                      : "bg-[#1A1C1E] border-gray-300 text-gray-400"
+                      ? "bg-site-accent border-site-accent text-white animate-pulse"
+                      : "bg-site-raised border-gray-300 text-gray-400"
                     }`}
                 >
                   {status === "completed" ? (
@@ -349,7 +349,7 @@ export default function AINewsProgressPanel({
                     className={`text-sm font-medium ${status === "completed"
                       ? "text-green-400"
                       : status === "current"
-                        ? "text-purple-700"
+                        ? "text-site-accent"
                         : "text-gray-500"
                       }`}
                   >
@@ -391,7 +391,7 @@ export default function AINewsProgressPanel({
       </div>
 
       {/* Debug Panel Toggle */}
-      <div className="px-4 py-2 border-b-[2px] border-gray-200 bg-[#1A1C1E]">
+      <div className="px-4 py-2 border-b-[2px] border-gray-200 bg-site-raised">
         <button
           onClick={() => setShowDebug(!showDebug)}
           className="flex items-center gap-2 text-sm text-gray-700 hover:text-white transition-colors font-medium w-full"
@@ -403,7 +403,7 @@ export default function AINewsProgressPanel({
           ) : (
             <ChevronDown className="w-4 h-4 ml-auto" />
           )}
-          <span className="ml-auto text-xs text-gray-500 bg-[#212328] px-2 py-0.5 border border-gray-300">
+          <span className="ml-auto text-xs text-gray-500 bg-site-raised px-2 py-0.5 border border-gray-300">
             {logs.length} logs
           </span>
         </button>
@@ -495,7 +495,7 @@ export default function AINewsProgressPanel({
             ? "bg-red-500"
             : currentStage === "completed"
               ? "bg-green-500"
-              : "bg-gradient-to-r from-purple-500 to-pink-500"
+              : "bg-gradient-to-r from-site-accent to-site-accent/80"
             }`}
           initial={{ width: "0%" }}
           animate={{

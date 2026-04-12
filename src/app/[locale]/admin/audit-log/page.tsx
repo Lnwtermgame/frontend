@@ -18,7 +18,7 @@ interface AuditLogEntry {
 }
 
 const SEVERITY_STYLES = {
-    INFO: { bg: "bg-[#181A1D]", text: "text-blue-400", border: "border-blue-200", badge: "bg-[#181A1D]0/10" },
+    INFO: { bg: "bg-site-surface", text: "text-site-accent", border: "border-blue-200", badge: "bg-site-surface0/10" },
     WARN: { bg: "bg-yellow-50", text: "text-yellow-400", border: "border-yellow-200", badge: "bg-yellow-500/10" },
     ALERT: { bg: "bg-red-500/5", text: "text-red-400", border: "border-red-200", badge: "bg-red-500/10" },
 };
@@ -85,9 +85,9 @@ export default function AdminAuditLogPage() {
                         <button
                             key={sev}
                             onClick={() => { setFilter(sev); setPage(1); }}
-                            className={`px-3 py-1.5 text-xs font-bold border border-site-border/30 rounded-[8px] transition-all ${filter === sev
-                                    ? "bg-orange-500/10 shadow-lg -translate-x-[1px] -translate-y-[1px]"
-                                    : "bg-[#212328] hover:bg-[#212328]/5"
+                            className={`px-3 py-1.5 text-xs font-bold border border-white/5 rounded-lg transition-all ${filter === sev
+                                    ? "bg-site-accent/10 shadow-lg -translate-x-[1px] -translate-y-[1px]"
+                                    : "bg-site-raised hover:bg-white/5"
                                 }`}>
                             {sev}
                         </button>
@@ -100,7 +100,7 @@ export default function AdminAuditLogPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b-[3px] border-site-border/50 bg-[#181A1D]">
+                            <tr className="border-b-[3px] border-white/10 bg-site-surface">
                                 <th className="px-4 py-3 text-left font-bold">Time</th>
                                 <th className="px-4 py-3 text-left font-bold">Severity</th>
                                 <th className="px-4 py-3 text-left font-bold">Event</th>
@@ -127,8 +127,8 @@ export default function AdminAuditLogPage() {
                                 filteredLogs.map((log) => {
                                     const style = SEVERITY_STYLES[log.severity] || SEVERITY_STYLES.INFO;
                                     return (
-                                        <tr key={log.id} className={`border-b border-site-border/30 hover:bg-[#212328]/5 transition-colors`}>
-                                            <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500 font-mono">
+                                        <tr key={log.id} className={`border-b border-white/5 hover:bg-site-raised/5 transition-colors`}>
+                                            <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-400 font-mono">
                                                 {new Date(log.createdAt).toLocaleString("th-TH")}
                                             </td>
                                             <td className="px-4 py-3">
@@ -141,7 +141,7 @@ export default function AdminAuditLogPage() {
                                             <td className="px-4 py-3 max-w-xs truncate" title={log.message}>
                                                 {log.message}
                                             </td>
-                                            <td className="px-4 py-3 font-mono text-xs text-pink-400">
+                                            <td className="px-4 py-3 font-mono text-xs text-site-accent">
                                                 {log.orderId ? log.orderId.slice(0, 12) + "…" : "—"}
                                             </td>
                                             <td className="px-4 py-3 text-xs">

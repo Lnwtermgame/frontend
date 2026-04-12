@@ -34,8 +34,8 @@ const statusConfig: Record<
     icon: <Clock className="h-5 w-5" />,
   },
   PROCESSING: {
-    color: "text-blue-400",
-    bgColor: "bg-[#181A1D]0/10",
+    color: "text-site-accent",
+    bgColor: "bg-site-surface0/10",
     icon: <Truck className="h-5 w-5" />,
   },
   COMPLETED: {
@@ -55,7 +55,7 @@ const statusConfig: Record<
   },
   REFUNDED: {
     color: "text-gray-300",
-    bgColor: "bg-[#1A1C1E]",
+    bgColor: "bg-site-raised",
     icon: <XCircle className="h-5 w-5" />,
   },
 };
@@ -69,8 +69,8 @@ const fulfillStatusConfig: Record<
     bgColor: "bg-yellow-500/10",
   },
   PROCESSING: {
-    color: "text-blue-400",
-    bgColor: "bg-[#181A1D]0/10",
+    color: "text-site-accent",
+    bgColor: "bg-site-surface0/10",
   },
   COMPLETED: {
     color: "text-green-400",
@@ -174,7 +174,7 @@ export default function OrderViewPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center">
-          <Loader2 className="h-12 w-12 text-pink-400 animate-spin" />
+          <Loader2 className="h-12 w-12 text-site-accent animate-spin" />
           <p className="mt-4 text-gray-400 font-medium">
             กำลังโหลดข้อมูลคำสั่งซื้อ...
           </p>
@@ -189,7 +189,7 @@ export default function OrderViewPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-500/10 border border-red-500/30/30 rounded-[12px] p-6 text-center">
+          className="bg-red-500/10 border border-red-500/30/30 rounded-xl p-6 text-center">
           <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />
           <h2 className="text-xl font-bold text-white mb-2">ไม่พบคำสั่งซื้อ</h2>
           <p className="text-red-600 mb-4">
@@ -197,7 +197,7 @@ export default function OrderViewPage() {
           </p>
           <Link
             href="/admin/orders"
-            className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-site-border/30 rounded-[12px] transition-all hover:-translate-y-0.5">
+            className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5">
             <ArrowLeft size={18} className="mr-2" />
             {t("order_detail.back_to_orders")}
           </Link>
@@ -215,12 +215,12 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/orders"
-            className="p-1.5 bg-[#212328] border border-site-border/30 rounded-[16px] hover:bg-[#212328]/5 transition-colors">
+            className="p-1.5 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors">
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
             <h1 className="text-xl font-black text-white flex items-center gap-2">
-              <Package className="h-5 w-5 text-pink-400" />
+              <Package className="h-5 w-5 text-site-accent" />
               {t("order_detail.title")} #
               {order.orderNumber || order.id.slice(-8).toUpperCase()}
             </h1>
@@ -233,7 +233,7 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchOrder}
-            className="flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 border border-site-border/30 rounded-[12px] font-bold hover:bg-orange-500/10/90 transition-all hover:-translate-y-0.5 text-sm">
+            className="flex items-center gap-2 px-3 py-1.5 bg-site-accent/10 border border-white/5 rounded-xl font-bold hover:bg-site-accent/10/90 transition-all hover:-translate-y-0.5 text-sm">
             <RefreshCw className="h-3 w-3" />
             {t("common.refresh")}
           </button>
@@ -244,10 +244,10 @@ export default function OrderViewPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${status.bgColor} border border-site-border/30 rounded-[12px] p-3 flex items-center justify-between print:hidden`}>
+        className={`${status.bgColor} border border-white/5 rounded-xl p-3 flex items-center justify-between print:hidden`}>
         <div className="flex items-center gap-2">
           <div
-            className={`p-1.5 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm ${status.color}`}>
+            className={`p-1.5 bg-site-surface border border-white/5 rounded-2xl ${status.color}`}>
             {status.icon}
           </div>
           <div>
@@ -272,8 +272,8 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
-            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
               <h2 className="font-bold text-white flex items-center gap-2 text-base">
                 <Package className="h-4 w-4 text-site-accent" />
                 {t("order_detail.items")}
@@ -294,10 +294,10 @@ export default function OrderViewPage() {
                         <img
                           src={item.product.imageUrl}
                           alt={productName}
-                          className="w-10 h-10 object-cover border border-site-border/30 rounded-[12px] shadow-sm"
+                          className="w-10 h-10 object-cover border border-white/5 rounded-xl"
                         />
                       ) : (
-                        <div className="w-10 h-10 bg-[#1A1C1E] border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center font-bold text-gray-400 text-xs">
+                        <div className="w-10 h-10 bg-site-raised border border-white/5 rounded-xl flex items-center justify-center font-bold text-gray-400 text-xs">
                           {index + 1}
                         </div>
                       )}
@@ -317,7 +317,7 @@ export default function OrderViewPage() {
                         </p>
                         {item.playerInfo &&
                           Object.keys(item.playerInfo).length > 0 && (
-                            <div className="mt-1 text-[10px] text-gray-500 bg-[#1A1C1E] p-1.5 border border-gray-300">
+                            <div className="mt-1 text-[10px] text-gray-400 bg-site-raised p-1.5 border border-gray-300">
                               {Object.entries(item.playerInfo).map(
                                 ([key, value]) => (
                                   <div key={key}>
@@ -331,10 +331,10 @@ export default function OrderViewPage() {
                     </div>
                     <div className="text-right space-y-1">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 border border-site-border/30 rounded-[12px] shadow-sm text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}>
+                        className={`inline-flex items-center px-2 py-0.5 border border-white/5 rounded-xl text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}>
                         {t(`orders.status.${statusKeyMap[item.fulfillStatus] || item.fulfillStatus.toLowerCase()}`)}
                       </span>
-                      <p className="text-xs text-gray-500 font-mono">
+                      <p className="text-xs text-gray-400 font-mono">
                         {formatPrice((item.priceAtPurchase || item.price || 0) * item.quantity)}
                       </p>
                     </div>
@@ -349,8 +349,8 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
-            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
               <h2 className="font-bold text-white flex items-center gap-2 text-base">
                 <CreditCard className="h-4 w-4 text-green-400" />
                 สรุปการชำระเงิน
@@ -367,10 +367,10 @@ export default function OrderViewPage() {
                   -{formatPrice(order.discountAmount)}
                 </span>
               </div>
-              <div className="border-t-[2px] border-site-border/30 pt-2">
+              <div className="border-t-[2px] border-white/5 pt-2">
                 <div className="flex justify-between text-lg font-bold text-white">
                   <span>ยอดสุทธิ</span>
-                  <span className="text-pink-400">
+                  <span className="text-site-accent">
                     {formatPrice(order.finalAmount)}
                   </span>
                 </div>
@@ -386,10 +386,10 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
-            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
               <h2 className="font-bold text-white flex items-center gap-2 text-base">
-                <User className="h-4 w-4 text-purple-400" />
+                <User className="h-4 w-4 text-site-accent" />
                 ข้อมูลลูกค้า
               </h2>
             </div>
@@ -397,7 +397,7 @@ export default function OrderViewPage() {
               {order.user ? (
                 <>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-orange-500/10 border border-site-border/30 rounded-[12px] shadow-sm flex items-center justify-center">
+                    <div className="w-10 h-10 bg-site-accent/10 border border-white/5 rounded-xl flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <div>
@@ -409,13 +409,13 @@ export default function OrderViewPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-400 bg-[#181A1D] p-2 border border-site-border/30">
+                  <div className="flex items-center gap-2 text-gray-400 bg-site-surface p-2 border border-white/5">
                     <Mail className="h-3 w-3" />
                     <span className="text-xs">{order.user.email}</span>
                   </div>
                 </>
               ) : (
-                <p className="text-gray-500 text-center py-3 text-sm">
+                <p className="text-gray-400 text-center py-3 text-sm">
                   ไม่พบข้อมูลลูกค้า
                 </p>
               )}
@@ -427,10 +427,10 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
-            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
               <h2 className="font-bold text-white flex items-center gap-2 text-base">
-                <FileText className="h-4 w-4 text-orange-400" />
+                <FileText className="h-4 w-4 text-site-accent" />
                 ข้อมูลคำสั่งซื้อ
               </h2>
             </div>
@@ -464,8 +464,8 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden">
-            <div className="p-3 border-b-[3px] border-site-border/50 bg-[#1A1C1E]">
+            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
               <h2 className="font-bold text-white text-base">จัดการคำสั่งซื้อ</h2>
             </div>
             <div className="p-3 space-y-3">
@@ -477,7 +477,7 @@ export default function OrderViewPage() {
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-[#212328] border border-site-border/30 rounded-[12px] shadow-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-site-accent text-sm">
+                  className="w-full bg-site-surface border border-white/5 rounded-2xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-site-accent text-sm">
                   <option value="PENDING">รอดำเนินการ</option>
                   <option value="PROCESSING">กำลังดำเนินการ</option>
                   <option value="COMPLETED">สำเร็จ</option>
@@ -489,7 +489,7 @@ export default function OrderViewPage() {
               <button
                 onClick={handleUpdateStatus}
                 disabled={updating || selectedStatus === order.status}
-                className="w-full py-1.5 bg-site-accent hover:bg-site-accent/90 text-white font-bold border border-site-border/30 rounded-[12px] shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="w-full py-1.5 bg-site-accent hover:bg-site-accent/90 text-white font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 style={{
                   boxShadow:
                     updating || selectedStatus === order.status
@@ -512,7 +512,7 @@ export default function OrderViewPage() {
                 <button
                   onClick={handleFulfill}
                   disabled={updating}
-                  className="w-full py-1.5 bg-green-500 hover:bg-green-500/90 text-white font-bold border border-site-border/30 rounded-[12px] shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
+                  className="w-full py-1.5 bg-green-500 hover:bg-green-500/90 text-white font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
                   style={{
                     boxShadow: updating ? "none" : "2px 2px 0 0 #000000",
                   }}
@@ -533,7 +533,7 @@ export default function OrderViewPage() {
                 order.status === "PROCESSING") && (
                   <button
                     onClick={() => setSelectedStatus("CANCELLED")}
-                    className="w-full py-1.5 bg-red-500/10 hover:bg-red-200 text-red-400 font-bold border border-site-border/30 rounded-[12px] shadow-sm border-red-500/30/30 transition-all hover:-translate-y-0.5 text-sm">
+                    className="w-full py-1.5 bg-red-500/10 hover:bg-red-200 text-red-400 font-bold border border-white/5 rounded-xl border-red-500/30/30 transition-all hover:-translate-y-0.5 text-sm">
                     ยกเลิกคำสั่งซื้อ
                   </button>
                 )}

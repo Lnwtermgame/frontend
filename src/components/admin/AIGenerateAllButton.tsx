@@ -6,12 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   Wand2,
-  Loader2,
   CheckCircle2,
   AlertCircle,
   X,
-  ChevronDown,
-  ChevronUp,
   Clock,
   RefreshCw,
   Save,
@@ -34,18 +31,6 @@ import {
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
 
-// Fields that AI generates - used for completeness checking
-const AI_FIELDS = [
-  { key: "description", label: "คำอธิบาย" },
-  { key: "shortDescription", label: "คำอธิบายสั้น" },
-  { key: "metaTitle", label: "Meta Title" },
-  { key: "metaDescription", label: "Meta Desc" },
-  { key: "metaKeywords", label: "Keywords" },
-  { key: "developer", label: "Developer" },
-  { key: "publisher", label: "Publisher" },
-  { key: "platforms", label: "Platforms" },
-] as const;
-
 // Check which fields a product is missing
 function getMissingFields(product: Product): string[] {
   const missing: string[] = [];
@@ -62,11 +47,6 @@ function getMissingFields(product: Product): string[] {
   )
     missing.push("Platforms");
   return missing;
-}
-
-// Check if product has all AI-generated fields complete
-function isProductComplete(product: Product): boolean {
-  return getMissingFields(product).length === 0;
 }
 
 // Check if product has any existing data worth viewing
@@ -127,6 +107,16 @@ interface AIGenerateAllButtonProps {
   categories: Category[];
 }
 
+type AutoSavePolicy = "manual" | "auto";
+
+type PreflightStatus = {
+  configured: boolean;
+  networkOk: boolean;
+  modelReady: boolean;
+  ready: boolean;
+  message: string;
+};
+
 export default function AIGenerateAllButton({
   products,
   categories,
@@ -138,7 +128,6 @@ export default function AIGenerateAllButton({
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [skipComplete, setSkipComplete] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(-1);
   const [totalElapsed, setTotalElapsed] = useState(0);
   const abortRef = useRef(false);
   const pauseRef = useRef(false);
@@ -149,6 +138,15 @@ export default function AIGenerateAllButton({
   const [availableModels, setAvailableModels] = useState<AIModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [isLoadingModels, setIsLoadingModels] = useState(false);
+  const [isCheckingPreflight, setIsCheckingPreflight] = useState(false);
+  const [preflight, setPreflight] = useState<PreflightStatus>({
+    configured: false,
+    networkOk: false,
+    modelReady: false,
+    ready: false,
+    message: "ยังไม่ได้ตรวจสอบ",
+  });
+  const [autoSavePolicy, setAutoSavePolicy] = useState<AutoSavePolicy>("manual");
 
   // Fetch available models on mount
   useEffect(() => {
@@ -171,6 +169,51 @@ export default function AIGenerateAllButton({
     fetchModels();
   }, [selectedModel]);
 
+  const runPreflight = useCallback(async () => {
+    setIsCheckingPreflight(true);
+    try {
+      const configured = await aiService.isConfigured();
+      let models = availableModels;
+      if (models.length === 0) {
+        models = await aiService.fetchModels();
+        setAvailableModels(models);
+      }
+
+      const modelReady = Boolean((selectedModel && models.some((m) => m.id === selectedModel)) || models.length > 0);
+      if (!selectedModel && models.length > 0) {
+        const defaultModel = aiService.getSelectedModel() || models[0].id;
+        setSelectedModel(defaultModel);
+        aiService.setModel(defaultModel);
+      }
+
+      const status: PreflightStatus = {
+        configured,
+        networkOk: true,
+        modelReady,
+        ready: configured && modelReady,
+        message: configured
+          ? modelReady
+            ? "พร้อมใช้งาน"
+            : "ยังไม่พบโมเดลที่ใช้งานได้"
+          : "ยังไม่ได้ตั้งค่า AI service",
+      };
+      setPreflight(status);
+      return status;
+    } catch {
+      const status: PreflightStatus = {
+        configured: false,
+        networkOk: false,
+        modelReady: false,
+        ready: false,
+        message: "ไม่สามารถเชื่อมต่อ AI service ได้",
+      };
+      setPreflight(status);
+      return status;
+    } finally {
+      setIsCheckingPreflight(false);
+    }
+  }, [availableModels, selectedModel]);
+
   // Initialize product states when modal opens
   const initializeStates = useCallback(() => {
     const states: ProductGenerationState[] = products.map((product) => {
@@ -186,7 +229,6 @@ export default function AIGenerateAllButton({
       };
     });
     setProductStates(states);
-    setCurrentIndex(-1);
     setIsRunning(false);
     setIsPaused(false);
     setTotalElapsed(0);
@@ -217,6 +259,7 @@ export default function AIGenerateAllButton({
   const handleOpen = () => {
     initializeStates();
     setIsOpen(true);
+    void runPreflight();
   };
 
   // Close modal
@@ -248,80 +291,11 @@ export default function AIGenerateAllButton({
     [],
   );
 
-  // Generate content for a single product
-  const generateForProduct = useCallback(
-    async (index: number): Promise<boolean> => {
-      return new Promise(async (resolve) => {
-        const state = productStates[index];
-        if (!state) {
-          resolve(false);
-          return;
-        }
-
-        const productStartTime = Date.now();
-        let productTimer: NodeJS.Timeout | null = null;
-
-        // Start per-product timer
-        productTimer = setInterval(() => {
-          const elapsed = Math.floor((Date.now() - productStartTime) / 1000);
-          updateProductState(index, (prev) => ({
-            ...prev,
-            elapsedTime: elapsed,
-          }));
-        }, 1000);
-
-        updateProductState(index, (prev) => ({
-          ...prev,
-          status: "generating",
-          error: undefined,
-          results: undefined,
-        }));
-
-        try {
-          const handleProgress = (progress: GenerationProgress) => {
-            updateProductState(index, (prev) => ({
-              ...prev,
-              progress,
-            }));
-
-            if (progress.stage === "completed" && progress.results) {
-              updateProductState(index, (prev) => ({
-                ...prev,
-                status: "completed",
-                results: progress.results,
-              }));
-            }
-          };
-
-          await aiService.generateProductContent(
-            state.product.name,
-            state.product.productType,
-            state.categoryName,
-            handleProgress,
-          );
-
-          if (productTimer) clearInterval(productTimer);
-          resolve(true);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Unknown error occurred";
-          updateProductState(index, (prev) => ({
-            ...prev,
-            status: "error",
-            error: errorMessage,
-          }));
-          if (productTimer) clearInterval(productTimer);
-          resolve(false);
-        }
-      });
-    },
-    [productStates, updateProductState],
-  );
-
   // Start batch generation
   const startGeneration = useCallback(async () => {
-    if (!aiService.isConfiguredSync()) {
-      toast.error("AI service not configured. Please set LITELLM_API_KEY in your server .env file.");
+    const status = await runPreflight();
+    if (!status.ready) {
+      toast.error(`ยังไม่พร้อมเริ่มงาน: ${status.message}`);
       return;
     }
 
@@ -354,7 +328,6 @@ export default function AIGenerateAllButton({
       if (abortRef.current) break;
 
       // Check if this product already has results (skip if saved/completed and user hasn't reset)
-      setCurrentIndex(i);
 
       // Check the current state of this product
       const currentState = await new Promise<ProductGenerationState>(
@@ -444,6 +417,10 @@ export default function AIGenerateAllButton({
           handleProgress,
           availableCategories,
         );
+
+        if (autoSavePolicy === "auto") {
+          await saveProduct(i, true);
+        }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error occurred";
@@ -465,9 +442,8 @@ export default function AIGenerateAllButton({
     }
 
     setIsRunning(false);
-    setCurrentIndex(-1);
     if (totalTimerRef.current) clearInterval(totalTimerRef.current);
-  }, [products, categories, skipComplete, selectedModel]);
+  }, [products, categories, skipComplete, selectedModel, runPreflight, autoSavePolicy]);
 
   // Pause/Resume
   const togglePause = () => {
@@ -484,7 +460,7 @@ export default function AIGenerateAllButton({
   };
 
   // Save single product to database
-  const saveProduct = async (index: number) => {
+  const saveProduct = async (index: number, silent = false) => {
     const state = productStates[index];
     if (!state || !state.results) return;
 
@@ -531,12 +507,12 @@ export default function AIGenerateAllButton({
           ...prev,
           status: "saved",
         }));
-        toast.success(`บันทึก ${state.product.name} สำเร็จ!`);
+        if (!silent) toast.success(`บันทึก ${state.product.name} สำเร็จ!`);
       } else {
-        toast.error(`ไม่สามารถบันทึก ${state.product.name} ได้`);
+        if (!silent) toast.error(`ไม่สามารถบันทึก ${state.product.name} ได้`);
       }
-    } catch (error) {
-      toast.error(`เกิดข้อผิดพลาดในการบันทึก ${state.product.name}`);
+    } catch {
+      if (!silent) toast.error(`เกิดข้อผิดพลาดในการบันทึก ${state.product.name}`);
     }
   };
 
@@ -561,8 +537,9 @@ export default function AIGenerateAllButton({
     const state = productStates[index];
     if (!state) return;
 
-    if (!aiService.isConfiguredSync()) {
-      toast.error("AI service not configured. Please set LITELLM_API_KEY in your server .env file.");
+    const status = await runPreflight();
+    if (!status.ready) {
+      toast.error(`ยังไม่พร้อมเริ่มงาน: ${status.message}`);
       return;
     }
 
@@ -694,6 +671,45 @@ export default function AIGenerateAllButton({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const copyDebugInfo = async (index: number) => {
+    const state = productStates[index];
+    if (!state) return;
+
+    const debugInfo = {
+      productId: state.product.id,
+      productName: state.product.name,
+      status: state.status,
+      error: state.error,
+      progressStage: state.progress?.stage,
+      model: selectedModel || aiService.getSelectedModel(),
+      preflight,
+      timestamp: new Date().toISOString(),
+    };
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2));
+      toast.success("คัดลอก debug info แล้ว");
+    } catch {
+      toast.error("คัดลอก debug info ไม่สำเร็จ");
+    }
+  };
+
+  const retryFailedOnly = async () => {
+    const failedIndexes = productStates
+      .map((state, index) => ({ state, index }))
+      .filter(({ state }) => state.status === "error")
+      .map(({ index }) => index);
+
+    if (failedIndexes.length === 0) {
+      toast.error("ไม่มีรายการที่ล้มเหลวให้ลองใหม่");
+      return;
+    }
+
+    for (const index of failedIndexes) {
+      await regenerateProduct(index);
+    }
   };
 
   const getStatusBadge = (
@@ -853,36 +869,83 @@ export default function AIGenerateAllButton({
 
               {/* Stats Bar */}
               <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-site-surface shrink-0">
-                {/* Model Selector */}
-                <div className="mb-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    เลือก AI Model
-                  </label>
-                  <select
-                    value={selectedModel}
-                    onChange={(e) => {
-                      setSelectedModel(e.target.value);
-                      aiService.setModel(e.target.value);
-                    }}
-                    disabled={
-                      isLoadingModels ||
-                      availableModels.length === 0 ||
-                      isRunning
-                    }
-                    className="w-full py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
-                  >
-                    {isLoadingModels ? (
-                      <option value="">กำลังโหลด models...</option>
-                    ) : availableModels.length === 0 ? (
-                      <option value="">ไม่พบ model ที่ใช้ได้</option>
-                    ) : (
-                      availableModels.map((model) => (
-                        <option key={model.id} value={model.id}>
-                          {model.name || model.id}
-                        </option>
-                      ))
-                    )}
-                  </select>
+                {/* Model Selector + Auto Save */}
+                <div className="mb-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      เลือก AI Model
+                    </label>
+                    <select
+                      value={selectedModel}
+                      onChange={(e) => {
+                        setSelectedModel(e.target.value);
+                        aiService.setModel(e.target.value);
+                      }}
+                      disabled={
+                        isLoadingModels ||
+                        availableModels.length === 0 ||
+                        isRunning
+                      }
+                      className="w-full min-h-[44px] py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                    >
+                      {isLoadingModels ? (
+                        <option value="">กำลังโหลด models...</option>
+                      ) : availableModels.length === 0 ? (
+                        <option value="">ไม่พบ model ที่ใช้ได้</option>
+                      ) : (
+                        availableModels.map((model) => (
+                          <option key={model.id} value={model.id}>
+                            {model.name || model.id}
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Auto-save policy
+                    </label>
+                    <select
+                      value={autoSavePolicy}
+                      onChange={(e) =>
+                        setAutoSavePolicy(e.target.value as AutoSavePolicy)
+                      }
+                      disabled={isRunning}
+                      className="w-full min-h-[44px] py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                    >
+                      <option value="manual">รอยืนยันทีละรายการ</option>
+                      <option value="auto">บันทึกทันทีเมื่อเสร็จ</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Preflight */}
+                <div className="mb-3 p-3 border-[2px] border-gray-300 bg-site-raised/40">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="text-sm font-semibold text-white">Preflight Check</div>
+                    <button
+                      onClick={() => void runPreflight()}
+                      disabled={isCheckingPreflight || isRunning}
+                      className="min-h-[44px] px-3 py-2 text-sm border border-site-border/30 rounded-[10px] bg-site-raised text-white disabled:opacity-50"
+                    >
+                      {isCheckingPreflight ? "กำลังตรวจสอบ..." : "ตรวจสอบอีกครั้ง"}
+                    </button>
+                  </div>
+                  <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                    <span className={`px-2 py-1 border ${preflight.configured ? "bg-green-500/10 text-green-400 border-green-300" : "bg-red-500/10 text-red-400 border-red-300"}`}>
+                      Config: {preflight.configured ? "พร้อม" : "ไม่พร้อม"}
+                    </span>
+                    <span className={`px-2 py-1 border ${preflight.modelReady ? "bg-green-500/10 text-green-400 border-green-300" : "bg-yellow-500/10 text-yellow-400 border-yellow-300"}`}>
+                      Model: {preflight.modelReady ? "พร้อม" : "ยังไม่พร้อม"}
+                    </span>
+                    <span className={`px-2 py-1 border ${preflight.networkOk ? "bg-green-500/10 text-green-400 border-green-300" : "bg-red-500/10 text-red-400 border-red-300"}`}>
+                      Network: {preflight.networkOk ? "เชื่อมต่อได้" : "เชื่อมต่อไม่ได้"}
+                    </span>
+                  </div>
+                  <p className={`mt-2 text-xs font-medium ${preflight.ready ? "text-green-400" : "text-yellow-300"}`}>
+                    สถานะ: {preflight.message}
+                  </p>
                 </div>
 
                 {/* Skip complete checkbox + completeness summary */}
@@ -1046,11 +1109,13 @@ export default function AIGenerateAllButton({
                             </div>
                           )}
 
-                          {/* Error message */}
+                          {/* Error message with action guidance */}
                           {state.status === "error" && state.error && (
-                            <p className="text-xs text-red-500 mt-0.5 truncate">
-                              {state.error}
-                            </p>
+                            <div className="mt-1 p-2 border border-red-300 bg-red-500/10 text-xs text-red-300">
+                              <p><strong>เกิดอะไรขึ้น:</strong> {state.error}</p>
+                              <p><strong>กระทบอะไร:</strong> รายการนี้ยังไม่ถูก Generate/บันทึก</p>
+                              <p><strong>ต้องทำอะไรต่อ:</strong> กด Retry หรือคัดลอก debug info ส่งทีม dev</p>
+                            </div>
                           )}
                         </div>
 
@@ -1086,10 +1151,21 @@ export default function AIGenerateAllButton({
                           {state.status !== "generating" && (
                             <button
                               onClick={() => regenerateProduct(index)}
-                              className="p-1.5 text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-300 hover:border-blue-600 transition-all"
+                              className="p-1.5 min-h-[44px] min-w-[44px] text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-300 hover:border-blue-600 transition-all"
                               title="Regenerate"
                             >
                               <RefreshCw className="w-4 h-4" />
+                            </button>
+                          )}
+
+                          {/* Copy debug info for failed */}
+                          {state.status === "error" && (
+                            <button
+                              onClick={() => copyDebugInfo(index)}
+                              className="p-1.5 min-h-[44px] min-w-[44px] text-site-accent hover:text-white hover:bg-site-accent border border-site-accent/40 transition-all"
+                              title="คัดลอก debug info"
+                            >
+                              <AlertCircle className="w-4 h-4" />
                             </button>
                           )}
 
@@ -1153,6 +1229,25 @@ export default function AIGenerateAllButton({
                                     )}
                                     {headerLabel}
                                   </div>
+
+                                  {/* Diff view: DB vs AI */}
+                                  {!isShowingDbData && hasAnyData(state.product) && (
+                                    <div className="border-[2px] p-3 bg-site-surface border-gray-200">
+                                      <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                        เปรียบเทียบก่อนบันทึก (เดิม vs AI ใหม่)
+                                      </h5>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                        <div className="p-2 border border-site-accent/30 bg-site-accent/5">
+                                          <p className="text-xs font-bold text-site-accent mb-1">ของเดิม (DB)</p>
+                                          <p className="text-gray-700 line-clamp-3">{state.product.description || "-"}</p>
+                                        </div>
+                                        <div className="p-2 border border-green-300 bg-green-500/10">
+                                          <p className="text-xs font-bold text-green-400 mb-1">AI ใหม่</p>
+                                          <p className="text-gray-700 line-clamp-3">{displayData.description || "-"}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
 
                                   {/* Description */}
                                   <div
@@ -1448,10 +1543,10 @@ export default function AIGenerateAllButton({
               </div>
 
               {/* Footer Actions */}
-              <div className="p-4 border-t-[3px] border-black bg-site-surface shrink-0">
+              <div className="p-4 border-t-[3px] border-black bg-site-surface shrink-0 sticky bottom-0">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   {/* Left side */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {!isRunning &&
                       stats.pending > 0 &&
                       stats.completed === 0 &&
@@ -1471,13 +1566,24 @@ export default function AIGenerateAllButton({
                       stats.pending > 0 && (
                         <button
                           onClick={startGeneration}
-                          className="flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-accent"
+                          className="flex items-center gap-2 px-4 py-2 min-h-[44px] bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-accent"
                           style={{ boxShadow: "3px 3px 0 0 #000000" }}
                         >
                           <Play className="w-4 h-4" />
                           <span>ดำเนินการต่อ</span>
                         </button>
                       )}
+
+                    {!isRunning && stats.error > 0 && (
+                      <button
+                        onClick={retryFailedOnly}
+                        className="flex items-center gap-2 px-4 py-2 min-h-[44px] bg-blue-600 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-blue-700"
+                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        <span>ลองใหม่เฉพาะที่ล้มเหลว ({stats.error})</span>
+                      </button>
+                    )}
 
                     {isRunning && (
                       <>

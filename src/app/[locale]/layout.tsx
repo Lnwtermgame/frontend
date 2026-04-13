@@ -256,7 +256,10 @@ export default async function RootLayout(
         <HomeJsonLd />
         <BreadcrumbJsonLd />
       </head>
-      <body className={cn(`min-h-screen bg-site-bg text-site-text font-sans antialiased ${kanit.variable}`)}>
+      <body
+        suppressHydrationWarning
+        className={cn(`min-h-screen bg-site-bg text-site-text font-sans antialiased ${kanit.variable}`)}
+      >
         <ReactGrabInit />
         <NextIntlClientProvider messages={messages}>
           <NextAuthProvider>

@@ -1188,7 +1188,21 @@
         "notifications": "सिस्टम सूचनाएं",
         "email": "ईमेल प्रोटोकॉल",
         "settings": "सिस्टम कॉन्फ़िगरेशन",
-        "oauth": "OAuth सेवाएं"
+        "oauth": "OAuth सेवाएं",
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "processing": "Processing",
+            "failed": "Failed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "active": "Active",
+            "inactive": "Inactive",
+            "low_stock": "Low stock",
+            "out_of_stock": "Out of stock",
+            "banned": "Banned",
+            "unknown": "Unknown"
+        }
     },
     "hero_zzz_subtitle": "ज़ेनलेस ज़ोन ज़ीरो टॉप-अप",
     "hero_zzz_highlight_text": "तक",

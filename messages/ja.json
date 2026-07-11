@@ -1188,7 +1188,21 @@
         "notifications": "システム通知",
         "email": "メール設定",
         "settings": "システム設定",
-        "oauth": "OAuthサービス"
+        "oauth": "OAuthサービス",
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "processing": "Processing",
+            "failed": "Failed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "active": "Active",
+            "inactive": "Inactive",
+            "low_stock": "Low stock",
+            "out_of_stock": "Out of stock",
+            "banned": "Banned",
+            "unknown": "Unknown"
+        }
     },
     "hero_zzz_subtitle": "ゼンレスゾーンゼロをチャージ",
     "hero_zzz_highlight_text": "最大",

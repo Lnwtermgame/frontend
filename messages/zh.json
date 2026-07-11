@@ -1188,7 +1188,21 @@
         "notifications": "系统通知",
         "email": "邮件协议",
         "settings": "系统配置",
-        "oauth": "OAuth 服务"
+        "oauth": "OAuth 服务",
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "processing": "Processing",
+            "failed": "Failed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "active": "Active",
+            "inactive": "Inactive",
+            "low_stock": "Low stock",
+            "out_of_stock": "Out of stock",
+            "banned": "Banned",
+            "unknown": "Unknown"
+        }
     },
     "hero_zzz_subtitle": "充值绝区零",
     "hero_zzz_highlight_text": "高达",

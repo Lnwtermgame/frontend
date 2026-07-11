@@ -1188,7 +1188,21 @@
         "notifications": "Notifikasi Sistem",
         "email": "Protokol E-mel",
         "settings": "Konfigurasi Sistem",
-        "oauth": "Perkhidmatan OAuth"
+        "oauth": "Perkhidmatan OAuth",
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "processing": "Processing",
+            "failed": "Failed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "active": "Active",
+            "inactive": "Inactive",
+            "low_stock": "Low stock",
+            "out_of_stock": "Out of stock",
+            "banned": "Banned",
+            "unknown": "Unknown"
+        }
     },
     "hero_zzz_subtitle": "Top Up Zenless Zone Zero",
     "hero_zzz_highlight_text": "Sehingga",

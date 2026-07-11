@@ -1188,7 +1188,21 @@
         "notifications": "시스템 알림",
         "email": "이메일 프로토콜",
         "settings": "시스템 설정",
-        "oauth": "OAuth 서비스"
+        "oauth": "OAuth 서비스",
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "processing": "Processing",
+            "failed": "Failed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "active": "Active",
+            "inactive": "Inactive",
+            "low_stock": "Low stock",
+            "out_of_stock": "Out of stock",
+            "banned": "Banned",
+            "unknown": "Unknown"
+        }
     },
     "hero_zzz_subtitle": "젠레스 존 제로 충전",
     "hero_zzz_highlight_text": "최대",

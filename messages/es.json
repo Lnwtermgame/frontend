@@ -1188,7 +1188,21 @@
         "notifications": "Notificaciones del sistema",
         "email": "Protocolo de email",
         "settings": "Configuración del sistema",
-        "oauth": "Servicios OAuth"
+        "oauth": "Servicios OAuth",
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "processing": "Processing",
+            "failed": "Failed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "active": "Active",
+            "inactive": "Inactive",
+            "low_stock": "Low stock",
+            "out_of_stock": "Out of stock",
+            "banned": "Banned",
+            "unknown": "Unknown"
+        }
     },
     "hero_zzz_subtitle": "Recargar Zenless Zone Zero",
     "hero_zzz_highlight_text": "Hasta",

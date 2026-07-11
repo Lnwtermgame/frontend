@@ -1188,7 +1188,21 @@
     "notifications": "ระบบแจ้งเตือน",
     "email": "รับส่งอีเมล",
     "settings": "ตั้งค่าระบบ",
-    "oauth": "การเชื่อมต่อ OAuth"
+    "oauth": "การเชื่อมต่อ OAuth",
+    "status": {
+      "completed": "สำเร็จ",
+      "pending": "รอดำเนินการ",
+      "processing": "กำลังดำเนินการ",
+      "failed": "ล้มเหลว",
+      "cancelled": "ยกเลิก",
+      "refunded": "คืนเงินแล้ว",
+      "active": "ใช้งาน",
+      "inactive": "ไม่ใช้งาน",
+      "low_stock": "ใกล้หมด",
+      "out_of_stock": "หมดสต็อก",
+      "banned": "ระงับ",
+      "unknown": "ไม่ทราบ"
+    }
   },
   "hero_zzz_subtitle": "เติมเงิน Zenless Zone Zero",
   "hero_zzz_highlight_text": "ส่วนลดสูงสุด",

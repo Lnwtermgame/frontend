@@ -1189,6 +1189,10 @@
         "email": "Protocole email",
         "settings": "Configuration système",
         "oauth": "Services OAuth",
+        "pin": "Pin menu",
+        "unpin": "Unpin menu",
+        "switch_dark": "Switch to dark",
+        "switch_light": "Switch to light",
         "status": {
             "completed": "Completed",
             "pending": "Pending",

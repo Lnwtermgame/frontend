@@ -1189,6 +1189,10 @@
         "email": "이메일 프로토콜",
         "settings": "시스템 설정",
         "oauth": "OAuth 서비스",
+        "pin": "Pin menu",
+        "unpin": "Unpin menu",
+        "switch_dark": "Switch to dark",
+        "switch_light": "Switch to light",
         "status": {
             "completed": "Completed",
             "pending": "Pending",

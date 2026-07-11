@@ -1208,6 +1208,9 @@
             "empty": "No items",
             "prev": "Previous",
             "next": "Next"
+        },
+        "table": {
+            "empty": "No data"
         }
     },
     "hero_zzz_subtitle": "ज़ेनलेस ज़ोन ज़ीरो टॉप-अप",

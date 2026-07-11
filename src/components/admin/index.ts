@@ -9,4 +9,6 @@ export { PageContainer } from "./PageContainer";
 export { StatCard } from "./StatCard";
 export { FilterBar } from "./FilterBar";
 export type { FilterOption } from "./FilterBar";
+export { DataTable } from "./DataTable";
+export type { Column } from "./DataTable";
 // More exports added in later tasks.

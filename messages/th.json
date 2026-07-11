@@ -1208,6 +1208,9 @@
       "empty": "ไม่มีรายการ",
       "prev": "ก่อนหน้า",
       "next": "ถัดไป"
+    },
+    "table": {
+      "empty": "ไม่มีข้อมูล"
     }
   },
   "hero_zzz_subtitle": "เติมเงิน Zenless Zone Zero",

@@ -1202,6 +1202,12 @@
             "out_of_stock": "Out of stock",
             "banned": "Banned",
             "unknown": "Unknown"
+        },
+        "pagination": {
+            "showing": "Showing {start}–{end} of {total}",
+            "empty": "No items",
+            "prev": "Previous",
+            "next": "Next"
         }
     },
     "hero_zzz_subtitle": "ゼンレスゾーンゼロをチャージ",

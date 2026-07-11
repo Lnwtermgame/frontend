@@ -1202,6 +1202,12 @@
       "out_of_stock": "หมดสต็อก",
       "banned": "ระงับ",
       "unknown": "ไม่ทราบ"
+    },
+    "pagination": {
+      "showing": "แสดง {start}–{end} จาก {total} รายการ",
+      "empty": "ไม่มีรายการ",
+      "prev": "ก่อนหน้า",
+      "next": "ถัดไป"
     }
   },
   "hero_zzz_subtitle": "เติมเงิน Zenless Zone Zero",

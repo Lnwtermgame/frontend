@@ -7,4 +7,6 @@ export { ConfirmDialog } from "./ConfirmDialog";
 export { AdminPageHeader } from "./AdminPageHeader";
 export { PageContainer } from "./PageContainer";
 export { StatCard } from "./StatCard";
+export { FilterBar } from "./FilterBar";
+export type { FilterOption } from "./FilterBar";
 // More exports added in later tasks.

@@ -1,19 +1,55 @@
-/* Custom Fonts (Manrope via Google Fonts) */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+/* Custom Fonts (Manrope + IBM Plex Sans Thai via Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ══════════════════════════════════════
-   Dark Theme — ชาร์โคล & นีออน
-   Clean · Professional · High Contrast
+   Refined Charcoal — dual-theme tokens
    ══════════════════════════════════════ */
 
-:root {
+/* Dark = default (also the SSR fallback) */
+:root,
+:root[data-theme="dark"] {
+  --site-bg: #141517;
+  --site-surface: #1c1e21;
+  --site-raised: #25272b;
+  --site-border: #2d3034;
+  --site-border-soft: #232528;
   --site-accent: #67B0BA;
   --site-accent-hover: #5A9AA3;
   --site-accent-glow: rgba(103, 176, 186, 0.4);
+  --site-text: #f4f5f7;
+  --site-muted: #9ca0aa;
+  --site-dim: #6b6f78;
+  --semantic-blue: #5b8def;
+  --semantic-violet: #9b8cf0;
+  --semantic-green: #3ecf8e;
+  --semantic-amber: #f1a23c;
+  --semantic-rose: #f06a8a;
+}
+
+:root[data-theme="light"] {
+  --site-bg: #fafafa;
+  --site-surface: #ffffff;
+  --site-raised: #f4f5f7;
+  --site-border: #e5e7ec;
+  --site-border-soft: #eef0f3;
+  --site-accent: #3d97a3;
+  --site-accent-hover: #348089;
+  --site-accent-glow: rgba(61, 151, 163, 0.25);
+  --site-text: #1a1c22;
+  --site-muted: #5f6471;
+  --site-dim: #8b919e;
+  --semantic-blue: #2563eb;
+  --semantic-violet: #6c5ce7;
+  --semantic-green: #1f9d63;
+  --semantic-amber: #c9740c;
+  --semantic-rose: #dc3a5e;
 }
 
 @layer base {
@@ -47,95 +83,42 @@
   /* ─── Global text contrast fix ───
      Many legacy pages use text-black, text-gray-*, bg-white etc.
      Override them to neutral shades. */
-  .text-black {
-    color: #F8F9FA !important;
-  }
+  :root[data-theme="dark"] .text-black,
+  :root[data-theme="dark"] .text-gray-900,
+  :root[data-theme="dark"] .text-gray-800 { color: #F8F9FA !important; }
+  :root[data-theme="dark"] .text-gray-700 { color: #E5E7EB !important; }
+  :root[data-theme="dark"] .text-gray-600,
+  :root[data-theme="dark"] .text-gray-500 { color: #9CA3AF !important; }
+  :root[data-theme="dark"] .text-gray-400 { color: #9CA3AF !important; }
+  :root[data-theme="dark"] .text-gray-300 { color: #D1D5DB !important; }
+  :root[data-theme="dark"] .text-slate-900,
+  :root[data-theme="dark"] .text-slate-800 { color: #F8F9FA !important; }
+  :root[data-theme="dark"] .text-slate-700 { color: #E5E7EB !important; }
+  :root[data-theme="dark"] .text-slate-600,
+  :root[data-theme="dark"] .text-slate-500 { color: #9CA3AF !important; }
 
-  .text-gray-900,
-  .text-gray-800 {
-    color: #F8F9FA !important;
-  }
+  /* Dark-surface overrides only apply in dark theme.
+     In light theme, legacy .bg-white etc. render as actual light surfaces. */
+  :root[data-theme="dark"] .bg-white,
+  :root[data-theme="dark"] .bg-gray-50,
+  :root[data-theme="dark"] .bg-gray-100 { background-color: var(--site-surface) !important; }
 
-  .text-gray-700 {
-    color: #E5E7EB !important;
-  }
+  :root[data-theme="dark"] .bg-gray-200 { background-color: var(--site-raised) !important; }
 
-  .text-gray-600 {
-    color: #D1D5DB !important;
-  }
+  :root[data-theme="dark"] .bg-gray-900,
+  :root[data-theme="dark"] .bg-gray-800,
+  :root[data-theme="dark"] .bg-slate-900,
+  :root[data-theme="dark"] .bg-slate-800 { background-color: var(--site-bg) !important; }
 
-  .text-gray-500 {
-    color: #9CA3AF !important;
-  }
+  :root[data-theme="dark"] .bg-slate-50,
+  :root[data-theme="dark"] .bg-slate-100 { background-color: var(--site-surface) !important; }
 
-  .text-gray-400 {
-    color: #9CA3AF !important;
-  }
-
-  .text-gray-300 {
-    color: #D1D5DB !important;
-  }
-
-  .text-slate-900,
-  .text-slate-800 {
-    color: #F8F9FA !important;
-  }
-
-  .text-slate-700 {
-    color: #E5E7EB !important;
-  }
-
-  .text-slate-600 {
-    color: #D1D5DB !important;
-  }
-
-  .text-slate-500 {
-    color: #9CA3AF !important;
-  }
-
-  /* Background overrides — SEAGM dark grays */
-  .bg-white {
-    background-color: #222427 !important;
-  }
-
-  .bg-gray-50,
-  .bg-gray-100 {
-    background-color: #222427 !important;
-  }
-
-  .bg-gray-200 {
-    background-color: #292B2E !important;
-  }
-
-  .bg-gray-900,
-  .bg-gray-800 {
-    background-color: #16181A !important;
-  }
-
-  .bg-slate-50,
-  .bg-slate-100 {
-    background-color: #222427 !important;
-  }
-
-  .bg-slate-900,
-  .bg-slate-800 {
-    background-color: #16181A !important;
-  }
-
-  /* Border overrides */
-  .border-black {
-    border-color: #33353B !important;
-  }
-
-  .border-gray-200,
-  .border-gray-300 {
-    border-color: #33353B !important;
-  }
-
-  .border-slate-200,
-  .border-slate-300 {
-    border-color: #33353B !important;
-  }
+  /* Border overrides — dark theme only */
+  :root[data-theme="dark"] .border-black,
+  :root[data-theme="dark"] .border-gray-200,
+  :root[data-theme="dark"] .border-gray-300,
+  :root[data-theme="dark"] .border-slate-200,
+  :root[data-theme="dark"] .border-slate-300 { border-color: var(--site-border) !important; }
 
   /* Box shadow override — subtle */
   [style*="boxShadow"][style*="#000000"],

@@ -8,34 +8,39 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /* ══════════════════════════════════════
-           Ocean Blue (ทะเลฟ้าสีคราม) Theme
-           Deep sea → bright cyan accent
-           ══════════════════════════════════════ */
         site: {
-          bg: "#16181A",       // SEAGM base dark background
-          surface: "#222427",  // SEAGM card/container
-          raised: "#292B2E",   // SEAGM inactive tab/floating boxes
-          border: "#33353b",   // SEAGM subtle borders
-          accent: "var(--site-accent)",   // Dynamic Brand Theme
-          "accent-hover": "var(--site-accent-hover)", // Dynamic Hover State
-          "accent-soft": "#33353b",  // SEAGM tab border 
-          text: "#ffffff",     // Pure white for text
-          muted: "#d1d5db",    // Light grey
-          subtle: "#a1a1aa",   // Darker grey
-          dim: "#71717a",      // Inactive elements
+          bg: "var(--site-bg)",
+          surface: "var(--site-surface)",
+          raised: "var(--site-raised)",
+          border: "var(--site-border)",
+          "border-soft": "var(--site-border-soft)",
+          accent: "var(--site-accent)",
+          "accent-hover": "var(--site-accent-hover)",
+          text: "var(--site-text)",
+          muted: "var(--site-muted)",
+          dim: "var(--site-dim)",
         },
-        /* Legacy brutalist colors — remapped to ocean theme
-           so old pages (games, support, etc.) render correctly */
+        semantic: {
+          blue: "var(--semantic-blue)",
+          violet: "var(--semantic-violet)",
+          green: "var(--semantic-green)",
+          amber: "var(--semantic-amber)",
+          rose: "var(--semantic-rose)",
+        },
         brutal: {
-          yellow: "#22D3EE",    // Accent badge
-          pink: "#F472B6",    // Status badges
-          green: "#34D399",    // Success states
-          blue: "#38BDF8",    // Info states
+          yellow: "#22D3EE",
+          pink: "#F472B6",
+          green: "#34D399",
+          blue: "#38BDF8",
         },
       },
+      borderRadius: {
+        "12": "12px",
+        "10": "10px",
+      },
       fontFamily: {
-        sans: ["'Manrope'", "var(--font-kanit)", "'Poppins'", "sans-serif"],
+        sans: ["'Manrope'", "'IBM Plex Sans Thai'", "'Poppins'", "sans-serif"],
+        mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {
         ocean: "0 4px 30px rgba(8, 23, 34, 0.5)",

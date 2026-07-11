@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   HelpCircle,
   Plus,
@@ -589,7 +593,10 @@ export default function AdminFaqPage() {
   };
 
   return (
-    <AdminLayout title="จัดการคำถามที่พบบ่อย (FAQ)">
+    <AdminLayout>
+      <PageContainer>
+          <AdminPageHeader title="จัดการคำถามที่พบบ่อย (FAQ)" />
+
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -1757,6 +1764,7 @@ export default function AdminFaqPage() {
           </AnimatePresence>,
           document.body,
         )}
+    </PageContainer>
     </AdminLayout>
   );
 }

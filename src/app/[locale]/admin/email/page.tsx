@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Mail,
   Send,
@@ -409,38 +413,32 @@ export default function AdminEmailPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="จัดการอีเมล">
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
+      <AdminLayout>
+        <PageContainer>
+          <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
+          </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout title="จัดการอีเมล">
-      <div className="space-y-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <Mail className="h-5 w-5 text-site-accent" />
-              จัดการอีเมล
-            </h1>
-            <p className="text-gray-400 mt-1 text-sm">
-              จัดการเทมเพลตอีเมล อีเวนต์ และดูสถิติ
-            </p>
-          </div>
-          <button
-            onClick={fetchAllData}
-            className="flex items-center gap-2 px-3 py-1.5 border border-white/5 rounded-xl bg-site-raised hover:bg-white/5 font-bold text-sm">
-            <RefreshCw className="h-3.5 w-3.5" />
-            รีเฟรช
-          </button>
-        </motion.div>
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader
+          title="จัดการอีเมล"
+          description="จัดการเทมเพลตอีเมล อีเวนต์ และดูสถิติ"
+          icon={Mail}
+          actions={
+            <button
+              onClick={fetchAllData}
+              className="flex items-center gap-2 px-3 py-1.5 border border-white/5 rounded-xl bg-site-raised hover:bg-white/5 font-bold text-sm">
+              <RefreshCw className="h-3.5 w-3.5" />
+              รีเฟรช
+            </button>
+          }
+        />
 
         {/* SMTP Status */}
         {smtpConfig && (
@@ -953,7 +951,7 @@ export default function AdminEmailPage() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

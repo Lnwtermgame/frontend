@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   ArrowLeft,
   Save,
@@ -355,36 +359,40 @@ export default function EditProductPage() {
 
   if (loading) {
     return (
-      <AdminLayout title="Edit Product">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-10 h-10 text-site-accent animate-spin" />
-            <p className="text-gray-400 font-medium tracking-wide animate-pulse">
-              กำลังโหลดข้อมูลสินค้า...
-            </p>
+      <AdminLayout>
+        <PageContainer>
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="w-10 h-10 text-site-accent animate-spin" />
+              <p className="text-gray-400 font-medium tracking-wide animate-pulse">
+                กำลังโหลดข้อมูลสินค้า...
+              </p>
+            </div>
           </div>
-        </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
 
   if (!product) {
     return (
-      <AdminLayout title="Edit Product">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center space-y-4">
-            <div className="bg-site-surface border border-white/5 rounded-2xl p-6 inline-block shadow-lg">
-              <Package className="w-12 h-12 text-gray-400" />
+      <AdminLayout>
+        <PageContainer>
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center space-y-4">
+              <div className="bg-site-surface border border-white/5 rounded-2xl p-6 inline-block shadow-lg">
+                <Package className="w-12 h-12 text-gray-400" />
+              </div>
+              <h2 className="text-xl font-semibold text-white">ไม่พบสินค้า</h2>
+              <Link
+                href="/admin/products"
+                className="inline-flex items-center text-site-accent hover:text-white transition-colors gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                กลับไปหน้ารายการสินค้า
+              </Link>
             </div>
-            <h2 className="text-xl font-semibold text-white">ไม่พบสินค้า</h2>
-            <Link
-              href="/admin/products"
-              className="inline-flex items-center text-site-accent hover:text-white transition-colors gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              กลับไปหน้ารายการสินค้า
-            </Link>
           </div>
-        </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
@@ -392,8 +400,8 @@ export default function EditProductPage() {
   const isDirectTopUp = product.productType === "DIRECT_TOPUP";
 
   return (
-    <AdminLayout title={`Edit: ${formData.name || "Product"}`}>
-      <div className="pb-8 space-y-6 max-w-7xl mx-auto">
+    <AdminLayout>
+      <PageContainer className="pb-8 max-w-7xl mx-auto">
         {/* Success Banner */}
         {showSuccessBanner && (
           <motion.div
@@ -438,23 +446,18 @@ export default function EditProductPage() {
               className="group p-2 bg-site-surface border border-white/5 rounded-2xl text-gray-400 hover:text-white hover:bg-site-raised/5 transition-all duration-300 shadow-lg hover:shadow-lg hover:translate-x-[1px] hover:translate-y-[1px]">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-white tracking-tight">
-                  แก้ไขสินค้า
-                </h1>
-                <span
-                  className={`px-2 py-0.5 text-[10px] font-medium border-[1px] border-white/10 ${formData.isActive
-                      ? "bg-green-500 text-white"
-                      : "bg-site-border/30 text-gray-400"
-                    }`}>
-                  {formData.isActive ? "เผยแพร่แล้ว" : "ฉบับร่าง"}
-                </span>
-              </div>
-              <p className="text-gray-400 text-xs mt-0.5 font-medium">
-                {product.name} <span className="mx-1 text-gray-400">•</span>{" "}
-                รหัส: {product.id.slice(0, 8)}...
-              </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <AdminPageHeader
+                title="แก้ไขสินค้า"
+                description={`${product.name} • รหัส: ${product.id.slice(0, 8)}...`}
+              />
+              <span
+                className={`px-2 py-0.5 text-[10px] font-medium border-[1px] border-white/10 ${formData.isActive
+                    ? "bg-green-500 text-white"
+                    : "bg-site-border/30 text-gray-400"
+                  }`}>
+                {formData.isActive ? "เผยแพร่แล้ว" : "ฉบับร่าง"}
+              </span>
             </div>
           </div>
 
@@ -1306,7 +1309,7 @@ export default function EditProductPage() {
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

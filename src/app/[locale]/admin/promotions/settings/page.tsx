@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import { Settings, Save, ChevronLeft, Tag, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -130,19 +134,15 @@ export default function AdminPromotionSettings() {
   );
 
   return (
-    <AdminLayout title={"ตั้งค่าโปรโมชั่น" as any}>
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center mb-4">
+    <AdminLayout>
+      <PageContainer className="max-w-4xl mx-auto">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/admin/promotions")}
-            className="mr-3 p-1.5 rounded-lg bg-site-raised border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
+            className="p-1.5 rounded-lg bg-site-raised border border-white/10 text-white hover:bg-site-border/30 transition-colors">
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-            <h1 className="text-xl font-bold text-white">ตั้งค่าโปรโมชั่น</h1>
-          </div>
+          <AdminPageHeader title="ตั้งค่าโปรโมชั่น" icon={Settings} />
         </div>
 
         {saved && (
@@ -441,7 +441,7 @@ export default function AdminPromotionSettings() {
             </div>
           </form>
         </motion.div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

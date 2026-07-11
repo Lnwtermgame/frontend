@@ -4,7 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Mail,
   Send,
@@ -283,7 +287,10 @@ export default function EmailTemplateEditorPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="แก้ไขเทมเพลต">
+      <AdminLayout>
+      <PageContainer>
+          <AdminPageHeader title="แก้ไขเทมเพลต" />
+
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
@@ -659,6 +666,7 @@ export default function EmailTemplateEditorPage() {
           </motion.div>
         </div>
       )}
+    </PageContainer>
     </AdminLayout>
   );
 }

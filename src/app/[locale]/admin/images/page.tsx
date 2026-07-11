@@ -3,7 +3,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
     Upload,
     Trash2,
@@ -218,30 +222,19 @@ export default function AdminImagesPage() {
     };
 
     return (
-        <AdminLayout title="จัดการรูปภาพ">
-            <div className="space-y-6">
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div className="flex items-center">
-                        <span className="w-1.5 h-6 bg-site-accent mr-2"></span>
-                        <div>
-                            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                                <HardDrive className="w-6 h-6" />
-                                จัดการรูปภาพ Storage
-                            </h1>
-                            <p className="text-gray-400 mt-1">
-                                จัดการไฟล์ทั้งหมดใน Appwrite Storage — อัปโหลด ลบ คัดลอกลิงก์
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div
-                            className="bg-site-surface border border-white/5 rounded-2xl px-4 py-2 flex items-center gap-2 text-sm font-medium">
+        <AdminLayout>
+            <PageContainer>
+                <AdminPageHeader
+                    title="จัดการรูปภาพ Storage"
+                    description="จัดการไฟล์ทั้งหมดใน Appwrite Storage — อัปโหลด ลบ คัดลอกลิงก์"
+                    icon={HardDrive}
+                    actions={
+                        <div className="bg-site-surface border border-white/5 rounded-2xl px-4 py-2 flex items-center gap-2 text-sm font-medium">
                             <FolderOpen className="w-4 h-4 text-site-accent" />
                             {total} ไฟล์
                         </div>
-                    </div>
-                </div>
+                    }
+                />
 
                 {/* Upload Section */}
                 <motion.div
@@ -751,7 +744,7 @@ export default function AdminImagesPage() {
                     </AnimatePresence>,
                     document.body
                 )}
-            </div>
+            </PageContainer>
         </AdminLayout>
     );
 }

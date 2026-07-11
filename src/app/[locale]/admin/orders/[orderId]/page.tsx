@@ -23,6 +23,11 @@ import {
 } from "lucide-react";
 import { orderApi, Order } from "@/lib/services/order-api";
 import { useTranslations } from "next-intl";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 
 const statusConfig: Record<
   string,
@@ -172,45 +177,51 @@ export default function OrderViewPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center">
-          <Loader2 className="h-12 w-12 text-site-accent animate-spin" />
-          <p className="mt-4 text-gray-400 font-medium">
-            กำลังโหลดข้อมูลคำสั่งซื้อ...
-          </p>
-        </div>
-      </div>
+      <AdminLayout>
+        <PageContainer>
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-12 w-12 text-site-accent animate-spin" />
+              <p className="mt-4 text-gray-400 font-medium">
+                กำลังโหลดข้อมูลคำสั่งซื้อ...
+              </p>
+            </div>
+          </div>
+        </PageContainer>
+      </AdminLayout>
     );
   }
 
   if (error || !order) {
     return (
-      <div className="page-container">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-red-500/10 border border-red-500/30/30 rounded-xl p-6 text-center">
-          <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />
-          <h2 className="text-xl font-bold text-white mb-2">ไม่พบคำสั่งซื้อ</h2>
-          <p className="text-red-600 mb-4">
-            {error || "ไม่พบข้อมูลคำสั่งซื้อที่ระบุ"}
-          </p>
-          <Link
-            href="/admin/orders"
-            className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5">
-            <ArrowLeft size={18} className="mr-2" />
-            {t("order_detail.back_to_orders")}
-          </Link>
-        </motion.div>
-      </div>
+      <AdminLayout>
+        <PageContainer>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-500/10 border border-red-500/30/30 rounded-xl p-6 text-center">
+            <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />
+            <h2 className="text-xl font-bold text-white mb-2">ไม่พบคำสั่งซื้อ</h2>
+            <p className="text-red-600 mb-4">
+              {error || "ไม่พบข้อมูลคำสั่งซื้อที่ระบุ"}
+            </p>
+            <Link
+              href="/admin/orders"
+              className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5">
+              <ArrowLeft size={18} className="mr-2" />
+              {t("order_detail.back_to_orders")}
+            </Link>
+          </motion.div>
+        </PageContainer>
+      </AdminLayout>
     );
   }
 
   const status = statusConfig[order.status] || statusConfig.PENDING;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
+    <AdminLayout>
+      <PageContainer>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link
@@ -218,16 +229,11 @@ export default function OrderViewPage() {
             className="p-1.5 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors">
             <ArrowLeft className="h-4 w-4" />
           </Link>
-          <div>
-            <h1 className="text-xl font-black text-white flex items-center gap-2">
-              <Package className="h-5 w-5 text-site-accent" />
-              {t("order_detail.title")} #
-              {order.orderNumber || order.id.slice(-8).toUpperCase()}
-            </h1>
-            <p className="text-gray-400 text-xs">
-              {t("order_detail.subtitle")}
-            </p>
-          </div>
+          <AdminPageHeader
+            title={`${t("order_detail.title")} #${order.orderNumber || order.id.slice(-8).toUpperCase()}`}
+            description={t("order_detail.subtitle")}
+            icon={Package}
+          />
         </div>
 
         <div className="flex items-center gap-2">
@@ -541,6 +547,7 @@ export default function OrderViewPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+      </PageContainer>
+    </AdminLayout>
   );
 }

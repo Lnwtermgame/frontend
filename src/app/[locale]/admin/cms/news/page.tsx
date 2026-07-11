@@ -3,7 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Newspaper,
   Plus,
@@ -601,7 +605,10 @@ export default function AdminCmsNewsPage() {
   };
 
   return (
-    <AdminLayout title={"จัดการข่าวสาร" as any}>
+    <AdminLayout>
+      <PageContainer>
+          <AdminPageHeader title="จัดการข่าวสาร" as any" />
+
       <div className="space-y-6 max-w-7xl mx-auto pb-12">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1552,6 +1559,7 @@ export default function AdminCmsNewsPage() {
           </AnimatePresence>,
           document.body,
         )}
+    </PageContainer>
     </AdminLayout>
   );
 }

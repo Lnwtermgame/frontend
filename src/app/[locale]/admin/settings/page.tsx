@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState, ReactNode } from "react";
 import {
@@ -27,7 +27,11 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   AdminSettingsAuditLog,
@@ -666,20 +670,16 @@ export default function AdminSettingsPage() {
   ];
 
   return (
-    <AdminLayout title="ตั้งค่าเว็บไซต์">
-      <div className="space-y-4">
+    <AdminLayout>
+      <PageContainer>
         {/* ── Header & Actions ── */}
         <div className="bg-site-surface border border-white/5 rounded-2xl p-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <h1 className="flex items-center gap-2 text-xl font-black text-white">
-                <div className="w-10 h-10 bg-gradient-to-br from-site-accent to-site-accent/80 border border-white/5 rounded-xl flex items-center justify-center">
-                  <Settings2 className="h-4 w-4 text-white" />
-                </div>
-                Site Settings CMS
-              </h1>
-              <p className="text-xs text-gray-400 mt-1 ml-10">แก้ไข Draft → Preview → Publish เป็น Live</p>
-            </div>
+            <AdminPageHeader
+              title="Site Settings CMS"
+              description="แก้ไข Draft → Preview → Publish เป็น Live"
+              icon={Settings2}
+            />
             <div className="flex flex-wrap items-center gap-2">
               <button onClick={loadSettings} disabled={loading || saving || publishing} className="flex items-center gap-2 bg-site-raised border border-white/5 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/5 transition-all disabled:opacity-50">
                 <RefreshCcw size={14} /> โหลดใหม่
@@ -1134,7 +1134,7 @@ export default function AdminSettingsPage() {
             </div>
           </>
         )}
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

@@ -1,7 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { getAccessToken } from "@/lib/client/gateway";
 import { Bot, Loader2, Send, ShieldAlert, Sparkles, User } from "lucide-react";
@@ -140,17 +144,20 @@ export default function AdminAiChatPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="AI Chat (Admin)">
-        <div className="flex items-center justify-center py-24 text-gray-400">
-          <Loader2 className="h-6 w-6 animate-spin" />
-        </div>
+      <AdminLayout>
+        <PageContainer>
+          <div className="flex items-center justify-center py-24 text-gray-400">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout title="AI Chat (Admin)">
-      <div className="space-y-4">
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader title="AI Chat (Admin)" icon={Bot} />
         <div className="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-amber-100 text-sm">
           <div className="flex items-start gap-2">
             <ShieldAlert className="mt-0.5 h-4 w-4" />
@@ -287,7 +294,7 @@ export default function AdminAiChatPage() {
             </form>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

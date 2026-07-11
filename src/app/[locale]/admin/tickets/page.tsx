@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -12,7 +12,11 @@ import {
   RefreshCcw,
   Send,
 } from "lucide-react";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { AdminUser, adminUserApi } from "@/lib/services/admin-user-api";
 import {
@@ -535,10 +539,12 @@ function AdminTicketsPageContent() {
         </div>
       </div>
     ) : (
-      <AdminLayout title="ตั๋วซัพพอร์ต">
-        <div className="flex h-64 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
+      <AdminLayout>
+        <PageContainer>
+          <div className="flex h-64 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
@@ -557,7 +563,7 @@ function AdminTicketsPageContent() {
       )}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">จัดการทิกเก็ต</h1>
+          <AdminPageHeader title="จัดการทิกเก็ต" />
           <div className="flex items-center gap-2">
             {!isMonitorMode && (
               <button
@@ -1125,7 +1131,7 @@ function AdminTicketsPageContent() {
   return isMonitorMode ? (
     <div className="min-h-screen bg-site-surface">{content}</div>
   ) : (
-    <AdminLayout title="ตั๋วซัพพอร์ต">{content}</AdminLayout>
+    <AdminLayout><PageContainer>{content}</PageContainer></AdminLayout>
   );
 }
 
@@ -1140,10 +1146,12 @@ export default function AdminTicketsPage() {
 
 function AdminTicketsLoadingFallback() {
   return (
-    <AdminLayout title="ตั๋วซัพพอร์ต">
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-site-accent" />
-      </div>
+    <AdminLayout>
+      <PageContainer>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-site-accent" />
+        </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

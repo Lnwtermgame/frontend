@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Tag,
   Calendar,
@@ -72,19 +76,15 @@ export default function AdminPromotionCreate() {
   };
 
   return (
-    <AdminLayout title={"สร้างโปรโมชั่น" as any}>
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center mb-4">
+    <AdminLayout>
+      <PageContainer className="max-w-4xl mx-auto">
+        <div className="flex items-center gap-3">
           <Link href="/admin/promotions">
-            <button className="mr-3 p-1.5 bg-site-raised border-2 border-gray-300 text-white hover:bg-site-border/30 transition-colors">
+            <button className="p-1.5 bg-site-raised border border-white/10 text-white hover:bg-site-border/30 transition-colors rounded-lg">
               <ChevronLeft className="h-4 w-4" />
             </button>
           </Link>
-          <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-            <h1 className="text-xl font-bold text-white">สร้างโปรโมชั่น</h1>
-          </div>
+          <AdminPageHeader title="สร้างโปรโมชั่น" icon={Tag} />
         </div>
 
         {/* Form Container */}
@@ -413,7 +413,7 @@ export default function AdminPromotionCreate() {
             </div>
           </form>
         </motion.div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

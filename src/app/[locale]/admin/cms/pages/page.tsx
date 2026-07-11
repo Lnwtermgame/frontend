@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   FileText,
   Plus,
@@ -282,7 +286,10 @@ export default function AdminCmsPagesPage() {
   });
 
   return (
-    <AdminLayout title="จัดการหน้าเว็บ (CMS)">
+    <AdminLayout>
+      <PageContainer>
+          <AdminPageHeader title="จัดการหน้าเว็บ (CMS)" />
+
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-site-raised p-6 rounded-2xl border border-white/5 relative overflow-hidden">
@@ -933,6 +940,7 @@ export default function AdminCmsPagesPage() {
         </AnimatePresence>,
         document.body
       )}
+    </PageContainer>
     </AdminLayout>
   );
 }

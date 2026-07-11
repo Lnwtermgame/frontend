@@ -4,7 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   adminUserApi,
@@ -254,37 +258,43 @@ export default function AdminUserManagerPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="จัดการผู้ใช้">
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
+      <AdminLayout>
+        <PageContainer>
+                <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
+          </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
 
   if (loading) {
     return (
-      <AdminLayout title="จัดการผู้ใช้">
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
+      <AdminLayout>
+        <PageContainer>
+                <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
+          </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
 
   if (!userDetail) {
     return (
-      <AdminLayout title="จัดการผู้ใช้">
-        <div className="bg-red-500/10 border border-red-500/30/30 rounded-xl text-red-400 px-4 py-3">
-          ไม่พบข้อมูลผู้ใช้
-        </div>
+      <AdminLayout>
+        <PageContainer>
+                <div className="bg-red-500/10 border border-red-500/30/30 rounded-xl text-red-400 px-4 py-3">
+            ไม่พบข้อมูลผู้ใช้
+          </div>
+        </PageContainer>
       </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout title="จัดการผู้ใช้">
-      <div className="space-y-6">
+    <AdminLayout>
+      <PageContainer>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
@@ -292,12 +302,10 @@ export default function AdminUserManagerPage() {
               className="p-2 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-white">User Manager</h1>
-              <p className="text-sm text-gray-400">
-                ดูข้อมูลทั้งหมดและจัดการบัญชีผู้ใช้
-              </p>
-            </div>
+            <AdminPageHeader
+              title="User Manager"
+              description="ดูข้อมูลทั้งหมดและจัดการบัญชีผู้ใช้"
+            />
           </div>
           <button
             onClick={fetchAll}
@@ -916,7 +924,7 @@ export default function AdminUserManagerPage() {
             กำลังอัปเดตข้อมูล...
           </div>
         )}
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

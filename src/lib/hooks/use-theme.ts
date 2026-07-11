@@ -15,14 +15,12 @@ function resolveInitialTheme(): Theme {
 /**
  * Admin theme hook.
  *
- * State model:
- *  - No stored preference → resolved from prefers-color-scheme (NOT written to storage,
- *    so an OS theme change can still flip it until the user explicitly toggles).
- *  - Stored preference → used directly.
+ * Applies theme only while admin UI is mounted. On unmount, restores the dark
+ * storefront default so public pages never inherit admin light tokens.
  *
- * Note: useLocalStorage returns initialValue during SSR/hydration, so we layer a
- * "has the user chosen?" check on top. The no-flash script in AdminThemeProvider
- * sets data-theme before paint; this hook keeps React state in sync after mount.
+ * State model:
+ *  - No stored preference → prefers-color-scheme (not written until explicit toggle)
+ *  - Stored preference → used directly
  */
 export function useTheme() {
   const [stored, setStored, isHydrated] = useLocalStorage<Theme | null>(
@@ -31,7 +29,6 @@ export function useTheme() {
   );
   const [theme, setThemeState] = useState<Theme>("dark");
 
-  // On mount: if user has a stored preference use it, else resolve from OS.
   useEffect(() => {
     if (!isHydrated) return;
     if (stored) {
@@ -41,17 +38,19 @@ export function useTheme() {
     }
   }, [isHydrated, stored]);
 
-  // Reflect theme to <html data-theme>.
+  // Apply while mounted; reset storefront to dark on leave.
   useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.theme = theme;
-    }
+    if (typeof document === "undefined") return;
+    document.documentElement.dataset.theme = theme;
+    return () => {
+      document.documentElement.dataset.theme = "dark";
+    };
   }, [theme]);
 
   const setTheme = useCallback(
     (next: Theme) => {
       setThemeState(next);
-      setStored(next); // explicit choice → persist
+      setStored(next);
     },
     [setStored],
   );

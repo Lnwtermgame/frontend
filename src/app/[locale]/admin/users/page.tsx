@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users as UsersIcon, RefreshCw, Trash2 } from "lucide-react";
+import { Users as UsersIcon, RefreshCw, Trash2, UserCheck, UserX } from "lucide-react";
 import {
   AdminLayout,
   AdminPageHeader,
@@ -84,10 +84,6 @@ export default function AdminUsersPage() {
       setUsers(listRes.data.users);
       setMeta(listRes.data.meta ?? DEFAULT_META);
       setStats(statsRes.data ?? null);
-      // Prune selection to rows still present on the current page.
-      setSelectedIds((prev) =>
-        prev.filter((id) => listRes.data.users.some((u) => u.id === id)),
-      );
     } catch (err) {
       setError(adminUserApi.getErrorMessage(err));
       console.error(err);
@@ -127,10 +123,19 @@ export default function AdminUsersPage() {
     });
   };
 
-  // Toggle active/banned — there is no toggleUserStatus; updateUser handles it.
+  const handleBulkStatus = async (isActive: boolean) => {
+    if (selectedIds.length === 0) return;
+    await runMutation(async () => {
+      await Promise.all(
+        selectedIds.map((id) => adminUserApi.updateUserStatus(id, isActive)),
+      );
+      setSelectedIds([]);
+    });
+  };
+
   const toggleStatus = async (id: string, currentActive: boolean) => {
     await runMutation(async () => {
-      await adminUserApi.updateUser(id, { isActive: !currentActive });
+      await adminUserApi.updateUserStatus(id, !currentActive);
     });
   };
 
@@ -276,11 +281,25 @@ export default function AdminUsersPage() {
         )}
 
         {selectedIds.length > 0 && (
-          <div className="flex items-center gap-3 p-3 bg-site-surface border border-site-border-soft rounded-12">
+          <div className="flex items-center gap-3 p-3 bg-site-surface border border-site-border-soft rounded-12 flex-wrap">
             <span className="text-sm text-site-muted">
               เลือก {selectedIds.length} รายการ
             </span>
             <div className="flex-1" />
+            <button
+              onClick={() => handleBulkStatus(true)}
+              disabled={mutating}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-semantic-green/10 text-semantic-green border border-semantic-green/20 hover:bg-semantic-green/20 disabled:opacity-40 transition-colors"
+            >
+              <UserCheck className="w-3.5 h-3.5" /> เปิดใช้งาน
+            </button>
+            <button
+              onClick={() => handleBulkStatus(false)}
+              disabled={mutating}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-semantic-amber/10 text-semantic-amber border border-semantic-amber/20 hover:bg-semantic-amber/20 disabled:opacity-40 transition-colors"
+            >
+              <UserX className="w-3.5 h-3.5" /> ระงับ
+            </button>
             <button
               onClick={handleBulkDelete}
               disabled={mutating}

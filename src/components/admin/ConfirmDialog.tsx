@@ -36,6 +36,7 @@ export function ConfirmDialog({
       cancelLabel={cancelLabel}
       loading={loading}
       size="sm"
+      destructive={destructive}
     >
       <div className="flex gap-3">
         {destructive && (

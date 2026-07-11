@@ -14,6 +14,8 @@ interface FormModalProps {
   cancelLabel?: string;
   loading?: boolean;
   size?: "sm" | "md" | "lg";
+  /** Rose-tinted confirm for destructive actions */
+  destructive?: boolean;
   children: React.ReactNode;
 }
 
@@ -32,6 +34,7 @@ export function FormModal({
   cancelLabel = "ยกเลิก",
   loading = false,
   size = "md",
+  destructive = false,
   children,
 }: FormModalProps) {
   const [mounted, setMounted] = useState(false);
@@ -86,10 +89,22 @@ export function FormModal({
               <button
                 onClick={onSubmit}
                 disabled={loading}
-                className="px-4 py-2 text-sm font-semibold rounded-lg bg-site-accent text-site-bg hover:bg-site-accent-hover disabled:opacity-60 transition-colors inline-flex items-center gap-2"
+                className={cn(
+                  "px-4 py-2 text-sm font-semibold rounded-lg disabled:opacity-60 transition-colors inline-flex items-center gap-2",
+                  destructive
+                    ? "bg-semantic-rose text-white hover:bg-semantic-rose/90"
+                    : "bg-site-accent text-site-bg hover:bg-site-accent-hover",
+                )}
               >
                 {loading && (
-                  <span className="w-3.5 h-3.5 rounded-full border-2 border-site-bg/30 border-t-site-bg animate-spin" />
+                  <span
+                    className={cn(
+                      "w-3.5 h-3.5 rounded-full border-2 animate-spin",
+                      destructive
+                        ? "border-white/30 border-t-white"
+                        : "border-site-bg/30 border-t-site-bg",
+                    )}
+                  />
                 )}
                 {submitLabel}
               </button>

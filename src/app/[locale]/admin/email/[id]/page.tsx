@@ -289,27 +289,35 @@ export default function EmailTemplateEditorPage() {
     return (
       <AdminLayout>
       <PageContainer>
-          <AdminPageHeader title="แก้ไขเทมเพลต" />
+        <AdminPageHeader title="แก้ไขเทมเพลต" />
 
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
-      </AdminLayout>
+      </PageContainer>
+    </AdminLayout>
     );
   }
 
   if (isLoading) {
     return (
-      <AdminLayout title="แก้ไขเทมเพลต">
+      <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader title="แก้ไขเทมเพลต" />
+
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
-      </AdminLayout>
+      </PageContainer>
+    </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout title={isNew ? "สร้างเทมเพลตใหม่" : "แก้ไขเทมเพลต"}>
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader title={isNew ? "สร้างเทมเพลตใหม่" : "แก้ไขเทมเพลต"} />
+
       <div className="space-y-4">
         {/* Header */}
         <motion.div

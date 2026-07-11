@@ -607,7 +607,7 @@ export default function AdminCmsNewsPage() {
   return (
     <AdminLayout>
       <PageContainer>
-          <AdminPageHeader title="จัดการข่าวสาร" as any" />
+        <AdminPageHeader title="จัดการข่าวสาร" />
 
       <div className="space-y-6 max-w-7xl mx-auto pb-12">
         {/* Header Section */}

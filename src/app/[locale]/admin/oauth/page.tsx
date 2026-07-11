@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
@@ -191,7 +195,7 @@ export default function OAuthProvidersPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="OAuth Providers">
+      <AdminLayout>
         <div className="flex items-center justify-center h-64">
           <RefreshCw className="h-8 w-8 text-site-accent animate-spin" />
         </div>
@@ -200,39 +204,32 @@ export default function OAuthProvidersPage() {
   }
 
   return (
-    <AdminLayout title="OAuth Providers">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-site-accent to-site-accent/80 rounded-xl flex items-center justify-center mr-3"><Globe className="w-5 h-5 text-white" /></div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                จัดการ OAuth Providers
-              </h1>
-              <p className="text-gray-400 text-sm">
-                เปิด/ปิด การล็อกอินภายนอก (Google, Discord, ฯลฯ)
-              </p>
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader
+          title="จัดการ OAuth Providers"
+          description="เปิด/ปิด การล็อกอินภายนอก (Google, Discord, ฯลฯ)"
+          icon={Globe}
+          actions={
+            <div className="flex gap-2">
+              <button
+                onClick={fetchProviders}
+                disabled={loading}
+                className="bg-site-raised text-site-text border border-site-border rounded-xl px-4 py-2 hover:bg-white/5 transition-all flex items-center font-medium disabled:opacity-60">
+                <RefreshCw
+                  className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+                />
+                รีเฟรช
+              </button>
+              <button
+                onClick={handleCreateNew}
+                className="bg-gradient-to-r from-site-accent to-site-accent/80 text-white border border-site-border rounded-xl px-4 py-2 hover:from-site-accent hover:to-site-accent/60 transition-all flex items-center font-medium">
+                <Plus className="w-4 h-4 mr-2" />
+                เพิ่ม Provider
+              </button>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={fetchProviders}
-              disabled={loading}
-              className="bg-site-raised text-white border border-white/5 rounded-xl px-4 py-2 hover:bg-white/5 transition-all flex items-center font-medium disabled:opacity-60">
-              <RefreshCw
-                className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-              />
-              รีเฟรช
-            </button>
-            <button
-              onClick={handleCreateNew}
-              className="bg-gradient-to-r from-site-accent to-site-accent/80 text-white border border-white/5 rounded-xl px-4 py-2 hover:from-site-accent hover:to-site-accent/60 transition-all flex items-center font-medium">
-              <Plus className="w-4 h-4 mr-2" />
-              เพิ่ม Provider
-            </button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Info Banner */}
         <div className="bg-site-accent/10 border border-site-accent/20 rounded-2xl p-4 flex items-start gap-3">
@@ -548,7 +545,7 @@ export default function OAuthProvidersPage() {
             </div>,
             document.body,
           )}
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

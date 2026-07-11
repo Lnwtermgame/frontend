@@ -22,7 +22,11 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   analyticsApi,
   DashboardStats,
@@ -363,7 +367,7 @@ export default function AdminAnalyticsPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="วิเคราะห์">
+      <AdminLayout>
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
@@ -373,7 +377,7 @@ export default function AdminAnalyticsPage() {
 
   if (loading) {
     return (
-      <AdminLayout title="วิเคราะห์">
+      <AdminLayout>
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
@@ -382,38 +386,37 @@ export default function AdminAnalyticsPage() {
   }
 
   return (
-    <AdminLayout title="วิเคราะห์">
-      <div className="space-y-2">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="flex items-center">
-            <span className="w-1.5 h-3.5 bg-site-accent mr-2"></span>
-            <h1 className="text-base font-bold text-white">วิเคราะห์</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white px-2 py-1 text-[10px] focus:border-site-accent focus:outline-none">
-              <option value="24h">24 ชั่วโมง</option>
-              <option value="7d">7 วัน</option>
-              <option value="30d">30 วัน</option>
-              <option value="90d">90 วัน</option>
-            </select>
-            <button
-              onClick={fetchAnalyticsData}
-              className="bg-site-raised text-white border border-white/5 rounded-xl px-2 py-1 text-[10px] hover:bg-site-raised/5 transition-colors flex items-center font-medium">
-              <RefreshCw className="h-3 w-3 mr-1" />
-              รีเฟรช
-            </button>
-            <button
-              onClick={handleExport}
-              disabled={isExporting}
-              className="bg-black text-white border border-white/5 rounded-xl px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70">
-              <Download className="h-3 w-3 mr-1" />
-              {isExporting ? "กำลังส่งออก..." : "ส่งออก"}
-            </button>
-          </div>
-        </div>
+    <AdminLayout>
+      <PageContainer className="space-y-2">
+        <AdminPageHeader
+          title="วิเคราะห์"
+          actions={
+            <div className="flex items-center gap-2">
+              <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="bg-site-surface border border-site-border rounded-2xl text-site-text px-2 py-1 text-[10px] focus:border-site-accent focus:outline-none">
+                <option value="24h">24 ชั่วโมง</option>
+                <option value="7d">7 วัน</option>
+                <option value="30d">30 วัน</option>
+                <option value="90d">90 วัน</option>
+              </select>
+              <button
+                onClick={fetchAnalyticsData}
+                className="bg-site-raised text-site-text border border-site-border rounded-xl px-2 py-1 text-[10px] hover:bg-site-raised/5 transition-colors flex items-center font-medium">
+                <RefreshCw className="h-3 w-3 mr-1" />
+                รีเฟรช
+              </button>
+              <button
+                onClick={handleExport}
+                disabled={isExporting}
+                className="bg-black text-white border border-site-border rounded-xl px-2 py-1 text-[10px] hover:bg-gray-800 transition-colors flex items-center font-medium disabled:opacity-70">
+                <Download className="h-3 w-3 mr-1" />
+                {isExporting ? "กำลังส่งออก..." : "ส่งออก"}
+              </button>
+            </div>
+          }
+        />
 
         {error && (
           <div className="bg-red-500/10 border border-white/5 rounded-xl border-red-500/30/30 text-red-400 px-3 py-2 text-[10px]">
@@ -632,7 +635,7 @@ export default function AdminAnalyticsPage() {
             </table>
           </div>
         </motion.div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

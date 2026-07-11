@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Layers,
   Plus,
@@ -217,29 +221,21 @@ export default function AdminCategories() {
   };
 
   return (
-  <AdminLayout title={"หมวดหมู่" as any}>
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-white tracking-wide flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-site-accent/20 to-site-accent/20 rounded-xl border border-white/5">
-              <Layers className="h-6 w-6 text-site-accent" />
-            </div>
-            จัดการหมวดหมู่
-          </h1>
-          <p className="text-gray-400 text-sm mt-1 ml-14">จัดการและจัดกลุ่มแพลตฟอร์มเกม</p>
-        </div>
-
-        <div className="flex items-center gap-3">
+  <AdminLayout>
+    <PageContainer className="pb-12">
+      <AdminPageHeader
+        title="จัดการหมวดหมู่"
+        description="จัดการและจัดกลุ่มแพลตฟอร์มเกม"
+        icon={Layers}
+        actions={
           <button
             onClick={openCreateModal}
             className="bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg hover:shadow-accent-glow flex items-center gap-2 px-5 py-2.5 transition-all font-bold text-sm">
             <Plus className="h-4 w-4" />
             <span>เพิ่มหมวดหมู่ใหม่</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Info Banner */}
       <div className="bg-site-raised border border-site-accent/20 rounded-2xl p-4 flex items-start gap-3 shadow-inner relative overflow-hidden group">
@@ -420,7 +416,6 @@ export default function AdminCategories() {
           Gaming, Google Play, App Store)
         </p>
       </div>
-    </div>
 
     {/* Create/Edit Modal */}
     {isModalOpen &&
@@ -548,6 +543,7 @@ export default function AdminCategories() {
         </div>,
         document.body,
       )}
+    </PageContainer>
   </AdminLayout>
   );
 }

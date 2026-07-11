@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Plus,
   Search,
@@ -100,78 +104,74 @@ export default function AdminPromotions() {
   };
 
   return (
-    <AdminLayout title={"โปรโมชั่น" as any}>
-      <div className="space-y-5">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row gap-3 justify-between">
-          <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-            <h1 className="text-xl font-bold text-white">จัดการโปรโมชั่น</h1>
-          </div>
-          {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-            <div className="relative w-full sm:max-w-xs">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader
+          title="จัดการโปรโมชั่น"
+          description="จัดการรหัสส่วนลดและแคมเปญโปรโมชั่น"
+          actions={
+            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+              <div className="relative w-full sm:max-w-xs">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-site-muted" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="ค้นหาโปรโมชั่นหรือรหัส..."
+                  className="bg-site-raised border border-site-border text-site-text pl-9 pr-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none rounded-lg"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
-              <input
-                type="text"
-                placeholder="ค้นหาโปรโมชั่นหรือรหัส..."
-                className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <div className="relative w-full sm:max-w-xs">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Info className="h-4 w-4 text-site-muted" />
+                </div>
+                <select
+                  className="bg-site-raised border border-site-border text-site-text pl-9 pr-3 py-1.5 w-full appearance-none text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none rounded-lg"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  <option value="all">ทุกสถานะ</option>
+                  <option value="active">ใช้งาน</option>
+                  <option value="scheduled">กำหนดเวลา</option>
+                  <option value="expired">หมดอายุ</option>
+                </select>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-site-muted">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </div>
+                </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Link href="/admin/promotions/settings">
+                  <button
+                    className="bg-site-surface border border-site-border rounded-2xl text-site-text w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-site-raised/5 transition-colors font-medium">
+                    <Settings className="h-4 w-4" />
+                    <span>ตั้งค่า</span>
+                  </button>
+                </Link>
+                <Link href="/admin/promotions/create">
+                  <button
+                    className="bg-black text-white border border-site-border rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium">
+                    <Plus className="h-4 w-4" />
+                    <span>สร้างโปรโมชั่น</span>
+                  </button>
+                </Link>
+              </div>
             </div>
-            <div className="relative w-full sm:max-w-xs">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Info className="h-4 w-4 text-gray-400" />
-              </div>
-              <select
-                className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-1.5 w-full appearance-none text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none"
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                <option value="all">ทุกสถานะ</option>
-                <option value="active">ใช้งาน</option>
-                <option value="scheduled">กำหนดเวลา</option>
-                <option value="expired">หมดอายุ</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-gray-400">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Link href="/admin/promotions/settings">
-              <button
-                className="bg-site-surface border border-white/5 rounded-2xl text-white w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-site-raised/5 transition-colors font-medium">
-                <Settings className="h-4 w-4" />
-                <span>ตั้งค่า</span>
-              </button>
-            </Link>
-            <Link href="/admin/promotions/create">
-              <button
-                className="bg-black text-white border border-white/5 rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium">
-                <Plus className="h-4 w-4" />
-                <span>สร้างโปรโมชั่น</span>
-              </button>
-            </Link>
-          </div>
-        </div>
+          }
+        />
 
         {/* Promotions Table */}
         <motion.div
@@ -358,7 +358,7 @@ export default function AdminPromotions() {
             </div>
           </div>
         </motion.div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

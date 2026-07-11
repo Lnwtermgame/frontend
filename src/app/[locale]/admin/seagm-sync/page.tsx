@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "@/lib/framer-exports";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   RefreshCw,
   CreditCard,
@@ -275,32 +279,23 @@ export default function SeagmSyncPage() {
   );
 
   return (
-    <AdminLayout title="ซิงค์ SEAGM">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center">
-            <span className="w-1.5 h-6 bg-site-accent mr-2"></span>
-            <div>
-              <h1 className="text-2xl font-bold text-white">ซิงค์ SEAGM</h1>
-              <p className="text-gray-400 mt-1">
-                ซิงค์สินค้าจาก SEAGM API ไปยังฐานข้อมูลภายใน
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div
-              className="bg-site-surface border border-white/5 rounded-2xl px-4 py-2 flex items-center gap-3">
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader
+          title="ซิงค์ SEAGM"
+          description="ซิงค์สินค้าจาก SEAGM API ไปยังฐานข้อมูลภายใน"
+          actions={
+            <div className="bg-site-surface border border-site-border rounded-2xl px-4 py-2 flex items-center gap-3">
               <Database className="w-5 h-5 text-site-accent" />
               <div>
-                <p className="text-xs text-gray-400">ขนาดแคช</p>
-                <p className="text-white font-medium">
+                <p className="text-xs text-site-muted">ขนาดแคช</p>
+                <p className="text-site-text font-medium">
                   {cacheStats?.size ?? 0} รายการ
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+          }
+        />
 
         {/* Environment Toggle */}
         <motion.div
@@ -536,7 +531,7 @@ export default function SeagmSyncPage() {
             <li>หากยังไม่สำเร็จ รายงานฟิลด์ที่ขาดหายไปให้ผู้ดูแลระบบ</li>
           </ol>
         </motion.div>
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

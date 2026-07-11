@@ -17,7 +17,11 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+    AdminLayout,
+    AdminPageHeader,
+    PageContainer,
+} from "@/components/admin";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
     AdminPaymentGateway,
@@ -302,29 +306,25 @@ export default function AdminPaymentsPage() {
     };
 
     return (
-        <AdminLayout title="จัดการช่องทางชำระเงิน">
-            <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h2 className="text-xl font-black text-white thai-font">
-                            Payment Gateways & Options
-                        </h2>
-                        <p className="text-xs text-gray-400 thai-font">
-                            จัดการผู้ให้บริการชำระเงินและช่องทางรับเงินทั้งหมด
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => fetchAll(false)}
-                        disabled={refreshing}
-                        className="inline-flex items-center gap-2 border border-white/5 rounded-xl bg-site-raised px-3 py-1.5 text-xs font-semibold hover:bg-site-raised/5 disabled:opacity-60">
-                        {refreshing ? (
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : (
-                            <RefreshCw className="h-3 w-3" />
-                        )}
-                        รีเฟรช
-                    </button>
-                </div>
+        <AdminLayout>
+            <PageContainer>
+                <AdminPageHeader
+                    title="จัดการช่องทางชำระเงิน"
+                    description="จัดการผู้ให้บริการชำระเงินและช่องทางรับเงินทั้งหมด"
+                    actions={
+                        <button
+                            onClick={() => fetchAll(false)}
+                            disabled={refreshing}
+                            className="inline-flex items-center gap-2 border border-site-border rounded-xl bg-site-raised px-3 py-1.5 text-xs font-semibold hover:bg-site-raised/5 disabled:opacity-60">
+                            {refreshing ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                                <RefreshCw className="h-3 w-3" />
+                            )}
+                            รีเฟรช
+                        </button>
+                    }
+                />
 
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
@@ -829,7 +829,7 @@ export default function AdminPaymentsPage() {
                         </motion.div>
                     </>
                 )}
-            </div>
+            </PageContainer>
         </AdminLayout>
     );
 }

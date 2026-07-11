@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
-import AdminLayout from "@/components/layout/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 import {
   Bell,
   Send,
@@ -165,7 +169,7 @@ export default function AdminNotificationPage() {
 
   if (!isInitialized || !isAdmin) {
     return (
-      <AdminLayout title="จัดการการแจ้งเตือน">
+      <AdminLayout>
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
         </div>
@@ -174,23 +178,13 @@ export default function AdminNotificationPage() {
   }
 
   return (
-    <AdminLayout title="จัดการการแจ้งเตือน">
-      <div className="space-y-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <Bell className="h-5 w-5 text-site-accent" />
-              จัดการการแจ้งเตือน
-            </h1>
-            <p className="text-xs text-gray-400 mt-1">
-              ส่งการแจ้งเตือนไปยังผู้ใช้ทั้งหมดหรือเฉพาะราย
-            </p>
-          </div>
-        </motion.div>
+    <AdminLayout>
+      <PageContainer>
+        <AdminPageHeader
+          title="จัดการการแจ้งเตือน"
+          description="ส่งการแจ้งเตือนไปยังผู้ใช้ทั้งหมดหรือเฉพาะราย"
+          icon={Bell}
+        />
 
         {/* Stats Cards */}
         {stats && (
@@ -449,7 +443,7 @@ export default function AdminNotificationPage() {
             </div>
           </motion.div>
         )}
-      </div>
+      </PageContainer>
     </AdminLayout>
   );
 }

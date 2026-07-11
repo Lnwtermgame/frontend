@@ -2,6 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  PageContainer,
+} from "@/components/admin";
 
 interface AuditLogEntry {
     id: string;
@@ -65,14 +70,15 @@ export default function AdminAuditLogPage() {
     const filteredLogs = logs;
 
     return (
-        <div className="page-container">
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-white">{t("audit_log", { defaultMessage: "Audit Log" })}</h1>
-                <p className="text-gray-400 text-sm mt-1">Payment and order audit trail</p>
-            </div>
+        <AdminLayout>
+          <PageContainer>
+            <AdminPageHeader
+              title={t("audit_log", { defaultMessage: "Audit Log" })}
+              description="Payment and order audit trail"
+            />
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3">
                 <input
                     type="text"
                     placeholder="Search by order ID, event type..."
@@ -165,14 +171,14 @@ export default function AdminAuditLogPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-between items-center">
                 <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page <= 1}
                     className="btn-brutal text-xs disabled:opacity-40 disabled:cursor-not-allowed">
                     ← Previous
                 </button>
-                <span className="text-sm text-gray-400">Page {page}</span>
+                <span className="text-sm text-site-muted">Page {page}</span>
                 <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={filteredLogs.length < perPage}
@@ -180,6 +186,7 @@ export default function AdminAuditLogPage() {
                     Next →
                 </button>
             </div>
-        </div>
+          </PageContainer>
+        </AdminLayout>
     );
 }

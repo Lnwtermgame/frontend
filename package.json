@@ -11,6 +11,7 @@
     "build:safe": "npm run check:i18n && next build"
   },
   "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/noto-sans-devanagari": "^5.2.8",
     "@fontsource/noto-sans-jp": "^5.2.9",
     "@fontsource/noto-sans-kr": "^5.2.9",

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 interface FormModalProps {
@@ -30,13 +31,16 @@ export function FormModal({
   onClose,
   title,
   onSubmit,
-  submitLabel = "บันทึก",
-  cancelLabel = "ยกเลิก",
+  submitLabel,
+  cancelLabel,
   loading = false,
   size = "md",
   destructive = false,
   children,
 }: FormModalProps) {
+  const t = useTranslations("Admin");
+  const resolvedSubmit = submitLabel ?? t("actions.save");
+  const resolvedCancel = cancelLabel ?? t("actions.cancel");
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -84,7 +88,7 @@ export function FormModal({
                 disabled={loading}
                 className="px-4 py-2 text-sm font-medium rounded-lg border border-site-border text-site-muted hover:bg-site-raised hover:text-site-text disabled:opacity-40 transition-colors"
               >
-                {cancelLabel}
+                {resolvedCancel}
               </button>
               <button
                 onClick={onSubmit}
@@ -106,7 +110,7 @@ export function FormModal({
                     )}
                   />
                 )}
-                {submitLabel}
+                {resolvedSubmit}
               </button>
             </div>
           </div>

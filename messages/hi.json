@@ -1,1259 +1,1267 @@
 {
-    "Auth": {
-        "login": {
-            "email": {
-                "_base": "ईमेल"
-            },
-            "error": "त्रुटि",
-            "error_occurred": "लॉगिन में त्रुटि हुई",
-            "forgot_password": "पासवर्ड भूल गए?",
-            "hero_title_1": "सर्वश्रेष्ठ गेम टॉप-अप",
-            "hero_title_2": "तेज़ और सुरक्षित",
-            "hero_title_3": "24/7 उपलब्ध",
-            "hero_title_4": "Lnwtermgame के साथ",
-            "login_button": "लॉगिन",
-            "no_account": "खाता नहीं है?",
-            "oauth_callback_failed": "सोशल अकाउंट से लॉगिन विफल",
-            "oauth_failed": "लॉगिन विफल",
-            "oauth_init_failed": "लॉगिन शुरू करने में विफल",
-            "or_login_with": "या इससे लॉगिन करें",
-            "password": "पासवर्ड",
-            "provider_not_enabled": "यह विधि अभी उपलब्ध नहीं है",
-            "redirect": "रीडायरेक्ट हो रहा है...",
-            "register_now": "अभी रजिस्टर करें",
-            "secure_100": "100% सुरक्षित",
-            "secure_100_desc": "आपका डेटा सुरक्षित रखा जाता है",
-            "session_expired": "सत्र समाप्त",
-            "session_expired_desc": "कृपया दोबारा लॉगिन करें।",
-            "subtitle": "पूर्ण सुविधाओं के लिए लॉगिन करें",
-            "title": "लॉगिन",
-            "vip_points": "VIP पॉइंट कमाएं",
-            "vip_points_desc": "सदस्य बनकर विशेष लाभ पाएं।"
-        },
-        "register": {
-            "already_have_account": "पहले से खाता है?",
-            "and": "और",
-            "confirm_password": "पासवर्ड की पुष्टि करें",
-            "email": {
-                "_base": "ईमेल"
-            },
-            "fast_247": "24/7 तेज़ सहायता",
-            "fast_247_desc": "कभी भी लेनदेन, बिना छुट्टी के।",
-            "go_to_login": "यहां लॉगिन करें",
-            "hero_desc": "विशेष ऑफ़र और लाभ के लिए Lnwtermgame से जुड़ें।",
-            "hero_title_1": "नया खाता बनाएं",
-            "hero_title_2": "विशेष प्रमोशन पाएं",
-            "hero_title_3": "सिर्फ आपके लिए",
-            "login_now": "अभी लॉगिन करें",
-            "password": "पासवर्ड",
-            "password_hint": "पासवर्ड कम से कम 8 अक्षर होना चाहिए",
-            "passwords_not_match": "पासवर्ड मेल नहीं खाते",
-            "privacy_policy": "गोपनीयता नीति",
-            "register_button": "रजिस्टर",
-            "registration_disabled": "पंजीकरण बंद",
-            "registration_disabled_desc": "हम अस्थायी रूप से नए पंजीकरण स्वीकार नहीं कर रहे।",
-            "subtitle": "टॉप-अप शुरू करने के लिए खाता बनाएं",
-            "terms": "सेवा की शर्तें",
-            "terms_agreement": "मैं सहमत हूं",
-            "title": "पंजीकरण",
-            "username": "यूज़रनेम",
-            "welcome_bonus": "स्वागत बोनस",
-            "welcome_bonus_desc": "पहले टॉप-अप पर विशेष बोनस पाएं।"
-        }
+  "Auth": {
+    "login": {
+      "email": {
+        "_base": "ईमेल"
+      },
+      "error": "त्रुटि",
+      "error_occurred": "लॉगिन में त्रुटि हुई",
+      "forgot_password": "पासवर्ड भूल गए?",
+      "hero_title_1": "सर्वश्रेष्ठ गेम टॉप-अप",
+      "hero_title_2": "तेज़ और सुरक्षित",
+      "hero_title_3": "24/7 उपलब्ध",
+      "hero_title_4": "Lnwtermgame के साथ",
+      "login_button": "लॉगिन",
+      "no_account": "खाता नहीं है?",
+      "oauth_callback_failed": "सोशल अकाउंट से लॉगिन विफल",
+      "oauth_failed": "लॉगिन विफल",
+      "oauth_init_failed": "लॉगिन शुरू करने में विफल",
+      "or_login_with": "या इससे लॉगिन करें",
+      "password": "पासवर्ड",
+      "provider_not_enabled": "यह विधि अभी उपलब्ध नहीं है",
+      "redirect": "रीडायरेक्ट हो रहा है...",
+      "register_now": "अभी रजिस्टर करें",
+      "secure_100": "100% सुरक्षित",
+      "secure_100_desc": "आपका डेटा सुरक्षित रखा जाता है",
+      "session_expired": "सत्र समाप्त",
+      "session_expired_desc": "कृपया दोबारा लॉगिन करें।",
+      "subtitle": "पूर्ण सुविधाओं के लिए लॉगिन करें",
+      "title": "लॉगिन",
+      "vip_points": "VIP पॉइंट कमाएं",
+      "vip_points_desc": "सदस्य बनकर विशेष लाभ पाएं।"
     },
-    "AdminPage": {
-        "ALL": "सभी",
-        "SLA_24": "SLA 24 घंटे",
-        "SLA_8": "SLA 8 घंटे",
-        "UNASSIGNED": "अनिर्दिष्ट",
-        "WAITING_ADMIN": "एडमिन प्रतीक्षारत",
-        "a": " ",
-        "categories": {
-            "delete_confirm": "क्या आप इस श्रेणी को हटाना चाहते हैं?",
-            "delete_failed": "श्रेणी हटाने में विफल",
-            "delete_has_products": "इस श्रेणी में उत्पाद हैं, हटा नहीं सकते।",
-            "delete_success": "श्रेणी सफलतापूर्वक हटाई गई",
-            "load_failed": "श्रेणियां लोड करने में विफल",
-            "name_required": "श्रेणी का नाम आवश्यक है",
-            "save_success": "डेटा सफलतापूर्वक सहेजा गया",
-            "slug_required": "स्लग आवश्यक है"
-        },
-        "cms_news": {
-            "categories": {
-                "event": "इवेंट्स",
-                "general": "सामान्य",
-                "promotion": "प्रमोशन",
-                "update": "अपडेट"
-            }
-        },
-        "common": {
-            "error": "त्रुटि हुई",
-            "from": "से",
-            "refresh": "रीफ़्रेश",
-            "showing": "दिखा रहा है"
-        },
-        "dashboard": {
-            "load_error": "डैशबोर्ड डेटा लोड करने में विफल",
-            "no_data": "कोई डेटा उपलब्ध नहीं"
-        },
-        "email": {
-            "categories": {
-                "authentication": "प्रमाणीकरण",
-                "general": "सामान्य",
-                "order": "ऑर्डर",
-                "payment": "भुगतान",
-                "promotion": "प्रमोशन",
-                "support": "सहायता",
-                "system": "सिस्टम"
-            },
-            "placeholders": {
-                "discountAmount": "छूट राशि",
-                "email": "ईमेल",
-                "expiresIn": "समाप्ति",
-                "finalAmount": "अंतिम राशि",
-                "orderDate": "ऑर्डर तिथि",
-                "orderNumber": "ऑर्डर नंबर",
-                "resetUrl": "रीसेट URL",
-                "siteName": "साइट नाम",
-                "ticketNumber": "टिकट नंबर",
-                "totalAmount": "कुल राशि",
-                "username": "यूज़रनेम",
-                "verificationUrl": "सत्यापन URL"
-            }
-        },
-        "logo": "लोगो",
-        "monitor": "सिस्टम मॉनिटर",
-        "newsItems": "समाचार",
-        "oauth": {
-            "load_error": "OAuth डेटा लोड करने में त्रुटि"
-        },
-        "order_detail": {
-            "back_to_orders": "ऑर्डर पर वापस",
-            "items": "आइटम",
-            "order_date": "ऑर्डर तिथि",
-            "order_status": "ऑर्डर स्थिति",
-            "subtitle": "ऑर्डर का विवरण और स्थिति",
-            "title": "ऑर्डर विवरण"
-        },
-        "orders": {
-            "actions": "कार्रवाई",
-            "amount": "कुल राशि",
-            "customer": "ग्राहक",
-            "date": "तिथि",
-            "no_orders": "कोई ऑर्डर नहीं मिला",
-            "order_id": "ऑर्डर ID",
-            "product": "उत्पाद",
-            "search_placeholder": "ऑर्डर खोजें...",
-            "status": {
-                "all": "सभी",
-                "cancelled": "रद्द",
-                "completed": "पूर्ण",
-                "failed": "विफल",
-                "pending": "लंबित",
-                "processing": "प्रोसेसिंग",
-                "refunded": "वापस किया"
-            },
-            "status_text": "स्थिति",
-            "subtitle": "सिस्टम के सभी ऑर्डर प्रबंधित करें",
-            "title": "ऑर्डर"
-        },
-        "promoCards": "प्रोमो कार्ड",
-        "seasonalEvents": "सीज़नल इवेंट",
-        "settings": {
-            "section_labels": {
-                "featured_products": "विशेष उत्पाद",
-                "hero_button": "हीरो बटन",
-                "news": "समाचार",
-                "specials": "विशेष",
-                "view_all": "सभी देखें"
-            }
-        },
-        "th-TH": "थाई",
-        "tickets": {
-            "all_assignees": "सभी नियुक्त",
-            "categories": {
-                "all": "सभी श्रेणियां",
-                "order_issue": "ऑर्डर समस्या",
-                "payment_issue": "भुगतान समस्या",
-                "product_issue": "उत्पाद समस्या",
-                "account_issue": "खाता समस्या",
-                "technical_support": "तकनीकी सहायता",
-                "refund_request": "वापसी अनुरोध",
-                "general_inquiry": "सामान्य पूछताछ"
-            },
-            "priorities": {
-                "high": "उच्च",
-                "urgent": "अत्यावश्यक"
-            },
-            "status": {
-                "open": "खुला",
-                "in_progress": "प्रगति में",
-                "waiting_user": "उपयोगकर्ता प्रतीक्षारत",
-                "waiting_admin": "एडमिन प्रतीक्षारत",
-                "resolved": "हल किया",
-                "closed": "बंद"
-            },
-            "unassigned": "अनिर्दिष्ट"
-        }
+    "register": {
+      "already_have_account": "पहले से खाता है?",
+      "and": "और",
+      "confirm_password": "पासवर्ड की पुष्टि करें",
+      "email": {
+        "_base": "ईमेल"
+      },
+      "fast_247": "24/7 तेज़ सहायता",
+      "fast_247_desc": "कभी भी लेनदेन, बिना छुट्टी के।",
+      "go_to_login": "यहां लॉगिन करें",
+      "hero_desc": "विशेष ऑफ़र और लाभ के लिए Lnwtermgame से जुड़ें।",
+      "hero_title_1": "नया खाता बनाएं",
+      "hero_title_2": "विशेष प्रमोशन पाएं",
+      "hero_title_3": "सिर्फ आपके लिए",
+      "login_now": "अभी लॉगिन करें",
+      "password": "पासवर्ड",
+      "password_hint": "पासवर्ड कम से कम 8 अक्षर होना चाहिए",
+      "passwords_not_match": "पासवर्ड मेल नहीं खाते",
+      "privacy_policy": "गोपनीयता नीति",
+      "register_button": "रजिस्टर",
+      "registration_disabled": "पंजीकरण बंद",
+      "registration_disabled_desc": "हम अस्थायी रूप से नए पंजीकरण स्वीकार नहीं कर रहे।",
+      "subtitle": "टॉप-अप शुरू करने के लिए खाता बनाएं",
+      "terms": "सेवा की शर्तें",
+      "terms_agreement": "मैं सहमत हूं",
+      "title": "पंजीकरण",
+      "username": "यूज़रनेम",
+      "welcome_bonus": "स्वागत बोनस",
+      "welcome_bonus_desc": "पहले टॉप-अप पर विशेष बोनस पाएं।"
+    }
+  },
+  "AdminPage": {
+    "ALL": "सभी",
+    "SLA_24": "SLA 24 घंटे",
+    "SLA_8": "SLA 8 घंटे",
+    "UNASSIGNED": "अनिर्दिष्ट",
+    "WAITING_ADMIN": "एडमिन प्रतीक्षारत",
+    "a": " ",
+    "categories": {
+      "delete_confirm": "क्या आप इस श्रेणी को हटाना चाहते हैं?",
+      "delete_failed": "श्रेणी हटाने में विफल",
+      "delete_has_products": "इस श्रेणी में उत्पाद हैं, हटा नहीं सकते।",
+      "delete_success": "श्रेणी सफलतापूर्वक हटाई गई",
+      "load_failed": "श्रेणियां लोड करने में विफल",
+      "name_required": "श्रेणी का नाम आवश्यक है",
+      "save_success": "डेटा सफलतापूर्वक सहेजा गया",
+      "slug_required": "स्लग आवश्यक है"
     },
-    "Catalog": {
-        "card": {
-            "subtitle": "लोकप्रिय गेम",
-            "title": "अपना गेम चुनें"
-        },
-        "cta_buy": "अभी खरीदें",
-        "cta_topup": "अभी टॉप-अप करें",
-        "filter_category": "श्रेणी फ़िल्टर",
-        "games": {
-            "subtitle": "सभी उपलब्ध गेम",
-            "title": "गेम"
-        },
-        "loading": "लोड हो रहा है...",
-        "mobile": {
-            "subtitle": "तेज़ मोबाइल टॉप-अप",
-            "title": "मोबाइल गेम"
-        },
-        "no_results": "कोई परिणाम नहीं मिला",
-        "no_results_desc": "दूसरे कीवर्ड से खोजें",
-        "search": "गेम खोजें",
-        "search_placeholder": "गेम का नाम लिखें...",
-        "sort": {
-            "all": "सभी"
-        }
+    "cms_news": {
+      "categories": {
+        "event": "इवेंट्स",
+        "general": "सामान्य",
+        "promotion": "प्रमोशन",
+        "update": "अपडेट"
+      }
     },
-    "Checkout": {
-        "browse_products": "उत्पाद देखें",
-        "confirm_order": "ऑर्डर पुष्टि",
-        "continue_shopping": "खरीदारी जारी रखें",
-        "direct_topup": "सीधा टॉप-अप",
-        "empty_cart": "आपकी कार्ट खाली है",
-        "empty_cart_desc": "अपने पसंदीदा गेम खोजने के लिए कैटलॉग देखें।",
-        "error": {
-            "fill_all_fields": "कृपया सभी आवश्यक फ़ील्ड भरें",
-            "generic_failed": "लेनदेन विफल। कृपया पुनः प्रयास करें।",
-            "order_failed": "ऑर्डर बनाने में विफल",
-            "player_id_invalid": "अमान्य प्लेयर ID",
-            "product_changed": "उत्पाद डेटा बदल गया है। कृपया पेज रीफ़्रेश करें।"
-        },
-        "fill_required_fields": "कृपया आवश्यक फ़ील्ड भरें",
-        "gift_card": "गिफ्ट कार्ड",
-        "grand_total": "कुल योग",
-        "info_complete": "जानकारी पूर्ण",
-        "loading": "प्रोसेसिंग...",
-        "order_summary": "ऑर्डर सारांश",
-        "per_item": "प्रति आइटम",
-        "quantity": "मात्रा",
-        "subtitle": "समीक्षा करें और भुगतान करें",
-        "terms_agreement": "मैंने पढ़ लिया है और सहमत हूं",
-        "terms_of_service": "सेवा की शर्तें",
-        "title": "चेकआउट",
-        "total": "कुल"
+    "common": {
+      "error": "त्रुटि हुई",
+      "from": "से",
+      "refresh": "रीफ़्रेश",
+      "showing": "दिखा रहा है"
     },
-    "Account": {
-        "account_settings": "खाता सेटिंग",
-        "email_label": "आपका ईमेल",
-        "my_orders": "मेरे ऑर्डर",
-        "no_recent_purchases": "कोई हाल की खरीद नहीं",
-        "not_verified": "असत्यापित",
-        "order_status": {
-            "completed": "पूर्ण",
-            "pending": "भुगतान लंबित",
-            "processing": "प्रोसेसिंग",
-            "refunded": "वापस किया"
-        },
-        "recent_purchases": "हाल की खरीदारी",
-        "security": "सुरक्षा",
-        "send_failed": "सत्यापन ईमेल भेजने में विफल",
-        "send_verification": "सत्यापन ईमेल भेजें",
-        "sending": "भेज रहा है...",
-        "spam_hint": "ईमेल न दिखे तो स्पैम फ़ोल्डर देखें।",
-        "subtitle": "प्रोफ़ाइल प्रबंधित करें और ऑर्डर ट्रैक करें",
-        "title": "मेरा खाता",
-        "verification_sent": "सत्यापन लिंक भेजा गया",
-        "verified": "सत्यापित",
-        "verify_email_banner": "पूर्ण एक्सेस के लिए ईमेल सत्यापित करें",
-        "verify_email_desc": "ईमेल सत्यापन से सुरक्षित रिकवरी और सही ऑर्डर ट्रैकिंग सुनिश्चित होती है।",
-        "view_all_orders": "सभी ऑर्डर देखें",
-        "wait_cooldown": "कृपया पुनः प्रयास से पहले कुछ देर प्रतीक्षा करें"
+    "dashboard": {
+      "load_error": "डैशबोर्ड डेटा लोड करने में विफल",
+      "no_data": "कोई डेटा उपलब्ध नहीं"
     },
-    "Security": {
-        "additional_settings": {
-            "login_notifications": "लॉगिन सूचनाएं",
-            "login_notifications_desc": "नए डिवाइस से लॉगिन पर सूचना पाएं।",
-            "title": "अतिरिक्त सेटिंग"
-        },
-        "change_password": {
-            "button_cancel": "रद्द करें",
-            "button_change": "पासवर्ड बदलें",
-            "button_saving": "सहेज रहा है...",
-            "button_setup": "पासवर्ड सेट करें",
-            "confirm_label": "पासवर्ड पुष्टि",
-            "current_label": "वर्तमान पासवर्ड",
-            "error_change_failed": "पासवर्ड नहीं बदल सका",
-            "error_otp_failed": "अमान्य OTP",
-            "error_setup_failed": "पासवर्ड सेट करने में विफल",
-            "length_hint": "कम से कम 8 अक्षर",
-            "match_error": "पासवर्ड मेल नहीं खाते",
-            "new_label": "नया पासवर्ड",
-            "oauth_notice": "आपने सोशल अकाउंट से लॉगिन किया। यहां मानक पासवर्ड सेट कर सकते हैं।",
-            "otp_label": "OTP कोड",
-            "otp_sent_success": "OTP सफलतापूर्वक भेजा गया",
-            "otp_wait": "कृपया प्रतीक्षा करें...",
-            "request_otp": "OTP अनुरोध",
-            "resend_otp": "OTP पुनः भेजें",
-            "setup_confirm_label": "पासवर्ड पुष्टि",
-            "setup_title": "पासवर्ड सेट करें",
-            "success_setup": "पासवर्ड सफलतापूर्वक सेट हुआ",
-            "title": "पासवर्ड बदलें"
-        },
-        "error_email_not_found": "ईमेल नहीं मिला",
-        "recent_devices": {
-            "logout_all": "अन्य सभी डिवाइस से लॉगआउट",
-            "processing": "प्रोसेसिंग...",
-            "title": "हाल के डिवाइस"
-        },
-        "subtitle": "अपनी सुरक्षा और पासवर्ड प्रबंधित करें",
-        "suspicious_activity": {
-            "admin_location": "लंबित",
-            "confirm_button": "गतिविधि की पुष्टि",
-            "resolved_badge": "हल किया",
-            "title": "संदिग्ध गतिविधि"
-        },
-        "title": "सुरक्षा",
-        "two_factor": {
-            "coming_soon": "जल्द आ रहा है",
-            "setup_button": "2FA सेटअप करें",
-            "subtitle": "सुरक्षा की एक और परत जोड़ें",
-            "title": "दो-चरणीय प्रमाणीकरण (2FA)"
-        }
-    },
-    "Common": {
-        "already_verified_title": "पहले से सत्यापित",
-        "back_to_login": "लॉगिन पर वापसी",
-        "confirm_password": "पासवर्ड की पुष्टि करें",
-        "contact_support": "सहायता से संपर्क",
-        "email": "ईमेल",
-        "email_placeholder": "example@email.com",
-        "error_expired": "इस लिंक की समय सीमा समाप्त हो गई है",
-        "error_get_new_link": "नया लिंक अनुरोध करें",
-        "error_invalid": "अमान्य जानकारी",
-        "error_invalid_email": "अमान्य ईमेल प्रारूप",
-        "error_invalid_link": "अमान्य लिंक",
-        "error_invalid_link_desc": "आपका लिंक अमान्य या समाप्त हो गया है।",
-        "error_occurred": "एक त्रुटि हुई",
-        "error_send_failed": "डेटा भेजने में विफल",
-        "error_title": "विफल",
-        "expired_title": "अनुरोध समाप्त",
-        "go_to_account": "खाते पर जाएं",
-        "go_to_login": "लॉगिन पर जाएं",
-        "invalid_link_desc": "लिंक अमान्य है। कृपया पुनः जांचें।",
-        "invalid_link_title": "अमान्य लिंक",
-        "invalid_token_title": "अमान्य टोकन",
-        "loading": "लोड हो रहा है...",
-        "loading_desc": "कृपया प्रतीक्षा करें",
-        "login_now": "अभी लॉगिन करें",
-        "match_error": "डेटा मेल नहीं खाता",
-        "match_success": "डेटा मेल खाता है",
-        "member": "सदस्य क्षेत्र",
-        "new_password": "नया पासवर्ड",
-        "password_requirements": {
-            "length": "कम से कम 8 अक्षर",
-            "lowercase": "कम से कम 1 छोटा अक्षर",
-            "number": "कम से कम 1 अंक",
-            "uppercase": "कम से कम 1 बड़ा अक्षर"
-        },
-        "redirect_hint": "रीडायरेक्ट हो रहा है...",
-        "resend_button": "पुनः भेजें",
-        "resend_email": "ईमेल पुनः भेजें",
-        "resend_success": "सफलतापूर्वक भेजा गया",
-        "reset_button": "रीसेट",
-        "send_link": "लिंक भेजें",
-        "sending": "प्रोसेसिंग...",
-        "spam_hint": "ईमेल न दिखे तो स्पैम फ़ोल्डर देखें।",
-        "strength": "पासवर्ड की मजबूती",
-        "subtitle": "विवरण",
-        "success_desc": "लेनदेन सफल",
-        "success_title": "सफल",
-        "title": "शीर्षक",
-        "token": "सुरक्षा टोकन"
-    },
-    "Coupons": {
-        "add_coupon": "कूपन जोड़ें",
-        "add_failed": "कूपन जोड़ने में विफल",
-        "add_success": "कूपन सफलतापूर्वक जोड़ा गया",
-        "code_label": "कूपन कोड",
-        "details": {
-            "copied": "कॉपी हुआ",
-            "copy_code": "कोड कॉपी करें",
-            "discount": "छूट",
-            "max_discount": "अधिकतम छूट",
-            "min_purchase": "न्यूनतम खरीद",
-            "no_min_purchase": "न्यूनतम खरीद नहीं",
-            "title": "कूपन विवरण",
-            "use_now": "अभी उपयोग करें",
-            "used_at": "उपयोग किया",
-            "valid_until": "इस तक वैध"
-        },
-        "example_code": "DISCOUNT20",
-        "expiry_hint": "कूपन की सीमित वैधता होती है।",
-        "filter": {
-            "active": "सक्रिय",
-            "all": "सभी",
-            "expired": "समाप्त",
-            "used": "उपयोग किया"
-        },
-        "how_to_use": {
-            "step1": "अपने उत्पाद चुनें",
-            "step2": "चेकआउट पर कोड दर्ज करें",
-            "step3": "भुगतान से पहले छूट सत्यापित करें",
-            "title": "कैसे उपयोग करें"
-        },
-        "invalid_code": "अमान्य कोड",
-        "no_coupons": "कोई कूपन उपलब्ध नहीं",
-        "no_coupons_desc": "आपके पास वर्तमान में कोई कूपन नहीं है।",
-        "no_search_results": "आपकी खोज से मिलता कोई कूपन नहीं मिला।",
-        "not_found": "कूपन नहीं मिला",
-        "search_placeholder": "कूपन खोजें...",
-        "start_shopping": "खरीदारी शुरू करें",
-        "status": {
-            "active": "सक्रिय",
-            "expired": "समाप्त",
-            "used": "उपयोग किया"
-        },
-        "subtitle": "अपने छूट कूपन प्रबंधित करें",
-        "th-TH": "थाई",
-        "title": "छूट कूपन",
-        "validating": "सत्यापन हो रहा..."
-    },
-    "Credits": {
-        "about": {
-            "step1_desc": "लॉगिन करें और क्रेडिट टॉप-अप पर जाएं",
-            "step1_title": "पैकेज चुनें",
-            "step2_desc": "अपनी सुविधानुसार भुगतान करें",
-            "step2_title": "भुगतान करें",
-            "step3_desc": "क्रेडिट तुरंत आपके वॉलेट में जुड़ते हैं",
-            "step3_title": "लेनदेन सफल",
-            "title": "क्रेडिट टॉप-अप कैसे करें"
-        },
-        "balance_label": "शेष:",
-        "earned": "कमाई इतिहास",
-        "error_loading": "क्रेडिट जानकारी लोड करने में विफल",
-        "history": {
-            "all": "सभी लेनदेन",
-            "empty": "कोई क्रेडिट इतिहास नहीं",
-            "empty_desc": "कोई हालिया क्रेडिट लेनदेन नहीं।",
-            "this_month": "इस महीने",
-            "this_week": "इस सप्ताह",
-            "title": "लेनदेन इतिहास"
-        },
-        "spent": "खर्च इतिहास",
-        "subtitle": "अपने खाते के क्रेडिट प्रबंधित करें",
-        "th-TH": "थाई",
-        "title": "मेरे क्रेडिट",
-        "topup_button": "क्रेडिट टॉप-अप",
-        "topup_upcoming": "क्रेडिट पैकेज",
-        "total_transactions": "कुल लेनदेन",
-        "types": {
-            "bonus": "बोनस",
-            "purchase": "खरीदारी",
-            "refund": "वापसी",
-            "topup": "टॉप-अप"
-        },
-        "value_hint": "बल्क टॉप-अप पर बेहतर सौदे"
-    },
-    "Favorites": {
-        "added_to_cart": "कार्ट में जोड़ा गया",
-        "buy_now": "अभी खरीदें",
-        "error_loading": "पसंदीदा सूची लोड करने में विफल",
-        "found_items": "आइटम मिले",
-        "no_favorites": "कोई पसंदीदा नहीं",
-        "no_favorites_desc": "पसंदीदा में जोड़ने के लिए दिल आइकन पर क्लिक करें।",
-        "no_search_results": "खोज से मेल खाता कोई पसंदीदा नहीं।",
-        "remove_failed": "आइटम हटाने में विफल",
-        "remove_success": "पसंदीदा से सफलतापूर्वक हटाया गया",
-        "search_placeholder": "पसंदीदा में खोजें...",
-        "start_shopping": "गेम देखें",
-        "starting_at": "शुरू",
-        "subtitle": "आपके पसंदीदा गेम यहां हैं",
-        "title": "मेरे पसंदीदा",
-        "view_more": "विवरण देखें"
-    },
-    "Invoices": {
-        "actions": {
-            "download": "डाउनलोड",
-            "view": "विवरण देखें"
-        },
-        "filter": {
-            "all": "सभी बिल",
-            "cancelled": "रद्द",
-            "paid": "भुगतान हुआ",
-            "pending": "भुगतान लंबित"
-        },
-        "no_invoices": "कोई बिल नहीं मिला",
-        "no_invoices_desc": "अभी तक कोई लेनदेन नहीं हुआ।",
-        "no_search_results": "खोज से मिलता कोई बिल नहीं।",
-        "search_placeholder": "बिल खोजें...",
-        "status": {
-            "cancelled": "रद्द",
-            "paid": "भुगतान हुआ",
-            "pending": "लंबित"
-        },
-        "subtitle": "अपने बिल रिकॉर्ड प्रबंधित करें",
-        "table": {
-            "actions": "कार्रवाई",
-            "amount": "कुल राशि",
-            "date": "तिथि",
-            "invoice_number": "बिल ID",
-            "order_number": "ऑर्डर ID",
-            "status": "स्थिति"
-        },
-        "th-TH": "थाई",
-        "title": "आपके बिल"
-    },
-    "InvoiceDetail": {
-        "a": " ",
-        "back_to_list": "सूची पर वापस",
-        "copy_success": "सफलतापूर्वक कॉपी हुआ",
-        "customer_info": "ग्राहक जानकारी",
-        "date": "लेनदेन तिथि",
-        "download_pdf": "PDF डाउनलोड",
-        "error_not_found": "बिल नहीं मिला",
-        "grand_total": "शुद्ध भुगतान",
-        "invoice_no": "बिल नंबर",
-        "item_details": "खरीदे गए आइटम",
-        "order_no": "ऑर्डर नंबर",
-        "paid": "भुगतान हुआ",
-        "payment_info": "प्रदाता",
-        "payment_status": "भुगतान स्थिति",
-        "price": "कीमत",
-        "print": "रिपोर्ट प्रिंट करें",
-        "product": "उत्पाद जानकारी",
-        "quantity": "मात्रा",
-        "subtotal": "उप-योग",
-        "title": "बिल / रसीद",
-        "total": "कुल योग",
-        "unpaid": "अवैतनिक",
-        "vat": "कर"
-    },
-    "Notifications": {
-        "delete": "सूचना हटाएं",
-        "delete_success": "सफलतापूर्वक हटाया",
-        "empty_desc": "आपकी कोई सूचना नहीं है।",
-        "empty_filter_desc": "इस फ़िल्टर के लिए कोई सूचना नहीं।",
-        "empty_title": "इनबॉक्स खाली है",
-        "error_loading": "संदेश लोड करने में विफल",
-        "filters": {
-            "all": "सभी",
-            "order": "ऑर्डर",
-            "payment": "वित्त",
-            "promotion": "प्रमोशन",
-            "unread": "अपठित"
-        },
-        "manage_settings": "सूचना सेटिंग",
-        "mark_all_read": "सभी पठित करें",
-        "mark_read": "पठित करें",
-        "mark_read_success": "पठित के रूप में चिह्नित",
-        "subtitle": "सूचना केंद्र",
-        "title": "सूचनाएं",
-        "unread_badge": "अपठित",
-        "view_details": "विवरण देखें"
-    },
-    "NotificationPreferences": {
-        "channels": {
-            "email": "ईमेल",
-            "email_desc": "ईमेल से अपडेट और खरीद की रसीद पाएं।",
-            "web": "ऐप-में-सूचनाएं",
-            "web_desc": "वेबसाइट पर ऐप-में-सूचनाएं पाएं।"
-        },
-        "save_button": "सेटिंग सहेजें",
-        "save_success": "प्राथमिकताएं सहेजी गईं।",
-        "saving": "सहेज रहा है...",
-        "subtitle": "अपडेट और अलर्ट कैसे प्राप्त करें, प्रबंधित करें",
-        "title": "सूचना प्राथमिकताएं",
-        "types": {
-            "orders": "ऑर्डर अपडेट",
-            "orders_desc": "ऑर्डर स्थिति और समस्या समाधान के अपडेट।",
-            "promotions": "प्रमोशन",
-            "promotions_desc": "छूट, इवेंट और विशेष ऑफ़र अपडेट।"
-        }
-    },
-    "Orders": {
-        "amount_label": "ऑर्डर राशि:",
-        "date_label": "ऑर्डर तिथि:",
-        "error_loading": "ऑर्डर आइटम लोड करने में विफल",
-        "filter_title": "ऑर्डर फ़िल्टर",
-        "no_orders": "अभी तक कोई ऑर्डर नहीं",
-        "no_orders_desc": "आपके पिछले ऑर्डर यहां दिखेंगे।",
-        "no_search_results": "कोई मिलान नहीं। कृपया ऑर्डर ID जांचें।",
-        "order_id_label": "ऑर्डर ID:",
-        "search_placeholder": "ऑर्डर ID या उत्पाद से खोजें",
-        "status": {
-            "all": "सभी",
-            "cancelled": "रद्द",
-            "completed": "पूर्ण",
-            "pending": "भुगतान प्रतीक्षारत",
-            "processing": "प्रोसेसिंग",
-            "refunded": "वापस किया"
-        },
-        "subtitle": "इतिहास देखें और ऑर्डर ट्रैक करें",
-        "table": {
-            "amount": "राशि",
-            "date": "तिथि",
-            "order_number": "ऑर्डर ID",
-            "product": "उत्पाद विवरण",
-            "status": "स्थिति"
-        },
-        "th-TH": "थाई",
-        "title": "ऑर्डर इतिहास",
-        "view_details": "विवरण देखें",
-        "view_mode": {
-            "card": "कार्ड व्यू",
-            "table": "टेबल व्यू"
-        },
-        "view_results": "परिणाम दिखाएं",
-        "view_short": "छोटा करें"
-    },
-    "OrderDetail": {
-        "actions": {
-            "cancel": "ऑर्डर रद्द करें",
-            "cancel_confirm": "क्या आप यह ऑर्डर रद्द करना चाहते हैं?",
-            "cancel_failed": "ऑर्डर रद्द करने में विफल",
-            "cancel_hint": "ऑर्डर रद्दीकरण वापस नहीं किया जा सकता।",
-            "cancel_success": "ऑर्डर सफलतापूर्वक रद्द हुआ।",
-            "cancelling": "रद्द हो रहा...",
-            "need_help": "मदद चाहिए?",
-            "report_issue": "समस्या रिपोर्ट करें",
-            "title": "ऑर्डर प्रबंधित करें"
-        },
-        "back_to_orders": "ऑर्डर इतिहास पर वापस",
-        "customer": {
-            "date": "ऑर्डर तिथि: ",
-            "email": "ईमेल: ",
-            "title": "ग्राहक विवरण",
-            "username": "ग्राहक: "
-        },
-        "delivery": {
-            "completed_at": "डिलीवरी समय",
-            "status_summary": "डिलीवरी स्थिति",
-            "statuses": {
-                "completed": "सफलतापूर्वक डिलीवर",
-                "failed": "डिलीवरी विफल",
-                "pending": "कतार में",
-                "processing": "डिलीवरी प्रोसेसिंग..."
-            },
-            "title": "डिलीवरी"
-        },
-        "error_loading": "ऑर्डर विवरण लोड करने में त्रुटि",
-        "error_not_found": "ऑर्डर नहीं मिला",
-        "error_not_found_desc": "कृपया ऑर्डर ID जांचें और पुनः प्रयास करें।",
-        "items": {
-            "account_info": "अतिरिक्त जानकारी",
-            "code_label": "रिडेम्पशन कोड",
-            "copy_success": "कोड सफलतापूर्वक कॉपी हुआ",
-            "delivery_failed": "आइटम लोड करने में त्रुटि",
-            "delivery_status": "आइटम डिलीवरी स्थिति",
-            "digital_codes": "डिजिटल कोड",
-            "expired_label": "समाप्ति",
-            "hide_code": "कोड छुपाएं",
-            "pin_label": "PIN",
-            "quantity": "मात्रा",
-            "serial_label": "सीरियल",
-            "show_code": "कोड दिखाएं",
-            "title": "ऑर्डर आइटम",
-            "usage_hint": "कृपया अपना कोड सुरक्षित रखें।"
-        },
-        "loading": "लोड हो रहा है...",
-        "order_id_label": "ऑर्डर ID",
-        "payment": {
-            "discount": "छूट",
-            "method": "भुगतान विधि",
-            "methods": {
-                "bank_transfer": "बैंक ट्रांसफर",
-                "promptpay": "PromptPay",
-                "truemoney": "TrueMoney वॉलेट",
-                "unknown": "अन्य"
-            },
-            "status_paid": "भुगतान हुआ",
-            "status_pending": "सत्यापन लंबित",
-            "subtotal": "उप-योग",
-            "title": "भुगतान सारांश",
-            "total": "कुल राशि"
-        },
-        "th-TH": "थाई",
-        "title": "ऑर्डर विवरण"
-    },
-    "errors": {
-        "generic": {
-            "description": "एक अप्रत्याशित त्रुटि हुई। कृपया बाद में प्रयास करें।",
-            "goHome": "होम पर वापसी",
-            "title": "एक त्रुटि हुई",
-            "tryAgain": "पुनः प्रयास"
-        },
-        "notFound": {
-            "description": "यह पेज मौजूद नहीं है।",
-            "goBack": "वापस जाएं",
-            "goHome": "होम पर वापसी",
-            "title": "पेज नहीं मिला"
-        }
-    },
-    "Verification": {
-        "forgot_password": {
-            "back_to_login": "लॉगिन पर वापसी",
-            "email_placeholder": "पंजीकृत ईमेल दर्ज करें...",
-            "error_invalid_email": "कृपया एक वैध ईमेल दर्ज करें",
-            "error_send_failed": "रीसेट लिंक भेजने में विफल",
-            "loading": "प्रोसेसिंग...",
-            "resend_email": "ईमेल पुनः भेजें",
-            "send_link": "Send Reset Link",
-            "spam_hint": "ईमेल न मिले तो स्पैम फ़ोल्डर देखें।",
-            "subtitle": "पासवर्ड रीसेट लिंक पाने के लिए ईमेल दर्ज करें।",
-            "success_desc": "पासवर्ड रीसेट लिंक आपके ईमेल पर भेजा गया है।",
-            "success_title": "ईमेल भेजा गया",
-            "title": "पासवर्ड भूल गए?"
-        },
-        "reset_password": {
-            "back_to_login": "लॉगिन पर वापसी",
-            "confirm_password": "नया पासवर्ड पुष्टि करें",
-            "error_expired": "रीसेट लिंक की समय सीमा समाप्त हो गई।",
-            "error_get_new_link": "नया रीसेट लिंक अनुरोध करें",
-            "error_invalid": "सुरक्षा कोड अमान्य या समाप्त हो गया।",
-            "error_invalid_link": "अमान्य सत्यापन लिंक।",
-            "error_invalid_link_desc": "रीसेट लिंक अमान्य या पहले से उपयोग हो चुका है।",
-            "loading": "प्रोसेसिंग...",
-            "login_now": "अभी लॉगिन करें",
-            "match_error": "पासवर्ड मेल नहीं खाते",
-            "match_success": "पासवर्ड मेल खाते हैं।",
-            "new_password": "नया पासवर्ड",
-            "password_requirements": {
-                "length": "कम से कम 8 अक्षर",
-                "lowercase": "कम से कम 1 छोटा अक्षर (a-z)",
-                "number": "कम से कम 1 अंक (0-9)",
-                "uppercase": "कम से कम 1 बड़ा अक्षर (A-Z)"
-            },
-            "redirect_hint": "रीडायरेक्ट हो रहा है...",
-            "reset_button": "पासवर्ड अपडेट करें",
-            "strength": "पासवर्ड की मजबूती",
-            "subtitle": "कृपया नया पासवर्ड सेट करें",
-            "success_desc": "पासवर्ड सफलतापूर्वक अपडेट हुआ। अब लॉगिन कर सकते हैं।",
-            "success_title": "पासवर्ड अपडेट हुआ",
-            "title": "पासवर्ड रीसेट",
-            "token": "सुरक्षा टोकन"
-        },
-        "verify_email": {
-            "already_verified_title": "ईमेल पहले से सत्यापित है।",
-            "back_to_login": "लॉगिन पर वापसी",
-            "contact_support": "सहायता से संपर्क",
-            "email": "ईमेल",
-            "error_title": "नेटवर्क त्रुटि के कारण सत्यापन विफल",
-            "expired_title": "सत्यापन लिंक की समय सीमा समाप्त हो गई।",
-            "go_to_account": "खाते पर जाएं",
-            "go_to_login": "लॉगिन पर जाएं",
-            "invalid_link_desc": "सत्यापन लिंक अमान्य या ईमेल पहले से सत्यापित है।",
-            "invalid_link_title": "अमान्य सत्यापन लिंक",
-            "invalid_token_title": "अमान्य टोकन",
-            "loading": "ईमेल सत्यापित हो रहा है...",
-            "loading_desc": "कृपया प्रतीक्षा करें...",
-            "redirect_hint": "होम पर रीडायरेक्ट हो रहा...",
-            "resend_button": "सत्यापन ईमेल पुनः भेजें",
-            "resend_success": "सत्यापन ईमेल सफलतापूर्वक भेजा गया।",
-            "sending": "ईमेल भेज रहा...",
-            "spam_hint": "कृपया स्पैम फ़ोल्डर देखें।",
-            "success_title": "ईमेल सफलतापूर्वक सत्यापित",
-            "title": "ईमेल पता सत्यापित करें",
-            "token": "सुरक्षा टोकन"
-        }
-    },
-    "ProductDetail": {
-        "about_product": "उत्पाद विवरण",
-        "account_info_title": "खाता जानकारी",
-        "auto_delivery_hint": "तत्काल स्वचालित डिलीवरी",
-        "back": "वापस",
-        "buy_now_button": "अभी खरीदें",
-        "by_developer": "डेवलपर: ",
-        "cancel_button": "रद्द करें",
-        "change_button": "चयन बदलें",
-        "close_window_button": "विंडो बंद करें",
-        "confirm_button": "भुगतान पुष्टि",
-        "confirm_hint": "पुष्टि से पहले कृपया अपना चयन सत्यापित करें।",
-        "confirm_order_title": "ऑर्डर सारांश",
-        "confirm_selection_button": "चयन पुष्टि",
-        "copy_link_failed": "कॉपी विफल। कृपया पुनः प्रयास करें।",
-        "copy_link_success": "लिंक सफलतापूर्वक कॉपी हुआ",
-        "developer": "डेवलपर",
-        "error": {
-            "enter_phone": "कृपया एक वैध 10-अंकीय फोन नंबर दर्ज करें।",
-            "fill_all_fields": "कृपया सभी आवश्यक फ़ील्ड भरें।",
-            "invalid_phone": "दर्ज किया गया फोन नंबर अमान्य है।",
-            "login_required": "लेनदेन के लिए कृपया लॉगिन करें।",
-            "no_payment_link": "भुगतान लिंक बनाने में विफल। पुनः प्रयास करें।",
-            "not_found": "उत्पाद नहीं मिला",
-            "not_found_desc": "अनुरोधित उत्पाद नहीं मिला या अब उपलब्ध नहीं।",
-            "order_success_redirect": "लेनदेन सफल। होम पेज पर रीडायरेक्ट...",
-            "payment_error": "भुगतान प्रक्रिया विफल",
-            "payment_failed": "भुगतान जानकारी सत्यापित नहीं हो सकी",
-            "payment_method_unavailable": "यह भुगतान विधि अभी उपलब्ध नहीं।",
-            "phone_region_mismatch": "क्षेत्रीय फोन नंबर समर्थित नहीं",
-            "player_id_invalid": "अमान्य प्लेयर ID। कृपया जांचें और पुनः प्रयास करें।",
-            "select_option": "जारी रखने के लिए पैकेज चुनें।",
-            "truemoney_minimum": "TrueMoney वॉलेट के लिए न्यूनतम 20 THB आवश्यक।"
-        },
-        "fee_label": "शुल्क",
-        "form": "विवरण",
-        "game_info": "गेम विवरण",
-        "input": "जानकारी दर्ज करें",
-        "login_required_notice": "विशेष छूट देखने के लिए लॉगिन करें",
-        "login_to_buy_button": "खरीदने के लिए लॉगिन करें",
-        "meta": "टैग",
-        "mobile_number_label": "वॉलेट नंबर",
-        "mobile_number_placeholder": "08x-xxx-xxxx",
-        "no_options": "कोई पैकेज उपलब्ध नहीं",
-        "no_options_desc": "इस उत्पाद के लिए कोई पैकेज उपलब्ध नहीं।",
-        "no_refund_warning_desc": "पूर्ण ऑर्डर पर वापसी नहीं होती। पुष्टि से पहले विवरण जांचें।",
-        "no_refund_warning_title": "वापसी-अयोग्य सूचना",
-        "no_similar_found": "कोई समान उत्पाद नहीं मिला।",
-        "payment_method_label": "भुगतान विधि: ",
-        "payment_selection_desc": "अपनी पसंदीदा भुगतान विधि चुनें",
-        "payment_selection_title": "भुगतान विकल्प",
-        "platforms": "समर्थित प्लेटफॉर्म",
-        "popular_badge": "बेस्ट सेलर",
-        "price_label": "कीमत:",
-        "privacy_label": "गोपनीयता नीति",
-        "product_details_title": "उत्पाद विवरण",
-        "publisher": "प्रकाशक",
-        "purchase_summary": "ऑर्डर सारांश",
-        "refund_label": "वापसी नीति",
-        "related_products": "आपको यह भी पसंद आ सकता है",
-        "release_date": "रिलीज़ तिथि",
-        "savings_label": "आप बचाते हैं: ",
-        "secure_payment_notice": "100% सुरक्षित भुगतान",
-        "select_package": "पैकेज चुनें",
-        "selected_package_label": "चयनित पैकेज",
-        "similar_products": "समान उत्पाद",
-        "subtotal_label": "उप-योग: ",
-        "terms_agreement_prefix": "जारी रखकर, आप सहमत होते हैं ",
-        "terms_label": "उपयोग की शर्तें",
-        "th-TH": "थाई",
-        "topup_options": "टॉप-अप विकल्प",
-        "total_label": "कुल राशि: ",
-        "transaction_summary_title": "वित्तीय सारांश",
-        "unknown": "निर्दिष्ट नहीं",
-        "unverified_account_warning": "खरीदारी से पहले कृपया ईमेल सत्यापित करें।",
-        "verify_info_hint": "जारी रखने से पहले कृपया प्लेयर ID सावधानी से जांचें।"
-    },
-    "News": {
-        "all_news": "सभी समाचार",
-        "categories": {
-            "event": "इवेंट्स",
-            "general": "सामान्य",
-            "promotion": "प्रमोशन",
-            "update": "अपडेट"
-        },
-        "featured": "विशेष समाचार",
-        "featured_badge": "विशेष",
-        "no_news": "अभी कोई समाचार उपलब्ध नहीं।",
-        "subtitle": "नवीनतम अपडेट और घोषणाएं",
-        "title": "समाचार और घोषणाएं",
-        "view_count": "देखे गए"
-    },
-    "NewsDetail": {
-        "back_to_news": "समाचार पर वापस",
-        "error_loading": "लेख लोड करने में विफल",
-        "error_not_found": "समाचार लेख नहीं मिला",
-        "error_not_found_desc": "यह लेख मौजूद नहीं या हटा दिया गया है।",
-        "featured_badge": "ट्रेंडिंग",
-        "last_updated": "अंतिम अपडेट: ",
-        "other_news": "संबंधित समाचार",
-        "sources": "स्रोत",
-        "views": "देखे गए: "
-    },
-    "PaymentPending": {
-        "a": " ",
-        "loading": "भुगतान स्थिति लोड हो रही...",
-        "orderId": "ऑर्डर ID:",
-        "order_id": "ऑर्डर ID:",
-        "payment_failed": "भुगतान विफल",
-        "payment_failed_desc": "कृपया भुगतान पुनः प्रयास करें।",
-        "payment_success": "भुगतान सफल",
-        "qr_expired": "QR कोड समाप्त",
-        "qr_expired_desc": "कृपया रद्द करें और नया ऑर्डर बनाएं।",
-        "redirecting": "रीडायरेक्ट हो रहा है...",
-        "referenceNo": "संदर्भ नंबर: ",
-        "reference_no": "संदर्भ: ",
-        "time_remaining": "शेष समय: ",
-        "try_again": "पुनः प्रयास",
-        "view_orders": "ऑर्डर इतिहास देखें"
-    },
-    "PaymentSuccess": {
-        "back_home": "होम पर वापसी",
-        "delivery_notice": "आपका ऑर्डर प्रोसेस हो रहा है और जल्द डिलीवर होगा।",
-        "orderId": "ऑर्डर ID:",
-        "order_number": "ऑर्डर नंबर",
-        "processing_badge": "डिलीवरी प्रोसेसिंग",
-        "referenceNo": "संदर्भ: ",
-        "session_id": "सत्र ID",
-        "subtitle": "भुगतान सफलतापूर्वक प्राप्त। हम आपका ऑर्डर तैयार कर रहे हैं।",
-        "title": "भुगतान सफल!",
-        "view_order": "ऑर्डर स्थिति देखें"
-    },
-    "Navigation": {
-        "account": "मेरा खाता",
-        "card": "प्रीपेड कार्ड",
-        "faq": "अक्सर पूछे जाने वाले प्रश्न",
-        "favorite": "पसंदीदा",
-        "games": "गेम टॉप-अप",
-        "home": "होम",
-        "login": "लॉगिन",
-        "mobile_recharge": "मोबाइल टॉप-अप",
-        "news": "समाचार",
-        "orders": "ऑर्डर इतिहास",
-        "register": "रजिस्टर",
-        "support": "सहायता"
-    },
-    "SupportContact": {
-        "form": {
-            "email": "आपका ईमेल",
-            "message": "संदेश",
-            "name": "आपका नाम",
-            "send": "संदेश भेजें",
-            "sending": "भेज रहा है...",
-            "subject": "विषय",
-            "success": "आपका संदेश भेजा गया। हमारी टीम जल्द जवाब देगी।",
-            "title": "ईमेल से संपर्क करें"
-        },
-        "social": {
-            "title": "सोशल मीडिया पर जुड़ें (Facebook / Line / Discord)"
-        },
-        "subtitle": "सहायता के लिए हमारी टीम से संपर्क करें",
-        "title": "सहायता संपर्क (24/7)"
-    },
-    "SupportFAQ": {
-        "all": "सभी श्रेणियां",
-        "back_to_faq": "FAQ पर वापसी",
-        "categories": {
-            "_base": "श्रेणियां"
-        },
-        "need_help": {
-            "title": "मदद चाहिए?",
-            "description": "जो खोज रहे हैं वह नहीं मिला?",
-            "contact_support": "सहायता से संपर्क"
-        },
-        "no": "सहायक नहीं",
-        "no_results": "कोई परिणाम नहीं मिला।",
-        "search_placeholder": "उत्तर खोजें...",
-        "subtitle": "सामान्य प्रश्नों के त्वरित उत्तर पाएं",
-        "title": "अक्सर पूछे जाने वाले प्रश्न",
-        "view_all": "सभी देखें",
-        "yes": "सहायक"
-    },
-    "SupportFAQDetail": {
-        "back_to_faq": "FAQ पर वापसी",
-        "contact_support": "सहायता से संपर्क",
-        "contact_support_desc": "अतिरिक्त सहायता के लिए कृपया हमारी टीम से संपर्क करें।",
-        "error": {
-            "_base": "सामग्री लोड करने में विफल।"
-        },
-        "helpful": "क्या यह लेख सहायक था?",
-        "last_updated": "अंतिम अपडेट",
-        "loading": "लोड हो रहा है...",
-        "no": "सहायक नहीं",
-        "still_need_help": "अभी भी मदद चाहिए?",
-        "thank_you": "आपकी प्रतिक्रिया के लिए धन्यवाद।",
-        "views": "देखे गए: ",
-        "yes": "सहायक"
-    },
-    "Support": {
-        "categories": {
-            "faq": {
-                "description": "सामान्य प्रश्नों के त्वरित समाधान और उत्तर पाएं।",
-                "title": "अक्सर पूछे जाने वाले प्रश्न"
-            },
-            "tickets": {
-                "description": "ऑर्डर, भुगतान या खाते की समस्या रिपोर्ट करें।",
-                "title": "टिकट जमा करें"
-            }
-        },
-        "common_issues": {
-            "title": "सामान्य समस्याएं"
-        },
-        "contact_methods": "संपर्क विधियां",
-        "subtitle": "नीचे विषय चुनें या सीधे सहायता टीम से संपर्क करें।",
-        "title": "सहायता केंद्र",
-        "urgent_help": {
-            "description": "तत्काल सहायता के लिए Live Chat या Line से संपर्क करें।",
-            "title": "तत्काल सहायता"
-        },
-        "visit": "देखें",
-        "working_hours": {
-            "mon_fri": "सोमवार - शुक्रवार (सामान्य सेवा)",
-            "sat_sun": "शनिवार - रविवार (उत्तर में कुछ देरी हो सकती है)",
-            "time_mon_fri": "09:00 - 00:00 (GMT+7)",
-            "time_sat_sun": "09:00 - 19:00 (GMT+7)",
-            "timezone": "समय क्षेत्र (GMT+7)",
-            "title": "सहायता समय"
-        }
-    },
-    "SupportTickets": {
-        "back": "टिकट पर वापसी",
-        "create": {
-            "cancel": "रद्द करें",
-            "categories": {
-                "account": "खाता समस्या",
-                "general": "सामान्य पूछताछ",
-                "order": "ऑर्डर समस्या",
-                "payment": "भुगतान समस्या",
-                "product": "उत्पाद समस्या",
-                "refund": "वापसी अनुरोध",
-                "technical": "तकनीकी सहायता"
-            },
-            "category": "श्रेणी",
-            "description": "समस्या विवरण",
-            "description_label": "अपनी समस्या विस्तार से बताएं",
-            "description_placeholder": "कृपया अपनी समस्या का वर्णन करें...",
-            "order_ref": "ऑर्डर ID (वैकल्पिक)",
-            "order_ref_placeholder": "ऑर्डर #999999",
-            "subject_placeholder": "संक्षिप्त विषय",
-            "submit": "टिकट जमा करें",
-            "title": "नया टिकट बनाएं"
-        },
-        "create_new": "नया टिकट बनाएं",
-        "created_at": "बनाया गया",
-        "detail": {
-            "closed_notice": "यह टिकट बंद हो गया है। अब उत्तर नहीं दे सकते।",
-            "reply": "उत्तर",
-            "send_reply": "संदेश भेजें"
-        },
-        "disabled": {
-            "cta": "होम पर लौटें",
-            "description": "टिकट सिस्टम अभी उपलब्ध नहीं है।",
-            "title": "सिस्टम अनुपलब्ध"
-        },
-        "no_tickets": "आपने अभी तक कोई टिकट नहीं जमा किया।",
-        "order_ref_label": "ऑर्डर संदर्भ ID (तेज़ समाधान में मदद करता है)",
-        "select_ticket": "टिकट चुनें",
-        "select_ticket_desc": "विवरण देखने के लिए सूची से टिकट चुनें।",
-        "status": {
-            "all": "सभी टिकट",
-            "closed": "बंद",
-            "open": "खुला",
-            "pending": "लंबित",
-            "resolved": "हल किया",
-            "waiting_admin": "सहायता प्रतीक्षारत",
-            "waiting_user": "उपयोगकर्ता प्रतीक्षारत"
-        },
-        "subtitle": "अपने सहायता अनुरोध प्रबंधित करें",
-        "support_team": "सहायता टीम",
-        "system": "सिस्टम स्वचालित सूचना",
-        "title": "सहायता टिकट",
-        "user_you": "आप"
-    },
-    "UserMenu": {
-        "account_menu": "खाता मेनू",
-        "credits": "मेरे क्रेडिट",
-        "favorite": "पसंदीदा",
-        "h-full": "",
-        "logout": "लॉगआउट",
-        "menu": "उपयोगकर्ता मेनू",
-        "my_account": "मेरा खाता",
-        "my_coupons": "मेरे कूपन",
-        "my_invoices": "बिल",
-        "my_orders": "ऑर्डर इतिहास",
-        "notifications": "सूचनाएं",
-        "open_menu": "मेनू खोलें"
-    },
-    "CookieNotice": {
-        "acknowledge": "स्वीकार करें",
-        "ariaClose": "सूचना बंद करें",
-        "description": "Lnwtermgame आपकी ब्राउज़िंग अनुभव, साइट प्रदर्शन और व्यक्तिगत प्रमोशन के लिए कुकीज़ का उपयोग करता है।",
-        "items": [
-            "आवश्यक कुकीज़ (बुनियादी वेबसाइट कार्यक्षमता के लिए)",
-            "विश्लेषण कुकीज़ (प्लेटफ़ॉर्म सुधार के लिए)"
-        ],
-        "noTawkItem": "लाइव चैट अभी अक्षम है।",
-        "privacy": "गोपनीयता नीति",
-        "tawkItem": "लाइव चैट कुकीज़ (Tawk.to) तेज़ ग्राहक सहायता के लिए।",
-        "title": "⚙️ कुकी प्राथमिकताएं"
-    },
-    "Footer": {
-        "about_us": "हमारे बारे में",
-        "contact_us": "संपर्क करें",
-        "copyright": "कॉपीराइट",
-        "language_thai": "थाई",
-        "partners": "भागीदार",
-        "customer": "ग्राहक सेवा",
-        "policies": "नीतियां",
-        "services": "सेवाएं",
-        "payment_inquiry": "भुगतान पूछताछ",
-        "payment_issues": "भुगतान और समस्याएं",
-        "sale_inquiry": "व्यापार पूछताछ",
-        "copyright_notice": "सर्वाधिकार सुरक्षित",
-        "create_ticket": "सहायता टिकट जमा करें",
-        "faq": "अक्सर पूछे जाने वाले प्रश्न",
-        "features": {
-            "payment": "विभिन्न भुगतान विकल्प",
-            "payment_desc": "TrueMoney Wallet और PromptPay से 0% अतिरिक्त शुल्क पर टॉप-अप करें।",
-            "price": "सर्वश्रेष्ठ कीमतें",
-            "price_desc": "विशेष प्रमोशन और सर्वोत्तम गेम टॉप-अप दरें।",
-            "security": "100% सुरक्षित",
-            "security_desc": "हमारा प्लेटफ़ॉर्म उच्च श्रेणी एन्क्रिप्शन से लेनदेन सुरक्षित करता है।",
-            "support": "24/7 ग्राहक सहायता",
-            "support_desc": "हमारी टीम किसी भी पूछताछ के लिए हर समय उपलब्ध है।",
-            "delivery": "तेज़ डिलीवरी"
-        },
-        "live_chat": "लाइव चैट",
-        "payment_channels": "भुगतान विधियां",
-        "privacy_policy": "गोपनीयता और कुकीज़",
-        "quick_links": "त्वरित लिंक",
-        "refund_policy": "वापसी नीति",
+    "email": {
+      "categories": {
+        "authentication": "प्रमाणीकरण",
+        "general": "सामान्य",
+        "order": "ऑर्डर",
+        "payment": "भुगतान",
+        "promotion": "प्रमोशन",
         "support": "सहायता",
-        "support_center": "सहायता केंद्र",
-        "supported_payments": "समर्थित भुगतान प्लेटफ़ॉर्म",
-        "tagline": "Lnwtermgame, थाईलैंड का अग्रणी तेज़ और सुरक्षित गेम टॉप-अप और प्रीपेड कार्ड प्लेटफ़ॉर्म।",
-        "terms_of_service": "सेवा की शर्तें"
+        "system": "सिस्टम"
+      },
+      "placeholders": {
+        "discountAmount": "छूट राशि",
+        "email": "ईमेल",
+        "expiresIn": "समाप्ति",
+        "finalAmount": "अंतिम राशि",
+        "orderDate": "ऑर्डर तिथि",
+        "orderNumber": "ऑर्डर नंबर",
+        "resetUrl": "रीसेट URL",
+        "siteName": "साइट नाम",
+        "ticketNumber": "टिकट नंबर",
+        "totalAmount": "कुल राशि",
+        "username": "यूज़रनेम",
+        "verificationUrl": "सत्यापन URL"
+      }
     },
-    "Header": {
-        " ": " ",
-        "/": "/",
-        "articles": "लेख",
-        "dealers": "डीलर",
-        "all_games": "सभी गेम",
-        "cart": "शॉपिंग कार्ट",
-        "contact_us": "संपर्क करें",
-        "credits": "क्रेडिट",
-        "direct_topup": "गेम टॉप-अप",
-        "gift_cards": "गिफ्ट कार्ड",
-        "login": "लॉगिन",
-        "logout": "लॉगआउट",
-        "mobile_recharge": "मोबाइल टॉप-अप",
-        "my_account": "मेरा खाता",
-        "news": "समाचार और प्रोमो",
-        "notifications": "सूचनाएं",
-        "order_history": "ऑर्डर इतिहास",
-        "search_placeholder": "गेम या कार्ड खोजें..."
+    "logo": "लोगो",
+    "monitor": "सिस्टम मॉनिटर",
+    "newsItems": "समाचार",
+    "oauth": {
+      "load_error": "OAuth डेटा लोड करने में त्रुटि"
     },
-    "Search": {
-        "aria_label_clear": "साफ करें",
-        "aria_label_remove_history": "खोज इतिहास मिटाएं",
-        "aria_label_search": "खोजें",
-        "no_results_for": "कोई परिणाम नहीं मिला...",
-        "placeholder": "खोजें...",
-        "placeholder_advanced": "गेम, कार्ड या लेख खोजें...",
-        "recent_searches": "हाल की खोज",
-        "search_results": "खोज परिणाम: ",
-        "view_all_results_for": "सभी परिणाम देखें"
+    "order_detail": {
+      "back_to_orders": "ऑर्डर पर वापस",
+      "items": "आइटम",
+      "order_date": "ऑर्डर तिथि",
+      "order_status": "ऑर्डर स्थिति",
+      "subtitle": "ऑर्डर का विवरण और स्थिति",
+      "title": "ऑर्डर विवरण"
     },
-    "Products": {
-        "recommended": "अनुशंसित पैकेज"
+    "orders": {
+      "actions": "कार्रवाई",
+      "amount": "कुल राशि",
+      "customer": "ग्राहक",
+      "date": "तिथि",
+      "no_orders": "कोई ऑर्डर नहीं मिला",
+      "order_id": "ऑर्डर ID",
+      "product": "उत्पाद",
+      "search_placeholder": "ऑर्डर खोजें...",
+      "status": {
+        "all": "सभी",
+        "cancelled": "रद्द",
+        "completed": "पूर्ण",
+        "failed": "विफल",
+        "pending": "लंबित",
+        "processing": "प्रोसेसिंग",
+        "refunded": "वापस किया"
+      },
+      "status_text": "स्थिति",
+      "subtitle": "सिस्टम के सभी ऑर्डर प्रबंधित करें",
+      "title": "ऑर्डर"
     },
-    "promotions": "प्रमोशन",
-    "how_to_use": {
-        "title": "कैसे उपयोग करें"
+    "promoCards": "प्रोमो कार्ड",
+    "seasonalEvents": "सीज़नल इवेंट",
+    "settings": {
+      "section_labels": {
+        "featured_products": "विशेष उत्पाद",
+        "hero_button": "हीरो बटन",
+        "news": "समाचार",
+        "specials": "विशेष",
+        "view_all": "सभी देखें"
+      }
     },
-    "topup_system": "टॉप-अप सिस्टम",
+    "th-TH": "थाई",
+    "tickets": {
+      "all_assignees": "सभी नियुक्त",
+      "categories": {
+        "all": "सभी श्रेणियां",
+        "order_issue": "ऑर्डर समस्या",
+        "payment_issue": "भुगतान समस्या",
+        "product_issue": "उत्पाद समस्या",
+        "account_issue": "खाता समस्या",
+        "technical_support": "तकनीकी सहायता",
+        "refund_request": "वापसी अनुरोध",
+        "general_inquiry": "सामान्य पूछताछ"
+      },
+      "priorities": {
+        "high": "उच्च",
+        "urgent": "अत्यावश्यक"
+      },
+      "status": {
+        "open": "खुला",
+        "in_progress": "प्रगति में",
+        "waiting_user": "उपयोगकर्ता प्रतीक्षारत",
+        "waiting_admin": "एडमिन प्रतीक्षारत",
+        "resolved": "हल किया",
+        "closed": "बंद"
+      },
+      "unassigned": "अनिर्दिष्ट"
+    }
+  },
+  "Catalog": {
+    "card": {
+      "subtitle": "लोकप्रिय गेम",
+      "title": "अपना गेम चुनें"
+    },
+    "cta_buy": "अभी खरीदें",
+    "cta_topup": "अभी टॉप-अप करें",
+    "filter_category": "श्रेणी फ़िल्टर",
     "games": {
-        "title": "सभी गेम"
+      "subtitle": "सभी उपलब्ध गेम",
+      "title": "गेम"
     },
-    "lucky_games": "लकी गेम",
-    "nav_game_topup": "गेम टॉप-अप",
-    "nav_prepaid_card": "प्रीपेड कार्ड",
-    "nav_mobile_topup": "मोबाइल टॉप-अप",
-    "search_placeholder": "गेम या कार्ड खोजें...",
-    "admin_panel": "एडमिन पैनल",
-    "my_account": "मेरा खाता",
-    "credits": "क्रेडिट",
-    "order_history": "ऑर्डर इतिहास",
-    "logout": "लॉगआउट",
-    "login_button": "लॉगिन / रजिस्टर",
-    "Admin": {
-        "nav": {
-            "main": "डैशबोर्ड",
-            "products_sales": "उत्पाद और बिक्री",
-            "content": "सामग्री प्रबंधन",
-            "users_communication": "उपयोगकर्ता और संचार",
-            "system": "सिस्टम सेटिंग"
-        },
-        "admin_cp": "एडमिन कंट्रोल पैनल",
-        "admin": "प्रशासक",
-        "dashboard": "डैशबोर्ड",
-        "analytics": "विश्लेषण",
-        "products": "इन्वेंटरी",
-        "categories": "श्रेणियां",
-        "orders": "ऑर्डर",
-        "payments": "वित्तीय केंद्र",
-        "cms_pages": "सामग्री पेज",
-        "news": "समाचार प्रबंधन",
-        "manage_faq": "FAQ प्रबंधन",
-        "images": "छवि भंडार",
-        "manage_users": "उपयोगकर्ता प्रबंधन",
-        "support_tickets": "सहायता टिकट",
-        "notifications": "सिस्टम सूचनाएं",
-        "email": "ईमेल प्रोटोकॉल",
-        "settings": "सिस्टम कॉन्फ़िगरेशन",
-        "oauth": "OAuth सेवाएं",
-        "pin": "Pin menu",
-        "unpin": "Unpin menu",
-        "switch_dark": "Switch to dark",
-        "switch_light": "Switch to light",
-        "status": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "processing": "Processing",
-            "failed": "Failed",
-            "cancelled": "Cancelled",
-            "refunded": "Refunded",
-            "active": "Active",
-            "inactive": "Inactive",
-            "low_stock": "Low stock",
-            "out_of_stock": "Out of stock",
-            "banned": "Banned",
-            "unknown": "Unknown"
-        },
-        "pagination": {
-            "showing": "Showing {start}–{end} of {total}",
-            "empty": "No items",
-            "prev": "Previous",
-            "next": "Next"
-        },
-        "table": {
-            "empty": "No data"
-        }
+    "loading": "लोड हो रहा है...",
+    "mobile": {
+      "subtitle": "तेज़ मोबाइल टॉप-अप",
+      "title": "मोबाइल गेम"
     },
-    "hero_zzz_subtitle": "ज़ेनलेस ज़ोन ज़ीरो टॉप-अप",
-    "hero_zzz_highlight_text": "तक",
-    "hero_genshin_subtitle": "जेनशिन इम्पैक्ट टॉप-अप",
-    "hero_genshin_highlight_text": "तक",
-    "hero_btn_text": "अभी टॉप-अप करें",
-    "category_popular_games": "लोकप्रिय गेम",
-    "category_all_games": "सभी गेम",
-    "category_check_skin": "लकी स्किन",
-    "category_game_card": "गेम कार्ड",
-    "category_lucky_game": "लकी ड्रॉ",
-    "special_offers": "विशेष ऑफ़र",
-    "popular_games": "लोकप्रिय गेम टॉप-अप",
+    "no_results": "कोई परिणाम नहीं मिला",
+    "no_results_desc": "दूसरे कीवर्ड से खोजें",
+    "search": "गेम खोजें",
+    "search_placeholder": "गेम का नाम लिखें...",
+    "sort": {
+      "all": "सभी"
+    }
+  },
+  "Checkout": {
+    "browse_products": "उत्पाद देखें",
+    "confirm_order": "ऑर्डर पुष्टि",
+    "continue_shopping": "खरीदारी जारी रखें",
+    "direct_topup": "सीधा टॉप-अप",
+    "empty_cart": "आपकी कार्ट खाली है",
+    "empty_cart_desc": "अपने पसंदीदा गेम खोजने के लिए कैटलॉग देखें।",
+    "error": {
+      "fill_all_fields": "कृपया सभी आवश्यक फ़ील्ड भरें",
+      "generic_failed": "लेनदेन विफल। कृपया पुनः प्रयास करें।",
+      "order_failed": "ऑर्डर बनाने में विफल",
+      "player_id_invalid": "अमान्य प्लेयर ID",
+      "product_changed": "उत्पाद डेटा बदल गया है। कृपया पेज रीफ़्रेश करें।"
+    },
+    "fill_required_fields": "कृपया आवश्यक फ़ील्ड भरें",
+    "gift_card": "गिफ्ट कार्ड",
+    "grand_total": "कुल योग",
+    "info_complete": "जानकारी पूर्ण",
+    "loading": "प्रोसेसिंग...",
+    "order_summary": "ऑर्डर सारांश",
+    "per_item": "प्रति आइटम",
+    "quantity": "मात्रा",
+    "subtitle": "समीक्षा करें और भुगतान करें",
+    "terms_agreement": "मैंने पढ़ लिया है और सहमत हूं",
+    "terms_of_service": "सेवा की शर्तें",
+    "title": "चेकआउट",
+    "total": "कुल"
+  },
+  "Account": {
+    "account_settings": "खाता सेटिंग",
+    "email_label": "आपका ईमेल",
+    "my_orders": "मेरे ऑर्डर",
+    "no_recent_purchases": "कोई हाल की खरीद नहीं",
+    "not_verified": "असत्यापित",
+    "order_status": {
+      "completed": "पूर्ण",
+      "pending": "भुगतान लंबित",
+      "processing": "प्रोसेसिंग",
+      "refunded": "वापस किया"
+    },
+    "recent_purchases": "हाल की खरीदारी",
+    "security": "सुरक्षा",
+    "send_failed": "सत्यापन ईमेल भेजने में विफल",
+    "send_verification": "सत्यापन ईमेल भेजें",
+    "sending": "भेज रहा है...",
+    "spam_hint": "ईमेल न दिखे तो स्पैम फ़ोल्डर देखें।",
+    "subtitle": "प्रोफ़ाइल प्रबंधित करें और ऑर्डर ट्रैक करें",
+    "title": "मेरा खाता",
+    "verification_sent": "सत्यापन लिंक भेजा गया",
+    "verified": "सत्यापित",
+    "verify_email_banner": "पूर्ण एक्सेस के लिए ईमेल सत्यापित करें",
+    "verify_email_desc": "ईमेल सत्यापन से सुरक्षित रिकवरी और सही ऑर्डर ट्रैकिंग सुनिश्चित होती है।",
+    "view_all_orders": "सभी ऑर्डर देखें",
+    "wait_cooldown": "कृपया पुनः प्रयास से पहले कुछ देर प्रतीक्षा करें"
+  },
+  "Security": {
+    "additional_settings": {
+      "login_notifications": "लॉगिन सूचनाएं",
+      "login_notifications_desc": "नए डिवाइस से लॉगिन पर सूचना पाएं।",
+      "title": "अतिरिक्त सेटिंग"
+    },
+    "change_password": {
+      "button_cancel": "रद्द करें",
+      "button_change": "पासवर्ड बदलें",
+      "button_saving": "सहेज रहा है...",
+      "button_setup": "पासवर्ड सेट करें",
+      "confirm_label": "पासवर्ड पुष्टि",
+      "current_label": "वर्तमान पासवर्ड",
+      "error_change_failed": "पासवर्ड नहीं बदल सका",
+      "error_otp_failed": "अमान्य OTP",
+      "error_setup_failed": "पासवर्ड सेट करने में विफल",
+      "length_hint": "कम से कम 8 अक्षर",
+      "match_error": "पासवर्ड मेल नहीं खाते",
+      "new_label": "नया पासवर्ड",
+      "oauth_notice": "आपने सोशल अकाउंट से लॉगिन किया। यहां मानक पासवर्ड सेट कर सकते हैं।",
+      "otp_label": "OTP कोड",
+      "otp_sent_success": "OTP सफलतापूर्वक भेजा गया",
+      "otp_wait": "कृपया प्रतीक्षा करें...",
+      "request_otp": "OTP अनुरोध",
+      "resend_otp": "OTP पुनः भेजें",
+      "setup_confirm_label": "पासवर्ड पुष्टि",
+      "setup_title": "पासवर्ड सेट करें",
+      "success_setup": "पासवर्ड सफलतापूर्वक सेट हुआ",
+      "title": "पासवर्ड बदलें"
+    },
+    "error_email_not_found": "ईमेल नहीं मिला",
+    "recent_devices": {
+      "logout_all": "अन्य सभी डिवाइस से लॉगआउट",
+      "processing": "प्रोसेसिंग...",
+      "title": "हाल के डिवाइस"
+    },
+    "subtitle": "अपनी सुरक्षा और पासवर्ड प्रबंधित करें",
+    "suspicious_activity": {
+      "admin_location": "लंबित",
+      "confirm_button": "गतिविधि की पुष्टि",
+      "resolved_badge": "हल किया",
+      "title": "संदिग्ध गतिविधि"
+    },
+    "title": "सुरक्षा",
+    "two_factor": {
+      "coming_soon": "जल्द आ रहा है",
+      "setup_button": "2FA सेटअप करें",
+      "subtitle": "सुरक्षा की एक और परत जोड़ें",
+      "title": "दो-चरणीय प्रमाणीकरण (2FA)"
+    }
+  },
+  "Common": {
+    "already_verified_title": "पहले से सत्यापित",
+    "back_to_login": "लॉगिन पर वापसी",
+    "confirm_password": "पासवर्ड की पुष्टि करें",
+    "contact_support": "सहायता से संपर्क",
+    "email": "ईमेल",
+    "email_placeholder": "example@email.com",
+    "error_expired": "इस लिंक की समय सीमा समाप्त हो गई है",
+    "error_get_new_link": "नया लिंक अनुरोध करें",
+    "error_invalid": "अमान्य जानकारी",
+    "error_invalid_email": "अमान्य ईमेल प्रारूप",
+    "error_invalid_link": "अमान्य लिंक",
+    "error_invalid_link_desc": "आपका लिंक अमान्य या समाप्त हो गया है।",
+    "error_occurred": "एक त्रुटि हुई",
+    "error_send_failed": "डेटा भेजने में विफल",
+    "error_title": "विफल",
+    "expired_title": "अनुरोध समाप्त",
+    "go_to_account": "खाते पर जाएं",
+    "go_to_login": "लॉगिन पर जाएं",
+    "invalid_link_desc": "लिंक अमान्य है। कृपया पुनः जांचें।",
+    "invalid_link_title": "अमान्य लिंक",
+    "invalid_token_title": "अमान्य टोकन",
+    "loading": "लोड हो रहा है...",
+    "loading_desc": "कृपया प्रतीक्षा करें",
+    "login_now": "अभी लॉगिन करें",
+    "match_error": "डेटा मेल नहीं खाता",
+    "match_success": "डेटा मेल खाता है",
+    "member": "सदस्य क्षेत्र",
+    "new_password": "नया पासवर्ड",
+    "password_requirements": {
+      "length": "कम से कम 8 अक्षर",
+      "lowercase": "कम से कम 1 छोटा अक्षर",
+      "number": "कम से कम 1 अंक",
+      "uppercase": "कम से कम 1 बड़ा अक्षर"
+    },
+    "redirect_hint": "रीडायरेक्ट हो रहा है...",
+    "resend_button": "पुनः भेजें",
+    "resend_email": "ईमेल पुनः भेजें",
+    "resend_success": "सफलतापूर्वक भेजा गया",
+    "reset_button": "रीसेट",
+    "send_link": "लिंक भेजें",
+    "sending": "प्रोसेसिंग...",
+    "spam_hint": "ईमेल न दिखे तो स्पैम फ़ोल्डर देखें।",
+    "strength": "पासवर्ड की मजबूती",
+    "subtitle": "विवरण",
+    "success_desc": "लेनदेन सफल",
+    "success_title": "सफल",
+    "title": "शीर्षक",
+    "token": "सुरक्षा टोकन"
+  },
+  "Coupons": {
+    "add_coupon": "कूपन जोड़ें",
+    "add_failed": "कूपन जोड़ने में विफल",
+    "add_success": "कूपन सफलतापूर्वक जोड़ा गया",
+    "code_label": "कूपन कोड",
+    "details": {
+      "copied": "कॉपी हुआ",
+      "copy_code": "कोड कॉपी करें",
+      "discount": "छूट",
+      "max_discount": "अधिकतम छूट",
+      "min_purchase": "न्यूनतम खरीद",
+      "no_min_purchase": "न्यूनतम खरीद नहीं",
+      "title": "कूपन विवरण",
+      "use_now": "अभी उपयोग करें",
+      "used_at": "उपयोग किया",
+      "valid_until": "इस तक वैध"
+    },
+    "example_code": "DISCOUNT20",
+    "expiry_hint": "कूपन की सीमित वैधता होती है।",
+    "filter": {
+      "active": "सक्रिय",
+      "all": "सभी",
+      "expired": "समाप्त",
+      "used": "उपयोग किया"
+    },
+    "how_to_use": {
+      "step1": "अपने उत्पाद चुनें",
+      "step2": "चेकआउट पर कोड दर्ज करें",
+      "step3": "भुगतान से पहले छूट सत्यापित करें",
+      "title": "कैसे उपयोग करें"
+    },
+    "invalid_code": "अमान्य कोड",
+    "no_coupons": "कोई कूपन उपलब्ध नहीं",
+    "no_coupons_desc": "आपके पास वर्तमान में कोई कूपन नहीं है।",
+    "no_search_results": "आपकी खोज से मिलता कोई कूपन नहीं मिला।",
+    "not_found": "कूपन नहीं मिला",
+    "search_placeholder": "कूपन खोजें...",
+    "start_shopping": "खरीदारी शुरू करें",
+    "status": {
+      "active": "सक्रिय",
+      "expired": "समाप्त",
+      "used": "उपयोग किया"
+    },
+    "subtitle": "अपने छूट कूपन प्रबंधित करें",
+    "th-TH": "थाई",
+    "title": "छूट कूपन",
+    "validating": "सत्यापन हो रहा..."
+  },
+  "Credits": {
+    "about": {
+      "step1_desc": "लॉगिन करें और क्रेडिट टॉप-अप पर जाएं",
+      "step1_title": "पैकेज चुनें",
+      "step2_desc": "अपनी सुविधानुसार भुगतान करें",
+      "step2_title": "भुगतान करें",
+      "step3_desc": "क्रेडिट तुरंत आपके वॉलेट में जुड़ते हैं",
+      "step3_title": "लेनदेन सफल",
+      "title": "क्रेडिट टॉप-अप कैसे करें"
+    },
+    "balance_label": "शेष:",
+    "earned": "कमाई इतिहास",
+    "error_loading": "क्रेडिट जानकारी लोड करने में विफल",
+    "history": {
+      "all": "सभी लेनदेन",
+      "empty": "कोई क्रेडिट इतिहास नहीं",
+      "empty_desc": "कोई हालिया क्रेडिट लेनदेन नहीं।",
+      "this_month": "इस महीने",
+      "this_week": "इस सप्ताह",
+      "title": "लेनदेन इतिहास"
+    },
+    "spent": "खर्च इतिहास",
+    "subtitle": "अपने खाते के क्रेडिट प्रबंधित करें",
+    "th-TH": "थाई",
+    "title": "मेरे क्रेडिट",
+    "topup_button": "क्रेडिट टॉप-अप",
+    "topup_upcoming": "क्रेडिट पैकेज",
+    "total_transactions": "कुल लेनदेन",
+    "types": {
+      "bonus": "बोनस",
+      "purchase": "खरीदारी",
+      "refund": "वापसी",
+      "topup": "टॉप-अप"
+    },
+    "value_hint": "बल्क टॉप-अप पर बेहतर सौदे"
+  },
+  "Favorites": {
+    "added_to_cart": "कार्ट में जोड़ा गया",
+    "buy_now": "अभी खरीदें",
+    "error_loading": "पसंदीदा सूची लोड करने में विफल",
+    "found_items": "आइटम मिले",
+    "no_favorites": "कोई पसंदीदा नहीं",
+    "no_favorites_desc": "पसंदीदा में जोड़ने के लिए दिल आइकन पर क्लिक करें।",
+    "no_search_results": "खोज से मेल खाता कोई पसंदीदा नहीं।",
+    "remove_failed": "आइटम हटाने में विफल",
+    "remove_success": "पसंदीदा से सफलतापूर्वक हटाया गया",
+    "search_placeholder": "पसंदीदा में खोजें...",
+    "start_shopping": "गेम देखें",
+    "starting_at": "शुरू",
+    "subtitle": "आपके पसंदीदा गेम यहां हैं",
+    "title": "मेरे पसंदीदा",
+    "view_more": "विवरण देखें"
+  },
+  "Invoices": {
+    "actions": {
+      "download": "डाउनलोड",
+      "view": "विवरण देखें"
+    },
+    "filter": {
+      "all": "सभी बिल",
+      "cancelled": "रद्द",
+      "paid": "भुगतान हुआ",
+      "pending": "भुगतान लंबित"
+    },
+    "no_invoices": "कोई बिल नहीं मिला",
+    "no_invoices_desc": "अभी तक कोई लेनदेन नहीं हुआ।",
+    "no_search_results": "खोज से मिलता कोई बिल नहीं।",
+    "search_placeholder": "बिल खोजें...",
+    "status": {
+      "cancelled": "रद्द",
+      "paid": "भुगतान हुआ",
+      "pending": "लंबित"
+    },
+    "subtitle": "अपने बिल रिकॉर्ड प्रबंधित करें",
+    "table": {
+      "actions": "कार्रवाई",
+      "amount": "कुल राशि",
+      "date": "तिथि",
+      "invoice_number": "बिल ID",
+      "order_number": "ऑर्डर ID",
+      "status": "स्थिति"
+    },
+    "th-TH": "थाई",
+    "title": "आपके बिल"
+  },
+  "InvoiceDetail": {
+    "a": " ",
+    "back_to_list": "सूची पर वापस",
+    "copy_success": "सफलतापूर्वक कॉपी हुआ",
+    "customer_info": "ग्राहक जानकारी",
+    "date": "लेनदेन तिथि",
+    "download_pdf": "PDF डाउनलोड",
+    "error_not_found": "बिल नहीं मिला",
+    "grand_total": "शुद्ध भुगतान",
+    "invoice_no": "बिल नंबर",
+    "item_details": "खरीदे गए आइटम",
+    "order_no": "ऑर्डर नंबर",
+    "paid": "भुगतान हुआ",
+    "payment_info": "प्रदाता",
+    "payment_status": "भुगतान स्थिति",
+    "price": "कीमत",
+    "print": "रिपोर्ट प्रिंट करें",
+    "product": "उत्पाद जानकारी",
+    "quantity": "मात्रा",
+    "subtotal": "उप-योग",
+    "title": "बिल / रसीद",
+    "total": "कुल योग",
+    "unpaid": "अवैतनिक",
+    "vat": "कर"
+  },
+  "Notifications": {
+    "delete": "सूचना हटाएं",
+    "delete_success": "सफलतापूर्वक हटाया",
+    "empty_desc": "आपकी कोई सूचना नहीं है।",
+    "empty_filter_desc": "इस फ़िल्टर के लिए कोई सूचना नहीं।",
+    "empty_title": "इनबॉक्स खाली है",
+    "error_loading": "संदेश लोड करने में विफल",
+    "filters": {
+      "all": "सभी",
+      "order": "ऑर्डर",
+      "payment": "वित्त",
+      "promotion": "प्रमोशन",
+      "unread": "अपठित"
+    },
+    "manage_settings": "सूचना सेटिंग",
+    "mark_all_read": "सभी पठित करें",
+    "mark_read": "पठित करें",
+    "mark_read_success": "पठित के रूप में चिह्नित",
+    "subtitle": "सूचना केंद्र",
+    "title": "सूचनाएं",
+    "unread_badge": "अपठित",
+    "view_details": "विवरण देखें"
+  },
+  "NotificationPreferences": {
+    "channels": {
+      "email": "ईमेल",
+      "email_desc": "ईमेल से अपडेट और खरीद की रसीद पाएं।",
+      "web": "ऐप-में-सूचनाएं",
+      "web_desc": "वेबसाइट पर ऐप-में-सूचनाएं पाएं।"
+    },
+    "save_button": "सेटिंग सहेजें",
+    "save_success": "प्राथमिकताएं सहेजी गईं।",
+    "saving": "सहेज रहा है...",
+    "subtitle": "अपडेट और अलर्ट कैसे प्राप्त करें, प्रबंधित करें",
+    "title": "सूचना प्राथमिकताएं",
+    "types": {
+      "orders": "ऑर्डर अपडेट",
+      "orders_desc": "ऑर्डर स्थिति और समस्या समाधान के अपडेट।",
+      "promotions": "प्रमोशन",
+      "promotions_desc": "छूट, इवेंट और विशेष ऑफ़र अपडेट।"
+    }
+  },
+  "Orders": {
+    "amount_label": "ऑर्डर राशि:",
+    "date_label": "ऑर्डर तिथि:",
+    "error_loading": "ऑर्डर आइटम लोड करने में विफल",
+    "filter_title": "ऑर्डर फ़िल्टर",
+    "no_orders": "अभी तक कोई ऑर्डर नहीं",
+    "no_orders_desc": "आपके पिछले ऑर्डर यहां दिखेंगे।",
+    "no_search_results": "कोई मिलान नहीं। कृपया ऑर्डर ID जांचें।",
+    "order_id_label": "ऑर्डर ID:",
+    "search_placeholder": "ऑर्डर ID या उत्पाद से खोजें",
+    "status": {
+      "all": "सभी",
+      "cancelled": "रद्द",
+      "completed": "पूर्ण",
+      "pending": "भुगतान प्रतीक्षारत",
+      "processing": "प्रोसेसिंग",
+      "refunded": "वापस किया"
+    },
+    "subtitle": "इतिहास देखें और ऑर्डर ट्रैक करें",
+    "table": {
+      "amount": "राशि",
+      "date": "तिथि",
+      "order_number": "ऑर्डर ID",
+      "product": "उत्पाद विवरण",
+      "status": "स्थिति"
+    },
+    "th-TH": "थाई",
+    "title": "ऑर्डर इतिहास",
+    "view_details": "विवरण देखें",
+    "view_mode": {
+      "card": "कार्ड व्यू",
+      "table": "टेबल व्यू"
+    },
+    "view_results": "परिणाम दिखाएं",
+    "view_short": "छोटा करें"
+  },
+  "OrderDetail": {
+    "actions": {
+      "cancel": "ऑर्डर रद्द करें",
+      "cancel_confirm": "क्या आप यह ऑर्डर रद्द करना चाहते हैं?",
+      "cancel_failed": "ऑर्डर रद्द करने में विफल",
+      "cancel_hint": "ऑर्डर रद्दीकरण वापस नहीं किया जा सकता।",
+      "cancel_success": "ऑर्डर सफलतापूर्वक रद्द हुआ।",
+      "cancelling": "रद्द हो रहा...",
+      "need_help": "मदद चाहिए?",
+      "report_issue": "समस्या रिपोर्ट करें",
+      "title": "ऑर्डर प्रबंधित करें"
+    },
+    "back_to_orders": "ऑर्डर इतिहास पर वापस",
+    "customer": {
+      "date": "ऑर्डर तिथि: ",
+      "email": "ईमेल: ",
+      "title": "ग्राहक विवरण",
+      "username": "ग्राहक: "
+    },
+    "delivery": {
+      "completed_at": "डिलीवरी समय",
+      "status_summary": "डिलीवरी स्थिति",
+      "statuses": {
+        "completed": "सफलतापूर्वक डिलीवर",
+        "failed": "डिलीवरी विफल",
+        "pending": "कतार में",
+        "processing": "डिलीवरी प्रोसेसिंग..."
+      },
+      "title": "डिलीवरी"
+    },
+    "error_loading": "ऑर्डर विवरण लोड करने में त्रुटि",
+    "error_not_found": "ऑर्डर नहीं मिला",
+    "error_not_found_desc": "कृपया ऑर्डर ID जांचें और पुनः प्रयास करें।",
+    "items": {
+      "account_info": "अतिरिक्त जानकारी",
+      "code_label": "रिडेम्पशन कोड",
+      "copy_success": "कोड सफलतापूर्वक कॉपी हुआ",
+      "delivery_failed": "आइटम लोड करने में त्रुटि",
+      "delivery_status": "आइटम डिलीवरी स्थिति",
+      "digital_codes": "डिजिटल कोड",
+      "expired_label": "समाप्ति",
+      "hide_code": "कोड छुपाएं",
+      "pin_label": "PIN",
+      "quantity": "मात्रा",
+      "serial_label": "सीरियल",
+      "show_code": "कोड दिखाएं",
+      "title": "ऑर्डर आइटम",
+      "usage_hint": "कृपया अपना कोड सुरक्षित रखें।"
+    },
+    "loading": "लोड हो रहा है...",
+    "order_id_label": "ऑर्डर ID",
+    "payment": {
+      "discount": "छूट",
+      "method": "भुगतान विधि",
+      "methods": {
+        "bank_transfer": "बैंक ट्रांसफर",
+        "promptpay": "PromptPay",
+        "truemoney": "TrueMoney वॉलेट",
+        "unknown": "अन्य"
+      },
+      "status_paid": "भुगतान हुआ",
+      "status_pending": "सत्यापन लंबित",
+      "subtotal": "उप-योग",
+      "title": "भुगतान सारांश",
+      "total": "कुल राशि"
+    },
+    "th-TH": "थाई",
+    "title": "ऑर्डर विवरण"
+  },
+  "errors": {
+    "generic": {
+      "description": "एक अप्रत्याशित त्रुटि हुई। कृपया बाद में प्रयास करें।",
+      "goHome": "होम पर वापसी",
+      "title": "एक त्रुटि हुई",
+      "tryAgain": "पुनः प्रयास"
+    },
+    "notFound": {
+      "description": "यह पेज मौजूद नहीं है।",
+      "goBack": "वापस जाएं",
+      "goHome": "होम पर वापसी",
+      "title": "पेज नहीं मिला"
+    }
+  },
+  "Verification": {
+    "forgot_password": {
+      "back_to_login": "लॉगिन पर वापसी",
+      "email_placeholder": "पंजीकृत ईमेल दर्ज करें...",
+      "error_invalid_email": "कृपया एक वैध ईमेल दर्ज करें",
+      "error_send_failed": "रीसेट लिंक भेजने में विफल",
+      "loading": "प्रोसेसिंग...",
+      "resend_email": "ईमेल पुनः भेजें",
+      "send_link": "Send Reset Link",
+      "spam_hint": "ईमेल न मिले तो स्पैम फ़ोल्डर देखें।",
+      "subtitle": "पासवर्ड रीसेट लिंक पाने के लिए ईमेल दर्ज करें।",
+      "success_desc": "पासवर्ड रीसेट लिंक आपके ईमेल पर भेजा गया है।",
+      "success_title": "ईमेल भेजा गया",
+      "title": "पासवर्ड भूल गए?"
+    },
+    "reset_password": {
+      "back_to_login": "लॉगिन पर वापसी",
+      "confirm_password": "नया पासवर्ड पुष्टि करें",
+      "error_expired": "रीसेट लिंक की समय सीमा समाप्त हो गई।",
+      "error_get_new_link": "नया रीसेट लिंक अनुरोध करें",
+      "error_invalid": "सुरक्षा कोड अमान्य या समाप्त हो गया।",
+      "error_invalid_link": "अमान्य सत्यापन लिंक।",
+      "error_invalid_link_desc": "रीसेट लिंक अमान्य या पहले से उपयोग हो चुका है।",
+      "loading": "प्रोसेसिंग...",
+      "login_now": "अभी लॉगिन करें",
+      "match_error": "पासवर्ड मेल नहीं खाते",
+      "match_success": "पासवर्ड मेल खाते हैं।",
+      "new_password": "नया पासवर्ड",
+      "password_requirements": {
+        "length": "कम से कम 8 अक्षर",
+        "lowercase": "कम से कम 1 छोटा अक्षर (a-z)",
+        "number": "कम से कम 1 अंक (0-9)",
+        "uppercase": "कम से कम 1 बड़ा अक्षर (A-Z)"
+      },
+      "redirect_hint": "रीडायरेक्ट हो रहा है...",
+      "reset_button": "पासवर्ड अपडेट करें",
+      "strength": "पासवर्ड की मजबूती",
+      "subtitle": "कृपया नया पासवर्ड सेट करें",
+      "success_desc": "पासवर्ड सफलतापूर्वक अपडेट हुआ। अब लॉगिन कर सकते हैं।",
+      "success_title": "पासवर्ड अपडेट हुआ",
+      "title": "पासवर्ड रीसेट",
+      "token": "सुरक्षा टोकन"
+    },
+    "verify_email": {
+      "already_verified_title": "ईमेल पहले से सत्यापित है।",
+      "back_to_login": "लॉगिन पर वापसी",
+      "contact_support": "सहायता से संपर्क",
+      "email": "ईमेल",
+      "error_title": "नेटवर्क त्रुटि के कारण सत्यापन विफल",
+      "expired_title": "सत्यापन लिंक की समय सीमा समाप्त हो गई।",
+      "go_to_account": "खाते पर जाएं",
+      "go_to_login": "लॉगिन पर जाएं",
+      "invalid_link_desc": "सत्यापन लिंक अमान्य या ईमेल पहले से सत्यापित है।",
+      "invalid_link_title": "अमान्य सत्यापन लिंक",
+      "invalid_token_title": "अमान्य टोकन",
+      "loading": "ईमेल सत्यापित हो रहा है...",
+      "loading_desc": "कृपया प्रतीक्षा करें...",
+      "redirect_hint": "होम पर रीडायरेक्ट हो रहा...",
+      "resend_button": "सत्यापन ईमेल पुनः भेजें",
+      "resend_success": "सत्यापन ईमेल सफलतापूर्वक भेजा गया।",
+      "sending": "ईमेल भेज रहा...",
+      "spam_hint": "कृपया स्पैम फ़ोल्डर देखें।",
+      "success_title": "ईमेल सफलतापूर्वक सत्यापित",
+      "title": "ईमेल पता सत्यापित करें",
+      "token": "सुरक्षा टोकन"
+    }
+  },
+  "ProductDetail": {
+    "about_product": "उत्पाद विवरण",
+    "account_info_title": "खाता जानकारी",
+    "auto_delivery_hint": "तत्काल स्वचालित डिलीवरी",
+    "back": "वापस",
+    "buy_now_button": "अभी खरीदें",
+    "by_developer": "डेवलपर: ",
+    "cancel_button": "रद्द करें",
+    "change_button": "चयन बदलें",
+    "close_window_button": "विंडो बंद करें",
+    "confirm_button": "भुगतान पुष्टि",
+    "confirm_hint": "पुष्टि से पहले कृपया अपना चयन सत्यापित करें।",
+    "confirm_order_title": "ऑर्डर सारांश",
+    "confirm_selection_button": "चयन पुष्टि",
+    "copy_link_failed": "कॉपी विफल। कृपया पुनः प्रयास करें।",
+    "copy_link_success": "लिंक सफलतापूर्वक कॉपी हुआ",
+    "developer": "डेवलपर",
+    "error": {
+      "enter_phone": "कृपया एक वैध 10-अंकीय फोन नंबर दर्ज करें।",
+      "fill_all_fields": "कृपया सभी आवश्यक फ़ील्ड भरें।",
+      "invalid_phone": "दर्ज किया गया फोन नंबर अमान्य है।",
+      "login_required": "लेनदेन के लिए कृपया लॉगिन करें।",
+      "no_payment_link": "भुगतान लिंक बनाने में विफल। पुनः प्रयास करें।",
+      "not_found": "उत्पाद नहीं मिला",
+      "not_found_desc": "अनुरोधित उत्पाद नहीं मिला या अब उपलब्ध नहीं।",
+      "order_success_redirect": "लेनदेन सफल। होम पेज पर रीडायरेक्ट...",
+      "payment_error": "भुगतान प्रक्रिया विफल",
+      "payment_failed": "भुगतान जानकारी सत्यापित नहीं हो सकी",
+      "payment_method_unavailable": "यह भुगतान विधि अभी उपलब्ध नहीं।",
+      "phone_region_mismatch": "क्षेत्रीय फोन नंबर समर्थित नहीं",
+      "player_id_invalid": "अमान्य प्लेयर ID। कृपया जांचें और पुनः प्रयास करें।",
+      "select_option": "जारी रखने के लिए पैकेज चुनें।",
+      "truemoney_minimum": "TrueMoney वॉलेट के लिए न्यूनतम 20 THB आवश्यक।"
+    },
+    "fee_label": "शुल्क",
+    "form": "विवरण",
+    "game_info": "गेम विवरण",
+    "input": "जानकारी दर्ज करें",
+    "login_required_notice": "विशेष छूट देखने के लिए लॉगिन करें",
+    "login_to_buy_button": "खरीदने के लिए लॉगिन करें",
+    "meta": "टैग",
+    "mobile_number_label": "वॉलेट नंबर",
+    "mobile_number_placeholder": "08x-xxx-xxxx",
+    "no_options": "कोई पैकेज उपलब्ध नहीं",
+    "no_options_desc": "इस उत्पाद के लिए कोई पैकेज उपलब्ध नहीं।",
+    "no_refund_warning_desc": "पूर्ण ऑर्डर पर वापसी नहीं होती। पुष्टि से पहले विवरण जांचें।",
+    "no_refund_warning_title": "वापसी-अयोग्य सूचना",
+    "no_similar_found": "कोई समान उत्पाद नहीं मिला।",
+    "payment_method_label": "भुगतान विधि: ",
+    "payment_selection_desc": "अपनी पसंदीदा भुगतान विधि चुनें",
+    "payment_selection_title": "भुगतान विकल्प",
+    "platforms": "समर्थित प्लेटफॉर्म",
+    "popular_badge": "बेस्ट सेलर",
+    "price_label": "कीमत:",
+    "privacy_label": "गोपनीयता नीति",
+    "product_details_title": "उत्पाद विवरण",
+    "publisher": "प्रकाशक",
+    "purchase_summary": "ऑर्डर सारांश",
+    "refund_label": "वापसी नीति",
+    "related_products": "आपको यह भी पसंद आ सकता है",
+    "release_date": "रिलीज़ तिथि",
+    "savings_label": "आप बचाते हैं: ",
+    "secure_payment_notice": "100% सुरक्षित भुगतान",
+    "select_package": "पैकेज चुनें",
+    "selected_package_label": "चयनित पैकेज",
+    "similar_products": "समान उत्पाद",
+    "subtotal_label": "उप-योग: ",
+    "terms_agreement_prefix": "जारी रखकर, आप सहमत होते हैं ",
+    "terms_label": "उपयोग की शर्तें",
+    "th-TH": "थाई",
+    "topup_options": "टॉप-अप विकल्प",
+    "total_label": "कुल राशि: ",
+    "transaction_summary_title": "वित्तीय सारांश",
+    "unknown": "निर्दिष्ट नहीं",
+    "unverified_account_warning": "खरीदारी से पहले कृपया ईमेल सत्यापित करें।",
+    "verify_info_hint": "जारी रखने से पहले कृपया प्लेयर ID सावधानी से जांचें।"
+  },
+  "News": {
+    "all_news": "सभी समाचार",
+    "categories": {
+      "event": "इवेंट्स",
+      "general": "सामान्य",
+      "promotion": "प्रमोशन",
+      "update": "अपडेट"
+    },
+    "featured": "विशेष समाचार",
+    "featured_badge": "विशेष",
+    "no_news": "अभी कोई समाचार उपलब्ध नहीं।",
+    "subtitle": "नवीनतम अपडेट और घोषणाएं",
+    "title": "समाचार और घोषणाएं",
+    "view_count": "देखे गए"
+  },
+  "NewsDetail": {
+    "back_to_news": "समाचार पर वापस",
+    "error_loading": "लेख लोड करने में विफल",
+    "error_not_found": "समाचार लेख नहीं मिला",
+    "error_not_found_desc": "यह लेख मौजूद नहीं या हटा दिया गया है।",
+    "featured_badge": "ट्रेंडिंग",
+    "last_updated": "अंतिम अपडेट: ",
+    "other_news": "संबंधित समाचार",
+    "sources": "स्रोत",
+    "views": "देखे गए: "
+  },
+  "PaymentPending": {
+    "a": " ",
+    "loading": "भुगतान स्थिति लोड हो रही...",
+    "orderId": "ऑर्डर ID:",
+    "order_id": "ऑर्डर ID:",
+    "payment_failed": "भुगतान विफल",
+    "payment_failed_desc": "कृपया भुगतान पुनः प्रयास करें।",
+    "payment_success": "भुगतान सफल",
+    "qr_expired": "QR कोड समाप्त",
+    "qr_expired_desc": "कृपया रद्द करें और नया ऑर्डर बनाएं।",
+    "redirecting": "रीडायरेक्ट हो रहा है...",
+    "referenceNo": "संदर्भ नंबर: ",
+    "reference_no": "संदर्भ: ",
+    "time_remaining": "शेष समय: ",
+    "try_again": "पुनः प्रयास",
+    "view_orders": "ऑर्डर इतिहास देखें"
+  },
+  "PaymentSuccess": {
+    "back_home": "होम पर वापसी",
+    "delivery_notice": "आपका ऑर्डर प्रोसेस हो रहा है और जल्द डिलीवर होगा।",
+    "orderId": "ऑर्डर ID:",
+    "order_number": "ऑर्डर नंबर",
+    "processing_badge": "डिलीवरी प्रोसेसिंग",
+    "referenceNo": "संदर्भ: ",
+    "session_id": "सत्र ID",
+    "subtitle": "भुगतान सफलतापूर्वक प्राप्त। हम आपका ऑर्डर तैयार कर रहे हैं।",
+    "title": "भुगतान सफल!",
+    "view_order": "ऑर्डर स्थिति देखें"
+  },
+  "Navigation": {
+    "account": "मेरा खाता",
+    "card": "प्रीपेड कार्ड",
+    "faq": "अक्सर पूछे जाने वाले प्रश्न",
+    "favorite": "पसंदीदा",
+    "games": "गेम टॉप-अप",
+    "home": "होम",
+    "login": "लॉगिन",
+    "mobile_recharge": "मोबाइल टॉप-अप",
+    "news": "समाचार",
+    "orders": "ऑर्डर इतिहास",
+    "register": "रजिस्टर",
+    "support": "सहायता"
+  },
+  "SupportContact": {
+    "form": {
+      "email": "आपका ईमेल",
+      "message": "संदेश",
+      "name": "आपका नाम",
+      "send": "संदेश भेजें",
+      "sending": "भेज रहा है...",
+      "subject": "विषय",
+      "success": "आपका संदेश भेजा गया। हमारी टीम जल्द जवाब देगी।",
+      "title": "ईमेल से संपर्क करें"
+    },
+    "social": {
+      "title": "सोशल मीडिया पर जुड़ें (Facebook / Line / Discord)"
+    },
+    "subtitle": "सहायता के लिए हमारी टीम से संपर्क करें",
+    "title": "सहायता संपर्क (24/7)"
+  },
+  "SupportFAQ": {
+    "all": "सभी श्रेणियां",
+    "back_to_faq": "FAQ पर वापसी",
+    "categories": {
+      "_base": "श्रेणियां"
+    },
+    "need_help": {
+      "title": "मदद चाहिए?",
+      "description": "जो खोज रहे हैं वह नहीं मिला?",
+      "contact_support": "सहायता से संपर्क"
+    },
+    "no": "सहायक नहीं",
+    "no_results": "कोई परिणाम नहीं मिला।",
+    "search_placeholder": "उत्तर खोजें...",
+    "subtitle": "सामान्य प्रश्नों के त्वरित उत्तर पाएं",
+    "title": "अक्सर पूछे जाने वाले प्रश्न",
     "view_all": "सभी देखें",
-    "news_title": "समाचार",
-    "status_instant": "तत्काल",
-    "status_30_60_mins": "30-60 मिनट",
-    "status_preorder": "प्री-ऑर्डर",
-    "trust_secure_title": "100% सुरक्षित",
-    "trust_secure_desc": "उच्च स्तरीय सुरक्षा प्रणाली",
-    "trust_fast_title": "तत्काल डिलीवरी",
-    "trust_fast_desc": "तेज़ स्वचालित डिलीवरी",
-    "trust_price_title": "सर्वोत्तम कीमत",
-    "trust_price_desc": "सबसे प्रतिस्पर्धी कीमतें",
-    "trust_support_title": "24/7 सहायता",
-    "trust_support_desc": "हमारी टीम हमेशा मदद के लिए तैयार है",
-    "special_offers_subtitle": "सिर्फ आपके लिए विशेष डील न चूकें!",
-    "no_deals": "कोई छूट वाले उत्पाद नहीं",
-    "no_products": "कोई उत्पाद उपलब्ध नहीं",
-    "no_news": "अभी कोई समाचार नहीं",
-    "promotion_badge": "प्रोमो",
-    "login_success": "लॉगिन सफल",
-    "invalid_email_password": "अमान्य ईमेल या पासवर्ड",
-    "register_success": "पंजीकरण सफल",
-    "register_error": "पंजीकरण त्रुटि",
-    "logout_success": "लॉगआउट सफल",
-    "profile_update_success": "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई",
-    "profile_update_error": "प्रोफ़ाइल अपडेट विफल रहा",
-    "password_change_success": "पासवर्ड सफलतापूर्वक बदल गया",
-    "login_error": "लॉगिन त्रुटि"
+    "yes": "सहायक"
+  },
+  "SupportFAQDetail": {
+    "back_to_faq": "FAQ पर वापसी",
+    "contact_support": "सहायता से संपर्क",
+    "contact_support_desc": "अतिरिक्त सहायता के लिए कृपया हमारी टीम से संपर्क करें।",
+    "error": {
+      "_base": "सामग्री लोड करने में विफल।"
+    },
+    "helpful": "क्या यह लेख सहायक था?",
+    "last_updated": "अंतिम अपडेट",
+    "loading": "लोड हो रहा है...",
+    "no": "सहायक नहीं",
+    "still_need_help": "अभी भी मदद चाहिए?",
+    "thank_you": "आपकी प्रतिक्रिया के लिए धन्यवाद।",
+    "views": "देखे गए: ",
+    "yes": "सहायक"
+  },
+  "Support": {
+    "categories": {
+      "faq": {
+        "description": "सामान्य प्रश्नों के त्वरित समाधान और उत्तर पाएं।",
+        "title": "अक्सर पूछे जाने वाले प्रश्न"
+      },
+      "tickets": {
+        "description": "ऑर्डर, भुगतान या खाते की समस्या रिपोर्ट करें।",
+        "title": "टिकट जमा करें"
+      }
+    },
+    "common_issues": {
+      "title": "सामान्य समस्याएं"
+    },
+    "contact_methods": "संपर्क विधियां",
+    "subtitle": "नीचे विषय चुनें या सीधे सहायता टीम से संपर्क करें।",
+    "title": "सहायता केंद्र",
+    "urgent_help": {
+      "description": "तत्काल सहायता के लिए Live Chat या Line से संपर्क करें।",
+      "title": "तत्काल सहायता"
+    },
+    "visit": "देखें",
+    "working_hours": {
+      "mon_fri": "सोमवार - शुक्रवार (सामान्य सेवा)",
+      "sat_sun": "शनिवार - रविवार (उत्तर में कुछ देरी हो सकती है)",
+      "time_mon_fri": "09:00 - 00:00 (GMT+7)",
+      "time_sat_sun": "09:00 - 19:00 (GMT+7)",
+      "timezone": "समय क्षेत्र (GMT+7)",
+      "title": "सहायता समय"
+    }
+  },
+  "SupportTickets": {
+    "back": "टिकट पर वापसी",
+    "create": {
+      "cancel": "रद्द करें",
+      "categories": {
+        "account": "खाता समस्या",
+        "general": "सामान्य पूछताछ",
+        "order": "ऑर्डर समस्या",
+        "payment": "भुगतान समस्या",
+        "product": "उत्पाद समस्या",
+        "refund": "वापसी अनुरोध",
+        "technical": "तकनीकी सहायता"
+      },
+      "category": "श्रेणी",
+      "description": "समस्या विवरण",
+      "description_label": "अपनी समस्या विस्तार से बताएं",
+      "description_placeholder": "कृपया अपनी समस्या का वर्णन करें...",
+      "order_ref": "ऑर्डर ID (वैकल्पिक)",
+      "order_ref_placeholder": "ऑर्डर #999999",
+      "subject_placeholder": "संक्षिप्त विषय",
+      "submit": "टिकट जमा करें",
+      "title": "नया टिकट बनाएं"
+    },
+    "create_new": "नया टिकट बनाएं",
+    "created_at": "बनाया गया",
+    "detail": {
+      "closed_notice": "यह टिकट बंद हो गया है। अब उत्तर नहीं दे सकते।",
+      "reply": "उत्तर",
+      "send_reply": "संदेश भेजें"
+    },
+    "disabled": {
+      "cta": "होम पर लौटें",
+      "description": "टिकट सिस्टम अभी उपलब्ध नहीं है।",
+      "title": "सिस्टम अनुपलब्ध"
+    },
+    "no_tickets": "आपने अभी तक कोई टिकट नहीं जमा किया।",
+    "order_ref_label": "ऑर्डर संदर्भ ID (तेज़ समाधान में मदद करता है)",
+    "select_ticket": "टिकट चुनें",
+    "select_ticket_desc": "विवरण देखने के लिए सूची से टिकट चुनें।",
+    "status": {
+      "all": "सभी टिकट",
+      "closed": "बंद",
+      "open": "खुला",
+      "pending": "लंबित",
+      "resolved": "हल किया",
+      "waiting_admin": "सहायता प्रतीक्षारत",
+      "waiting_user": "उपयोगकर्ता प्रतीक्षारत"
+    },
+    "subtitle": "अपने सहायता अनुरोध प्रबंधित करें",
+    "support_team": "सहायता टीम",
+    "system": "सिस्टम स्वचालित सूचना",
+    "title": "सहायता टिकट",
+    "user_you": "आप"
+  },
+  "UserMenu": {
+    "account_menu": "खाता मेनू",
+    "credits": "मेरे क्रेडिट",
+    "favorite": "पसंदीदा",
+    "h-full": "",
+    "logout": "लॉगआउट",
+    "menu": "उपयोगकर्ता मेनू",
+    "my_account": "मेरा खाता",
+    "my_coupons": "मेरे कूपन",
+    "my_invoices": "बिल",
+    "my_orders": "ऑर्डर इतिहास",
+    "notifications": "सूचनाएं",
+    "open_menu": "मेनू खोलें"
+  },
+  "CookieNotice": {
+    "acknowledge": "स्वीकार करें",
+    "ariaClose": "सूचना बंद करें",
+    "description": "Lnwtermgame आपकी ब्राउज़िंग अनुभव, साइट प्रदर्शन और व्यक्तिगत प्रमोशन के लिए कुकीज़ का उपयोग करता है।",
+    "items": [
+      "आवश्यक कुकीज़ (बुनियादी वेबसाइट कार्यक्षमता के लिए)",
+      "विश्लेषण कुकीज़ (प्लेटफ़ॉर्म सुधार के लिए)"
+    ],
+    "noTawkItem": "लाइव चैट अभी अक्षम है।",
+    "privacy": "गोपनीयता नीति",
+    "tawkItem": "लाइव चैट कुकीज़ (Tawk.to) तेज़ ग्राहक सहायता के लिए।",
+    "title": "⚙️ कुकी प्राथमिकताएं"
+  },
+  "Footer": {
+    "about_us": "हमारे बारे में",
+    "contact_us": "संपर्क करें",
+    "copyright": "कॉपीराइट",
+    "language_thai": "थाई",
+    "partners": "भागीदार",
+    "customer": "ग्राहक सेवा",
+    "policies": "नीतियां",
+    "services": "सेवाएं",
+    "payment_inquiry": "भुगतान पूछताछ",
+    "payment_issues": "भुगतान और समस्याएं",
+    "sale_inquiry": "व्यापार पूछताछ",
+    "copyright_notice": "सर्वाधिकार सुरक्षित",
+    "create_ticket": "सहायता टिकट जमा करें",
+    "faq": "अक्सर पूछे जाने वाले प्रश्न",
+    "features": {
+      "payment": "विभिन्न भुगतान विकल्प",
+      "payment_desc": "TrueMoney Wallet और PromptPay से 0% अतिरिक्त शुल्क पर टॉप-अप करें।",
+      "price": "सर्वश्रेष्ठ कीमतें",
+      "price_desc": "विशेष प्रमोशन और सर्वोत्तम गेम टॉप-अप दरें।",
+      "security": "100% सुरक्षित",
+      "security_desc": "हमारा प्लेटफ़ॉर्म उच्च श्रेणी एन्क्रिप्शन से लेनदेन सुरक्षित करता है।",
+      "support": "24/7 ग्राहक सहायता",
+      "support_desc": "हमारी टीम किसी भी पूछताछ के लिए हर समय उपलब्ध है।",
+      "delivery": "तेज़ डिलीवरी"
+    },
+    "live_chat": "लाइव चैट",
+    "payment_channels": "भुगतान विधियां",
+    "privacy_policy": "गोपनीयता और कुकीज़",
+    "quick_links": "त्वरित लिंक",
+    "refund_policy": "वापसी नीति",
+    "support": "सहायता",
+    "support_center": "सहायता केंद्र",
+    "supported_payments": "समर्थित भुगतान प्लेटफ़ॉर्म",
+    "tagline": "Lnwtermgame, थाईलैंड का अग्रणी तेज़ और सुरक्षित गेम टॉप-अप और प्रीपेड कार्ड प्लेटफ़ॉर्म।",
+    "terms_of_service": "सेवा की शर्तें"
+  },
+  "Header": {
+    " ": " ",
+    "/": "/",
+    "articles": "लेख",
+    "dealers": "डीलर",
+    "all_games": "सभी गेम",
+    "cart": "शॉपिंग कार्ट",
+    "contact_us": "संपर्क करें",
+    "credits": "क्रेडिट",
+    "direct_topup": "गेम टॉप-अप",
+    "gift_cards": "गिफ्ट कार्ड",
+    "login": "लॉगिन",
+    "logout": "लॉगआउट",
+    "mobile_recharge": "मोबाइल टॉप-अप",
+    "my_account": "मेरा खाता",
+    "news": "समाचार और प्रोमो",
+    "notifications": "सूचनाएं",
+    "order_history": "ऑर्डर इतिहास",
+    "search_placeholder": "गेम या कार्ड खोजें..."
+  },
+  "Search": {
+    "aria_label_clear": "साफ करें",
+    "aria_label_remove_history": "खोज इतिहास मिटाएं",
+    "aria_label_search": "खोजें",
+    "no_results_for": "कोई परिणाम नहीं मिला...",
+    "placeholder": "खोजें...",
+    "placeholder_advanced": "गेम, कार्ड या लेख खोजें...",
+    "recent_searches": "हाल की खोज",
+    "search_results": "खोज परिणाम: ",
+    "view_all_results_for": "सभी परिणाम देखें"
+  },
+  "Products": {
+    "recommended": "अनुशंसित पैकेज"
+  },
+  "promotions": "प्रमोशन",
+  "how_to_use": {
+    "title": "कैसे उपयोग करें"
+  },
+  "topup_system": "टॉप-अप सिस्टम",
+  "games": {
+    "title": "सभी गेम"
+  },
+  "lucky_games": "लकी गेम",
+  "nav_game_topup": "गेम टॉप-अप",
+  "nav_prepaid_card": "प्रीपेड कार्ड",
+  "nav_mobile_topup": "मोबाइल टॉप-अप",
+  "search_placeholder": "गेम या कार्ड खोजें...",
+  "admin_panel": "एडमिन पैनल",
+  "my_account": "मेरा खाता",
+  "credits": "क्रेडिट",
+  "order_history": "ऑर्डर इतिहास",
+  "logout": "लॉगआउट",
+  "login_button": "लॉगिन / रजिस्टर",
+  "Admin": {
+    "nav": {
+      "main": "डैशबोर्ड",
+      "products_sales": "उत्पाद और बिक्री",
+      "content": "सामग्री प्रबंधन",
+      "users_communication": "उपयोगकर्ता और संचार",
+      "system": "सिस्टम सेटिंग"
+    },
+    "admin_cp": "एडमिन कंट्रोल पैनल",
+    "admin": "प्रशासक",
+    "dashboard": "डैशबोर्ड",
+    "analytics": "विश्लेषण",
+    "products": "इन्वेंटरी",
+    "categories": "श्रेणियां",
+    "orders": "ऑर्डर",
+    "payments": "वित्तीय केंद्र",
+    "cms_pages": "सामग्री पेज",
+    "news": "समाचार प्रबंधन",
+    "manage_faq": "FAQ प्रबंधन",
+    "images": "छवि भंडार",
+    "manage_users": "उपयोगकर्ता प्रबंधन",
+    "support_tickets": "सहायता टिकट",
+    "notifications": "सिस्टम सूचनाएं",
+    "email": "ईमेल प्रोटोकॉल",
+    "settings": "सिस्टम कॉन्फ़िगरेशन",
+    "oauth": "OAuth सेवाएं",
+    "pin": "Pin menu",
+    "unpin": "Unpin menu",
+    "switch_dark": "Switch to dark",
+    "switch_light": "Switch to light",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "active": "Active",
+      "inactive": "Inactive",
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "banned": "Banned",
+      "unknown": "Unknown"
+    },
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "empty": "No items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "empty": "No data"
+    },
+    "actions": {
+      "save": "सहेजें",
+      "cancel": "रद्द करें",
+      "confirm": "पुष्टि करें",
+      "search": "खोजें...",
+      "clear_filters": "फ़िल्टर साफ़ करें"
+    },
+    "ai_chat": "एआई चैट"
+  },
+  "hero_zzz_subtitle": "ज़ेनलेस ज़ोन ज़ीरो टॉप-अप",
+  "hero_zzz_highlight_text": "तक",
+  "hero_genshin_subtitle": "जेनशिन इम्पैक्ट टॉप-अप",
+  "hero_genshin_highlight_text": "तक",
+  "hero_btn_text": "अभी टॉप-अप करें",
+  "category_popular_games": "लोकप्रिय गेम",
+  "category_all_games": "सभी गेम",
+  "category_check_skin": "लकी स्किन",
+  "category_game_card": "गेम कार्ड",
+  "category_lucky_game": "लकी ड्रॉ",
+  "special_offers": "विशेष ऑफ़र",
+  "popular_games": "लोकप्रिय गेम टॉप-अप",
+  "view_all": "सभी देखें",
+  "news_title": "समाचार",
+  "status_instant": "तत्काल",
+  "status_30_60_mins": "30-60 मिनट",
+  "status_preorder": "प्री-ऑर्डर",
+  "trust_secure_title": "100% सुरक्षित",
+  "trust_secure_desc": "उच्च स्तरीय सुरक्षा प्रणाली",
+  "trust_fast_title": "तत्काल डिलीवरी",
+  "trust_fast_desc": "तेज़ स्वचालित डिलीवरी",
+  "trust_price_title": "सर्वोत्तम कीमत",
+  "trust_price_desc": "सबसे प्रतिस्पर्धी कीमतें",
+  "trust_support_title": "24/7 सहायता",
+  "trust_support_desc": "हमारी टीम हमेशा मदद के लिए तैयार है",
+  "special_offers_subtitle": "सिर्फ आपके लिए विशेष डील न चूकें!",
+  "no_deals": "कोई छूट वाले उत्पाद नहीं",
+  "no_products": "कोई उत्पाद उपलब्ध नहीं",
+  "no_news": "अभी कोई समाचार नहीं",
+  "promotion_badge": "प्रोमो",
+  "login_success": "लॉगिन सफल",
+  "invalid_email_password": "अमान्य ईमेल या पासवर्ड",
+  "register_success": "पंजीकरण सफल",
+  "register_error": "पंजीकरण त्रुटि",
+  "logout_success": "लॉगआउट सफल",
+  "profile_update_success": "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई",
+  "profile_update_error": "प्रोफ़ाइल अपडेट विफल रहा",
+  "password_change_success": "पासवर्ड सफलतापूर्वक बदल गया",
+  "login_error": "लॉगिन त्रुटि"
 }

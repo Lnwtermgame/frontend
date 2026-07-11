@@ -1215,7 +1215,15 @@
     },
     "table": {
       "empty": "ไม่มีข้อมูล"
-    }
+    },
+    "actions": {
+      "save": "บันทึก",
+      "cancel": "ยกเลิก",
+      "confirm": "ยืนยัน",
+      "search": "ค้นหา...",
+      "clear_filters": "ล้างตัวกรอง"
+    },
+    "ai_chat": "AI Chat"
   },
   "hero_zzz_subtitle": "เติมเงิน Zenless Zone Zero",
   "hero_zzz_highlight_text": "ส่วนลดสูงสุด",

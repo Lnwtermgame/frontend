@@ -1,1259 +1,1267 @@
 {
-    "Auth": {
-        "login": {
-            "email": {
-                "_base": "Email"
-            },
-            "error": "Error",
-            "error_occurred": "An error occurred during login",
-            "forgot_password": "Forgot Password?",
-            "hero_title_1": "Best game top-ups",
-            "hero_title_2": "Fast and Secure",
-            "hero_title_3": "Available 24/7",
-            "hero_title_4": "with Lnwtermgame",
-            "login_button": "Login",
-            "no_account": "Don't have an account?",
-            "oauth_callback_failed": "Failed to login via social account",
-            "oauth_failed": "Login failed",
-            "oauth_init_failed": "Failed to initialize login",
-            "or_login_with": "Or login with",
-            "password": "Password",
-            "provider_not_enabled": "This provider is not currently available",
-            "redirect": "Redirecting...",
-            "register_now": "Register now",
-            "secure_100": "100% Secure",
-            "secure_100_desc": "Your data is kept safe and secure",
-            "session_expired": "Session Expired",
-            "session_expired_desc": "Please login again.",
-            "subtitle": "Login to access full features",
-            "title": "Login",
-            "vip_points": "Earn VIP Points",
-            "vip_points_desc": "Get exclusive privileges when you become a member."
-        },
-        "register": {
-            "already_have_account": "Already have an account?",
-            "and": "and",
-            "confirm_password": "Confirm password",
-            "email": {
-                "_base": "Email"
-            },
-            "fast_247": "Fast 24/7 Support",
-            "fast_247_desc": "Process your transactions anytime, no holidays.",
-            "go_to_login": "Login here",
-            "hero_desc": "Join Lnwtermgame to receive special promotions and privileges.",
-            "hero_title_1": "Register New Account",
-            "hero_title_2": "Get special promotions",
-            "hero_title_3": "Just for you",
-            "login_now": "Login now",
-            "password": "Password",
-            "password_hint": "Password must be at least 8 characters",
-            "passwords_not_match": "Passwords do not match",
-            "privacy_policy": "Privacy Policy",
-            "register_button": "Register",
-            "registration_disabled": "Registration Disabled",
-            "registration_disabled_desc": "We are temporarily not accepting new registrations.",
-            "subtitle": "Create an account to start topping up",
-            "terms": "Terms of Service",
-            "terms_agreement": "I agree to the",
-            "title": "Registration",
-            "username": "Username",
-            "welcome_bonus": "Welcome Bonus",
-            "welcome_bonus_desc": "Get a special bonus on your first top-up."
-        }
+  "Auth": {
+    "login": {
+      "email": {
+        "_base": "Email"
+      },
+      "error": "Error",
+      "error_occurred": "An error occurred during login",
+      "forgot_password": "Forgot Password?",
+      "hero_title_1": "Best game top-ups",
+      "hero_title_2": "Fast and Secure",
+      "hero_title_3": "Available 24/7",
+      "hero_title_4": "with Lnwtermgame",
+      "login_button": "Login",
+      "no_account": "Don't have an account?",
+      "oauth_callback_failed": "Failed to login via social account",
+      "oauth_failed": "Login failed",
+      "oauth_init_failed": "Failed to initialize login",
+      "or_login_with": "Or login with",
+      "password": "Password",
+      "provider_not_enabled": "This provider is not currently available",
+      "redirect": "Redirecting...",
+      "register_now": "Register now",
+      "secure_100": "100% Secure",
+      "secure_100_desc": "Your data is kept safe and secure",
+      "session_expired": "Session Expired",
+      "session_expired_desc": "Please login again.",
+      "subtitle": "Login to access full features",
+      "title": "Login",
+      "vip_points": "Earn VIP Points",
+      "vip_points_desc": "Get exclusive privileges when you become a member."
     },
-    "AdminPage": {
-        "ALL": "All",
-        "SLA_24": "SLA 24h",
-        "SLA_8": "SLA 8h",
-        "UNASSIGNED": "Unassigned",
-        "WAITING_ADMIN": "Waiting for Admin",
-        "a": " ",
-        "categories": {
-            "delete_confirm": "Confirm deleting this category?",
-            "delete_failed": "Failed to delete category",
-            "delete_has_products": "Cannot delete because there are products in this category.",
-            "delete_success": "Category deleted successfully",
-            "load_failed": "Failed to load categories",
-            "name_required": "Category name is required",
-            "save_success": "Data saved successfully",
-            "slug_required": "Slug is required"
-        },
-        "cms_news": {
-            "categories": {
-                "event": "Events",
-                "general": "General",
-                "promotion": "Promotions",
-                "update": "Updates"
-            }
-        },
-        "common": {
-            "error": "Error occurred",
-            "from": "from",
-            "refresh": "Refresh",
-            "showing": "Showing"
-        },
-        "dashboard": {
-            "load_error": "Failed to load dashboard data",
-            "no_data": "No data available"
-        },
-        "email": {
-            "categories": {
-                "authentication": "Authentication",
-                "general": "General",
-                "order": "Order",
-                "payment": "Payment",
-                "promotion": "Promotion",
-                "support": "Support",
-                "system": "System"
-            },
-            "placeholders": {
-                "discountAmount": "Discount Amount",
-                "email": "Email",
-                "expiresIn": "Expires in",
-                "finalAmount": "Final Amount",
-                "orderDate": "Order Date",
-                "orderNumber": "Order Number",
-                "resetUrl": "Reset URL",
-                "siteName": "Site Name",
-                "ticketNumber": "Ticket Number",
-                "totalAmount": "Total Amount",
-                "username": "Username",
-                "verificationUrl": "Verification URL"
-            }
-        },
-        "logo": "Logo",
-        "monitor": "System Monitor",
-        "newsItems": "News Items",
-        "oauth": {
-            "load_error": "Error loading OAuth data"
-        },
-        "order_detail": {
-            "back_to_orders": "Back to orders",
-            "items": "Items",
-            "order_date": "Order Date",
-            "order_status": "Order Status",
-            "subtitle": "Details and status of the order",
-            "title": "Order Detail"
-        },
-        "orders": {
-            "actions": "Actions",
-            "amount": "Total Amount",
-            "customer": "Customer",
-            "date": "Date",
-            "no_orders": "No orders found",
-            "order_id": "Order ID",
-            "product": "Product",
-            "search_placeholder": "Search orders...",
-            "status": {
-                "all": "All",
-                "cancelled": "Cancelled",
-                "completed": "Completed",
-                "failed": "Failed",
-                "pending": "Pending",
-                "processing": "Processing",
-                "refunded": "Refunded"
-            },
-            "status_text": "Status",
-            "subtitle": "Manage all orders in the system",
-            "title": "Orders"
-        },
-        "promoCards": "Promo Cards",
-        "seasonalEvents": "Seasonal Events",
-        "settings": {
-            "section_labels": {
-                "featured_products": "Featured Products",
-                "hero_button": "Hero Button",
-                "news": "News",
-                "specials": "Specials",
-                "view_all": "View All"
-            }
-        },
-        "th-TH": "Thai",
-        "tickets": {
-            "all_assignees": "All Assignees",
-            "categories": {
-                "all": "All categories",
-                "order_issue": "Order Issue",
-                "payment_issue": "Payment Issue",
-                "product_issue": "Product Issue",
-                "account_issue": "Account Issue",
-                "technical_support": "Technical Support",
-                "refund_request": "Refund Request",
-                "general_inquiry": "General Inquiry"
-            },
-            "priorities": {
-                "high": "High",
-                "urgent": "Urgent"
-            },
-            "status": {
-                "open": "Open",
-                "in_progress": "In Progress",
-                "waiting_user": "Waiting User",
-                "waiting_admin": "Waiting Admin",
-                "resolved": "Resolved",
-                "closed": "Closed"
-            },
-            "unassigned": "Unassigned"
-        }
+    "register": {
+      "already_have_account": "Already have an account?",
+      "and": "and",
+      "confirm_password": "Confirm password",
+      "email": {
+        "_base": "Email"
+      },
+      "fast_247": "Fast 24/7 Support",
+      "fast_247_desc": "Process your transactions anytime, no holidays.",
+      "go_to_login": "Login here",
+      "hero_desc": "Join Lnwtermgame to receive special promotions and privileges.",
+      "hero_title_1": "Register New Account",
+      "hero_title_2": "Get special promotions",
+      "hero_title_3": "Just for you",
+      "login_now": "Login now",
+      "password": "Password",
+      "password_hint": "Password must be at least 8 characters",
+      "passwords_not_match": "Passwords do not match",
+      "privacy_policy": "Privacy Policy",
+      "register_button": "Register",
+      "registration_disabled": "Registration Disabled",
+      "registration_disabled_desc": "We are temporarily not accepting new registrations.",
+      "subtitle": "Create an account to start topping up",
+      "terms": "Terms of Service",
+      "terms_agreement": "I agree to the",
+      "title": "Registration",
+      "username": "Username",
+      "welcome_bonus": "Welcome Bonus",
+      "welcome_bonus_desc": "Get a special bonus on your first top-up."
+    }
+  },
+  "AdminPage": {
+    "ALL": "All",
+    "SLA_24": "SLA 24h",
+    "SLA_8": "SLA 8h",
+    "UNASSIGNED": "Unassigned",
+    "WAITING_ADMIN": "Waiting for Admin",
+    "a": " ",
+    "categories": {
+      "delete_confirm": "Confirm deleting this category?",
+      "delete_failed": "Failed to delete category",
+      "delete_has_products": "Cannot delete because there are products in this category.",
+      "delete_success": "Category deleted successfully",
+      "load_failed": "Failed to load categories",
+      "name_required": "Category name is required",
+      "save_success": "Data saved successfully",
+      "slug_required": "Slug is required"
     },
-    "Catalog": {
-        "card": {
-            "subtitle": "Popular games",
-            "title": "Select your game"
-        },
-        "cta_buy": "Buy Now",
-        "cta_topup": "Top Up Now",
-        "filter_category": "Filter category",
-        "games": {
-            "subtitle": "All games available",
-            "title": "Games"
-        },
-        "loading": "Loading...",
-        "mobile": {
-            "subtitle": "Fast mobile top-up",
-            "title": "Mobile Games"
-        },
-        "no_results": "No results found",
-        "no_results_desc": "Try searching with a different keyword",
-        "search": "Search game",
-        "search_placeholder": "Search game title...",
-        "sort": {
-            "all": "All"
-        }
+    "cms_news": {
+      "categories": {
+        "event": "Events",
+        "general": "General",
+        "promotion": "Promotions",
+        "update": "Updates"
+      }
     },
-    "Checkout": {
-        "browse_products": "Browse products",
-        "confirm_order": "Confirm Order",
-        "continue_shopping": "Continue Shopping",
-        "direct_topup": "Direct Top Up",
-        "empty_cart": "Your cart is empty",
-        "empty_cart_desc": "Browse our catalog to find your favorite games.",
-        "error": {
-            "fill_all_fields": "Please fill all required fields",
-            "generic_failed": "Transaction failed. Please try again.",
-            "order_failed": "Failed to create order",
-            "player_id_invalid": "Invalid Player ID",
-            "product_changed": "Product data has changed. Please refresh the page."
-        },
-        "fill_required_fields": "Please fill required fields",
-        "gift_card": "Gift Card",
-        "grand_total": "Grand Total",
-        "info_complete": "Information complete",
-        "loading": "Processing...",
-        "order_summary": "Order Summary",
-        "per_item": "per item",
-        "quantity": "Quantity",
-        "subtitle": "Review and proceed to payment",
-        "terms_agreement": "I have read and agree to the",
-        "terms_of_service": "Terms of Service",
-        "title": "Checkout",
-        "total": "Total"
+    "common": {
+      "error": "Error occurred",
+      "from": "from",
+      "refresh": "Refresh",
+      "showing": "Showing"
     },
-    "Account": {
-        "account_settings": "Account Settings",
-        "email_label": "Your email",
-        "my_orders": "My Orders",
-        "no_recent_purchases": "No recent purchases",
-        "not_verified": "Not Verified",
-        "order_status": {
-            "completed": "Completed",
-            "pending": "Pending Payment",
-            "processing": "Processing",
-            "refunded": "Refunded"
-        },
-        "recent_purchases": "Recent Purchases",
-        "security": "Security",
-        "send_failed": "Failed to send verification email",
-        "send_verification": "Send verification email",
-        "sending": "Sending...",
-        "spam_hint": "If you don't see the email, please check your spam folder.",
-        "subtitle": "Manage your profile and track orders",
-        "title": "My Account",
-        "verification_sent": "Verification link sent",
-        "verified": "Verified",
-        "verify_email_banner": "Please verify your email for full access",
-        "verify_email_desc": "Verifying your email ensures secure recovery and accurate tracking of your orders.",
-        "view_all_orders": "View all orders",
-        "wait_cooldown": "Please wait a moment before trying again"
+    "dashboard": {
+      "load_error": "Failed to load dashboard data",
+      "no_data": "No data available"
     },
-    "Security": {
-        "additional_settings": {
-            "login_notifications": "Login Notifications",
-            "login_notifications_desc": "Get notified when a new device logs into your account.",
-            "title": "Additional Settings"
-        },
-        "change_password": {
-            "button_cancel": "Cancel",
-            "button_change": "Change Password",
-            "button_saving": "Saving...",
-            "button_setup": "Set Password",
-            "confirm_label": "Confirm Password",
-            "current_label": "Current Password",
-            "error_change_failed": "Could not change password",
-            "error_otp_failed": "Invalid OTP",
-            "error_setup_failed": "Failed to set password",
-            "length_hint": "At least 8 characters long",
-            "match_error": "Passwords do not match",
-            "new_label": "New Password",
-            "oauth_notice": "You logged in via a social account. You can set a standard password here.",
-            "otp_label": "OTP Code",
-            "otp_sent_success": "OTP sent successfully",
-            "otp_wait": "Please wait...",
-            "request_otp": "Request OTP",
-            "resend_otp": "Resend OTP",
-            "setup_confirm_label": "Confirm Password",
-            "setup_title": "Set Password",
-            "success_setup": "Password set successfully",
-            "title": "Change Password"
-        },
-        "error_email_not_found": "Email not found",
-        "recent_devices": {
-            "logout_all": "Logout from all other devices",
-            "processing": "Processing...",
-            "title": "Recent Devices"
-        },
-        "subtitle": "Manage your security and passwords",
-        "suspicious_activity": {
-            "admin_location": "Pending",
-            "confirm_button": "Confirm Activity",
-            "resolved_badge": "Resolved",
-            "title": "Suspicious Activity"
-        },
-        "title": "Security",
-        "two_factor": {
-            "coming_soon": "Coming Soon",
-            "setup_button": "Setup 2FA",
-            "subtitle": "Add another layer of security",
-            "title": "Two-Factor Authentication (2FA)"
-        }
-    },
-    "Common": {
-        "already_verified_title": "Already verified",
-        "back_to_login": "Back to Login",
-        "confirm_password": "Confirm password",
-        "contact_support": "Contact Support",
-        "email": "Email",
-        "email_placeholder": "example@email.com",
-        "error_expired": "This link has expired",
-        "error_get_new_link": "Request a new link",
-        "error_invalid": "Invalid information",
-        "error_invalid_email": "Invalid email format",
-        "error_invalid_link": "Invalid link",
-        "error_invalid_link_desc": "The link you are using is invalid or has expired.",
-        "error_occurred": "An error occurred",
-        "error_send_failed": "Failed to send data",
-        "error_title": "Failed",
-        "expired_title": "Request Expired",
-        "go_to_account": "Go to Account",
-        "go_to_login": "Go to Login",
-        "invalid_link_desc": "The link is invalid. Please check again.",
-        "invalid_link_title": "Invalid Link",
-        "invalid_token_title": "Invalid Token",
-        "loading": "Loading...",
-        "loading_desc": "Please wait a moment",
-        "login_now": "Login Now",
-        "match_error": "Data does not match",
-        "match_success": "Data matched",
-        "member": "Member Area",
-        "new_password": "New Password",
-        "password_requirements": {
-            "length": "At least 8 characters",
-            "lowercase": "At least 1 lowercase letter",
-            "number": "At least 1 number",
-            "uppercase": "At least 1 uppercase letter"
-        },
-        "redirect_hint": "Redirecting...",
-        "resend_button": "Resend",
-        "resend_email": "Resend Email",
-        "resend_success": "Sent successfully",
-        "reset_button": "Reset",
-        "send_link": "Send Link",
-        "sending": "Processing...",
-        "spam_hint": "Check your spam folder if you do not see the email.",
-        "strength": "Password Strength",
-        "subtitle": "Overview description",
-        "success_desc": "Transaction Successful",
-        "success_title": "Success",
-        "title": "Title",
-        "token": "Security Token"
-    },
-    "Coupons": {
-        "add_coupon": "Add Coupon",
-        "add_failed": "Failed to add coupon",
-        "add_success": "Coupon added successfully",
-        "code_label": "Coupon Code",
-        "details": {
-            "copied": "Copied",
-            "copy_code": "Copy Code",
-            "discount": "Discount",
-            "max_discount": "Max Discount",
-            "min_purchase": "Minimum Purchase",
-            "no_min_purchase": "No minimum purchase",
-            "title": "Coupon Details",
-            "use_now": "Use Now",
-            "used_at": "Used At",
-            "valid_until": "Valid Until"
-        },
-        "example_code": "DISCOUNT20",
-        "expiry_hint": "Coupons have a limited validity period.",
-        "filter": {
-            "active": "Active",
-            "all": "All",
-            "expired": "Expired",
-            "used": "Used"
-        },
-        "how_to_use": {
-            "step1": "Select your products",
-            "step2": "Enter code during checkout",
-            "step3": "Verify the discount before payment",
-            "title": "How to Use"
-        },
-        "invalid_code": "Invalid Code",
-        "no_coupons": "No Coupons Available",
-        "no_coupons_desc": "You do not have any discount coupons currently.",
-        "no_search_results": "No coupons found matching your search.",
-        "not_found": "Coupon not found",
-        "search_placeholder": "Search coupons...",
-        "start_shopping": "Start Shopping",
-        "status": {
-            "active": "Active",
-            "expired": "Expired",
-            "used": "Used"
-        },
-        "subtitle": "Manage your discount coupons",
-        "th-TH": "Thai",
-        "title": "Discount Coupons",
-        "validating": "Validating..."
-    },
-    "Credits": {
-        "about": {
-            "step1_desc": "Login and head to the credit top-up section",
-            "step1_title": "Choose Package",
-            "step2_desc": "Pay via your most convenient method",
-            "step2_title": "Make Payment",
-            "step3_desc": "Credits are instantly added to your wallet",
-            "step3_title": "Transaction Successful",
-            "title": "How to top up credits"
-        },
-        "balance_label": "Balance:",
-        "earned": "Earned History",
-        "error_loading": "Failed to load credits information",
-        "history": {
-            "all": "All Transactions",
-            "empty": "No Credit History",
-            "empty_desc": "No recent credit transactions found.",
-            "this_month": "This Month",
-            "this_week": "This Week",
-            "title": "Transaction History"
-        },
-        "spent": "Spending History",
-        "subtitle": "Manage your account's credits",
-        "th-TH": "Thai",
-        "title": "My Credits",
-        "topup_button": "Top Up Credits",
-        "topup_upcoming": "Credit Packages",
-        "total_transactions": "Total Transactions",
-        "types": {
-            "bonus": "Bonus",
-            "purchase": "Purchases",
-            "refund": "Refunds",
-            "topup": "Top-up"
-        },
-        "value_hint": "Enjoy better deals with bulk top-ups"
-    },
-    "Favorites": {
-        "added_to_cart": "Successfully added to cart",
-        "buy_now": "Buy Now",
-        "error_loading": "Failed to load favorites list",
-        "found_items": "items found",
-        "no_favorites": "No Favorite Items",
-        "no_favorites_desc": "Click the heart icon on any game to add it to your favorites.",
-        "no_search_results": "No favorites matching your search.",
-        "remove_failed": "Failed to remove item",
-        "remove_success": "Removed from favorites successfully",
-        "search_placeholder": "Search in favorites...",
-        "start_shopping": "Browse Games",
-        "starting_at": "Starting at",
-        "subtitle": "Games you liked are stored here",
-        "title": "My Favorites",
-        "view_more": "View details"
-    },
-    "Invoices": {
-        "actions": {
-            "download": "Download",
-            "view": "View Details"
-        },
-        "filter": {
-            "all": "All Invoices",
-            "cancelled": "Cancelled",
-            "paid": "Paid",
-            "pending": "Pending Payment"
-        },
-        "no_invoices": "No Invoices Found",
-        "no_invoices_desc": "No transactions have been made yet.",
-        "no_search_results": "No invoices matching your search.",
-        "search_placeholder": "Search invoices...",
-        "status": {
-            "cancelled": "Cancelled",
-            "paid": "Paid",
-            "pending": "Pending"
-        },
-        "subtitle": "Manage your invoice records",
-        "table": {
-            "actions": "Actions",
-            "amount": "Total Amount",
-            "date": "Date",
-            "invoice_number": "Invoice ID",
-            "order_number": "Order ID",
-            "status": "Status"
-        },
-        "th-TH": "Thai",
-        "title": "Your Invoices"
-    },
-    "InvoiceDetail": {
-        "a": " ",
-        "back_to_list": "Back to List",
-        "copy_success": "Copied successfully",
-        "customer_info": "Customer Information",
-        "date": "Transaction Date",
-        "download_pdf": "Download PDF",
-        "error_not_found": "Invoice not found",
-        "grand_total": "Net Payment",
-        "invoice_no": "Invoice Number",
-        "item_details": "Purchased Items",
-        "order_no": "Order Number",
-        "paid": "Paid",
-        "payment_info": "Provider",
-        "payment_status": "Payment Status",
-        "price": "Price",
-        "print": "Print Report",
-        "product": "Product Info",
-        "quantity": "Qty",
-        "subtotal": "Subtotal",
-        "title": "Invoice / Receipt",
-        "total": "Grand Total",
-        "unpaid": "Unpaid",
-        "vat": "VAT"
-    },
-    "Notifications": {
-        "delete": "Delete Notification",
-        "delete_success": "Deleted successfully",
-        "empty_desc": "You have no notifications.",
-        "empty_filter_desc": "No notifications found for this filter.",
-        "empty_title": "Inbox is empty",
-        "error_loading": "Failed to load messages",
-        "filters": {
-            "all": "All",
-            "order": "Orders",
-            "payment": "Finance",
-            "promotion": "Promotions",
-            "unread": "Unread"
-        },
-        "manage_settings": "Notification Settings",
-        "mark_all_read": "Mark All as Read",
-        "mark_read": "Mark as Read",
-        "mark_read_success": "Marked as read successfully",
-        "subtitle": "Notification Center",
-        "title": "Notifications",
-        "unread_badge": "Unread",
-        "view_details": "View Details"
-    },
-    "NotificationPreferences": {
-        "channels": {
-            "email": "Email",
-            "email_desc": "Receive updates and purchase receipts directly via email.",
-            "web": "In-App Notifications",
-            "web_desc": "Receive in-app notifications on the website."
-        },
-        "save_button": "Save Settings",
-        "save_success": "Preferences saved successfully.",
-        "saving": "Saving...",
-        "subtitle": "Manage how you receive updates and alerts",
-        "title": "Notification Preferences",
-        "types": {
-            "orders": "Order Updates",
-            "orders_desc": "Updates on your order status and resolution of issues.",
-            "promotions": "Promotions",
-            "promotions_desc": "Updates on discounts, events, and special offers."
-        }
-    },
-    "Orders": {
-        "amount_label": "Order Amount:",
-        "date_label": "Order Date:",
-        "error_loading": "Failed to load order items",
-        "filter_title": "Order Filters",
-        "no_orders": "No orders yet",
-        "no_orders_desc": "Your past orders will appear here.",
-        "no_search_results": "No matching orders found. Please check the order ID.",
-        "order_id_label": "Order ID:",
-        "search_placeholder": "Search by Order ID or Product",
-        "status": {
-            "all": "All",
-            "cancelled": "Cancelled",
-            "completed": "Completed",
-            "pending": "Awaiting Payment",
-            "processing": "Processing",
-            "refunded": "Refunded"
-        },
-        "subtitle": "Check history and track your orders",
-        "table": {
-            "amount": "Amount",
-            "date": "Date",
-            "order_number": "Order ID",
-            "product": "Product Details",
-            "status": "Status"
-        },
-        "th-TH": "Thai",
-        "title": "Order History",
-        "view_details": "View Details",
-        "view_mode": {
-            "card": "Card View",
-            "table": "Table View"
-        },
-        "view_results": "Show Results",
-        "view_short": "Minimize"
-    },
-    "OrderDetail": {
-        "actions": {
-            "cancel": "Cancel Order",
-            "cancel_confirm": "Are you sure you want to cancel this order?",
-            "cancel_failed": "Failed to cancel order",
-            "cancel_hint": "Order cancellation cannot be undone.",
-            "cancel_success": "Order cancelled successfully.",
-            "cancelling": "Cancelling...",
-            "need_help": "Need Help?",
-            "report_issue": "Report Issue",
-            "title": "Manage Order"
-        },
-        "back_to_orders": "Back to Order History",
-        "customer": {
-            "date": "Order Date: ",
-            "email": "Email: ",
-            "title": "Customer Details",
-            "username": "Customer: "
-        },
-        "delivery": {
-            "completed_at": "Delivered at",
-            "status_summary": "Delivery Status",
-            "statuses": {
-                "completed": "Delivered successfully",
-                "failed": "Delivery failed",
-                "pending": "In queue",
-                "processing": "Processing delivery..."
-            },
-            "title": "Delivery"
-        },
-        "error_loading": "Error loading order details",
-        "error_not_found": "Order not found",
-        "error_not_found_desc": "Please check the Order ID and try again.",
-        "items": {
-            "account_info": "Additional Info",
-            "code_label": "Redemption Code",
-            "copy_success": "Code copied successfully",
-            "delivery_failed": "Error loading item",
-            "delivery_status": "Item Delivery Status",
-            "digital_codes": "Digital Code",
-            "expired_label": "Expires at",
-            "hide_code": "Hide Code",
-            "pin_label": "PIN",
-            "quantity": "Qty",
-            "serial_label": "Serial",
-            "show_code": "Show Code",
-            "title": "Order Items",
-            "usage_hint": "Please keep your code secure."
-        },
-        "loading": "Loading...",
-        "order_id_label": "Order ID",
-        "payment": {
-            "discount": "Discount",
-            "method": "Payment Method",
-            "methods": {
-                "bank_transfer": "Bank Transfer",
-                "promptpay": "PromptPay",
-                "truemoney": "TrueMoney Wallet",
-                "unknown": "Other"
-            },
-            "status_paid": "Paid",
-            "status_pending": "Pending Validation",
-            "subtotal": "Subtotal",
-            "title": "Payment Summary",
-            "total": "Total Amount"
-        },
-        "th-TH": "Thai",
-        "title": "Order Details"
-    },
-    "errors": {
-        "generic": {
-            "description": "An unexpected error occurred. Please try again later.",
-            "goHome": "Back to Home",
-            "title": "An error occurred",
-            "tryAgain": "Try Again"
-        },
-        "notFound": {
-            "description": "The page you are looking for does not exist.",
-            "goBack": "Go Back",
-            "goHome": "Back to Home",
-            "title": "Page Not Found"
-        }
-    },
-    "Verification": {
-        "forgot_password": {
-            "back_to_login": "Back to Login",
-            "email_placeholder": "Enter your registered email...",
-            "error_invalid_email": "Please enter a valid email address",
-            "error_send_failed": "Failed to send reset link",
-            "loading": "Processing...",
-            "resend_email": "Resend Email",
-            "send_link": "Send Reset Link",
-            "spam_hint": "Please check your spam folder if you do not receive the email.",
-            "subtitle": "Enter your email to receive a password reset link.",
-            "success_desc": "A password reset link has been sent to your email.",
-            "success_title": "Email Sent",
-            "title": "Forgot Password?"
-        },
-        "reset_password": {
-            "back_to_login": "Back to Login",
-            "confirm_password": "Confirm new password",
-            "error_expired": "The reset link has expired.",
-            "error_get_new_link": "Request a new reset link",
-            "error_invalid": "The security code is invalid or has expired.",
-            "error_invalid_link": "Invalid verification link.",
-            "error_invalid_link_desc": "The reset link is invalid or has already been used.",
-            "loading": "Processing...",
-            "login_now": "Login Now",
-            "match_error": "Passwords do not match",
-            "match_success": "Passwords match.",
-            "new_password": "New password",
-            "password_requirements": {
-                "length": "At least 8 characters",
-                "lowercase": "At least 1 lowercase letter (a-z)",
-                "number": "At least 1 number (0-9)",
-                "uppercase": "At least 1 uppercase letter (A-Z)"
-            },
-            "redirect_hint": "Redirecting...",
-            "reset_button": "Update Password",
-            "strength": "Password Strength",
-            "subtitle": "Please set a new password",
-            "success_desc": "Your password has been successfully updated. You may now login.",
-            "success_title": "Password Updated",
-            "title": "Reset Password",
-            "token": "Security Token"
-        },
-        "verify_email": {
-            "already_verified_title": "Email already verified.",
-            "back_to_login": "Back to Login",
-            "contact_support": "Contact Support",
-            "email": "Email",
-            "error_title": "Verification failed due to a network error",
-            "expired_title": "The verification link has expired.",
-            "go_to_account": "Go to Account",
-            "go_to_login": "Go to Login",
-            "invalid_link_desc": "The verification link is invalid or the email has already been verified.",
-            "invalid_link_title": "Invalid Verification Link",
-            "invalid_token_title": "Invalid Token",
-            "loading": "Verifying your email...",
-            "loading_desc": "Please wait a moment...",
-            "redirect_hint": "Redirecting to Home...",
-            "resend_button": "Resend Verification Email",
-            "resend_success": "Verification email sent successfully.",
-            "sending": "Sending email...",
-            "spam_hint": "Please check your spam folder.",
-            "success_title": "Email Verified Successfully",
-            "title": "Verify Email Address",
-            "token": "Security Token"
-        }
-    },
-    "ProductDetail": {
-        "about_product": "Product Description",
-        "account_info_title": "Account Information",
-        "auto_delivery_hint": "Instant Automatic Delivery",
-        "back": "Back",
-        "buy_now_button": "Buy Now",
-        "by_developer": "Developer: ",
-        "cancel_button": "Cancel",
-        "change_button": "Change Selection",
-        "close_window_button": "Close Window",
-        "confirm_button": "Confirm Payment",
-        "confirm_hint": "Please verify your selection before confirming.",
-        "confirm_order_title": "Order Summary",
-        "confirm_selection_button": "Confirm Selection",
-        "copy_link_failed": "Failed to copy. Please try again.",
-        "copy_link_success": "Link copied successfully",
-        "developer": "Developer",
-        "error": {
-            "enter_phone": "Please enter a valid 10-digit phone number.",
-            "fill_all_fields": "Please fill in all required fields.",
-            "invalid_phone": "The phone number entered is invalid.",
-            "login_required": "Please login to proceed with your transaction.",
-            "no_payment_link": "Failed to generate payment link. Please try again.",
-            "not_found": "Product not found",
-            "not_found_desc": "The requested product could not be found or is no longer available.",
-            "order_success_redirect": "Transaction successful. Redirecting to home page...",
-            "payment_error": "Payment process failed",
-            "payment_failed": "Could not verify payment information",
-            "payment_method_unavailable": "This payment method is currently unavailable.",
-            "phone_region_mismatch": "Regional phone numbers are not supported",
-            "player_id_invalid": "Invalid Player ID. Please verify and try again.",
-            "select_option": "Please select a package to continue.",
-            "truemoney_minimum": "TrueMoney Wallet requires a minimum of 20 THB."
-        },
-        "fee_label": "Fee",
-        "form": "Details",
-        "game_info": "Game Details",
-        "input": "Input Information",
-        "login_required_notice": "Login to view exclusive discounts",
-        "login_to_buy_button": "Login to Buy",
-        "meta": "Tags",
-        "mobile_number_label": "Wallet Number",
-        "mobile_number_placeholder": "08x-xxx-xxxx",
-        "no_options": "No packages available",
-        "no_options_desc": "There are currently no packages available for this product.",
-        "no_refund_warning_desc": "Completed orders are non-refundable. Please verify your details before confirming.",
-        "no_refund_warning_title": "Non-Refundable Notice",
-        "no_similar_found": "No similar products found.",
-        "payment_method_label": "Payment Method: ",
-        "payment_selection_desc": "Select your preferred payment method",
-        "payment_selection_title": "Payment Options",
-        "platforms": "Supported Platforms",
-        "popular_badge": "Best Seller",
-        "price_label": "Price:",
-        "privacy_label": "Privacy Policy",
-        "product_details_title": "Product Details",
-        "publisher": "Publisher",
-        "purchase_summary": "Order Summary",
-        "refund_label": "Refund Policy",
-        "related_products": "You Might Also Like",
-        "release_date": "Release Date",
-        "savings_label": "You Save: ",
-        "secure_payment_notice": "100% Secure Payment",
-        "select_package": "Select Package",
-        "selected_package_label": "Selected Package",
-        "similar_products": "Similar Products",
-        "subtotal_label": "Subtotal: ",
-        "terms_agreement_prefix": "By proceeding, you agree to the ",
-        "terms_label": "Terms of Use",
-        "th-TH": "Thai",
-        "topup_options": "Top-up Options",
-        "total_label": "Total Amount: ",
-        "transaction_summary_title": "Financial Summary",
-        "unknown": "Not specified",
-        "unverified_account_warning": "Please verify your email before making a purchase.",
-        "verify_info_hint": "Please verify your Player ID carefully before proceeding."
-    },
-    "News": {
-        "all_news": "All News",
-        "categories": {
-            "event": "Events",
-            "general": "General",
-            "promotion": "Promotions",
-            "update": "Updates"
-        },
-        "featured": "Featured News",
-        "featured_badge": "Featured",
-        "no_news": "No news articles are currently available.",
-        "subtitle": "Latest updates and announcements",
-        "title": "News & Announcements",
-        "view_count": "Views"
-    },
-    "NewsDetail": {
-        "back_to_news": "Back to News",
-        "error_loading": "Failed to load article",
-        "error_not_found": "News Article Not Found",
-        "error_not_found_desc": "The article you are looking for does not exist or has been removed.",
-        "featured_badge": "Trending",
-        "last_updated": "Last Updated: ",
-        "other_news": "Related News",
-        "sources": "Source",
-        "views": "Views: "
-    },
-    "PaymentPending": {
-        "a": " ",
-        "loading": "Loading payment status...",
-        "orderId": "Order ID:",
-        "order_id": "Order ID:",
-        "payment_failed": "Payment Failed",
-        "payment_failed_desc": "Please try processing your payment again.",
-        "payment_success": "Payment Successful",
-        "qr_expired": "QR Code Expired",
-        "qr_expired_desc": "Please cancel and create a new order.",
-        "redirecting": "Redirecting...",
-        "referenceNo": "Reference No: ",
-        "reference_no": "Reference: ",
-        "time_remaining": "Time Remaining: ",
-        "try_again": "Try Again",
-        "view_orders": "View Order History"
-    },
-    "PaymentSuccess": {
-        "back_home": "Back to Home",
-        "delivery_notice": "Your order is being processed and will be delivered shortly.",
-        "orderId": "Order ID:",
-        "order_number": "Order Number",
-        "processing_badge": "Processing Delivery",
-        "referenceNo": "Ref: ",
-        "session_id": "Session ID",
-        "subtitle": "Your payment has been received successfully. We are now preparing your order.",
-        "title": "Payment Successful!",
-        "view_order": "View Order Status"
-    },
-    "Navigation": {
-        "account": "My Account",
-        "card": "Prepaid Cards",
-        "faq": "FAQ",
-        "favorite": "Favorites",
-        "games": "Game Top-up",
-        "home": "Home",
-        "login": "Login",
-        "mobile_recharge": "Mobile Top-up",
-        "news": "News",
-        "orders": "Order History",
-        "register": "Register",
-        "support": "Support"
-    },
-    "SupportContact": {
-        "form": {
-            "email": "Your Email",
-            "message": "Message",
-            "name": "Your Name",
-            "send": "Send Message",
-            "sending": "Sending...",
-            "subject": "Subject",
-            "success": "Your message has been sent. Our team will get back to you shortly.",
-            "title": "Contact Us via Email"
-        },
-        "social": {
-            "title": "Connect with us on Social Media (Facebook / Line / Discord)"
-        },
-        "subtitle": "Reach out to our support team for assistance",
-        "title": "Contact Support (24/7)"
-    },
-    "SupportFAQ": {
-        "all": "All Categories",
-        "back_to_faq": "Back to FAQ",
-        "categories": {
-            "_base": "Categories"
-        },
-        "need_help": {
-            "title": "Need Help?",
-            "description": "Can't find what you're looking for?",
-            "contact_support": "Contact Support"
-        },
-        "no": "Not helpful",
-        "no_results": "No results found.",
-        "search_placeholder": "Search for answers...",
-        "subtitle": "Find quick answers to common questions",
-        "title": "Frequently Asked Questions",
-        "view_all": "View All",
-        "yes": "Helpful"
-    },
-    "SupportFAQDetail": {
-        "back_to_faq": "Back to FAQ",
-        "contact_support": "Contact Support",
-        "contact_support_desc": "If you need further assistance, please reach out to our support team.",
-        "error": {
-            "_base": "Failed to load content."
-        },
-        "helpful": "Was this article helpful?",
-        "last_updated": "Last Updated",
-        "loading": "Loading...",
-        "no": "Not helpful",
-        "still_need_help": "Still need help?",
-        "thank_you": "Thank you for your feedback.",
-        "views": "Views: ",
-        "yes": "Helpful"
-    },
-    "Support": {
-        "categories": {
-            "faq": {
-                "description": "Find quick solutions and answers to commonly asked questions.",
-                "title": "FAQ"
-            },
-            "tickets": {
-                "description": "Report an issue with your order, payment, or account.",
-                "title": "Submit a Ticket"
-            }
-        },
-        "common_issues": {
-            "title": "Common Issues"
-        },
-        "contact_methods": "Contact Methods",
-        "subtitle": "Choose a topic below or contact our support team directly.",
-        "title": "Help Center",
-        "urgent_help": {
-            "description": "For immediate assistance, contact our support team via Live Chat or Line.",
-            "title": "Urgent Support"
-        },
-        "visit": "View",
-        "working_hours": {
-            "mon_fri": "Monday - Friday (Normal Service)",
-            "sat_sun": "Saturday - Sunday (Response may be slightly delayed)",
-            "time_mon_fri": "09:00 - 00:00 (GMT+7)",
-            "time_sat_sun": "09:00 - 19:00 (GMT+7)",
-            "timezone": "Timezone (GMT+7)",
-            "title": "Support Hours"
-        }
-    },
-    "SupportTickets": {
-        "back": "Back to Tickets",
-        "create": {
-            "cancel": "Cancel",
-            "categories": {
-                "account": "Account Issue",
-                "general": "General Inquiry",
-                "order": "Order Issue",
-                "payment": "Payment Issue",
-                "product": "Product Issue",
-                "refund": "Refund Request",
-                "technical": "Technical Support"
-            },
-            "category": "Category",
-            "description": "Problem Description",
-            "description_label": "Describe your issue in detail",
-            "description_placeholder": "Please describe the issue you are experiencing...",
-            "order_ref": "Order ID (Optional)",
-            "order_ref_placeholder": "Order #999999",
-            "subject_placeholder": "Brief Subject",
-            "submit": "Submit Ticket",
-            "title": "Create a New Ticket"
-        },
-        "create_new": "Create New Ticket",
-        "created_at": "Created at",
-        "detail": {
-            "closed_notice": "This ticket has been closed. You can no longer reply to this conversation.",
-            "reply": "Reply",
-            "send_reply": "Send Message"
-        },
-        "disabled": {
-            "cta": "Return Home",
-            "description": "The support ticketing system is currently unavailable.",
-            "title": "System Unavailable"
-        },
-        "no_tickets": "You have not submitted any support tickets yet.",
-        "order_ref_label": "Order Reference ID (Helps us resolve your issue faster)",
-        "select_ticket": "Select a Ticket",
-        "select_ticket_desc": "Select a ticket from the list to view details.",
-        "status": {
-            "all": "All Tickets",
-            "closed": "Closed",
-            "open": "Open",
-            "pending": "Pending",
-            "resolved": "Resolved",
-            "waiting_admin": "Waiting for Support",
-            "waiting_user": "Waiting for User"
-        },
-        "subtitle": "Manage your support requests",
-        "support_team": "Support Team",
-        "system": "System Automated Notice",
-        "title": "Support Tickets",
-        "user_you": "You"
-    },
-    "UserMenu": {
-        "account_menu": "Account Menu",
-        "credits": "My Credits",
-        "favorite": "Favorites",
-        "h-full": "",
-        "logout": "Logout",
-        "menu": "User Menu",
-        "my_account": "My Account",
-        "my_coupons": "My Coupons",
-        "my_invoices": "Invoices",
-        "my_orders": "Order History",
-        "notifications": "Notifications",
-        "open_menu": "Open Menu"
-    },
-    "CookieNotice": {
-        "acknowledge": "Accept",
-        "ariaClose": "Close notice",
-        "description": "Lnwtermgame uses cookies to improve your browsing experience, optimize site performance, and deliver personalized promotions.",
-        "items": [
-            "Essential cookies (required for basic website functionality)",
-            "Analytics cookies (used to measure and improve our platform)"
-        ],
-        "noTawkItem": "Live Chat support is currently disabled.",
-        "privacy": "Privacy Policy",
-        "tawkItem": "Live Chat cookies (Tawk.to) to enable fast customer support interactions.",
-        "title": "⚙️ Cookie Preferences"
-    },
-    "Footer": {
-        "about_us": "About Us",
-        "contact_us": "Contact Us",
-        "copyright": "Copyright",
-        "language_thai": "Thai",
-        "partners": "Partners",
-        "customer": "Customer Service",
-        "policies": "Policies",
-        "services": "Services",
-        "payment_inquiry": "Payment Inquiry",
-        "payment_issues": "Payment & Issues",
-        "sale_inquiry": "Business Inquiry",
-        "copyright_notice": "All Rights Reserved",
-        "create_ticket": "Submit Support Ticket",
-        "faq": "FAQ",
-        "features": {
-            "payment": "Multiple Payment Options",
-            "payment_desc": "Top up easily with TrueMoney Wallet and PromptPay with 0% extra fees.",
-            "price": "Best Prices",
-            "price_desc": "Enjoy exclusive promotions and the best rates for game top-ups.",
-            "security": "100% Secure",
-            "security_desc": "Our platform uses top-grade encryption to ensure your transactions are safe.",
-            "support": "24/7 Customer Support",
-            "support_desc": "Our team is available around the clock to assist you with any inquiries.",
-            "delivery": "Fast Delivery"
-        },
-        "live_chat": "Live Chat",
-        "payment_channels": "Payment Methods",
-        "privacy_policy": "Privacy & Cookies",
-        "quick_links": "Quick Links",
-        "refund_policy": "Refund Policy",
+    "email": {
+      "categories": {
+        "authentication": "Authentication",
+        "general": "General",
+        "order": "Order",
+        "payment": "Payment",
+        "promotion": "Promotion",
         "support": "Support",
-        "support_center": "Help Center",
-        "supported_payments": "Supported Payment Platforms",
-        "tagline": "Lnwtermgame, Thailand's leading platform for fast and secure game top-ups and prepaid cards.",
-        "terms_of_service": "Terms of Service"
+        "system": "System"
+      },
+      "placeholders": {
+        "discountAmount": "Discount Amount",
+        "email": "Email",
+        "expiresIn": "Expires in",
+        "finalAmount": "Final Amount",
+        "orderDate": "Order Date",
+        "orderNumber": "Order Number",
+        "resetUrl": "Reset URL",
+        "siteName": "Site Name",
+        "ticketNumber": "Ticket Number",
+        "totalAmount": "Total Amount",
+        "username": "Username",
+        "verificationUrl": "Verification URL"
+      }
     },
-    "Header": {
-        " ": " ",
-        "/": "/",
-        "articles": "Articles",
-        "dealers": "Dealers",
-        "all_games": "All Games",
-        "cart": "Shopping Cart",
-        "contact_us": "Contact Us",
-        "credits": "Credits",
-        "direct_topup": "Game Top-up",
-        "gift_cards": "Gift Cards",
-        "login": "Login",
-        "logout": "Logout",
-        "mobile_recharge": "Mobile Top-up",
-        "my_account": "My Account",
-        "news": "News & Promos",
-        "notifications": "Notifications",
-        "order_history": "Order History",
-        "search_placeholder": "Search for games or cards..."
+    "logo": "Logo",
+    "monitor": "System Monitor",
+    "newsItems": "News Items",
+    "oauth": {
+      "load_error": "Error loading OAuth data"
     },
-    "Search": {
-        "aria_label_clear": "Clear",
-        "aria_label_remove_history": "Clear Search History",
-        "aria_label_search": "Search",
-        "no_results_for": "No results found for...",
-        "placeholder": "Search...",
-        "placeholder_advanced": "Search for games, cards, or articles...",
-        "recent_searches": "Recent Searches",
-        "search_results": "Search Results: ",
-        "view_all_results_for": "View all results for"
+    "order_detail": {
+      "back_to_orders": "Back to orders",
+      "items": "Items",
+      "order_date": "Order Date",
+      "order_status": "Order Status",
+      "subtitle": "Details and status of the order",
+      "title": "Order Detail"
     },
-    "Products": {
-        "recommended": "Recommended Packages"
+    "orders": {
+      "actions": "Actions",
+      "amount": "Total Amount",
+      "customer": "Customer",
+      "date": "Date",
+      "no_orders": "No orders found",
+      "order_id": "Order ID",
+      "product": "Product",
+      "search_placeholder": "Search orders...",
+      "status": {
+        "all": "All",
+        "cancelled": "Cancelled",
+        "completed": "Completed",
+        "failed": "Failed",
+        "pending": "Pending",
+        "processing": "Processing",
+        "refunded": "Refunded"
+      },
+      "status_text": "Status",
+      "subtitle": "Manage all orders in the system",
+      "title": "Orders"
     },
-    "promotions": "Promotions",
-    "how_to_use": {
-        "title": "How to Use"
+    "promoCards": "Promo Cards",
+    "seasonalEvents": "Seasonal Events",
+    "settings": {
+      "section_labels": {
+        "featured_products": "Featured Products",
+        "hero_button": "Hero Button",
+        "news": "News",
+        "specials": "Specials",
+        "view_all": "View All"
+      }
     },
-    "topup_system": "Top-up System",
+    "th-TH": "Thai",
+    "tickets": {
+      "all_assignees": "All Assignees",
+      "categories": {
+        "all": "All categories",
+        "order_issue": "Order Issue",
+        "payment_issue": "Payment Issue",
+        "product_issue": "Product Issue",
+        "account_issue": "Account Issue",
+        "technical_support": "Technical Support",
+        "refund_request": "Refund Request",
+        "general_inquiry": "General Inquiry"
+      },
+      "priorities": {
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "status": {
+        "open": "Open",
+        "in_progress": "In Progress",
+        "waiting_user": "Waiting User",
+        "waiting_admin": "Waiting Admin",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      },
+      "unassigned": "Unassigned"
+    }
+  },
+  "Catalog": {
+    "card": {
+      "subtitle": "Popular games",
+      "title": "Select your game"
+    },
+    "cta_buy": "Buy Now",
+    "cta_topup": "Top Up Now",
+    "filter_category": "Filter category",
     "games": {
-        "title": "All Games"
+      "subtitle": "All games available",
+      "title": "Games"
     },
-    "lucky_games": "Lucky Games",
-    "nav_game_topup": "Game Top-Up",
-    "nav_prepaid_card": "Prepaid Cards",
-    "nav_mobile_topup": "Mobile Top-Up",
-    "search_placeholder": "Search for games or cards...",
-    "admin_panel": "Admin Panel",
-    "my_account": "My Account",
-    "credits": "Credits",
-    "order_history": "Order History",
-    "logout": "Logout",
-    "login_button": "Login / Register",
-    "Admin": {
-        "nav": {
-            "main": "Dashboard",
-            "products_sales": "Products & Sales",
-            "content": "Content Management",
-            "users_communication": "Users & Communication",
-            "system": "System Settings"
-        },
-        "admin_cp": "Admin Control Panel",
-        "admin": "Administrator",
-        "dashboard": "Dashboard",
-        "analytics": "Analytics",
-        "products": "Inventory",
-        "categories": "Categories",
-        "orders": "Orders",
-        "payments": "Financial Hub",
-        "cms_pages": "Content Pages",
-        "news": "News Management",
-        "manage_faq": "FAQ Management",
-        "images": "Image Vault",
-        "manage_users": "User Management",
-        "support_tickets": "Support Tickets",
-        "notifications": "System Notifications",
-        "email": "Email Protocol",
-        "settings": "System Configuration",
-        "oauth": "OAuth Services",
-        "pin": "Pin menu",
-        "unpin": "Unpin menu",
-        "switch_dark": "Switch to dark",
-        "switch_light": "Switch to light",
-        "status": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "processing": "Processing",
-            "failed": "Failed",
-            "cancelled": "Cancelled",
-            "refunded": "Refunded",
-            "active": "Active",
-            "inactive": "Inactive",
-            "low_stock": "Low stock",
-            "out_of_stock": "Out of stock",
-            "banned": "Banned",
-            "unknown": "Unknown"
-        },
-        "pagination": {
-            "showing": "Showing {start}–{end} of {total}",
-            "empty": "No items",
-            "prev": "Previous",
-            "next": "Next"
-        },
-        "table": {
-            "empty": "No data"
-        }
+    "loading": "Loading...",
+    "mobile": {
+      "subtitle": "Fast mobile top-up",
+      "title": "Mobile Games"
     },
-    "hero_zzz_subtitle": "Top Up Zenless Zone Zero",
-    "hero_zzz_highlight_text": "Up to",
-    "hero_genshin_subtitle": "Top Up Genshin Impact",
-    "hero_genshin_highlight_text": "Up to",
-    "hero_btn_text": "Top Up Now",
-    "category_popular_games": "Popular Games",
-    "category_all_games": "All Games",
-    "category_check_skin": "Lucky Skins",
-    "category_game_card": "Game Cards",
-    "category_lucky_game": "Lucky Draw",
-    "special_offers": "Special Offers",
-    "popular_games": "Popular Game Top-Up",
+    "no_results": "No results found",
+    "no_results_desc": "Try searching with a different keyword",
+    "search": "Search game",
+    "search_placeholder": "Search game title...",
+    "sort": {
+      "all": "All"
+    }
+  },
+  "Checkout": {
+    "browse_products": "Browse products",
+    "confirm_order": "Confirm Order",
+    "continue_shopping": "Continue Shopping",
+    "direct_topup": "Direct Top Up",
+    "empty_cart": "Your cart is empty",
+    "empty_cart_desc": "Browse our catalog to find your favorite games.",
+    "error": {
+      "fill_all_fields": "Please fill all required fields",
+      "generic_failed": "Transaction failed. Please try again.",
+      "order_failed": "Failed to create order",
+      "player_id_invalid": "Invalid Player ID",
+      "product_changed": "Product data has changed. Please refresh the page."
+    },
+    "fill_required_fields": "Please fill required fields",
+    "gift_card": "Gift Card",
+    "grand_total": "Grand Total",
+    "info_complete": "Information complete",
+    "loading": "Processing...",
+    "order_summary": "Order Summary",
+    "per_item": "per item",
+    "quantity": "Quantity",
+    "subtitle": "Review and proceed to payment",
+    "terms_agreement": "I have read and agree to the",
+    "terms_of_service": "Terms of Service",
+    "title": "Checkout",
+    "total": "Total"
+  },
+  "Account": {
+    "account_settings": "Account Settings",
+    "email_label": "Your email",
+    "my_orders": "My Orders",
+    "no_recent_purchases": "No recent purchases",
+    "not_verified": "Not Verified",
+    "order_status": {
+      "completed": "Completed",
+      "pending": "Pending Payment",
+      "processing": "Processing",
+      "refunded": "Refunded"
+    },
+    "recent_purchases": "Recent Purchases",
+    "security": "Security",
+    "send_failed": "Failed to send verification email",
+    "send_verification": "Send verification email",
+    "sending": "Sending...",
+    "spam_hint": "If you don't see the email, please check your spam folder.",
+    "subtitle": "Manage your profile and track orders",
+    "title": "My Account",
+    "verification_sent": "Verification link sent",
+    "verified": "Verified",
+    "verify_email_banner": "Please verify your email for full access",
+    "verify_email_desc": "Verifying your email ensures secure recovery and accurate tracking of your orders.",
+    "view_all_orders": "View all orders",
+    "wait_cooldown": "Please wait a moment before trying again"
+  },
+  "Security": {
+    "additional_settings": {
+      "login_notifications": "Login Notifications",
+      "login_notifications_desc": "Get notified when a new device logs into your account.",
+      "title": "Additional Settings"
+    },
+    "change_password": {
+      "button_cancel": "Cancel",
+      "button_change": "Change Password",
+      "button_saving": "Saving...",
+      "button_setup": "Set Password",
+      "confirm_label": "Confirm Password",
+      "current_label": "Current Password",
+      "error_change_failed": "Could not change password",
+      "error_otp_failed": "Invalid OTP",
+      "error_setup_failed": "Failed to set password",
+      "length_hint": "At least 8 characters long",
+      "match_error": "Passwords do not match",
+      "new_label": "New Password",
+      "oauth_notice": "You logged in via a social account. You can set a standard password here.",
+      "otp_label": "OTP Code",
+      "otp_sent_success": "OTP sent successfully",
+      "otp_wait": "Please wait...",
+      "request_otp": "Request OTP",
+      "resend_otp": "Resend OTP",
+      "setup_confirm_label": "Confirm Password",
+      "setup_title": "Set Password",
+      "success_setup": "Password set successfully",
+      "title": "Change Password"
+    },
+    "error_email_not_found": "Email not found",
+    "recent_devices": {
+      "logout_all": "Logout from all other devices",
+      "processing": "Processing...",
+      "title": "Recent Devices"
+    },
+    "subtitle": "Manage your security and passwords",
+    "suspicious_activity": {
+      "admin_location": "Pending",
+      "confirm_button": "Confirm Activity",
+      "resolved_badge": "Resolved",
+      "title": "Suspicious Activity"
+    },
+    "title": "Security",
+    "two_factor": {
+      "coming_soon": "Coming Soon",
+      "setup_button": "Setup 2FA",
+      "subtitle": "Add another layer of security",
+      "title": "Two-Factor Authentication (2FA)"
+    }
+  },
+  "Common": {
+    "already_verified_title": "Already verified",
+    "back_to_login": "Back to Login",
+    "confirm_password": "Confirm password",
+    "contact_support": "Contact Support",
+    "email": "Email",
+    "email_placeholder": "example@email.com",
+    "error_expired": "This link has expired",
+    "error_get_new_link": "Request a new link",
+    "error_invalid": "Invalid information",
+    "error_invalid_email": "Invalid email format",
+    "error_invalid_link": "Invalid link",
+    "error_invalid_link_desc": "The link you are using is invalid or has expired.",
+    "error_occurred": "An error occurred",
+    "error_send_failed": "Failed to send data",
+    "error_title": "Failed",
+    "expired_title": "Request Expired",
+    "go_to_account": "Go to Account",
+    "go_to_login": "Go to Login",
+    "invalid_link_desc": "The link is invalid. Please check again.",
+    "invalid_link_title": "Invalid Link",
+    "invalid_token_title": "Invalid Token",
+    "loading": "Loading...",
+    "loading_desc": "Please wait a moment",
+    "login_now": "Login Now",
+    "match_error": "Data does not match",
+    "match_success": "Data matched",
+    "member": "Member Area",
+    "new_password": "New Password",
+    "password_requirements": {
+      "length": "At least 8 characters",
+      "lowercase": "At least 1 lowercase letter",
+      "number": "At least 1 number",
+      "uppercase": "At least 1 uppercase letter"
+    },
+    "redirect_hint": "Redirecting...",
+    "resend_button": "Resend",
+    "resend_email": "Resend Email",
+    "resend_success": "Sent successfully",
+    "reset_button": "Reset",
+    "send_link": "Send Link",
+    "sending": "Processing...",
+    "spam_hint": "Check your spam folder if you do not see the email.",
+    "strength": "Password Strength",
+    "subtitle": "Overview description",
+    "success_desc": "Transaction Successful",
+    "success_title": "Success",
+    "title": "Title",
+    "token": "Security Token"
+  },
+  "Coupons": {
+    "add_coupon": "Add Coupon",
+    "add_failed": "Failed to add coupon",
+    "add_success": "Coupon added successfully",
+    "code_label": "Coupon Code",
+    "details": {
+      "copied": "Copied",
+      "copy_code": "Copy Code",
+      "discount": "Discount",
+      "max_discount": "Max Discount",
+      "min_purchase": "Minimum Purchase",
+      "no_min_purchase": "No minimum purchase",
+      "title": "Coupon Details",
+      "use_now": "Use Now",
+      "used_at": "Used At",
+      "valid_until": "Valid Until"
+    },
+    "example_code": "DISCOUNT20",
+    "expiry_hint": "Coupons have a limited validity period.",
+    "filter": {
+      "active": "Active",
+      "all": "All",
+      "expired": "Expired",
+      "used": "Used"
+    },
+    "how_to_use": {
+      "step1": "Select your products",
+      "step2": "Enter code during checkout",
+      "step3": "Verify the discount before payment",
+      "title": "How to Use"
+    },
+    "invalid_code": "Invalid Code",
+    "no_coupons": "No Coupons Available",
+    "no_coupons_desc": "You do not have any discount coupons currently.",
+    "no_search_results": "No coupons found matching your search.",
+    "not_found": "Coupon not found",
+    "search_placeholder": "Search coupons...",
+    "start_shopping": "Start Shopping",
+    "status": {
+      "active": "Active",
+      "expired": "Expired",
+      "used": "Used"
+    },
+    "subtitle": "Manage your discount coupons",
+    "th-TH": "Thai",
+    "title": "Discount Coupons",
+    "validating": "Validating..."
+  },
+  "Credits": {
+    "about": {
+      "step1_desc": "Login and head to the credit top-up section",
+      "step1_title": "Choose Package",
+      "step2_desc": "Pay via your most convenient method",
+      "step2_title": "Make Payment",
+      "step3_desc": "Credits are instantly added to your wallet",
+      "step3_title": "Transaction Successful",
+      "title": "How to top up credits"
+    },
+    "balance_label": "Balance:",
+    "earned": "Earned History",
+    "error_loading": "Failed to load credits information",
+    "history": {
+      "all": "All Transactions",
+      "empty": "No Credit History",
+      "empty_desc": "No recent credit transactions found.",
+      "this_month": "This Month",
+      "this_week": "This Week",
+      "title": "Transaction History"
+    },
+    "spent": "Spending History",
+    "subtitle": "Manage your account's credits",
+    "th-TH": "Thai",
+    "title": "My Credits",
+    "topup_button": "Top Up Credits",
+    "topup_upcoming": "Credit Packages",
+    "total_transactions": "Total Transactions",
+    "types": {
+      "bonus": "Bonus",
+      "purchase": "Purchases",
+      "refund": "Refunds",
+      "topup": "Top-up"
+    },
+    "value_hint": "Enjoy better deals with bulk top-ups"
+  },
+  "Favorites": {
+    "added_to_cart": "Successfully added to cart",
+    "buy_now": "Buy Now",
+    "error_loading": "Failed to load favorites list",
+    "found_items": "items found",
+    "no_favorites": "No Favorite Items",
+    "no_favorites_desc": "Click the heart icon on any game to add it to your favorites.",
+    "no_search_results": "No favorites matching your search.",
+    "remove_failed": "Failed to remove item",
+    "remove_success": "Removed from favorites successfully",
+    "search_placeholder": "Search in favorites...",
+    "start_shopping": "Browse Games",
+    "starting_at": "Starting at",
+    "subtitle": "Games you liked are stored here",
+    "title": "My Favorites",
+    "view_more": "View details"
+  },
+  "Invoices": {
+    "actions": {
+      "download": "Download",
+      "view": "View Details"
+    },
+    "filter": {
+      "all": "All Invoices",
+      "cancelled": "Cancelled",
+      "paid": "Paid",
+      "pending": "Pending Payment"
+    },
+    "no_invoices": "No Invoices Found",
+    "no_invoices_desc": "No transactions have been made yet.",
+    "no_search_results": "No invoices matching your search.",
+    "search_placeholder": "Search invoices...",
+    "status": {
+      "cancelled": "Cancelled",
+      "paid": "Paid",
+      "pending": "Pending"
+    },
+    "subtitle": "Manage your invoice records",
+    "table": {
+      "actions": "Actions",
+      "amount": "Total Amount",
+      "date": "Date",
+      "invoice_number": "Invoice ID",
+      "order_number": "Order ID",
+      "status": "Status"
+    },
+    "th-TH": "Thai",
+    "title": "Your Invoices"
+  },
+  "InvoiceDetail": {
+    "a": " ",
+    "back_to_list": "Back to List",
+    "copy_success": "Copied successfully",
+    "customer_info": "Customer Information",
+    "date": "Transaction Date",
+    "download_pdf": "Download PDF",
+    "error_not_found": "Invoice not found",
+    "grand_total": "Net Payment",
+    "invoice_no": "Invoice Number",
+    "item_details": "Purchased Items",
+    "order_no": "Order Number",
+    "paid": "Paid",
+    "payment_info": "Provider",
+    "payment_status": "Payment Status",
+    "price": "Price",
+    "print": "Print Report",
+    "product": "Product Info",
+    "quantity": "Qty",
+    "subtotal": "Subtotal",
+    "title": "Invoice / Receipt",
+    "total": "Grand Total",
+    "unpaid": "Unpaid",
+    "vat": "VAT"
+  },
+  "Notifications": {
+    "delete": "Delete Notification",
+    "delete_success": "Deleted successfully",
+    "empty_desc": "You have no notifications.",
+    "empty_filter_desc": "No notifications found for this filter.",
+    "empty_title": "Inbox is empty",
+    "error_loading": "Failed to load messages",
+    "filters": {
+      "all": "All",
+      "order": "Orders",
+      "payment": "Finance",
+      "promotion": "Promotions",
+      "unread": "Unread"
+    },
+    "manage_settings": "Notification Settings",
+    "mark_all_read": "Mark All as Read",
+    "mark_read": "Mark as Read",
+    "mark_read_success": "Marked as read successfully",
+    "subtitle": "Notification Center",
+    "title": "Notifications",
+    "unread_badge": "Unread",
+    "view_details": "View Details"
+  },
+  "NotificationPreferences": {
+    "channels": {
+      "email": "Email",
+      "email_desc": "Receive updates and purchase receipts directly via email.",
+      "web": "In-App Notifications",
+      "web_desc": "Receive in-app notifications on the website."
+    },
+    "save_button": "Save Settings",
+    "save_success": "Preferences saved successfully.",
+    "saving": "Saving...",
+    "subtitle": "Manage how you receive updates and alerts",
+    "title": "Notification Preferences",
+    "types": {
+      "orders": "Order Updates",
+      "orders_desc": "Updates on your order status and resolution of issues.",
+      "promotions": "Promotions",
+      "promotions_desc": "Updates on discounts, events, and special offers."
+    }
+  },
+  "Orders": {
+    "amount_label": "Order Amount:",
+    "date_label": "Order Date:",
+    "error_loading": "Failed to load order items",
+    "filter_title": "Order Filters",
+    "no_orders": "No orders yet",
+    "no_orders_desc": "Your past orders will appear here.",
+    "no_search_results": "No matching orders found. Please check the order ID.",
+    "order_id_label": "Order ID:",
+    "search_placeholder": "Search by Order ID or Product",
+    "status": {
+      "all": "All",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "pending": "Awaiting Payment",
+      "processing": "Processing",
+      "refunded": "Refunded"
+    },
+    "subtitle": "Check history and track your orders",
+    "table": {
+      "amount": "Amount",
+      "date": "Date",
+      "order_number": "Order ID",
+      "product": "Product Details",
+      "status": "Status"
+    },
+    "th-TH": "Thai",
+    "title": "Order History",
+    "view_details": "View Details",
+    "view_mode": {
+      "card": "Card View",
+      "table": "Table View"
+    },
+    "view_results": "Show Results",
+    "view_short": "Minimize"
+  },
+  "OrderDetail": {
+    "actions": {
+      "cancel": "Cancel Order",
+      "cancel_confirm": "Are you sure you want to cancel this order?",
+      "cancel_failed": "Failed to cancel order",
+      "cancel_hint": "Order cancellation cannot be undone.",
+      "cancel_success": "Order cancelled successfully.",
+      "cancelling": "Cancelling...",
+      "need_help": "Need Help?",
+      "report_issue": "Report Issue",
+      "title": "Manage Order"
+    },
+    "back_to_orders": "Back to Order History",
+    "customer": {
+      "date": "Order Date: ",
+      "email": "Email: ",
+      "title": "Customer Details",
+      "username": "Customer: "
+    },
+    "delivery": {
+      "completed_at": "Delivered at",
+      "status_summary": "Delivery Status",
+      "statuses": {
+        "completed": "Delivered successfully",
+        "failed": "Delivery failed",
+        "pending": "In queue",
+        "processing": "Processing delivery..."
+      },
+      "title": "Delivery"
+    },
+    "error_loading": "Error loading order details",
+    "error_not_found": "Order not found",
+    "error_not_found_desc": "Please check the Order ID and try again.",
+    "items": {
+      "account_info": "Additional Info",
+      "code_label": "Redemption Code",
+      "copy_success": "Code copied successfully",
+      "delivery_failed": "Error loading item",
+      "delivery_status": "Item Delivery Status",
+      "digital_codes": "Digital Code",
+      "expired_label": "Expires at",
+      "hide_code": "Hide Code",
+      "pin_label": "PIN",
+      "quantity": "Qty",
+      "serial_label": "Serial",
+      "show_code": "Show Code",
+      "title": "Order Items",
+      "usage_hint": "Please keep your code secure."
+    },
+    "loading": "Loading...",
+    "order_id_label": "Order ID",
+    "payment": {
+      "discount": "Discount",
+      "method": "Payment Method",
+      "methods": {
+        "bank_transfer": "Bank Transfer",
+        "promptpay": "PromptPay",
+        "truemoney": "TrueMoney Wallet",
+        "unknown": "Other"
+      },
+      "status_paid": "Paid",
+      "status_pending": "Pending Validation",
+      "subtotal": "Subtotal",
+      "title": "Payment Summary",
+      "total": "Total Amount"
+    },
+    "th-TH": "Thai",
+    "title": "Order Details"
+  },
+  "errors": {
+    "generic": {
+      "description": "An unexpected error occurred. Please try again later.",
+      "goHome": "Back to Home",
+      "title": "An error occurred",
+      "tryAgain": "Try Again"
+    },
+    "notFound": {
+      "description": "The page you are looking for does not exist.",
+      "goBack": "Go Back",
+      "goHome": "Back to Home",
+      "title": "Page Not Found"
+    }
+  },
+  "Verification": {
+    "forgot_password": {
+      "back_to_login": "Back to Login",
+      "email_placeholder": "Enter your registered email...",
+      "error_invalid_email": "Please enter a valid email address",
+      "error_send_failed": "Failed to send reset link",
+      "loading": "Processing...",
+      "resend_email": "Resend Email",
+      "send_link": "Send Reset Link",
+      "spam_hint": "Please check your spam folder if you do not receive the email.",
+      "subtitle": "Enter your email to receive a password reset link.",
+      "success_desc": "A password reset link has been sent to your email.",
+      "success_title": "Email Sent",
+      "title": "Forgot Password?"
+    },
+    "reset_password": {
+      "back_to_login": "Back to Login",
+      "confirm_password": "Confirm new password",
+      "error_expired": "The reset link has expired.",
+      "error_get_new_link": "Request a new reset link",
+      "error_invalid": "The security code is invalid or has expired.",
+      "error_invalid_link": "Invalid verification link.",
+      "error_invalid_link_desc": "The reset link is invalid or has already been used.",
+      "loading": "Processing...",
+      "login_now": "Login Now",
+      "match_error": "Passwords do not match",
+      "match_success": "Passwords match.",
+      "new_password": "New password",
+      "password_requirements": {
+        "length": "At least 8 characters",
+        "lowercase": "At least 1 lowercase letter (a-z)",
+        "number": "At least 1 number (0-9)",
+        "uppercase": "At least 1 uppercase letter (A-Z)"
+      },
+      "redirect_hint": "Redirecting...",
+      "reset_button": "Update Password",
+      "strength": "Password Strength",
+      "subtitle": "Please set a new password",
+      "success_desc": "Your password has been successfully updated. You may now login.",
+      "success_title": "Password Updated",
+      "title": "Reset Password",
+      "token": "Security Token"
+    },
+    "verify_email": {
+      "already_verified_title": "Email already verified.",
+      "back_to_login": "Back to Login",
+      "contact_support": "Contact Support",
+      "email": "Email",
+      "error_title": "Verification failed due to a network error",
+      "expired_title": "The verification link has expired.",
+      "go_to_account": "Go to Account",
+      "go_to_login": "Go to Login",
+      "invalid_link_desc": "The verification link is invalid or the email has already been verified.",
+      "invalid_link_title": "Invalid Verification Link",
+      "invalid_token_title": "Invalid Token",
+      "loading": "Verifying your email...",
+      "loading_desc": "Please wait a moment...",
+      "redirect_hint": "Redirecting to Home...",
+      "resend_button": "Resend Verification Email",
+      "resend_success": "Verification email sent successfully.",
+      "sending": "Sending email...",
+      "spam_hint": "Please check your spam folder.",
+      "success_title": "Email Verified Successfully",
+      "title": "Verify Email Address",
+      "token": "Security Token"
+    }
+  },
+  "ProductDetail": {
+    "about_product": "Product Description",
+    "account_info_title": "Account Information",
+    "auto_delivery_hint": "Instant Automatic Delivery",
+    "back": "Back",
+    "buy_now_button": "Buy Now",
+    "by_developer": "Developer: ",
+    "cancel_button": "Cancel",
+    "change_button": "Change Selection",
+    "close_window_button": "Close Window",
+    "confirm_button": "Confirm Payment",
+    "confirm_hint": "Please verify your selection before confirming.",
+    "confirm_order_title": "Order Summary",
+    "confirm_selection_button": "Confirm Selection",
+    "copy_link_failed": "Failed to copy. Please try again.",
+    "copy_link_success": "Link copied successfully",
+    "developer": "Developer",
+    "error": {
+      "enter_phone": "Please enter a valid 10-digit phone number.",
+      "fill_all_fields": "Please fill in all required fields.",
+      "invalid_phone": "The phone number entered is invalid.",
+      "login_required": "Please login to proceed with your transaction.",
+      "no_payment_link": "Failed to generate payment link. Please try again.",
+      "not_found": "Product not found",
+      "not_found_desc": "The requested product could not be found or is no longer available.",
+      "order_success_redirect": "Transaction successful. Redirecting to home page...",
+      "payment_error": "Payment process failed",
+      "payment_failed": "Could not verify payment information",
+      "payment_method_unavailable": "This payment method is currently unavailable.",
+      "phone_region_mismatch": "Regional phone numbers are not supported",
+      "player_id_invalid": "Invalid Player ID. Please verify and try again.",
+      "select_option": "Please select a package to continue.",
+      "truemoney_minimum": "TrueMoney Wallet requires a minimum of 20 THB."
+    },
+    "fee_label": "Fee",
+    "form": "Details",
+    "game_info": "Game Details",
+    "input": "Input Information",
+    "login_required_notice": "Login to view exclusive discounts",
+    "login_to_buy_button": "Login to Buy",
+    "meta": "Tags",
+    "mobile_number_label": "Wallet Number",
+    "mobile_number_placeholder": "08x-xxx-xxxx",
+    "no_options": "No packages available",
+    "no_options_desc": "There are currently no packages available for this product.",
+    "no_refund_warning_desc": "Completed orders are non-refundable. Please verify your details before confirming.",
+    "no_refund_warning_title": "Non-Refundable Notice",
+    "no_similar_found": "No similar products found.",
+    "payment_method_label": "Payment Method: ",
+    "payment_selection_desc": "Select your preferred payment method",
+    "payment_selection_title": "Payment Options",
+    "platforms": "Supported Platforms",
+    "popular_badge": "Best Seller",
+    "price_label": "Price:",
+    "privacy_label": "Privacy Policy",
+    "product_details_title": "Product Details",
+    "publisher": "Publisher",
+    "purchase_summary": "Order Summary",
+    "refund_label": "Refund Policy",
+    "related_products": "You Might Also Like",
+    "release_date": "Release Date",
+    "savings_label": "You Save: ",
+    "secure_payment_notice": "100% Secure Payment",
+    "select_package": "Select Package",
+    "selected_package_label": "Selected Package",
+    "similar_products": "Similar Products",
+    "subtotal_label": "Subtotal: ",
+    "terms_agreement_prefix": "By proceeding, you agree to the ",
+    "terms_label": "Terms of Use",
+    "th-TH": "Thai",
+    "topup_options": "Top-up Options",
+    "total_label": "Total Amount: ",
+    "transaction_summary_title": "Financial Summary",
+    "unknown": "Not specified",
+    "unverified_account_warning": "Please verify your email before making a purchase.",
+    "verify_info_hint": "Please verify your Player ID carefully before proceeding."
+  },
+  "News": {
+    "all_news": "All News",
+    "categories": {
+      "event": "Events",
+      "general": "General",
+      "promotion": "Promotions",
+      "update": "Updates"
+    },
+    "featured": "Featured News",
+    "featured_badge": "Featured",
+    "no_news": "No news articles are currently available.",
+    "subtitle": "Latest updates and announcements",
+    "title": "News & Announcements",
+    "view_count": "Views"
+  },
+  "NewsDetail": {
+    "back_to_news": "Back to News",
+    "error_loading": "Failed to load article",
+    "error_not_found": "News Article Not Found",
+    "error_not_found_desc": "The article you are looking for does not exist or has been removed.",
+    "featured_badge": "Trending",
+    "last_updated": "Last Updated: ",
+    "other_news": "Related News",
+    "sources": "Source",
+    "views": "Views: "
+  },
+  "PaymentPending": {
+    "a": " ",
+    "loading": "Loading payment status...",
+    "orderId": "Order ID:",
+    "order_id": "Order ID:",
+    "payment_failed": "Payment Failed",
+    "payment_failed_desc": "Please try processing your payment again.",
+    "payment_success": "Payment Successful",
+    "qr_expired": "QR Code Expired",
+    "qr_expired_desc": "Please cancel and create a new order.",
+    "redirecting": "Redirecting...",
+    "referenceNo": "Reference No: ",
+    "reference_no": "Reference: ",
+    "time_remaining": "Time Remaining: ",
+    "try_again": "Try Again",
+    "view_orders": "View Order History"
+  },
+  "PaymentSuccess": {
+    "back_home": "Back to Home",
+    "delivery_notice": "Your order is being processed and will be delivered shortly.",
+    "orderId": "Order ID:",
+    "order_number": "Order Number",
+    "processing_badge": "Processing Delivery",
+    "referenceNo": "Ref: ",
+    "session_id": "Session ID",
+    "subtitle": "Your payment has been received successfully. We are now preparing your order.",
+    "title": "Payment Successful!",
+    "view_order": "View Order Status"
+  },
+  "Navigation": {
+    "account": "My Account",
+    "card": "Prepaid Cards",
+    "faq": "FAQ",
+    "favorite": "Favorites",
+    "games": "Game Top-up",
+    "home": "Home",
+    "login": "Login",
+    "mobile_recharge": "Mobile Top-up",
+    "news": "News",
+    "orders": "Order History",
+    "register": "Register",
+    "support": "Support"
+  },
+  "SupportContact": {
+    "form": {
+      "email": "Your Email",
+      "message": "Message",
+      "name": "Your Name",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "subject": "Subject",
+      "success": "Your message has been sent. Our team will get back to you shortly.",
+      "title": "Contact Us via Email"
+    },
+    "social": {
+      "title": "Connect with us on Social Media (Facebook / Line / Discord)"
+    },
+    "subtitle": "Reach out to our support team for assistance",
+    "title": "Contact Support (24/7)"
+  },
+  "SupportFAQ": {
+    "all": "All Categories",
+    "back_to_faq": "Back to FAQ",
+    "categories": {
+      "_base": "Categories"
+    },
+    "need_help": {
+      "title": "Need Help?",
+      "description": "Can't find what you're looking for?",
+      "contact_support": "Contact Support"
+    },
+    "no": "Not helpful",
+    "no_results": "No results found.",
+    "search_placeholder": "Search for answers...",
+    "subtitle": "Find quick answers to common questions",
+    "title": "Frequently Asked Questions",
     "view_all": "View All",
-    "news_title": "News",
-    "status_instant": "Instant",
-    "status_30_60_mins": "30-60 mins",
-    "status_preorder": "Pre-order",
-    "trust_secure_title": "100% Secure",
-    "trust_secure_desc": "High-grade security system",
-    "trust_fast_title": "Instant Delivery",
-    "trust_fast_desc": "Fast automatic delivery",
-    "trust_price_title": "Best Price",
-    "trust_price_desc": "Most competitive prices",
-    "trust_support_title": "24/7 Support",
-    "trust_support_desc": "Our team is always ready to help",
-    "special_offers_subtitle": "Don't miss these exclusive deals just for you!",
-    "no_deals": "No discounted products available",
-    "no_products": "No products available",
-    "no_news": "No news articles yet",
-    "promotion_badge": "PROMO",
-    "login_success": "Login successful",
-    "invalid_email_password": "Invalid email or password",
-    "register_success": "Registration successful",
-    "register_error": "Registration error",
-    "logout_success": "Logout successful",
-    "profile_update_success": "Profile updated successfully",
-    "profile_update_error": "Profile update failed",
-    "password_change_success": "Password changed successfully",
-    "login_error": "Login error"
+    "yes": "Helpful"
+  },
+  "SupportFAQDetail": {
+    "back_to_faq": "Back to FAQ",
+    "contact_support": "Contact Support",
+    "contact_support_desc": "If you need further assistance, please reach out to our support team.",
+    "error": {
+      "_base": "Failed to load content."
+    },
+    "helpful": "Was this article helpful?",
+    "last_updated": "Last Updated",
+    "loading": "Loading...",
+    "no": "Not helpful",
+    "still_need_help": "Still need help?",
+    "thank_you": "Thank you for your feedback.",
+    "views": "Views: ",
+    "yes": "Helpful"
+  },
+  "Support": {
+    "categories": {
+      "faq": {
+        "description": "Find quick solutions and answers to commonly asked questions.",
+        "title": "FAQ"
+      },
+      "tickets": {
+        "description": "Report an issue with your order, payment, or account.",
+        "title": "Submit a Ticket"
+      }
+    },
+    "common_issues": {
+      "title": "Common Issues"
+    },
+    "contact_methods": "Contact Methods",
+    "subtitle": "Choose a topic below or contact our support team directly.",
+    "title": "Help Center",
+    "urgent_help": {
+      "description": "For immediate assistance, contact our support team via Live Chat or Line.",
+      "title": "Urgent Support"
+    },
+    "visit": "View",
+    "working_hours": {
+      "mon_fri": "Monday - Friday (Normal Service)",
+      "sat_sun": "Saturday - Sunday (Response may be slightly delayed)",
+      "time_mon_fri": "09:00 - 00:00 (GMT+7)",
+      "time_sat_sun": "09:00 - 19:00 (GMT+7)",
+      "timezone": "Timezone (GMT+7)",
+      "title": "Support Hours"
+    }
+  },
+  "SupportTickets": {
+    "back": "Back to Tickets",
+    "create": {
+      "cancel": "Cancel",
+      "categories": {
+        "account": "Account Issue",
+        "general": "General Inquiry",
+        "order": "Order Issue",
+        "payment": "Payment Issue",
+        "product": "Product Issue",
+        "refund": "Refund Request",
+        "technical": "Technical Support"
+      },
+      "category": "Category",
+      "description": "Problem Description",
+      "description_label": "Describe your issue in detail",
+      "description_placeholder": "Please describe the issue you are experiencing...",
+      "order_ref": "Order ID (Optional)",
+      "order_ref_placeholder": "Order #999999",
+      "subject_placeholder": "Brief Subject",
+      "submit": "Submit Ticket",
+      "title": "Create a New Ticket"
+    },
+    "create_new": "Create New Ticket",
+    "created_at": "Created at",
+    "detail": {
+      "closed_notice": "This ticket has been closed. You can no longer reply to this conversation.",
+      "reply": "Reply",
+      "send_reply": "Send Message"
+    },
+    "disabled": {
+      "cta": "Return Home",
+      "description": "The support ticketing system is currently unavailable.",
+      "title": "System Unavailable"
+    },
+    "no_tickets": "You have not submitted any support tickets yet.",
+    "order_ref_label": "Order Reference ID (Helps us resolve your issue faster)",
+    "select_ticket": "Select a Ticket",
+    "select_ticket_desc": "Select a ticket from the list to view details.",
+    "status": {
+      "all": "All Tickets",
+      "closed": "Closed",
+      "open": "Open",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "waiting_admin": "Waiting for Support",
+      "waiting_user": "Waiting for User"
+    },
+    "subtitle": "Manage your support requests",
+    "support_team": "Support Team",
+    "system": "System Automated Notice",
+    "title": "Support Tickets",
+    "user_you": "You"
+  },
+  "UserMenu": {
+    "account_menu": "Account Menu",
+    "credits": "My Credits",
+    "favorite": "Favorites",
+    "h-full": "",
+    "logout": "Logout",
+    "menu": "User Menu",
+    "my_account": "My Account",
+    "my_coupons": "My Coupons",
+    "my_invoices": "Invoices",
+    "my_orders": "Order History",
+    "notifications": "Notifications",
+    "open_menu": "Open Menu"
+  },
+  "CookieNotice": {
+    "acknowledge": "Accept",
+    "ariaClose": "Close notice",
+    "description": "Lnwtermgame uses cookies to improve your browsing experience, optimize site performance, and deliver personalized promotions.",
+    "items": [
+      "Essential cookies (required for basic website functionality)",
+      "Analytics cookies (used to measure and improve our platform)"
+    ],
+    "noTawkItem": "Live Chat support is currently disabled.",
+    "privacy": "Privacy Policy",
+    "tawkItem": "Live Chat cookies (Tawk.to) to enable fast customer support interactions.",
+    "title": "⚙️ Cookie Preferences"
+  },
+  "Footer": {
+    "about_us": "About Us",
+    "contact_us": "Contact Us",
+    "copyright": "Copyright",
+    "language_thai": "Thai",
+    "partners": "Partners",
+    "customer": "Customer Service",
+    "policies": "Policies",
+    "services": "Services",
+    "payment_inquiry": "Payment Inquiry",
+    "payment_issues": "Payment & Issues",
+    "sale_inquiry": "Business Inquiry",
+    "copyright_notice": "All Rights Reserved",
+    "create_ticket": "Submit Support Ticket",
+    "faq": "FAQ",
+    "features": {
+      "payment": "Multiple Payment Options",
+      "payment_desc": "Top up easily with TrueMoney Wallet and PromptPay with 0% extra fees.",
+      "price": "Best Prices",
+      "price_desc": "Enjoy exclusive promotions and the best rates for game top-ups.",
+      "security": "100% Secure",
+      "security_desc": "Our platform uses top-grade encryption to ensure your transactions are safe.",
+      "support": "24/7 Customer Support",
+      "support_desc": "Our team is available around the clock to assist you with any inquiries.",
+      "delivery": "Fast Delivery"
+    },
+    "live_chat": "Live Chat",
+    "payment_channels": "Payment Methods",
+    "privacy_policy": "Privacy & Cookies",
+    "quick_links": "Quick Links",
+    "refund_policy": "Refund Policy",
+    "support": "Support",
+    "support_center": "Help Center",
+    "supported_payments": "Supported Payment Platforms",
+    "tagline": "Lnwtermgame, Thailand's leading platform for fast and secure game top-ups and prepaid cards.",
+    "terms_of_service": "Terms of Service"
+  },
+  "Header": {
+    " ": " ",
+    "/": "/",
+    "articles": "Articles",
+    "dealers": "Dealers",
+    "all_games": "All Games",
+    "cart": "Shopping Cart",
+    "contact_us": "Contact Us",
+    "credits": "Credits",
+    "direct_topup": "Game Top-up",
+    "gift_cards": "Gift Cards",
+    "login": "Login",
+    "logout": "Logout",
+    "mobile_recharge": "Mobile Top-up",
+    "my_account": "My Account",
+    "news": "News & Promos",
+    "notifications": "Notifications",
+    "order_history": "Order History",
+    "search_placeholder": "Search for games or cards..."
+  },
+  "Search": {
+    "aria_label_clear": "Clear",
+    "aria_label_remove_history": "Clear Search History",
+    "aria_label_search": "Search",
+    "no_results_for": "No results found for...",
+    "placeholder": "Search...",
+    "placeholder_advanced": "Search for games, cards, or articles...",
+    "recent_searches": "Recent Searches",
+    "search_results": "Search Results: ",
+    "view_all_results_for": "View all results for"
+  },
+  "Products": {
+    "recommended": "Recommended Packages"
+  },
+  "promotions": "Promotions",
+  "how_to_use": {
+    "title": "How to Use"
+  },
+  "topup_system": "Top-up System",
+  "games": {
+    "title": "All Games"
+  },
+  "lucky_games": "Lucky Games",
+  "nav_game_topup": "Game Top-Up",
+  "nav_prepaid_card": "Prepaid Cards",
+  "nav_mobile_topup": "Mobile Top-Up",
+  "search_placeholder": "Search for games or cards...",
+  "admin_panel": "Admin Panel",
+  "my_account": "My Account",
+  "credits": "Credits",
+  "order_history": "Order History",
+  "logout": "Logout",
+  "login_button": "Login / Register",
+  "Admin": {
+    "nav": {
+      "main": "Dashboard",
+      "products_sales": "Products & Sales",
+      "content": "Content Management",
+      "users_communication": "Users & Communication",
+      "system": "System Settings"
+    },
+    "admin_cp": "Admin Control Panel",
+    "admin": "Administrator",
+    "dashboard": "Dashboard",
+    "analytics": "Analytics",
+    "products": "Inventory",
+    "categories": "Categories",
+    "orders": "Orders",
+    "payments": "Financial Hub",
+    "cms_pages": "Content Pages",
+    "news": "News Management",
+    "manage_faq": "FAQ Management",
+    "images": "Image Vault",
+    "manage_users": "User Management",
+    "support_tickets": "Support Tickets",
+    "notifications": "System Notifications",
+    "email": "Email Protocol",
+    "settings": "System Configuration",
+    "oauth": "OAuth Services",
+    "pin": "Pin menu",
+    "unpin": "Unpin menu",
+    "switch_dark": "Switch to dark",
+    "switch_light": "Switch to light",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "active": "Active",
+      "inactive": "Inactive",
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "banned": "Banned",
+      "unknown": "Unknown"
+    },
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "empty": "No items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "empty": "No data"
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "search": "Search...",
+      "clear_filters": "Clear filters"
+    },
+    "ai_chat": "AI Chat"
+  },
+  "hero_zzz_subtitle": "Top Up Zenless Zone Zero",
+  "hero_zzz_highlight_text": "Up to",
+  "hero_genshin_subtitle": "Top Up Genshin Impact",
+  "hero_genshin_highlight_text": "Up to",
+  "hero_btn_text": "Top Up Now",
+  "category_popular_games": "Popular Games",
+  "category_all_games": "All Games",
+  "category_check_skin": "Lucky Skins",
+  "category_game_card": "Game Cards",
+  "category_lucky_game": "Lucky Draw",
+  "special_offers": "Special Offers",
+  "popular_games": "Popular Game Top-Up",
+  "view_all": "View All",
+  "news_title": "News",
+  "status_instant": "Instant",
+  "status_30_60_mins": "30-60 mins",
+  "status_preorder": "Pre-order",
+  "trust_secure_title": "100% Secure",
+  "trust_secure_desc": "High-grade security system",
+  "trust_fast_title": "Instant Delivery",
+  "trust_fast_desc": "Fast automatic delivery",
+  "trust_price_title": "Best Price",
+  "trust_price_desc": "Most competitive prices",
+  "trust_support_title": "24/7 Support",
+  "trust_support_desc": "Our team is always ready to help",
+  "special_offers_subtitle": "Don't miss these exclusive deals just for you!",
+  "no_deals": "No discounted products available",
+  "no_products": "No products available",
+  "no_news": "No news articles yet",
+  "promotion_badge": "PROMO",
+  "login_success": "Login successful",
+  "invalid_email_password": "Invalid email or password",
+  "register_success": "Registration successful",
+  "register_error": "Registration error",
+  "logout_success": "Logout successful",
+  "profile_update_success": "Profile updated successfully",
+  "profile_update_error": "Profile update failed",
+  "password_change_success": "Password changed successfully",
+  "login_error": "Login error"
 }

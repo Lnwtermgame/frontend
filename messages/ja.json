@@ -1,1259 +1,1267 @@
 {
-    "Auth": {
-        "login": {
-            "email": {
-                "_base": "メールアドレス"
-            },
-            "error": "エラー",
-            "error_occurred": "ログイン中にエラーが発生しました",
-            "forgot_password": "パスワードをお忘れですか？",
-            "hero_title_1": "ゲームチャージなら",
-            "hero_title_2": "高速＆安全",
-            "hero_title_3": "24時間対応",
-            "hero_title_4": "Lnwtermgame",
-            "login_button": "ログイン",
-            "no_account": "アカウントをお持ちでないですか？",
-            "oauth_callback_failed": "SNSアカウントでのログインに失敗しました",
-            "oauth_failed": "ログインに失敗しました",
-            "oauth_init_failed": "ログインの初期化に失敗しました",
-            "or_login_with": "または以下でログイン",
-            "password": "パスワード",
-            "provider_not_enabled": "このログイン方法は現在利用できません",
-            "redirect": "リダイレクト中...",
-            "register_now": "新規登録",
-            "secure_100": "100%安全保証",
-            "secure_100_desc": "お客様のデータは厳重に保護されています",
-            "session_expired": "セッション切れ",
-            "session_expired_desc": "再度ログインしてください。",
-            "subtitle": "全機能をご利用いただくにはログインしてください",
-            "title": "ログイン",
-            "vip_points": "VIPポイントを貯めよう",
-            "vip_points_desc": "会員限定の特典をゲットしましょう。"
-        },
-        "register": {
-            "already_have_account": "すでにアカウントをお持ちですか？",
-            "and": "および",
-            "confirm_password": "パスワード確認",
-            "email": {
-                "_base": "メールアドレス"
-            },
-            "fast_247": "24時間スピード対応",
-            "fast_247_desc": "休日も含め、いつでもお取引を処理します。",
-            "go_to_login": "ログインはこちら",
-            "hero_desc": "Lnwtermgameに登録して、特別なキャンペーンや限定特典をお楽しみください。",
-            "hero_title_1": "新規アカウント登録",
-            "hero_title_2": "限定キャンペーン",
-            "hero_title_3": "あなただけに",
-            "login_now": "ログインする",
-            "password": "パスワード",
-            "password_hint": "パスワードは8文字以上で入力してください",
-            "passwords_not_match": "パスワードが一致しません",
-            "privacy_policy": "プライバシーポリシー",
-            "register_button": "登録する",
-            "registration_disabled": "登録受付停止中",
-            "registration_disabled_desc": "現在、新規登録を一時停止しています。",
-            "subtitle": "アカウントを作成してチャージを始めましょう",
-            "terms": "利用規約",
-            "terms_agreement": "以下に同意します",
-            "title": "新規登録",
-            "username": "ユーザー名",
-            "welcome_bonus": "初回特典",
-            "welcome_bonus_desc": "初回チャージで特別ボーナスをプレゼント。"
-        }
+  "Auth": {
+    "login": {
+      "email": {
+        "_base": "メールアドレス"
+      },
+      "error": "エラー",
+      "error_occurred": "ログイン中にエラーが発生しました",
+      "forgot_password": "パスワードをお忘れですか？",
+      "hero_title_1": "ゲームチャージなら",
+      "hero_title_2": "高速＆安全",
+      "hero_title_3": "24時間対応",
+      "hero_title_4": "Lnwtermgame",
+      "login_button": "ログイン",
+      "no_account": "アカウントをお持ちでないですか？",
+      "oauth_callback_failed": "SNSアカウントでのログインに失敗しました",
+      "oauth_failed": "ログインに失敗しました",
+      "oauth_init_failed": "ログインの初期化に失敗しました",
+      "or_login_with": "または以下でログイン",
+      "password": "パスワード",
+      "provider_not_enabled": "このログイン方法は現在利用できません",
+      "redirect": "リダイレクト中...",
+      "register_now": "新規登録",
+      "secure_100": "100%安全保証",
+      "secure_100_desc": "お客様のデータは厳重に保護されています",
+      "session_expired": "セッション切れ",
+      "session_expired_desc": "再度ログインしてください。",
+      "subtitle": "全機能をご利用いただくにはログインしてください",
+      "title": "ログイン",
+      "vip_points": "VIPポイントを貯めよう",
+      "vip_points_desc": "会員限定の特典をゲットしましょう。"
     },
-    "AdminPage": {
-        "ALL": "すべて",
-        "SLA_24": "SLA 24時間",
-        "SLA_8": "SLA 8時間",
-        "UNASSIGNED": "未割当",
-        "WAITING_ADMIN": "管理者対応待ち",
-        "a": " ",
-        "categories": {
-            "delete_confirm": "このカテゴリを削除しますか？",
-            "delete_failed": "カテゴリの削除に失敗しました",
-            "delete_has_products": "商品が存在するため、削除できません。",
-            "delete_success": "カテゴリを削除しました",
-            "load_failed": "カテゴリの読み込みに失敗しました",
-            "name_required": "カテゴリ名は必須です",
-            "save_success": "データを保存しました",
-            "slug_required": "スラッグは必須です"
-        },
-        "cms_news": {
-            "categories": {
-                "event": "イベント",
-                "general": "一般",
-                "promotion": "キャンペーン",
-                "update": "アップデート"
-            }
-        },
-        "common": {
-            "error": "エラーが発生しました",
-            "from": "件目",
-            "refresh": "更新",
-            "showing": "表示中"
-        },
-        "dashboard": {
-            "load_error": "ダッシュボードの読み込みに失敗しました",
-            "no_data": "データがありません"
-        },
-        "email": {
-            "categories": {
-                "authentication": "認証",
-                "general": "一般",
-                "order": "注文",
-                "payment": "決済",
-                "promotion": "キャンペーン",
-                "support": "サポート",
-                "system": "システム"
-            },
-            "placeholders": {
-                "discountAmount": "割引額",
-                "email": "メールアドレス",
-                "expiresIn": "有効期限",
-                "finalAmount": "最終金額",
-                "orderDate": "注文日",
-                "orderNumber": "注文番号",
-                "resetUrl": "リセットURL",
-                "siteName": "サイト名",
-                "ticketNumber": "チケット番号",
-                "totalAmount": "合計金額",
-                "username": "ユーザー名",
-                "verificationUrl": "認証URL"
-            }
-        },
-        "logo": "ロゴ",
-        "monitor": "システムモニター",
-        "newsItems": "ニュース一覧",
-        "oauth": {
-            "load_error": "OAuthデータの読み込みエラー"
-        },
-        "order_detail": {
-            "back_to_orders": "注文一覧に戻る",
-            "items": "商品",
-            "order_date": "注文日",
-            "order_status": "注文ステータス",
-            "subtitle": "注文の詳細とステータス",
-            "title": "注文詳細"
-        },
-        "orders": {
-            "actions": "操作",
-            "amount": "合計金額",
-            "customer": "顧客",
-            "date": "日付",
-            "no_orders": "注文がありません",
-            "order_id": "注文ID",
-            "product": "商品",
-            "search_placeholder": "注文を検索...",
-            "status": {
-                "all": "すべて",
-                "cancelled": "キャンセル済み",
-                "completed": "完了",
-                "failed": "失敗",
-                "pending": "保留中",
-                "processing": "処理中",
-                "refunded": "返金済み"
-            },
-            "status_text": "ステータス",
-            "subtitle": "全注文を管理",
-            "title": "注文管理"
-        },
-        "promoCards": "プロモカード",
-        "seasonalEvents": "シーズンイベント",
-        "settings": {
-            "section_labels": {
-                "featured_products": "おすすめ商品",
-                "hero_button": "ヒーローボタン",
-                "news": "ニュース",
-                "specials": "特別セール",
-                "view_all": "すべて見る"
-            }
-        },
-        "th-TH": "タイ語",
-        "tickets": {
-            "all_assignees": "全担当者",
-            "categories": {
-                "all": "すべてのカテゴリ",
-                "order_issue": "注文のトラブル",
-                "payment_issue": "決済のトラブル",
-                "product_issue": "商品のトラブル",
-                "account_issue": "アカウントのトラブル",
-                "technical_support": "技術サポート",
-                "refund_request": "返金リクエスト",
-                "general_inquiry": "一般お問い合わせ"
-            },
-            "priorities": {
-                "high": "高",
-                "urgent": "緊急"
-            },
-            "status": {
-                "open": "オープン",
-                "in_progress": "対応中",
-                "waiting_user": "ユーザー返信待ち",
-                "waiting_admin": "管理者対応待ち",
-                "resolved": "解決済み",
-                "closed": "クローズ"
-            },
-            "unassigned": "未割当"
-        }
+    "register": {
+      "already_have_account": "すでにアカウントをお持ちですか？",
+      "and": "および",
+      "confirm_password": "パスワード確認",
+      "email": {
+        "_base": "メールアドレス"
+      },
+      "fast_247": "24時間スピード対応",
+      "fast_247_desc": "休日も含め、いつでもお取引を処理します。",
+      "go_to_login": "ログインはこちら",
+      "hero_desc": "Lnwtermgameに登録して、特別なキャンペーンや限定特典をお楽しみください。",
+      "hero_title_1": "新規アカウント登録",
+      "hero_title_2": "限定キャンペーン",
+      "hero_title_3": "あなただけに",
+      "login_now": "ログインする",
+      "password": "パスワード",
+      "password_hint": "パスワードは8文字以上で入力してください",
+      "passwords_not_match": "パスワードが一致しません",
+      "privacy_policy": "プライバシーポリシー",
+      "register_button": "登録する",
+      "registration_disabled": "登録受付停止中",
+      "registration_disabled_desc": "現在、新規登録を一時停止しています。",
+      "subtitle": "アカウントを作成してチャージを始めましょう",
+      "terms": "利用規約",
+      "terms_agreement": "以下に同意します",
+      "title": "新規登録",
+      "username": "ユーザー名",
+      "welcome_bonus": "初回特典",
+      "welcome_bonus_desc": "初回チャージで特別ボーナスをプレゼント。"
+    }
+  },
+  "AdminPage": {
+    "ALL": "すべて",
+    "SLA_24": "SLA 24時間",
+    "SLA_8": "SLA 8時間",
+    "UNASSIGNED": "未割当",
+    "WAITING_ADMIN": "管理者対応待ち",
+    "a": " ",
+    "categories": {
+      "delete_confirm": "このカテゴリを削除しますか？",
+      "delete_failed": "カテゴリの削除に失敗しました",
+      "delete_has_products": "商品が存在するため、削除できません。",
+      "delete_success": "カテゴリを削除しました",
+      "load_failed": "カテゴリの読み込みに失敗しました",
+      "name_required": "カテゴリ名は必須です",
+      "save_success": "データを保存しました",
+      "slug_required": "スラッグは必須です"
     },
-    "Catalog": {
-        "card": {
-            "subtitle": "人気ゲーム",
-            "title": "ゲームを選ぶ"
-        },
-        "cta_buy": "購入する",
-        "cta_topup": "チャージする",
-        "filter_category": "カテゴリで絞り込み",
-        "games": {
-            "subtitle": "全ゲーム一覧",
-            "title": "ゲーム"
-        },
-        "loading": "読み込み中...",
-        "mobile": {
-            "subtitle": "スマホ高速チャージ",
-            "title": "モバイルゲーム"
-        },
-        "no_results": "結果が見つかりません",
-        "no_results_desc": "別のキーワードで検索してみてください",
-        "search": "ゲームを検索",
-        "search_placeholder": "ゲーム名を入力...",
-        "sort": {
-            "all": "すべて"
-        }
+    "cms_news": {
+      "categories": {
+        "event": "イベント",
+        "general": "一般",
+        "promotion": "キャンペーン",
+        "update": "アップデート"
+      }
     },
-    "Checkout": {
-        "browse_products": "商品を見る",
-        "confirm_order": "注文を確定",
-        "continue_shopping": "買い物を続ける",
-        "direct_topup": "ダイレクトチャージ",
-        "empty_cart": "カートは空です",
-        "empty_cart_desc": "カタログからお気に入りのゲームを見つけましょう。",
-        "error": {
-            "fill_all_fields": "すべての必須項目を入力してください",
-            "generic_failed": "取引に失敗しました。再度お試しください。",
-            "order_failed": "注文の作成に失敗しました",
-            "player_id_invalid": "プレイヤーIDが無効です",
-            "product_changed": "商品情報が変更されました。ページを更新してください。"
-        },
-        "fill_required_fields": "必須項目を入力してください",
-        "gift_card": "ギフトカード",
-        "grand_total": "合計金額",
-        "info_complete": "入力完了",
-        "loading": "処理中...",
-        "order_summary": "注文内容",
-        "per_item": "1個あたり",
-        "quantity": "数量",
-        "subtitle": "内容を確認してお支払いへ",
-        "terms_agreement": "以下に同意します",
-        "terms_of_service": "利用規約",
-        "title": "お会計",
-        "total": "合計"
+    "common": {
+      "error": "エラーが発生しました",
+      "from": "件目",
+      "refresh": "更新",
+      "showing": "表示中"
     },
-    "Account": {
-        "account_settings": "アカウント設定",
-        "email_label": "登録メールアドレス",
-        "my_orders": "注文履歴",
-        "no_recent_purchases": "最近の購入履歴はありません",
-        "not_verified": "未認証",
-        "order_status": {
-            "completed": "完了",
-            "pending": "支払い待ち",
-            "processing": "処理中",
-            "refunded": "返金済み"
-        },
-        "recent_purchases": "最近の購入",
-        "security": "セキュリティ",
-        "send_failed": "認証メールの送信に失敗しました",
-        "send_verification": "認証メールを送信",
-        "sending": "送信中...",
-        "spam_hint": "メールが届かない場合は迷惑メールフォルダをご確認ください。",
-        "subtitle": "プロフィール管理と注文の追跡",
-        "title": "マイアカウント",
-        "verification_sent": "認証リンクを送信しました",
-        "verified": "認証済み",
-        "verify_email_banner": "すべての機能を利用するにはメール認証が必要です",
-        "verify_email_desc": "メール認証により、アカウントの安全な復旧と正確な注文追跡が可能になります。",
-        "view_all_orders": "すべての注文を見る",
-        "wait_cooldown": "しばらくお待ちください"
+    "dashboard": {
+      "load_error": "ダッシュボードの読み込みに失敗しました",
+      "no_data": "データがありません"
     },
-    "Security": {
-        "additional_settings": {
-            "login_notifications": "ログイン通知",
-            "login_notifications_desc": "新しいデバイスからログインがあった際に通知します。",
-            "title": "その他の設定"
-        },
-        "change_password": {
-            "button_cancel": "キャンセル",
-            "button_change": "パスワードを変更",
-            "button_saving": "保存中...",
-            "button_setup": "パスワードを設定",
-            "confirm_label": "パスワード確認",
-            "current_label": "現在のパスワード",
-            "error_change_failed": "パスワードの変更に失敗しました",
-            "error_otp_failed": "OTPが無効です",
-            "error_setup_failed": "パスワードの設定に失敗しました",
-            "length_hint": "8文字以上",
-            "match_error": "パスワードが一致しません",
-            "new_label": "新しいパスワード",
-            "oauth_notice": "SNSアカウントでログインしています。こちらで通常のパスワードを設定できます。",
-            "otp_label": "OTPコード",
-            "otp_sent_success": "OTPを送信しました",
-            "otp_wait": "しばらくお待ちください...",
-            "request_otp": "OTPを取得",
-            "resend_otp": "OTPを再送信",
-            "setup_confirm_label": "パスワード確認",
-            "setup_title": "パスワード設定",
-            "success_setup": "パスワードを設定しました",
-            "title": "パスワード変更"
-        },
-        "error_email_not_found": "メールアドレスが見つかりません",
-        "recent_devices": {
-            "logout_all": "他のすべてのデバイスからログアウト",
-            "processing": "処理中...",
-            "title": "最近のログインデバイス"
-        },
-        "subtitle": "セキュリティとパスワードの管理",
-        "suspicious_activity": {
-            "admin_location": "保留中",
-            "confirm_button": "アクティビティを確認",
-            "resolved_badge": "解決済み",
-            "title": "不審なアクティビティ"
-        },
-        "title": "セキュリティ",
-        "two_factor": {
-            "coming_soon": "近日公開",
-            "setup_button": "2FAを設定",
-            "subtitle": "アカウントに二重の保護を追加",
-            "title": "二段階認証 (2FA)"
-        }
-    },
-    "Common": {
-        "already_verified_title": "認証済みです",
-        "back_to_login": "ログインに戻る",
-        "confirm_password": "パスワード確認",
-        "contact_support": "サポートに連絡",
-        "email": "メールアドレス",
-        "email_placeholder": "example@email.com",
-        "error_expired": "リンクの有効期限が切れています",
-        "error_get_new_link": "新しいリンクを取得",
-        "error_invalid": "無効な情報です",
-        "error_invalid_email": "メールアドレスの形式が正しくありません",
-        "error_invalid_link": "無効なリンクです",
-        "error_invalid_link_desc": "このリンクは無効か、有効期限が切れています。",
-        "error_occurred": "エラーが発生しました",
-        "error_send_failed": "データの送信に失敗しました",
-        "error_title": "失敗しました",
-        "expired_title": "リクエストの有効期限切れ",
-        "go_to_account": "アカウントへ",
-        "go_to_login": "ログインへ",
-        "invalid_link_desc": "リンクが無効です。再度ご確認ください。",
-        "invalid_link_title": "無効なリンク",
-        "invalid_token_title": "無効なトークン",
-        "loading": "読み込み中...",
-        "loading_desc": "しばらくお待ちください",
-        "login_now": "ログインする",
-        "match_error": "データが一致しません",
-        "match_success": "データが一致しました",
-        "member": "会員エリア",
-        "new_password": "新しいパスワード",
-        "password_requirements": {
-            "length": "8文字以上",
-            "lowercase": "小文字を1文字以上",
-            "number": "数字を1つ以上",
-            "uppercase": "大文字を1文字以上"
-        },
-        "redirect_hint": "リダイレクト中...",
-        "resend_button": "再送信",
-        "resend_email": "メールを再送信",
-        "resend_success": "送信しました",
-        "reset_button": "リセット",
-        "send_link": "リンクを送信",
-        "sending": "処理中...",
-        "spam_hint": "メールが届かない場合は迷惑メールフォルダをご確認ください。",
-        "strength": "パスワード強度",
-        "subtitle": "概要",
-        "success_desc": "取引成功",
-        "success_title": "成功",
-        "title": "タイトル",
-        "token": "セキュリティトークン"
-    },
-    "Coupons": {
-        "add_coupon": "クーポンを追加",
-        "add_failed": "クーポンの追加に失敗しました",
-        "add_success": "クーポンを追加しました",
-        "code_label": "クーポンコード",
-        "details": {
-            "copied": "コピーしました",
-            "copy_code": "コードをコピー",
-            "discount": "割引",
-            "max_discount": "最大割引額",
-            "min_purchase": "最低購入額",
-            "no_min_purchase": "最低購入額なし",
-            "title": "クーポン詳細",
-            "use_now": "今すぐ使う",
-            "used_at": "使用日時",
-            "valid_until": "有効期限"
-        },
-        "example_code": "DISCOUNT20",
-        "expiry_hint": "クーポンには有効期限があります。",
-        "filter": {
-            "active": "利用可能",
-            "all": "すべて",
-            "expired": "期限切れ",
-            "used": "使用済み"
-        },
-        "how_to_use": {
-            "step1": "商品を選択",
-            "step2": "お会計時にコードを入力",
-            "step3": "割引を確認してお支払い",
-            "title": "使い方"
-        },
-        "invalid_code": "無効なコード",
-        "no_coupons": "クーポンがありません",
-        "no_coupons_desc": "現在ご利用可能なクーポンはありません。",
-        "no_search_results": "該当するクーポンが見つかりません。",
-        "not_found": "クーポンが見つかりません",
-        "search_placeholder": "クーポンを検索...",
-        "start_shopping": "ショッピングを始める",
-        "status": {
-            "active": "利用可能",
-            "expired": "期限切れ",
-            "used": "使用済み"
-        },
-        "subtitle": "クーポンの管理",
-        "th-TH": "タイ語",
-        "title": "クーポン",
-        "validating": "確認中..."
-    },
-    "Credits": {
-        "about": {
-            "step1_desc": "ログインしてクレジットチャージへ",
-            "step1_title": "パッケージを選択",
-            "step2_desc": "お好みの方法でお支払い",
-            "step2_title": "お支払い",
-            "step3_desc": "クレジットが即座に反映されます",
-            "step3_title": "チャージ完了",
-            "title": "クレジットのチャージ方法"
-        },
-        "balance_label": "残高：",
-        "earned": "獲得履歴",
-        "error_loading": "クレジット情報の読み込みに失敗しました",
-        "history": {
-            "all": "すべての取引",
-            "empty": "履歴がありません",
-            "empty_desc": "クレジットの取引履歴はまだありません。",
-            "this_month": "今月",
-            "this_week": "今週",
-            "title": "取引履歴"
-        },
-        "spent": "利用履歴",
-        "subtitle": "アカウントのクレジット管理",
-        "th-TH": "タイ語",
-        "title": "マイクレジット",
-        "topup_button": "クレジットをチャージ",
-        "topup_upcoming": "チャージパッケージ",
-        "total_transactions": "総取引数",
-        "types": {
-            "bonus": "ボーナス",
-            "purchase": "購入",
-            "refund": "返金",
-            "topup": "チャージ"
-        },
-        "value_hint": "まとめてチャージするとお得です"
-    },
-    "Favorites": {
-        "added_to_cart": "カートに追加しました",
-        "buy_now": "今すぐ購入",
-        "error_loading": "お気に入りの読み込みに失敗しました",
-        "found_items": "件",
-        "no_favorites": "お気に入りがありません",
-        "no_favorites_desc": "ゲームのハートアイコンをクリックしてお気に入りに追加しましょう。",
-        "no_search_results": "該当するお気に入りが見つかりません。",
-        "remove_failed": "削除に失敗しました",
-        "remove_success": "お気に入りから削除しました",
-        "search_placeholder": "お気に入りを検索...",
-        "start_shopping": "ゲームを探す",
-        "starting_at": "〜から",
-        "subtitle": "お気に入りのゲームはここに表示されます",
-        "title": "お気に入り",
-        "view_more": "詳細を見る"
-    },
-    "Invoices": {
-        "actions": {
-            "download": "ダウンロード",
-            "view": "詳細を見る"
-        },
-        "filter": {
-            "all": "すべての請求書",
-            "cancelled": "キャンセル済み",
-            "paid": "支払い済み",
-            "pending": "支払い待ち"
-        },
-        "no_invoices": "請求書がありません",
-        "no_invoices_desc": "まだ取引がありません。",
-        "no_search_results": "該当する請求書が見つかりません。",
-        "search_placeholder": "請求書を検索...",
-        "status": {
-            "cancelled": "キャンセル",
-            "paid": "支払い済み",
-            "pending": "保留中"
-        },
-        "subtitle": "請求書の管理",
-        "table": {
-            "actions": "操作",
-            "amount": "金額",
-            "date": "日付",
-            "invoice_number": "請求書番号",
-            "order_number": "注文番号",
-            "status": "ステータス"
-        },
-        "th-TH": "タイ語",
-        "title": "請求書一覧"
-    },
-    "InvoiceDetail": {
-        "a": " ",
-        "back_to_list": "一覧に戻る",
-        "copy_success": "コピーしました",
-        "customer_info": "顧客情報",
-        "date": "取引日",
-        "download_pdf": "PDFをダウンロード",
-        "error_not_found": "請求書が見つかりません",
-        "grand_total": "お支払い金額",
-        "invoice_no": "請求書番号",
-        "item_details": "購入商品",
-        "order_no": "注文番号",
-        "paid": "支払い済み",
-        "payment_info": "決済会社",
-        "payment_status": "支払いステータス",
-        "price": "価格",
-        "print": "印刷",
-        "product": "商品情報",
-        "quantity": "数量",
-        "subtotal": "小計",
-        "title": "請求書/領収書",
-        "total": "合計",
-        "unpaid": "未払い",
-        "vat": "消費税"
-    },
-    "Notifications": {
-        "delete": "通知を削除",
-        "delete_success": "削除しました",
-        "empty_desc": "通知はありません。",
-        "empty_filter_desc": "このフィルターに該当する通知はありません。",
-        "empty_title": "受信トレイは空です",
-        "error_loading": "メッセージの読み込みに失敗しました",
-        "filters": {
-            "all": "すべて",
-            "order": "注文",
-            "payment": "決済",
-            "promotion": "キャンペーン",
-            "unread": "未読"
-        },
-        "manage_settings": "通知設定",
-        "mark_all_read": "すべて既読にする",
-        "mark_read": "既読にする",
-        "mark_read_success": "既読にしました",
-        "subtitle": "通知センター",
-        "title": "通知",
-        "unread_badge": "未読",
-        "view_details": "詳細を見る"
-    },
-    "NotificationPreferences": {
-        "channels": {
-            "email": "メール通知",
-            "email_desc": "メールで最新情報や購入明細をお届けします。",
-            "web": "サイト内通知",
-            "web_desc": "ウェブサイト上で通知を受け取ります。"
-        },
-        "save_button": "設定を保存",
-        "save_success": "設定を保存しました。",
-        "saving": "保存中...",
-        "subtitle": "通知の受信方法を管理",
-        "title": "通知設定",
-        "types": {
-            "orders": "注文の更新",
-            "orders_desc": "注文状況や問題の解決状況をお知らせします。",
-            "promotions": "キャンペーン",
-            "promotions_desc": "割引、イベント、限定オファーのお知らせ。"
-        }
-    },
-    "Orders": {
-        "amount_label": "注文金額：",
-        "date_label": "注文日：",
-        "error_loading": "注文の読み込みに失敗しました",
-        "filter_title": "注文フィルター",
-        "no_orders": "注文がありません",
-        "no_orders_desc": "過去の注文はここに表示されます。",
-        "no_search_results": "該当する注文が見つかりません。注文番号をご確認ください。",
-        "order_id_label": "注文番号：",
-        "search_placeholder": "注文番号または商品名で検索",
-        "status": {
-            "all": "すべて",
-            "cancelled": "キャンセル",
-            "completed": "完了",
-            "pending": "支払い待ち",
-            "processing": "処理中",
-            "refunded": "返金済み"
-        },
-        "subtitle": "注文履歴の確認と追跡",
-        "table": {
-            "amount": "金額",
-            "date": "日付",
-            "order_number": "注文番号",
-            "product": "商品",
-            "status": "ステータス"
-        },
-        "th-TH": "タイ語",
-        "title": "注文履歴",
-        "view_details": "詳細を見る",
-        "view_mode": {
-            "card": "カード表示",
-            "table": "テーブル表示"
-        },
-        "view_results": "結果を表示",
-        "view_short": "折りたたむ"
-    },
-    "OrderDetail": {
-        "actions": {
-            "cancel": "注文をキャンセル",
-            "cancel_confirm": "この注文をキャンセルしますか？",
-            "cancel_failed": "キャンセルに失敗しました",
-            "cancel_hint": "キャンセルは取り消せません。",
-            "cancel_success": "注文をキャンセルしました。",
-            "cancelling": "キャンセル中...",
-            "need_help": "お困りですか？",
-            "report_issue": "問題を報告",
-            "title": "注文管理"
-        },
-        "back_to_orders": "注文履歴に戻る",
-        "customer": {
-            "date": "注文日：",
-            "email": "メール：",
-            "title": "顧客情報",
-            "username": "顧客："
-        },
-        "delivery": {
-            "completed_at": "配送完了日時",
-            "status_summary": "配送状況",
-            "statuses": {
-                "completed": "配送完了",
-                "failed": "配送失敗",
-                "pending": "キュー待ち",
-                "processing": "配送処理中..."
-            },
-            "title": "配送情報"
-        },
-        "error_loading": "注文詳細の読み込みエラー",
-        "error_not_found": "注文が見つかりません",
-        "error_not_found_desc": "注文番号をご確認の上、再度お試しください。",
-        "items": {
-            "account_info": "追加情報",
-            "code_label": "引き換えコード",
-            "copy_success": "コードをコピーしました",
-            "delivery_failed": "商品の読み込みエラー",
-            "delivery_status": "商品の配送状況",
-            "digital_codes": "デジタルコード",
-            "expired_label": "有効期限",
-            "hide_code": "コードを隠す",
-            "pin_label": "PINコード",
-            "quantity": "数量",
-            "serial_label": "シリアル番号",
-            "show_code": "コードを表示",
-            "title": "注文商品",
-            "usage_hint": "コードは大切に保管してください。"
-        },
-        "loading": "読み込み中...",
-        "order_id_label": "注文番号",
-        "payment": {
-            "discount": "割引",
-            "method": "支払い方法",
-            "methods": {
-                "bank_transfer": "銀行振込",
-                "promptpay": "PromptPay",
-                "truemoney": "TrueMoney Wallet",
-                "unknown": "その他"
-            },
-            "status_paid": "支払い済み",
-            "status_pending": "確認待ち",
-            "subtotal": "小計",
-            "title": "支払い明細",
-            "total": "合計金額"
-        },
-        "th-TH": "タイ語",
-        "title": "注文詳細"
-    },
-    "errors": {
-        "generic": {
-            "description": "予期しないエラーが発生しました。後ほどお試しください。",
-            "goHome": "ホームに戻る",
-            "title": "エラーが発生しました",
-            "tryAgain": "再試行"
-        },
-        "notFound": {
-            "description": "お探しのページは存在しません。",
-            "goBack": "戻る",
-            "goHome": "ホームに戻る",
-            "title": "ページが見つかりません"
-        }
-    },
-    "Verification": {
-        "forgot_password": {
-            "back_to_login": "ログインに戻る",
-            "email_placeholder": "登録済みメールアドレスを入力...",
-            "error_invalid_email": "有効なメールアドレスを入力してください",
-            "error_send_failed": "リセットリンクの送信に失敗しました",
-            "loading": "処理中...",
-            "resend_email": "メールを再送信",
-            "send_link": "リセットリンクを送信",
-            "spam_hint": "メールが届かない場合は迷惑メールフォルダをご確認ください。",
-            "subtitle": "パスワードリセットリンクをお送りします。",
-            "success_desc": "パスワードリセットリンクをメールで送信しました。",
-            "success_title": "メール送信完了",
-            "title": "パスワードをお忘れですか？"
-        },
-        "reset_password": {
-            "back_to_login": "ログインに戻る",
-            "confirm_password": "新しいパスワードの確認",
-            "error_expired": "リセットリンクの有効期限が切れています。",
-            "error_get_new_link": "新しいリセットリンクを取得",
-            "error_invalid": "セキュリティコードが無効または期限切れです。",
-            "error_invalid_link": "認証リンクが無効です。",
-            "error_invalid_link_desc": "このリセットリンクは無効か、すでに使用されています。",
-            "loading": "処理中...",
-            "login_now": "ログインする",
-            "match_error": "パスワードが一致しません",
-            "match_success": "パスワードが一致しました。",
-            "new_password": "新しいパスワード",
-            "password_requirements": {
-                "length": "8文字以上",
-                "lowercase": "小文字1文字以上 (a-z)",
-                "number": "数字1つ以上 (0-9)",
-                "uppercase": "大文字1文字以上 (A-Z)"
-            },
-            "redirect_hint": "リダイレクト中...",
-            "reset_button": "パスワードを更新",
-            "strength": "パスワード強度",
-            "subtitle": "新しいパスワードを設定してください",
-            "success_desc": "パスワードが更新されました。ログインできます。",
-            "success_title": "パスワード更新完了",
-            "title": "パスワードリセット",
-            "token": "セキュリティトークン"
-        },
-        "verify_email": {
-            "already_verified_title": "メールは認証済みです。",
-            "back_to_login": "ログインに戻る",
-            "contact_support": "サポートに連絡",
-            "email": "メールアドレス",
-            "error_title": "ネットワークエラーにより認証に失敗しました",
-            "expired_title": "認証リンクの有効期限が切れています。",
-            "go_to_account": "アカウントへ",
-            "go_to_login": "ログインへ",
-            "invalid_link_desc": "認証リンクが無効か、メールは既に認証されています。",
-            "invalid_link_title": "無効な認証リンク",
-            "invalid_token_title": "無効なトークン",
-            "loading": "メールを認証中...",
-            "loading_desc": "しばらくお待ちください...",
-            "redirect_hint": "ホームにリダイレクト中...",
-            "resend_button": "認証メールを再送信",
-            "resend_success": "認証メールを送信しました。",
-            "sending": "メール送信中...",
-            "spam_hint": "迷惑メールフォルダをご確認ください。",
-            "success_title": "メール認証完了",
-            "title": "メールアドレスの認証",
-            "token": "セキュリティトークン"
-        }
-    },
-    "ProductDetail": {
-        "about_product": "商品説明",
-        "account_info_title": "アカウント情報",
-        "auto_delivery_hint": "自動即時配送",
-        "back": "戻る",
-        "buy_now_button": "今すぐ購入",
-        "by_developer": "開発元：",
-        "cancel_button": "キャンセル",
-        "change_button": "選択を変更",
-        "close_window_button": "閉じる",
-        "confirm_button": "購入を確定",
-        "confirm_hint": "確定前に内容をご確認ください。",
-        "confirm_order_title": "注文確認",
-        "confirm_selection_button": "選択を確定",
-        "copy_link_failed": "コピーに失敗しました。再度お試しください。",
-        "copy_link_success": "リンクをコピーしました",
-        "developer": "開発元",
-        "error": {
-            "enter_phone": "10桁の有効な電話番号を入力してください。",
-            "fill_all_fields": "すべての必須項目を入力してください。",
-            "invalid_phone": "電話番号が無効です。",
-            "login_required": "取引を行うにはログインしてください。",
-            "no_payment_link": "決済リンクの生成に失敗しました。再度お試しください。",
-            "not_found": "商品が見つかりません",
-            "not_found_desc": "この商品は存在しないか、販売終了しました。",
-            "order_success_redirect": "取引成功。トップページにリダイレクト中...",
-            "payment_error": "決済処理エラー",
-            "payment_failed": "決済情報を確認できませんでした",
-            "payment_method_unavailable": "この決済方法は現在利用できません。",
-            "phone_region_mismatch": "海外の電話番号はサポートされていません",
-            "player_id_invalid": "無効なプレイヤーIDです。確認して再入力してください。",
-            "select_option": "パッケージを選択してください。",
-            "truemoney_minimum": "TrueMoney Walletは最低20バーツからです。"
-        },
-        "fee_label": "手数料",
-        "form": "詳細",
-        "game_info": "ゲーム情報",
-        "input": "情報入力",
-        "login_required_notice": "ログインで限定割引を確認",
-        "login_to_buy_button": "ログインして購入",
-        "meta": "タグ",
-        "mobile_number_label": "ウォレット番号",
-        "mobile_number_placeholder": "08x-xxx-xxxx",
-        "no_options": "利用可能なパッケージがありません",
-        "no_options_desc": "現在この商品のパッケージはございません。",
-        "no_refund_warning_desc": "完了した注文は返金できません。確定前に内容をご確認ください。",
-        "no_refund_warning_title": "返金不可のお知らせ",
-        "no_similar_found": "類似商品はありません。",
-        "payment_method_label": "決済方法：",
-        "payment_selection_desc": "ご希望の決済方法をお選びください",
-        "payment_selection_title": "決済オプション",
-        "platforms": "対応プラットフォーム",
-        "popular_badge": "人気",
-        "price_label": "価格：",
-        "privacy_label": "プライバシーポリシー",
-        "product_details_title": "商品詳細",
-        "publisher": "パブリッシャー",
-        "purchase_summary": "注文内容",
-        "refund_label": "返金ポリシー",
-        "related_products": "こちらもおすすめ",
-        "release_date": "発売日",
-        "savings_label": "お得額：",
-        "secure_payment_notice": "100%安全な決済",
-        "select_package": "パッケージを選択",
-        "selected_package_label": "選択中のパッケージ",
-        "similar_products": "類似商品",
-        "subtotal_label": "小計：",
-        "terms_agreement_prefix": "続行すると以下に同意したことになります ",
-        "terms_label": "利用規約",
-        "th-TH": "タイ語",
-        "topup_options": "チャージオプション",
-        "total_label": "合計金額：",
-        "transaction_summary_title": "料金明細",
-        "unknown": "不明",
-        "unverified_account_warning": "購入前にメール認証を完了してください。",
-        "verify_info_hint": "続行前にプレイヤーIDを慎重にご確認ください。"
-    },
-    "News": {
-        "all_news": "すべてのニュース",
-        "categories": {
-            "event": "イベント",
-            "general": "一般",
-            "promotion": "キャンペーン",
-            "update": "アップデート"
-        },
-        "featured": "注目ニュース",
-        "featured_badge": "注目",
-        "no_news": "ニュースはまだありません。",
-        "subtitle": "最新情報とお知らせ",
-        "title": "ニュース＆お知らせ",
-        "view_count": "閲覧数"
-    },
-    "NewsDetail": {
-        "back_to_news": "ニュースに戻る",
-        "error_loading": "記事の読み込みに失敗しました",
-        "error_not_found": "記事が見つかりません",
-        "error_not_found_desc": "この記事は存在しないか、削除されています。",
-        "featured_badge": "話題",
-        "last_updated": "最終更新：",
-        "other_news": "関連ニュース",
-        "sources": "ソース",
-        "views": "閲覧数："
-    },
-    "PaymentPending": {
-        "a": " ",
-        "loading": "支払い状況を確認中...",
-        "orderId": "注文番号：",
-        "order_id": "注文番号：",
-        "payment_failed": "支払い失敗",
-        "payment_failed_desc": "再度お支払いをお試しください。",
-        "payment_success": "支払い成功",
-        "qr_expired": "QRコード期限切れ",
-        "qr_expired_desc": "注文をキャンセルして再度作成してください。",
-        "redirecting": "リダイレクト中...",
-        "referenceNo": "参照番号：",
-        "reference_no": "参照番号：",
-        "time_remaining": "残り時間：",
-        "try_again": "再試行",
-        "view_orders": "注文履歴を見る"
-    },
-    "PaymentSuccess": {
-        "back_home": "ホームに戻る",
-        "delivery_notice": "ご注文は処理中です。まもなくお届けします。",
-        "orderId": "注文番号：",
-        "order_number": "注文番号",
-        "processing_badge": "配送処理中",
-        "referenceNo": "参照番号：",
-        "session_id": "セッションID",
-        "subtitle": "お支払いが完了しました。ご注文の準備を進めています。",
-        "title": "支払い完了！",
-        "view_order": "注文状況を確認"
-    },
-    "Navigation": {
-        "account": "マイアカウント",
-        "card": "プリペイドカード",
-        "faq": "よくある質問",
-        "favorite": "お気に入り",
-        "games": "ゲームチャージ",
-        "home": "ホーム",
-        "login": "ログイン",
-        "mobile_recharge": "モバイルチャージ",
-        "news": "ニュース",
-        "orders": "注文履歴",
-        "register": "新規登録",
-        "support": "サポート"
-    },
-    "SupportContact": {
-        "form": {
-            "email": "メールアドレス",
-            "message": "メッセージ",
-            "name": "お名前",
-            "send": "送信",
-            "sending": "送信中...",
-            "subject": "件名",
-            "success": "メッセージを送信しました。担当者より折り返しご連絡いたします。",
-            "title": "メールでお問い合わせ"
-        },
-        "social": {
-            "title": "SNSでお問い合わせ (Facebook / Line / Discord)"
-        },
-        "subtitle": "サポートチームにお気軽にご相談ください",
-        "title": "お問い合わせ (24時間対応)"
-    },
-    "SupportFAQ": {
-        "all": "全カテゴリ",
-        "back_to_faq": "FAQに戻る",
-        "categories": {
-            "_base": "カテゴリ"
-        },
-        "need_help": {
-            "title": "お困りですか？",
-            "description": "お探しの答えが見つかりませんか？",
-            "contact_support": "サポートに連絡"
-        },
-        "no": "役に立たなかった",
-        "no_results": "結果が見つかりません。",
-        "search_placeholder": "質問を検索...",
-        "subtitle": "よくある質問への回答を検索",
-        "title": "よくある質問",
-        "view_all": "すべて見る",
-        "yes": "役に立った"
-    },
-    "SupportFAQDetail": {
-        "back_to_faq": "FAQに戻る",
-        "contact_support": "サポートに連絡",
-        "contact_support_desc": "さらにサポートが必要な場合はお問い合わせください。",
-        "error": {
-            "_base": "コンテンツの読み込みに失敗しました。"
-        },
-        "helpful": "この記事は役に立ちましたか？",
-        "last_updated": "最終更新",
-        "loading": "読み込み中...",
-        "no": "役に立たなかった",
-        "still_need_help": "まだお困りですか？",
-        "thank_you": "フィードバックありがとうございます。",
-        "views": "閲覧数：",
-        "yes": "役に立った"
-    },
-    "Support": {
-        "categories": {
-            "faq": {
-                "description": "よくある質問とその回答をご確認いただけます。",
-                "title": "よくある質問"
-            },
-            "tickets": {
-                "description": "注文、決済、アカウントに関する問題を報告できます。",
-                "title": "チケットを送信"
-            }
-        },
-        "common_issues": {
-            "title": "よくある問題"
-        },
-        "contact_methods": "お問い合わせ方法",
-        "subtitle": "以下のトピックを選択するか、サポートチームに直接お問い合わせください。",
-        "title": "ヘルプセンター",
-        "urgent_help": {
-            "description": "緊急の場合はライブチャットまたはLineでお問い合わせください。",
-            "title": "緊急サポート"
-        },
-        "visit": "見る",
-        "working_hours": {
-            "mon_fri": "月曜〜金曜（通常対応）",
-            "sat_sun": "土曜〜日曜（返信が遅れる場合があります）",
-            "time_mon_fri": "09:00 - 00:00 (GMT+7)",
-            "time_sat_sun": "09:00 - 19:00 (GMT+7)",
-            "timezone": "タイムゾーン (GMT+7)",
-            "title": "サポート対応時間"
-        }
-    },
-    "SupportTickets": {
-        "back": "チケット一覧に戻る",
-        "create": {
-            "cancel": "キャンセル",
-            "categories": {
-                "account": "アカウントの問題",
-                "general": "一般的なお問い合わせ",
-                "order": "注文の問題",
-                "payment": "決済の問題",
-                "product": "商品の問題",
-                "refund": "返金リクエスト",
-                "technical": "技術サポート"
-            },
-            "category": "カテゴリ",
-            "description": "問題の詳細",
-            "description_label": "問題の詳細をお知らせください",
-            "description_placeholder": "発生している問題を記載してください...",
-            "order_ref": "注文番号（任意）",
-            "order_ref_placeholder": "注文 #999999",
-            "subject_placeholder": "簡潔な件名",
-            "submit": "チケットを送信",
-            "title": "新しいチケットを作成"
-        },
-        "create_new": "新しいチケットを作成",
-        "created_at": "作成日時",
-        "detail": {
-            "closed_notice": "このチケットはクローズされました。返信できません。",
-            "reply": "返信",
-            "send_reply": "メッセージを送信"
-        },
-        "disabled": {
-            "cta": "ホームに戻る",
-            "description": "チケットシステムは現在利用できません。",
-            "title": "システム利用不可"
-        },
-        "no_tickets": "まだチケットを送信していません。",
-        "order_ref_label": "関連注文番号（迅速な対応に役立ちます）",
-        "select_ticket": "チケットを選択",
-        "select_ticket_desc": "リストからチケットを選択して詳細を確認。",
-        "status": {
-            "all": "すべてのチケット",
-            "closed": "クローズ",
-            "open": "オープン",
-            "pending": "保留中",
-            "resolved": "解決済み",
-            "waiting_admin": "サポート対応待ち",
-            "waiting_user": "ユーザー返信待ち"
-        },
-        "subtitle": "サポートリクエストの管理",
-        "support_team": "サポートチーム",
-        "system": "システム自動通知",
-        "title": "サポートチケット",
-        "user_you": "あなた"
-    },
-    "UserMenu": {
-        "account_menu": "アカウントメニュー",
-        "credits": "マイクレジット",
-        "favorite": "お気に入り",
-        "h-full": "",
-        "logout": "ログアウト",
-        "menu": "ユーザーメニュー",
-        "my_account": "マイアカウント",
-        "my_coupons": "マイクーポン",
-        "my_invoices": "請求書",
-        "my_orders": "注文履歴",
-        "notifications": "通知",
-        "open_menu": "メニューを開く"
-    },
-    "CookieNotice": {
-        "acknowledge": "同意する",
-        "ariaClose": "閉じる",
-        "description": "Lnwtermgameはブラウジング体験の向上、サイトパフォーマンスの最適化、パーソナライズされたキャンペーンの提供のためにCookieを使用しています。",
-        "items": [
-            "必須Cookie（サイトの基本機能に必要）",
-            "分析Cookie（プラットフォームの改善に使用）"
-        ],
-        "noTawkItem": "ライブチャットは現在無効です。",
-        "privacy": "プライバシーポリシー",
-        "tawkItem": "ライブチャットCookie (Tawk.to) による迅速なカスタマーサポート。",
-        "title": "⚙️ Cookie設定"
-    },
-    "Footer": {
-        "about_us": "会社概要",
-        "contact_us": "お問い合わせ",
-        "copyright": "著作権",
-        "language_thai": "タイ語",
-        "partners": "パートナー",
-        "customer": "カスタマーサービス",
-        "policies": "ポリシー",
-        "services": "サービス",
-        "payment_inquiry": "決済のお問い合わせ",
-        "payment_issues": "決済＆トラブル",
-        "sale_inquiry": "法人のお問い合わせ",
-        "copyright_notice": "All Rights Reserved",
-        "create_ticket": "サポートチケットを送信",
-        "faq": "よくある質問",
-        "features": {
-            "payment": "多彩な決済方法",
-            "payment_desc": "TrueMoney WalletとPromptPayで手数料0%チャージ。",
-            "price": "最安値保証",
-            "price_desc": "限定キャンペーンと最安値のゲームチャージ。",
-            "security": "100%安全保証",
-            "security_desc": "最高レベルの暗号化技術で取引を保護。",
-            "support": "24時間サポート",
-            "support_desc": "いつでもお気軽にお問い合わせください。",
-            "delivery": "高速配送"
-        },
-        "live_chat": "ライブチャット",
-        "payment_channels": "対応決済",
-        "privacy_policy": "プライバシー＆Cookie",
-        "quick_links": "クイックリンク",
-        "refund_policy": "返金ポリシー",
+    "email": {
+      "categories": {
+        "authentication": "認証",
+        "general": "一般",
+        "order": "注文",
+        "payment": "決済",
+        "promotion": "キャンペーン",
         "support": "サポート",
-        "support_center": "ヘルプセンター",
-        "supported_payments": "対応決済プラットフォーム",
-        "tagline": "Lnwtermgame — タイ最大級の高速＆安全なゲームチャージ＆プリペイドカードプラットフォーム。",
-        "terms_of_service": "利用規約"
+        "system": "システム"
+      },
+      "placeholders": {
+        "discountAmount": "割引額",
+        "email": "メールアドレス",
+        "expiresIn": "有効期限",
+        "finalAmount": "最終金額",
+        "orderDate": "注文日",
+        "orderNumber": "注文番号",
+        "resetUrl": "リセットURL",
+        "siteName": "サイト名",
+        "ticketNumber": "チケット番号",
+        "totalAmount": "合計金額",
+        "username": "ユーザー名",
+        "verificationUrl": "認証URL"
+      }
     },
-    "Header": {
-        " ": " ",
-        "/": "/",
-        "articles": "記事",
-        "dealers": "ディーラー",
-        "all_games": "全ゲーム",
-        "cart": "カート",
-        "contact_us": "お問い合わせ",
-        "credits": "クレジット",
-        "direct_topup": "ゲームチャージ",
-        "gift_cards": "ギフトカード",
-        "login": "ログイン",
-        "logout": "ログアウト",
-        "mobile_recharge": "モバイルチャージ",
-        "my_account": "マイアカウント",
-        "news": "ニュース＆キャンペーン",
-        "notifications": "通知",
-        "order_history": "注文履歴",
-        "search_placeholder": "ゲームやカードを検索..."
+    "logo": "ロゴ",
+    "monitor": "システムモニター",
+    "newsItems": "ニュース一覧",
+    "oauth": {
+      "load_error": "OAuthデータの読み込みエラー"
     },
-    "Search": {
-        "aria_label_clear": "クリア",
-        "aria_label_remove_history": "検索履歴を削除",
-        "aria_label_search": "検索",
-        "no_results_for": "該当する結果がありません...",
-        "placeholder": "検索...",
-        "placeholder_advanced": "ゲーム、カード、記事を検索...",
-        "recent_searches": "最近の検索",
-        "search_results": "検索結果：",
-        "view_all_results_for": "すべての結果を見る"
+    "order_detail": {
+      "back_to_orders": "注文一覧に戻る",
+      "items": "商品",
+      "order_date": "注文日",
+      "order_status": "注文ステータス",
+      "subtitle": "注文の詳細とステータス",
+      "title": "注文詳細"
     },
-    "Products": {
-        "recommended": "おすすめパッケージ"
+    "orders": {
+      "actions": "操作",
+      "amount": "合計金額",
+      "customer": "顧客",
+      "date": "日付",
+      "no_orders": "注文がありません",
+      "order_id": "注文ID",
+      "product": "商品",
+      "search_placeholder": "注文を検索...",
+      "status": {
+        "all": "すべて",
+        "cancelled": "キャンセル済み",
+        "completed": "完了",
+        "failed": "失敗",
+        "pending": "保留中",
+        "processing": "処理中",
+        "refunded": "返金済み"
+      },
+      "status_text": "ステータス",
+      "subtitle": "全注文を管理",
+      "title": "注文管理"
     },
-    "promotions": "キャンペーン",
-    "how_to_use": {
-        "title": "使い方"
+    "promoCards": "プロモカード",
+    "seasonalEvents": "シーズンイベント",
+    "settings": {
+      "section_labels": {
+        "featured_products": "おすすめ商品",
+        "hero_button": "ヒーローボタン",
+        "news": "ニュース",
+        "specials": "特別セール",
+        "view_all": "すべて見る"
+      }
     },
-    "topup_system": "チャージシステム",
+    "th-TH": "タイ語",
+    "tickets": {
+      "all_assignees": "全担当者",
+      "categories": {
+        "all": "すべてのカテゴリ",
+        "order_issue": "注文のトラブル",
+        "payment_issue": "決済のトラブル",
+        "product_issue": "商品のトラブル",
+        "account_issue": "アカウントのトラブル",
+        "technical_support": "技術サポート",
+        "refund_request": "返金リクエスト",
+        "general_inquiry": "一般お問い合わせ"
+      },
+      "priorities": {
+        "high": "高",
+        "urgent": "緊急"
+      },
+      "status": {
+        "open": "オープン",
+        "in_progress": "対応中",
+        "waiting_user": "ユーザー返信待ち",
+        "waiting_admin": "管理者対応待ち",
+        "resolved": "解決済み",
+        "closed": "クローズ"
+      },
+      "unassigned": "未割当"
+    }
+  },
+  "Catalog": {
+    "card": {
+      "subtitle": "人気ゲーム",
+      "title": "ゲームを選ぶ"
+    },
+    "cta_buy": "購入する",
+    "cta_topup": "チャージする",
+    "filter_category": "カテゴリで絞り込み",
     "games": {
-        "title": "全ゲーム"
+      "subtitle": "全ゲーム一覧",
+      "title": "ゲーム"
     },
-    "lucky_games": "ラッキーゲーム",
-    "nav_game_topup": "ゲームチャージ",
-    "nav_prepaid_card": "プリペイドカード",
-    "nav_mobile_topup": "モバイルチャージ",
-    "search_placeholder": "ゲームやカードを検索...",
-    "admin_panel": "管理画面",
-    "my_account": "マイアカウント",
-    "credits": "クレジット",
-    "order_history": "注文履歴",
-    "logout": "ログアウト",
-    "login_button": "ログイン / 新規登録",
-    "Admin": {
-        "nav": {
-            "main": "ダッシュボード",
-            "products_sales": "商品＆販売",
-            "content": "コンテンツ管理",
-            "users_communication": "ユーザー＆連絡",
-            "system": "システム設定"
-        },
-        "admin_cp": "管理コントロールパネル",
-        "admin": "管理者",
-        "dashboard": "ダッシュボード",
-        "analytics": "アナリティクス",
-        "products": "在庫管理",
-        "categories": "カテゴリ管理",
-        "orders": "注文管理",
-        "payments": "決済ハブ",
-        "cms_pages": "コンテンツページ",
-        "news": "ニュース管理",
-        "manage_faq": "FAQ管理",
-        "images": "画像ライブラリ",
-        "manage_users": "ユーザー管理",
-        "support_tickets": "サポートチケット",
-        "notifications": "システム通知",
-        "email": "メール設定",
-        "settings": "システム設定",
-        "oauth": "OAuthサービス",
-        "pin": "Pin menu",
-        "unpin": "Unpin menu",
-        "switch_dark": "Switch to dark",
-        "switch_light": "Switch to light",
-        "status": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "processing": "Processing",
-            "failed": "Failed",
-            "cancelled": "Cancelled",
-            "refunded": "Refunded",
-            "active": "Active",
-            "inactive": "Inactive",
-            "low_stock": "Low stock",
-            "out_of_stock": "Out of stock",
-            "banned": "Banned",
-            "unknown": "Unknown"
-        },
-        "pagination": {
-            "showing": "Showing {start}–{end} of {total}",
-            "empty": "No items",
-            "prev": "Previous",
-            "next": "Next"
-        },
-        "table": {
-            "empty": "No data"
-        }
+    "loading": "読み込み中...",
+    "mobile": {
+      "subtitle": "スマホ高速チャージ",
+      "title": "モバイルゲーム"
     },
-    "hero_zzz_subtitle": "ゼンレスゾーンゼロをチャージ",
-    "hero_zzz_highlight_text": "最大",
-    "hero_genshin_subtitle": "原神をチャージ",
-    "hero_genshin_highlight_text": "最大",
-    "hero_btn_text": "チャージする",
-    "category_popular_games": "人気ゲーム",
-    "category_all_games": "全ゲーム",
-    "category_check_skin": "ラッキースキン",
-    "category_game_card": "ゲームカード",
-    "category_lucky_game": "ラッキードロー",
-    "special_offers": "特別オファー",
-    "popular_games": "人気ゲームチャージ",
+    "no_results": "結果が見つかりません",
+    "no_results_desc": "別のキーワードで検索してみてください",
+    "search": "ゲームを検索",
+    "search_placeholder": "ゲーム名を入力...",
+    "sort": {
+      "all": "すべて"
+    }
+  },
+  "Checkout": {
+    "browse_products": "商品を見る",
+    "confirm_order": "注文を確定",
+    "continue_shopping": "買い物を続ける",
+    "direct_topup": "ダイレクトチャージ",
+    "empty_cart": "カートは空です",
+    "empty_cart_desc": "カタログからお気に入りのゲームを見つけましょう。",
+    "error": {
+      "fill_all_fields": "すべての必須項目を入力してください",
+      "generic_failed": "取引に失敗しました。再度お試しください。",
+      "order_failed": "注文の作成に失敗しました",
+      "player_id_invalid": "プレイヤーIDが無効です",
+      "product_changed": "商品情報が変更されました。ページを更新してください。"
+    },
+    "fill_required_fields": "必須項目を入力してください",
+    "gift_card": "ギフトカード",
+    "grand_total": "合計金額",
+    "info_complete": "入力完了",
+    "loading": "処理中...",
+    "order_summary": "注文内容",
+    "per_item": "1個あたり",
+    "quantity": "数量",
+    "subtitle": "内容を確認してお支払いへ",
+    "terms_agreement": "以下に同意します",
+    "terms_of_service": "利用規約",
+    "title": "お会計",
+    "total": "合計"
+  },
+  "Account": {
+    "account_settings": "アカウント設定",
+    "email_label": "登録メールアドレス",
+    "my_orders": "注文履歴",
+    "no_recent_purchases": "最近の購入履歴はありません",
+    "not_verified": "未認証",
+    "order_status": {
+      "completed": "完了",
+      "pending": "支払い待ち",
+      "processing": "処理中",
+      "refunded": "返金済み"
+    },
+    "recent_purchases": "最近の購入",
+    "security": "セキュリティ",
+    "send_failed": "認証メールの送信に失敗しました",
+    "send_verification": "認証メールを送信",
+    "sending": "送信中...",
+    "spam_hint": "メールが届かない場合は迷惑メールフォルダをご確認ください。",
+    "subtitle": "プロフィール管理と注文の追跡",
+    "title": "マイアカウント",
+    "verification_sent": "認証リンクを送信しました",
+    "verified": "認証済み",
+    "verify_email_banner": "すべての機能を利用するにはメール認証が必要です",
+    "verify_email_desc": "メール認証により、アカウントの安全な復旧と正確な注文追跡が可能になります。",
+    "view_all_orders": "すべての注文を見る",
+    "wait_cooldown": "しばらくお待ちください"
+  },
+  "Security": {
+    "additional_settings": {
+      "login_notifications": "ログイン通知",
+      "login_notifications_desc": "新しいデバイスからログインがあった際に通知します。",
+      "title": "その他の設定"
+    },
+    "change_password": {
+      "button_cancel": "キャンセル",
+      "button_change": "パスワードを変更",
+      "button_saving": "保存中...",
+      "button_setup": "パスワードを設定",
+      "confirm_label": "パスワード確認",
+      "current_label": "現在のパスワード",
+      "error_change_failed": "パスワードの変更に失敗しました",
+      "error_otp_failed": "OTPが無効です",
+      "error_setup_failed": "パスワードの設定に失敗しました",
+      "length_hint": "8文字以上",
+      "match_error": "パスワードが一致しません",
+      "new_label": "新しいパスワード",
+      "oauth_notice": "SNSアカウントでログインしています。こちらで通常のパスワードを設定できます。",
+      "otp_label": "OTPコード",
+      "otp_sent_success": "OTPを送信しました",
+      "otp_wait": "しばらくお待ちください...",
+      "request_otp": "OTPを取得",
+      "resend_otp": "OTPを再送信",
+      "setup_confirm_label": "パスワード確認",
+      "setup_title": "パスワード設定",
+      "success_setup": "パスワードを設定しました",
+      "title": "パスワード変更"
+    },
+    "error_email_not_found": "メールアドレスが見つかりません",
+    "recent_devices": {
+      "logout_all": "他のすべてのデバイスからログアウト",
+      "processing": "処理中...",
+      "title": "最近のログインデバイス"
+    },
+    "subtitle": "セキュリティとパスワードの管理",
+    "suspicious_activity": {
+      "admin_location": "保留中",
+      "confirm_button": "アクティビティを確認",
+      "resolved_badge": "解決済み",
+      "title": "不審なアクティビティ"
+    },
+    "title": "セキュリティ",
+    "two_factor": {
+      "coming_soon": "近日公開",
+      "setup_button": "2FAを設定",
+      "subtitle": "アカウントに二重の保護を追加",
+      "title": "二段階認証 (2FA)"
+    }
+  },
+  "Common": {
+    "already_verified_title": "認証済みです",
+    "back_to_login": "ログインに戻る",
+    "confirm_password": "パスワード確認",
+    "contact_support": "サポートに連絡",
+    "email": "メールアドレス",
+    "email_placeholder": "example@email.com",
+    "error_expired": "リンクの有効期限が切れています",
+    "error_get_new_link": "新しいリンクを取得",
+    "error_invalid": "無効な情報です",
+    "error_invalid_email": "メールアドレスの形式が正しくありません",
+    "error_invalid_link": "無効なリンクです",
+    "error_invalid_link_desc": "このリンクは無効か、有効期限が切れています。",
+    "error_occurred": "エラーが発生しました",
+    "error_send_failed": "データの送信に失敗しました",
+    "error_title": "失敗しました",
+    "expired_title": "リクエストの有効期限切れ",
+    "go_to_account": "アカウントへ",
+    "go_to_login": "ログインへ",
+    "invalid_link_desc": "リンクが無効です。再度ご確認ください。",
+    "invalid_link_title": "無効なリンク",
+    "invalid_token_title": "無効なトークン",
+    "loading": "読み込み中...",
+    "loading_desc": "しばらくお待ちください",
+    "login_now": "ログインする",
+    "match_error": "データが一致しません",
+    "match_success": "データが一致しました",
+    "member": "会員エリア",
+    "new_password": "新しいパスワード",
+    "password_requirements": {
+      "length": "8文字以上",
+      "lowercase": "小文字を1文字以上",
+      "number": "数字を1つ以上",
+      "uppercase": "大文字を1文字以上"
+    },
+    "redirect_hint": "リダイレクト中...",
+    "resend_button": "再送信",
+    "resend_email": "メールを再送信",
+    "resend_success": "送信しました",
+    "reset_button": "リセット",
+    "send_link": "リンクを送信",
+    "sending": "処理中...",
+    "spam_hint": "メールが届かない場合は迷惑メールフォルダをご確認ください。",
+    "strength": "パスワード強度",
+    "subtitle": "概要",
+    "success_desc": "取引成功",
+    "success_title": "成功",
+    "title": "タイトル",
+    "token": "セキュリティトークン"
+  },
+  "Coupons": {
+    "add_coupon": "クーポンを追加",
+    "add_failed": "クーポンの追加に失敗しました",
+    "add_success": "クーポンを追加しました",
+    "code_label": "クーポンコード",
+    "details": {
+      "copied": "コピーしました",
+      "copy_code": "コードをコピー",
+      "discount": "割引",
+      "max_discount": "最大割引額",
+      "min_purchase": "最低購入額",
+      "no_min_purchase": "最低購入額なし",
+      "title": "クーポン詳細",
+      "use_now": "今すぐ使う",
+      "used_at": "使用日時",
+      "valid_until": "有効期限"
+    },
+    "example_code": "DISCOUNT20",
+    "expiry_hint": "クーポンには有効期限があります。",
+    "filter": {
+      "active": "利用可能",
+      "all": "すべて",
+      "expired": "期限切れ",
+      "used": "使用済み"
+    },
+    "how_to_use": {
+      "step1": "商品を選択",
+      "step2": "お会計時にコードを入力",
+      "step3": "割引を確認してお支払い",
+      "title": "使い方"
+    },
+    "invalid_code": "無効なコード",
+    "no_coupons": "クーポンがありません",
+    "no_coupons_desc": "現在ご利用可能なクーポンはありません。",
+    "no_search_results": "該当するクーポンが見つかりません。",
+    "not_found": "クーポンが見つかりません",
+    "search_placeholder": "クーポンを検索...",
+    "start_shopping": "ショッピングを始める",
+    "status": {
+      "active": "利用可能",
+      "expired": "期限切れ",
+      "used": "使用済み"
+    },
+    "subtitle": "クーポンの管理",
+    "th-TH": "タイ語",
+    "title": "クーポン",
+    "validating": "確認中..."
+  },
+  "Credits": {
+    "about": {
+      "step1_desc": "ログインしてクレジットチャージへ",
+      "step1_title": "パッケージを選択",
+      "step2_desc": "お好みの方法でお支払い",
+      "step2_title": "お支払い",
+      "step3_desc": "クレジットが即座に反映されます",
+      "step3_title": "チャージ完了",
+      "title": "クレジットのチャージ方法"
+    },
+    "balance_label": "残高：",
+    "earned": "獲得履歴",
+    "error_loading": "クレジット情報の読み込みに失敗しました",
+    "history": {
+      "all": "すべての取引",
+      "empty": "履歴がありません",
+      "empty_desc": "クレジットの取引履歴はまだありません。",
+      "this_month": "今月",
+      "this_week": "今週",
+      "title": "取引履歴"
+    },
+    "spent": "利用履歴",
+    "subtitle": "アカウントのクレジット管理",
+    "th-TH": "タイ語",
+    "title": "マイクレジット",
+    "topup_button": "クレジットをチャージ",
+    "topup_upcoming": "チャージパッケージ",
+    "total_transactions": "総取引数",
+    "types": {
+      "bonus": "ボーナス",
+      "purchase": "購入",
+      "refund": "返金",
+      "topup": "チャージ"
+    },
+    "value_hint": "まとめてチャージするとお得です"
+  },
+  "Favorites": {
+    "added_to_cart": "カートに追加しました",
+    "buy_now": "今すぐ購入",
+    "error_loading": "お気に入りの読み込みに失敗しました",
+    "found_items": "件",
+    "no_favorites": "お気に入りがありません",
+    "no_favorites_desc": "ゲームのハートアイコンをクリックしてお気に入りに追加しましょう。",
+    "no_search_results": "該当するお気に入りが見つかりません。",
+    "remove_failed": "削除に失敗しました",
+    "remove_success": "お気に入りから削除しました",
+    "search_placeholder": "お気に入りを検索...",
+    "start_shopping": "ゲームを探す",
+    "starting_at": "〜から",
+    "subtitle": "お気に入りのゲームはここに表示されます",
+    "title": "お気に入り",
+    "view_more": "詳細を見る"
+  },
+  "Invoices": {
+    "actions": {
+      "download": "ダウンロード",
+      "view": "詳細を見る"
+    },
+    "filter": {
+      "all": "すべての請求書",
+      "cancelled": "キャンセル済み",
+      "paid": "支払い済み",
+      "pending": "支払い待ち"
+    },
+    "no_invoices": "請求書がありません",
+    "no_invoices_desc": "まだ取引がありません。",
+    "no_search_results": "該当する請求書が見つかりません。",
+    "search_placeholder": "請求書を検索...",
+    "status": {
+      "cancelled": "キャンセル",
+      "paid": "支払い済み",
+      "pending": "保留中"
+    },
+    "subtitle": "請求書の管理",
+    "table": {
+      "actions": "操作",
+      "amount": "金額",
+      "date": "日付",
+      "invoice_number": "請求書番号",
+      "order_number": "注文番号",
+      "status": "ステータス"
+    },
+    "th-TH": "タイ語",
+    "title": "請求書一覧"
+  },
+  "InvoiceDetail": {
+    "a": " ",
+    "back_to_list": "一覧に戻る",
+    "copy_success": "コピーしました",
+    "customer_info": "顧客情報",
+    "date": "取引日",
+    "download_pdf": "PDFをダウンロード",
+    "error_not_found": "請求書が見つかりません",
+    "grand_total": "お支払い金額",
+    "invoice_no": "請求書番号",
+    "item_details": "購入商品",
+    "order_no": "注文番号",
+    "paid": "支払い済み",
+    "payment_info": "決済会社",
+    "payment_status": "支払いステータス",
+    "price": "価格",
+    "print": "印刷",
+    "product": "商品情報",
+    "quantity": "数量",
+    "subtotal": "小計",
+    "title": "請求書/領収書",
+    "total": "合計",
+    "unpaid": "未払い",
+    "vat": "消費税"
+  },
+  "Notifications": {
+    "delete": "通知を削除",
+    "delete_success": "削除しました",
+    "empty_desc": "通知はありません。",
+    "empty_filter_desc": "このフィルターに該当する通知はありません。",
+    "empty_title": "受信トレイは空です",
+    "error_loading": "メッセージの読み込みに失敗しました",
+    "filters": {
+      "all": "すべて",
+      "order": "注文",
+      "payment": "決済",
+      "promotion": "キャンペーン",
+      "unread": "未読"
+    },
+    "manage_settings": "通知設定",
+    "mark_all_read": "すべて既読にする",
+    "mark_read": "既読にする",
+    "mark_read_success": "既読にしました",
+    "subtitle": "通知センター",
+    "title": "通知",
+    "unread_badge": "未読",
+    "view_details": "詳細を見る"
+  },
+  "NotificationPreferences": {
+    "channels": {
+      "email": "メール通知",
+      "email_desc": "メールで最新情報や購入明細をお届けします。",
+      "web": "サイト内通知",
+      "web_desc": "ウェブサイト上で通知を受け取ります。"
+    },
+    "save_button": "設定を保存",
+    "save_success": "設定を保存しました。",
+    "saving": "保存中...",
+    "subtitle": "通知の受信方法を管理",
+    "title": "通知設定",
+    "types": {
+      "orders": "注文の更新",
+      "orders_desc": "注文状況や問題の解決状況をお知らせします。",
+      "promotions": "キャンペーン",
+      "promotions_desc": "割引、イベント、限定オファーのお知らせ。"
+    }
+  },
+  "Orders": {
+    "amount_label": "注文金額：",
+    "date_label": "注文日：",
+    "error_loading": "注文の読み込みに失敗しました",
+    "filter_title": "注文フィルター",
+    "no_orders": "注文がありません",
+    "no_orders_desc": "過去の注文はここに表示されます。",
+    "no_search_results": "該当する注文が見つかりません。注文番号をご確認ください。",
+    "order_id_label": "注文番号：",
+    "search_placeholder": "注文番号または商品名で検索",
+    "status": {
+      "all": "すべて",
+      "cancelled": "キャンセル",
+      "completed": "完了",
+      "pending": "支払い待ち",
+      "processing": "処理中",
+      "refunded": "返金済み"
+    },
+    "subtitle": "注文履歴の確認と追跡",
+    "table": {
+      "amount": "金額",
+      "date": "日付",
+      "order_number": "注文番号",
+      "product": "商品",
+      "status": "ステータス"
+    },
+    "th-TH": "タイ語",
+    "title": "注文履歴",
+    "view_details": "詳細を見る",
+    "view_mode": {
+      "card": "カード表示",
+      "table": "テーブル表示"
+    },
+    "view_results": "結果を表示",
+    "view_short": "折りたたむ"
+  },
+  "OrderDetail": {
+    "actions": {
+      "cancel": "注文をキャンセル",
+      "cancel_confirm": "この注文をキャンセルしますか？",
+      "cancel_failed": "キャンセルに失敗しました",
+      "cancel_hint": "キャンセルは取り消せません。",
+      "cancel_success": "注文をキャンセルしました。",
+      "cancelling": "キャンセル中...",
+      "need_help": "お困りですか？",
+      "report_issue": "問題を報告",
+      "title": "注文管理"
+    },
+    "back_to_orders": "注文履歴に戻る",
+    "customer": {
+      "date": "注文日：",
+      "email": "メール：",
+      "title": "顧客情報",
+      "username": "顧客："
+    },
+    "delivery": {
+      "completed_at": "配送完了日時",
+      "status_summary": "配送状況",
+      "statuses": {
+        "completed": "配送完了",
+        "failed": "配送失敗",
+        "pending": "キュー待ち",
+        "processing": "配送処理中..."
+      },
+      "title": "配送情報"
+    },
+    "error_loading": "注文詳細の読み込みエラー",
+    "error_not_found": "注文が見つかりません",
+    "error_not_found_desc": "注文番号をご確認の上、再度お試しください。",
+    "items": {
+      "account_info": "追加情報",
+      "code_label": "引き換えコード",
+      "copy_success": "コードをコピーしました",
+      "delivery_failed": "商品の読み込みエラー",
+      "delivery_status": "商品の配送状況",
+      "digital_codes": "デジタルコード",
+      "expired_label": "有効期限",
+      "hide_code": "コードを隠す",
+      "pin_label": "PINコード",
+      "quantity": "数量",
+      "serial_label": "シリアル番号",
+      "show_code": "コードを表示",
+      "title": "注文商品",
+      "usage_hint": "コードは大切に保管してください。"
+    },
+    "loading": "読み込み中...",
+    "order_id_label": "注文番号",
+    "payment": {
+      "discount": "割引",
+      "method": "支払い方法",
+      "methods": {
+        "bank_transfer": "銀行振込",
+        "promptpay": "PromptPay",
+        "truemoney": "TrueMoney Wallet",
+        "unknown": "その他"
+      },
+      "status_paid": "支払い済み",
+      "status_pending": "確認待ち",
+      "subtotal": "小計",
+      "title": "支払い明細",
+      "total": "合計金額"
+    },
+    "th-TH": "タイ語",
+    "title": "注文詳細"
+  },
+  "errors": {
+    "generic": {
+      "description": "予期しないエラーが発生しました。後ほどお試しください。",
+      "goHome": "ホームに戻る",
+      "title": "エラーが発生しました",
+      "tryAgain": "再試行"
+    },
+    "notFound": {
+      "description": "お探しのページは存在しません。",
+      "goBack": "戻る",
+      "goHome": "ホームに戻る",
+      "title": "ページが見つかりません"
+    }
+  },
+  "Verification": {
+    "forgot_password": {
+      "back_to_login": "ログインに戻る",
+      "email_placeholder": "登録済みメールアドレスを入力...",
+      "error_invalid_email": "有効なメールアドレスを入力してください",
+      "error_send_failed": "リセットリンクの送信に失敗しました",
+      "loading": "処理中...",
+      "resend_email": "メールを再送信",
+      "send_link": "リセットリンクを送信",
+      "spam_hint": "メールが届かない場合は迷惑メールフォルダをご確認ください。",
+      "subtitle": "パスワードリセットリンクをお送りします。",
+      "success_desc": "パスワードリセットリンクをメールで送信しました。",
+      "success_title": "メール送信完了",
+      "title": "パスワードをお忘れですか？"
+    },
+    "reset_password": {
+      "back_to_login": "ログインに戻る",
+      "confirm_password": "新しいパスワードの確認",
+      "error_expired": "リセットリンクの有効期限が切れています。",
+      "error_get_new_link": "新しいリセットリンクを取得",
+      "error_invalid": "セキュリティコードが無効または期限切れです。",
+      "error_invalid_link": "認証リンクが無効です。",
+      "error_invalid_link_desc": "このリセットリンクは無効か、すでに使用されています。",
+      "loading": "処理中...",
+      "login_now": "ログインする",
+      "match_error": "パスワードが一致しません",
+      "match_success": "パスワードが一致しました。",
+      "new_password": "新しいパスワード",
+      "password_requirements": {
+        "length": "8文字以上",
+        "lowercase": "小文字1文字以上 (a-z)",
+        "number": "数字1つ以上 (0-9)",
+        "uppercase": "大文字1文字以上 (A-Z)"
+      },
+      "redirect_hint": "リダイレクト中...",
+      "reset_button": "パスワードを更新",
+      "strength": "パスワード強度",
+      "subtitle": "新しいパスワードを設定してください",
+      "success_desc": "パスワードが更新されました。ログインできます。",
+      "success_title": "パスワード更新完了",
+      "title": "パスワードリセット",
+      "token": "セキュリティトークン"
+    },
+    "verify_email": {
+      "already_verified_title": "メールは認証済みです。",
+      "back_to_login": "ログインに戻る",
+      "contact_support": "サポートに連絡",
+      "email": "メールアドレス",
+      "error_title": "ネットワークエラーにより認証に失敗しました",
+      "expired_title": "認証リンクの有効期限が切れています。",
+      "go_to_account": "アカウントへ",
+      "go_to_login": "ログインへ",
+      "invalid_link_desc": "認証リンクが無効か、メールは既に認証されています。",
+      "invalid_link_title": "無効な認証リンク",
+      "invalid_token_title": "無効なトークン",
+      "loading": "メールを認証中...",
+      "loading_desc": "しばらくお待ちください...",
+      "redirect_hint": "ホームにリダイレクト中...",
+      "resend_button": "認証メールを再送信",
+      "resend_success": "認証メールを送信しました。",
+      "sending": "メール送信中...",
+      "spam_hint": "迷惑メールフォルダをご確認ください。",
+      "success_title": "メール認証完了",
+      "title": "メールアドレスの認証",
+      "token": "セキュリティトークン"
+    }
+  },
+  "ProductDetail": {
+    "about_product": "商品説明",
+    "account_info_title": "アカウント情報",
+    "auto_delivery_hint": "自動即時配送",
+    "back": "戻る",
+    "buy_now_button": "今すぐ購入",
+    "by_developer": "開発元：",
+    "cancel_button": "キャンセル",
+    "change_button": "選択を変更",
+    "close_window_button": "閉じる",
+    "confirm_button": "購入を確定",
+    "confirm_hint": "確定前に内容をご確認ください。",
+    "confirm_order_title": "注文確認",
+    "confirm_selection_button": "選択を確定",
+    "copy_link_failed": "コピーに失敗しました。再度お試しください。",
+    "copy_link_success": "リンクをコピーしました",
+    "developer": "開発元",
+    "error": {
+      "enter_phone": "10桁の有効な電話番号を入力してください。",
+      "fill_all_fields": "すべての必須項目を入力してください。",
+      "invalid_phone": "電話番号が無効です。",
+      "login_required": "取引を行うにはログインしてください。",
+      "no_payment_link": "決済リンクの生成に失敗しました。再度お試しください。",
+      "not_found": "商品が見つかりません",
+      "not_found_desc": "この商品は存在しないか、販売終了しました。",
+      "order_success_redirect": "取引成功。トップページにリダイレクト中...",
+      "payment_error": "決済処理エラー",
+      "payment_failed": "決済情報を確認できませんでした",
+      "payment_method_unavailable": "この決済方法は現在利用できません。",
+      "phone_region_mismatch": "海外の電話番号はサポートされていません",
+      "player_id_invalid": "無効なプレイヤーIDです。確認して再入力してください。",
+      "select_option": "パッケージを選択してください。",
+      "truemoney_minimum": "TrueMoney Walletは最低20バーツからです。"
+    },
+    "fee_label": "手数料",
+    "form": "詳細",
+    "game_info": "ゲーム情報",
+    "input": "情報入力",
+    "login_required_notice": "ログインで限定割引を確認",
+    "login_to_buy_button": "ログインして購入",
+    "meta": "タグ",
+    "mobile_number_label": "ウォレット番号",
+    "mobile_number_placeholder": "08x-xxx-xxxx",
+    "no_options": "利用可能なパッケージがありません",
+    "no_options_desc": "現在この商品のパッケージはございません。",
+    "no_refund_warning_desc": "完了した注文は返金できません。確定前に内容をご確認ください。",
+    "no_refund_warning_title": "返金不可のお知らせ",
+    "no_similar_found": "類似商品はありません。",
+    "payment_method_label": "決済方法：",
+    "payment_selection_desc": "ご希望の決済方法をお選びください",
+    "payment_selection_title": "決済オプション",
+    "platforms": "対応プラットフォーム",
+    "popular_badge": "人気",
+    "price_label": "価格：",
+    "privacy_label": "プライバシーポリシー",
+    "product_details_title": "商品詳細",
+    "publisher": "パブリッシャー",
+    "purchase_summary": "注文内容",
+    "refund_label": "返金ポリシー",
+    "related_products": "こちらもおすすめ",
+    "release_date": "発売日",
+    "savings_label": "お得額：",
+    "secure_payment_notice": "100%安全な決済",
+    "select_package": "パッケージを選択",
+    "selected_package_label": "選択中のパッケージ",
+    "similar_products": "類似商品",
+    "subtotal_label": "小計：",
+    "terms_agreement_prefix": "続行すると以下に同意したことになります ",
+    "terms_label": "利用規約",
+    "th-TH": "タイ語",
+    "topup_options": "チャージオプション",
+    "total_label": "合計金額：",
+    "transaction_summary_title": "料金明細",
+    "unknown": "不明",
+    "unverified_account_warning": "購入前にメール認証を完了してください。",
+    "verify_info_hint": "続行前にプレイヤーIDを慎重にご確認ください。"
+  },
+  "News": {
+    "all_news": "すべてのニュース",
+    "categories": {
+      "event": "イベント",
+      "general": "一般",
+      "promotion": "キャンペーン",
+      "update": "アップデート"
+    },
+    "featured": "注目ニュース",
+    "featured_badge": "注目",
+    "no_news": "ニュースはまだありません。",
+    "subtitle": "最新情報とお知らせ",
+    "title": "ニュース＆お知らせ",
+    "view_count": "閲覧数"
+  },
+  "NewsDetail": {
+    "back_to_news": "ニュースに戻る",
+    "error_loading": "記事の読み込みに失敗しました",
+    "error_not_found": "記事が見つかりません",
+    "error_not_found_desc": "この記事は存在しないか、削除されています。",
+    "featured_badge": "話題",
+    "last_updated": "最終更新：",
+    "other_news": "関連ニュース",
+    "sources": "ソース",
+    "views": "閲覧数："
+  },
+  "PaymentPending": {
+    "a": " ",
+    "loading": "支払い状況を確認中...",
+    "orderId": "注文番号：",
+    "order_id": "注文番号：",
+    "payment_failed": "支払い失敗",
+    "payment_failed_desc": "再度お支払いをお試しください。",
+    "payment_success": "支払い成功",
+    "qr_expired": "QRコード期限切れ",
+    "qr_expired_desc": "注文をキャンセルして再度作成してください。",
+    "redirecting": "リダイレクト中...",
+    "referenceNo": "参照番号：",
+    "reference_no": "参照番号：",
+    "time_remaining": "残り時間：",
+    "try_again": "再試行",
+    "view_orders": "注文履歴を見る"
+  },
+  "PaymentSuccess": {
+    "back_home": "ホームに戻る",
+    "delivery_notice": "ご注文は処理中です。まもなくお届けします。",
+    "orderId": "注文番号：",
+    "order_number": "注文番号",
+    "processing_badge": "配送処理中",
+    "referenceNo": "参照番号：",
+    "session_id": "セッションID",
+    "subtitle": "お支払いが完了しました。ご注文の準備を進めています。",
+    "title": "支払い完了！",
+    "view_order": "注文状況を確認"
+  },
+  "Navigation": {
+    "account": "マイアカウント",
+    "card": "プリペイドカード",
+    "faq": "よくある質問",
+    "favorite": "お気に入り",
+    "games": "ゲームチャージ",
+    "home": "ホーム",
+    "login": "ログイン",
+    "mobile_recharge": "モバイルチャージ",
+    "news": "ニュース",
+    "orders": "注文履歴",
+    "register": "新規登録",
+    "support": "サポート"
+  },
+  "SupportContact": {
+    "form": {
+      "email": "メールアドレス",
+      "message": "メッセージ",
+      "name": "お名前",
+      "send": "送信",
+      "sending": "送信中...",
+      "subject": "件名",
+      "success": "メッセージを送信しました。担当者より折り返しご連絡いたします。",
+      "title": "メールでお問い合わせ"
+    },
+    "social": {
+      "title": "SNSでお問い合わせ (Facebook / Line / Discord)"
+    },
+    "subtitle": "サポートチームにお気軽にご相談ください",
+    "title": "お問い合わせ (24時間対応)"
+  },
+  "SupportFAQ": {
+    "all": "全カテゴリ",
+    "back_to_faq": "FAQに戻る",
+    "categories": {
+      "_base": "カテゴリ"
+    },
+    "need_help": {
+      "title": "お困りですか？",
+      "description": "お探しの答えが見つかりませんか？",
+      "contact_support": "サポートに連絡"
+    },
+    "no": "役に立たなかった",
+    "no_results": "結果が見つかりません。",
+    "search_placeholder": "質問を検索...",
+    "subtitle": "よくある質問への回答を検索",
+    "title": "よくある質問",
     "view_all": "すべて見る",
-    "news_title": "ニュース",
-    "status_instant": "即時",
-    "status_30_60_mins": "30〜60分",
-    "status_preorder": "予約",
-    "trust_secure_title": "100%安全",
-    "trust_secure_desc": "最高品質のセキュリティシステム",
-    "trust_fast_title": "即時配送",
-    "trust_fast_desc": "自動高速配送",
-    "trust_price_title": "最安値",
-    "trust_price_desc": "最も競争力のある価格",
-    "trust_support_title": "24時間サポート",
-    "trust_support_desc": "いつでもサポートチームが対応します",
-    "special_offers_subtitle": "あなただけの限定オファーをお見逃しなく！",
-    "no_deals": "割引商品はありません",
-    "no_products": "商品がありません",
-    "no_news": "ニュースはまだありません",
-    "promotion_badge": "セール",
-    "login_success": "ログインに成功しました",
-    "invalid_email_password": "メールアドレスまたはパスワードが正しくありません",
-    "register_success": "登録に成功しました",
-    "register_error": "登録エラー",
-    "logout_success": "ログアウトしました",
-    "profile_update_success": "プロフィールを更新しました",
-    "profile_update_error": "プロフィールの更新に失敗しました",
-    "password_change_success": "パスワードを変更しました",
-    "login_error": "ログインエラー"
+    "yes": "役に立った"
+  },
+  "SupportFAQDetail": {
+    "back_to_faq": "FAQに戻る",
+    "contact_support": "サポートに連絡",
+    "contact_support_desc": "さらにサポートが必要な場合はお問い合わせください。",
+    "error": {
+      "_base": "コンテンツの読み込みに失敗しました。"
+    },
+    "helpful": "この記事は役に立ちましたか？",
+    "last_updated": "最終更新",
+    "loading": "読み込み中...",
+    "no": "役に立たなかった",
+    "still_need_help": "まだお困りですか？",
+    "thank_you": "フィードバックありがとうございます。",
+    "views": "閲覧数：",
+    "yes": "役に立った"
+  },
+  "Support": {
+    "categories": {
+      "faq": {
+        "description": "よくある質問とその回答をご確認いただけます。",
+        "title": "よくある質問"
+      },
+      "tickets": {
+        "description": "注文、決済、アカウントに関する問題を報告できます。",
+        "title": "チケットを送信"
+      }
+    },
+    "common_issues": {
+      "title": "よくある問題"
+    },
+    "contact_methods": "お問い合わせ方法",
+    "subtitle": "以下のトピックを選択するか、サポートチームに直接お問い合わせください。",
+    "title": "ヘルプセンター",
+    "urgent_help": {
+      "description": "緊急の場合はライブチャットまたはLineでお問い合わせください。",
+      "title": "緊急サポート"
+    },
+    "visit": "見る",
+    "working_hours": {
+      "mon_fri": "月曜〜金曜（通常対応）",
+      "sat_sun": "土曜〜日曜（返信が遅れる場合があります）",
+      "time_mon_fri": "09:00 - 00:00 (GMT+7)",
+      "time_sat_sun": "09:00 - 19:00 (GMT+7)",
+      "timezone": "タイムゾーン (GMT+7)",
+      "title": "サポート対応時間"
+    }
+  },
+  "SupportTickets": {
+    "back": "チケット一覧に戻る",
+    "create": {
+      "cancel": "キャンセル",
+      "categories": {
+        "account": "アカウントの問題",
+        "general": "一般的なお問い合わせ",
+        "order": "注文の問題",
+        "payment": "決済の問題",
+        "product": "商品の問題",
+        "refund": "返金リクエスト",
+        "technical": "技術サポート"
+      },
+      "category": "カテゴリ",
+      "description": "問題の詳細",
+      "description_label": "問題の詳細をお知らせください",
+      "description_placeholder": "発生している問題を記載してください...",
+      "order_ref": "注文番号（任意）",
+      "order_ref_placeholder": "注文 #999999",
+      "subject_placeholder": "簡潔な件名",
+      "submit": "チケットを送信",
+      "title": "新しいチケットを作成"
+    },
+    "create_new": "新しいチケットを作成",
+    "created_at": "作成日時",
+    "detail": {
+      "closed_notice": "このチケットはクローズされました。返信できません。",
+      "reply": "返信",
+      "send_reply": "メッセージを送信"
+    },
+    "disabled": {
+      "cta": "ホームに戻る",
+      "description": "チケットシステムは現在利用できません。",
+      "title": "システム利用不可"
+    },
+    "no_tickets": "まだチケットを送信していません。",
+    "order_ref_label": "関連注文番号（迅速な対応に役立ちます）",
+    "select_ticket": "チケットを選択",
+    "select_ticket_desc": "リストからチケットを選択して詳細を確認。",
+    "status": {
+      "all": "すべてのチケット",
+      "closed": "クローズ",
+      "open": "オープン",
+      "pending": "保留中",
+      "resolved": "解決済み",
+      "waiting_admin": "サポート対応待ち",
+      "waiting_user": "ユーザー返信待ち"
+    },
+    "subtitle": "サポートリクエストの管理",
+    "support_team": "サポートチーム",
+    "system": "システム自動通知",
+    "title": "サポートチケット",
+    "user_you": "あなた"
+  },
+  "UserMenu": {
+    "account_menu": "アカウントメニュー",
+    "credits": "マイクレジット",
+    "favorite": "お気に入り",
+    "h-full": "",
+    "logout": "ログアウト",
+    "menu": "ユーザーメニュー",
+    "my_account": "マイアカウント",
+    "my_coupons": "マイクーポン",
+    "my_invoices": "請求書",
+    "my_orders": "注文履歴",
+    "notifications": "通知",
+    "open_menu": "メニューを開く"
+  },
+  "CookieNotice": {
+    "acknowledge": "同意する",
+    "ariaClose": "閉じる",
+    "description": "Lnwtermgameはブラウジング体験の向上、サイトパフォーマンスの最適化、パーソナライズされたキャンペーンの提供のためにCookieを使用しています。",
+    "items": [
+      "必須Cookie（サイトの基本機能に必要）",
+      "分析Cookie（プラットフォームの改善に使用）"
+    ],
+    "noTawkItem": "ライブチャットは現在無効です。",
+    "privacy": "プライバシーポリシー",
+    "tawkItem": "ライブチャットCookie (Tawk.to) による迅速なカスタマーサポート。",
+    "title": "⚙️ Cookie設定"
+  },
+  "Footer": {
+    "about_us": "会社概要",
+    "contact_us": "お問い合わせ",
+    "copyright": "著作権",
+    "language_thai": "タイ語",
+    "partners": "パートナー",
+    "customer": "カスタマーサービス",
+    "policies": "ポリシー",
+    "services": "サービス",
+    "payment_inquiry": "決済のお問い合わせ",
+    "payment_issues": "決済＆トラブル",
+    "sale_inquiry": "法人のお問い合わせ",
+    "copyright_notice": "All Rights Reserved",
+    "create_ticket": "サポートチケットを送信",
+    "faq": "よくある質問",
+    "features": {
+      "payment": "多彩な決済方法",
+      "payment_desc": "TrueMoney WalletとPromptPayで手数料0%チャージ。",
+      "price": "最安値保証",
+      "price_desc": "限定キャンペーンと最安値のゲームチャージ。",
+      "security": "100%安全保証",
+      "security_desc": "最高レベルの暗号化技術で取引を保護。",
+      "support": "24時間サポート",
+      "support_desc": "いつでもお気軽にお問い合わせください。",
+      "delivery": "高速配送"
+    },
+    "live_chat": "ライブチャット",
+    "payment_channels": "対応決済",
+    "privacy_policy": "プライバシー＆Cookie",
+    "quick_links": "クイックリンク",
+    "refund_policy": "返金ポリシー",
+    "support": "サポート",
+    "support_center": "ヘルプセンター",
+    "supported_payments": "対応決済プラットフォーム",
+    "tagline": "Lnwtermgame — タイ最大級の高速＆安全なゲームチャージ＆プリペイドカードプラットフォーム。",
+    "terms_of_service": "利用規約"
+  },
+  "Header": {
+    " ": " ",
+    "/": "/",
+    "articles": "記事",
+    "dealers": "ディーラー",
+    "all_games": "全ゲーム",
+    "cart": "カート",
+    "contact_us": "お問い合わせ",
+    "credits": "クレジット",
+    "direct_topup": "ゲームチャージ",
+    "gift_cards": "ギフトカード",
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "mobile_recharge": "モバイルチャージ",
+    "my_account": "マイアカウント",
+    "news": "ニュース＆キャンペーン",
+    "notifications": "通知",
+    "order_history": "注文履歴",
+    "search_placeholder": "ゲームやカードを検索..."
+  },
+  "Search": {
+    "aria_label_clear": "クリア",
+    "aria_label_remove_history": "検索履歴を削除",
+    "aria_label_search": "検索",
+    "no_results_for": "該当する結果がありません...",
+    "placeholder": "検索...",
+    "placeholder_advanced": "ゲーム、カード、記事を検索...",
+    "recent_searches": "最近の検索",
+    "search_results": "検索結果：",
+    "view_all_results_for": "すべての結果を見る"
+  },
+  "Products": {
+    "recommended": "おすすめパッケージ"
+  },
+  "promotions": "キャンペーン",
+  "how_to_use": {
+    "title": "使い方"
+  },
+  "topup_system": "チャージシステム",
+  "games": {
+    "title": "全ゲーム"
+  },
+  "lucky_games": "ラッキーゲーム",
+  "nav_game_topup": "ゲームチャージ",
+  "nav_prepaid_card": "プリペイドカード",
+  "nav_mobile_topup": "モバイルチャージ",
+  "search_placeholder": "ゲームやカードを検索...",
+  "admin_panel": "管理画面",
+  "my_account": "マイアカウント",
+  "credits": "クレジット",
+  "order_history": "注文履歴",
+  "logout": "ログアウト",
+  "login_button": "ログイン / 新規登録",
+  "Admin": {
+    "nav": {
+      "main": "ダッシュボード",
+      "products_sales": "商品＆販売",
+      "content": "コンテンツ管理",
+      "users_communication": "ユーザー＆連絡",
+      "system": "システム設定"
+    },
+    "admin_cp": "管理コントロールパネル",
+    "admin": "管理者",
+    "dashboard": "ダッシュボード",
+    "analytics": "アナリティクス",
+    "products": "在庫管理",
+    "categories": "カテゴリ管理",
+    "orders": "注文管理",
+    "payments": "決済ハブ",
+    "cms_pages": "コンテンツページ",
+    "news": "ニュース管理",
+    "manage_faq": "FAQ管理",
+    "images": "画像ライブラリ",
+    "manage_users": "ユーザー管理",
+    "support_tickets": "サポートチケット",
+    "notifications": "システム通知",
+    "email": "メール設定",
+    "settings": "システム設定",
+    "oauth": "OAuthサービス",
+    "pin": "Pin menu",
+    "unpin": "Unpin menu",
+    "switch_dark": "Switch to dark",
+    "switch_light": "Switch to light",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "active": "Active",
+      "inactive": "Inactive",
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "banned": "Banned",
+      "unknown": "Unknown"
+    },
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "empty": "No items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "empty": "No data"
+    },
+    "actions": {
+      "save": "保存",
+      "cancel": "キャンセル",
+      "confirm": "確認",
+      "search": "検索...",
+      "clear_filters": "フィルタをクリア"
+    },
+    "ai_chat": "AIチャット"
+  },
+  "hero_zzz_subtitle": "ゼンレスゾーンゼロをチャージ",
+  "hero_zzz_highlight_text": "最大",
+  "hero_genshin_subtitle": "原神をチャージ",
+  "hero_genshin_highlight_text": "最大",
+  "hero_btn_text": "チャージする",
+  "category_popular_games": "人気ゲーム",
+  "category_all_games": "全ゲーム",
+  "category_check_skin": "ラッキースキン",
+  "category_game_card": "ゲームカード",
+  "category_lucky_game": "ラッキードロー",
+  "special_offers": "特別オファー",
+  "popular_games": "人気ゲームチャージ",
+  "view_all": "すべて見る",
+  "news_title": "ニュース",
+  "status_instant": "即時",
+  "status_30_60_mins": "30〜60分",
+  "status_preorder": "予約",
+  "trust_secure_title": "100%安全",
+  "trust_secure_desc": "最高品質のセキュリティシステム",
+  "trust_fast_title": "即時配送",
+  "trust_fast_desc": "自動高速配送",
+  "trust_price_title": "最安値",
+  "trust_price_desc": "最も競争力のある価格",
+  "trust_support_title": "24時間サポート",
+  "trust_support_desc": "いつでもサポートチームが対応します",
+  "special_offers_subtitle": "あなただけの限定オファーをお見逃しなく！",
+  "no_deals": "割引商品はありません",
+  "no_products": "商品がありません",
+  "no_news": "ニュースはまだありません",
+  "promotion_badge": "セール",
+  "login_success": "ログインに成功しました",
+  "invalid_email_password": "メールアドレスまたはパスワードが正しくありません",
+  "register_success": "登録に成功しました",
+  "register_error": "登録エラー",
+  "logout_success": "ログアウトしました",
+  "profile_update_success": "プロフィールを更新しました",
+  "profile_update_error": "プロフィールの更新に失敗しました",
+  "password_change_success": "パスワードを変更しました",
+  "login_error": "ログインエラー"
 }

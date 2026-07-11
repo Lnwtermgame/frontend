@@ -10,6 +10,7 @@ import {
   FilterBar,
   DataTable,
   StatCard,
+  StatusBadge,
   ConfirmDialog,
   type Column,
 } from "@/components/admin";
@@ -182,9 +183,10 @@ export default function AdminUsersPage() {
             toggleStatus(u.id, u.isActive);
           }}
           disabled={mutating}
-          className="text-[11px] disabled:opacity-40"
+          className="disabled:opacity-40"
+          title={u.isActive ? "ระงับ" : "เปิดใช้งาน"}
         >
-          {u.isActive ? "🟢 ใช้งาน" : "🔴 ระงับ"}
+          <StatusBadge status={u.isActive ? "ACTIVE" : "INACTIVE"} />
         </button>
       ),
     },

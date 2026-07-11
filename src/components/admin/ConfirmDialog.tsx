@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { FormModal } from "./FormModal";
 
 interface ConfirmDialogProps {
@@ -21,19 +22,20 @@ export function ConfirmDialog({
   onConfirm,
   title,
   description,
-  confirmLabel = "ยืนยัน",
-  cancelLabel = "ยกเลิก",
+  confirmLabel,
+  cancelLabel,
   destructive = false,
   loading = false,
 }: ConfirmDialogProps) {
+  const t = useTranslations("Admin");
   return (
     <FormModal
       open={open}
       onClose={onClose}
       onSubmit={onConfirm}
       title={title}
-      submitLabel={confirmLabel}
-      cancelLabel={cancelLabel}
+      submitLabel={confirmLabel ?? t("actions.confirm")}
+      cancelLabel={cancelLabel ?? t("actions.cancel")}
       loading={loading}
       size="sm"
       destructive={destructive}

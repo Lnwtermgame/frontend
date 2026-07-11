@@ -1,1259 +1,1267 @@
 {
-    "Auth": {
-        "login": {
-            "email": {
-                "_base": "Correo electrónico"
-            },
-            "error": "Error",
-            "error_occurred": "Se produjo un error al iniciar sesión",
-            "forgot_password": "¿Olvidaste tu contraseña?",
-            "hero_title_1": "Las mejores recargas de juegos",
-            "hero_title_2": "Rápido y seguro",
-            "hero_title_3": "Disponible 24/7",
-            "hero_title_4": "con Lnwtermgame",
-            "login_button": "Iniciar sesión",
-            "no_account": "¿No tienes cuenta?",
-            "oauth_callback_failed": "Error al iniciar sesión con cuenta social",
-            "oauth_failed": "Inicio de sesión fallido",
-            "oauth_init_failed": "No se pudo iniciar el proceso de login",
-            "or_login_with": "O inicia sesión con",
-            "password": "Contraseña",
-            "provider_not_enabled": "Este método no está disponible actualmente",
-            "redirect": "Redirigiendo...",
-            "register_now": "Regístrate ahora",
-            "secure_100": "100% Seguro",
-            "secure_100_desc": "Tus datos están protegidos de forma segura",
-            "session_expired": "Sesión expirada",
-            "session_expired_desc": "Por favor, inicia sesión nuevamente.",
-            "subtitle": "Inicia sesión para acceder a todas las funciones",
-            "title": "Iniciar sesión",
-            "vip_points": "Gana puntos VIP",
-            "vip_points_desc": "Obtén privilegios exclusivos al ser miembro."
-        },
-        "register": {
-            "already_have_account": "¿Ya tienes cuenta?",
-            "and": "y",
-            "confirm_password": "Confirmar contraseña",
-            "email": {
-                "_base": "Correo electrónico"
-            },
-            "fast_247": "Soporte rápido 24/7",
-            "fast_247_desc": "Procesa tus transacciones en cualquier momento, sin días festivos.",
-            "go_to_login": "Inicia sesión aquí",
-            "hero_desc": "Únete a Lnwtermgame para recibir promociones y beneficios especiales.",
-            "hero_title_1": "Crear cuenta nueva",
-            "hero_title_2": "Obtén promociones especiales",
-            "hero_title_3": "Solo para ti",
-            "login_now": "Inicia sesión ahora",
-            "password": "Contraseña",
-            "password_hint": "La contraseña debe tener al menos 8 caracteres",
-            "passwords_not_match": "Las contraseñas no coinciden",
-            "privacy_policy": "Política de privacidad",
-            "register_button": "Registrarse",
-            "registration_disabled": "Registro deshabilitado",
-            "registration_disabled_desc": "No estamos aceptando nuevos registros temporalmente.",
-            "subtitle": "Crea una cuenta para empezar a recargar",
-            "terms": "Términos de servicio",
-            "terms_agreement": "Acepto los",
-            "title": "Registro",
-            "username": "Nombre de usuario",
-            "welcome_bonus": "Bono de bienvenida",
-            "welcome_bonus_desc": "Obtén un bono especial en tu primera recarga."
-        }
+  "Auth": {
+    "login": {
+      "email": {
+        "_base": "Correo electrónico"
+      },
+      "error": "Error",
+      "error_occurred": "Se produjo un error al iniciar sesión",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "hero_title_1": "Las mejores recargas de juegos",
+      "hero_title_2": "Rápido y seguro",
+      "hero_title_3": "Disponible 24/7",
+      "hero_title_4": "con Lnwtermgame",
+      "login_button": "Iniciar sesión",
+      "no_account": "¿No tienes cuenta?",
+      "oauth_callback_failed": "Error al iniciar sesión con cuenta social",
+      "oauth_failed": "Inicio de sesión fallido",
+      "oauth_init_failed": "No se pudo iniciar el proceso de login",
+      "or_login_with": "O inicia sesión con",
+      "password": "Contraseña",
+      "provider_not_enabled": "Este método no está disponible actualmente",
+      "redirect": "Redirigiendo...",
+      "register_now": "Regístrate ahora",
+      "secure_100": "100% Seguro",
+      "secure_100_desc": "Tus datos están protegidos de forma segura",
+      "session_expired": "Sesión expirada",
+      "session_expired_desc": "Por favor, inicia sesión nuevamente.",
+      "subtitle": "Inicia sesión para acceder a todas las funciones",
+      "title": "Iniciar sesión",
+      "vip_points": "Gana puntos VIP",
+      "vip_points_desc": "Obtén privilegios exclusivos al ser miembro."
     },
-    "AdminPage": {
-        "ALL": "Todos",
-        "SLA_24": "SLA 24h",
-        "SLA_8": "SLA 8h",
-        "UNASSIGNED": "Sin asignar",
-        "WAITING_ADMIN": "Esperando administrador",
-        "a": " ",
-        "categories": {
-            "delete_confirm": "¿Confirmar eliminación de esta categoría?",
-            "delete_failed": "Error al eliminar categoría",
-            "delete_has_products": "No se puede eliminar porque hay productos en esta categoría.",
-            "delete_success": "Categoría eliminada exitosamente",
-            "load_failed": "Error al cargar categorías",
-            "name_required": "El nombre de categoría es obligatorio",
-            "save_success": "Datos guardados exitosamente",
-            "slug_required": "El slug es obligatorio"
-        },
-        "cms_news": {
-            "categories": {
-                "event": "Eventos",
-                "general": "General",
-                "promotion": "Promociones",
-                "update": "Actualizaciones"
-            }
-        },
-        "common": {
-            "error": "Ocurrió un error",
-            "from": "desde",
-            "refresh": "Actualizar",
-            "showing": "Mostrando"
-        },
-        "dashboard": {
-            "load_error": "Error al cargar datos del panel",
-            "no_data": "Sin datos disponibles"
-        },
-        "email": {
-            "categories": {
-                "authentication": "Autenticación",
-                "general": "General",
-                "order": "Pedido",
-                "payment": "Pago",
-                "promotion": "Promoción",
-                "support": "Soporte",
-                "system": "Sistema"
-            },
-            "placeholders": {
-                "discountAmount": "Monto de descuento",
-                "email": "Correo electrónico",
-                "expiresIn": "Expira en",
-                "finalAmount": "Monto final",
-                "orderDate": "Fecha de pedido",
-                "orderNumber": "Número de pedido",
-                "resetUrl": "URL de restablecimiento",
-                "siteName": "Nombre del sitio",
-                "ticketNumber": "Número de ticket",
-                "totalAmount": "Monto total",
-                "username": "Nombre de usuario",
-                "verificationUrl": "URL de verificación"
-            }
-        },
-        "logo": "Logo",
-        "monitor": "Monitor del sistema",
-        "newsItems": "Noticias",
-        "oauth": {
-            "load_error": "Error al cargar datos OAuth"
-        },
-        "order_detail": {
-            "back_to_orders": "Volver a pedidos",
-            "items": "Artículos",
-            "order_date": "Fecha de pedido",
-            "order_status": "Estado del pedido",
-            "subtitle": "Detalles y estado del pedido",
-            "title": "Detalle del pedido"
-        },
-        "orders": {
-            "actions": "Acciones",
-            "amount": "Monto total",
-            "customer": "Cliente",
-            "date": "Fecha",
-            "no_orders": "No se encontraron pedidos",
-            "order_id": "ID de pedido",
-            "product": "Producto",
-            "search_placeholder": "Buscar pedidos...",
-            "status": {
-                "all": "Todos",
-                "cancelled": "Cancelado",
-                "completed": "Completado",
-                "failed": "Fallido",
-                "pending": "Pendiente",
-                "processing": "Procesando",
-                "refunded": "Reembolsado"
-            },
-            "status_text": "Estado",
-            "subtitle": "Gestionar todos los pedidos",
-            "title": "Pedidos"
-        },
-        "promoCards": "Tarjetas promocionales",
-        "seasonalEvents": "Eventos de temporada",
-        "settings": {
-            "section_labels": {
-                "featured_products": "Productos destacados",
-                "hero_button": "Botón principal",
-                "news": "Noticias",
-                "specials": "Ofertas",
-                "view_all": "Ver todo"
-            }
-        },
-        "th-TH": "Tailandés",
-        "tickets": {
-            "all_assignees": "Todos los asignados",
-            "categories": {
-                "all": "Todas las categorías",
-                "order_issue": "Problema con pedido",
-                "payment_issue": "Problema de pago",
-                "product_issue": "Problema con producto",
-                "account_issue": "Problema de cuenta",
-                "technical_support": "Soporte técnico",
-                "refund_request": "Solicitud de reembolso",
-                "general_inquiry": "Consulta general"
-            },
-            "priorities": {
-                "high": "Alta",
-                "urgent": "Urgente"
-            },
-            "status": {
-                "open": "Abierto",
-                "in_progress": "En progreso",
-                "waiting_user": "Esperando usuario",
-                "waiting_admin": "Esperando administrador",
-                "resolved": "Resuelto",
-                "closed": "Cerrado"
-            },
-            "unassigned": "Sin asignar"
-        }
+    "register": {
+      "already_have_account": "¿Ya tienes cuenta?",
+      "and": "y",
+      "confirm_password": "Confirmar contraseña",
+      "email": {
+        "_base": "Correo electrónico"
+      },
+      "fast_247": "Soporte rápido 24/7",
+      "fast_247_desc": "Procesa tus transacciones en cualquier momento, sin días festivos.",
+      "go_to_login": "Inicia sesión aquí",
+      "hero_desc": "Únete a Lnwtermgame para recibir promociones y beneficios especiales.",
+      "hero_title_1": "Crear cuenta nueva",
+      "hero_title_2": "Obtén promociones especiales",
+      "hero_title_3": "Solo para ti",
+      "login_now": "Inicia sesión ahora",
+      "password": "Contraseña",
+      "password_hint": "La contraseña debe tener al menos 8 caracteres",
+      "passwords_not_match": "Las contraseñas no coinciden",
+      "privacy_policy": "Política de privacidad",
+      "register_button": "Registrarse",
+      "registration_disabled": "Registro deshabilitado",
+      "registration_disabled_desc": "No estamos aceptando nuevos registros temporalmente.",
+      "subtitle": "Crea una cuenta para empezar a recargar",
+      "terms": "Términos de servicio",
+      "terms_agreement": "Acepto los",
+      "title": "Registro",
+      "username": "Nombre de usuario",
+      "welcome_bonus": "Bono de bienvenida",
+      "welcome_bonus_desc": "Obtén un bono especial en tu primera recarga."
+    }
+  },
+  "AdminPage": {
+    "ALL": "Todos",
+    "SLA_24": "SLA 24h",
+    "SLA_8": "SLA 8h",
+    "UNASSIGNED": "Sin asignar",
+    "WAITING_ADMIN": "Esperando administrador",
+    "a": " ",
+    "categories": {
+      "delete_confirm": "¿Confirmar eliminación de esta categoría?",
+      "delete_failed": "Error al eliminar categoría",
+      "delete_has_products": "No se puede eliminar porque hay productos en esta categoría.",
+      "delete_success": "Categoría eliminada exitosamente",
+      "load_failed": "Error al cargar categorías",
+      "name_required": "El nombre de categoría es obligatorio",
+      "save_success": "Datos guardados exitosamente",
+      "slug_required": "El slug es obligatorio"
     },
-    "Catalog": {
-        "card": {
-            "subtitle": "Juegos populares",
-            "title": "Elige tu juego"
-        },
-        "cta_buy": "Comprar ahora",
-        "cta_topup": "Recargar ahora",
-        "filter_category": "Filtrar categoría",
-        "games": {
-            "subtitle": "Todos los juegos disponibles",
-            "title": "Juegos"
-        },
-        "loading": "Cargando...",
-        "mobile": {
-            "subtitle": "Recarga móvil rápida",
-            "title": "Juegos móviles"
-        },
-        "no_results": "Sin resultados",
-        "no_results_desc": "Prueba con otra palabra clave",
-        "search": "Buscar juego",
-        "search_placeholder": "Escribe el nombre del juego...",
-        "sort": {
-            "all": "Todos"
-        }
+    "cms_news": {
+      "categories": {
+        "event": "Eventos",
+        "general": "General",
+        "promotion": "Promociones",
+        "update": "Actualizaciones"
+      }
     },
-    "Checkout": {
-        "browse_products": "Ver productos",
-        "confirm_order": "Confirmar pedido",
-        "continue_shopping": "Seguir comprando",
-        "direct_topup": "Recarga directa",
-        "empty_cart": "Tu carrito está vacío",
-        "empty_cart_desc": "Explora nuestro catálogo para encontrar tus juegos favoritos.",
-        "error": {
-            "fill_all_fields": "Por favor completa todos los campos",
-            "generic_failed": "Transacción fallida. Inténtalo de nuevo.",
-            "order_failed": "Error al crear pedido",
-            "player_id_invalid": "ID de jugador no válido",
-            "product_changed": "Los datos del producto han cambiado. Actualiza la página."
-        },
-        "fill_required_fields": "Completa los campos requeridos",
-        "gift_card": "Tarjeta de regalo",
-        "grand_total": "Total general",
-        "info_complete": "Información completa",
-        "loading": "Procesando...",
-        "order_summary": "Resumen del pedido",
-        "per_item": "por unidad",
-        "quantity": "Cantidad",
-        "subtitle": "Revisa y procede al pago",
-        "terms_agreement": "He leído y acepto los",
-        "terms_of_service": "Términos de servicio",
-        "title": "Pago",
-        "total": "Total"
+    "common": {
+      "error": "Ocurrió un error",
+      "from": "desde",
+      "refresh": "Actualizar",
+      "showing": "Mostrando"
     },
-    "Account": {
-        "account_settings": "Configuración de cuenta",
-        "email_label": "Tu correo electrónico",
-        "my_orders": "Mis pedidos",
-        "no_recent_purchases": "Sin compras recientes",
-        "not_verified": "No verificado",
-        "order_status": {
-            "completed": "Completado",
-            "pending": "Pago pendiente",
-            "processing": "Procesando",
-            "refunded": "Reembolsado"
-        },
-        "recent_purchases": "Compras recientes",
-        "security": "Seguridad",
-        "send_failed": "Error al enviar email de verificación",
-        "send_verification": "Enviar email de verificación",
-        "sending": "Enviando...",
-        "spam_hint": "Si no ves el email, revisa tu carpeta de spam.",
-        "subtitle": "Gestiona tu perfil y rastrea pedidos",
-        "title": "Mi cuenta",
-        "verification_sent": "Enlace de verificación enviado",
-        "verified": "Verificado",
-        "verify_email_banner": "Verifica tu email para acceso completo",
-        "verify_email_desc": "Verificar tu email asegura la recuperación segura y el seguimiento preciso de tus pedidos.",
-        "view_all_orders": "Ver todos los pedidos",
-        "wait_cooldown": "Espera un momento antes de intentar de nuevo"
+    "dashboard": {
+      "load_error": "Error al cargar datos del panel",
+      "no_data": "Sin datos disponibles"
     },
-    "Security": {
-        "additional_settings": {
-            "login_notifications": "Notificaciones de inicio de sesión",
-            "login_notifications_desc": "Recibe notificaciones cuando un nuevo dispositivo inicie sesión.",
-            "title": "Configuración adicional"
-        },
-        "change_password": {
-            "button_cancel": "Cancelar",
-            "button_change": "Cambiar contraseña",
-            "button_saving": "Guardando...",
-            "button_setup": "Establecer contraseña",
-            "confirm_label": "Confirmar contraseña",
-            "current_label": "Contraseña actual",
-            "error_change_failed": "No se pudo cambiar la contraseña",
-            "error_otp_failed": "OTP no válido",
-            "error_setup_failed": "Error al establecer contraseña",
-            "length_hint": "Al menos 8 caracteres",
-            "match_error": "Las contraseñas no coinciden",
-            "new_label": "Nueva contraseña",
-            "oauth_notice": "Iniciaste sesión con cuenta social. Puedes establecer una contraseña estándar aquí.",
-            "otp_label": "Código OTP",
-            "otp_sent_success": "OTP enviado exitosamente",
-            "otp_wait": "Por favor espera...",
-            "request_otp": "Solicitar OTP",
-            "resend_otp": "Reenviar OTP",
-            "setup_confirm_label": "Confirmar contraseña",
-            "setup_title": "Establecer contraseña",
-            "success_setup": "Contraseña establecida exitosamente",
-            "title": "Cambiar contraseña"
-        },
-        "error_email_not_found": "Email no encontrado",
-        "recent_devices": {
-            "logout_all": "Cerrar sesión en todos los demás dispositivos",
-            "processing": "Procesando...",
-            "title": "Dispositivos recientes"
-        },
-        "subtitle": "Gestiona tu seguridad y contraseñas",
-        "suspicious_activity": {
-            "admin_location": "Pendiente",
-            "confirm_button": "Confirmar actividad",
-            "resolved_badge": "Resuelto",
-            "title": "Actividad sospechosa"
-        },
-        "title": "Seguridad",
-        "two_factor": {
-            "coming_soon": "Próximamente",
-            "setup_button": "Configurar 2FA",
-            "subtitle": "Añade otra capa de seguridad",
-            "title": "Autenticación de dos factores (2FA)"
-        }
-    },
-    "Common": {
-        "already_verified_title": "Ya verificado",
-        "back_to_login": "Volver al inicio de sesión",
-        "confirm_password": "Confirmar contraseña",
-        "contact_support": "Contactar soporte",
-        "email": "Correo electrónico",
-        "email_placeholder": "ejemplo@correo.com",
-        "error_expired": "Este enlace ha expirado",
-        "error_get_new_link": "Solicitar un nuevo enlace",
-        "error_invalid": "Información no válida",
-        "error_invalid_email": "Formato de email no válido",
-        "error_invalid_link": "Enlace no válido",
-        "error_invalid_link_desc": "El enlace que usas no es válido o ha expirado.",
-        "error_occurred": "Ocurrió un error",
-        "error_send_failed": "Error al enviar datos",
-        "error_title": "Fallido",
-        "expired_title": "Solicitud expirada",
-        "go_to_account": "Ir a cuenta",
-        "go_to_login": "Ir a inicio de sesión",
-        "invalid_link_desc": "El enlace no es válido. Verifica de nuevo.",
-        "invalid_link_title": "Enlace no válido",
-        "invalid_token_title": "Token no válido",
-        "loading": "Cargando...",
-        "loading_desc": "Espera un momento",
-        "login_now": "Iniciar sesión ahora",
-        "match_error": "Los datos no coinciden",
-        "match_success": "Datos coincidentes",
-        "member": "Área de miembros",
-        "new_password": "Nueva contraseña",
-        "password_requirements": {
-            "length": "Al menos 8 caracteres",
-            "lowercase": "Al menos 1 minúscula",
-            "number": "Al menos 1 número",
-            "uppercase": "Al menos 1 mayúscula"
-        },
-        "redirect_hint": "Redirigiendo...",
-        "resend_button": "Reenviar",
-        "resend_email": "Reenviar email",
-        "resend_success": "Enviado exitosamente",
-        "reset_button": "Restablecer",
-        "send_link": "Enviar enlace",
-        "sending": "Procesando...",
-        "spam_hint": "Revisa tu carpeta de spam si no ves el email.",
-        "strength": "Fortaleza de la contraseña",
-        "subtitle": "Descripción general",
-        "success_desc": "Transacción exitosa",
-        "success_title": "Éxito",
-        "title": "Título",
-        "token": "Token de seguridad"
-    },
-    "Coupons": {
-        "add_coupon": "Añadir cupón",
-        "add_failed": "Error al añadir cupón",
-        "add_success": "Cupón añadido exitosamente",
-        "code_label": "Código de cupón",
-        "details": {
-            "copied": "Copiado",
-            "copy_code": "Copiar código",
-            "discount": "Descuento",
-            "max_discount": "Descuento máximo",
-            "min_purchase": "Compra mínima",
-            "no_min_purchase": "Sin compra mínima",
-            "title": "Detalles del cupón",
-            "use_now": "Usar ahora",
-            "used_at": "Usado el",
-            "valid_until": "Válido hasta"
-        },
-        "example_code": "DISCOUNT20",
-        "expiry_hint": "Los cupones tienen un período de validez limitado.",
-        "filter": {
-            "active": "Activo",
-            "all": "Todos",
-            "expired": "Expirado",
-            "used": "Usado"
-        },
-        "how_to_use": {
-            "step1": "Selecciona tus productos",
-            "step2": "Ingresa el código durante el pago",
-            "step3": "Verifica el descuento antes de pagar",
-            "title": "Cómo usar"
-        },
-        "invalid_code": "Código no válido",
-        "no_coupons": "Sin cupones disponibles",
-        "no_coupons_desc": "No tienes cupones de descuento actualmente.",
-        "no_search_results": "No se encontraron cupones con tu búsqueda.",
-        "not_found": "Cupón no encontrado",
-        "search_placeholder": "Buscar cupones...",
-        "start_shopping": "Empezar a comprar",
-        "status": {
-            "active": "Activo",
-            "expired": "Expirado",
-            "used": "Usado"
-        },
-        "subtitle": "Gestiona tus cupones de descuento",
-        "th-TH": "Tailandés",
-        "title": "Cupones de descuento",
-        "validating": "Validando..."
-    },
-    "Credits": {
-        "about": {
-            "step1_desc": "Inicia sesión y ve a la sección de recarga de créditos",
-            "step1_title": "Elegir paquete",
-            "step2_desc": "Paga con tu método más conveniente",
-            "step2_title": "Realizar pago",
-            "step3_desc": "Los créditos se añaden instantáneamente a tu billetera",
-            "step3_title": "Transacción exitosa",
-            "title": "Cómo recargar créditos"
-        },
-        "balance_label": "Saldo:",
-        "earned": "Historial de ganancias",
-        "error_loading": "Error al cargar información de créditos",
-        "history": {
-            "all": "Todas las transacciones",
-            "empty": "Sin historial de créditos",
-            "empty_desc": "No se encontraron transacciones recientes.",
-            "this_month": "Este mes",
-            "this_week": "Esta semana",
-            "title": "Historial de transacciones"
-        },
-        "spent": "Historial de gastos",
-        "subtitle": "Gestiona los créditos de tu cuenta",
-        "th-TH": "Tailandés",
-        "title": "Mis créditos",
-        "topup_button": "Recargar créditos",
-        "topup_upcoming": "Paquetes de créditos",
-        "total_transactions": "Total de transacciones",
-        "types": {
-            "bonus": "Bono",
-            "purchase": "Compras",
-            "refund": "Reembolsos",
-            "topup": "Recarga"
-        },
-        "value_hint": "Disfruta mejores ofertas con recargas en volumen"
-    },
-    "Favorites": {
-        "added_to_cart": "Añadido al carrito exitosamente",
-        "buy_now": "Comprar ahora",
-        "error_loading": "Error al cargar lista de favoritos",
-        "found_items": "resultados",
-        "no_favorites": "Sin favoritos",
-        "no_favorites_desc": "Haz clic en el ícono de corazón para añadir a favoritos.",
-        "no_search_results": "No se encontraron favoritos con tu búsqueda.",
-        "remove_failed": "Error al eliminar",
-        "remove_success": "Eliminado de favoritos exitosamente",
-        "search_placeholder": "Buscar en favoritos...",
-        "start_shopping": "Explorar juegos",
-        "starting_at": "Desde",
-        "subtitle": "Tus juegos favoritos se guardan aquí",
-        "title": "Mis favoritos",
-        "view_more": "Ver detalles"
-    },
-    "Invoices": {
-        "actions": {
-            "download": "Descargar",
-            "view": "Ver detalles"
-        },
-        "filter": {
-            "all": "Todas las facturas",
-            "cancelled": "Cancelado",
-            "paid": "Pagado",
-            "pending": "Pago pendiente"
-        },
-        "no_invoices": "Sin facturas",
-        "no_invoices_desc": "Aún no se han realizado transacciones.",
-        "no_search_results": "No se encontraron facturas con tu búsqueda.",
-        "search_placeholder": "Buscar facturas...",
-        "status": {
-            "cancelled": "Cancelado",
-            "paid": "Pagado",
-            "pending": "Pendiente"
-        },
-        "subtitle": "Gestiona tus registros de facturación",
-        "table": {
-            "actions": "Acciones",
-            "amount": "Monto total",
-            "date": "Fecha",
-            "invoice_number": "ID de factura",
-            "order_number": "ID de pedido",
-            "status": "Estado"
-        },
-        "th-TH": "Tailandés",
-        "title": "Tus facturas"
-    },
-    "InvoiceDetail": {
-        "a": " ",
-        "back_to_list": "Volver a la lista",
-        "copy_success": "Copiado exitosamente",
-        "customer_info": "Información del cliente",
-        "date": "Fecha de transacción",
-        "download_pdf": "Descargar PDF",
-        "error_not_found": "Factura no encontrada",
-        "grand_total": "Pago neto",
-        "invoice_no": "Número de factura",
-        "item_details": "Artículos comprados",
-        "order_no": "Número de pedido",
-        "paid": "Pagado",
-        "payment_info": "Proveedor",
-        "payment_status": "Estado de pago",
-        "price": "Precio",
-        "print": "Imprimir informe",
-        "product": "Info del producto",
-        "quantity": "Cant.",
-        "subtotal": "Subtotal",
-        "title": "Factura / Recibo",
-        "total": "Total general",
-        "unpaid": "No pagado",
-        "vat": "IVA"
-    },
-    "Notifications": {
-        "delete": "Eliminar notificación",
-        "delete_success": "Eliminado exitosamente",
-        "empty_desc": "No tienes notificaciones.",
-        "empty_filter_desc": "Sin notificaciones para este filtro.",
-        "empty_title": "Bandeja vacía",
-        "error_loading": "Error al cargar mensajes",
-        "filters": {
-            "all": "Todos",
-            "order": "Pedidos",
-            "payment": "Finanzas",
-            "promotion": "Promociones",
-            "unread": "No leído"
-        },
-        "manage_settings": "Configuración de notificaciones",
-        "mark_all_read": "Marcar todo como leído",
-        "mark_read": "Marcar como leído",
-        "mark_read_success": "Marcado como leído",
-        "subtitle": "Centro de notificaciones",
-        "title": "Notificaciones",
-        "unread_badge": "No leído",
-        "view_details": "Ver detalles"
-    },
-    "NotificationPreferences": {
-        "channels": {
-            "email": "Correo electrónico",
-            "email_desc": "Recibe actualizaciones y recibos por email.",
-            "web": "Notificaciones en la app",
-            "web_desc": "Recibe notificaciones en la web."
-        },
-        "save_button": "Guardar configuración",
-        "save_success": "Preferencias guardadas exitosamente.",
-        "saving": "Guardando...",
-        "subtitle": "Gestiona cómo recibes actualizaciones y alertas",
-        "title": "Preferencias de notificaciones",
-        "types": {
-            "orders": "Actualizaciones de pedidos",
-            "orders_desc": "Actualizaciones sobre el estado de tus pedidos.",
-            "promotions": "Promociones",
-            "promotions_desc": "Novedades sobre descuentos, eventos y ofertas especiales."
-        }
-    },
-    "Orders": {
-        "amount_label": "Monto del pedido:",
-        "date_label": "Fecha del pedido:",
-        "error_loading": "Error al cargar artículos del pedido",
-        "filter_title": "Filtros de pedidos",
-        "no_orders": "Sin pedidos aún",
-        "no_orders_desc": "Tus pedidos anteriores aparecerán aquí.",
-        "no_search_results": "No se encontraron pedidos. Verifica el ID.",
-        "order_id_label": "ID de pedido:",
-        "search_placeholder": "Buscar por ID o producto",
-        "status": {
-            "all": "Todos",
-            "cancelled": "Cancelado",
-            "completed": "Completado",
-            "pending": "Esperando pago",
-            "processing": "Procesando",
-            "refunded": "Reembolsado"
-        },
-        "subtitle": "Revisa historial y rastrea tus pedidos",
-        "table": {
-            "amount": "Monto",
-            "date": "Fecha",
-            "order_number": "ID de pedido",
-            "product": "Detalles del producto",
-            "status": "Estado"
-        },
-        "th-TH": "Tailandés",
-        "title": "Historial de pedidos",
-        "view_details": "Ver detalles",
-        "view_mode": {
-            "card": "Vista de tarjetas",
-            "table": "Vista de tabla"
-        },
-        "view_results": "Mostrar resultados",
-        "view_short": "Minimizar"
-    },
-    "OrderDetail": {
-        "actions": {
-            "cancel": "Cancelar pedido",
-            "cancel_confirm": "¿Seguro que deseas cancelar este pedido?",
-            "cancel_failed": "Error al cancelar pedido",
-            "cancel_hint": "La cancelación no se puede deshacer.",
-            "cancel_success": "Pedido cancelado exitosamente.",
-            "cancelling": "Cancelando...",
-            "need_help": "¿Necesitas ayuda?",
-            "report_issue": "Reportar problema",
-            "title": "Gestionar pedido"
-        },
-        "back_to_orders": "Volver al historial",
-        "customer": {
-            "date": "Fecha: ",
-            "email": "Email: ",
-            "title": "Datos del cliente",
-            "username": "Cliente: "
-        },
-        "delivery": {
-            "completed_at": "Entregado a las",
-            "status_summary": "Estado de entrega",
-            "statuses": {
-                "completed": "Entregado exitosamente",
-                "failed": "Entrega fallida",
-                "pending": "En cola",
-                "processing": "Procesando entrega..."
-            },
-            "title": "Entrega"
-        },
-        "error_loading": "Error al cargar detalles del pedido",
-        "error_not_found": "Pedido no encontrado",
-        "error_not_found_desc": "Verifica el ID del pedido e intenta de nuevo.",
-        "items": {
-            "account_info": "Información adicional",
-            "code_label": "Código de canje",
-            "copy_success": "Código copiado",
-            "delivery_failed": "Error al cargar artículo",
-            "delivery_status": "Estado de entrega del artículo",
-            "digital_codes": "Código digital",
-            "expired_label": "Expira el",
-            "hide_code": "Ocultar código",
-            "pin_label": "PIN",
-            "quantity": "Cant.",
-            "serial_label": "Serie",
-            "show_code": "Mostrar código",
-            "title": "Artículos del pedido",
-            "usage_hint": "Mantén tu código seguro."
-        },
-        "loading": "Cargando...",
-        "order_id_label": "ID de pedido",
-        "payment": {
-            "discount": "Descuento",
-            "method": "Método de pago",
-            "methods": {
-                "bank_transfer": "Transferencia bancaria",
-                "promptpay": "PromptPay",
-                "truemoney": "Billetera TrueMoney",
-                "unknown": "Otro"
-            },
-            "status_paid": "Pagado",
-            "status_pending": "Validación pendiente",
-            "subtotal": "Subtotal",
-            "title": "Resumen de pago",
-            "total": "Monto total"
-        },
-        "th-TH": "Tailandés",
-        "title": "Detalles del pedido"
-    },
-    "errors": {
-        "generic": {
-            "description": "Ocurrió un error inesperado. Inténtalo más tarde.",
-            "goHome": "Volver al inicio",
-            "title": "Ocurrió un error",
-            "tryAgain": "Intentar de nuevo"
-        },
-        "notFound": {
-            "description": "La página que buscas no existe.",
-            "goBack": "Volver",
-            "goHome": "Volver al inicio",
-            "title": "Página no encontrada"
-        }
-    },
-    "Verification": {
-        "forgot_password": {
-            "back_to_login": "Volver al inicio de sesión",
-            "email_placeholder": "Ingresa tu email registrado...",
-            "error_invalid_email": "Ingresa un email válido",
-            "error_send_failed": "Error al enviar enlace de restablecimiento",
-            "loading": "Procesando...",
-            "resend_email": "Reenviar email",
-            "send_link": "Send Reset Link",
-            "spam_hint": "Revisa spam si no recibes el email.",
-            "subtitle": "Ingresa tu email para recibir un enlace de restablecimiento.",
-            "success_desc": "Se ha enviado un enlace de restablecimiento a tu email.",
-            "success_title": "Email enviado",
-            "title": "¿Olvidaste tu contraseña?"
-        },
-        "reset_password": {
-            "back_to_login": "Volver al inicio de sesión",
-            "confirm_password": "Confirmar nueva contraseña",
-            "error_expired": "El enlace ha expirado.",
-            "error_get_new_link": "Solicitar nuevo enlace",
-            "error_invalid": "El código de seguridad no es válido o ha expirado.",
-            "error_invalid_link": "Enlace de verificación no válido.",
-            "error_invalid_link_desc": "El enlace no es válido o ya fue usado.",
-            "loading": "Procesando...",
-            "login_now": "Iniciar sesión ahora",
-            "match_error": "Las contraseñas no coinciden",
-            "match_success": "Las contraseñas coinciden.",
-            "new_password": "Nueva contraseña",
-            "password_requirements": {
-                "length": "Al menos 8 caracteres",
-                "lowercase": "Al menos 1 minúscula (a-z)",
-                "number": "Al menos 1 número (0-9)",
-                "uppercase": "Al menos 1 mayúscula (A-Z)"
-            },
-            "redirect_hint": "Redirigiendo...",
-            "reset_button": "Actualizar contraseña",
-            "strength": "Fortaleza de la contraseña",
-            "subtitle": "Establece una nueva contraseña",
-            "success_desc": "Tu contraseña ha sido actualizada. Ya puedes iniciar sesión.",
-            "success_title": "Contraseña actualizada",
-            "title": "Restablecer contraseña",
-            "token": "Token de seguridad"
-        },
-        "verify_email": {
-            "already_verified_title": "Email ya verificado.",
-            "back_to_login": "Volver al inicio de sesión",
-            "contact_support": "Contactar soporte",
-            "email": "Correo electrónico",
-            "error_title": "Verificación fallida por error de red",
-            "expired_title": "El enlace de verificación ha expirado.",
-            "go_to_account": "Ir a cuenta",
-            "go_to_login": "Ir a inicio de sesión",
-            "invalid_link_desc": "El enlace no es válido o el email ya fue verificado.",
-            "invalid_link_title": "Enlace de verificación no válido",
-            "invalid_token_title": "Token no válido",
-            "loading": "Verificando tu email...",
-            "loading_desc": "Espera un momento...",
-            "redirect_hint": "Redirigiendo al inicio...",
-            "resend_button": "Reenviar email de verificación",
-            "resend_success": "Email de verificación enviado.",
-            "sending": "Enviando email...",
-            "spam_hint": "Revisa tu carpeta de spam.",
-            "success_title": "Email verificado exitosamente",
-            "title": "Verificar dirección de email",
-            "token": "Token de seguridad"
-        }
-    },
-    "ProductDetail": {
-        "about_product": "Descripción del producto",
-        "account_info_title": "Información de cuenta",
-        "auto_delivery_hint": "Entrega automática instantánea",
-        "back": "Atrás",
-        "buy_now_button": "Comprar ahora",
-        "by_developer": "Desarrollador: ",
-        "cancel_button": "Cancelar",
-        "change_button": "Cambiar selección",
-        "close_window_button": "Cerrar ventana",
-        "confirm_button": "Confirmar pago",
-        "confirm_hint": "Verifica tu selección antes de confirmar.",
-        "confirm_order_title": "Resumen del pedido",
-        "confirm_selection_button": "Confirmar selección",
-        "copy_link_failed": "Error al copiar. Inténtalo de nuevo.",
-        "copy_link_success": "Enlace copiado",
-        "developer": "Desarrollador",
-        "error": {
-            "enter_phone": "Ingresa un número de teléfono de 10 dígitos válido.",
-            "fill_all_fields": "Completa todos los campos obligatorios.",
-            "invalid_phone": "El número de teléfono no es válido.",
-            "login_required": "Inicia sesión para continuar con tu transacción.",
-            "no_payment_link": "Error al generar enlace de pago. Inténtalo de nuevo.",
-            "not_found": "Producto no encontrado",
-            "not_found_desc": "El producto no existe o ya no está disponible.",
-            "order_success_redirect": "Transacción exitosa. Redirigiendo...",
-            "payment_error": "Proceso de pago fallido",
-            "payment_failed": "No se pudo verificar la información de pago",
-            "payment_method_unavailable": "Este método de pago no está disponible.",
-            "phone_region_mismatch": "Números regionales no soportados",
-            "player_id_invalid": "ID de jugador no válido. Verifica e intenta de nuevo.",
-            "select_option": "Selecciona un paquete para continuar.",
-            "truemoney_minimum": "TrueMoney Wallet requiere un mínimo de 20 THB."
-        },
-        "fee_label": "Comisión",
-        "form": "Detalles",
-        "game_info": "Detalles del juego",
-        "input": "Ingresa información",
-        "login_required_notice": "Inicia sesión para ver descuentos exclusivos",
-        "login_to_buy_button": "Iniciar sesión para comprar",
-        "meta": "Etiquetas",
-        "mobile_number_label": "Número de billetera",
-        "mobile_number_placeholder": "08x-xxx-xxxx",
-        "no_options": "Sin paquetes disponibles",
-        "no_options_desc": "No hay paquetes disponibles para este producto.",
-        "no_refund_warning_desc": "Los pedidos completados no son reembolsables. Verifica antes de confirmar.",
-        "no_refund_warning_title": "Aviso de no reembolso",
-        "no_similar_found": "No se encontraron productos similares.",
-        "payment_method_label": "Método de pago: ",
-        "payment_selection_desc": "Selecciona tu método de pago preferido",
-        "payment_selection_title": "Opciones de pago",
-        "platforms": "Plataformas soportadas",
-        "popular_badge": "Más vendido",
-        "price_label": "Precio:",
-        "privacy_label": "Política de privacidad",
-        "product_details_title": "Detalles del producto",
-        "publisher": "Editor",
-        "purchase_summary": "Resumen del pedido",
-        "refund_label": "Política de reembolso",
-        "related_products": "También te puede gustar",
-        "release_date": "Fecha de lanzamiento",
-        "savings_label": "Ahorras: ",
-        "secure_payment_notice": "Pago 100% seguro",
-        "select_package": "Seleccionar paquete",
-        "selected_package_label": "Paquete seleccionado",
-        "similar_products": "Productos similares",
-        "subtotal_label": "Subtotal: ",
-        "terms_agreement_prefix": "Al continuar, aceptas los ",
-        "terms_label": "Términos de uso",
-        "th-TH": "Tailandés",
-        "topup_options": "Opciones de recarga",
-        "total_label": "Monto total: ",
-        "transaction_summary_title": "Resumen financiero",
-        "unknown": "No especificado",
-        "unverified_account_warning": "Verifica tu email antes de comprar.",
-        "verify_info_hint": "Verifica tu ID de jugador antes de continuar."
-    },
-    "News": {
-        "all_news": "Todas las noticias",
-        "categories": {
-            "event": "Eventos",
-            "general": "General",
-            "promotion": "Promociones",
-            "update": "Actualizaciones"
-        },
-        "featured": "Noticias destacadas",
-        "featured_badge": "Destacado",
-        "no_news": "No hay noticias disponibles.",
-        "subtitle": "Últimas actualizaciones y anuncios",
-        "title": "Noticias y anuncios",
-        "view_count": "Vistas"
-    },
-    "NewsDetail": {
-        "back_to_news": "Volver a noticias",
-        "error_loading": "Error al cargar artículo",
-        "error_not_found": "Artículo no encontrado",
-        "error_not_found_desc": "El artículo no existe o ha sido eliminado.",
-        "featured_badge": "Tendencia",
-        "last_updated": "Última actualización: ",
-        "other_news": "Noticias relacionadas",
-        "sources": "Fuente",
-        "views": "Vistas: "
-    },
-    "PaymentPending": {
-        "a": " ",
-        "loading": "Cargando estado de pago...",
-        "orderId": "ID de pedido:",
-        "order_id": "ID de pedido:",
-        "payment_failed": "Pago fallido",
-        "payment_failed_desc": "Intenta procesar tu pago de nuevo.",
-        "payment_success": "Pago exitoso",
-        "qr_expired": "Código QR expirado",
-        "qr_expired_desc": "Cancela y crea un nuevo pedido.",
-        "redirecting": "Redirigiendo...",
-        "referenceNo": "Nro. de referencia: ",
-        "reference_no": "Referencia: ",
-        "time_remaining": "Tiempo restante: ",
-        "try_again": "Intentar de nuevo",
-        "view_orders": "Ver historial de pedidos"
-    },
-    "PaymentSuccess": {
-        "back_home": "Volver al inicio",
-        "delivery_notice": "Tu pedido está siendo procesado y será entregado pronto.",
-        "orderId": "ID de pedido:",
-        "order_number": "Número de pedido",
-        "processing_badge": "Procesando entrega",
-        "referenceNo": "Ref: ",
-        "session_id": "ID de sesión",
-        "subtitle": "Tu pago ha sido recibido. Estamos preparando tu pedido.",
-        "title": "¡Pago exitoso!",
-        "view_order": "Ver estado del pedido"
-    },
-    "Navigation": {
-        "account": "Mi cuenta",
-        "card": "Tarjetas prepago",
-        "faq": "Preguntas frecuentes",
-        "favorite": "Favoritos",
-        "games": "Recarga de juegos",
-        "home": "Inicio",
-        "login": "Iniciar sesión",
-        "mobile_recharge": "Recarga móvil",
-        "news": "Noticias",
-        "orders": "Historial de pedidos",
-        "register": "Registrarse",
-        "support": "Soporte"
-    },
-    "SupportContact": {
-        "form": {
-            "email": "Tu email",
-            "message": "Mensaje",
-            "name": "Tu nombre",
-            "send": "Enviar mensaje",
-            "sending": "Enviando...",
-            "subject": "Asunto",
-            "success": "Tu mensaje ha sido enviado. Nuestro equipote responderá pronto.",
-            "title": "Contáctanos por email"
-        },
-        "social": {
-            "title": "Conéctate con nosotros en redes sociales (Facebook / Line / Discord)"
-        },
-        "subtitle": "Contacta a nuestro equipo de soporte",
-        "title": "Soporte (24/7)"
-    },
-    "SupportFAQ": {
-        "all": "Todas las categorías",
-        "back_to_faq": "Volver a FAQ",
-        "categories": {
-            "_base": "Categorías"
-        },
-        "need_help": {
-            "title": "¿Necesitas ayuda?",
-            "description": "¿No encuentras lo que buscas?",
-            "contact_support": "Contactar soporte"
-        },
-        "no": "No fue útil",
-        "no_results": "Sin resultados.",
-        "search_placeholder": "Buscar respuestas...",
-        "subtitle": "Encuentra respuestas rápidas a preguntas comunes",
-        "title": "Preguntas frecuentes",
-        "view_all": "Ver todo",
-        "yes": "Útil"
-    },
-    "SupportFAQDetail": {
-        "back_to_faq": "Volver a FAQ",
-        "contact_support": "Contactar soporte",
-        "contact_support_desc": "Si necesitas más ayuda, contacta a nuestro equipo de soporte.",
-        "error": {
-            "_base": "Error al cargar contenido."
-        },
-        "helpful": "¿Te fue útil este artículo?",
-        "last_updated": "Última actualización",
-        "loading": "Cargando...",
-        "no": "No fue útil",
-        "still_need_help": "¿Aún necesitas ayuda?",
-        "thank_you": "Gracias por tu opinión.",
-        "views": "Vistas: ",
-        "yes": "Útil"
-    },
-    "Support": {
-        "categories": {
-            "faq": {
-                "description": "Encuentra soluciones rápidas a preguntas frecuentes.",
-                "title": "Preguntas frecuentes"
-            },
-            "tickets": {
-                "description": "Reporta un problema con tu pedido, pago o cuenta.",
-                "title": "Enviar un ticket"
-            }
-        },
-        "common_issues": {
-            "title": "Problemas comunes"
-        },
-        "contact_methods": "Métodos de contacto",
-        "subtitle": "Elige un tema o contacta a nuestro equipo directamente.",
-        "title": "Centro de ayuda",
-        "urgent_help": {
-            "description": "Para asistencia inmediata, contacta por Live Chat o Line.",
-            "title": "Soporte urgente"
-        },
-        "visit": "Ver",
-        "working_hours": {
-            "mon_fri": "Lunes - Viernes (Servicio normal)",
-            "sat_sun": "Sábado - Domingo (La respuesta puede demorar un poco)",
-            "time_mon_fri": "09:00 - 00:00 (GMT+7)",
-            "time_sat_sun": "09:00 - 19:00 (GMT+7)",
-            "timezone": "Zona horaria (GMT+7)",
-            "title": "Horario de soporte"
-        }
-    },
-    "SupportTickets": {
-        "back": "Volver a tickets",
-        "create": {
-            "cancel": "Cancelar",
-            "categories": {
-                "account": "Problema de cuenta",
-                "general": "Consulta general",
-                "order": "Problema con pedido",
-                "payment": "Problema de pago",
-                "product": "Problema con producto",
-                "refund": "Solicitud de reembolso",
-                "technical": "Soporte técnico"
-            },
-            "category": "Categoría",
-            "description": "Descripción del problema",
-            "description_label": "Describe tu problema en detalle",
-            "description_placeholder": "Describe el problema que estás experimentando...",
-            "order_ref": "ID de pedido (Opcional)",
-            "order_ref_placeholder": "Pedido #999999",
-            "subject_placeholder": "Asunto breve",
-            "submit": "Enviar ticket",
-            "title": "Crear nuevo ticket"
-        },
-        "create_new": "Crear ticket nuevo",
-        "created_at": "Creado el",
-        "detail": {
-            "closed_notice": "Este ticket ha sido cerrado. Ya no puedes responder.",
-            "reply": "Responder",
-            "send_reply": "Enviar mensaje"
-        },
-        "disabled": {
-            "cta": "Volver al inicio",
-            "description": "El sistema de tickets no está disponible.",
-            "title": "Sistema no disponible"
-        },
-        "no_tickets": "No has enviado ningún ticket de soporte aún.",
-        "order_ref_label": "ID de referencia (Nos ayuda a resolver tu problema más rápido)",
-        "select_ticket": "Seleccionar ticket",
-        "select_ticket_desc": "Selecciona un ticket de la lista para ver detalles.",
-        "status": {
-            "all": "Todos los tickets",
-            "closed": "Cerrado",
-            "open": "Abierto",
-            "pending": "Pendiente",
-            "resolved": "Resuelto",
-            "waiting_admin": "Esperando soporte",
-            "waiting_user": "Esperando usuario"
-        },
-        "subtitle": "Gestiona tus solicitudes de soporte",
-        "support_team": "Equipo de soporte",
-        "system": "Aviso automatizado del sistema",
-        "title": "Tickets de soporte",
-        "user_you": "Tú"
-    },
-    "UserMenu": {
-        "account_menu": "Menú de cuenta",
-        "credits": "Mis créditos",
-        "favorite": "Favoritos",
-        "h-full": "",
-        "logout": "Cerrar sesión",
-        "menu": "Menú de usuario",
-        "my_account": "Mi cuenta",
-        "my_coupons": "Mis cupones",
-        "my_invoices": "Facturas",
-        "my_orders": "Historial de pedidos",
-        "notifications": "Notificaciones",
-        "open_menu": "Abrir menú"
-    },
-    "CookieNotice": {
-        "acknowledge": "Aceptar",
-        "ariaClose": "Cerrar aviso",
-        "description": "Lnwtermgame usa cookies para mejorar tu experiencia, optimizar el rendimiento y ofrecer promociones personalizadas.",
-        "items": [
-            "Cookies esenciales (necesarias para la funcionalidad básica)",
-            "Cookies de análisis (para medir y mejorar nuestra plataforma)"
-        ],
-        "noTawkItem": "El soporte por Live Chat está deshabilitado.",
-        "privacy": "Política de privacidad",
-        "tawkItem": "Cookies de Live Chat (Tawk.to) para interacciones de soporte rápidas.",
-        "title": "⚙️ Preferencias de cookies"
-    },
-    "Footer": {
-        "about_us": "Sobre nosotros",
-        "contact_us": "Contáctanos",
-        "copyright": "Derechos de autor",
-        "language_thai": "Tailandés",
-        "partners": "Socios",
-        "customer": "Atención al cliente",
-        "policies": "Políticas",
-        "services": "Servicios",
-        "payment_inquiry": "Consulta de pago",
-        "payment_issues": "Pagos y problemas",
-        "sale_inquiry": "Consulta comercial",
-        "copyright_notice": "Todos los derechos reservados",
-        "create_ticket": "Enviar ticket de soporte",
-        "faq": "Preguntas frecuentes",
-        "features": {
-            "payment": "Múltiples opciones de pago",
-            "payment_desc": "Recarga fácilmente con TrueMoney y PromptPay sin comisiones extra.",
-            "price": "Mejores precios",
-            "price_desc": "Disfruta de promociones exclusivas y las mejores tarifas.",
-            "security": "100% Seguro",
-            "security_desc": "Nuestra plataforma usa encriptación de primer nivel para proteger tus transacciones.",
-            "support": "Soporte 24/7",
-            "support_desc": "Nuestro equipo está disponible las 24 horas.",
-            "delivery": "Entrega rápida"
-        },
-        "live_chat": "Chat en vivo",
-        "payment_channels": "Métodos de pago",
-        "privacy_policy": "Privacidad y cookies",
-        "quick_links": "Enlaces rápidos",
-        "refund_policy": "Política de reembolso",
+    "email": {
+      "categories": {
+        "authentication": "Autenticación",
+        "general": "General",
+        "order": "Pedido",
+        "payment": "Pago",
+        "promotion": "Promoción",
         "support": "Soporte",
-        "support_center": "Centro de ayuda",
-        "supported_payments": "Plataformas de pago soportadas",
-        "tagline": "Lnwtermgame, la plataforma líder en Tailandia para recargas de juegos rápidas y seguras.",
-        "terms_of_service": "Términos de servicio"
+        "system": "Sistema"
+      },
+      "placeholders": {
+        "discountAmount": "Monto de descuento",
+        "email": "Correo electrónico",
+        "expiresIn": "Expira en",
+        "finalAmount": "Monto final",
+        "orderDate": "Fecha de pedido",
+        "orderNumber": "Número de pedido",
+        "resetUrl": "URL de restablecimiento",
+        "siteName": "Nombre del sitio",
+        "ticketNumber": "Número de ticket",
+        "totalAmount": "Monto total",
+        "username": "Nombre de usuario",
+        "verificationUrl": "URL de verificación"
+      }
     },
-    "Header": {
-        " ": " ",
-        "/": "/",
-        "articles": "Artículos",
-        "dealers": "Distribuidores",
-        "all_games": "Todos los juegos",
-        "cart": "Carrito de compras",
-        "contact_us": "Contáctanos",
-        "credits": "Créditos",
-        "direct_topup": "Recarga de juegos",
-        "gift_cards": "Tarjetas de regalo",
-        "login": "Iniciar sesión",
-        "logout": "Cerrar sesión",
-        "mobile_recharge": "Recarga móvil",
-        "my_account": "Mi cuenta",
-        "news": "Noticias y promos",
-        "notifications": "Notificaciones",
-        "order_history": "Historial de pedidos",
-        "search_placeholder": "Buscar juegos o tarjetas..."
+    "logo": "Logo",
+    "monitor": "Monitor del sistema",
+    "newsItems": "Noticias",
+    "oauth": {
+      "load_error": "Error al cargar datos OAuth"
     },
-    "Search": {
-        "aria_label_clear": "Borrar",
-        "aria_label_remove_history": "Borrar historial",
-        "aria_label_search": "Buscar",
-        "no_results_for": "Sin resultados para...",
-        "placeholder": "Buscar...",
-        "placeholder_advanced": "Buscar juegos, tarjetas o artículos...",
-        "recent_searches": "Búsquedas recientes",
-        "search_results": "Resultados: ",
-        "view_all_results_for": "Ver todos los resultados para"
+    "order_detail": {
+      "back_to_orders": "Volver a pedidos",
+      "items": "Artículos",
+      "order_date": "Fecha de pedido",
+      "order_status": "Estado del pedido",
+      "subtitle": "Detalles y estado del pedido",
+      "title": "Detalle del pedido"
     },
-    "Products": {
-        "recommended": "Paquetes recomendados"
+    "orders": {
+      "actions": "Acciones",
+      "amount": "Monto total",
+      "customer": "Cliente",
+      "date": "Fecha",
+      "no_orders": "No se encontraron pedidos",
+      "order_id": "ID de pedido",
+      "product": "Producto",
+      "search_placeholder": "Buscar pedidos...",
+      "status": {
+        "all": "Todos",
+        "cancelled": "Cancelado",
+        "completed": "Completado",
+        "failed": "Fallido",
+        "pending": "Pendiente",
+        "processing": "Procesando",
+        "refunded": "Reembolsado"
+      },
+      "status_text": "Estado",
+      "subtitle": "Gestionar todos los pedidos",
+      "title": "Pedidos"
     },
-    "promotions": "Promociones",
-    "how_to_use": {
-        "title": "Cómo usar"
+    "promoCards": "Tarjetas promocionales",
+    "seasonalEvents": "Eventos de temporada",
+    "settings": {
+      "section_labels": {
+        "featured_products": "Productos destacados",
+        "hero_button": "Botón principal",
+        "news": "Noticias",
+        "specials": "Ofertas",
+        "view_all": "Ver todo"
+      }
     },
-    "topup_system": "Sistema de recarga",
+    "th-TH": "Tailandés",
+    "tickets": {
+      "all_assignees": "Todos los asignados",
+      "categories": {
+        "all": "Todas las categorías",
+        "order_issue": "Problema con pedido",
+        "payment_issue": "Problema de pago",
+        "product_issue": "Problema con producto",
+        "account_issue": "Problema de cuenta",
+        "technical_support": "Soporte técnico",
+        "refund_request": "Solicitud de reembolso",
+        "general_inquiry": "Consulta general"
+      },
+      "priorities": {
+        "high": "Alta",
+        "urgent": "Urgente"
+      },
+      "status": {
+        "open": "Abierto",
+        "in_progress": "En progreso",
+        "waiting_user": "Esperando usuario",
+        "waiting_admin": "Esperando administrador",
+        "resolved": "Resuelto",
+        "closed": "Cerrado"
+      },
+      "unassigned": "Sin asignar"
+    }
+  },
+  "Catalog": {
+    "card": {
+      "subtitle": "Juegos populares",
+      "title": "Elige tu juego"
+    },
+    "cta_buy": "Comprar ahora",
+    "cta_topup": "Recargar ahora",
+    "filter_category": "Filtrar categoría",
     "games": {
-        "title": "Todos los juegos"
+      "subtitle": "Todos los juegos disponibles",
+      "title": "Juegos"
     },
-    "lucky_games": "Juegos de suerte",
-    "nav_game_topup": "Recarga de juegos",
-    "nav_prepaid_card": "Tarjetas prepago",
-    "nav_mobile_topup": "Recarga móvil",
-    "search_placeholder": "Buscar juegos o tarjetas...",
-    "admin_panel": "Panel de administración",
-    "my_account": "Mi cuenta",
-    "credits": "Créditos",
-    "order_history": "Historial de pedidos",
-    "logout": "Cerrar sesión",
-    "login_button": "Iniciar sesión / Registrarse",
-    "Admin": {
-        "nav": {
-            "main": "Panel de control",
-            "products_sales": "Productos y ventas",
-            "content": "Gestión de contenido",
-            "users_communication": "Usuarios y comunicación",
-            "system": "Configuración del sistema"
-        },
-        "admin_cp": "Panel de control administrativo",
-        "admin": "Administrador",
-        "dashboard": "Panel de control",
-        "analytics": "Analíticas",
-        "products": "Inventario",
-        "categories": "Categorías",
-        "orders": "Pedidos",
-        "payments": "Centro financiero",
-        "cms_pages": "Páginas de contenido",
-        "news": "Gestión de noticias",
-        "manage_faq": "Gestión de FAQ",
-        "images": "Galería de imágenes",
-        "manage_users": "Gestión de usuarios",
-        "support_tickets": "Tickets de soporte",
-        "notifications": "Notificaciones del sistema",
-        "email": "Protocolo de email",
-        "settings": "Configuración del sistema",
-        "oauth": "Servicios OAuth",
-        "pin": "Pin menu",
-        "unpin": "Unpin menu",
-        "switch_dark": "Switch to dark",
-        "switch_light": "Switch to light",
-        "status": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "processing": "Processing",
-            "failed": "Failed",
-            "cancelled": "Cancelled",
-            "refunded": "Refunded",
-            "active": "Active",
-            "inactive": "Inactive",
-            "low_stock": "Low stock",
-            "out_of_stock": "Out of stock",
-            "banned": "Banned",
-            "unknown": "Unknown"
-        },
-        "pagination": {
-            "showing": "Showing {start}–{end} of {total}",
-            "empty": "No items",
-            "prev": "Previous",
-            "next": "Next"
-        },
-        "table": {
-            "empty": "No data"
-        }
+    "loading": "Cargando...",
+    "mobile": {
+      "subtitle": "Recarga móvil rápida",
+      "title": "Juegos móviles"
     },
-    "hero_zzz_subtitle": "Recargar Zenless Zone Zero",
-    "hero_zzz_highlight_text": "Hasta",
-    "hero_genshin_subtitle": "Recargar Genshin Impact",
-    "hero_genshin_highlight_text": "Hasta",
-    "hero_btn_text": "Recargar ahora",
-    "category_popular_games": "Juegos populares",
-    "category_all_games": "Todos los juegos",
-    "category_check_skin": "Skins de suerte",
-    "category_game_card": "Tarjetas de juego",
-    "category_lucky_game": "Sorteo de suerte",
-    "special_offers": "Ofertas especiales",
-    "popular_games": "Recargas populares",
+    "no_results": "Sin resultados",
+    "no_results_desc": "Prueba con otra palabra clave",
+    "search": "Buscar juego",
+    "search_placeholder": "Escribe el nombre del juego...",
+    "sort": {
+      "all": "Todos"
+    }
+  },
+  "Checkout": {
+    "browse_products": "Ver productos",
+    "confirm_order": "Confirmar pedido",
+    "continue_shopping": "Seguir comprando",
+    "direct_topup": "Recarga directa",
+    "empty_cart": "Tu carrito está vacío",
+    "empty_cart_desc": "Explora nuestro catálogo para encontrar tus juegos favoritos.",
+    "error": {
+      "fill_all_fields": "Por favor completa todos los campos",
+      "generic_failed": "Transacción fallida. Inténtalo de nuevo.",
+      "order_failed": "Error al crear pedido",
+      "player_id_invalid": "ID de jugador no válido",
+      "product_changed": "Los datos del producto han cambiado. Actualiza la página."
+    },
+    "fill_required_fields": "Completa los campos requeridos",
+    "gift_card": "Tarjeta de regalo",
+    "grand_total": "Total general",
+    "info_complete": "Información completa",
+    "loading": "Procesando...",
+    "order_summary": "Resumen del pedido",
+    "per_item": "por unidad",
+    "quantity": "Cantidad",
+    "subtitle": "Revisa y procede al pago",
+    "terms_agreement": "He leído y acepto los",
+    "terms_of_service": "Términos de servicio",
+    "title": "Pago",
+    "total": "Total"
+  },
+  "Account": {
+    "account_settings": "Configuración de cuenta",
+    "email_label": "Tu correo electrónico",
+    "my_orders": "Mis pedidos",
+    "no_recent_purchases": "Sin compras recientes",
+    "not_verified": "No verificado",
+    "order_status": {
+      "completed": "Completado",
+      "pending": "Pago pendiente",
+      "processing": "Procesando",
+      "refunded": "Reembolsado"
+    },
+    "recent_purchases": "Compras recientes",
+    "security": "Seguridad",
+    "send_failed": "Error al enviar email de verificación",
+    "send_verification": "Enviar email de verificación",
+    "sending": "Enviando...",
+    "spam_hint": "Si no ves el email, revisa tu carpeta de spam.",
+    "subtitle": "Gestiona tu perfil y rastrea pedidos",
+    "title": "Mi cuenta",
+    "verification_sent": "Enlace de verificación enviado",
+    "verified": "Verificado",
+    "verify_email_banner": "Verifica tu email para acceso completo",
+    "verify_email_desc": "Verificar tu email asegura la recuperación segura y el seguimiento preciso de tus pedidos.",
+    "view_all_orders": "Ver todos los pedidos",
+    "wait_cooldown": "Espera un momento antes de intentar de nuevo"
+  },
+  "Security": {
+    "additional_settings": {
+      "login_notifications": "Notificaciones de inicio de sesión",
+      "login_notifications_desc": "Recibe notificaciones cuando un nuevo dispositivo inicie sesión.",
+      "title": "Configuración adicional"
+    },
+    "change_password": {
+      "button_cancel": "Cancelar",
+      "button_change": "Cambiar contraseña",
+      "button_saving": "Guardando...",
+      "button_setup": "Establecer contraseña",
+      "confirm_label": "Confirmar contraseña",
+      "current_label": "Contraseña actual",
+      "error_change_failed": "No se pudo cambiar la contraseña",
+      "error_otp_failed": "OTP no válido",
+      "error_setup_failed": "Error al establecer contraseña",
+      "length_hint": "Al menos 8 caracteres",
+      "match_error": "Las contraseñas no coinciden",
+      "new_label": "Nueva contraseña",
+      "oauth_notice": "Iniciaste sesión con cuenta social. Puedes establecer una contraseña estándar aquí.",
+      "otp_label": "Código OTP",
+      "otp_sent_success": "OTP enviado exitosamente",
+      "otp_wait": "Por favor espera...",
+      "request_otp": "Solicitar OTP",
+      "resend_otp": "Reenviar OTP",
+      "setup_confirm_label": "Confirmar contraseña",
+      "setup_title": "Establecer contraseña",
+      "success_setup": "Contraseña establecida exitosamente",
+      "title": "Cambiar contraseña"
+    },
+    "error_email_not_found": "Email no encontrado",
+    "recent_devices": {
+      "logout_all": "Cerrar sesión en todos los demás dispositivos",
+      "processing": "Procesando...",
+      "title": "Dispositivos recientes"
+    },
+    "subtitle": "Gestiona tu seguridad y contraseñas",
+    "suspicious_activity": {
+      "admin_location": "Pendiente",
+      "confirm_button": "Confirmar actividad",
+      "resolved_badge": "Resuelto",
+      "title": "Actividad sospechosa"
+    },
+    "title": "Seguridad",
+    "two_factor": {
+      "coming_soon": "Próximamente",
+      "setup_button": "Configurar 2FA",
+      "subtitle": "Añade otra capa de seguridad",
+      "title": "Autenticación de dos factores (2FA)"
+    }
+  },
+  "Common": {
+    "already_verified_title": "Ya verificado",
+    "back_to_login": "Volver al inicio de sesión",
+    "confirm_password": "Confirmar contraseña",
+    "contact_support": "Contactar soporte",
+    "email": "Correo electrónico",
+    "email_placeholder": "ejemplo@correo.com",
+    "error_expired": "Este enlace ha expirado",
+    "error_get_new_link": "Solicitar un nuevo enlace",
+    "error_invalid": "Información no válida",
+    "error_invalid_email": "Formato de email no válido",
+    "error_invalid_link": "Enlace no válido",
+    "error_invalid_link_desc": "El enlace que usas no es válido o ha expirado.",
+    "error_occurred": "Ocurrió un error",
+    "error_send_failed": "Error al enviar datos",
+    "error_title": "Fallido",
+    "expired_title": "Solicitud expirada",
+    "go_to_account": "Ir a cuenta",
+    "go_to_login": "Ir a inicio de sesión",
+    "invalid_link_desc": "El enlace no es válido. Verifica de nuevo.",
+    "invalid_link_title": "Enlace no válido",
+    "invalid_token_title": "Token no válido",
+    "loading": "Cargando...",
+    "loading_desc": "Espera un momento",
+    "login_now": "Iniciar sesión ahora",
+    "match_error": "Los datos no coinciden",
+    "match_success": "Datos coincidentes",
+    "member": "Área de miembros",
+    "new_password": "Nueva contraseña",
+    "password_requirements": {
+      "length": "Al menos 8 caracteres",
+      "lowercase": "Al menos 1 minúscula",
+      "number": "Al menos 1 número",
+      "uppercase": "Al menos 1 mayúscula"
+    },
+    "redirect_hint": "Redirigiendo...",
+    "resend_button": "Reenviar",
+    "resend_email": "Reenviar email",
+    "resend_success": "Enviado exitosamente",
+    "reset_button": "Restablecer",
+    "send_link": "Enviar enlace",
+    "sending": "Procesando...",
+    "spam_hint": "Revisa tu carpeta de spam si no ves el email.",
+    "strength": "Fortaleza de la contraseña",
+    "subtitle": "Descripción general",
+    "success_desc": "Transacción exitosa",
+    "success_title": "Éxito",
+    "title": "Título",
+    "token": "Token de seguridad"
+  },
+  "Coupons": {
+    "add_coupon": "Añadir cupón",
+    "add_failed": "Error al añadir cupón",
+    "add_success": "Cupón añadido exitosamente",
+    "code_label": "Código de cupón",
+    "details": {
+      "copied": "Copiado",
+      "copy_code": "Copiar código",
+      "discount": "Descuento",
+      "max_discount": "Descuento máximo",
+      "min_purchase": "Compra mínima",
+      "no_min_purchase": "Sin compra mínima",
+      "title": "Detalles del cupón",
+      "use_now": "Usar ahora",
+      "used_at": "Usado el",
+      "valid_until": "Válido hasta"
+    },
+    "example_code": "DISCOUNT20",
+    "expiry_hint": "Los cupones tienen un período de validez limitado.",
+    "filter": {
+      "active": "Activo",
+      "all": "Todos",
+      "expired": "Expirado",
+      "used": "Usado"
+    },
+    "how_to_use": {
+      "step1": "Selecciona tus productos",
+      "step2": "Ingresa el código durante el pago",
+      "step3": "Verifica el descuento antes de pagar",
+      "title": "Cómo usar"
+    },
+    "invalid_code": "Código no válido",
+    "no_coupons": "Sin cupones disponibles",
+    "no_coupons_desc": "No tienes cupones de descuento actualmente.",
+    "no_search_results": "No se encontraron cupones con tu búsqueda.",
+    "not_found": "Cupón no encontrado",
+    "search_placeholder": "Buscar cupones...",
+    "start_shopping": "Empezar a comprar",
+    "status": {
+      "active": "Activo",
+      "expired": "Expirado",
+      "used": "Usado"
+    },
+    "subtitle": "Gestiona tus cupones de descuento",
+    "th-TH": "Tailandés",
+    "title": "Cupones de descuento",
+    "validating": "Validando..."
+  },
+  "Credits": {
+    "about": {
+      "step1_desc": "Inicia sesión y ve a la sección de recarga de créditos",
+      "step1_title": "Elegir paquete",
+      "step2_desc": "Paga con tu método más conveniente",
+      "step2_title": "Realizar pago",
+      "step3_desc": "Los créditos se añaden instantáneamente a tu billetera",
+      "step3_title": "Transacción exitosa",
+      "title": "Cómo recargar créditos"
+    },
+    "balance_label": "Saldo:",
+    "earned": "Historial de ganancias",
+    "error_loading": "Error al cargar información de créditos",
+    "history": {
+      "all": "Todas las transacciones",
+      "empty": "Sin historial de créditos",
+      "empty_desc": "No se encontraron transacciones recientes.",
+      "this_month": "Este mes",
+      "this_week": "Esta semana",
+      "title": "Historial de transacciones"
+    },
+    "spent": "Historial de gastos",
+    "subtitle": "Gestiona los créditos de tu cuenta",
+    "th-TH": "Tailandés",
+    "title": "Mis créditos",
+    "topup_button": "Recargar créditos",
+    "topup_upcoming": "Paquetes de créditos",
+    "total_transactions": "Total de transacciones",
+    "types": {
+      "bonus": "Bono",
+      "purchase": "Compras",
+      "refund": "Reembolsos",
+      "topup": "Recarga"
+    },
+    "value_hint": "Disfruta mejores ofertas con recargas en volumen"
+  },
+  "Favorites": {
+    "added_to_cart": "Añadido al carrito exitosamente",
+    "buy_now": "Comprar ahora",
+    "error_loading": "Error al cargar lista de favoritos",
+    "found_items": "resultados",
+    "no_favorites": "Sin favoritos",
+    "no_favorites_desc": "Haz clic en el ícono de corazón para añadir a favoritos.",
+    "no_search_results": "No se encontraron favoritos con tu búsqueda.",
+    "remove_failed": "Error al eliminar",
+    "remove_success": "Eliminado de favoritos exitosamente",
+    "search_placeholder": "Buscar en favoritos...",
+    "start_shopping": "Explorar juegos",
+    "starting_at": "Desde",
+    "subtitle": "Tus juegos favoritos se guardan aquí",
+    "title": "Mis favoritos",
+    "view_more": "Ver detalles"
+  },
+  "Invoices": {
+    "actions": {
+      "download": "Descargar",
+      "view": "Ver detalles"
+    },
+    "filter": {
+      "all": "Todas las facturas",
+      "cancelled": "Cancelado",
+      "paid": "Pagado",
+      "pending": "Pago pendiente"
+    },
+    "no_invoices": "Sin facturas",
+    "no_invoices_desc": "Aún no se han realizado transacciones.",
+    "no_search_results": "No se encontraron facturas con tu búsqueda.",
+    "search_placeholder": "Buscar facturas...",
+    "status": {
+      "cancelled": "Cancelado",
+      "paid": "Pagado",
+      "pending": "Pendiente"
+    },
+    "subtitle": "Gestiona tus registros de facturación",
+    "table": {
+      "actions": "Acciones",
+      "amount": "Monto total",
+      "date": "Fecha",
+      "invoice_number": "ID de factura",
+      "order_number": "ID de pedido",
+      "status": "Estado"
+    },
+    "th-TH": "Tailandés",
+    "title": "Tus facturas"
+  },
+  "InvoiceDetail": {
+    "a": " ",
+    "back_to_list": "Volver a la lista",
+    "copy_success": "Copiado exitosamente",
+    "customer_info": "Información del cliente",
+    "date": "Fecha de transacción",
+    "download_pdf": "Descargar PDF",
+    "error_not_found": "Factura no encontrada",
+    "grand_total": "Pago neto",
+    "invoice_no": "Número de factura",
+    "item_details": "Artículos comprados",
+    "order_no": "Número de pedido",
+    "paid": "Pagado",
+    "payment_info": "Proveedor",
+    "payment_status": "Estado de pago",
+    "price": "Precio",
+    "print": "Imprimir informe",
+    "product": "Info del producto",
+    "quantity": "Cant.",
+    "subtotal": "Subtotal",
+    "title": "Factura / Recibo",
+    "total": "Total general",
+    "unpaid": "No pagado",
+    "vat": "IVA"
+  },
+  "Notifications": {
+    "delete": "Eliminar notificación",
+    "delete_success": "Eliminado exitosamente",
+    "empty_desc": "No tienes notificaciones.",
+    "empty_filter_desc": "Sin notificaciones para este filtro.",
+    "empty_title": "Bandeja vacía",
+    "error_loading": "Error al cargar mensajes",
+    "filters": {
+      "all": "Todos",
+      "order": "Pedidos",
+      "payment": "Finanzas",
+      "promotion": "Promociones",
+      "unread": "No leído"
+    },
+    "manage_settings": "Configuración de notificaciones",
+    "mark_all_read": "Marcar todo como leído",
+    "mark_read": "Marcar como leído",
+    "mark_read_success": "Marcado como leído",
+    "subtitle": "Centro de notificaciones",
+    "title": "Notificaciones",
+    "unread_badge": "No leído",
+    "view_details": "Ver detalles"
+  },
+  "NotificationPreferences": {
+    "channels": {
+      "email": "Correo electrónico",
+      "email_desc": "Recibe actualizaciones y recibos por email.",
+      "web": "Notificaciones en la app",
+      "web_desc": "Recibe notificaciones en la web."
+    },
+    "save_button": "Guardar configuración",
+    "save_success": "Preferencias guardadas exitosamente.",
+    "saving": "Guardando...",
+    "subtitle": "Gestiona cómo recibes actualizaciones y alertas",
+    "title": "Preferencias de notificaciones",
+    "types": {
+      "orders": "Actualizaciones de pedidos",
+      "orders_desc": "Actualizaciones sobre el estado de tus pedidos.",
+      "promotions": "Promociones",
+      "promotions_desc": "Novedades sobre descuentos, eventos y ofertas especiales."
+    }
+  },
+  "Orders": {
+    "amount_label": "Monto del pedido:",
+    "date_label": "Fecha del pedido:",
+    "error_loading": "Error al cargar artículos del pedido",
+    "filter_title": "Filtros de pedidos",
+    "no_orders": "Sin pedidos aún",
+    "no_orders_desc": "Tus pedidos anteriores aparecerán aquí.",
+    "no_search_results": "No se encontraron pedidos. Verifica el ID.",
+    "order_id_label": "ID de pedido:",
+    "search_placeholder": "Buscar por ID o producto",
+    "status": {
+      "all": "Todos",
+      "cancelled": "Cancelado",
+      "completed": "Completado",
+      "pending": "Esperando pago",
+      "processing": "Procesando",
+      "refunded": "Reembolsado"
+    },
+    "subtitle": "Revisa historial y rastrea tus pedidos",
+    "table": {
+      "amount": "Monto",
+      "date": "Fecha",
+      "order_number": "ID de pedido",
+      "product": "Detalles del producto",
+      "status": "Estado"
+    },
+    "th-TH": "Tailandés",
+    "title": "Historial de pedidos",
+    "view_details": "Ver detalles",
+    "view_mode": {
+      "card": "Vista de tarjetas",
+      "table": "Vista de tabla"
+    },
+    "view_results": "Mostrar resultados",
+    "view_short": "Minimizar"
+  },
+  "OrderDetail": {
+    "actions": {
+      "cancel": "Cancelar pedido",
+      "cancel_confirm": "¿Seguro que deseas cancelar este pedido?",
+      "cancel_failed": "Error al cancelar pedido",
+      "cancel_hint": "La cancelación no se puede deshacer.",
+      "cancel_success": "Pedido cancelado exitosamente.",
+      "cancelling": "Cancelando...",
+      "need_help": "¿Necesitas ayuda?",
+      "report_issue": "Reportar problema",
+      "title": "Gestionar pedido"
+    },
+    "back_to_orders": "Volver al historial",
+    "customer": {
+      "date": "Fecha: ",
+      "email": "Email: ",
+      "title": "Datos del cliente",
+      "username": "Cliente: "
+    },
+    "delivery": {
+      "completed_at": "Entregado a las",
+      "status_summary": "Estado de entrega",
+      "statuses": {
+        "completed": "Entregado exitosamente",
+        "failed": "Entrega fallida",
+        "pending": "En cola",
+        "processing": "Procesando entrega..."
+      },
+      "title": "Entrega"
+    },
+    "error_loading": "Error al cargar detalles del pedido",
+    "error_not_found": "Pedido no encontrado",
+    "error_not_found_desc": "Verifica el ID del pedido e intenta de nuevo.",
+    "items": {
+      "account_info": "Información adicional",
+      "code_label": "Código de canje",
+      "copy_success": "Código copiado",
+      "delivery_failed": "Error al cargar artículo",
+      "delivery_status": "Estado de entrega del artículo",
+      "digital_codes": "Código digital",
+      "expired_label": "Expira el",
+      "hide_code": "Ocultar código",
+      "pin_label": "PIN",
+      "quantity": "Cant.",
+      "serial_label": "Serie",
+      "show_code": "Mostrar código",
+      "title": "Artículos del pedido",
+      "usage_hint": "Mantén tu código seguro."
+    },
+    "loading": "Cargando...",
+    "order_id_label": "ID de pedido",
+    "payment": {
+      "discount": "Descuento",
+      "method": "Método de pago",
+      "methods": {
+        "bank_transfer": "Transferencia bancaria",
+        "promptpay": "PromptPay",
+        "truemoney": "Billetera TrueMoney",
+        "unknown": "Otro"
+      },
+      "status_paid": "Pagado",
+      "status_pending": "Validación pendiente",
+      "subtotal": "Subtotal",
+      "title": "Resumen de pago",
+      "total": "Monto total"
+    },
+    "th-TH": "Tailandés",
+    "title": "Detalles del pedido"
+  },
+  "errors": {
+    "generic": {
+      "description": "Ocurrió un error inesperado. Inténtalo más tarde.",
+      "goHome": "Volver al inicio",
+      "title": "Ocurrió un error",
+      "tryAgain": "Intentar de nuevo"
+    },
+    "notFound": {
+      "description": "La página que buscas no existe.",
+      "goBack": "Volver",
+      "goHome": "Volver al inicio",
+      "title": "Página no encontrada"
+    }
+  },
+  "Verification": {
+    "forgot_password": {
+      "back_to_login": "Volver al inicio de sesión",
+      "email_placeholder": "Ingresa tu email registrado...",
+      "error_invalid_email": "Ingresa un email válido",
+      "error_send_failed": "Error al enviar enlace de restablecimiento",
+      "loading": "Procesando...",
+      "resend_email": "Reenviar email",
+      "send_link": "Send Reset Link",
+      "spam_hint": "Revisa spam si no recibes el email.",
+      "subtitle": "Ingresa tu email para recibir un enlace de restablecimiento.",
+      "success_desc": "Se ha enviado un enlace de restablecimiento a tu email.",
+      "success_title": "Email enviado",
+      "title": "¿Olvidaste tu contraseña?"
+    },
+    "reset_password": {
+      "back_to_login": "Volver al inicio de sesión",
+      "confirm_password": "Confirmar nueva contraseña",
+      "error_expired": "El enlace ha expirado.",
+      "error_get_new_link": "Solicitar nuevo enlace",
+      "error_invalid": "El código de seguridad no es válido o ha expirado.",
+      "error_invalid_link": "Enlace de verificación no válido.",
+      "error_invalid_link_desc": "El enlace no es válido o ya fue usado.",
+      "loading": "Procesando...",
+      "login_now": "Iniciar sesión ahora",
+      "match_error": "Las contraseñas no coinciden",
+      "match_success": "Las contraseñas coinciden.",
+      "new_password": "Nueva contraseña",
+      "password_requirements": {
+        "length": "Al menos 8 caracteres",
+        "lowercase": "Al menos 1 minúscula (a-z)",
+        "number": "Al menos 1 número (0-9)",
+        "uppercase": "Al menos 1 mayúscula (A-Z)"
+      },
+      "redirect_hint": "Redirigiendo...",
+      "reset_button": "Actualizar contraseña",
+      "strength": "Fortaleza de la contraseña",
+      "subtitle": "Establece una nueva contraseña",
+      "success_desc": "Tu contraseña ha sido actualizada. Ya puedes iniciar sesión.",
+      "success_title": "Contraseña actualizada",
+      "title": "Restablecer contraseña",
+      "token": "Token de seguridad"
+    },
+    "verify_email": {
+      "already_verified_title": "Email ya verificado.",
+      "back_to_login": "Volver al inicio de sesión",
+      "contact_support": "Contactar soporte",
+      "email": "Correo electrónico",
+      "error_title": "Verificación fallida por error de red",
+      "expired_title": "El enlace de verificación ha expirado.",
+      "go_to_account": "Ir a cuenta",
+      "go_to_login": "Ir a inicio de sesión",
+      "invalid_link_desc": "El enlace no es válido o el email ya fue verificado.",
+      "invalid_link_title": "Enlace de verificación no válido",
+      "invalid_token_title": "Token no válido",
+      "loading": "Verificando tu email...",
+      "loading_desc": "Espera un momento...",
+      "redirect_hint": "Redirigiendo al inicio...",
+      "resend_button": "Reenviar email de verificación",
+      "resend_success": "Email de verificación enviado.",
+      "sending": "Enviando email...",
+      "spam_hint": "Revisa tu carpeta de spam.",
+      "success_title": "Email verificado exitosamente",
+      "title": "Verificar dirección de email",
+      "token": "Token de seguridad"
+    }
+  },
+  "ProductDetail": {
+    "about_product": "Descripción del producto",
+    "account_info_title": "Información de cuenta",
+    "auto_delivery_hint": "Entrega automática instantánea",
+    "back": "Atrás",
+    "buy_now_button": "Comprar ahora",
+    "by_developer": "Desarrollador: ",
+    "cancel_button": "Cancelar",
+    "change_button": "Cambiar selección",
+    "close_window_button": "Cerrar ventana",
+    "confirm_button": "Confirmar pago",
+    "confirm_hint": "Verifica tu selección antes de confirmar.",
+    "confirm_order_title": "Resumen del pedido",
+    "confirm_selection_button": "Confirmar selección",
+    "copy_link_failed": "Error al copiar. Inténtalo de nuevo.",
+    "copy_link_success": "Enlace copiado",
+    "developer": "Desarrollador",
+    "error": {
+      "enter_phone": "Ingresa un número de teléfono de 10 dígitos válido.",
+      "fill_all_fields": "Completa todos los campos obligatorios.",
+      "invalid_phone": "El número de teléfono no es válido.",
+      "login_required": "Inicia sesión para continuar con tu transacción.",
+      "no_payment_link": "Error al generar enlace de pago. Inténtalo de nuevo.",
+      "not_found": "Producto no encontrado",
+      "not_found_desc": "El producto no existe o ya no está disponible.",
+      "order_success_redirect": "Transacción exitosa. Redirigiendo...",
+      "payment_error": "Proceso de pago fallido",
+      "payment_failed": "No se pudo verificar la información de pago",
+      "payment_method_unavailable": "Este método de pago no está disponible.",
+      "phone_region_mismatch": "Números regionales no soportados",
+      "player_id_invalid": "ID de jugador no válido. Verifica e intenta de nuevo.",
+      "select_option": "Selecciona un paquete para continuar.",
+      "truemoney_minimum": "TrueMoney Wallet requiere un mínimo de 20 THB."
+    },
+    "fee_label": "Comisión",
+    "form": "Detalles",
+    "game_info": "Detalles del juego",
+    "input": "Ingresa información",
+    "login_required_notice": "Inicia sesión para ver descuentos exclusivos",
+    "login_to_buy_button": "Iniciar sesión para comprar",
+    "meta": "Etiquetas",
+    "mobile_number_label": "Número de billetera",
+    "mobile_number_placeholder": "08x-xxx-xxxx",
+    "no_options": "Sin paquetes disponibles",
+    "no_options_desc": "No hay paquetes disponibles para este producto.",
+    "no_refund_warning_desc": "Los pedidos completados no son reembolsables. Verifica antes de confirmar.",
+    "no_refund_warning_title": "Aviso de no reembolso",
+    "no_similar_found": "No se encontraron productos similares.",
+    "payment_method_label": "Método de pago: ",
+    "payment_selection_desc": "Selecciona tu método de pago preferido",
+    "payment_selection_title": "Opciones de pago",
+    "platforms": "Plataformas soportadas",
+    "popular_badge": "Más vendido",
+    "price_label": "Precio:",
+    "privacy_label": "Política de privacidad",
+    "product_details_title": "Detalles del producto",
+    "publisher": "Editor",
+    "purchase_summary": "Resumen del pedido",
+    "refund_label": "Política de reembolso",
+    "related_products": "También te puede gustar",
+    "release_date": "Fecha de lanzamiento",
+    "savings_label": "Ahorras: ",
+    "secure_payment_notice": "Pago 100% seguro",
+    "select_package": "Seleccionar paquete",
+    "selected_package_label": "Paquete seleccionado",
+    "similar_products": "Productos similares",
+    "subtotal_label": "Subtotal: ",
+    "terms_agreement_prefix": "Al continuar, aceptas los ",
+    "terms_label": "Términos de uso",
+    "th-TH": "Tailandés",
+    "topup_options": "Opciones de recarga",
+    "total_label": "Monto total: ",
+    "transaction_summary_title": "Resumen financiero",
+    "unknown": "No especificado",
+    "unverified_account_warning": "Verifica tu email antes de comprar.",
+    "verify_info_hint": "Verifica tu ID de jugador antes de continuar."
+  },
+  "News": {
+    "all_news": "Todas las noticias",
+    "categories": {
+      "event": "Eventos",
+      "general": "General",
+      "promotion": "Promociones",
+      "update": "Actualizaciones"
+    },
+    "featured": "Noticias destacadas",
+    "featured_badge": "Destacado",
+    "no_news": "No hay noticias disponibles.",
+    "subtitle": "Últimas actualizaciones y anuncios",
+    "title": "Noticias y anuncios",
+    "view_count": "Vistas"
+  },
+  "NewsDetail": {
+    "back_to_news": "Volver a noticias",
+    "error_loading": "Error al cargar artículo",
+    "error_not_found": "Artículo no encontrado",
+    "error_not_found_desc": "El artículo no existe o ha sido eliminado.",
+    "featured_badge": "Tendencia",
+    "last_updated": "Última actualización: ",
+    "other_news": "Noticias relacionadas",
+    "sources": "Fuente",
+    "views": "Vistas: "
+  },
+  "PaymentPending": {
+    "a": " ",
+    "loading": "Cargando estado de pago...",
+    "orderId": "ID de pedido:",
+    "order_id": "ID de pedido:",
+    "payment_failed": "Pago fallido",
+    "payment_failed_desc": "Intenta procesar tu pago de nuevo.",
+    "payment_success": "Pago exitoso",
+    "qr_expired": "Código QR expirado",
+    "qr_expired_desc": "Cancela y crea un nuevo pedido.",
+    "redirecting": "Redirigiendo...",
+    "referenceNo": "Nro. de referencia: ",
+    "reference_no": "Referencia: ",
+    "time_remaining": "Tiempo restante: ",
+    "try_again": "Intentar de nuevo",
+    "view_orders": "Ver historial de pedidos"
+  },
+  "PaymentSuccess": {
+    "back_home": "Volver al inicio",
+    "delivery_notice": "Tu pedido está siendo procesado y será entregado pronto.",
+    "orderId": "ID de pedido:",
+    "order_number": "Número de pedido",
+    "processing_badge": "Procesando entrega",
+    "referenceNo": "Ref: ",
+    "session_id": "ID de sesión",
+    "subtitle": "Tu pago ha sido recibido. Estamos preparando tu pedido.",
+    "title": "¡Pago exitoso!",
+    "view_order": "Ver estado del pedido"
+  },
+  "Navigation": {
+    "account": "Mi cuenta",
+    "card": "Tarjetas prepago",
+    "faq": "Preguntas frecuentes",
+    "favorite": "Favoritos",
+    "games": "Recarga de juegos",
+    "home": "Inicio",
+    "login": "Iniciar sesión",
+    "mobile_recharge": "Recarga móvil",
+    "news": "Noticias",
+    "orders": "Historial de pedidos",
+    "register": "Registrarse",
+    "support": "Soporte"
+  },
+  "SupportContact": {
+    "form": {
+      "email": "Tu email",
+      "message": "Mensaje",
+      "name": "Tu nombre",
+      "send": "Enviar mensaje",
+      "sending": "Enviando...",
+      "subject": "Asunto",
+      "success": "Tu mensaje ha sido enviado. Nuestro equipote responderá pronto.",
+      "title": "Contáctanos por email"
+    },
+    "social": {
+      "title": "Conéctate con nosotros en redes sociales (Facebook / Line / Discord)"
+    },
+    "subtitle": "Contacta a nuestro equipo de soporte",
+    "title": "Soporte (24/7)"
+  },
+  "SupportFAQ": {
+    "all": "Todas las categorías",
+    "back_to_faq": "Volver a FAQ",
+    "categories": {
+      "_base": "Categorías"
+    },
+    "need_help": {
+      "title": "¿Necesitas ayuda?",
+      "description": "¿No encuentras lo que buscas?",
+      "contact_support": "Contactar soporte"
+    },
+    "no": "No fue útil",
+    "no_results": "Sin resultados.",
+    "search_placeholder": "Buscar respuestas...",
+    "subtitle": "Encuentra respuestas rápidas a preguntas comunes",
+    "title": "Preguntas frecuentes",
     "view_all": "Ver todo",
-    "news_title": "Noticias",
-    "status_instant": "Instantáneo",
-    "status_30_60_mins": "30-60 min",
-    "status_preorder": "Pre-pedido",
-    "trust_secure_title": "100% Seguro",
-    "trust_secure_desc": "Sistema de seguridad de alto nivel",
-    "trust_fast_title": "Entrega instantánea",
-    "trust_fast_desc": "Entrega automática rápida",
-    "trust_price_title": "Mejor precio",
-    "trust_price_desc": "Precios más competitivos",
-    "trust_support_title": "Soporte 24/7",
-    "trust_support_desc": "Nuestro equipo siempre está listo para ayudar",
-    "special_offers_subtitle": "¡No te pierdas estas ofertas exclusivas!",
-    "no_deals": "Sin productos con descuento",
-    "no_products": "Sin productos disponibles",
-    "no_news": "Aún no hay noticias",
-    "promotion_badge": "PROMO",
-    "login_success": "Inicio de sesión exitoso",
-    "invalid_email_password": "Correo electrónico o contraseña no válidos",
-    "register_success": "Registro exitoso",
-    "register_error": "Error de registro",
-    "logout_success": "Cierre de sesión exitoso",
-    "profile_update_success": "Perfil actualizado con éxito",
-    "profile_update_error": "Error al actualizar el perfil",
-    "password_change_success": "Contraseña cambiada con éxito",
-    "login_error": "Error de inicio de sesión"
+    "yes": "Útil"
+  },
+  "SupportFAQDetail": {
+    "back_to_faq": "Volver a FAQ",
+    "contact_support": "Contactar soporte",
+    "contact_support_desc": "Si necesitas más ayuda, contacta a nuestro equipo de soporte.",
+    "error": {
+      "_base": "Error al cargar contenido."
+    },
+    "helpful": "¿Te fue útil este artículo?",
+    "last_updated": "Última actualización",
+    "loading": "Cargando...",
+    "no": "No fue útil",
+    "still_need_help": "¿Aún necesitas ayuda?",
+    "thank_you": "Gracias por tu opinión.",
+    "views": "Vistas: ",
+    "yes": "Útil"
+  },
+  "Support": {
+    "categories": {
+      "faq": {
+        "description": "Encuentra soluciones rápidas a preguntas frecuentes.",
+        "title": "Preguntas frecuentes"
+      },
+      "tickets": {
+        "description": "Reporta un problema con tu pedido, pago o cuenta.",
+        "title": "Enviar un ticket"
+      }
+    },
+    "common_issues": {
+      "title": "Problemas comunes"
+    },
+    "contact_methods": "Métodos de contacto",
+    "subtitle": "Elige un tema o contacta a nuestro equipo directamente.",
+    "title": "Centro de ayuda",
+    "urgent_help": {
+      "description": "Para asistencia inmediata, contacta por Live Chat o Line.",
+      "title": "Soporte urgente"
+    },
+    "visit": "Ver",
+    "working_hours": {
+      "mon_fri": "Lunes - Viernes (Servicio normal)",
+      "sat_sun": "Sábado - Domingo (La respuesta puede demorar un poco)",
+      "time_mon_fri": "09:00 - 00:00 (GMT+7)",
+      "time_sat_sun": "09:00 - 19:00 (GMT+7)",
+      "timezone": "Zona horaria (GMT+7)",
+      "title": "Horario de soporte"
+    }
+  },
+  "SupportTickets": {
+    "back": "Volver a tickets",
+    "create": {
+      "cancel": "Cancelar",
+      "categories": {
+        "account": "Problema de cuenta",
+        "general": "Consulta general",
+        "order": "Problema con pedido",
+        "payment": "Problema de pago",
+        "product": "Problema con producto",
+        "refund": "Solicitud de reembolso",
+        "technical": "Soporte técnico"
+      },
+      "category": "Categoría",
+      "description": "Descripción del problema",
+      "description_label": "Describe tu problema en detalle",
+      "description_placeholder": "Describe el problema que estás experimentando...",
+      "order_ref": "ID de pedido (Opcional)",
+      "order_ref_placeholder": "Pedido #999999",
+      "subject_placeholder": "Asunto breve",
+      "submit": "Enviar ticket",
+      "title": "Crear nuevo ticket"
+    },
+    "create_new": "Crear ticket nuevo",
+    "created_at": "Creado el",
+    "detail": {
+      "closed_notice": "Este ticket ha sido cerrado. Ya no puedes responder.",
+      "reply": "Responder",
+      "send_reply": "Enviar mensaje"
+    },
+    "disabled": {
+      "cta": "Volver al inicio",
+      "description": "El sistema de tickets no está disponible.",
+      "title": "Sistema no disponible"
+    },
+    "no_tickets": "No has enviado ningún ticket de soporte aún.",
+    "order_ref_label": "ID de referencia (Nos ayuda a resolver tu problema más rápido)",
+    "select_ticket": "Seleccionar ticket",
+    "select_ticket_desc": "Selecciona un ticket de la lista para ver detalles.",
+    "status": {
+      "all": "Todos los tickets",
+      "closed": "Cerrado",
+      "open": "Abierto",
+      "pending": "Pendiente",
+      "resolved": "Resuelto",
+      "waiting_admin": "Esperando soporte",
+      "waiting_user": "Esperando usuario"
+    },
+    "subtitle": "Gestiona tus solicitudes de soporte",
+    "support_team": "Equipo de soporte",
+    "system": "Aviso automatizado del sistema",
+    "title": "Tickets de soporte",
+    "user_you": "Tú"
+  },
+  "UserMenu": {
+    "account_menu": "Menú de cuenta",
+    "credits": "Mis créditos",
+    "favorite": "Favoritos",
+    "h-full": "",
+    "logout": "Cerrar sesión",
+    "menu": "Menú de usuario",
+    "my_account": "Mi cuenta",
+    "my_coupons": "Mis cupones",
+    "my_invoices": "Facturas",
+    "my_orders": "Historial de pedidos",
+    "notifications": "Notificaciones",
+    "open_menu": "Abrir menú"
+  },
+  "CookieNotice": {
+    "acknowledge": "Aceptar",
+    "ariaClose": "Cerrar aviso",
+    "description": "Lnwtermgame usa cookies para mejorar tu experiencia, optimizar el rendimiento y ofrecer promociones personalizadas.",
+    "items": [
+      "Cookies esenciales (necesarias para la funcionalidad básica)",
+      "Cookies de análisis (para medir y mejorar nuestra plataforma)"
+    ],
+    "noTawkItem": "El soporte por Live Chat está deshabilitado.",
+    "privacy": "Política de privacidad",
+    "tawkItem": "Cookies de Live Chat (Tawk.to) para interacciones de soporte rápidas.",
+    "title": "⚙️ Preferencias de cookies"
+  },
+  "Footer": {
+    "about_us": "Sobre nosotros",
+    "contact_us": "Contáctanos",
+    "copyright": "Derechos de autor",
+    "language_thai": "Tailandés",
+    "partners": "Socios",
+    "customer": "Atención al cliente",
+    "policies": "Políticas",
+    "services": "Servicios",
+    "payment_inquiry": "Consulta de pago",
+    "payment_issues": "Pagos y problemas",
+    "sale_inquiry": "Consulta comercial",
+    "copyright_notice": "Todos los derechos reservados",
+    "create_ticket": "Enviar ticket de soporte",
+    "faq": "Preguntas frecuentes",
+    "features": {
+      "payment": "Múltiples opciones de pago",
+      "payment_desc": "Recarga fácilmente con TrueMoney y PromptPay sin comisiones extra.",
+      "price": "Mejores precios",
+      "price_desc": "Disfruta de promociones exclusivas y las mejores tarifas.",
+      "security": "100% Seguro",
+      "security_desc": "Nuestra plataforma usa encriptación de primer nivel para proteger tus transacciones.",
+      "support": "Soporte 24/7",
+      "support_desc": "Nuestro equipo está disponible las 24 horas.",
+      "delivery": "Entrega rápida"
+    },
+    "live_chat": "Chat en vivo",
+    "payment_channels": "Métodos de pago",
+    "privacy_policy": "Privacidad y cookies",
+    "quick_links": "Enlaces rápidos",
+    "refund_policy": "Política de reembolso",
+    "support": "Soporte",
+    "support_center": "Centro de ayuda",
+    "supported_payments": "Plataformas de pago soportadas",
+    "tagline": "Lnwtermgame, la plataforma líder en Tailandia para recargas de juegos rápidas y seguras.",
+    "terms_of_service": "Términos de servicio"
+  },
+  "Header": {
+    " ": " ",
+    "/": "/",
+    "articles": "Artículos",
+    "dealers": "Distribuidores",
+    "all_games": "Todos los juegos",
+    "cart": "Carrito de compras",
+    "contact_us": "Contáctanos",
+    "credits": "Créditos",
+    "direct_topup": "Recarga de juegos",
+    "gift_cards": "Tarjetas de regalo",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "mobile_recharge": "Recarga móvil",
+    "my_account": "Mi cuenta",
+    "news": "Noticias y promos",
+    "notifications": "Notificaciones",
+    "order_history": "Historial de pedidos",
+    "search_placeholder": "Buscar juegos o tarjetas..."
+  },
+  "Search": {
+    "aria_label_clear": "Borrar",
+    "aria_label_remove_history": "Borrar historial",
+    "aria_label_search": "Buscar",
+    "no_results_for": "Sin resultados para...",
+    "placeholder": "Buscar...",
+    "placeholder_advanced": "Buscar juegos, tarjetas o artículos...",
+    "recent_searches": "Búsquedas recientes",
+    "search_results": "Resultados: ",
+    "view_all_results_for": "Ver todos los resultados para"
+  },
+  "Products": {
+    "recommended": "Paquetes recomendados"
+  },
+  "promotions": "Promociones",
+  "how_to_use": {
+    "title": "Cómo usar"
+  },
+  "topup_system": "Sistema de recarga",
+  "games": {
+    "title": "Todos los juegos"
+  },
+  "lucky_games": "Juegos de suerte",
+  "nav_game_topup": "Recarga de juegos",
+  "nav_prepaid_card": "Tarjetas prepago",
+  "nav_mobile_topup": "Recarga móvil",
+  "search_placeholder": "Buscar juegos o tarjetas...",
+  "admin_panel": "Panel de administración",
+  "my_account": "Mi cuenta",
+  "credits": "Créditos",
+  "order_history": "Historial de pedidos",
+  "logout": "Cerrar sesión",
+  "login_button": "Iniciar sesión / Registrarse",
+  "Admin": {
+    "nav": {
+      "main": "Panel de control",
+      "products_sales": "Productos y ventas",
+      "content": "Gestión de contenido",
+      "users_communication": "Usuarios y comunicación",
+      "system": "Configuración del sistema"
+    },
+    "admin_cp": "Panel de control administrativo",
+    "admin": "Administrador",
+    "dashboard": "Panel de control",
+    "analytics": "Analíticas",
+    "products": "Inventario",
+    "categories": "Categorías",
+    "orders": "Pedidos",
+    "payments": "Centro financiero",
+    "cms_pages": "Páginas de contenido",
+    "news": "Gestión de noticias",
+    "manage_faq": "Gestión de FAQ",
+    "images": "Galería de imágenes",
+    "manage_users": "Gestión de usuarios",
+    "support_tickets": "Tickets de soporte",
+    "notifications": "Notificaciones del sistema",
+    "email": "Protocolo de email",
+    "settings": "Configuración del sistema",
+    "oauth": "Servicios OAuth",
+    "pin": "Pin menu",
+    "unpin": "Unpin menu",
+    "switch_dark": "Switch to dark",
+    "switch_light": "Switch to light",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "active": "Active",
+      "inactive": "Inactive",
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "banned": "Banned",
+      "unknown": "Unknown"
+    },
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "empty": "No items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "empty": "No data"
+    },
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "search": "Buscar...",
+      "clear_filters": "Borrar filtros"
+    },
+    "ai_chat": "Chat de IA"
+  },
+  "hero_zzz_subtitle": "Recargar Zenless Zone Zero",
+  "hero_zzz_highlight_text": "Hasta",
+  "hero_genshin_subtitle": "Recargar Genshin Impact",
+  "hero_genshin_highlight_text": "Hasta",
+  "hero_btn_text": "Recargar ahora",
+  "category_popular_games": "Juegos populares",
+  "category_all_games": "Todos los juegos",
+  "category_check_skin": "Skins de suerte",
+  "category_game_card": "Tarjetas de juego",
+  "category_lucky_game": "Sorteo de suerte",
+  "special_offers": "Ofertas especiales",
+  "popular_games": "Recargas populares",
+  "view_all": "Ver todo",
+  "news_title": "Noticias",
+  "status_instant": "Instantáneo",
+  "status_30_60_mins": "30-60 min",
+  "status_preorder": "Pre-pedido",
+  "trust_secure_title": "100% Seguro",
+  "trust_secure_desc": "Sistema de seguridad de alto nivel",
+  "trust_fast_title": "Entrega instantánea",
+  "trust_fast_desc": "Entrega automática rápida",
+  "trust_price_title": "Mejor precio",
+  "trust_price_desc": "Precios más competitivos",
+  "trust_support_title": "Soporte 24/7",
+  "trust_support_desc": "Nuestro equipo siempre está listo para ayudar",
+  "special_offers_subtitle": "¡No te pierdas estas ofertas exclusivas!",
+  "no_deals": "Sin productos con descuento",
+  "no_products": "Sin productos disponibles",
+  "no_news": "Aún no hay noticias",
+  "promotion_badge": "PROMO",
+  "login_success": "Inicio de sesión exitoso",
+  "invalid_email_password": "Correo electrónico o contraseña no válidos",
+  "register_success": "Registro exitoso",
+  "register_error": "Error de registro",
+  "logout_success": "Cierre de sesión exitoso",
+  "profile_update_success": "Perfil actualizado con éxito",
+  "profile_update_error": "Error al actualizar el perfil",
+  "password_change_success": "Contraseña cambiada con éxito",
+  "login_error": "Error de inicio de sesión"
 }

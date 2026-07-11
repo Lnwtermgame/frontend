@@ -1,1259 +1,1267 @@
 {
-    "Auth": {
-        "login": {
-            "email": {
-                "_base": "电子邮箱"
-            },
-            "error": "错误",
-            "error_occurred": "登录过程中出现异常",
-            "forgot_password": "忘记密码？",
-            "hero_title_1": "热门游戏充值",
-            "hero_title_2": "极速安全到账",
-            "hero_title_3": "全天候不间断",
-            "hero_title_4": "尽在 Lnwtermgame",
-            "login_button": "立即登录",
-            "no_account": "还没有账号？",
-            "oauth_callback_failed": "社交账号登录失败",
-            "oauth_failed": "登录失败",
-            "oauth_init_failed": "无法初始化登录流程",
-            "or_login_with": "或使用以下方式登录",
-            "password": "密码",
-            "provider_not_enabled": "该登录方式暂不可用",
-            "redirect": "正在跳转...",
-            "register_now": "立即注册",
-            "secure_100": "100% 安全保障",
-            "secure_100_desc": "您的数据受到严密保护",
-            "session_expired": "登录已过期",
-            "session_expired_desc": "请重新登录",
-            "subtitle": "登录以使用完整功能",
-            "title": "登录",
-            "vip_points": "累积VIP积分",
-            "vip_points_desc": "成为会员即享专属特权"
-        },
-        "register": {
-            "already_have_account": "已有账号？",
-            "and": "和",
-            "confirm_password": "确认密码",
-            "email": {
-                "_base": "电子邮箱"
-            },
-            "fast_247": "全天候极速服务",
-            "fast_247_desc": "随时处理您的交易，无节假日。",
-            "go_to_login": "前往登录",
-            "hero_desc": "加入 Lnwtermgame，享受专属优惠活动和会员特权。",
-            "hero_title_1": "注册新账号",
-            "hero_title_2": "领取专属优惠",
-            "hero_title_3": "只为你准备",
-            "login_now": "立即登录",
-            "password": "密码",
-            "password_hint": "密码至少需要8个字符",
-            "passwords_not_match": "两次输入的密码不一致",
-            "privacy_policy": "隐私政策",
-            "register_button": "立即注册",
-            "registration_disabled": "注册暂停",
-            "registration_disabled_desc": "我们暂时不接受新用户注册。",
-            "subtitle": "创建账号，开始充值之旅",
-            "terms": "服务条款",
-            "terms_agreement": "我同意",
-            "title": "注册",
-            "username": "用户名",
-            "welcome_bonus": "新人礼包",
-            "welcome_bonus_desc": "首次充值享专属奖励"
-        }
+  "Auth": {
+    "login": {
+      "email": {
+        "_base": "电子邮箱"
+      },
+      "error": "错误",
+      "error_occurred": "登录过程中出现异常",
+      "forgot_password": "忘记密码？",
+      "hero_title_1": "热门游戏充值",
+      "hero_title_2": "极速安全到账",
+      "hero_title_3": "全天候不间断",
+      "hero_title_4": "尽在 Lnwtermgame",
+      "login_button": "立即登录",
+      "no_account": "还没有账号？",
+      "oauth_callback_failed": "社交账号登录失败",
+      "oauth_failed": "登录失败",
+      "oauth_init_failed": "无法初始化登录流程",
+      "or_login_with": "或使用以下方式登录",
+      "password": "密码",
+      "provider_not_enabled": "该登录方式暂不可用",
+      "redirect": "正在跳转...",
+      "register_now": "立即注册",
+      "secure_100": "100% 安全保障",
+      "secure_100_desc": "您的数据受到严密保护",
+      "session_expired": "登录已过期",
+      "session_expired_desc": "请重新登录",
+      "subtitle": "登录以使用完整功能",
+      "title": "登录",
+      "vip_points": "累积VIP积分",
+      "vip_points_desc": "成为会员即享专属特权"
     },
-    "AdminPage": {
-        "ALL": "全部",
-        "SLA_24": "SLA 24小时",
-        "SLA_8": "SLA 8小时",
-        "UNASSIGNED": "未分配",
-        "WAITING_ADMIN": "等待管理员处理",
-        "a": " ",
-        "categories": {
-            "delete_confirm": "确认删除此分类？",
-            "delete_failed": "删除分类失败",
-            "delete_has_products": "该分类下仍有商品，无法删除。",
-            "delete_success": "分类已成功删除",
-            "load_failed": "加载分类失败",
-            "name_required": "分类名称为必填项",
-            "save_success": "数据保存成功",
-            "slug_required": "Slug 为必填项"
-        },
-        "cms_news": {
-            "categories": {
-                "event": "活动",
-                "general": "综合",
-                "promotion": "促销",
-                "update": "更新"
-            }
-        },
-        "common": {
-            "error": "发生错误",
-            "from": "来自",
-            "refresh": "刷新",
-            "showing": "正在显示"
-        },
-        "dashboard": {
-            "load_error": "仪表盘数据加载失败",
-            "no_data": "暂无数据"
-        },
-        "email": {
-            "categories": {
-                "authentication": "身份验证",
-                "general": "综合通知",
-                "order": "订单",
-                "payment": "支付",
-                "promotion": "促销活动",
-                "support": "客服支持",
-                "system": "系统"
-            },
-            "placeholders": {
-                "discountAmount": "优惠金额",
-                "email": "邮箱地址",
-                "expiresIn": "有效时长",
-                "finalAmount": "实付金额",
-                "orderDate": "下单日期",
-                "orderNumber": "订单编号",
-                "resetUrl": "重置链接",
-                "siteName": "网站名称",
-                "ticketNumber": "工单编号",
-                "totalAmount": "订单总额",
-                "username": "用户名",
-                "verificationUrl": "验证链接"
-            }
-        },
-        "logo": "标志",
-        "monitor": "系统监控",
-        "newsItems": "新闻条目",
-        "oauth": {
-            "load_error": "OAuth 数据加载出错"
-        },
-        "order_detail": {
-            "back_to_orders": "返回订单列表",
-            "items": "商品",
-            "order_date": "下单日期",
-            "order_status": "订单状态",
-            "subtitle": "订单详情与状态",
-            "title": "订单详情"
-        },
-        "orders": {
-            "actions": "操作",
-            "amount": "总金额",
-            "customer": "客户",
-            "date": "日期",
-            "no_orders": "暂无订单",
-            "order_id": "订单号",
-            "product": "商品",
-            "search_placeholder": "搜索订单...",
-            "status": {
-                "all": "全部",
-                "cancelled": "已取消",
-                "completed": "已完成",
-                "failed": "失败",
-                "pending": "待处理",
-                "processing": "处理中",
-                "refunded": "已退款"
-            },
-            "status_text": "状态",
-            "subtitle": "管理系统内所有订单",
-            "title": "订单管理"
-        },
-        "promoCards": "促销卡片",
-        "seasonalEvents": "限时活动",
-        "settings": {
-            "section_labels": {
-                "featured_products": "推荐商品",
-                "hero_button": "首页横幅按钮",
-                "news": "新闻",
-                "specials": "特惠",
-                "view_all": "查看全部"
-            }
-        },
-        "th-TH": "泰语",
-        "tickets": {
-            "all_assignees": "所有受理人",
-            "categories": {
-                "all": "全部分类",
-                "order_issue": "订单问题",
-                "payment_issue": "支付问题",
-                "product_issue": "商品问题",
-                "account_issue": "账号问题",
-                "technical_support": "技术支持",
-                "refund_request": "退款申请",
-                "general_inquiry": "一般咨询"
-            },
-            "priorities": {
-                "high": "高",
-                "urgent": "紧急"
-            },
-            "status": {
-                "open": "待处理",
-                "in_progress": "处理中",
-                "waiting_user": "等待用户回复",
-                "waiting_admin": "等待管理员处理",
-                "resolved": "已解决",
-                "closed": "已关闭"
-            },
-            "unassigned": "未分配"
-        }
+    "register": {
+      "already_have_account": "已有账号？",
+      "and": "和",
+      "confirm_password": "确认密码",
+      "email": {
+        "_base": "电子邮箱"
+      },
+      "fast_247": "全天候极速服务",
+      "fast_247_desc": "随时处理您的交易，无节假日。",
+      "go_to_login": "前往登录",
+      "hero_desc": "加入 Lnwtermgame，享受专属优惠活动和会员特权。",
+      "hero_title_1": "注册新账号",
+      "hero_title_2": "领取专属优惠",
+      "hero_title_3": "只为你准备",
+      "login_now": "立即登录",
+      "password": "密码",
+      "password_hint": "密码至少需要8个字符",
+      "passwords_not_match": "两次输入的密码不一致",
+      "privacy_policy": "隐私政策",
+      "register_button": "立即注册",
+      "registration_disabled": "注册暂停",
+      "registration_disabled_desc": "我们暂时不接受新用户注册。",
+      "subtitle": "创建账号，开始充值之旅",
+      "terms": "服务条款",
+      "terms_agreement": "我同意",
+      "title": "注册",
+      "username": "用户名",
+      "welcome_bonus": "新人礼包",
+      "welcome_bonus_desc": "首次充值享专属奖励"
+    }
+  },
+  "AdminPage": {
+    "ALL": "全部",
+    "SLA_24": "SLA 24小时",
+    "SLA_8": "SLA 8小时",
+    "UNASSIGNED": "未分配",
+    "WAITING_ADMIN": "等待管理员处理",
+    "a": " ",
+    "categories": {
+      "delete_confirm": "确认删除此分类？",
+      "delete_failed": "删除分类失败",
+      "delete_has_products": "该分类下仍有商品，无法删除。",
+      "delete_success": "分类已成功删除",
+      "load_failed": "加载分类失败",
+      "name_required": "分类名称为必填项",
+      "save_success": "数据保存成功",
+      "slug_required": "Slug 为必填项"
     },
-    "Catalog": {
-        "card": {
-            "subtitle": "热门游戏",
-            "title": "选择你的游戏"
-        },
-        "cta_buy": "立即购买",
-        "cta_topup": "立即充值",
-        "filter_category": "筛选分类",
-        "games": {
-            "subtitle": "全部可选游戏",
-            "title": "游戏列表"
-        },
-        "loading": "加载中...",
-        "mobile": {
-            "subtitle": "极速手机充值",
-            "title": "手游充值"
-        },
-        "no_results": "未找到结果",
-        "no_results_desc": "请尝试使用其他关键词搜索",
-        "search": "搜索游戏",
-        "search_placeholder": "输入游戏名称...",
-        "sort": {
-            "all": "全部"
-        }
+    "cms_news": {
+      "categories": {
+        "event": "活动",
+        "general": "综合",
+        "promotion": "促销",
+        "update": "更新"
+      }
     },
-    "Checkout": {
-        "browse_products": "浏览商品",
-        "confirm_order": "确认订单",
-        "continue_shopping": "继续选购",
-        "direct_topup": "直充",
-        "empty_cart": "购物车为空",
-        "empty_cart_desc": "去游戏商城挑选你喜欢的游戏吧。",
-        "error": {
-            "fill_all_fields": "请填写所有必填项",
-            "generic_failed": "交易失败，请重试",
-            "order_failed": "创建订单失败",
-            "player_id_invalid": "无效的玩家 ID",
-            "product_changed": "商品信息已变更，请刷新页面"
-        },
-        "fill_required_fields": "请填写必填信息",
-        "gift_card": "礼品卡",
-        "grand_total": "合计金额",
-        "info_complete": "信息填写完整",
-        "loading": "处理中...",
-        "order_summary": "订单摘要",
-        "per_item": "每件",
-        "quantity": "数量",
-        "subtitle": "核实信息并完成支付",
-        "terms_agreement": "我已阅读并同意",
-        "terms_of_service": "服务条款",
-        "title": "结算",
-        "total": "合计"
+    "common": {
+      "error": "发生错误",
+      "from": "来自",
+      "refresh": "刷新",
+      "showing": "正在显示"
     },
-    "Account": {
-        "account_settings": "账号设置",
-        "email_label": "当前邮箱",
-        "my_orders": "我的订单",
-        "no_recent_purchases": "暂无近期消费记录",
-        "not_verified": "未验证",
-        "order_status": {
-            "completed": "已完成",
-            "pending": "待付款",
-            "processing": "处理中",
-            "refunded": "已退款"
-        },
-        "recent_purchases": "最近消费",
-        "security": "安全设置",
-        "send_failed": "验证邮件发送失败",
-        "send_verification": "发送验证邮件",
-        "sending": "发送中...",
-        "spam_hint": "若未收到邮件，请检查垃圾邮件文件夹。",
-        "subtitle": "管理个人资料和追踪订单",
-        "title": "我的账号",
-        "verification_sent": "验证链接已发送",
-        "verified": "已验证",
-        "verify_email_banner": "请验证邮箱以获得全部功能",
-        "verify_email_desc": "验证邮箱有助于安全找回账号及准确追踪订单。",
-        "view_all_orders": "查看所有订单",
-        "wait_cooldown": "请稍候再试"
+    "dashboard": {
+      "load_error": "仪表盘数据加载失败",
+      "no_data": "暂无数据"
     },
-    "Security": {
-        "additional_settings": {
-            "login_notifications": "登录提醒",
-            "login_notifications_desc": "有新设备登录时通知您。",
-            "title": "其他设置"
-        },
-        "change_password": {
-            "button_cancel": "取消",
-            "button_change": "修改密码",
-            "button_saving": "保存中...",
-            "button_setup": "设置密码",
-            "confirm_label": "确认密码",
-            "current_label": "当前密码",
-            "error_change_failed": "密码修改失败",
-            "error_otp_failed": "验证码无效",
-            "error_setup_failed": "密码设置失败",
-            "length_hint": "至少8个字符",
-            "match_error": "两次密码不一致",
-            "new_label": "新密码",
-            "oauth_notice": "您通过社交账号登录，可在此设置独立密码。",
-            "otp_label": "验证码",
-            "otp_sent_success": "验证码已发送",
-            "otp_wait": "请稍候...",
-            "request_otp": "获取验证码",
-            "resend_otp": "重新发送验证码",
-            "setup_confirm_label": "确认密码",
-            "setup_title": "设置密码",
-            "success_setup": "密码设置成功",
-            "title": "修改密码"
-        },
-        "error_email_not_found": "未找到该邮箱",
-        "recent_devices": {
-            "logout_all": "退出所有其他设备",
-            "processing": "处理中...",
-            "title": "最近登录设备"
-        },
-        "subtitle": "管理安全设置和密码",
-        "suspicious_activity": {
-            "admin_location": "待定",
-            "confirm_button": "确认活动",
-            "resolved_badge": "已处理",
-            "title": "异常活动"
-        },
-        "title": "安全中心",
-        "two_factor": {
-            "coming_soon": "即将推出",
-            "setup_button": "设置两步验证",
-            "subtitle": "为账号添加额外安全保护",
-            "title": "两步验证 (2FA)"
-        }
+    "email": {
+      "categories": {
+        "authentication": "身份验证",
+        "general": "综合通知",
+        "order": "订单",
+        "payment": "支付",
+        "promotion": "促销活动",
+        "support": "客服支持",
+        "system": "系统"
+      },
+      "placeholders": {
+        "discountAmount": "优惠金额",
+        "email": "邮箱地址",
+        "expiresIn": "有效时长",
+        "finalAmount": "实付金额",
+        "orderDate": "下单日期",
+        "orderNumber": "订单编号",
+        "resetUrl": "重置链接",
+        "siteName": "网站名称",
+        "ticketNumber": "工单编号",
+        "totalAmount": "订单总额",
+        "username": "用户名",
+        "verificationUrl": "验证链接"
+      }
     },
-    "Common": {
-        "already_verified_title": "邮箱已验证",
-        "back_to_login": "返回登录",
-        "confirm_password": "确认密码",
-        "contact_support": "联系客服",
-        "email": "电子邮箱",
-        "email_placeholder": "example@email.com",
-        "error_expired": "链接已过期",
-        "error_get_new_link": "获取新链接",
-        "error_invalid": "信息无效",
-        "error_invalid_email": "邮箱格式错误",
-        "error_invalid_link": "链接无效",
-        "error_invalid_link_desc": "您使用的链接已失效或已过期。",
-        "error_occurred": "发生错误",
-        "error_send_failed": "数据发送失败",
-        "error_title": "操作失败",
-        "expired_title": "请求已过期",
-        "go_to_account": "前往账号",
-        "go_to_login": "前往登录",
-        "invalid_link_desc": "链接无效，请重新检查。",
-        "invalid_link_title": "链接无效",
-        "invalid_token_title": "令牌无效",
-        "loading": "加载中...",
-        "loading_desc": "请稍候",
-        "login_now": "立即登录",
-        "match_error": "数据不匹配",
-        "match_success": "数据匹配",
-        "member": "会员中心",
-        "new_password": "新密码",
-        "password_requirements": {
-            "length": "至少8个字符",
-            "lowercase": "至少1个小写字母",
-            "number": "至少1个数字",
-            "uppercase": "至少1个大写字母"
-        },
-        "redirect_hint": "正在跳转...",
-        "resend_button": "重新发送",
-        "resend_email": "重发邮件",
-        "resend_success": "发送成功",
-        "reset_button": "重置",
-        "send_link": "发送链接",
-        "sending": "处理中...",
-        "spam_hint": "若未收到邮件，请查看垃圾邮件文件夹。",
-        "strength": "密码强度",
-        "subtitle": "概览说明",
-        "success_desc": "交易成功",
-        "success_title": "操作成功",
-        "title": "标题",
-        "token": "安全令牌"
+    "logo": "标志",
+    "monitor": "系统监控",
+    "newsItems": "新闻条目",
+    "oauth": {
+      "load_error": "OAuth 数据加载出错"
     },
-    "Coupons": {
-        "add_coupon": "添加优惠券",
-        "add_failed": "优惠券添加失败",
-        "add_success": "优惠券添加成功",
-        "code_label": "优惠券代码",
-        "details": {
-            "copied": "已复制",
-            "copy_code": "复制代码",
-            "discount": "折扣",
-            "max_discount": "最高优惠",
-            "min_purchase": "最低消费",
-            "no_min_purchase": "无最低消费限制",
-            "title": "优惠券详情",
-            "use_now": "立即使用",
-            "used_at": "使用时间",
-            "valid_until": "有效期至"
-        },
-        "example_code": "DISCOUNT20",
-        "expiry_hint": "优惠券有使用期限。",
-        "filter": {
-            "active": "可使用",
-            "all": "全部",
-            "expired": "已过期",
-            "used": "已使用"
-        },
-        "how_to_use": {
-            "step1": "选择商品",
-            "step2": "结算时输入优惠码",
-            "step3": "确认折扣后完成支付",
-            "title": "使用方法"
-        },
-        "invalid_code": "无效的优惠码",
-        "no_coupons": "暂无优惠券",
-        "no_coupons_desc": "您目前没有可用的优惠券。",
-        "no_search_results": "未找到匹配的优惠券。",
-        "not_found": "优惠券不存在",
-        "search_placeholder": "搜索优惠券...",
-        "start_shopping": "去选购",
-        "status": {
-            "active": "可使用",
-            "expired": "已过期",
-            "used": "已使用"
-        },
-        "subtitle": "管理你的优惠券",
-        "th-TH": "泰语",
-        "title": "我的优惠券",
-        "validating": "验证中..."
+    "order_detail": {
+      "back_to_orders": "返回订单列表",
+      "items": "商品",
+      "order_date": "下单日期",
+      "order_status": "订单状态",
+      "subtitle": "订单详情与状态",
+      "title": "订单详情"
     },
-    "Credits": {
-        "about": {
-            "step1_desc": "登录后前往余额充值页面",
-            "step1_title": "选择套餐",
-            "step2_desc": "选择最便捷的方式完成支付",
-            "step2_title": "完成支付",
-            "step3_desc": "余额即时到账",
-            "step3_title": "充值成功",
-            "title": "如何充值余额"
-        },
-        "balance_label": "当前余额：",
-        "earned": "收入记录",
-        "error_loading": "余额信息加载失败",
-        "history": {
-            "all": "全部交易",
-            "empty": "暂无记录",
-            "empty_desc": "暂无任何余额变动记录。",
-            "this_month": "本月",
-            "this_week": "本周",
-            "title": "交易明细"
-        },
-        "spent": "消费记录",
-        "subtitle": "管理您的账户余额",
-        "th-TH": "泰语",
-        "title": "我的余额",
-        "topup_button": "充值余额",
-        "topup_upcoming": "充值套餐",
-        "total_transactions": "总交易数",
-        "types": {
-            "bonus": "奖励",
-            "purchase": "消费",
-            "refund": "退款",
-            "topup": "充值"
-        },
-        "value_hint": "批量充值更划算"
+    "orders": {
+      "actions": "操作",
+      "amount": "总金额",
+      "customer": "客户",
+      "date": "日期",
+      "no_orders": "暂无订单",
+      "order_id": "订单号",
+      "product": "商品",
+      "search_placeholder": "搜索订单...",
+      "status": {
+        "all": "全部",
+        "cancelled": "已取消",
+        "completed": "已完成",
+        "failed": "失败",
+        "pending": "待处理",
+        "processing": "处理中",
+        "refunded": "已退款"
+      },
+      "status_text": "状态",
+      "subtitle": "管理系统内所有订单",
+      "title": "订单管理"
     },
-    "Favorites": {
-        "added_to_cart": "已加入购物车",
-        "buy_now": "立即购买",
-        "error_loading": "收藏列表加载失败",
-        "found_items": "个结果",
-        "no_favorites": "暂无收藏",
-        "no_favorites_desc": "点击游戏上的爱心图标即可添加收藏。",
-        "no_search_results": "未找到匹配的收藏。",
-        "remove_failed": "移除失败",
-        "remove_success": "已从收藏中移除",
-        "search_placeholder": "搜索收藏...",
-        "start_shopping": "浏览游戏",
-        "starting_at": "起",
-        "subtitle": "你收藏的游戏都在这里",
-        "title": "我的收藏",
-        "view_more": "查看详情"
-    },
-    "Invoices": {
-        "actions": {
-            "download": "下载",
-            "view": "查看详情"
-        },
-        "filter": {
-            "all": "全部账单",
-            "cancelled": "已取消",
-            "paid": "已付款",
-            "pending": "待付款"
-        },
-        "no_invoices": "暂无账单",
-        "no_invoices_desc": "您还没有任何交易记录。",
-        "no_search_results": "未找到匹配的账单。",
-        "search_placeholder": "搜索账单...",
-        "status": {
-            "cancelled": "已取消",
-            "paid": "已付款",
-            "pending": "待处理"
-        },
-        "subtitle": "管理你的账单记录",
-        "table": {
-            "actions": "操作",
-            "amount": "金额",
-            "date": "日期",
-            "invoice_number": "账单编号",
-            "order_number": "订单编号",
-            "status": "状态"
-        },
-        "th-TH": "泰语",
-        "title": "我的账单"
-    },
-    "InvoiceDetail": {
-        "a": " ",
-        "back_to_list": "返回列表",
-        "copy_success": "复制成功",
-        "customer_info": "客户信息",
-        "date": "交易日期",
-        "download_pdf": "下载 PDF",
-        "error_not_found": "账单不存在",
-        "grand_total": "实付金额",
-        "invoice_no": "账单编号",
-        "item_details": "购买的商品",
-        "order_no": "订单编号",
-        "paid": "已付",
-        "payment_info": "支付渠道",
-        "payment_status": "支付状态",
-        "price": "价格",
-        "print": "打印凭证",
-        "product": "商品信息",
-        "quantity": "数量",
-        "subtotal": "小计",
-        "title": "账单/收据",
-        "total": "总计",
-        "unpaid": "未付",
-        "vat": "增值税"
-    },
-    "Notifications": {
-        "delete": "删除通知",
-        "delete_success": "删除成功",
-        "empty_desc": "您暂无任何通知。",
-        "empty_filter_desc": "该筛选条件下没有通知。",
-        "empty_title": "暂无消息",
-        "error_loading": "消息加载失败",
-        "filters": {
-            "all": "全部",
-            "order": "订单",
-            "payment": "财务",
-            "promotion": "优惠活动",
-            "unread": "未读"
-        },
-        "manage_settings": "通知设置",
-        "mark_all_read": "全部标为已读",
-        "mark_read": "标为已读",
-        "mark_read_success": "已标为已读",
-        "subtitle": "通知中心",
-        "title": "消息通知",
-        "unread_badge": "未读",
-        "view_details": "查看详情"
-    },
-    "NotificationPreferences": {
-        "channels": {
-            "email": "电子邮件",
-            "email_desc": "通过邮件接收动态和消费凭据。",
-            "web": "站内通知",
-            "web_desc": "在网站上接收站内通知。"
-        },
-        "save_button": "保存设置",
-        "save_success": "偏好设置已保存。",
-        "saving": "保存中...",
-        "subtitle": "管理接收通知的方式",
-        "title": "通知偏好",
-        "types": {
-            "orders": "订单动态",
-            "orders_desc": "接收订单状态与问题处理进展。",
-            "promotions": "促销活动",
-            "promotions_desc": "接收折扣、活动和专享优惠。"
-        }
-    },
-    "Orders": {
-        "amount_label": "订单金额：",
-        "date_label": "下单日期：",
-        "error_loading": "订单加载失败",
-        "filter_title": "订单筛选",
-        "no_orders": "暂无订单",
-        "no_orders_desc": "您的历史订单将在这里显示。",
-        "no_search_results": "未找到匹配订单，请检查订单号。",
-        "order_id_label": "订单号：",
-        "search_placeholder": "按订单号或商品搜索",
-        "status": {
-            "all": "全部",
-            "cancelled": "已取消",
-            "completed": "已完成",
-            "pending": "待付款",
-            "processing": "处理中",
-            "refunded": "已退款"
-        },
-        "subtitle": "查看历史记录和追踪订单",
-        "table": {
-            "amount": "金额",
-            "date": "日期",
-            "order_number": "订单号",
-            "product": "商品",
-            "status": "状态"
-        },
-        "th-TH": "泰语",
-        "title": "订单记录",
-        "view_details": "查看详情",
-        "view_mode": {
-            "card": "卡片视图",
-            "table": "列表视图"
-        },
-        "view_results": "显示结果",
-        "view_short": "收起"
-    },
-    "OrderDetail": {
-        "actions": {
-            "cancel": "取消订单",
-            "cancel_confirm": "确定要取消此订单吗？",
-            "cancel_failed": "取消订单失败",
-            "cancel_hint": "订单取消后无法撤回。",
-            "cancel_success": "订单已成功取消。",
-            "cancelling": "取消中...",
-            "need_help": "需要帮助？",
-            "report_issue": "反馈问题",
-            "title": "管理订单"
-        },
-        "back_to_orders": "返回订单列表",
-        "customer": {
-            "date": "下单日期：",
-            "email": "邮箱：",
-            "title": "客户信息",
-            "username": "客户："
-        },
-        "delivery": {
-            "completed_at": "交付时间",
-            "status_summary": "交付状态",
-            "statuses": {
-                "completed": "已成功交付",
-                "failed": "交付失败",
-                "pending": "排队等待中",
-                "processing": "正在处理中..."
-            },
-            "title": "交付信息"
-        },
-        "error_loading": "订单详情加载失败",
-        "error_not_found": "订单未找到",
-        "error_not_found_desc": "请检查订单号后重试。",
-        "items": {
-            "account_info": "附加信息",
-            "code_label": "兑换码",
-            "copy_success": "已复制兑换码",
-            "delivery_failed": "商品加载失败",
-            "delivery_status": "商品交付状态",
-            "digital_codes": "数字密钥",
-            "expired_label": "过期时间",
-            "hide_code": "隐藏密钥",
-            "pin_label": "PIN码",
-            "quantity": "数量",
-            "serial_label": "序列号",
-            "show_code": "显示密钥",
-            "title": "订单商品",
-            "usage_hint": "请妥善保管您的密钥。"
-        },
-        "loading": "加载中...",
-        "order_id_label": "订单号",
-        "payment": {
-            "discount": "优惠",
-            "method": "支付方式",
-            "methods": {
-                "bank_transfer": "银行转账",
-                "promptpay": "PromptPay",
-                "truemoney": "TrueMoney 钱包",
-                "unknown": "其他"
-            },
-            "status_paid": "已付款",
-            "status_pending": "待确认",
-            "subtotal": "小计",
-            "title": "支付明细",
-            "total": "总金额"
-        },
-        "th-TH": "泰语",
-        "title": "订单详情"
-    },
-    "errors": {
-        "generic": {
-            "description": "发生意外错误，请稍后重试。",
-            "goHome": "返回首页",
-            "title": "出错了",
-            "tryAgain": "重试"
-        },
-        "notFound": {
-            "description": "您访问的页面不存在。",
-            "goBack": "返回",
-            "goHome": "返回首页",
-            "title": "页面未找到"
-        }
-    },
-    "Verification": {
-        "forgot_password": {
-            "back_to_login": "返回登录",
-            "email_placeholder": "请输入注册邮箱...",
-            "error_invalid_email": "请输入有效的邮箱地址",
-            "error_send_failed": "重置链接发送失败",
-            "loading": "处理中...",
-            "resend_email": "重发邮件",
-            "send_link": "发送重置链接",
-            "spam_hint": "若未收到邮件，请查看垃圾邮件文件夹。",
-            "subtitle": "输入邮箱以接收密码重置链接。",
-            "success_desc": "密码重置链接已发送至您的邮箱。",
-            "success_title": "邮件已发送",
-            "title": "忘记密码？"
-        },
-        "reset_password": {
-            "back_to_login": "返回登录",
-            "confirm_password": "确认新密码",
-            "error_expired": "重置链接已过期。",
-            "error_get_new_link": "获取新的重置链接",
-            "error_invalid": "安全码无效或已过期。",
-            "error_invalid_link": "验证链接无效。",
-            "error_invalid_link_desc": "该重置链接无效或已被使用。",
-            "loading": "处理中...",
-            "login_now": "立即登录",
-            "match_error": "两次密码不一致",
-            "match_success": "密码一致。",
-            "new_password": "新密码",
-            "password_requirements": {
-                "length": "至少8个字符",
-                "lowercase": "至少1个小写字母 (a-z)",
-                "number": "至少1个数字 (0-9)",
-                "uppercase": "至少1个大写字母 (A-Z)"
-            },
-            "redirect_hint": "正在跳转...",
-            "reset_button": "更新密码",
-            "strength": "密码强度",
-            "subtitle": "请设置新密码",
-            "success_desc": "密码已成功更新，您现在可以登录了。",
-            "success_title": "密码已更新",
-            "title": "重置密码",
-            "token": "安全令牌"
-        },
-        "verify_email": {
-            "already_verified_title": "邮箱已验证。",
-            "back_to_login": "返回登录",
-            "contact_support": "联系客服",
-            "email": "邮箱",
-            "error_title": "网络异常导致验证失败",
-            "expired_title": "验证链接已过期。",
-            "go_to_account": "前往账号",
-            "go_to_login": "前往登录",
-            "invalid_link_desc": "验证链接无效或邮箱已验证。",
-            "invalid_link_title": "验证链接无效",
-            "invalid_token_title": "令牌无效",
-            "loading": "正在验证邮箱...",
-            "loading_desc": "请稍候...",
-            "redirect_hint": "正在跳转到首页...",
-            "resend_button": "重新发送验证邮件",
-            "resend_success": "验证邮件已发送。",
-            "sending": "邮件发送中...",
-            "spam_hint": "请检查垃圾邮件文件夹。",
-            "success_title": "邮箱验证成功",
-            "title": "验证邮箱",
-            "token": "安全令牌"
-        }
-    },
-    "ProductDetail": {
-        "about_product": "商品介绍",
-        "account_info_title": "账号信息",
-        "auto_delivery_hint": "自动即时发货",
-        "back": "返回",
-        "buy_now_button": "立即购买",
-        "by_developer": "开发商：",
-        "cancel_button": "取消",
-        "change_button": "更换选择",
-        "close_window_button": "关闭窗口",
-        "confirm_button": "确认支付",
-        "confirm_hint": "请在确认前核实您的选择。",
-        "confirm_order_title": "订单确认",
-        "confirm_selection_button": "确认选择",
-        "copy_link_failed": "复制失败，请重试。",
-        "copy_link_success": "链接已复制",
-        "developer": "开发商",
-        "error": {
-            "enter_phone": "请输入有效的10位手机号。",
-            "fill_all_fields": "请填写所有必填项。",
-            "invalid_phone": "手机号无效。",
-            "login_required": "请先登录再进行交易。",
-            "no_payment_link": "支付链接生成失败，请重试。",
-            "not_found": "商品未找到",
-            "not_found_desc": "该商品不存在或已下架。",
-            "order_success_redirect": "交易成功，正在跳转到首页...",
-            "payment_error": "支付流程出错",
-            "payment_failed": "无法验证支付信息",
-            "payment_method_unavailable": "该支付方式暂不可用。",
-            "phone_region_mismatch": "不支持跨区手机号",
-            "player_id_invalid": "无效的玩家 ID，请核实后重试。",
-            "select_option": "请选择套餐后继续。",
-            "truemoney_minimum": "TrueMoney 钱包最低消费 20 泰铢。"
-        },
-        "fee_label": "手续费",
-        "form": "详情",
-        "game_info": "游戏详情",
-        "input": "填写信息",
-        "login_required_notice": "登录查看专属折扣",
-        "login_to_buy_button": "登录购买",
-        "meta": "标签",
-        "mobile_number_label": "钱包号码",
-        "mobile_number_placeholder": "08x-xxx-xxxx",
-        "no_options": "暂无可选套餐",
-        "no_options_desc": "该商品暂无可用套餐。",
-        "no_refund_warning_desc": "已完成的订单不支持退款，请在确认前核实信息。",
-        "no_refund_warning_title": "不可退款声明",
-        "no_similar_found": "暂无类似商品。",
-        "payment_method_label": "支付方式：",
-        "payment_selection_desc": "选择您偏好的支付方式",
-        "payment_selection_title": "支付选项",
-        "platforms": "支持平台",
-        "popular_badge": "热销",
-        "price_label": "价格：",
-        "privacy_label": "隐私政策",
-        "product_details_title": "商品详情",
-        "publisher": "发行商",
-        "purchase_summary": "订单摘要",
-        "refund_label": "退款政策",
-        "related_products": "你可能还喜欢",
-        "release_date": "发售日期",
-        "savings_label": "为您省：",
-        "secure_payment_notice": "100% 安全支付",
-        "select_package": "选择套餐",
-        "selected_package_label": "已选套餐",
-        "similar_products": "类似商品",
-        "subtotal_label": "小计：",
-        "terms_agreement_prefix": "继续即代表您同意",
-        "terms_label": "使用条款",
-        "th-TH": "泰语",
-        "topup_options": "充值选项",
-        "total_label": "总金额：",
-        "transaction_summary_title": "费用明细",
-        "unknown": "未知",
-        "unverified_account_warning": "请先验证邮箱再进行购买。",
-        "verify_info_hint": "请在继续前仔细核实您的玩家 ID。"
-    },
-    "News": {
-        "all_news": "全部新闻",
-        "categories": {
-            "event": "活动",
-            "general": "综合",
-            "promotion": "促销",
-            "update": "更新"
-        },
-        "featured": "精选新闻",
-        "featured_badge": "精选",
-        "no_news": "暂无新闻。",
-        "subtitle": "最新动态与公告",
-        "title": "新闻公告",
-        "view_count": "浏览量"
-    },
-    "NewsDetail": {
-        "back_to_news": "返回新闻",
-        "error_loading": "文章加载失败",
-        "error_not_found": "文章未找到",
-        "error_not_found_desc": "该文章不存在或已被移除。",
-        "featured_badge": "热门",
-        "last_updated": "最后更新：",
-        "other_news": "相关新闻",
-        "sources": "来源",
-        "views": "浏览量："
-    },
-    "PaymentPending": {
-        "a": " ",
-        "loading": "正在查询支付状态...",
-        "orderId": "订单号：",
-        "order_id": "订单号：",
-        "payment_failed": "支付失败",
-        "payment_failed_desc": "请重新发起支付。",
-        "payment_success": "支付成功",
-        "qr_expired": "二维码已过期",
-        "qr_expired_desc": "请取消当前订单并重新创建。",
-        "redirecting": "正在跳转...",
-        "referenceNo": "参考编号：",
-        "reference_no": "参考号：",
-        "time_remaining": "剩余时间：",
-        "try_again": "重试",
-        "view_orders": "查看订单记录"
-    },
-    "PaymentSuccess": {
-        "back_home": "返回首页",
-        "delivery_notice": "您的订单正在处理中，稍后将完成交付。",
-        "orderId": "订单号：",
-        "order_number": "订单编号",
-        "processing_badge": "交付处理中",
-        "referenceNo": "参考号：",
-        "session_id": "会话 ID",
-        "subtitle": "支付已成功收取，正在为您准备订单。",
-        "title": "支付成功！",
-        "view_order": "查看订单状态"
-    },
-    "Navigation": {
-        "account": "我的账号",
-        "card": "预付卡",
-        "faq": "常见问题",
-        "favorite": "收藏",
-        "games": "游戏充值",
-        "home": "首页",
-        "login": "登录",
-        "mobile_recharge": "话费充值",
+    "promoCards": "促销卡片",
+    "seasonalEvents": "限时活动",
+    "settings": {
+      "section_labels": {
+        "featured_products": "推荐商品",
+        "hero_button": "首页横幅按钮",
         "news": "新闻",
-        "orders": "订单记录",
-        "register": "注册",
-        "support": "客服支持"
+        "specials": "特惠",
+        "view_all": "查看全部"
+      }
     },
-    "SupportContact": {
-        "form": {
-            "email": "您的邮箱",
-            "message": "留言内容",
-            "name": "您的姓名",
-            "send": "发送消息",
-            "sending": "发送中...",
-            "subject": "主题",
-            "success": "消息已发送，我们的团队将尽快回复您。",
-            "title": "通过邮件联系我们"
-        },
-        "social": {
-            "title": "通过社交媒体联系 (Facebook / Line / Discord)"
-        },
-        "subtitle": "联系我们的客服团队获取帮助",
-        "title": "联系客服 (全天候)"
-    },
-    "SupportFAQ": {
+    "th-TH": "泰语",
+    "tickets": {
+      "all_assignees": "所有受理人",
+      "categories": {
         "all": "全部分类",
-        "back_to_faq": "返回常见问题",
-        "categories": {
-            "_base": "分类"
-        },
-        "need_help": {
-            "title": "需要帮助？",
-            "description": "没有找到您需要的答案？",
-            "contact_support": "联系客服"
-        },
-        "no": "没有帮助",
-        "no_results": "未找到相关内容。",
-        "search_placeholder": "搜索答案...",
-        "subtitle": "快速查找常见问题",
-        "title": "常见问题",
-        "view_all": "查看全部",
-        "yes": "有帮助"
+        "order_issue": "订单问题",
+        "payment_issue": "支付问题",
+        "product_issue": "商品问题",
+        "account_issue": "账号问题",
+        "technical_support": "技术支持",
+        "refund_request": "退款申请",
+        "general_inquiry": "一般咨询"
+      },
+      "priorities": {
+        "high": "高",
+        "urgent": "紧急"
+      },
+      "status": {
+        "open": "待处理",
+        "in_progress": "处理中",
+        "waiting_user": "等待用户回复",
+        "waiting_admin": "等待管理员处理",
+        "resolved": "已解决",
+        "closed": "已关闭"
+      },
+      "unassigned": "未分配"
+    }
+  },
+  "Catalog": {
+    "card": {
+      "subtitle": "热门游戏",
+      "title": "选择你的游戏"
     },
-    "SupportFAQDetail": {
-        "back_to_faq": "返回常见问题",
-        "contact_support": "联系客服",
-        "contact_support_desc": "如果您需要更多帮助，请联系我们的客服团队。",
-        "error": {
-            "_base": "内容加载失败。"
-        },
-        "helpful": "这篇文章有帮助吗？",
-        "last_updated": "最后更新",
-        "loading": "加载中...",
-        "no": "没有帮助",
-        "still_need_help": "仍然需要帮助？",
-        "thank_you": "感谢您的反馈。",
-        "views": "浏览量：",
-        "yes": "有帮助"
-    },
-    "Support": {
-        "categories": {
-            "faq": {
-                "description": "快速查找常见问题的答案。",
-                "title": "常见问题"
-            },
-            "tickets": {
-                "description": "提交关于订单、支付或账号的问题。",
-                "title": "提交工单"
-            }
-        },
-        "common_issues": {
-            "title": "常见问题"
-        },
-        "contact_methods": "联系方式",
-        "subtitle": "选择以下主题或直接联系客服。",
-        "title": "帮助中心",
-        "urgent_help": {
-            "description": "如需紧急帮助，请通过在线客服或 Line 联系我们。",
-            "title": "紧急支持"
-        },
-        "visit": "查看",
-        "working_hours": {
-            "mon_fri": "周一至周五（正常服务）",
-            "sat_sun": "周六至周日（回复可能稍有延迟）",
-            "time_mon_fri": "09:00 - 00:00 (GMT+7)",
-            "time_sat_sun": "09:00 - 19:00 (GMT+7)",
-            "timezone": "时区 (GMT+7)",
-            "title": "服务时间"
-        }
-    },
-    "SupportTickets": {
-        "back": "返回工单列表",
-        "create": {
-            "cancel": "取消",
-            "categories": {
-                "account": "账号问题",
-                "general": "一般咨询",
-                "order": "订单问题",
-                "payment": "支付问题",
-                "product": "商品问题",
-                "refund": "退款申请",
-                "technical": "技术支持"
-            },
-            "category": "分类",
-            "description": "问题描述",
-            "description_label": "详细描述您遇到的问题",
-            "description_placeholder": "请描述您遇到的问题...",
-            "order_ref": "订单号（可选）",
-            "order_ref_placeholder": "订单 #999999",
-            "subject_placeholder": "简要主题",
-            "submit": "提交工单",
-            "title": "创建新工单"
-        },
-        "create_new": "创建新工单",
-        "created_at": "创建时间",
-        "detail": {
-            "closed_notice": "此工单已关闭，无法继续回复。",
-            "reply": "回复",
-            "send_reply": "发送消息"
-        },
-        "disabled": {
-            "cta": "返回首页",
-            "description": "工单系统暂时不可用。",
-            "title": "系统不可用"
-        },
-        "no_tickets": "您还没有提交过工单。",
-        "order_ref_label": "关联订单号（有助于我们更快处理您的问题）",
-        "select_ticket": "选择工单",
-        "select_ticket_desc": "从列表中选择一个工单查看详情。",
-        "status": {
-            "all": "全部工单",
-            "closed": "已关闭",
-            "open": "待处理",
-            "pending": "等待中",
-            "resolved": "已解决",
-            "waiting_admin": "等待客服处理",
-            "waiting_user": "等待用户回复"
-        },
-        "subtitle": "管理您的客服工单",
-        "support_team": "客服团队",
-        "system": "系统自动通知",
-        "title": "客服工单",
-        "user_you": "您"
-    },
-    "UserMenu": {
-        "account_menu": "账号菜单",
-        "credits": "我的余额",
-        "favorite": "收藏",
-        "h-full": "",
-        "logout": "退出登录",
-        "menu": "用户菜单",
-        "my_account": "我的账号",
-        "my_coupons": "我的优惠券",
-        "my_invoices": "账单",
-        "my_orders": "订单记录",
-        "notifications": "消息通知",
-        "open_menu": "展开菜单"
-    },
-    "CookieNotice": {
-        "acknowledge": "接受",
-        "ariaClose": "关闭提示",
-        "description": "Lnwtermgame 使用 Cookie 来提升您的浏览体验、优化网站性能并提供个性化推荐。",
-        "items": [
-            "必要 Cookie（网站基本功能所需）",
-            "分析 Cookie（用于改善平台体验）"
-        ],
-        "noTawkItem": "在线客服功能暂时关闭。",
-        "privacy": "隐私政策",
-        "tawkItem": "在线客服 Cookie (Tawk.to)，用于提供即时客服。",
-        "title": "⚙️ Cookie 偏好设置"
-    },
-    "Footer": {
-        "about_us": "关于我们",
-        "contact_us": "联系我们",
-        "copyright": "版权所有",
-        "language_thai": "泰语",
-        "partners": "合作伙伴",
-        "customer": "客户服务",
-        "policies": "相关政策",
-        "services": "服务项目",
-        "payment_inquiry": "支付咨询",
-        "payment_issues": "支付与售后",
-        "sale_inquiry": "商务合作",
-        "copyright_notice": "版权所有",
-        "create_ticket": "提交客服工单",
-        "faq": "常见问题",
-        "features": {
-            "payment": "多种支付方式",
-            "payment_desc": "支持 TrueMoney 钱包和 PromptPay 充值，0% 额外费用。",
-            "price": "最优价格",
-            "price_desc": "畅享专属优惠和最具竞争力的充值价格。",
-            "security": "100% 安全保障",
-            "security_desc": "平台采用顶级加密技术确保交易安全。",
-            "support": "全天候客服",
-            "support_desc": "我们的团队随时为您提供帮助。",
-            "delivery": "极速发货"
-        },
-        "live_chat": "在线客服",
-        "payment_channels": "支付方式",
-        "privacy_policy": "隐私与 Cookie",
-        "quick_links": "快速链接",
-        "refund_policy": "退款政策",
-        "support": "客服",
-        "support_center": "帮助中心",
-        "supported_payments": "支持的支付平台",
-        "tagline": "Lnwtermgame，泰国领先的极速安全游戏充值与预付卡平台。",
-        "terms_of_service": "服务条款"
-    },
-    "Header": {
-        " ": " ",
-        "/": "/",
-        "articles": "资讯",
-        "dealers": "经销商",
-        "all_games": "全部游戏",
-        "cart": "购物车",
-        "contact_us": "联系我们",
-        "credits": "余额",
-        "direct_topup": "游戏充值",
-        "gift_cards": "礼品卡",
-        "login": "登录",
-        "logout": "退出登录",
-        "mobile_recharge": "话费充值",
-        "my_account": "我的账号",
-        "news": "新闻活动",
-        "notifications": "通知",
-        "order_history": "订单记录",
-        "search_placeholder": "搜索游戏或卡片..."
-    },
-    "Search": {
-        "aria_label_clear": "清除",
-        "aria_label_remove_history": "清除搜索记录",
-        "aria_label_search": "搜索",
-        "no_results_for": "未找到相关结果...",
-        "placeholder": "搜索...",
-        "placeholder_advanced": "搜索游戏、卡片或资讯...",
-        "recent_searches": "最近搜索",
-        "search_results": "搜索结果：",
-        "view_all_results_for": "查看全部结果"
-    },
-    "Products": {
-        "recommended": "推荐套餐"
-    },
-    "promotions": "促销活动",
-    "how_to_use": {
-        "title": "使用方法"
-    },
-    "topup_system": "充值系统",
+    "cta_buy": "立即购买",
+    "cta_topup": "立即充值",
+    "filter_category": "筛选分类",
     "games": {
-        "title": "全部游戏"
+      "subtitle": "全部可选游戏",
+      "title": "游戏列表"
     },
-    "lucky_games": "幸运抽奖",
-    "nav_game_topup": "游戏充值",
-    "nav_prepaid_card": "预付卡",
-    "nav_mobile_topup": "话费充值",
-    "search_placeholder": "搜索游戏或卡片...",
-    "admin_panel": "管理后台",
-    "my_account": "我的账号",
-    "credits": "余额",
-    "order_history": "订单记录",
-    "logout": "退出登录",
-    "login_button": "登录 / 注册",
-    "Admin": {
-        "nav": {
-            "main": "仪表盘",
-            "products_sales": "商品与销售",
-            "content": "内容管理",
-            "users_communication": "用户与通信",
-            "system": "系统设置"
-        },
-        "admin_cp": "管理后台",
-        "admin": "管理员",
-        "dashboard": "仪表盘",
-        "analytics": "数据分析",
-        "products": "商品管理",
-        "categories": "分类管理",
-        "orders": "订单管理",
-        "payments": "财务中心",
-        "cms_pages": "内容页面",
-        "news": "新闻管理",
-        "manage_faq": "FAQ 管理",
-        "images": "图片资源",
-        "manage_users": "用户管理",
-        "support_tickets": "客服工单",
-        "notifications": "系统通知",
-        "email": "邮件协议",
-        "settings": "系统配置",
-        "oauth": "OAuth 服务",
-        "pin": "Pin menu",
-        "unpin": "Unpin menu",
-        "switch_dark": "Switch to dark",
-        "switch_light": "Switch to light",
-        "status": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "processing": "Processing",
-            "failed": "Failed",
-            "cancelled": "Cancelled",
-            "refunded": "Refunded",
-            "active": "Active",
-            "inactive": "Inactive",
-            "low_stock": "Low stock",
-            "out_of_stock": "Out of stock",
-            "banned": "Banned",
-            "unknown": "Unknown"
-        },
-        "pagination": {
-            "showing": "Showing {start}–{end} of {total}",
-            "empty": "No items",
-            "prev": "Previous",
-            "next": "Next"
-        },
-        "table": {
-            "empty": "No data"
-        }
+    "loading": "加载中...",
+    "mobile": {
+      "subtitle": "极速手机充值",
+      "title": "手游充值"
     },
-    "hero_zzz_subtitle": "充值绝区零",
-    "hero_zzz_highlight_text": "高达",
-    "hero_genshin_subtitle": "充值原神",
-    "hero_genshin_highlight_text": "高达",
-    "hero_btn_text": "立即充值",
-    "category_popular_games": "热门游戏",
-    "category_all_games": "全部游戏",
-    "category_check_skin": "皮肤抽奖",
-    "category_game_card": "游戏卡",
-    "category_lucky_game": "幸运抽奖",
-    "special_offers": "限时特惠",
-    "popular_games": "热门游戏充值",
+    "no_results": "未找到结果",
+    "no_results_desc": "请尝试使用其他关键词搜索",
+    "search": "搜索游戏",
+    "search_placeholder": "输入游戏名称...",
+    "sort": {
+      "all": "全部"
+    }
+  },
+  "Checkout": {
+    "browse_products": "浏览商品",
+    "confirm_order": "确认订单",
+    "continue_shopping": "继续选购",
+    "direct_topup": "直充",
+    "empty_cart": "购物车为空",
+    "empty_cart_desc": "去游戏商城挑选你喜欢的游戏吧。",
+    "error": {
+      "fill_all_fields": "请填写所有必填项",
+      "generic_failed": "交易失败，请重试",
+      "order_failed": "创建订单失败",
+      "player_id_invalid": "无效的玩家 ID",
+      "product_changed": "商品信息已变更，请刷新页面"
+    },
+    "fill_required_fields": "请填写必填信息",
+    "gift_card": "礼品卡",
+    "grand_total": "合计金额",
+    "info_complete": "信息填写完整",
+    "loading": "处理中...",
+    "order_summary": "订单摘要",
+    "per_item": "每件",
+    "quantity": "数量",
+    "subtitle": "核实信息并完成支付",
+    "terms_agreement": "我已阅读并同意",
+    "terms_of_service": "服务条款",
+    "title": "结算",
+    "total": "合计"
+  },
+  "Account": {
+    "account_settings": "账号设置",
+    "email_label": "当前邮箱",
+    "my_orders": "我的订单",
+    "no_recent_purchases": "暂无近期消费记录",
+    "not_verified": "未验证",
+    "order_status": {
+      "completed": "已完成",
+      "pending": "待付款",
+      "processing": "处理中",
+      "refunded": "已退款"
+    },
+    "recent_purchases": "最近消费",
+    "security": "安全设置",
+    "send_failed": "验证邮件发送失败",
+    "send_verification": "发送验证邮件",
+    "sending": "发送中...",
+    "spam_hint": "若未收到邮件，请检查垃圾邮件文件夹。",
+    "subtitle": "管理个人资料和追踪订单",
+    "title": "我的账号",
+    "verification_sent": "验证链接已发送",
+    "verified": "已验证",
+    "verify_email_banner": "请验证邮箱以获得全部功能",
+    "verify_email_desc": "验证邮箱有助于安全找回账号及准确追踪订单。",
+    "view_all_orders": "查看所有订单",
+    "wait_cooldown": "请稍候再试"
+  },
+  "Security": {
+    "additional_settings": {
+      "login_notifications": "登录提醒",
+      "login_notifications_desc": "有新设备登录时通知您。",
+      "title": "其他设置"
+    },
+    "change_password": {
+      "button_cancel": "取消",
+      "button_change": "修改密码",
+      "button_saving": "保存中...",
+      "button_setup": "设置密码",
+      "confirm_label": "确认密码",
+      "current_label": "当前密码",
+      "error_change_failed": "密码修改失败",
+      "error_otp_failed": "验证码无效",
+      "error_setup_failed": "密码设置失败",
+      "length_hint": "至少8个字符",
+      "match_error": "两次密码不一致",
+      "new_label": "新密码",
+      "oauth_notice": "您通过社交账号登录，可在此设置独立密码。",
+      "otp_label": "验证码",
+      "otp_sent_success": "验证码已发送",
+      "otp_wait": "请稍候...",
+      "request_otp": "获取验证码",
+      "resend_otp": "重新发送验证码",
+      "setup_confirm_label": "确认密码",
+      "setup_title": "设置密码",
+      "success_setup": "密码设置成功",
+      "title": "修改密码"
+    },
+    "error_email_not_found": "未找到该邮箱",
+    "recent_devices": {
+      "logout_all": "退出所有其他设备",
+      "processing": "处理中...",
+      "title": "最近登录设备"
+    },
+    "subtitle": "管理安全设置和密码",
+    "suspicious_activity": {
+      "admin_location": "待定",
+      "confirm_button": "确认活动",
+      "resolved_badge": "已处理",
+      "title": "异常活动"
+    },
+    "title": "安全中心",
+    "two_factor": {
+      "coming_soon": "即将推出",
+      "setup_button": "设置两步验证",
+      "subtitle": "为账号添加额外安全保护",
+      "title": "两步验证 (2FA)"
+    }
+  },
+  "Common": {
+    "already_verified_title": "邮箱已验证",
+    "back_to_login": "返回登录",
+    "confirm_password": "确认密码",
+    "contact_support": "联系客服",
+    "email": "电子邮箱",
+    "email_placeholder": "example@email.com",
+    "error_expired": "链接已过期",
+    "error_get_new_link": "获取新链接",
+    "error_invalid": "信息无效",
+    "error_invalid_email": "邮箱格式错误",
+    "error_invalid_link": "链接无效",
+    "error_invalid_link_desc": "您使用的链接已失效或已过期。",
+    "error_occurred": "发生错误",
+    "error_send_failed": "数据发送失败",
+    "error_title": "操作失败",
+    "expired_title": "请求已过期",
+    "go_to_account": "前往账号",
+    "go_to_login": "前往登录",
+    "invalid_link_desc": "链接无效，请重新检查。",
+    "invalid_link_title": "链接无效",
+    "invalid_token_title": "令牌无效",
+    "loading": "加载中...",
+    "loading_desc": "请稍候",
+    "login_now": "立即登录",
+    "match_error": "数据不匹配",
+    "match_success": "数据匹配",
+    "member": "会员中心",
+    "new_password": "新密码",
+    "password_requirements": {
+      "length": "至少8个字符",
+      "lowercase": "至少1个小写字母",
+      "number": "至少1个数字",
+      "uppercase": "至少1个大写字母"
+    },
+    "redirect_hint": "正在跳转...",
+    "resend_button": "重新发送",
+    "resend_email": "重发邮件",
+    "resend_success": "发送成功",
+    "reset_button": "重置",
+    "send_link": "发送链接",
+    "sending": "处理中...",
+    "spam_hint": "若未收到邮件，请查看垃圾邮件文件夹。",
+    "strength": "密码强度",
+    "subtitle": "概览说明",
+    "success_desc": "交易成功",
+    "success_title": "操作成功",
+    "title": "标题",
+    "token": "安全令牌"
+  },
+  "Coupons": {
+    "add_coupon": "添加优惠券",
+    "add_failed": "优惠券添加失败",
+    "add_success": "优惠券添加成功",
+    "code_label": "优惠券代码",
+    "details": {
+      "copied": "已复制",
+      "copy_code": "复制代码",
+      "discount": "折扣",
+      "max_discount": "最高优惠",
+      "min_purchase": "最低消费",
+      "no_min_purchase": "无最低消费限制",
+      "title": "优惠券详情",
+      "use_now": "立即使用",
+      "used_at": "使用时间",
+      "valid_until": "有效期至"
+    },
+    "example_code": "DISCOUNT20",
+    "expiry_hint": "优惠券有使用期限。",
+    "filter": {
+      "active": "可使用",
+      "all": "全部",
+      "expired": "已过期",
+      "used": "已使用"
+    },
+    "how_to_use": {
+      "step1": "选择商品",
+      "step2": "结算时输入优惠码",
+      "step3": "确认折扣后完成支付",
+      "title": "使用方法"
+    },
+    "invalid_code": "无效的优惠码",
+    "no_coupons": "暂无优惠券",
+    "no_coupons_desc": "您目前没有可用的优惠券。",
+    "no_search_results": "未找到匹配的优惠券。",
+    "not_found": "优惠券不存在",
+    "search_placeholder": "搜索优惠券...",
+    "start_shopping": "去选购",
+    "status": {
+      "active": "可使用",
+      "expired": "已过期",
+      "used": "已使用"
+    },
+    "subtitle": "管理你的优惠券",
+    "th-TH": "泰语",
+    "title": "我的优惠券",
+    "validating": "验证中..."
+  },
+  "Credits": {
+    "about": {
+      "step1_desc": "登录后前往余额充值页面",
+      "step1_title": "选择套餐",
+      "step2_desc": "选择最便捷的方式完成支付",
+      "step2_title": "完成支付",
+      "step3_desc": "余额即时到账",
+      "step3_title": "充值成功",
+      "title": "如何充值余额"
+    },
+    "balance_label": "当前余额：",
+    "earned": "收入记录",
+    "error_loading": "余额信息加载失败",
+    "history": {
+      "all": "全部交易",
+      "empty": "暂无记录",
+      "empty_desc": "暂无任何余额变动记录。",
+      "this_month": "本月",
+      "this_week": "本周",
+      "title": "交易明细"
+    },
+    "spent": "消费记录",
+    "subtitle": "管理您的账户余额",
+    "th-TH": "泰语",
+    "title": "我的余额",
+    "topup_button": "充值余额",
+    "topup_upcoming": "充值套餐",
+    "total_transactions": "总交易数",
+    "types": {
+      "bonus": "奖励",
+      "purchase": "消费",
+      "refund": "退款",
+      "topup": "充值"
+    },
+    "value_hint": "批量充值更划算"
+  },
+  "Favorites": {
+    "added_to_cart": "已加入购物车",
+    "buy_now": "立即购买",
+    "error_loading": "收藏列表加载失败",
+    "found_items": "个结果",
+    "no_favorites": "暂无收藏",
+    "no_favorites_desc": "点击游戏上的爱心图标即可添加收藏。",
+    "no_search_results": "未找到匹配的收藏。",
+    "remove_failed": "移除失败",
+    "remove_success": "已从收藏中移除",
+    "search_placeholder": "搜索收藏...",
+    "start_shopping": "浏览游戏",
+    "starting_at": "起",
+    "subtitle": "你收藏的游戏都在这里",
+    "title": "我的收藏",
+    "view_more": "查看详情"
+  },
+  "Invoices": {
+    "actions": {
+      "download": "下载",
+      "view": "查看详情"
+    },
+    "filter": {
+      "all": "全部账单",
+      "cancelled": "已取消",
+      "paid": "已付款",
+      "pending": "待付款"
+    },
+    "no_invoices": "暂无账单",
+    "no_invoices_desc": "您还没有任何交易记录。",
+    "no_search_results": "未找到匹配的账单。",
+    "search_placeholder": "搜索账单...",
+    "status": {
+      "cancelled": "已取消",
+      "paid": "已付款",
+      "pending": "待处理"
+    },
+    "subtitle": "管理你的账单记录",
+    "table": {
+      "actions": "操作",
+      "amount": "金额",
+      "date": "日期",
+      "invoice_number": "账单编号",
+      "order_number": "订单编号",
+      "status": "状态"
+    },
+    "th-TH": "泰语",
+    "title": "我的账单"
+  },
+  "InvoiceDetail": {
+    "a": " ",
+    "back_to_list": "返回列表",
+    "copy_success": "复制成功",
+    "customer_info": "客户信息",
+    "date": "交易日期",
+    "download_pdf": "下载 PDF",
+    "error_not_found": "账单不存在",
+    "grand_total": "实付金额",
+    "invoice_no": "账单编号",
+    "item_details": "购买的商品",
+    "order_no": "订单编号",
+    "paid": "已付",
+    "payment_info": "支付渠道",
+    "payment_status": "支付状态",
+    "price": "价格",
+    "print": "打印凭证",
+    "product": "商品信息",
+    "quantity": "数量",
+    "subtotal": "小计",
+    "title": "账单/收据",
+    "total": "总计",
+    "unpaid": "未付",
+    "vat": "增值税"
+  },
+  "Notifications": {
+    "delete": "删除通知",
+    "delete_success": "删除成功",
+    "empty_desc": "您暂无任何通知。",
+    "empty_filter_desc": "该筛选条件下没有通知。",
+    "empty_title": "暂无消息",
+    "error_loading": "消息加载失败",
+    "filters": {
+      "all": "全部",
+      "order": "订单",
+      "payment": "财务",
+      "promotion": "优惠活动",
+      "unread": "未读"
+    },
+    "manage_settings": "通知设置",
+    "mark_all_read": "全部标为已读",
+    "mark_read": "标为已读",
+    "mark_read_success": "已标为已读",
+    "subtitle": "通知中心",
+    "title": "消息通知",
+    "unread_badge": "未读",
+    "view_details": "查看详情"
+  },
+  "NotificationPreferences": {
+    "channels": {
+      "email": "电子邮件",
+      "email_desc": "通过邮件接收动态和消费凭据。",
+      "web": "站内通知",
+      "web_desc": "在网站上接收站内通知。"
+    },
+    "save_button": "保存设置",
+    "save_success": "偏好设置已保存。",
+    "saving": "保存中...",
+    "subtitle": "管理接收通知的方式",
+    "title": "通知偏好",
+    "types": {
+      "orders": "订单动态",
+      "orders_desc": "接收订单状态与问题处理进展。",
+      "promotions": "促销活动",
+      "promotions_desc": "接收折扣、活动和专享优惠。"
+    }
+  },
+  "Orders": {
+    "amount_label": "订单金额：",
+    "date_label": "下单日期：",
+    "error_loading": "订单加载失败",
+    "filter_title": "订单筛选",
+    "no_orders": "暂无订单",
+    "no_orders_desc": "您的历史订单将在这里显示。",
+    "no_search_results": "未找到匹配订单，请检查订单号。",
+    "order_id_label": "订单号：",
+    "search_placeholder": "按订单号或商品搜索",
+    "status": {
+      "all": "全部",
+      "cancelled": "已取消",
+      "completed": "已完成",
+      "pending": "待付款",
+      "processing": "处理中",
+      "refunded": "已退款"
+    },
+    "subtitle": "查看历史记录和追踪订单",
+    "table": {
+      "amount": "金额",
+      "date": "日期",
+      "order_number": "订单号",
+      "product": "商品",
+      "status": "状态"
+    },
+    "th-TH": "泰语",
+    "title": "订单记录",
+    "view_details": "查看详情",
+    "view_mode": {
+      "card": "卡片视图",
+      "table": "列表视图"
+    },
+    "view_results": "显示结果",
+    "view_short": "收起"
+  },
+  "OrderDetail": {
+    "actions": {
+      "cancel": "取消订单",
+      "cancel_confirm": "确定要取消此订单吗？",
+      "cancel_failed": "取消订单失败",
+      "cancel_hint": "订单取消后无法撤回。",
+      "cancel_success": "订单已成功取消。",
+      "cancelling": "取消中...",
+      "need_help": "需要帮助？",
+      "report_issue": "反馈问题",
+      "title": "管理订单"
+    },
+    "back_to_orders": "返回订单列表",
+    "customer": {
+      "date": "下单日期：",
+      "email": "邮箱：",
+      "title": "客户信息",
+      "username": "客户："
+    },
+    "delivery": {
+      "completed_at": "交付时间",
+      "status_summary": "交付状态",
+      "statuses": {
+        "completed": "已成功交付",
+        "failed": "交付失败",
+        "pending": "排队等待中",
+        "processing": "正在处理中..."
+      },
+      "title": "交付信息"
+    },
+    "error_loading": "订单详情加载失败",
+    "error_not_found": "订单未找到",
+    "error_not_found_desc": "请检查订单号后重试。",
+    "items": {
+      "account_info": "附加信息",
+      "code_label": "兑换码",
+      "copy_success": "已复制兑换码",
+      "delivery_failed": "商品加载失败",
+      "delivery_status": "商品交付状态",
+      "digital_codes": "数字密钥",
+      "expired_label": "过期时间",
+      "hide_code": "隐藏密钥",
+      "pin_label": "PIN码",
+      "quantity": "数量",
+      "serial_label": "序列号",
+      "show_code": "显示密钥",
+      "title": "订单商品",
+      "usage_hint": "请妥善保管您的密钥。"
+    },
+    "loading": "加载中...",
+    "order_id_label": "订单号",
+    "payment": {
+      "discount": "优惠",
+      "method": "支付方式",
+      "methods": {
+        "bank_transfer": "银行转账",
+        "promptpay": "PromptPay",
+        "truemoney": "TrueMoney 钱包",
+        "unknown": "其他"
+      },
+      "status_paid": "已付款",
+      "status_pending": "待确认",
+      "subtotal": "小计",
+      "title": "支付明细",
+      "total": "总金额"
+    },
+    "th-TH": "泰语",
+    "title": "订单详情"
+  },
+  "errors": {
+    "generic": {
+      "description": "发生意外错误，请稍后重试。",
+      "goHome": "返回首页",
+      "title": "出错了",
+      "tryAgain": "重试"
+    },
+    "notFound": {
+      "description": "您访问的页面不存在。",
+      "goBack": "返回",
+      "goHome": "返回首页",
+      "title": "页面未找到"
+    }
+  },
+  "Verification": {
+    "forgot_password": {
+      "back_to_login": "返回登录",
+      "email_placeholder": "请输入注册邮箱...",
+      "error_invalid_email": "请输入有效的邮箱地址",
+      "error_send_failed": "重置链接发送失败",
+      "loading": "处理中...",
+      "resend_email": "重发邮件",
+      "send_link": "发送重置链接",
+      "spam_hint": "若未收到邮件，请查看垃圾邮件文件夹。",
+      "subtitle": "输入邮箱以接收密码重置链接。",
+      "success_desc": "密码重置链接已发送至您的邮箱。",
+      "success_title": "邮件已发送",
+      "title": "忘记密码？"
+    },
+    "reset_password": {
+      "back_to_login": "返回登录",
+      "confirm_password": "确认新密码",
+      "error_expired": "重置链接已过期。",
+      "error_get_new_link": "获取新的重置链接",
+      "error_invalid": "安全码无效或已过期。",
+      "error_invalid_link": "验证链接无效。",
+      "error_invalid_link_desc": "该重置链接无效或已被使用。",
+      "loading": "处理中...",
+      "login_now": "立即登录",
+      "match_error": "两次密码不一致",
+      "match_success": "密码一致。",
+      "new_password": "新密码",
+      "password_requirements": {
+        "length": "至少8个字符",
+        "lowercase": "至少1个小写字母 (a-z)",
+        "number": "至少1个数字 (0-9)",
+        "uppercase": "至少1个大写字母 (A-Z)"
+      },
+      "redirect_hint": "正在跳转...",
+      "reset_button": "更新密码",
+      "strength": "密码强度",
+      "subtitle": "请设置新密码",
+      "success_desc": "密码已成功更新，您现在可以登录了。",
+      "success_title": "密码已更新",
+      "title": "重置密码",
+      "token": "安全令牌"
+    },
+    "verify_email": {
+      "already_verified_title": "邮箱已验证。",
+      "back_to_login": "返回登录",
+      "contact_support": "联系客服",
+      "email": "邮箱",
+      "error_title": "网络异常导致验证失败",
+      "expired_title": "验证链接已过期。",
+      "go_to_account": "前往账号",
+      "go_to_login": "前往登录",
+      "invalid_link_desc": "验证链接无效或邮箱已验证。",
+      "invalid_link_title": "验证链接无效",
+      "invalid_token_title": "令牌无效",
+      "loading": "正在验证邮箱...",
+      "loading_desc": "请稍候...",
+      "redirect_hint": "正在跳转到首页...",
+      "resend_button": "重新发送验证邮件",
+      "resend_success": "验证邮件已发送。",
+      "sending": "邮件发送中...",
+      "spam_hint": "请检查垃圾邮件文件夹。",
+      "success_title": "邮箱验证成功",
+      "title": "验证邮箱",
+      "token": "安全令牌"
+    }
+  },
+  "ProductDetail": {
+    "about_product": "商品介绍",
+    "account_info_title": "账号信息",
+    "auto_delivery_hint": "自动即时发货",
+    "back": "返回",
+    "buy_now_button": "立即购买",
+    "by_developer": "开发商：",
+    "cancel_button": "取消",
+    "change_button": "更换选择",
+    "close_window_button": "关闭窗口",
+    "confirm_button": "确认支付",
+    "confirm_hint": "请在确认前核实您的选择。",
+    "confirm_order_title": "订单确认",
+    "confirm_selection_button": "确认选择",
+    "copy_link_failed": "复制失败，请重试。",
+    "copy_link_success": "链接已复制",
+    "developer": "开发商",
+    "error": {
+      "enter_phone": "请输入有效的10位手机号。",
+      "fill_all_fields": "请填写所有必填项。",
+      "invalid_phone": "手机号无效。",
+      "login_required": "请先登录再进行交易。",
+      "no_payment_link": "支付链接生成失败，请重试。",
+      "not_found": "商品未找到",
+      "not_found_desc": "该商品不存在或已下架。",
+      "order_success_redirect": "交易成功，正在跳转到首页...",
+      "payment_error": "支付流程出错",
+      "payment_failed": "无法验证支付信息",
+      "payment_method_unavailable": "该支付方式暂不可用。",
+      "phone_region_mismatch": "不支持跨区手机号",
+      "player_id_invalid": "无效的玩家 ID，请核实后重试。",
+      "select_option": "请选择套餐后继续。",
+      "truemoney_minimum": "TrueMoney 钱包最低消费 20 泰铢。"
+    },
+    "fee_label": "手续费",
+    "form": "详情",
+    "game_info": "游戏详情",
+    "input": "填写信息",
+    "login_required_notice": "登录查看专属折扣",
+    "login_to_buy_button": "登录购买",
+    "meta": "标签",
+    "mobile_number_label": "钱包号码",
+    "mobile_number_placeholder": "08x-xxx-xxxx",
+    "no_options": "暂无可选套餐",
+    "no_options_desc": "该商品暂无可用套餐。",
+    "no_refund_warning_desc": "已完成的订单不支持退款，请在确认前核实信息。",
+    "no_refund_warning_title": "不可退款声明",
+    "no_similar_found": "暂无类似商品。",
+    "payment_method_label": "支付方式：",
+    "payment_selection_desc": "选择您偏好的支付方式",
+    "payment_selection_title": "支付选项",
+    "platforms": "支持平台",
+    "popular_badge": "热销",
+    "price_label": "价格：",
+    "privacy_label": "隐私政策",
+    "product_details_title": "商品详情",
+    "publisher": "发行商",
+    "purchase_summary": "订单摘要",
+    "refund_label": "退款政策",
+    "related_products": "你可能还喜欢",
+    "release_date": "发售日期",
+    "savings_label": "为您省：",
+    "secure_payment_notice": "100% 安全支付",
+    "select_package": "选择套餐",
+    "selected_package_label": "已选套餐",
+    "similar_products": "类似商品",
+    "subtotal_label": "小计：",
+    "terms_agreement_prefix": "继续即代表您同意",
+    "terms_label": "使用条款",
+    "th-TH": "泰语",
+    "topup_options": "充值选项",
+    "total_label": "总金额：",
+    "transaction_summary_title": "费用明细",
+    "unknown": "未知",
+    "unverified_account_warning": "请先验证邮箱再进行购买。",
+    "verify_info_hint": "请在继续前仔细核实您的玩家 ID。"
+  },
+  "News": {
+    "all_news": "全部新闻",
+    "categories": {
+      "event": "活动",
+      "general": "综合",
+      "promotion": "促销",
+      "update": "更新"
+    },
+    "featured": "精选新闻",
+    "featured_badge": "精选",
+    "no_news": "暂无新闻。",
+    "subtitle": "最新动态与公告",
+    "title": "新闻公告",
+    "view_count": "浏览量"
+  },
+  "NewsDetail": {
+    "back_to_news": "返回新闻",
+    "error_loading": "文章加载失败",
+    "error_not_found": "文章未找到",
+    "error_not_found_desc": "该文章不存在或已被移除。",
+    "featured_badge": "热门",
+    "last_updated": "最后更新：",
+    "other_news": "相关新闻",
+    "sources": "来源",
+    "views": "浏览量："
+  },
+  "PaymentPending": {
+    "a": " ",
+    "loading": "正在查询支付状态...",
+    "orderId": "订单号：",
+    "order_id": "订单号：",
+    "payment_failed": "支付失败",
+    "payment_failed_desc": "请重新发起支付。",
+    "payment_success": "支付成功",
+    "qr_expired": "二维码已过期",
+    "qr_expired_desc": "请取消当前订单并重新创建。",
+    "redirecting": "正在跳转...",
+    "referenceNo": "参考编号：",
+    "reference_no": "参考号：",
+    "time_remaining": "剩余时间：",
+    "try_again": "重试",
+    "view_orders": "查看订单记录"
+  },
+  "PaymentSuccess": {
+    "back_home": "返回首页",
+    "delivery_notice": "您的订单正在处理中，稍后将完成交付。",
+    "orderId": "订单号：",
+    "order_number": "订单编号",
+    "processing_badge": "交付处理中",
+    "referenceNo": "参考号：",
+    "session_id": "会话 ID",
+    "subtitle": "支付已成功收取，正在为您准备订单。",
+    "title": "支付成功！",
+    "view_order": "查看订单状态"
+  },
+  "Navigation": {
+    "account": "我的账号",
+    "card": "预付卡",
+    "faq": "常见问题",
+    "favorite": "收藏",
+    "games": "游戏充值",
+    "home": "首页",
+    "login": "登录",
+    "mobile_recharge": "话费充值",
+    "news": "新闻",
+    "orders": "订单记录",
+    "register": "注册",
+    "support": "客服支持"
+  },
+  "SupportContact": {
+    "form": {
+      "email": "您的邮箱",
+      "message": "留言内容",
+      "name": "您的姓名",
+      "send": "发送消息",
+      "sending": "发送中...",
+      "subject": "主题",
+      "success": "消息已发送，我们的团队将尽快回复您。",
+      "title": "通过邮件联系我们"
+    },
+    "social": {
+      "title": "通过社交媒体联系 (Facebook / Line / Discord)"
+    },
+    "subtitle": "联系我们的客服团队获取帮助",
+    "title": "联系客服 (全天候)"
+  },
+  "SupportFAQ": {
+    "all": "全部分类",
+    "back_to_faq": "返回常见问题",
+    "categories": {
+      "_base": "分类"
+    },
+    "need_help": {
+      "title": "需要帮助？",
+      "description": "没有找到您需要的答案？",
+      "contact_support": "联系客服"
+    },
+    "no": "没有帮助",
+    "no_results": "未找到相关内容。",
+    "search_placeholder": "搜索答案...",
+    "subtitle": "快速查找常见问题",
+    "title": "常见问题",
     "view_all": "查看全部",
-    "news_title": "新闻",
-    "status_instant": "秒到",
-    "status_30_60_mins": "30-60分钟",
-    "status_preorder": "预购",
-    "trust_secure_title": "100% 安全",
-    "trust_secure_desc": "高等级安全系统",
-    "trust_fast_title": "极速发货",
-    "trust_fast_desc": "全自动快速到账",
-    "trust_price_title": "最优价格",
-    "trust_price_desc": "最具竞争力的价格",
-    "trust_support_title": "全天候客服",
-    "trust_support_desc": "我们的团队随时为您服务",
-    "special_offers_subtitle": "别错过专为你准备的超值优惠！",
-    "no_deals": "暂无折扣商品",
-    "no_products": "暂无商品",
-    "no_news": "暂无新闻",
-    "promotion_badge": "优惠",
-    "login_success": "登录成功",
-    "invalid_email_password": "电子邮件或密码错误",
-    "register_success": "注册成功",
-    "register_error": "注册错误",
-    "logout_success": "登出成功",
-    "profile_update_success": "个人资料更新成功",
-    "profile_update_error": "个人资料更新失败",
-    "password_change_success": "密码修改成功",
-    "login_error": "登录错误"
+    "yes": "有帮助"
+  },
+  "SupportFAQDetail": {
+    "back_to_faq": "返回常见问题",
+    "contact_support": "联系客服",
+    "contact_support_desc": "如果您需要更多帮助，请联系我们的客服团队。",
+    "error": {
+      "_base": "内容加载失败。"
+    },
+    "helpful": "这篇文章有帮助吗？",
+    "last_updated": "最后更新",
+    "loading": "加载中...",
+    "no": "没有帮助",
+    "still_need_help": "仍然需要帮助？",
+    "thank_you": "感谢您的反馈。",
+    "views": "浏览量：",
+    "yes": "有帮助"
+  },
+  "Support": {
+    "categories": {
+      "faq": {
+        "description": "快速查找常见问题的答案。",
+        "title": "常见问题"
+      },
+      "tickets": {
+        "description": "提交关于订单、支付或账号的问题。",
+        "title": "提交工单"
+      }
+    },
+    "common_issues": {
+      "title": "常见问题"
+    },
+    "contact_methods": "联系方式",
+    "subtitle": "选择以下主题或直接联系客服。",
+    "title": "帮助中心",
+    "urgent_help": {
+      "description": "如需紧急帮助，请通过在线客服或 Line 联系我们。",
+      "title": "紧急支持"
+    },
+    "visit": "查看",
+    "working_hours": {
+      "mon_fri": "周一至周五（正常服务）",
+      "sat_sun": "周六至周日（回复可能稍有延迟）",
+      "time_mon_fri": "09:00 - 00:00 (GMT+7)",
+      "time_sat_sun": "09:00 - 19:00 (GMT+7)",
+      "timezone": "时区 (GMT+7)",
+      "title": "服务时间"
+    }
+  },
+  "SupportTickets": {
+    "back": "返回工单列表",
+    "create": {
+      "cancel": "取消",
+      "categories": {
+        "account": "账号问题",
+        "general": "一般咨询",
+        "order": "订单问题",
+        "payment": "支付问题",
+        "product": "商品问题",
+        "refund": "退款申请",
+        "technical": "技术支持"
+      },
+      "category": "分类",
+      "description": "问题描述",
+      "description_label": "详细描述您遇到的问题",
+      "description_placeholder": "请描述您遇到的问题...",
+      "order_ref": "订单号（可选）",
+      "order_ref_placeholder": "订单 #999999",
+      "subject_placeholder": "简要主题",
+      "submit": "提交工单",
+      "title": "创建新工单"
+    },
+    "create_new": "创建新工单",
+    "created_at": "创建时间",
+    "detail": {
+      "closed_notice": "此工单已关闭，无法继续回复。",
+      "reply": "回复",
+      "send_reply": "发送消息"
+    },
+    "disabled": {
+      "cta": "返回首页",
+      "description": "工单系统暂时不可用。",
+      "title": "系统不可用"
+    },
+    "no_tickets": "您还没有提交过工单。",
+    "order_ref_label": "关联订单号（有助于我们更快处理您的问题）",
+    "select_ticket": "选择工单",
+    "select_ticket_desc": "从列表中选择一个工单查看详情。",
+    "status": {
+      "all": "全部工单",
+      "closed": "已关闭",
+      "open": "待处理",
+      "pending": "等待中",
+      "resolved": "已解决",
+      "waiting_admin": "等待客服处理",
+      "waiting_user": "等待用户回复"
+    },
+    "subtitle": "管理您的客服工单",
+    "support_team": "客服团队",
+    "system": "系统自动通知",
+    "title": "客服工单",
+    "user_you": "您"
+  },
+  "UserMenu": {
+    "account_menu": "账号菜单",
+    "credits": "我的余额",
+    "favorite": "收藏",
+    "h-full": "",
+    "logout": "退出登录",
+    "menu": "用户菜单",
+    "my_account": "我的账号",
+    "my_coupons": "我的优惠券",
+    "my_invoices": "账单",
+    "my_orders": "订单记录",
+    "notifications": "消息通知",
+    "open_menu": "展开菜单"
+  },
+  "CookieNotice": {
+    "acknowledge": "接受",
+    "ariaClose": "关闭提示",
+    "description": "Lnwtermgame 使用 Cookie 来提升您的浏览体验、优化网站性能并提供个性化推荐。",
+    "items": [
+      "必要 Cookie（网站基本功能所需）",
+      "分析 Cookie（用于改善平台体验）"
+    ],
+    "noTawkItem": "在线客服功能暂时关闭。",
+    "privacy": "隐私政策",
+    "tawkItem": "在线客服 Cookie (Tawk.to)，用于提供即时客服。",
+    "title": "⚙️ Cookie 偏好设置"
+  },
+  "Footer": {
+    "about_us": "关于我们",
+    "contact_us": "联系我们",
+    "copyright": "版权所有",
+    "language_thai": "泰语",
+    "partners": "合作伙伴",
+    "customer": "客户服务",
+    "policies": "相关政策",
+    "services": "服务项目",
+    "payment_inquiry": "支付咨询",
+    "payment_issues": "支付与售后",
+    "sale_inquiry": "商务合作",
+    "copyright_notice": "版权所有",
+    "create_ticket": "提交客服工单",
+    "faq": "常见问题",
+    "features": {
+      "payment": "多种支付方式",
+      "payment_desc": "支持 TrueMoney 钱包和 PromptPay 充值，0% 额外费用。",
+      "price": "最优价格",
+      "price_desc": "畅享专属优惠和最具竞争力的充值价格。",
+      "security": "100% 安全保障",
+      "security_desc": "平台采用顶级加密技术确保交易安全。",
+      "support": "全天候客服",
+      "support_desc": "我们的团队随时为您提供帮助。",
+      "delivery": "极速发货"
+    },
+    "live_chat": "在线客服",
+    "payment_channels": "支付方式",
+    "privacy_policy": "隐私与 Cookie",
+    "quick_links": "快速链接",
+    "refund_policy": "退款政策",
+    "support": "客服",
+    "support_center": "帮助中心",
+    "supported_payments": "支持的支付平台",
+    "tagline": "Lnwtermgame，泰国领先的极速安全游戏充值与预付卡平台。",
+    "terms_of_service": "服务条款"
+  },
+  "Header": {
+    " ": " ",
+    "/": "/",
+    "articles": "资讯",
+    "dealers": "经销商",
+    "all_games": "全部游戏",
+    "cart": "购物车",
+    "contact_us": "联系我们",
+    "credits": "余额",
+    "direct_topup": "游戏充值",
+    "gift_cards": "礼品卡",
+    "login": "登录",
+    "logout": "退出登录",
+    "mobile_recharge": "话费充值",
+    "my_account": "我的账号",
+    "news": "新闻活动",
+    "notifications": "通知",
+    "order_history": "订单记录",
+    "search_placeholder": "搜索游戏或卡片..."
+  },
+  "Search": {
+    "aria_label_clear": "清除",
+    "aria_label_remove_history": "清除搜索记录",
+    "aria_label_search": "搜索",
+    "no_results_for": "未找到相关结果...",
+    "placeholder": "搜索...",
+    "placeholder_advanced": "搜索游戏、卡片或资讯...",
+    "recent_searches": "最近搜索",
+    "search_results": "搜索结果：",
+    "view_all_results_for": "查看全部结果"
+  },
+  "Products": {
+    "recommended": "推荐套餐"
+  },
+  "promotions": "促销活动",
+  "how_to_use": {
+    "title": "使用方法"
+  },
+  "topup_system": "充值系统",
+  "games": {
+    "title": "全部游戏"
+  },
+  "lucky_games": "幸运抽奖",
+  "nav_game_topup": "游戏充值",
+  "nav_prepaid_card": "预付卡",
+  "nav_mobile_topup": "话费充值",
+  "search_placeholder": "搜索游戏或卡片...",
+  "admin_panel": "管理后台",
+  "my_account": "我的账号",
+  "credits": "余额",
+  "order_history": "订单记录",
+  "logout": "退出登录",
+  "login_button": "登录 / 注册",
+  "Admin": {
+    "nav": {
+      "main": "仪表盘",
+      "products_sales": "商品与销售",
+      "content": "内容管理",
+      "users_communication": "用户与通信",
+      "system": "系统设置"
+    },
+    "admin_cp": "管理后台",
+    "admin": "管理员",
+    "dashboard": "仪表盘",
+    "analytics": "数据分析",
+    "products": "商品管理",
+    "categories": "分类管理",
+    "orders": "订单管理",
+    "payments": "财务中心",
+    "cms_pages": "内容页面",
+    "news": "新闻管理",
+    "manage_faq": "FAQ 管理",
+    "images": "图片资源",
+    "manage_users": "用户管理",
+    "support_tickets": "客服工单",
+    "notifications": "系统通知",
+    "email": "邮件协议",
+    "settings": "系统配置",
+    "oauth": "OAuth 服务",
+    "pin": "Pin menu",
+    "unpin": "Unpin menu",
+    "switch_dark": "Switch to dark",
+    "switch_light": "Switch to light",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "active": "Active",
+      "inactive": "Inactive",
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "banned": "Banned",
+      "unknown": "Unknown"
+    },
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "empty": "No items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "empty": "No data"
+    },
+    "actions": {
+      "save": "保存",
+      "cancel": "取消",
+      "confirm": "确认",
+      "search": "搜索...",
+      "clear_filters": "清除筛选"
+    },
+    "ai_chat": "AI 聊天"
+  },
+  "hero_zzz_subtitle": "充值绝区零",
+  "hero_zzz_highlight_text": "高达",
+  "hero_genshin_subtitle": "充值原神",
+  "hero_genshin_highlight_text": "高达",
+  "hero_btn_text": "立即充值",
+  "category_popular_games": "热门游戏",
+  "category_all_games": "全部游戏",
+  "category_check_skin": "皮肤抽奖",
+  "category_game_card": "游戏卡",
+  "category_lucky_game": "幸运抽奖",
+  "special_offers": "限时特惠",
+  "popular_games": "热门游戏充值",
+  "view_all": "查看全部",
+  "news_title": "新闻",
+  "status_instant": "秒到",
+  "status_30_60_mins": "30-60分钟",
+  "status_preorder": "预购",
+  "trust_secure_title": "100% 安全",
+  "trust_secure_desc": "高等级安全系统",
+  "trust_fast_title": "极速发货",
+  "trust_fast_desc": "全自动快速到账",
+  "trust_price_title": "最优价格",
+  "trust_price_desc": "最具竞争力的价格",
+  "trust_support_title": "全天候客服",
+  "trust_support_desc": "我们的团队随时为您服务",
+  "special_offers_subtitle": "别错过专为你准备的超值优惠！",
+  "no_deals": "暂无折扣商品",
+  "no_products": "暂无商品",
+  "no_news": "暂无新闻",
+  "promotion_badge": "优惠",
+  "login_success": "登录成功",
+  "invalid_email_password": "电子邮件或密码错误",
+  "register_success": "注册成功",
+  "register_error": "注册错误",
+  "logout_success": "登出成功",
+  "profile_update_success": "个人资料更新成功",
+  "profile_update_error": "个人资料更新失败",
+  "password_change_success": "密码修改成功",
+  "login_error": "登录错误"
 }

@@ -1,1259 +1,1267 @@
 {
-    "Auth": {
-        "login": {
-            "email": {
-                "_base": "E-mel"
-            },
-            "error": "Ralat",
-            "error_occurred": "Ralat berlaku semasa log masuk",
-            "forgot_password": "Lupa kata laluan?",
-            "hero_title_1": "Top-up permainan terbaik",
-            "hero_title_2": "Pantas dan selamat",
-            "hero_title_3": "24/7 tanpa henti",
-            "hero_title_4": "bersama Lnwtermgame",
-            "login_button": "Log Masuk",
-            "no_account": "Belum ada akaun?",
-            "oauth_callback_failed": "Log masuk melalui akaun sosial gagal",
-            "oauth_failed": "Log masuk gagal",
-            "oauth_init_failed": "Gagal memulakan proses log masuk",
-            "or_login_with": "Atau log masuk dengan",
-            "password": "Kata Laluan",
-            "provider_not_enabled": "Kaedah log masuk ini tidak tersedia buat masa ini",
-            "redirect": "Mengalihkan...",
-            "register_now": "Daftar sekarang",
-            "secure_100": "100% Selamat",
-            "secure_100_desc": "Data anda dilindungi dengan selamat",
-            "session_expired": "Sesi Tamat",
-            "session_expired_desc": "Sila log masuk semula.",
-            "subtitle": "Log masuk untuk akses penuh",
-            "title": "Log Masuk",
-            "vip_points": "Kumpul Mata VIP",
-            "vip_points_desc": "Dapatkan keistimewaan eksklusif sebagai ahli."
-        },
-        "register": {
-            "already_have_account": "Sudah ada akaun?",
-            "and": "dan",
-            "confirm_password": "Sahkan kata laluan",
-            "email": {
-                "_base": "E-mel"
-            },
-            "fast_247": "Perkhidmatan Pantas 24/7",
-            "fast_247_desc": "Proses transaksi anda bila-bila masa, tanpa cuti.",
-            "go_to_login": "Log masuk di sini",
-            "hero_desc": "Sertai Lnwtermgame untuk promosi istimewa dan keistimewaan ahli.",
-            "hero_title_1": "Daftar Akaun Baharu",
-            "hero_title_2": "Dapatkan promosi istimewa",
-            "hero_title_3": "Khas untuk anda",
-            "login_now": "Log masuk sekarang",
-            "password": "Kata Laluan",
-            "password_hint": "Kata laluan sekurang-kurangnya 8 aksara",
-            "passwords_not_match": "Kata laluan tidak sepadan",
-            "privacy_policy": "Dasar Privasi",
-            "register_button": "Daftar",
-            "registration_disabled": "Pendaftaran Dihentikan",
-            "registration_disabled_desc": "Kami tidak menerima pendaftaran baharu buat sementara waktu.",
-            "subtitle": "Cipta akaun untuk mula top-up",
-            "terms": "Terma Perkhidmatan",
-            "terms_agreement": "Saya bersetuju dengan",
-            "title": "Pendaftaran",
-            "username": "Nama Pengguna",
-            "welcome_bonus": "Bonus Selamat Datang",
-            "welcome_bonus_desc": "Dapatkan bonus istimewa pada top-up pertama anda."
-        }
+  "Auth": {
+    "login": {
+      "email": {
+        "_base": "E-mel"
+      },
+      "error": "Ralat",
+      "error_occurred": "Ralat berlaku semasa log masuk",
+      "forgot_password": "Lupa kata laluan?",
+      "hero_title_1": "Top-up permainan terbaik",
+      "hero_title_2": "Pantas dan selamat",
+      "hero_title_3": "24/7 tanpa henti",
+      "hero_title_4": "bersama Lnwtermgame",
+      "login_button": "Log Masuk",
+      "no_account": "Belum ada akaun?",
+      "oauth_callback_failed": "Log masuk melalui akaun sosial gagal",
+      "oauth_failed": "Log masuk gagal",
+      "oauth_init_failed": "Gagal memulakan proses log masuk",
+      "or_login_with": "Atau log masuk dengan",
+      "password": "Kata Laluan",
+      "provider_not_enabled": "Kaedah log masuk ini tidak tersedia buat masa ini",
+      "redirect": "Mengalihkan...",
+      "register_now": "Daftar sekarang",
+      "secure_100": "100% Selamat",
+      "secure_100_desc": "Data anda dilindungi dengan selamat",
+      "session_expired": "Sesi Tamat",
+      "session_expired_desc": "Sila log masuk semula.",
+      "subtitle": "Log masuk untuk akses penuh",
+      "title": "Log Masuk",
+      "vip_points": "Kumpul Mata VIP",
+      "vip_points_desc": "Dapatkan keistimewaan eksklusif sebagai ahli."
     },
-    "AdminPage": {
-        "ALL": "Semua",
-        "SLA_24": "SLA 24j",
-        "SLA_8": "SLA 8j",
-        "UNASSIGNED": "Belum Ditugaskan",
-        "WAITING_ADMIN": "Menunggu Admin",
-        "a": " ",
-        "categories": {
-            "delete_confirm": "Sahkan padam kategori ini?",
-            "delete_failed": "Gagal memadam kategori",
-            "delete_has_products": "Tidak boleh dipadam kerana terdapat produk dalam kategori ini.",
-            "delete_success": "Kategori berjaya dipadam",
-            "load_failed": "Gagal memuatkan kategori",
-            "name_required": "Nama kategori diperlukan",
-            "save_success": "Data berjaya disimpan",
-            "slug_required": "Slug diperlukan"
-        },
-        "cms_news": {
-            "categories": {
-                "event": "Acara",
-                "general": "Umum",
-                "promotion": "Promosi",
-                "update": "Kemaskini"
-            }
-        },
-        "common": {
-            "error": "Ralat berlaku",
-            "from": "dari",
-            "refresh": "Muat Semula",
-            "showing": "Memaparkan"
-        },
-        "dashboard": {
-            "load_error": "Gagal memuatkan data papan pemuka",
-            "no_data": "Tiada data tersedia"
-        },
-        "email": {
-            "categories": {
-                "authentication": "Pengesahan",
-                "general": "Umum",
-                "order": "Pesanan",
-                "payment": "Pembayaran",
-                "promotion": "Promosi",
-                "support": "Sokongan",
-                "system": "Sistem"
-            },
-            "placeholders": {
-                "discountAmount": "Jumlah Diskaun",
-                "email": "E-mel",
-                "expiresIn": "Tamat tempoh dalam",
-                "finalAmount": "Jumlah Akhir",
-                "orderDate": "Tarikh Pesanan",
-                "orderNumber": "Nombor Pesanan",
-                "resetUrl": "URL Set Semula",
-                "siteName": "Nama Laman",
-                "ticketNumber": "Nombor Tiket",
-                "totalAmount": "Jumlah Keseluruhan",
-                "username": "Nama Pengguna",
-                "verificationUrl": "URL Pengesahan"
-            }
-        },
-        "logo": "Logo",
-        "monitor": "Pemantau Sistem",
-        "newsItems": "Item Berita",
-        "oauth": {
-            "load_error": "Ralat memuatkan data OAuth"
-        },
-        "order_detail": {
-            "back_to_orders": "Kembali ke pesanan",
-            "items": "Item",
-            "order_date": "Tarikh Pesanan",
-            "order_status": "Status Pesanan",
-            "subtitle": "Butiran dan status pesanan",
-            "title": "Butiran Pesanan"
-        },
-        "orders": {
-            "actions": "Tindakan",
-            "amount": "Jumlah",
-            "customer": "Pelanggan",
-            "date": "Tarikh",
-            "no_orders": "Tiada pesanan",
-            "order_id": "ID Pesanan",
-            "product": "Produk",
-            "search_placeholder": "Cari pesanan...",
-            "status": {
-                "all": "Semua",
-                "cancelled": "Dibatalkan",
-                "completed": "Selesai",
-                "failed": "Gagal",
-                "pending": "Menunggu",
-                "processing": "Memproses",
-                "refunded": "Dikembalikan"
-            },
-            "status_text": "Status",
-            "subtitle": "Urus semua pesanan dalam sistem",
-            "title": "Pesanan"
-        },
-        "promoCards": "Kad Promo",
-        "seasonalEvents": "Acara Bermusim",
-        "settings": {
-            "section_labels": {
-                "featured_products": "Produk Pilihan",
-                "hero_button": "Butang Hero",
-                "news": "Berita",
-                "specials": "Istimewa",
-                "view_all": "Lihat Semua"
-            }
-        },
-        "th-TH": "Thai",
-        "tickets": {
-            "all_assignees": "Semua Penerima Tugas",
-            "categories": {
-                "all": "Semua kategori",
-                "order_issue": "Isu Pesanan",
-                "payment_issue": "Isu Pembayaran",
-                "product_issue": "Isu Produk",
-                "account_issue": "Isu Akaun",
-                "technical_support": "Sokongan Teknikal",
-                "refund_request": "Permintaan Bayaran Balik",
-                "general_inquiry": "Pertanyaan Umum"
-            },
-            "priorities": {
-                "high": "Tinggi",
-                "urgent": "Segera"
-            },
-            "status": {
-                "open": "Dibuka",
-                "in_progress": "Sedang Diproses",
-                "waiting_user": "Menunggu Pengguna",
-                "waiting_admin": "Menunggu Admin",
-                "resolved": "Diselesaikan",
-                "closed": "Ditutup"
-            },
-            "unassigned": "Belum Ditugaskan"
-        }
+    "register": {
+      "already_have_account": "Sudah ada akaun?",
+      "and": "dan",
+      "confirm_password": "Sahkan kata laluan",
+      "email": {
+        "_base": "E-mel"
+      },
+      "fast_247": "Perkhidmatan Pantas 24/7",
+      "fast_247_desc": "Proses transaksi anda bila-bila masa, tanpa cuti.",
+      "go_to_login": "Log masuk di sini",
+      "hero_desc": "Sertai Lnwtermgame untuk promosi istimewa dan keistimewaan ahli.",
+      "hero_title_1": "Daftar Akaun Baharu",
+      "hero_title_2": "Dapatkan promosi istimewa",
+      "hero_title_3": "Khas untuk anda",
+      "login_now": "Log masuk sekarang",
+      "password": "Kata Laluan",
+      "password_hint": "Kata laluan sekurang-kurangnya 8 aksara",
+      "passwords_not_match": "Kata laluan tidak sepadan",
+      "privacy_policy": "Dasar Privasi",
+      "register_button": "Daftar",
+      "registration_disabled": "Pendaftaran Dihentikan",
+      "registration_disabled_desc": "Kami tidak menerima pendaftaran baharu buat sementara waktu.",
+      "subtitle": "Cipta akaun untuk mula top-up",
+      "terms": "Terma Perkhidmatan",
+      "terms_agreement": "Saya bersetuju dengan",
+      "title": "Pendaftaran",
+      "username": "Nama Pengguna",
+      "welcome_bonus": "Bonus Selamat Datang",
+      "welcome_bonus_desc": "Dapatkan bonus istimewa pada top-up pertama anda."
+    }
+  },
+  "AdminPage": {
+    "ALL": "Semua",
+    "SLA_24": "SLA 24j",
+    "SLA_8": "SLA 8j",
+    "UNASSIGNED": "Belum Ditugaskan",
+    "WAITING_ADMIN": "Menunggu Admin",
+    "a": " ",
+    "categories": {
+      "delete_confirm": "Sahkan padam kategori ini?",
+      "delete_failed": "Gagal memadam kategori",
+      "delete_has_products": "Tidak boleh dipadam kerana terdapat produk dalam kategori ini.",
+      "delete_success": "Kategori berjaya dipadam",
+      "load_failed": "Gagal memuatkan kategori",
+      "name_required": "Nama kategori diperlukan",
+      "save_success": "Data berjaya disimpan",
+      "slug_required": "Slug diperlukan"
     },
-    "Catalog": {
-        "card": {
-            "subtitle": "Permainan popular",
-            "title": "Pilih permainan anda"
-        },
-        "cta_buy": "Beli Sekarang",
-        "cta_topup": "Top Up Sekarang",
-        "filter_category": "Tapis kategori",
-        "games": {
-            "subtitle": "Semua permainan tersedia",
-            "title": "Permainan"
-        },
-        "loading": "Memuatkan...",
-        "mobile": {
-            "subtitle": "Top-up pantas untuk mudah alih",
-            "title": "Permainan Mudah Alih"
-        },
-        "no_results": "Tiada keputusan ditemui",
-        "no_results_desc": "Cuba cari dengan kata kunci lain",
-        "search": "Cari permainan",
-        "search_placeholder": "Taip nama permainan...",
-        "sort": {
-            "all": "Semua"
-        }
+    "cms_news": {
+      "categories": {
+        "event": "Acara",
+        "general": "Umum",
+        "promotion": "Promosi",
+        "update": "Kemaskini"
+      }
     },
-    "Checkout": {
-        "browse_products": "Lihat produk",
-        "confirm_order": "Sahkan Pesanan",
-        "continue_shopping": "Teruskan Membeli-belah",
-        "direct_topup": "Top Up Terus",
-        "empty_cart": "Troli anda kosong",
-        "empty_cart_desc": "Layari katalog kami untuk mencari permainan kegemaran anda.",
-        "error": {
-            "fill_all_fields": "Sila isi semua medan yang diperlukan",
-            "generic_failed": "Transaksi gagal. Sila cuba lagi.",
-            "order_failed": "Gagal mencipta pesanan",
-            "player_id_invalid": "ID Pemain tidak sah",
-            "product_changed": "Data produk telah berubah. Sila muat semula halaman."
-        },
-        "fill_required_fields": "Sila isi medan yang diperlukan",
-        "gift_card": "Kad Hadiah",
-        "grand_total": "Jumlah Besar",
-        "info_complete": "Maklumat lengkap",
-        "loading": "Memproses...",
-        "order_summary": "Ringkasan Pesanan",
-        "per_item": "setiap satu",
-        "quantity": "Kuantiti",
-        "subtitle": "Semak dan teruskan ke pembayaran",
-        "terms_agreement": "Saya telah membaca dan bersetuju dengan",
-        "terms_of_service": "Terma Perkhidmatan",
-        "title": "Pembayaran",
-        "total": "Jumlah"
+    "common": {
+      "error": "Ralat berlaku",
+      "from": "dari",
+      "refresh": "Muat Semula",
+      "showing": "Memaparkan"
     },
-    "Account": {
-        "account_settings": "Tetapan Akaun",
-        "email_label": "E-mel anda",
-        "my_orders": "Pesanan Saya",
-        "no_recent_purchases": "Tiada pembelian terkini",
-        "not_verified": "Belum Disahkan",
-        "order_status": {
-            "completed": "Selesai",
-            "pending": "Menunggu Pembayaran",
-            "processing": "Memproses",
-            "refunded": "Dikembalikan"
-        },
-        "recent_purchases": "Pembelian Terkini",
-        "security": "Keselamatan",
-        "send_failed": "Gagal menghantar e-mel pengesahan",
-        "send_verification": "Hantar e-mel pengesahan",
-        "sending": "Menghantar...",
-        "spam_hint": "Jika tidak nampak e-mel, sila semak folder spam.",
-        "subtitle": "Urus profil dan jejak pesanan anda",
-        "title": "Akaun Saya",
-        "verification_sent": "Pautan pengesahan dihantar",
-        "verified": "Disahkan",
-        "verify_email_banner": "Sila sahkan e-mel anda untuk akses penuh",
-        "verify_email_desc": "Pengesahan e-mel memastikan pemulihan akaun yang selamat dan penjejakan pesanan yang tepat.",
-        "view_all_orders": "Lihat semua pesanan",
-        "wait_cooldown": "Sila tunggu sebentar sebelum mencuba lagi"
+    "dashboard": {
+      "load_error": "Gagal memuatkan data papan pemuka",
+      "no_data": "Tiada data tersedia"
     },
-    "Security": {
-        "additional_settings": {
-            "login_notifications": "Notifikasi Log Masuk",
-            "login_notifications_desc": "Terima notifikasi apabila peranti baharu log masuk ke akaun anda.",
-            "title": "Tetapan Tambahan"
-        },
-        "change_password": {
-            "button_cancel": "Batal",
-            "button_change": "Tukar Kata Laluan",
-            "button_saving": "Menyimpan...",
-            "button_setup": "Tetapkan Kata Laluan",
-            "confirm_label": "Sahkan Kata Laluan",
-            "current_label": "Kata Laluan Semasa",
-            "error_change_failed": "Gagal menukar kata laluan",
-            "error_otp_failed": "OTP tidak sah",
-            "error_setup_failed": "Gagal menetapkan kata laluan",
-            "length_hint": "Sekurang-kurangnya 8 aksara",
-            "match_error": "Kata laluan tidak sepadan",
-            "new_label": "Kata Laluan Baharu",
-            "oauth_notice": "Anda log masuk melalui akaun sosial. Anda boleh menetapkan kata laluan standard di sini.",
-            "otp_label": "Kod OTP",
-            "otp_sent_success": "OTP berjaya dihantar",
-            "otp_wait": "Sila tunggu...",
-            "request_otp": "Minta OTP",
-            "resend_otp": "Hantar Semula OTP",
-            "setup_confirm_label": "Sahkan Kata Laluan",
-            "setup_title": "Tetapkan Kata Laluan",
-            "success_setup": "Kata laluan berjaya ditetapkan",
-            "title": "Tukar Kata Laluan"
-        },
-        "error_email_not_found": "E-mel tidak ditemui",
-        "recent_devices": {
-            "logout_all": "Log keluar dari semua peranti lain",
-            "processing": "Memproses...",
-            "title": "Peranti Terkini"
-        },
-        "subtitle": "Urus keselamatan dan kata laluan anda",
-        "suspicious_activity": {
-            "admin_location": "Menunggu",
-            "confirm_button": "Sahkan Aktiviti",
-            "resolved_badge": "Diselesaikan",
-            "title": "Aktiviti Mencurigakan"
-        },
-        "title": "Keselamatan",
-        "two_factor": {
-            "coming_soon": "Akan Datang",
-            "setup_button": "Sediakan 2FA",
-            "subtitle": "Tambah lapisan keselamatan tambahan",
-            "title": "Pengesahan Dua Faktor (2FA)"
-        }
-    },
-    "Common": {
-        "already_verified_title": "Sudah disahkan",
-        "back_to_login": "Kembali ke Log Masuk",
-        "confirm_password": "Sahkan kata laluan",
-        "contact_support": "Hubungi Sokongan",
-        "email": "E-mel",
-        "email_placeholder": "contoh@e-mel.com",
-        "error_expired": "Pautan ini telah tamat tempoh",
-        "error_get_new_link": "Minta pautan baharu",
-        "error_invalid": "Maklumat tidak sah",
-        "error_invalid_email": "Format e-mel tidak sah",
-        "error_invalid_link": "Pautan tidak sah",
-        "error_invalid_link_desc": "Pautan yang anda gunakan tidak sah atau telah tamat tempoh.",
-        "error_occurred": "Ralat berlaku",
-        "error_send_failed": "Gagal menghantar data",
-        "error_title": "Gagal",
-        "expired_title": "Permintaan Tamat Tempoh",
-        "go_to_account": "Pergi ke Akaun",
-        "go_to_login": "Pergi ke Log Masuk",
-        "invalid_link_desc": "Pautan tidak sah. Sila semak semula.",
-        "invalid_link_title": "Pautan Tidak Sah",
-        "invalid_token_title": "Token Tidak Sah",
-        "loading": "Memuatkan...",
-        "loading_desc": "Sila tunggu sebentar",
-        "login_now": "Log Masuk Sekarang",
-        "match_error": "Data tidak sepadan",
-        "match_success": "Data sepadan",
-        "member": "Ruang Ahli",
-        "new_password": "Kata Laluan Baharu",
-        "password_requirements": {
-            "length": "Sekurang-kurangnya 8 aksara",
-            "lowercase": "Sekurang-kurangnya 1 huruf kecil",
-            "number": "Sekurang-kurangnya 1 nombor",
-            "uppercase": "Sekurang-kurangnya 1 huruf besar"
-        },
-        "redirect_hint": "Mengalihkan...",
-        "resend_button": "Hantar Semula",
-        "resend_email": "Hantar Semula E-mel",
-        "resend_success": "Berjaya dihantar",
-        "reset_button": "Set Semula",
-        "send_link": "Hantar Pautan",
-        "sending": "Memproses...",
-        "spam_hint": "Semak folder spam jika anda tidak menerima e-mel.",
-        "strength": "Kekuatan Kata Laluan",
-        "subtitle": "Penerangan ringkas",
-        "success_desc": "Transaksi Berjaya",
-        "success_title": "Berjaya",
-        "title": "Tajuk",
-        "token": "Token Keselamatan"
-    },
-    "Coupons": {
-        "add_coupon": "Tambah Kupon",
-        "add_failed": "Gagal menambah kupon",
-        "add_success": "Kupon berjaya ditambah",
-        "code_label": "Kod Kupon",
-        "details": {
-            "copied": "Disalin",
-            "copy_code": "Salin Kod",
-            "discount": "Diskaun",
-            "max_discount": "Diskaun Maksimum",
-            "min_purchase": "Pembelian Minimum",
-            "no_min_purchase": "Tiada pembelian minimum",
-            "title": "Butiran Kupon",
-            "use_now": "Guna Sekarang",
-            "used_at": "Digunakan Pada",
-            "valid_until": "Sah Sehingga"
-        },
-        "example_code": "DISCOUNT20",
-        "expiry_hint": "Kupon mempunyai tempoh sah yang terhad.",
-        "filter": {
-            "active": "Aktif",
-            "all": "Semua",
-            "expired": "Tamat Tempoh",
-            "used": "Telah Diguna"
-        },
-        "how_to_use": {
-            "step1": "Pilih produk anda",
-            "step2": "Masukkan kod semasa pembayaran",
-            "step3": "Sahkan diskaun sebelum membayar",
-            "title": "Cara Menggunakan"
-        },
-        "invalid_code": "Kod Tidak Sah",
-        "no_coupons": "Tiada Kupon",
-        "no_coupons_desc": "Anda tidak mempunyai sebarang kupon diskaun pada masa ini.",
-        "no_search_results": "Tiada kupon yang sepadan dengan carian anda.",
-        "not_found": "Kupon tidak ditemui",
-        "search_placeholder": "Cari kupon...",
-        "start_shopping": "Mula Membeli-belah",
-        "status": {
-            "active": "Aktif",
-            "expired": "Tamat Tempoh",
-            "used": "Telah Diguna"
-        },
-        "subtitle": "Urus kupon diskaun anda",
-        "th-TH": "Thai",
-        "title": "Kupon Diskaun",
-        "validating": "Mengesahkan..."
-    },
-    "Credits": {
-        "about": {
-            "step1_desc": "Log masuk dan pergi ke bahagian top-up kredit",
-            "step1_title": "Pilih Pakej",
-            "step2_desc": "Bayar melalui kaedah yang paling mudah",
-            "step2_title": "Buat Pembayaran",
-            "step3_desc": "Kredit ditambah serta-merta ke dompet anda",
-            "step3_title": "Transaksi Berjaya",
-            "title": "Cara top-up kredit"
-        },
-        "balance_label": "Baki:",
-        "earned": "Sejarah Perolehan",
-        "error_loading": "Gagal memuatkan maklumat kredit",
-        "history": {
-            "all": "Semua Transaksi",
-            "empty": "Tiada Sejarah Kredit",
-            "empty_desc": "Tiada transaksi kredit terkini.",
-            "this_month": "Bulan Ini",
-            "this_week": "Minggu Ini",
-            "title": "Sejarah Transaksi"
-        },
-        "spent": "Sejarah Perbelanjaan",
-        "subtitle": "Urus kredit akaun anda",
-        "th-TH": "Thai",
-        "title": "Kredit Saya",
-        "topup_button": "Top Up Kredit",
-        "topup_upcoming": "Pakej Kredit",
-        "total_transactions": "Jumlah Transaksi",
-        "types": {
-            "bonus": "Bonus",
-            "purchase": "Pembelian",
-            "refund": "Bayaran Balik",
-            "topup": "Top-up"
-        },
-        "value_hint": "Nikmati tawaran lebih baik dengan top-up pukal"
-    },
-    "Favorites": {
-        "added_to_cart": "Berjaya ditambah ke troli",
-        "buy_now": "Beli Sekarang",
-        "error_loading": "Gagal memuatkan senarai kegemaran",
-        "found_items": "item ditemui",
-        "no_favorites": "Tiada Item Kegemaran",
-        "no_favorites_desc": "Klik ikon hati pada mana-mana permainan untuk menambahnya ke kegemaran.",
-        "no_search_results": "Tiada kegemaran yang sepadan dengan carian anda.",
-        "remove_failed": "Gagal membuang item",
-        "remove_success": "Berjaya dibuang dari kegemaran",
-        "search_placeholder": "Cari dalam kegemaran...",
-        "start_shopping": "Layari Permainan",
-        "starting_at": "Bermula dari",
-        "subtitle": "Permainan yang anda suka disimpan di sini",
-        "title": "Kegemaran Saya",
-        "view_more": "Lihat butiran"
-    },
-    "Invoices": {
-        "actions": {
-            "download": "Muat Turun",
-            "view": "Lihat Butiran"
-        },
-        "filter": {
-            "all": "Semua Invois",
-            "cancelled": "Dibatalkan",
-            "paid": "Dibayar",
-            "pending": "Menunggu Pembayaran"
-        },
-        "no_invoices": "Tiada Invois",
-        "no_invoices_desc": "Tiada transaksi dibuat lagi.",
-        "no_search_results": "Tiada invois yang sepadan dengan carian anda.",
-        "search_placeholder": "Cari invois...",
-        "status": {
-            "cancelled": "Dibatalkan",
-            "paid": "Dibayar",
-            "pending": "Menunggu"
-        },
-        "subtitle": "Urus rekod invois anda",
-        "table": {
-            "actions": "Tindakan",
-            "amount": "Jumlah",
-            "date": "Tarikh",
-            "invoice_number": "ID Invois",
-            "order_number": "ID Pesanan",
-            "status": "Status"
-        },
-        "th-TH": "Thai",
-        "title": "Invois Anda"
-    },
-    "InvoiceDetail": {
-        "a": " ",
-        "back_to_list": "Kembali ke Senarai",
-        "copy_success": "Berjaya disalin",
-        "customer_info": "Maklumat Pelanggan",
-        "date": "Tarikh Transaksi",
-        "download_pdf": "Muat Turun PDF",
-        "error_not_found": "Invois tidak ditemui",
-        "grand_total": "Bayaran Bersih",
-        "invoice_no": "Nombor Invois",
-        "item_details": "Item Dibeli",
-        "order_no": "Nombor Pesanan",
-        "paid": "Dibayar",
-        "payment_info": "Pembekal",
-        "payment_status": "Status Pembayaran",
-        "price": "Harga",
-        "print": "Cetak Laporan",
-        "product": "Maklumat Produk",
-        "quantity": "Kuantiti",
-        "subtotal": "Subjumlah",
-        "title": "Invois / Resit",
-        "total": "Jumlah Besar",
-        "unpaid": "Belum Dibayar",
-        "vat": "Cukai"
-    },
-    "Notifications": {
-        "delete": "Padam Notifikasi",
-        "delete_success": "Berjaya dipadam",
-        "empty_desc": "Anda tiada notifikasi.",
-        "empty_filter_desc": "Tiada notifikasi untuk penapis ini.",
-        "empty_title": "Peti masuk kosong",
-        "error_loading": "Gagal memuatkan mesej",
-        "filters": {
-            "all": "Semua",
-            "order": "Pesanan",
-            "payment": "Kewangan",
-            "promotion": "Promosi",
-            "unread": "Belum Dibaca"
-        },
-        "manage_settings": "Tetapan Notifikasi",
-        "mark_all_read": "Tandai Semua Dibaca",
-        "mark_read": "Tandai Dibaca",
-        "mark_read_success": "Berjaya ditandai dibaca",
-        "subtitle": "Pusat Notifikasi",
-        "title": "Notifikasi",
-        "unread_badge": "Belum Dibaca",
-        "view_details": "Lihat Butiran"
-    },
-    "NotificationPreferences": {
-        "channels": {
-            "email": "E-mel",
-            "email_desc": "Terima kemaskini dan resit pembelian melalui e-mel.",
-            "web": "Notifikasi Dalam Aplikasi",
-            "web_desc": "Terima notifikasi dalam aplikasi di laman web."
-        },
-        "save_button": "Simpan Tetapan",
-        "save_success": "Keutamaan berjaya disimpan.",
-        "saving": "Menyimpan...",
-        "subtitle": "Urus cara anda menerima kemaskini dan makluman",
-        "title": "Keutamaan Notifikasi",
-        "types": {
-            "orders": "Kemaskini Pesanan",
-            "orders_desc": "Kemaskini tentang status pesanan dan penyelesaian isu anda.",
-            "promotions": "Promosi",
-            "promotions_desc": "Kemaskini tentang diskaun, acara dan tawaran istimewa."
-        }
-    },
-    "Orders": {
-        "amount_label": "Jumlah Pesanan:",
-        "date_label": "Tarikh Pesanan:",
-        "error_loading": "Gagal memuatkan item pesanan",
-        "filter_title": "Penapis Pesanan",
-        "no_orders": "Belum ada pesanan",
-        "no_orders_desc": "Pesanan lalu anda akan dipaparkan di sini.",
-        "no_search_results": "Tiada pesanan yang sepadan. Sila semak ID pesanan.",
-        "order_id_label": "ID Pesanan:",
-        "search_placeholder": "Cari mengikut ID Pesanan atau Produk",
-        "status": {
-            "all": "Semua",
-            "cancelled": "Dibatalkan",
-            "completed": "Selesai",
-            "pending": "Menunggu Pembayaran",
-            "processing": "Memproses",
-            "refunded": "Dikembalikan"
-        },
-        "subtitle": "Semak sejarah dan jejak pesanan anda",
-        "table": {
-            "amount": "Jumlah",
-            "date": "Tarikh",
-            "order_number": "ID Pesanan",
-            "product": "Butiran Produk",
-            "status": "Status"
-        },
-        "th-TH": "Thai",
-        "title": "Sejarah Pesanan",
-        "view_details": "Lihat Butiran",
-        "view_mode": {
-            "card": "Paparan Kad",
-            "table": "Paparan Jadual"
-        },
-        "view_results": "Tunjukkan Keputusan",
-        "view_short": "Minimumkan"
-    },
-    "OrderDetail": {
-        "actions": {
-            "cancel": "Batalkan Pesanan",
-            "cancel_confirm": "Adakah anda pasti mahu membatalkan pesanan ini?",
-            "cancel_failed": "Gagal membatalkan pesanan",
-            "cancel_hint": "Pembatalan pesanan tidak boleh dibuat asal.",
-            "cancel_success": "Pesanan berjaya dibatalkan.",
-            "cancelling": "Membatalkan...",
-            "need_help": "Perlukan Bantuan?",
-            "report_issue": "Laporkan Isu",
-            "title": "Urus Pesanan"
-        },
-        "back_to_orders": "Kembali ke Sejarah Pesanan",
-        "customer": {
-            "date": "Tarikh Pesanan: ",
-            "email": "E-mel: ",
-            "title": "Butiran Pelanggan",
-            "username": "Pelanggan: "
-        },
-        "delivery": {
-            "completed_at": "Dihantar pada",
-            "status_summary": "Status Penghantaran",
-            "statuses": {
-                "completed": "Berjaya dihantar",
-                "failed": "Penghantaran gagal",
-                "pending": "Dalam barisan",
-                "processing": "Memproses penghantaran..."
-            },
-            "title": "Penghantaran"
-        },
-        "error_loading": "Ralat memuatkan butiran pesanan",
-        "error_not_found": "Pesanan tidak ditemui",
-        "error_not_found_desc": "Sila semak ID Pesanan dan cuba lagi.",
-        "items": {
-            "account_info": "Maklumat Tambahan",
-            "code_label": "Kod Penebusan",
-            "copy_success": "Kod berjaya disalin",
-            "delivery_failed": "Ralat memuatkan item",
-            "delivery_status": "Status Penghantaran Item",
-            "digital_codes": "Kod Digital",
-            "expired_label": "Tamat tempoh pada",
-            "hide_code": "Sembunyikan Kod",
-            "pin_label": "PIN",
-            "quantity": "Kuantiti",
-            "serial_label": "Siri",
-            "show_code": "Tunjukkan Kod",
-            "title": "Item Pesanan",
-            "usage_hint": "Sila simpan kod anda dengan selamat."
-        },
-        "loading": "Memuatkan...",
-        "order_id_label": "ID Pesanan",
-        "payment": {
-            "discount": "Diskaun",
-            "method": "Kaedah Pembayaran",
-            "methods": {
-                "bank_transfer": "Pindahan Bank",
-                "promptpay": "PromptPay",
-                "truemoney": "Dompet TrueMoney",
-                "unknown": "Lain-lain"
-            },
-            "status_paid": "Dibayar",
-            "status_pending": "Pengesahan Tertunda",
-            "subtotal": "Subjumlah",
-            "title": "Ringkasan Pembayaran",
-            "total": "Jumlah Keseluruhan"
-        },
-        "th-TH": "Thai",
-        "title": "Butiran Pesanan"
-    },
-    "errors": {
-        "generic": {
-            "description": "Ralat yang tidak dijangka berlaku. Sila cuba lagi kemudian.",
-            "goHome": "Kembali ke Laman Utama",
-            "title": "Ralat berlaku",
-            "tryAgain": "Cuba Lagi"
-        },
-        "notFound": {
-            "description": "Halaman yang anda cari tidak wujud.",
-            "goBack": "Kembali",
-            "goHome": "Kembali ke Laman Utama",
-            "title": "Halaman Tidak Ditemui"
-        }
-    },
-    "Verification": {
-        "forgot_password": {
-            "back_to_login": "Kembali ke Log Masuk",
-            "email_placeholder": "Masukkan e-mel berdaftar anda...",
-            "error_invalid_email": "Sila masukkan alamat e-mel yang sah",
-            "error_send_failed": "Gagal menghantar pautan set semula",
-            "loading": "Memproses...",
-            "resend_email": "Hantar Semula E-mel",
-            "send_link": "Hantar Pautan Set Semula",
-            "spam_hint": "Sila semak folder spam jika anda tidak menerima e-mel.",
-            "subtitle": "Masukkan e-mel anda untuk menerima pautan set semula kata laluan.",
-            "success_desc": "Pautan set semula kata laluan telah dihantar ke e-mel anda.",
-            "success_title": "E-mel Dihantar",
-            "title": "Lupa Kata Laluan?"
-        },
-        "reset_password": {
-            "back_to_login": "Kembali ke Log Masuk",
-            "confirm_password": "Sahkan kata laluan baharu",
-            "error_expired": "Pautan set semula telah tamat tempoh.",
-            "error_get_new_link": "Minta pautan set semula baharu",
-            "error_invalid": "Kod keselamatan tidak sah atau telah tamat tempoh.",
-            "error_invalid_link": "Pautan pengesahan tidak sah.",
-            "error_invalid_link_desc": "Pautan set semula tidak sah atau telah digunakan.",
-            "loading": "Memproses...",
-            "login_now": "Log Masuk Sekarang",
-            "match_error": "Kata laluan tidak sepadan",
-            "match_success": "Kata laluan sepadan.",
-            "new_password": "Kata laluan baharu",
-            "password_requirements": {
-                "length": "Sekurang-kurangnya 8 aksara",
-                "lowercase": "Sekurang-kurangnya 1 huruf kecil (a-z)",
-                "number": "Sekurang-kurangnya 1 nombor (0-9)",
-                "uppercase": "Sekurang-kurangnya 1 huruf besar (A-Z)"
-            },
-            "redirect_hint": "Mengalihkan...",
-            "reset_button": "Kemaskini Kata Laluan",
-            "strength": "Kekuatan Kata Laluan",
-            "subtitle": "Sila tetapkan kata laluan baharu",
-            "success_desc": "Kata laluan anda telah berjaya dikemaskini. Anda boleh log masuk sekarang.",
-            "success_title": "Kata Laluan Dikemaskini",
-            "title": "Set Semula Kata Laluan",
-            "token": "Token Keselamatan"
-        },
-        "verify_email": {
-            "already_verified_title": "E-mel sudah disahkan.",
-            "back_to_login": "Kembali ke Log Masuk",
-            "contact_support": "Hubungi Sokongan",
-            "email": "E-mel",
-            "error_title": "Pengesahan gagal disebabkan ralat rangkaian",
-            "expired_title": "Pautan pengesahan telah tamat tempoh.",
-            "go_to_account": "Pergi ke Akaun",
-            "go_to_login": "Pergi ke Log Masuk",
-            "invalid_link_desc": "Pautan pengesahan tidak sah atau e-mel sudah disahkan.",
-            "invalid_link_title": "Pautan Pengesahan Tidak Sah",
-            "invalid_token_title": "Token Tidak Sah",
-            "loading": "Mengesahkan e-mel anda...",
-            "loading_desc": "Sila tunggu sebentar...",
-            "redirect_hint": "Mengalihkan ke Laman Utama...",
-            "resend_button": "Hantar Semula E-mel Pengesahan",
-            "resend_success": "E-mel pengesahan berjaya dihantar.",
-            "sending": "Menghantar e-mel...",
-            "spam_hint": "Sila semak folder spam anda.",
-            "success_title": "E-mel Berjaya Disahkan",
-            "title": "Sahkan Alamat E-mel",
-            "token": "Token Keselamatan"
-        }
-    },
-    "ProductDetail": {
-        "about_product": "Penerangan Produk",
-        "account_info_title": "Maklumat Akaun",
-        "auto_delivery_hint": "Penghantaran Automatik Serta-merta",
-        "back": "Kembali",
-        "buy_now_button": "Beli Sekarang",
-        "by_developer": "Pembangun: ",
-        "cancel_button": "Batal",
-        "change_button": "Tukar Pilihan",
-        "close_window_button": "Tutup Tetingkap",
-        "confirm_button": "Sahkan Pembayaran",
-        "confirm_hint": "Sila sahkan pilihan anda sebelum mengesahkan.",
-        "confirm_order_title": "Ringkasan Pesanan",
-        "confirm_selection_button": "Sahkan Pilihan",
-        "copy_link_failed": "Gagal menyalin. Sila cuba lagi.",
-        "copy_link_success": "Pautan berjaya disalin",
-        "developer": "Pembangun",
-        "error": {
-            "enter_phone": "Sila masukkan nombor telefon 10 digit yang sah.",
-            "fill_all_fields": "Sila isi semua medan yang diperlukan.",
-            "invalid_phone": "Nombor telefon yang dimasukkan tidak sah.",
-            "login_required": "Sila log masuk untuk meneruskan transaksi anda.",
-            "no_payment_link": "Gagal menjana pautan pembayaran. Sila cuba lagi.",
-            "not_found": "Produk tidak ditemui",
-            "not_found_desc": "Produk yang diminta tidak wujud atau sudah tidak tersedia.",
-            "order_success_redirect": "Transaksi berjaya. Mengalihkan ke laman utama...",
-            "payment_error": "Proses pembayaran gagal",
-            "payment_failed": "Tidak dapat mengesahkan maklumat pembayaran",
-            "payment_method_unavailable": "Kaedah pembayaran ini tidak tersedia buat masa ini.",
-            "phone_region_mismatch": "Nombor telefon luar negara tidak disokong",
-            "player_id_invalid": "ID Pemain tidak sah. Sila sahkan dan cuba lagi.",
-            "select_option": "Sila pilih pakej untuk meneruskan.",
-            "truemoney_minimum": "Dompet TrueMoney memerlukan minimum 20 THB."
-        },
-        "fee_label": "Yuran",
-        "form": "Butiran",
-        "game_info": "Butiran Permainan",
-        "input": "Masukkan Maklumat",
-        "login_required_notice": "Log masuk untuk lihat diskaun eksklusif",
-        "login_to_buy_button": "Log Masuk untuk Beli",
-        "meta": "Tag",
-        "mobile_number_label": "Nombor Dompet",
-        "mobile_number_placeholder": "08x-xxx-xxxx",
-        "no_options": "Tiada pakej tersedia",
-        "no_options_desc": "Tiada pakej tersedia untuk produk ini pada masa ini.",
-        "no_refund_warning_desc": "Pesanan yang selesai tidak boleh dikembalikan. Sila sahkan butiran anda sebelum mengesahkan.",
-        "no_refund_warning_title": "Notis Tidak Boleh Dikembalikan",
-        "no_similar_found": "Tiada produk yang serupa ditemui.",
-        "payment_method_label": "Kaedah Pembayaran: ",
-        "payment_selection_desc": "Pilih kaedah pembayaran pilihan anda",
-        "payment_selection_title": "Pilihan Pembayaran",
-        "platforms": "Platform Disokong",
-        "popular_badge": "Terlaris",
-        "price_label": "Harga:",
-        "privacy_label": "Dasar Privasi",
-        "product_details_title": "Butiran Produk",
-        "publisher": "Penerbit",
-        "purchase_summary": "Ringkasan Pesanan",
-        "refund_label": "Dasar Bayaran Balik",
-        "related_products": "Anda Mungkin Juga Suka",
-        "release_date": "Tarikh Keluaran",
-        "savings_label": "Anda Jimat: ",
-        "secure_payment_notice": "Pembayaran 100% Selamat",
-        "select_package": "Pilih Pakej",
-        "selected_package_label": "Pakej Dipilih",
-        "similar_products": "Produk Serupa",
-        "subtotal_label": "Subjumlah: ",
-        "terms_agreement_prefix": "Dengan meneruskan, anda bersetuju dengan ",
-        "terms_label": "Terma Penggunaan",
-        "th-TH": "Thai",
-        "topup_options": "Pilihan Top-up",
-        "total_label": "Jumlah Keseluruhan: ",
-        "transaction_summary_title": "Ringkasan Kewangan",
-        "unknown": "Tidak dinyatakan",
-        "unverified_account_warning": "Sila sahkan e-mel anda sebelum membuat pembelian.",
-        "verify_info_hint": "Sila sahkan ID Pemain anda dengan teliti sebelum meneruskan."
-    },
-    "News": {
-        "all_news": "Semua Berita",
-        "categories": {
-            "event": "Acara",
-            "general": "Umum",
-            "promotion": "Promosi",
-            "update": "Kemaskini"
-        },
-        "featured": "Berita Pilihan",
-        "featured_badge": "Pilihan",
-        "no_news": "Tiada artikel berita tersedia pada masa ini.",
-        "subtitle": "Kemaskini dan pengumuman terkini",
-        "title": "Berita & Pengumuman",
-        "view_count": "Tontonan"
-    },
-    "NewsDetail": {
-        "back_to_news": "Kembali ke Berita",
-        "error_loading": "Gagal memuatkan artikel",
-        "error_not_found": "Artikel Berita Tidak Ditemui",
-        "error_not_found_desc": "Artikel yang anda cari tidak wujud atau telah dialih keluar.",
-        "featured_badge": "Trending",
-        "last_updated": "Kemaskini Terakhir: ",
-        "other_news": "Berita Berkaitan",
-        "sources": "Sumber",
-        "views": "Tontonan: "
-    },
-    "PaymentPending": {
-        "a": " ",
-        "loading": "Memuatkan status pembayaran...",
-        "orderId": "ID Pesanan:",
-        "order_id": "ID Pesanan:",
-        "payment_failed": "Pembayaran Gagal",
-        "payment_failed_desc": "Sila cuba proses pembayaran anda sekali lagi.",
-        "payment_success": "Pembayaran Berjaya",
-        "qr_expired": "Kod QR Tamat Tempoh",
-        "qr_expired_desc": "Sila batalkan dan cipta pesanan baharu.",
-        "redirecting": "Mengalihkan...",
-        "referenceNo": "No Rujukan: ",
-        "reference_no": "Rujukan: ",
-        "time_remaining": "Masa Berbaki: ",
-        "try_again": "Cuba Lagi",
-        "view_orders": "Lihat Sejarah Pesanan"
-    },
-    "PaymentSuccess": {
-        "back_home": "Kembali ke Laman Utama",
-        "delivery_notice": "Pesanan anda sedang diproses dan akan dihantar tidak lama lagi.",
-        "orderId": "ID Pesanan:",
-        "order_number": "Nombor Pesanan",
-        "processing_badge": "Memproses Penghantaran",
-        "referenceNo": "Ruj: ",
-        "session_id": "ID Sesi",
-        "subtitle": "Pembayaran anda telah diterima. Kami sedang menyediakan pesanan anda.",
-        "title": "Pembayaran Berjaya!",
-        "view_order": "Lihat Status Pesanan"
-    },
-    "Navigation": {
-        "account": "Akaun Saya",
-        "card": "Kad Prabayar",
-        "faq": "Soalan Lazim",
-        "favorite": "Kegemaran",
-        "games": "Top-up Permainan",
-        "home": "Laman Utama",
-        "login": "Log Masuk",
-        "mobile_recharge": "Top-up Mudah Alih",
-        "news": "Berita",
-        "orders": "Sejarah Pesanan",
-        "register": "Daftar",
-        "support": "Sokongan"
-    },
-    "SupportContact": {
-        "form": {
-            "email": "E-mel Anda",
-            "message": "Mesej",
-            "name": "Nama Anda",
-            "send": "Hantar Mesej",
-            "sending": "Menghantar...",
-            "subject": "Subjek",
-            "success": "Mesej anda telah dihantar. Pasukan kami akan menghubungi anda tidak lama lagi.",
-            "title": "Hubungi Kami melalui E-mel"
-        },
-        "social": {
-            "title": "Hubungi kami di Media Sosial (Facebook / Line / Discord)"
-        },
-        "subtitle": "Hubungi pasukan sokongan kami untuk bantuan",
-        "title": "Hubungi Sokongan (24/7)"
-    },
-    "SupportFAQ": {
-        "all": "Semua Kategori",
-        "back_to_faq": "Kembali ke Soalan Lazim",
-        "categories": {
-            "_base": "Kategori"
-        },
-        "need_help": {
-            "title": "Perlukan Bantuan?",
-            "description": "Tidak jumpa apa yang anda cari?",
-            "contact_support": "Hubungi Sokongan"
-        },
-        "no": "Tidak membantu",
-        "no_results": "Tiada keputusan ditemui.",
-        "search_placeholder": "Cari jawapan...",
-        "subtitle": "Cari jawapan pantas untuk soalan lazim",
-        "title": "Soalan Lazim",
-        "view_all": "Lihat Semua",
-        "yes": "Membantu"
-    },
-    "SupportFAQDetail": {
-        "back_to_faq": "Kembali ke Soalan Lazim",
-        "contact_support": "Hubungi Sokongan",
-        "contact_support_desc": "Jika anda memerlukan bantuan lanjut, sila hubungi pasukan sokongan kami.",
-        "error": {
-            "_base": "Gagal memuatkan kandungan."
-        },
-        "helpful": "Adakah artikel ini membantu?",
-        "last_updated": "Kemaskini Terakhir",
-        "loading": "Memuatkan...",
-        "no": "Tidak membantu",
-        "still_need_help": "Masih perlukan bantuan?",
-        "thank_you": "Terima kasih atas maklum balas anda.",
-        "views": "Tontonan: ",
-        "yes": "Membantu"
-    },
-    "Support": {
-        "categories": {
-            "faq": {
-                "description": "Cari penyelesaian pantas dan jawapan untuk soalan lazim.",
-                "title": "Soalan Lazim"
-            },
-            "tickets": {
-                "description": "Laporkan isu berkaitan pesanan, pembayaran atau akaun anda.",
-                "title": "Hantar Tiket"
-            }
-        },
-        "common_issues": {
-            "title": "Isu Biasa"
-        },
-        "contact_methods": "Kaedah Hubungan",
-        "subtitle": "Pilih topik di bawah atau hubungi pasukan sokongan kami secara terus.",
-        "title": "Pusat Bantuan",
-        "urgent_help": {
-            "description": "Untuk bantuan segera, hubungi pasukan sokongan kami melalui Live Chat atau Line.",
-            "title": "Sokongan Segera"
-        },
-        "visit": "Lihat",
-        "working_hours": {
-            "mon_fri": "Isnin - Jumaat (Perkhidmatan Biasa)",
-            "sat_sun": "Sabtu - Ahad (Maklum balas mungkin sedikit lambat)",
-            "time_mon_fri": "09:00 - 00:00 (GMT+7)",
-            "time_sat_sun": "09:00 - 19:00 (GMT+7)",
-            "timezone": "Zon Waktu (GMT+7)",
-            "title": "Waktu Sokongan"
-        }
-    },
-    "SupportTickets": {
-        "back": "Kembali ke Tiket",
-        "create": {
-            "cancel": "Batal",
-            "categories": {
-                "account": "Isu Akaun",
-                "general": "Pertanyaan Umum",
-                "order": "Isu Pesanan",
-                "payment": "Isu Pembayaran",
-                "product": "Isu Produk",
-                "refund": "Permintaan Bayaran Balik",
-                "technical": "Sokongan Teknikal"
-            },
-            "category": "Kategori",
-            "description": "Penerangan Masalah",
-            "description_label": "Terangkan isu anda secara terperinci",
-            "description_placeholder": "Sila terangkan isu yang anda alami...",
-            "order_ref": "ID Pesanan (Pilihan)",
-            "order_ref_placeholder": "Pesanan #999999",
-            "subject_placeholder": "Subjek Ringkas",
-            "submit": "Hantar Tiket",
-            "title": "Cipta Tiket Baharu"
-        },
-        "create_new": "Cipta Tiket Baharu",
-        "created_at": "Dicipta pada",
-        "detail": {
-            "closed_notice": "Tiket ini telah ditutup. Anda tidak boleh membalas lagi.",
-            "reply": "Balas",
-            "send_reply": "Hantar Mesej"
-        },
-        "disabled": {
-            "cta": "Kembali ke Laman Utama",
-            "description": "Sistem tiket sokongan tidak tersedia buat masa ini.",
-            "title": "Sistem Tidak Tersedia"
-        },
-        "no_tickets": "Anda belum menghantar sebarang tiket sokongan.",
-        "order_ref_label": "ID Rujukan Pesanan (Membantu kami menyelesaikan isu anda dengan lebih pantas)",
-        "select_ticket": "Pilih Tiket",
-        "select_ticket_desc": "Pilih tiket dari senarai untuk melihat butiran.",
-        "status": {
-            "all": "Semua Tiket",
-            "closed": "Ditutup",
-            "open": "Dibuka",
-            "pending": "Menunggu",
-            "resolved": "Diselesaikan",
-            "waiting_admin": "Menunggu Sokongan",
-            "waiting_user": "Menunggu Pengguna"
-        },
-        "subtitle": "Urus permintaan sokongan anda",
-        "support_team": "Pasukan Sokongan",
-        "system": "Notis Automatik Sistem",
-        "title": "Tiket Sokongan",
-        "user_you": "Anda"
-    },
-    "UserMenu": {
-        "account_menu": "Menu Akaun",
-        "credits": "Kredit Saya",
-        "favorite": "Kegemaran",
-        "h-full": "",
-        "logout": "Log Keluar",
-        "menu": "Menu Pengguna",
-        "my_account": "Akaun Saya",
-        "my_coupons": "Kupon Saya",
-        "my_invoices": "Invois",
-        "my_orders": "Sejarah Pesanan",
-        "notifications": "Notifikasi",
-        "open_menu": "Buka Menu"
-    },
-    "CookieNotice": {
-        "acknowledge": "Terima",
-        "ariaClose": "Tutup notis",
-        "description": "Lnwtermgame menggunakan kuki untuk meningkatkan pengalaman pelayaran anda, mengoptimumkan prestasi laman dan menyampaikan promosi yang diperibadikan.",
-        "items": [
-            "Kuki penting (diperlukan untuk fungsi asas laman web)",
-            "Kuki analitik (digunakan untuk mengukur dan meningkatkan platform kami)"
-        ],
-        "noTawkItem": "Sokongan Live Chat tidak tersedia pada masa ini.",
-        "privacy": "Dasar Privasi",
-        "tawkItem": "Kuki Live Chat (Tawk.to) untuk interaksi sokongan pelanggan yang pantas.",
-        "title": "⚙️ Keutamaan Kuki"
-    },
-    "Footer": {
-        "about_us": "Tentang Kami",
-        "contact_us": "Hubungi Kami",
-        "copyright": "Hak Cipta",
-        "language_thai": "Thai",
-        "partners": "Rakan Kongsi",
-        "customer": "Khidmat Pelanggan",
-        "policies": "Polisi",
-        "services": "Perkhidmatan",
-        "payment_inquiry": "Pertanyaan Pembayaran",
-        "payment_issues": "Pembayaran & Isu",
-        "sale_inquiry": "Pertanyaan Perniagaan",
-        "copyright_notice": "Hak Cipta Terpelihara",
-        "create_ticket": "Hantar Tiket Sokongan",
-        "faq": "Soalan Lazim",
-        "features": {
-            "payment": "Pelbagai Pilihan Pembayaran",
-            "payment_desc": "Top-up mudah dengan Dompet TrueMoney dan PromptPay tanpa caj tambahan.",
-            "price": "Harga Terbaik",
-            "price_desc": "Nikmati promosi eksklusif dan kadar terbaik untuk top-up permainan.",
-            "security": "100% Selamat",
-            "security_desc": "Platform kami menggunakan enkripsi gred tinggi untuk memastikan transaksi anda selamat.",
-            "support": "Sokongan Pelanggan 24/7",
-            "support_desc": "Pasukan kami sedia membantu anda pada bila-bila masa.",
-            "delivery": "Penghantaran Pantas"
-        },
-        "live_chat": "Live Chat",
-        "payment_channels": "Kaedah Pembayaran",
-        "privacy_policy": "Privasi & Kuki",
-        "quick_links": "Pautan Pantas",
-        "refund_policy": "Dasar Bayaran Balik",
+    "email": {
+      "categories": {
+        "authentication": "Pengesahan",
+        "general": "Umum",
+        "order": "Pesanan",
+        "payment": "Pembayaran",
+        "promotion": "Promosi",
         "support": "Sokongan",
-        "support_center": "Pusat Bantuan",
-        "supported_payments": "Platform Pembayaran Disokong",
-        "tagline": "Lnwtermgame, platform top-up permainan dan kad prabayar terkemuka di Thailand yang pantas dan selamat.",
-        "terms_of_service": "Terma Perkhidmatan"
+        "system": "Sistem"
+      },
+      "placeholders": {
+        "discountAmount": "Jumlah Diskaun",
+        "email": "E-mel",
+        "expiresIn": "Tamat tempoh dalam",
+        "finalAmount": "Jumlah Akhir",
+        "orderDate": "Tarikh Pesanan",
+        "orderNumber": "Nombor Pesanan",
+        "resetUrl": "URL Set Semula",
+        "siteName": "Nama Laman",
+        "ticketNumber": "Nombor Tiket",
+        "totalAmount": "Jumlah Keseluruhan",
+        "username": "Nama Pengguna",
+        "verificationUrl": "URL Pengesahan"
+      }
     },
-    "Header": {
-        " ": " ",
-        "/": "/",
-        "articles": "Artikel",
-        "dealers": "Peniaga",
-        "all_games": "Semua Permainan",
-        "cart": "Troli Beli-belah",
-        "contact_us": "Hubungi Kami",
-        "credits": "Kredit",
-        "direct_topup": "Top-up Permainan",
-        "gift_cards": "Kad Hadiah",
-        "login": "Log Masuk",
-        "logout": "Log Keluar",
-        "mobile_recharge": "Top-up Mudah Alih",
-        "my_account": "Akaun Saya",
-        "news": "Berita & Promosi",
-        "notifications": "Notifikasi",
-        "order_history": "Sejarah Pesanan",
-        "search_placeholder": "Cari permainan atau kad..."
+    "logo": "Logo",
+    "monitor": "Pemantau Sistem",
+    "newsItems": "Item Berita",
+    "oauth": {
+      "load_error": "Ralat memuatkan data OAuth"
     },
-    "Search": {
-        "aria_label_clear": "Kosongkan",
-        "aria_label_remove_history": "Kosongkan Sejarah Carian",
-        "aria_label_search": "Cari",
-        "no_results_for": "Tiada keputusan ditemui untuk...",
-        "placeholder": "Cari...",
-        "placeholder_advanced": "Cari permainan, kad atau artikel...",
-        "recent_searches": "Carian Terkini",
-        "search_results": "Keputusan Carian: ",
-        "view_all_results_for": "Lihat semua keputusan untuk"
+    "order_detail": {
+      "back_to_orders": "Kembali ke pesanan",
+      "items": "Item",
+      "order_date": "Tarikh Pesanan",
+      "order_status": "Status Pesanan",
+      "subtitle": "Butiran dan status pesanan",
+      "title": "Butiran Pesanan"
     },
-    "Products": {
-        "recommended": "Pakej Disyorkan"
+    "orders": {
+      "actions": "Tindakan",
+      "amount": "Jumlah",
+      "customer": "Pelanggan",
+      "date": "Tarikh",
+      "no_orders": "Tiada pesanan",
+      "order_id": "ID Pesanan",
+      "product": "Produk",
+      "search_placeholder": "Cari pesanan...",
+      "status": {
+        "all": "Semua",
+        "cancelled": "Dibatalkan",
+        "completed": "Selesai",
+        "failed": "Gagal",
+        "pending": "Menunggu",
+        "processing": "Memproses",
+        "refunded": "Dikembalikan"
+      },
+      "status_text": "Status",
+      "subtitle": "Urus semua pesanan dalam sistem",
+      "title": "Pesanan"
     },
-    "promotions": "Promosi",
-    "how_to_use": {
-        "title": "Cara Menggunakan"
+    "promoCards": "Kad Promo",
+    "seasonalEvents": "Acara Bermusim",
+    "settings": {
+      "section_labels": {
+        "featured_products": "Produk Pilihan",
+        "hero_button": "Butang Hero",
+        "news": "Berita",
+        "specials": "Istimewa",
+        "view_all": "Lihat Semua"
+      }
     },
-    "topup_system": "Sistem Top-up",
+    "th-TH": "Thai",
+    "tickets": {
+      "all_assignees": "Semua Penerima Tugas",
+      "categories": {
+        "all": "Semua kategori",
+        "order_issue": "Isu Pesanan",
+        "payment_issue": "Isu Pembayaran",
+        "product_issue": "Isu Produk",
+        "account_issue": "Isu Akaun",
+        "technical_support": "Sokongan Teknikal",
+        "refund_request": "Permintaan Bayaran Balik",
+        "general_inquiry": "Pertanyaan Umum"
+      },
+      "priorities": {
+        "high": "Tinggi",
+        "urgent": "Segera"
+      },
+      "status": {
+        "open": "Dibuka",
+        "in_progress": "Sedang Diproses",
+        "waiting_user": "Menunggu Pengguna",
+        "waiting_admin": "Menunggu Admin",
+        "resolved": "Diselesaikan",
+        "closed": "Ditutup"
+      },
+      "unassigned": "Belum Ditugaskan"
+    }
+  },
+  "Catalog": {
+    "card": {
+      "subtitle": "Permainan popular",
+      "title": "Pilih permainan anda"
+    },
+    "cta_buy": "Beli Sekarang",
+    "cta_topup": "Top Up Sekarang",
+    "filter_category": "Tapis kategori",
     "games": {
-        "title": "Semua Permainan"
+      "subtitle": "Semua permainan tersedia",
+      "title": "Permainan"
     },
-    "lucky_games": "Permainan Nasib",
-    "nav_game_topup": "Top-Up Permainan",
-    "nav_prepaid_card": "Kad Prabayar",
-    "nav_mobile_topup": "Top-Up Mudah Alih",
-    "search_placeholder": "Cari permainan atau kad...",
-    "admin_panel": "Panel Admin",
-    "my_account": "Akaun Saya",
-    "credits": "Kredit",
-    "order_history": "Sejarah Pesanan",
-    "logout": "Log Keluar",
-    "login_button": "Log Masuk / Daftar",
-    "Admin": {
-        "nav": {
-            "main": "Papan Pemuka",
-            "products_sales": "Produk & Jualan",
-            "content": "Pengurusan Kandungan",
-            "users_communication": "Pengguna & Komunikasi",
-            "system": "Tetapan Sistem"
-        },
-        "admin_cp": "Panel Kawalan Admin",
-        "admin": "Pentadbir",
-        "dashboard": "Papan Pemuka",
-        "analytics": "Analitik",
-        "products": "Inventori",
-        "categories": "Kategori",
-        "orders": "Pesanan",
-        "payments": "Hab Kewangan",
-        "cms_pages": "Halaman Kandungan",
-        "news": "Pengurusan Berita",
-        "manage_faq": "Pengurusan Soalan Lazim",
-        "images": "Galeri Imej",
-        "manage_users": "Pengurusan Pengguna",
-        "support_tickets": "Tiket Sokongan",
-        "notifications": "Notifikasi Sistem",
-        "email": "Protokol E-mel",
-        "settings": "Konfigurasi Sistem",
-        "oauth": "Perkhidmatan OAuth",
-        "pin": "Pin menu",
-        "unpin": "Unpin menu",
-        "switch_dark": "Switch to dark",
-        "switch_light": "Switch to light",
-        "status": {
-            "completed": "Completed",
-            "pending": "Pending",
-            "processing": "Processing",
-            "failed": "Failed",
-            "cancelled": "Cancelled",
-            "refunded": "Refunded",
-            "active": "Active",
-            "inactive": "Inactive",
-            "low_stock": "Low stock",
-            "out_of_stock": "Out of stock",
-            "banned": "Banned",
-            "unknown": "Unknown"
-        },
-        "pagination": {
-            "showing": "Showing {start}–{end} of {total}",
-            "empty": "No items",
-            "prev": "Previous",
-            "next": "Next"
-        },
-        "table": {
-            "empty": "No data"
-        }
+    "loading": "Memuatkan...",
+    "mobile": {
+      "subtitle": "Top-up pantas untuk mudah alih",
+      "title": "Permainan Mudah Alih"
     },
-    "hero_zzz_subtitle": "Top Up Zenless Zone Zero",
-    "hero_zzz_highlight_text": "Sehingga",
-    "hero_genshin_subtitle": "Top Up Genshin Impact",
-    "hero_genshin_highlight_text": "Sehingga",
-    "hero_btn_text": "Top Up Sekarang",
-    "category_popular_games": "Permainan Popular",
-    "category_all_games": "Semua Permainan",
-    "category_check_skin": "Skin Bertuah",
-    "category_game_card": "Kad Permainan",
-    "category_lucky_game": "Cabutan Bertuah",
-    "special_offers": "Tawaran Istimewa",
-    "popular_games": "Top-Up Permainan Popular",
+    "no_results": "Tiada keputusan ditemui",
+    "no_results_desc": "Cuba cari dengan kata kunci lain",
+    "search": "Cari permainan",
+    "search_placeholder": "Taip nama permainan...",
+    "sort": {
+      "all": "Semua"
+    }
+  },
+  "Checkout": {
+    "browse_products": "Lihat produk",
+    "confirm_order": "Sahkan Pesanan",
+    "continue_shopping": "Teruskan Membeli-belah",
+    "direct_topup": "Top Up Terus",
+    "empty_cart": "Troli anda kosong",
+    "empty_cart_desc": "Layari katalog kami untuk mencari permainan kegemaran anda.",
+    "error": {
+      "fill_all_fields": "Sila isi semua medan yang diperlukan",
+      "generic_failed": "Transaksi gagal. Sila cuba lagi.",
+      "order_failed": "Gagal mencipta pesanan",
+      "player_id_invalid": "ID Pemain tidak sah",
+      "product_changed": "Data produk telah berubah. Sila muat semula halaman."
+    },
+    "fill_required_fields": "Sila isi medan yang diperlukan",
+    "gift_card": "Kad Hadiah",
+    "grand_total": "Jumlah Besar",
+    "info_complete": "Maklumat lengkap",
+    "loading": "Memproses...",
+    "order_summary": "Ringkasan Pesanan",
+    "per_item": "setiap satu",
+    "quantity": "Kuantiti",
+    "subtitle": "Semak dan teruskan ke pembayaran",
+    "terms_agreement": "Saya telah membaca dan bersetuju dengan",
+    "terms_of_service": "Terma Perkhidmatan",
+    "title": "Pembayaran",
+    "total": "Jumlah"
+  },
+  "Account": {
+    "account_settings": "Tetapan Akaun",
+    "email_label": "E-mel anda",
+    "my_orders": "Pesanan Saya",
+    "no_recent_purchases": "Tiada pembelian terkini",
+    "not_verified": "Belum Disahkan",
+    "order_status": {
+      "completed": "Selesai",
+      "pending": "Menunggu Pembayaran",
+      "processing": "Memproses",
+      "refunded": "Dikembalikan"
+    },
+    "recent_purchases": "Pembelian Terkini",
+    "security": "Keselamatan",
+    "send_failed": "Gagal menghantar e-mel pengesahan",
+    "send_verification": "Hantar e-mel pengesahan",
+    "sending": "Menghantar...",
+    "spam_hint": "Jika tidak nampak e-mel, sila semak folder spam.",
+    "subtitle": "Urus profil dan jejak pesanan anda",
+    "title": "Akaun Saya",
+    "verification_sent": "Pautan pengesahan dihantar",
+    "verified": "Disahkan",
+    "verify_email_banner": "Sila sahkan e-mel anda untuk akses penuh",
+    "verify_email_desc": "Pengesahan e-mel memastikan pemulihan akaun yang selamat dan penjejakan pesanan yang tepat.",
+    "view_all_orders": "Lihat semua pesanan",
+    "wait_cooldown": "Sila tunggu sebentar sebelum mencuba lagi"
+  },
+  "Security": {
+    "additional_settings": {
+      "login_notifications": "Notifikasi Log Masuk",
+      "login_notifications_desc": "Terima notifikasi apabila peranti baharu log masuk ke akaun anda.",
+      "title": "Tetapan Tambahan"
+    },
+    "change_password": {
+      "button_cancel": "Batal",
+      "button_change": "Tukar Kata Laluan",
+      "button_saving": "Menyimpan...",
+      "button_setup": "Tetapkan Kata Laluan",
+      "confirm_label": "Sahkan Kata Laluan",
+      "current_label": "Kata Laluan Semasa",
+      "error_change_failed": "Gagal menukar kata laluan",
+      "error_otp_failed": "OTP tidak sah",
+      "error_setup_failed": "Gagal menetapkan kata laluan",
+      "length_hint": "Sekurang-kurangnya 8 aksara",
+      "match_error": "Kata laluan tidak sepadan",
+      "new_label": "Kata Laluan Baharu",
+      "oauth_notice": "Anda log masuk melalui akaun sosial. Anda boleh menetapkan kata laluan standard di sini.",
+      "otp_label": "Kod OTP",
+      "otp_sent_success": "OTP berjaya dihantar",
+      "otp_wait": "Sila tunggu...",
+      "request_otp": "Minta OTP",
+      "resend_otp": "Hantar Semula OTP",
+      "setup_confirm_label": "Sahkan Kata Laluan",
+      "setup_title": "Tetapkan Kata Laluan",
+      "success_setup": "Kata laluan berjaya ditetapkan",
+      "title": "Tukar Kata Laluan"
+    },
+    "error_email_not_found": "E-mel tidak ditemui",
+    "recent_devices": {
+      "logout_all": "Log keluar dari semua peranti lain",
+      "processing": "Memproses...",
+      "title": "Peranti Terkini"
+    },
+    "subtitle": "Urus keselamatan dan kata laluan anda",
+    "suspicious_activity": {
+      "admin_location": "Menunggu",
+      "confirm_button": "Sahkan Aktiviti",
+      "resolved_badge": "Diselesaikan",
+      "title": "Aktiviti Mencurigakan"
+    },
+    "title": "Keselamatan",
+    "two_factor": {
+      "coming_soon": "Akan Datang",
+      "setup_button": "Sediakan 2FA",
+      "subtitle": "Tambah lapisan keselamatan tambahan",
+      "title": "Pengesahan Dua Faktor (2FA)"
+    }
+  },
+  "Common": {
+    "already_verified_title": "Sudah disahkan",
+    "back_to_login": "Kembali ke Log Masuk",
+    "confirm_password": "Sahkan kata laluan",
+    "contact_support": "Hubungi Sokongan",
+    "email": "E-mel",
+    "email_placeholder": "contoh@e-mel.com",
+    "error_expired": "Pautan ini telah tamat tempoh",
+    "error_get_new_link": "Minta pautan baharu",
+    "error_invalid": "Maklumat tidak sah",
+    "error_invalid_email": "Format e-mel tidak sah",
+    "error_invalid_link": "Pautan tidak sah",
+    "error_invalid_link_desc": "Pautan yang anda gunakan tidak sah atau telah tamat tempoh.",
+    "error_occurred": "Ralat berlaku",
+    "error_send_failed": "Gagal menghantar data",
+    "error_title": "Gagal",
+    "expired_title": "Permintaan Tamat Tempoh",
+    "go_to_account": "Pergi ke Akaun",
+    "go_to_login": "Pergi ke Log Masuk",
+    "invalid_link_desc": "Pautan tidak sah. Sila semak semula.",
+    "invalid_link_title": "Pautan Tidak Sah",
+    "invalid_token_title": "Token Tidak Sah",
+    "loading": "Memuatkan...",
+    "loading_desc": "Sila tunggu sebentar",
+    "login_now": "Log Masuk Sekarang",
+    "match_error": "Data tidak sepadan",
+    "match_success": "Data sepadan",
+    "member": "Ruang Ahli",
+    "new_password": "Kata Laluan Baharu",
+    "password_requirements": {
+      "length": "Sekurang-kurangnya 8 aksara",
+      "lowercase": "Sekurang-kurangnya 1 huruf kecil",
+      "number": "Sekurang-kurangnya 1 nombor",
+      "uppercase": "Sekurang-kurangnya 1 huruf besar"
+    },
+    "redirect_hint": "Mengalihkan...",
+    "resend_button": "Hantar Semula",
+    "resend_email": "Hantar Semula E-mel",
+    "resend_success": "Berjaya dihantar",
+    "reset_button": "Set Semula",
+    "send_link": "Hantar Pautan",
+    "sending": "Memproses...",
+    "spam_hint": "Semak folder spam jika anda tidak menerima e-mel.",
+    "strength": "Kekuatan Kata Laluan",
+    "subtitle": "Penerangan ringkas",
+    "success_desc": "Transaksi Berjaya",
+    "success_title": "Berjaya",
+    "title": "Tajuk",
+    "token": "Token Keselamatan"
+  },
+  "Coupons": {
+    "add_coupon": "Tambah Kupon",
+    "add_failed": "Gagal menambah kupon",
+    "add_success": "Kupon berjaya ditambah",
+    "code_label": "Kod Kupon",
+    "details": {
+      "copied": "Disalin",
+      "copy_code": "Salin Kod",
+      "discount": "Diskaun",
+      "max_discount": "Diskaun Maksimum",
+      "min_purchase": "Pembelian Minimum",
+      "no_min_purchase": "Tiada pembelian minimum",
+      "title": "Butiran Kupon",
+      "use_now": "Guna Sekarang",
+      "used_at": "Digunakan Pada",
+      "valid_until": "Sah Sehingga"
+    },
+    "example_code": "DISCOUNT20",
+    "expiry_hint": "Kupon mempunyai tempoh sah yang terhad.",
+    "filter": {
+      "active": "Aktif",
+      "all": "Semua",
+      "expired": "Tamat Tempoh",
+      "used": "Telah Diguna"
+    },
+    "how_to_use": {
+      "step1": "Pilih produk anda",
+      "step2": "Masukkan kod semasa pembayaran",
+      "step3": "Sahkan diskaun sebelum membayar",
+      "title": "Cara Menggunakan"
+    },
+    "invalid_code": "Kod Tidak Sah",
+    "no_coupons": "Tiada Kupon",
+    "no_coupons_desc": "Anda tidak mempunyai sebarang kupon diskaun pada masa ini.",
+    "no_search_results": "Tiada kupon yang sepadan dengan carian anda.",
+    "not_found": "Kupon tidak ditemui",
+    "search_placeholder": "Cari kupon...",
+    "start_shopping": "Mula Membeli-belah",
+    "status": {
+      "active": "Aktif",
+      "expired": "Tamat Tempoh",
+      "used": "Telah Diguna"
+    },
+    "subtitle": "Urus kupon diskaun anda",
+    "th-TH": "Thai",
+    "title": "Kupon Diskaun",
+    "validating": "Mengesahkan..."
+  },
+  "Credits": {
+    "about": {
+      "step1_desc": "Log masuk dan pergi ke bahagian top-up kredit",
+      "step1_title": "Pilih Pakej",
+      "step2_desc": "Bayar melalui kaedah yang paling mudah",
+      "step2_title": "Buat Pembayaran",
+      "step3_desc": "Kredit ditambah serta-merta ke dompet anda",
+      "step3_title": "Transaksi Berjaya",
+      "title": "Cara top-up kredit"
+    },
+    "balance_label": "Baki:",
+    "earned": "Sejarah Perolehan",
+    "error_loading": "Gagal memuatkan maklumat kredit",
+    "history": {
+      "all": "Semua Transaksi",
+      "empty": "Tiada Sejarah Kredit",
+      "empty_desc": "Tiada transaksi kredit terkini.",
+      "this_month": "Bulan Ini",
+      "this_week": "Minggu Ini",
+      "title": "Sejarah Transaksi"
+    },
+    "spent": "Sejarah Perbelanjaan",
+    "subtitle": "Urus kredit akaun anda",
+    "th-TH": "Thai",
+    "title": "Kredit Saya",
+    "topup_button": "Top Up Kredit",
+    "topup_upcoming": "Pakej Kredit",
+    "total_transactions": "Jumlah Transaksi",
+    "types": {
+      "bonus": "Bonus",
+      "purchase": "Pembelian",
+      "refund": "Bayaran Balik",
+      "topup": "Top-up"
+    },
+    "value_hint": "Nikmati tawaran lebih baik dengan top-up pukal"
+  },
+  "Favorites": {
+    "added_to_cart": "Berjaya ditambah ke troli",
+    "buy_now": "Beli Sekarang",
+    "error_loading": "Gagal memuatkan senarai kegemaran",
+    "found_items": "item ditemui",
+    "no_favorites": "Tiada Item Kegemaran",
+    "no_favorites_desc": "Klik ikon hati pada mana-mana permainan untuk menambahnya ke kegemaran.",
+    "no_search_results": "Tiada kegemaran yang sepadan dengan carian anda.",
+    "remove_failed": "Gagal membuang item",
+    "remove_success": "Berjaya dibuang dari kegemaran",
+    "search_placeholder": "Cari dalam kegemaran...",
+    "start_shopping": "Layari Permainan",
+    "starting_at": "Bermula dari",
+    "subtitle": "Permainan yang anda suka disimpan di sini",
+    "title": "Kegemaran Saya",
+    "view_more": "Lihat butiran"
+  },
+  "Invoices": {
+    "actions": {
+      "download": "Muat Turun",
+      "view": "Lihat Butiran"
+    },
+    "filter": {
+      "all": "Semua Invois",
+      "cancelled": "Dibatalkan",
+      "paid": "Dibayar",
+      "pending": "Menunggu Pembayaran"
+    },
+    "no_invoices": "Tiada Invois",
+    "no_invoices_desc": "Tiada transaksi dibuat lagi.",
+    "no_search_results": "Tiada invois yang sepadan dengan carian anda.",
+    "search_placeholder": "Cari invois...",
+    "status": {
+      "cancelled": "Dibatalkan",
+      "paid": "Dibayar",
+      "pending": "Menunggu"
+    },
+    "subtitle": "Urus rekod invois anda",
+    "table": {
+      "actions": "Tindakan",
+      "amount": "Jumlah",
+      "date": "Tarikh",
+      "invoice_number": "ID Invois",
+      "order_number": "ID Pesanan",
+      "status": "Status"
+    },
+    "th-TH": "Thai",
+    "title": "Invois Anda"
+  },
+  "InvoiceDetail": {
+    "a": " ",
+    "back_to_list": "Kembali ke Senarai",
+    "copy_success": "Berjaya disalin",
+    "customer_info": "Maklumat Pelanggan",
+    "date": "Tarikh Transaksi",
+    "download_pdf": "Muat Turun PDF",
+    "error_not_found": "Invois tidak ditemui",
+    "grand_total": "Bayaran Bersih",
+    "invoice_no": "Nombor Invois",
+    "item_details": "Item Dibeli",
+    "order_no": "Nombor Pesanan",
+    "paid": "Dibayar",
+    "payment_info": "Pembekal",
+    "payment_status": "Status Pembayaran",
+    "price": "Harga",
+    "print": "Cetak Laporan",
+    "product": "Maklumat Produk",
+    "quantity": "Kuantiti",
+    "subtotal": "Subjumlah",
+    "title": "Invois / Resit",
+    "total": "Jumlah Besar",
+    "unpaid": "Belum Dibayar",
+    "vat": "Cukai"
+  },
+  "Notifications": {
+    "delete": "Padam Notifikasi",
+    "delete_success": "Berjaya dipadam",
+    "empty_desc": "Anda tiada notifikasi.",
+    "empty_filter_desc": "Tiada notifikasi untuk penapis ini.",
+    "empty_title": "Peti masuk kosong",
+    "error_loading": "Gagal memuatkan mesej",
+    "filters": {
+      "all": "Semua",
+      "order": "Pesanan",
+      "payment": "Kewangan",
+      "promotion": "Promosi",
+      "unread": "Belum Dibaca"
+    },
+    "manage_settings": "Tetapan Notifikasi",
+    "mark_all_read": "Tandai Semua Dibaca",
+    "mark_read": "Tandai Dibaca",
+    "mark_read_success": "Berjaya ditandai dibaca",
+    "subtitle": "Pusat Notifikasi",
+    "title": "Notifikasi",
+    "unread_badge": "Belum Dibaca",
+    "view_details": "Lihat Butiran"
+  },
+  "NotificationPreferences": {
+    "channels": {
+      "email": "E-mel",
+      "email_desc": "Terima kemaskini dan resit pembelian melalui e-mel.",
+      "web": "Notifikasi Dalam Aplikasi",
+      "web_desc": "Terima notifikasi dalam aplikasi di laman web."
+    },
+    "save_button": "Simpan Tetapan",
+    "save_success": "Keutamaan berjaya disimpan.",
+    "saving": "Menyimpan...",
+    "subtitle": "Urus cara anda menerima kemaskini dan makluman",
+    "title": "Keutamaan Notifikasi",
+    "types": {
+      "orders": "Kemaskini Pesanan",
+      "orders_desc": "Kemaskini tentang status pesanan dan penyelesaian isu anda.",
+      "promotions": "Promosi",
+      "promotions_desc": "Kemaskini tentang diskaun, acara dan tawaran istimewa."
+    }
+  },
+  "Orders": {
+    "amount_label": "Jumlah Pesanan:",
+    "date_label": "Tarikh Pesanan:",
+    "error_loading": "Gagal memuatkan item pesanan",
+    "filter_title": "Penapis Pesanan",
+    "no_orders": "Belum ada pesanan",
+    "no_orders_desc": "Pesanan lalu anda akan dipaparkan di sini.",
+    "no_search_results": "Tiada pesanan yang sepadan. Sila semak ID pesanan.",
+    "order_id_label": "ID Pesanan:",
+    "search_placeholder": "Cari mengikut ID Pesanan atau Produk",
+    "status": {
+      "all": "Semua",
+      "cancelled": "Dibatalkan",
+      "completed": "Selesai",
+      "pending": "Menunggu Pembayaran",
+      "processing": "Memproses",
+      "refunded": "Dikembalikan"
+    },
+    "subtitle": "Semak sejarah dan jejak pesanan anda",
+    "table": {
+      "amount": "Jumlah",
+      "date": "Tarikh",
+      "order_number": "ID Pesanan",
+      "product": "Butiran Produk",
+      "status": "Status"
+    },
+    "th-TH": "Thai",
+    "title": "Sejarah Pesanan",
+    "view_details": "Lihat Butiran",
+    "view_mode": {
+      "card": "Paparan Kad",
+      "table": "Paparan Jadual"
+    },
+    "view_results": "Tunjukkan Keputusan",
+    "view_short": "Minimumkan"
+  },
+  "OrderDetail": {
+    "actions": {
+      "cancel": "Batalkan Pesanan",
+      "cancel_confirm": "Adakah anda pasti mahu membatalkan pesanan ini?",
+      "cancel_failed": "Gagal membatalkan pesanan",
+      "cancel_hint": "Pembatalan pesanan tidak boleh dibuat asal.",
+      "cancel_success": "Pesanan berjaya dibatalkan.",
+      "cancelling": "Membatalkan...",
+      "need_help": "Perlukan Bantuan?",
+      "report_issue": "Laporkan Isu",
+      "title": "Urus Pesanan"
+    },
+    "back_to_orders": "Kembali ke Sejarah Pesanan",
+    "customer": {
+      "date": "Tarikh Pesanan: ",
+      "email": "E-mel: ",
+      "title": "Butiran Pelanggan",
+      "username": "Pelanggan: "
+    },
+    "delivery": {
+      "completed_at": "Dihantar pada",
+      "status_summary": "Status Penghantaran",
+      "statuses": {
+        "completed": "Berjaya dihantar",
+        "failed": "Penghantaran gagal",
+        "pending": "Dalam barisan",
+        "processing": "Memproses penghantaran..."
+      },
+      "title": "Penghantaran"
+    },
+    "error_loading": "Ralat memuatkan butiran pesanan",
+    "error_not_found": "Pesanan tidak ditemui",
+    "error_not_found_desc": "Sila semak ID Pesanan dan cuba lagi.",
+    "items": {
+      "account_info": "Maklumat Tambahan",
+      "code_label": "Kod Penebusan",
+      "copy_success": "Kod berjaya disalin",
+      "delivery_failed": "Ralat memuatkan item",
+      "delivery_status": "Status Penghantaran Item",
+      "digital_codes": "Kod Digital",
+      "expired_label": "Tamat tempoh pada",
+      "hide_code": "Sembunyikan Kod",
+      "pin_label": "PIN",
+      "quantity": "Kuantiti",
+      "serial_label": "Siri",
+      "show_code": "Tunjukkan Kod",
+      "title": "Item Pesanan",
+      "usage_hint": "Sila simpan kod anda dengan selamat."
+    },
+    "loading": "Memuatkan...",
+    "order_id_label": "ID Pesanan",
+    "payment": {
+      "discount": "Diskaun",
+      "method": "Kaedah Pembayaran",
+      "methods": {
+        "bank_transfer": "Pindahan Bank",
+        "promptpay": "PromptPay",
+        "truemoney": "Dompet TrueMoney",
+        "unknown": "Lain-lain"
+      },
+      "status_paid": "Dibayar",
+      "status_pending": "Pengesahan Tertunda",
+      "subtotal": "Subjumlah",
+      "title": "Ringkasan Pembayaran",
+      "total": "Jumlah Keseluruhan"
+    },
+    "th-TH": "Thai",
+    "title": "Butiran Pesanan"
+  },
+  "errors": {
+    "generic": {
+      "description": "Ralat yang tidak dijangka berlaku. Sila cuba lagi kemudian.",
+      "goHome": "Kembali ke Laman Utama",
+      "title": "Ralat berlaku",
+      "tryAgain": "Cuba Lagi"
+    },
+    "notFound": {
+      "description": "Halaman yang anda cari tidak wujud.",
+      "goBack": "Kembali",
+      "goHome": "Kembali ke Laman Utama",
+      "title": "Halaman Tidak Ditemui"
+    }
+  },
+  "Verification": {
+    "forgot_password": {
+      "back_to_login": "Kembali ke Log Masuk",
+      "email_placeholder": "Masukkan e-mel berdaftar anda...",
+      "error_invalid_email": "Sila masukkan alamat e-mel yang sah",
+      "error_send_failed": "Gagal menghantar pautan set semula",
+      "loading": "Memproses...",
+      "resend_email": "Hantar Semula E-mel",
+      "send_link": "Hantar Pautan Set Semula",
+      "spam_hint": "Sila semak folder spam jika anda tidak menerima e-mel.",
+      "subtitle": "Masukkan e-mel anda untuk menerima pautan set semula kata laluan.",
+      "success_desc": "Pautan set semula kata laluan telah dihantar ke e-mel anda.",
+      "success_title": "E-mel Dihantar",
+      "title": "Lupa Kata Laluan?"
+    },
+    "reset_password": {
+      "back_to_login": "Kembali ke Log Masuk",
+      "confirm_password": "Sahkan kata laluan baharu",
+      "error_expired": "Pautan set semula telah tamat tempoh.",
+      "error_get_new_link": "Minta pautan set semula baharu",
+      "error_invalid": "Kod keselamatan tidak sah atau telah tamat tempoh.",
+      "error_invalid_link": "Pautan pengesahan tidak sah.",
+      "error_invalid_link_desc": "Pautan set semula tidak sah atau telah digunakan.",
+      "loading": "Memproses...",
+      "login_now": "Log Masuk Sekarang",
+      "match_error": "Kata laluan tidak sepadan",
+      "match_success": "Kata laluan sepadan.",
+      "new_password": "Kata laluan baharu",
+      "password_requirements": {
+        "length": "Sekurang-kurangnya 8 aksara",
+        "lowercase": "Sekurang-kurangnya 1 huruf kecil (a-z)",
+        "number": "Sekurang-kurangnya 1 nombor (0-9)",
+        "uppercase": "Sekurang-kurangnya 1 huruf besar (A-Z)"
+      },
+      "redirect_hint": "Mengalihkan...",
+      "reset_button": "Kemaskini Kata Laluan",
+      "strength": "Kekuatan Kata Laluan",
+      "subtitle": "Sila tetapkan kata laluan baharu",
+      "success_desc": "Kata laluan anda telah berjaya dikemaskini. Anda boleh log masuk sekarang.",
+      "success_title": "Kata Laluan Dikemaskini",
+      "title": "Set Semula Kata Laluan",
+      "token": "Token Keselamatan"
+    },
+    "verify_email": {
+      "already_verified_title": "E-mel sudah disahkan.",
+      "back_to_login": "Kembali ke Log Masuk",
+      "contact_support": "Hubungi Sokongan",
+      "email": "E-mel",
+      "error_title": "Pengesahan gagal disebabkan ralat rangkaian",
+      "expired_title": "Pautan pengesahan telah tamat tempoh.",
+      "go_to_account": "Pergi ke Akaun",
+      "go_to_login": "Pergi ke Log Masuk",
+      "invalid_link_desc": "Pautan pengesahan tidak sah atau e-mel sudah disahkan.",
+      "invalid_link_title": "Pautan Pengesahan Tidak Sah",
+      "invalid_token_title": "Token Tidak Sah",
+      "loading": "Mengesahkan e-mel anda...",
+      "loading_desc": "Sila tunggu sebentar...",
+      "redirect_hint": "Mengalihkan ke Laman Utama...",
+      "resend_button": "Hantar Semula E-mel Pengesahan",
+      "resend_success": "E-mel pengesahan berjaya dihantar.",
+      "sending": "Menghantar e-mel...",
+      "spam_hint": "Sila semak folder spam anda.",
+      "success_title": "E-mel Berjaya Disahkan",
+      "title": "Sahkan Alamat E-mel",
+      "token": "Token Keselamatan"
+    }
+  },
+  "ProductDetail": {
+    "about_product": "Penerangan Produk",
+    "account_info_title": "Maklumat Akaun",
+    "auto_delivery_hint": "Penghantaran Automatik Serta-merta",
+    "back": "Kembali",
+    "buy_now_button": "Beli Sekarang",
+    "by_developer": "Pembangun: ",
+    "cancel_button": "Batal",
+    "change_button": "Tukar Pilihan",
+    "close_window_button": "Tutup Tetingkap",
+    "confirm_button": "Sahkan Pembayaran",
+    "confirm_hint": "Sila sahkan pilihan anda sebelum mengesahkan.",
+    "confirm_order_title": "Ringkasan Pesanan",
+    "confirm_selection_button": "Sahkan Pilihan",
+    "copy_link_failed": "Gagal menyalin. Sila cuba lagi.",
+    "copy_link_success": "Pautan berjaya disalin",
+    "developer": "Pembangun",
+    "error": {
+      "enter_phone": "Sila masukkan nombor telefon 10 digit yang sah.",
+      "fill_all_fields": "Sila isi semua medan yang diperlukan.",
+      "invalid_phone": "Nombor telefon yang dimasukkan tidak sah.",
+      "login_required": "Sila log masuk untuk meneruskan transaksi anda.",
+      "no_payment_link": "Gagal menjana pautan pembayaran. Sila cuba lagi.",
+      "not_found": "Produk tidak ditemui",
+      "not_found_desc": "Produk yang diminta tidak wujud atau sudah tidak tersedia.",
+      "order_success_redirect": "Transaksi berjaya. Mengalihkan ke laman utama...",
+      "payment_error": "Proses pembayaran gagal",
+      "payment_failed": "Tidak dapat mengesahkan maklumat pembayaran",
+      "payment_method_unavailable": "Kaedah pembayaran ini tidak tersedia buat masa ini.",
+      "phone_region_mismatch": "Nombor telefon luar negara tidak disokong",
+      "player_id_invalid": "ID Pemain tidak sah. Sila sahkan dan cuba lagi.",
+      "select_option": "Sila pilih pakej untuk meneruskan.",
+      "truemoney_minimum": "Dompet TrueMoney memerlukan minimum 20 THB."
+    },
+    "fee_label": "Yuran",
+    "form": "Butiran",
+    "game_info": "Butiran Permainan",
+    "input": "Masukkan Maklumat",
+    "login_required_notice": "Log masuk untuk lihat diskaun eksklusif",
+    "login_to_buy_button": "Log Masuk untuk Beli",
+    "meta": "Tag",
+    "mobile_number_label": "Nombor Dompet",
+    "mobile_number_placeholder": "08x-xxx-xxxx",
+    "no_options": "Tiada pakej tersedia",
+    "no_options_desc": "Tiada pakej tersedia untuk produk ini pada masa ini.",
+    "no_refund_warning_desc": "Pesanan yang selesai tidak boleh dikembalikan. Sila sahkan butiran anda sebelum mengesahkan.",
+    "no_refund_warning_title": "Notis Tidak Boleh Dikembalikan",
+    "no_similar_found": "Tiada produk yang serupa ditemui.",
+    "payment_method_label": "Kaedah Pembayaran: ",
+    "payment_selection_desc": "Pilih kaedah pembayaran pilihan anda",
+    "payment_selection_title": "Pilihan Pembayaran",
+    "platforms": "Platform Disokong",
+    "popular_badge": "Terlaris",
+    "price_label": "Harga:",
+    "privacy_label": "Dasar Privasi",
+    "product_details_title": "Butiran Produk",
+    "publisher": "Penerbit",
+    "purchase_summary": "Ringkasan Pesanan",
+    "refund_label": "Dasar Bayaran Balik",
+    "related_products": "Anda Mungkin Juga Suka",
+    "release_date": "Tarikh Keluaran",
+    "savings_label": "Anda Jimat: ",
+    "secure_payment_notice": "Pembayaran 100% Selamat",
+    "select_package": "Pilih Pakej",
+    "selected_package_label": "Pakej Dipilih",
+    "similar_products": "Produk Serupa",
+    "subtotal_label": "Subjumlah: ",
+    "terms_agreement_prefix": "Dengan meneruskan, anda bersetuju dengan ",
+    "terms_label": "Terma Penggunaan",
+    "th-TH": "Thai",
+    "topup_options": "Pilihan Top-up",
+    "total_label": "Jumlah Keseluruhan: ",
+    "transaction_summary_title": "Ringkasan Kewangan",
+    "unknown": "Tidak dinyatakan",
+    "unverified_account_warning": "Sila sahkan e-mel anda sebelum membuat pembelian.",
+    "verify_info_hint": "Sila sahkan ID Pemain anda dengan teliti sebelum meneruskan."
+  },
+  "News": {
+    "all_news": "Semua Berita",
+    "categories": {
+      "event": "Acara",
+      "general": "Umum",
+      "promotion": "Promosi",
+      "update": "Kemaskini"
+    },
+    "featured": "Berita Pilihan",
+    "featured_badge": "Pilihan",
+    "no_news": "Tiada artikel berita tersedia pada masa ini.",
+    "subtitle": "Kemaskini dan pengumuman terkini",
+    "title": "Berita & Pengumuman",
+    "view_count": "Tontonan"
+  },
+  "NewsDetail": {
+    "back_to_news": "Kembali ke Berita",
+    "error_loading": "Gagal memuatkan artikel",
+    "error_not_found": "Artikel Berita Tidak Ditemui",
+    "error_not_found_desc": "Artikel yang anda cari tidak wujud atau telah dialih keluar.",
+    "featured_badge": "Trending",
+    "last_updated": "Kemaskini Terakhir: ",
+    "other_news": "Berita Berkaitan",
+    "sources": "Sumber",
+    "views": "Tontonan: "
+  },
+  "PaymentPending": {
+    "a": " ",
+    "loading": "Memuatkan status pembayaran...",
+    "orderId": "ID Pesanan:",
+    "order_id": "ID Pesanan:",
+    "payment_failed": "Pembayaran Gagal",
+    "payment_failed_desc": "Sila cuba proses pembayaran anda sekali lagi.",
+    "payment_success": "Pembayaran Berjaya",
+    "qr_expired": "Kod QR Tamat Tempoh",
+    "qr_expired_desc": "Sila batalkan dan cipta pesanan baharu.",
+    "redirecting": "Mengalihkan...",
+    "referenceNo": "No Rujukan: ",
+    "reference_no": "Rujukan: ",
+    "time_remaining": "Masa Berbaki: ",
+    "try_again": "Cuba Lagi",
+    "view_orders": "Lihat Sejarah Pesanan"
+  },
+  "PaymentSuccess": {
+    "back_home": "Kembali ke Laman Utama",
+    "delivery_notice": "Pesanan anda sedang diproses dan akan dihantar tidak lama lagi.",
+    "orderId": "ID Pesanan:",
+    "order_number": "Nombor Pesanan",
+    "processing_badge": "Memproses Penghantaran",
+    "referenceNo": "Ruj: ",
+    "session_id": "ID Sesi",
+    "subtitle": "Pembayaran anda telah diterima. Kami sedang menyediakan pesanan anda.",
+    "title": "Pembayaran Berjaya!",
+    "view_order": "Lihat Status Pesanan"
+  },
+  "Navigation": {
+    "account": "Akaun Saya",
+    "card": "Kad Prabayar",
+    "faq": "Soalan Lazim",
+    "favorite": "Kegemaran",
+    "games": "Top-up Permainan",
+    "home": "Laman Utama",
+    "login": "Log Masuk",
+    "mobile_recharge": "Top-up Mudah Alih",
+    "news": "Berita",
+    "orders": "Sejarah Pesanan",
+    "register": "Daftar",
+    "support": "Sokongan"
+  },
+  "SupportContact": {
+    "form": {
+      "email": "E-mel Anda",
+      "message": "Mesej",
+      "name": "Nama Anda",
+      "send": "Hantar Mesej",
+      "sending": "Menghantar...",
+      "subject": "Subjek",
+      "success": "Mesej anda telah dihantar. Pasukan kami akan menghubungi anda tidak lama lagi.",
+      "title": "Hubungi Kami melalui E-mel"
+    },
+    "social": {
+      "title": "Hubungi kami di Media Sosial (Facebook / Line / Discord)"
+    },
+    "subtitle": "Hubungi pasukan sokongan kami untuk bantuan",
+    "title": "Hubungi Sokongan (24/7)"
+  },
+  "SupportFAQ": {
+    "all": "Semua Kategori",
+    "back_to_faq": "Kembali ke Soalan Lazim",
+    "categories": {
+      "_base": "Kategori"
+    },
+    "need_help": {
+      "title": "Perlukan Bantuan?",
+      "description": "Tidak jumpa apa yang anda cari?",
+      "contact_support": "Hubungi Sokongan"
+    },
+    "no": "Tidak membantu",
+    "no_results": "Tiada keputusan ditemui.",
+    "search_placeholder": "Cari jawapan...",
+    "subtitle": "Cari jawapan pantas untuk soalan lazim",
+    "title": "Soalan Lazim",
     "view_all": "Lihat Semua",
-    "news_title": "Berita",
-    "status_instant": "Serta-merta",
-    "status_30_60_mins": "30-60 minit",
-    "status_preorder": "Pra-tempahan",
-    "trust_secure_title": "100% Selamat",
-    "trust_secure_desc": "Sistem keselamatan gred tinggi",
-    "trust_fast_title": "Penghantaran Segera",
-    "trust_fast_desc": "Penghantaran automatik yang pantas",
-    "trust_price_title": "Harga Terbaik",
-    "trust_price_desc": "Harga paling kompetitif",
-    "trust_support_title": "Sokongan 24/7",
-    "trust_support_desc": "Pasukan kami sentiasa bersedia membantu",
-    "special_offers_subtitle": "Jangan lepaskan tawaran eksklusif ini khas untuk anda!",
-    "no_deals": "Tiada produk berdiskaun tersedia",
-    "no_products": "Tiada produk tersedia",
-    "no_news": "Belum ada artikel berita",
-    "promotion_badge": "PROMO",
-    "login_success": "Log masuk berjaya",
-    "invalid_email_password": "E-mel atau kata laluan tidak sah",
-    "register_success": "Pendaftaran berjaya",
-    "register_error": "Ralat pendaftaran",
-    "logout_success": "Log keluar berjaya",
-    "profile_update_success": "Profil berjaya dikemas kini",
-    "profile_update_error": "Kemas kini profil gagal",
-    "password_change_success": "Kata laluan berjaya ditukar",
-    "login_error": "Ralat log masuk"
+    "yes": "Membantu"
+  },
+  "SupportFAQDetail": {
+    "back_to_faq": "Kembali ke Soalan Lazim",
+    "contact_support": "Hubungi Sokongan",
+    "contact_support_desc": "Jika anda memerlukan bantuan lanjut, sila hubungi pasukan sokongan kami.",
+    "error": {
+      "_base": "Gagal memuatkan kandungan."
+    },
+    "helpful": "Adakah artikel ini membantu?",
+    "last_updated": "Kemaskini Terakhir",
+    "loading": "Memuatkan...",
+    "no": "Tidak membantu",
+    "still_need_help": "Masih perlukan bantuan?",
+    "thank_you": "Terima kasih atas maklum balas anda.",
+    "views": "Tontonan: ",
+    "yes": "Membantu"
+  },
+  "Support": {
+    "categories": {
+      "faq": {
+        "description": "Cari penyelesaian pantas dan jawapan untuk soalan lazim.",
+        "title": "Soalan Lazim"
+      },
+      "tickets": {
+        "description": "Laporkan isu berkaitan pesanan, pembayaran atau akaun anda.",
+        "title": "Hantar Tiket"
+      }
+    },
+    "common_issues": {
+      "title": "Isu Biasa"
+    },
+    "contact_methods": "Kaedah Hubungan",
+    "subtitle": "Pilih topik di bawah atau hubungi pasukan sokongan kami secara terus.",
+    "title": "Pusat Bantuan",
+    "urgent_help": {
+      "description": "Untuk bantuan segera, hubungi pasukan sokongan kami melalui Live Chat atau Line.",
+      "title": "Sokongan Segera"
+    },
+    "visit": "Lihat",
+    "working_hours": {
+      "mon_fri": "Isnin - Jumaat (Perkhidmatan Biasa)",
+      "sat_sun": "Sabtu - Ahad (Maklum balas mungkin sedikit lambat)",
+      "time_mon_fri": "09:00 - 00:00 (GMT+7)",
+      "time_sat_sun": "09:00 - 19:00 (GMT+7)",
+      "timezone": "Zon Waktu (GMT+7)",
+      "title": "Waktu Sokongan"
+    }
+  },
+  "SupportTickets": {
+    "back": "Kembali ke Tiket",
+    "create": {
+      "cancel": "Batal",
+      "categories": {
+        "account": "Isu Akaun",
+        "general": "Pertanyaan Umum",
+        "order": "Isu Pesanan",
+        "payment": "Isu Pembayaran",
+        "product": "Isu Produk",
+        "refund": "Permintaan Bayaran Balik",
+        "technical": "Sokongan Teknikal"
+      },
+      "category": "Kategori",
+      "description": "Penerangan Masalah",
+      "description_label": "Terangkan isu anda secara terperinci",
+      "description_placeholder": "Sila terangkan isu yang anda alami...",
+      "order_ref": "ID Pesanan (Pilihan)",
+      "order_ref_placeholder": "Pesanan #999999",
+      "subject_placeholder": "Subjek Ringkas",
+      "submit": "Hantar Tiket",
+      "title": "Cipta Tiket Baharu"
+    },
+    "create_new": "Cipta Tiket Baharu",
+    "created_at": "Dicipta pada",
+    "detail": {
+      "closed_notice": "Tiket ini telah ditutup. Anda tidak boleh membalas lagi.",
+      "reply": "Balas",
+      "send_reply": "Hantar Mesej"
+    },
+    "disabled": {
+      "cta": "Kembali ke Laman Utama",
+      "description": "Sistem tiket sokongan tidak tersedia buat masa ini.",
+      "title": "Sistem Tidak Tersedia"
+    },
+    "no_tickets": "Anda belum menghantar sebarang tiket sokongan.",
+    "order_ref_label": "ID Rujukan Pesanan (Membantu kami menyelesaikan isu anda dengan lebih pantas)",
+    "select_ticket": "Pilih Tiket",
+    "select_ticket_desc": "Pilih tiket dari senarai untuk melihat butiran.",
+    "status": {
+      "all": "Semua Tiket",
+      "closed": "Ditutup",
+      "open": "Dibuka",
+      "pending": "Menunggu",
+      "resolved": "Diselesaikan",
+      "waiting_admin": "Menunggu Sokongan",
+      "waiting_user": "Menunggu Pengguna"
+    },
+    "subtitle": "Urus permintaan sokongan anda",
+    "support_team": "Pasukan Sokongan",
+    "system": "Notis Automatik Sistem",
+    "title": "Tiket Sokongan",
+    "user_you": "Anda"
+  },
+  "UserMenu": {
+    "account_menu": "Menu Akaun",
+    "credits": "Kredit Saya",
+    "favorite": "Kegemaran",
+    "h-full": "",
+    "logout": "Log Keluar",
+    "menu": "Menu Pengguna",
+    "my_account": "Akaun Saya",
+    "my_coupons": "Kupon Saya",
+    "my_invoices": "Invois",
+    "my_orders": "Sejarah Pesanan",
+    "notifications": "Notifikasi",
+    "open_menu": "Buka Menu"
+  },
+  "CookieNotice": {
+    "acknowledge": "Terima",
+    "ariaClose": "Tutup notis",
+    "description": "Lnwtermgame menggunakan kuki untuk meningkatkan pengalaman pelayaran anda, mengoptimumkan prestasi laman dan menyampaikan promosi yang diperibadikan.",
+    "items": [
+      "Kuki penting (diperlukan untuk fungsi asas laman web)",
+      "Kuki analitik (digunakan untuk mengukur dan meningkatkan platform kami)"
+    ],
+    "noTawkItem": "Sokongan Live Chat tidak tersedia pada masa ini.",
+    "privacy": "Dasar Privasi",
+    "tawkItem": "Kuki Live Chat (Tawk.to) untuk interaksi sokongan pelanggan yang pantas.",
+    "title": "⚙️ Keutamaan Kuki"
+  },
+  "Footer": {
+    "about_us": "Tentang Kami",
+    "contact_us": "Hubungi Kami",
+    "copyright": "Hak Cipta",
+    "language_thai": "Thai",
+    "partners": "Rakan Kongsi",
+    "customer": "Khidmat Pelanggan",
+    "policies": "Polisi",
+    "services": "Perkhidmatan",
+    "payment_inquiry": "Pertanyaan Pembayaran",
+    "payment_issues": "Pembayaran & Isu",
+    "sale_inquiry": "Pertanyaan Perniagaan",
+    "copyright_notice": "Hak Cipta Terpelihara",
+    "create_ticket": "Hantar Tiket Sokongan",
+    "faq": "Soalan Lazim",
+    "features": {
+      "payment": "Pelbagai Pilihan Pembayaran",
+      "payment_desc": "Top-up mudah dengan Dompet TrueMoney dan PromptPay tanpa caj tambahan.",
+      "price": "Harga Terbaik",
+      "price_desc": "Nikmati promosi eksklusif dan kadar terbaik untuk top-up permainan.",
+      "security": "100% Selamat",
+      "security_desc": "Platform kami menggunakan enkripsi gred tinggi untuk memastikan transaksi anda selamat.",
+      "support": "Sokongan Pelanggan 24/7",
+      "support_desc": "Pasukan kami sedia membantu anda pada bila-bila masa.",
+      "delivery": "Penghantaran Pantas"
+    },
+    "live_chat": "Live Chat",
+    "payment_channels": "Kaedah Pembayaran",
+    "privacy_policy": "Privasi & Kuki",
+    "quick_links": "Pautan Pantas",
+    "refund_policy": "Dasar Bayaran Balik",
+    "support": "Sokongan",
+    "support_center": "Pusat Bantuan",
+    "supported_payments": "Platform Pembayaran Disokong",
+    "tagline": "Lnwtermgame, platform top-up permainan dan kad prabayar terkemuka di Thailand yang pantas dan selamat.",
+    "terms_of_service": "Terma Perkhidmatan"
+  },
+  "Header": {
+    " ": " ",
+    "/": "/",
+    "articles": "Artikel",
+    "dealers": "Peniaga",
+    "all_games": "Semua Permainan",
+    "cart": "Troli Beli-belah",
+    "contact_us": "Hubungi Kami",
+    "credits": "Kredit",
+    "direct_topup": "Top-up Permainan",
+    "gift_cards": "Kad Hadiah",
+    "login": "Log Masuk",
+    "logout": "Log Keluar",
+    "mobile_recharge": "Top-up Mudah Alih",
+    "my_account": "Akaun Saya",
+    "news": "Berita & Promosi",
+    "notifications": "Notifikasi",
+    "order_history": "Sejarah Pesanan",
+    "search_placeholder": "Cari permainan atau kad..."
+  },
+  "Search": {
+    "aria_label_clear": "Kosongkan",
+    "aria_label_remove_history": "Kosongkan Sejarah Carian",
+    "aria_label_search": "Cari",
+    "no_results_for": "Tiada keputusan ditemui untuk...",
+    "placeholder": "Cari...",
+    "placeholder_advanced": "Cari permainan, kad atau artikel...",
+    "recent_searches": "Carian Terkini",
+    "search_results": "Keputusan Carian: ",
+    "view_all_results_for": "Lihat semua keputusan untuk"
+  },
+  "Products": {
+    "recommended": "Pakej Disyorkan"
+  },
+  "promotions": "Promosi",
+  "how_to_use": {
+    "title": "Cara Menggunakan"
+  },
+  "topup_system": "Sistem Top-up",
+  "games": {
+    "title": "Semua Permainan"
+  },
+  "lucky_games": "Permainan Nasib",
+  "nav_game_topup": "Top-Up Permainan",
+  "nav_prepaid_card": "Kad Prabayar",
+  "nav_mobile_topup": "Top-Up Mudah Alih",
+  "search_placeholder": "Cari permainan atau kad...",
+  "admin_panel": "Panel Admin",
+  "my_account": "Akaun Saya",
+  "credits": "Kredit",
+  "order_history": "Sejarah Pesanan",
+  "logout": "Log Keluar",
+  "login_button": "Log Masuk / Daftar",
+  "Admin": {
+    "nav": {
+      "main": "Papan Pemuka",
+      "products_sales": "Produk & Jualan",
+      "content": "Pengurusan Kandungan",
+      "users_communication": "Pengguna & Komunikasi",
+      "system": "Tetapan Sistem"
+    },
+    "admin_cp": "Panel Kawalan Admin",
+    "admin": "Pentadbir",
+    "dashboard": "Papan Pemuka",
+    "analytics": "Analitik",
+    "products": "Inventori",
+    "categories": "Kategori",
+    "orders": "Pesanan",
+    "payments": "Hab Kewangan",
+    "cms_pages": "Halaman Kandungan",
+    "news": "Pengurusan Berita",
+    "manage_faq": "Pengurusan Soalan Lazim",
+    "images": "Galeri Imej",
+    "manage_users": "Pengurusan Pengguna",
+    "support_tickets": "Tiket Sokongan",
+    "notifications": "Notifikasi Sistem",
+    "email": "Protokol E-mel",
+    "settings": "Konfigurasi Sistem",
+    "oauth": "Perkhidmatan OAuth",
+    "pin": "Pin menu",
+    "unpin": "Unpin menu",
+    "switch_dark": "Switch to dark",
+    "switch_light": "Switch to light",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "active": "Active",
+      "inactive": "Inactive",
+      "low_stock": "Low stock",
+      "out_of_stock": "Out of stock",
+      "banned": "Banned",
+      "unknown": "Unknown"
+    },
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "empty": "No items",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "empty": "No data"
+    },
+    "actions": {
+      "save": "Simpan",
+      "cancel": "Batal",
+      "confirm": "Sahkan",
+      "search": "Cari...",
+      "clear_filters": "Kosongkan penapis"
+    },
+    "ai_chat": "Sembang AI"
+  },
+  "hero_zzz_subtitle": "Top Up Zenless Zone Zero",
+  "hero_zzz_highlight_text": "Sehingga",
+  "hero_genshin_subtitle": "Top Up Genshin Impact",
+  "hero_genshin_highlight_text": "Sehingga",
+  "hero_btn_text": "Top Up Sekarang",
+  "category_popular_games": "Permainan Popular",
+  "category_all_games": "Semua Permainan",
+  "category_check_skin": "Skin Bertuah",
+  "category_game_card": "Kad Permainan",
+  "category_lucky_game": "Cabutan Bertuah",
+  "special_offers": "Tawaran Istimewa",
+  "popular_games": "Top-Up Permainan Popular",
+  "view_all": "Lihat Semua",
+  "news_title": "Berita",
+  "status_instant": "Serta-merta",
+  "status_30_60_mins": "30-60 minit",
+  "status_preorder": "Pra-tempahan",
+  "trust_secure_title": "100% Selamat",
+  "trust_secure_desc": "Sistem keselamatan gred tinggi",
+  "trust_fast_title": "Penghantaran Segera",
+  "trust_fast_desc": "Penghantaran automatik yang pantas",
+  "trust_price_title": "Harga Terbaik",
+  "trust_price_desc": "Harga paling kompetitif",
+  "trust_support_title": "Sokongan 24/7",
+  "trust_support_desc": "Pasukan kami sentiasa bersedia membantu",
+  "special_offers_subtitle": "Jangan lepaskan tawaran eksklusif ini khas untuk anda!",
+  "no_deals": "Tiada produk berdiskaun tersedia",
+  "no_products": "Tiada produk tersedia",
+  "no_news": "Belum ada artikel berita",
+  "promotion_badge": "PROMO",
+  "login_success": "Log masuk berjaya",
+  "invalid_email_password": "E-mel atau kata laluan tidak sah",
+  "register_success": "Pendaftaran berjaya",
+  "register_error": "Ralat pendaftaran",
+  "logout_success": "Log keluar berjaya",
+  "profile_update_success": "Profil berjaya dikemas kini",
+  "profile_update_error": "Kemas kini profil gagal",
+  "password_change_success": "Kata laluan berjaya ditukar",
+  "login_error": "Ralat log masuk"
 }

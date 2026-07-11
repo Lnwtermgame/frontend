@@ -28,7 +28,6 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
   const tAdmin = useTranslations("Admin");
   const t = useTranslations();
   const { user, logout } = useAuth();
-  const isProduction = process.env.NODE_ENV === "production";
   const [pinned, setPinned] = useLocalStorage<boolean>("admin-sidebar-pinned", false);
 
   const categories: NavCategory[] = [
@@ -70,9 +69,7 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
     {
       title: tAdmin("nav.system"),
       items: [
-        ...(isProduction
-          ? [{ title: "AI Chat", href: "/admin/ai-chat", icon: Bot }]
-          : []),
+        { title: tAdmin("ai_chat"), href: "/admin/ai-chat", icon: Bot },
         { title: tAdmin("settings"), href: "/admin/settings", icon: Settings },
         { title: tAdmin("oauth"), href: "/admin/oauth", icon: Key },
       ],

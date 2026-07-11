@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export interface FilterOption {
@@ -29,6 +30,7 @@ export function FilterBar({
   actions,
   className,
 }: FilterBarProps) {
+  const t = useTranslations("Admin");
   const hasActiveReset = !!onReset;
 
   return (
@@ -46,7 +48,7 @@ export function FilterBar({
               type="text"
               value={search.value}
               onChange={(e) => search.onChange(e.target.value)}
-              placeholder={search.placeholder ?? "ค้นหา..."}
+              placeholder={search.placeholder ?? t("actions.search")}
               className="w-full h-9 pl-9 pr-3 bg-site-raised border border-site-border rounded-lg text-sm text-site-text placeholder:text-site-dim focus:outline-none focus:border-site-accent transition-colors"
             />
           </div>
@@ -71,7 +73,7 @@ export function FilterBar({
             className="h-9 px-3 inline-flex items-center gap-1.5 text-xs font-medium text-site-muted hover:text-site-text border border-site-border rounded-lg hover:bg-site-raised transition-colors"
           >
             <X className="w-3.5 h-3.5" />
-            ล้างตัวกรอง
+            {t("actions.clear_filters")}
           </button>
         )}
       </div>

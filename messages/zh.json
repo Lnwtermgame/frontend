@@ -28,7 +28,8 @@
       "subtitle": "登录以使用完整功能",
       "title": "登录",
       "vip_points": "累积VIP积分",
-      "vip_points_desc": "成为会员即享专属特权"
+      "vip_points_desc": "成为会员即享专属特权",
+      "footer_secure_note": "使用行业标准加密安全登录"
     },
     "register": {
       "already_have_account": "已有账号？",

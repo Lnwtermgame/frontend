@@ -28,7 +28,8 @@
       "subtitle": "पूर्ण सुविधाओं के लिए लॉगिन करें",
       "title": "लॉगिन",
       "vip_points": "VIP पॉइंट कमाएं",
-      "vip_points_desc": "सदस्य बनकर विशेष लाभ पाएं।"
+      "vip_points_desc": "सदस्य बनकर विशेष लाभ पाएं।",
+      "footer_secure_note": "उद्योग-मानक एन्क्रिप्शन के साथ सुरक्षित लॉगिन"
     },
     "register": {
       "already_have_account": "पहले से खाता है?",

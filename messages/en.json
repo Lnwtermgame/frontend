@@ -28,7 +28,8 @@
       "subtitle": "Login to access full features",
       "title": "Login",
       "vip_points": "Earn VIP Points",
-      "vip_points_desc": "Get exclusive privileges when you become a member."
+      "vip_points_desc": "Get exclusive privileges when you become a member.",
+      "footer_secure_note": "Secure login with industry-standard encryption"
     },
     "register": {
       "already_have_account": "Already have an account?",

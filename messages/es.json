@@ -28,7 +28,8 @@
       "subtitle": "Inicia sesión para acceder a todas las funciones",
       "title": "Iniciar sesión",
       "vip_points": "Gana puntos VIP",
-      "vip_points_desc": "Obtén privilegios exclusivos al ser miembro."
+      "vip_points_desc": "Obtén privilegios exclusivos al ser miembro.",
+      "footer_secure_note": "Inicio de sesión seguro con cifrado estándar"
     },
     "register": {
       "already_have_account": "¿Ya tienes cuenta?",

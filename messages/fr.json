@@ -28,7 +28,8 @@
       "subtitle": "Connectez-vous pour accéder à toutes les fonctionnalités",
       "title": "Connexion",
       "vip_points": "Gagnez des points VIP",
-      "vip_points_desc": "Obtenez des privilèges exclusifs en devenant membre."
+      "vip_points_desc": "Obtenez des privilèges exclusifs en devenant membre.",
+      "footer_secure_note": "Connexion sécurisée avec chiffrement standard"
     },
     "register": {
       "already_have_account": "Vous avez déjà un compte ?",

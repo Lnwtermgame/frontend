@@ -28,7 +28,8 @@
       "subtitle": "全機能をご利用いただくにはログインしてください",
       "title": "ログイン",
       "vip_points": "VIPポイントを貯めよう",
-      "vip_points_desc": "会員限定の特典をゲットしましょう。"
+      "vip_points_desc": "会員限定の特典をゲットしましょう。",
+      "footer_secure_note": "業界標準の暗号化で安全にログイン"
     },
     "register": {
       "already_have_account": "すでにアカウントをお持ちですか？",

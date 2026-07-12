@@ -22,10 +22,13 @@ const languages = [
   { code: "ms", label: "Melayu", flagCode: "my" },
   { code: "hi", label: "हिन्दी", flagCode: "in" },
   { code: "es", label: "Español", flagCode: "es" },
-  { code: 'fr', label: 'Français', flagCode: 'fr' }
+  { code: "fr", label: "Français", flagCode: "fr" },
 ];
 
-export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwitcherProps) {
+export function LanguageSwitcher({
+  variant = "desktop",
+  className,
+}: LanguageSwitcherProps) {
   const locale = useLocale();
   const t = useTranslations();
   const router = useRouter();
@@ -34,13 +37,17 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const currentLanguage = languages.find((l) => l.code === locale) || languages[0];
+  const currentLanguage =
+    languages.find((l) => l.code === locale) || languages[0];
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setMounted(true);
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -55,16 +62,19 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
     });
   };
 
-  const getFlagUrl = (code: string) => `https://kapowaz.github.io/square-flags/flags/${code}.svg`;
+  const getFlagUrl = (code: string) =>
+    `https://kapowaz.github.io/square-flags/flags/${code}.svg`;
 
   if (variant === "mobile") {
     return (
       <div className={cn("space-y-3", className)}>
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">{t("language_selector")}</p>
+        <p className="text-xs font-bold text-site-dim uppercase tracking-wider px-1">
+          {t("language_selector")}
+        </p>
 
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center justify-between p-3 bg-[#212328] border border-site-border/30 rounded-[12px] hover:bg-white/5 transition-all text-white"
+          className="w-full flex items-center justify-between p-3 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/40 transition-all text-site-text"
         >
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 rounded-sm overflow-hidden shrink-0 shadow-sm">
@@ -74,66 +84,83 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="font-bold uppercase text-[13px] tracking-wide">{currentLanguage.label}</span>
+            <span className="font-bold uppercase text-[13px] tracking-wide">
+              {currentLanguage.label}
+            </span>
           </div>
-          <ChevronDown size={18} className="text-gray-400" />
+          <ChevronDown size={18} className="text-site-dim" />
         </button>
 
-        {mounted && createPortal(
-          <AnimatePresence>
-            {isOpen && (
-              <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 bg-black/60"
-                  onClick={() => setIsOpen(false)}
-                />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="relative w-full max-w-sm bg-[#212328] border border-site-border/30 rounded-[16px] p-5 max-h-[85vh] overflow-y-auto flex flex-col shadow-2xl"
-                >
-                  <div className="flex justify-between items-center mb-6 border-b border-site-border/30 pb-4">
-                    <h3 className="font-bold text-[15px] uppercase tracking-wide text-white">Select Language</h3>
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="p-1 hover:bg-[#1A1C1E] transition-colors"
-                    >
-                      <span className="text-2xl font-bold leading-none block w-6 h-6 text-center">&times;</span>
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    {languages.map((lang) => (
+        {mounted &&
+          createPortal(
+            <AnimatePresence>
+              {isOpen && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    onClick={() => setIsOpen(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className="relative w-full max-w-sm bg-site-surface border border-site-border-soft rounded-2xl p-5 max-h-[85vh] overflow-y-auto flex flex-col shadow-2xl"
+                  >
+                    <div className="flex justify-between items-center mb-6 border-b border-site-border-soft pb-4">
+                      <h3 className="font-bold text-sm uppercase tracking-wide text-site-text">
+                        Select Language
+                      </h3>
                       <button
-                        key={lang.code}
-                        onClick={() => handleLanguageChange(lang.code)}
-                        className={cn(
-                          "flex flex-col items-center justify-center p-4 border rounded-[12px] transition-all",
-                          locale === lang.code
-                            ? "bg-site-accent/10 border-site-accent shadow-sm"
-                            : "bg-[#181A1D] border-site-border/30 hover:border-site-border hover:bg-[#292B30] text-gray-400"
-                        )}
+                        onClick={() => setIsOpen(false)}
+                        className="p-1.5 rounded-lg text-site-dim hover:text-site-text hover:bg-site-raised transition-colors"
+                        aria-label="Close"
                       >
-                        <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0 shadow-sm">
-                          <img
-                            src={getFlagUrl(lang.flagCode)}
-                            alt={lang.label}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <span className={cn("text-[11px] uppercase font-bold tracking-wide", locale === lang.code ? "text-site-accent" : "text-gray-400")}>{lang.label}</span>
+                        <span className="text-xl font-bold leading-none block w-5 h-5 text-center">
+                          ×
+                        </span>
                       </button>
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            )}
-          </AnimatePresence>,
-          document.body
-        )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {languages.map((lang) => (
+                        <button
+                          key={lang.code}
+                          onClick={() => handleLanguageChange(lang.code)}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-4 border rounded-xl transition-all",
+                            locale === lang.code
+                              ? "bg-site-accent/10 border-site-accent/40 shadow-sm"
+                              : "bg-site-raised border-site-border-soft hover:border-site-border text-site-muted hover:text-site-text",
+                          )}
+                        >
+                          <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0 shadow-sm">
+                            <img
+                              src={getFlagUrl(lang.flagCode)}
+                              alt={lang.label}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <span
+                            className={cn(
+                              "text-[11px] uppercase font-bold tracking-wide",
+                              locale === lang.code
+                                ? "text-site-accent"
+                                : "text-site-muted",
+                            )}
+                          >
+                            {lang.label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>,
+            document.body,
+          )}
       </div>
     );
   }
@@ -142,7 +169,7 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
     <div className={cn("relative", className)} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 bg-transparent hover:bg-white/5 rounded-full transition-colors group cursor-pointer"
+        className="flex items-center gap-2 px-3 py-1.5 bg-transparent hover:bg-site-raised rounded-full transition-colors group cursor-pointer"
       >
         <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity">
           <img
@@ -151,10 +178,15 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
             className="w-full h-full object-cover"
           />
         </div>
-        <span className="text-[12px] text-gray-300 font-medium group-hover:text-white transition-colors uppercase tabular-nums tracking-wide">{currentLanguage.code} {currentLanguage.label}</span>
+        <span className="text-xs text-site-muted font-medium group-hover:text-site-text transition-colors uppercase tabular-nums tracking-wide">
+          {currentLanguage.code} {currentLanguage.label}
+        </span>
         <ChevronDown
           size={14}
-          className={cn("text-gray-500 transition-transform duration-200 group-hover:text-gray-300", isOpen && "rotate-180")}
+          className={cn(
+            "text-site-dim transition-transform duration-200 group-hover:text-site-muted",
+            isOpen && "rotate-180",
+          )}
         />
       </button>
 
@@ -165,33 +197,38 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-48 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-2xl z-[110] overflow-hidden"
+            className="absolute right-0 mt-2 w-48 bg-site-surface border border-site-border-soft rounded-xl shadow-2xl z-[110] overflow-hidden"
           >
             <div className="p-2 space-y-1">
-              {languages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => handleLanguageChange(lang.code)}
-                  className={cn(
-                    "w-full flex items-center justify-between px-3 py-2 text-[13px] rounded-lg transition-colors border border-transparent",
-                    locale === lang.code
-                      ? "bg-site-accent/10 border-site-accent/30 font-medium text-site-accent"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90">
-                      <img
-                        src={getFlagUrl(lang.flagCode)}
-                        alt={lang.label}
-                        className="w-full h-full object-cover"
-                      />
+              {languages.map((lang) => {
+                const active = locale === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleLanguageChange(lang.code)}
+                    className={cn(
+                      "w-full flex items-center justify-between px-3 py-2 text-[13px] rounded-lg transition-colors border",
+                      active
+                        ? "bg-site-accent/10 border-site-accent/30 font-medium text-site-accent"
+                        : "border-transparent text-site-muted hover:text-site-text hover:bg-site-raised",
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90">
+                        <img
+                          src={getFlagUrl(lang.flagCode)}
+                          alt={lang.label}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="tracking-wide uppercase font-medium">
+                        {lang.label}
+                      </span>
                     </div>
-                    <span className="tracking-wide uppercase font-medium">{lang.label}</span>
-                  </div>
-                  {locale === lang.code && <Check size={14} className="text-site-accent" />}
-                </button>
-              ))}
+                    {active && <Check size={14} className="text-site-accent" />}
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
         )}

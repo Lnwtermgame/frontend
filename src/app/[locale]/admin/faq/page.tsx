@@ -607,11 +607,11 @@ export default function AdminFaqPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setShowAIGenerate(!showAIGenerate)}
-              className={`border border-white/5 rounded-xl px-3 py-1.5 font-medium flex items-center transition-colors text-sm ${showAIGenerate
-                ? "bg-site-accent text-white"
-                : "bg-gradient-to-r from-site-accent to-site-accent/80 text-white hover:from-site-accent hover:to-site-accent/60"
+              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 font-bold text-[13px] transition-all ${showAIGenerate
+                ? "bg-site-accent text-site-bg"
+                : "bg-site-accent/10 border border-site-accent/20 text-site-accent hover:bg-site-accent/20"
                 }`}>
-              <Sparkles size={16} className="mr-2" />
+              <Sparkles className="h-4 w-4" />
               AI สร้าง FAQ
             </button>
             <button
@@ -626,8 +626,8 @@ export default function AdminFaqPage() {
                 });
                 setShowCategoryModal(true);
               }}
-              className="bg-site-surface border border-white/5 rounded-2xl px-3 py-1.5 font-medium flex items-center hover:bg-site-raised/5 transition-colors text-sm">
-              <Tag size={16} className="mr-2" />
+              className="inline-flex items-center gap-2 bg-site-raised border border-site-border rounded-lg px-4 py-2 font-bold text-[13px] text-site-muted hover:bg-site-surface hover:text-site-text transition-all">
+              <Tag className="h-4 w-4" />
               เพิ่มหมวดหมู่
             </button>
             <button
@@ -646,8 +646,8 @@ export default function AdminFaqPage() {
                 setShowArticleModal(true);
               }}
               disabled={categories.length === 0}
-              className="bg-black text-white border border-white/5 rounded-xl px-3 py-1.5 font-medium flex items-center hover:bg-gray-800 transition-colors disabled:opacity-50 text-sm">
-              <Plus size={16} className="mr-2" />
+              className="inline-flex items-center gap-2 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg px-4 py-2 font-bold text-[13px] hover:bg-site-accent-hover transition-all disabled:opacity-50">
+              <Plus className="h-4 w-4" />
               เพิ่มบทความ
             </button>
           </div>

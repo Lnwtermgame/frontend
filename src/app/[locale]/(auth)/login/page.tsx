@@ -148,14 +148,7 @@ function LoginContent() {
     email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   return (
-    <div className="min-h-[100dvh] bg-site-bg relative overflow-hidden">
-      {/* Background ambient gradient */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-site-accent/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-site-accent/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative min-h-[100dvh] flex items-center justify-center px-4 py-6 lg:py-12">
+    <div className="min-h-[100dvh] bg-site-bg flex items-center justify-center px-4 py-6 lg:py-12">
         <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-12 items-center">
           {/* Left Side - Branding */}
           <motion.div
@@ -166,7 +159,7 @@ function LoginContent() {
           >
             <div className="flex items-center space-x-3">
               <motion.div
-                className="w-14 h-14 bg-site-surface border border-site-border rounded-2xl flex items-center justify-center shadow-accent-glow"
+                className="w-14 h-14 bg-site-surface border border-site-border rounded-2xl flex items-center justify-center"
                 whileHover={{ rotate: [0, -8, 8, 0] }}
                 transition={{ duration: 0.5 }}
               >
@@ -238,10 +231,10 @@ function LoginContent() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="lg:col-span-3"
           >
-            <div className="bg-site-surface border border-site-border-soft rounded-2xl shadow-ocean p-6 lg:p-9 max-w-md mx-auto">
+            <div className="bg-site-surface border border-site-border-soft rounded-2xl p-6 lg:p-9 max-w-md mx-auto">
               {/* Mobile Logo */}
               <div className="lg:hidden flex items-center justify-center space-x-2 mb-7">
-                <div className="w-11 h-11 bg-site-raised border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+                <div className="w-11 h-11 bg-site-raised border border-site-border rounded-xl flex items-center justify-center">
                   <Zap
                     className="w-6 h-6 text-site-accent"
                     fill="currentColor"
@@ -466,7 +459,6 @@ function LoginContent() {
           </motion.div>
         </div>
       </div>
-    </div>
   );
 }
 

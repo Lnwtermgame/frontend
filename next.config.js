@@ -5,12 +5,18 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Pin Turbopack workspace root to this project. Without this, Next 16
+  // detects multiple lockfiles at the drive root (D:\...\pnpm-lock.yaml)
+  // and resolves the workspace root incorrectly, breaking file watching.
+  turbopack: {
+    root: __dirname,
+  },
   compiler: {
     removeConsole:
       process.env.NODE_ENV === "production"
         ? {
-          exclude: ["error", "warn"],
-        }
+            exclude: ["error", "warn"],
+          }
         : false,
   },
   async headers() {

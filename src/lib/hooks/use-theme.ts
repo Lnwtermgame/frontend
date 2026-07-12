@@ -6,45 +6,46 @@ import { useLocalStorage } from "./use-local-storage";
 export type Theme = "dark" | "light";
 export const THEME_STORAGE_KEY = "admin-theme";
 
-function resolveInitialTheme(): Theme {
-  if (typeof window === "undefined") return "dark";
-  if (window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
-  return "dark";
+/**
+ * Read the theme that the no-flash script already applied to <html>.
+ * Avoids a second source of truth during hydration (no dark→light flash).
+ */
+function readAppliedTheme(): Theme {
+  if (typeof document === "undefined") return "dark";
+  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
 /**
  * Admin theme hook.
  *
- * Applies theme only while admin UI is mounted. On unmount, restores the dark
- * storefront default so public pages never inherit admin light tokens.
+ * Initial state is read from the DOM (set by the no-flash script), NOT from
+ * useState("dark"), so there is no flash on hydration. The cleanup-on-unmount
+ * reset is removed — it caused a dark flash every time `theme` changed because
+ * React runs cleanup before the next effect.
  *
- * State model:
- *  - No stored preference → prefers-color-scheme (not written until explicit toggle)
- *  - Stored preference → used directly
+ * Single responsibility: this hook ONLY manages data-theme. Storefront reset
+ * is handled by the route leave effect in AdminThemeProvider, not here.
  */
 export function useTheme() {
+  const [theme, setThemeState] = useState<Theme>(readAppliedTheme);
   const [stored, setStored, isHydrated] = useLocalStorage<Theme | null>(
     THEME_STORAGE_KEY,
     null,
   );
-  const [theme, setThemeState] = useState<Theme>("dark");
 
+  // Sync from localStorage after hydration (covers cross-tab changes).
   useEffect(() => {
     if (!isHydrated) return;
-    if (stored) {
+    if (stored && stored !== theme) {
       setThemeState(stored);
-    } else {
-      setThemeState(resolveInitialTheme());
     }
-  }, [isHydrated, stored]);
+  }, [isHydrated, stored, theme]);
 
-  // Apply while mounted; reset storefront to dark on leave.
+  // Reflect theme to <html data-theme>. No cleanup reset — the no-flash
+  // script already set the correct value before paint, and resetting on
+  // unmount causes storefront pages to flash if the user navigates away.
   useEffect(() => {
-    if (typeof document === "undefined") return;
     document.documentElement.dataset.theme = theme;
-    return () => {
-      document.documentElement.dataset.theme = "dark";
-    };
   }, [theme]);
 
   const setTheme = useCallback(
@@ -56,8 +57,12 @@ export function useTheme() {
   );
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }, [theme, setTheme]);
+    setThemeState((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+      setStored(next);
+      return next;
+    });
+  }, [setStored]);
 
   return { theme, setTheme, toggleTheme };
 }

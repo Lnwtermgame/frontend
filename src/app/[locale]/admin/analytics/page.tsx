@@ -8,7 +8,6 @@ import {
   type ElementType,
 } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   BarChart3,
   Calendar,
@@ -161,8 +160,7 @@ const getOrderStatusClassName = (status: string) => {
 
 export default function AdminAnalyticsPage() {
   const t = useTranslations("AdminPage");
-  const router = useRouter();
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
 
   const [dateRange, setDateRange] = useState("7d");
   const [isExporting, setIsExporting] = useState(false);
@@ -176,12 +174,6 @@ export default function AdminAnalyticsPage() {
     revenueDaily: [],
     recentOrders: [],
   });
-
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, isInitialized, router]);
 
   const fetchAnalyticsData = useCallback(async () => {
     if (!isAdmin) return;
@@ -364,16 +356,6 @@ export default function AdminAnalyticsPage() {
       <p className="text-base font-bold text-white mt-0.5">{value}</p>
     </motion.div>
   );
-
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
-      </AdminLayout>
-    );
-  }
 
   if (loading) {
     return (

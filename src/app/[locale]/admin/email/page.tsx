@@ -146,7 +146,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function AdminEmailPage() {
   const router = useRouter();
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>("templates");
 
@@ -171,13 +171,6 @@ export default function AdminEmailPage() {
     configured: boolean;
     smtp: { host: string; port: number; from: string };
   } | null>(null);
-
-  // Redirect non-admin users
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, isInitialized, router]);
 
   // Fetch data on mount
   useEffect(() => {
@@ -410,18 +403,6 @@ export default function AdminEmailPage() {
       e.triggerEvent.toLowerCase().includes(eventSearch.toLowerCase())
     );
   });
-
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-        <PageContainer>
-          <div className="flex items-center justify-center h-64">
-            <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-          </div>
-        </PageContainer>
-      </AdminLayout>
-    );
-  }
 
   return (
     <AdminLayout>

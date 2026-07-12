@@ -2,12 +2,12 @@
 
 import { Menu, Sun, Moon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useTheme } from "@/lib/hooks/use-theme";
+import { useAdminTheme } from "./AdminThemeProvider";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/context/auth-context";
 
 export function AdminTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useAdminTheme();
   const pathname = usePathname();
   const t = useTranslations("Admin");
   const { user } = useAuth();

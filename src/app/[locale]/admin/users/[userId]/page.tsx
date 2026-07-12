@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
 import {
   AdminLayout,
@@ -49,10 +49,9 @@ const formatDateTime = (iso: string) =>
   });
 
 export default function AdminUserManagerPage() {
-  const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [mutating, setMutating] = useState(false);
@@ -97,12 +96,6 @@ export default function AdminUserManagerPage() {
   const [auditResolvedFilter, setAuditResolvedFilter] = useState("all");
   const [auditFromDate, setAuditFromDate] = useState("");
   const [auditToDate, setAuditToDate] = useState("");
-
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, isInitialized, router]);
 
   const fetchAll = useCallback(async () => {
     if (!isAdmin || !userId) return;
@@ -255,18 +248,6 @@ export default function AdminUserManagerPage() {
     if (!userDetail) return "-";
     return `${userDetail.orderCount.toLocaleString()} รายการ`;
   }, [userDetail]);
-
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-        <PageContainer>
-                <div className="flex items-center justify-center h-64">
-            <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-          </div>
-        </PageContainer>
-      </AdminLayout>
-    );
-  }
 
   if (loading) {
     return (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import {
   AlertCircle,
@@ -86,9 +86,8 @@ function toCsvCell(value: string | number | null | undefined): string {
 
 function AdminTicketsPageContent() {
   const t = useTranslations("AdminPage");
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
   const isMonitorMode = searchParams.get("monitor") === "1";
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -130,12 +129,6 @@ function AdminTicketsPageContent() {
 
   const [reply, setReply] = useState("");
   const replyInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isInitialized, isAdmin, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -530,24 +523,6 @@ function AdminTicketsPageContent() {
       "popup=yes,width=1500,height=920,toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes",
     );
   }, []);
-
-  if (!isInitialized || !isAdmin) {
-    return isMonitorMode ? (
-      <div className="min-h-screen bg-site-surface p-4">
-        <div className="flex h-64 items-center justify-center rounded border border-white/5 rounded-xl bg-site-raised">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      </div>
-    ) : (
-      <AdminLayout>
-        <PageContainer>
-          <div className="flex h-64 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        </PageContainer>
-      </AdminLayout>
-    );
-  }
 
   const content = (
     <div className={isMonitorMode ? "space-y-4 p-4" : "space-y-4"}>

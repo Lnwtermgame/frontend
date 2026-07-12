@@ -165,7 +165,7 @@ export function LanguageSwitcher({ variant = "desktop", className }: LanguageSwi
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-48 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-2xl z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-48 bg-[#212328] border border-site-border/30 rounded-[12px] shadow-2xl z-[110] overflow-hidden"
           >
             <div className="p-2 space-y-1">
               {languages.map((lang) => (

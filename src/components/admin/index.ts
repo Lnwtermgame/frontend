@@ -12,6 +12,6 @@ export type { FilterOption } from "./FilterBar";
 export { DataTable } from "./DataTable";
 export type { Column } from "./DataTable";
 export { AdminLayout } from "./AdminLayout";
+export { AdminShell } from "./AdminShell";
 export { AdminSidebar } from "./AdminSidebar";
 export { AdminTopbar } from "./AdminTopbar";
-// More exports added in later tasks.

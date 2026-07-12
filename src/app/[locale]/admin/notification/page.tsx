@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
@@ -36,8 +35,7 @@ interface NotificationStats {
 }
 
 export default function AdminNotificationPage() {
-  const router = useRouter();
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -55,13 +53,6 @@ export default function AdminNotificationPage() {
 
   // Stats
   const [stats, setStats] = useState<NotificationStats | null>(null);
-
-  // Redirect non-admin users
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, isInitialized, router]);
 
   // Fetch stats
   useEffect(() => {
@@ -166,16 +157,6 @@ export default function AdminNotificationPage() {
         return "bg-site-raised text-gray-300 border-gray-300";
     }
   };
-
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
-      </AdminLayout>
-    );
-  }
 
   return (
     <AdminLayout>

@@ -142,18 +142,6 @@ export default function AdminAiChatPage() {
     await sendMessage(input);
   };
 
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-        <PageContainer>
-          <div className="flex items-center justify-center py-24 text-gray-400">
-            <Loader2 className="h-6 w-6 animate-spin" />
-          </div>
-        </PageContainer>
-      </AdminLayout>
-    );
-  }
-
   return (
     <AdminLayout>
       <PageContainer>

@@ -71,7 +71,7 @@ export default function EmailTemplateEditorPage() {
     { name: "expiresIn", description: t("email.placeholders.expiresIn") },
   ];
   const params = useParams();
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
   const isNew = params.id === "new";
 
   const [isLoading, setIsLoading] = useState(!isNew);
@@ -111,13 +111,6 @@ export default function EmailTemplateEditorPage() {
 
   const [testEmail, setTestEmail] = useState("");
   const [isSendingTest, setIsSendingTest] = useState(false);
-
-  // Redirect non-admin
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, isInitialized, router]);
 
   // Fetch template if editing
   useEffect(() => {
@@ -285,31 +278,17 @@ export default function EmailTemplateEditorPage() {
     }
   };
 
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-      <PageContainer>
-        <AdminPageHeader title="แก้ไขเทมเพลต" />
-
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
-      </PageContainer>
-    </AdminLayout>
-    );
-  }
-
   if (isLoading) {
     return (
       <AdminLayout>
-      <PageContainer>
-        <AdminPageHeader title="แก้ไขเทมเพลต" />
+        <PageContainer>
+          <AdminPageHeader title="แก้ไขเทมเพลต" />
 
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
-      </PageContainer>
-    </AdminLayout>
+          <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
+          </div>
+        </PageContainer>
+      </AdminLayout>
     );
   }
 

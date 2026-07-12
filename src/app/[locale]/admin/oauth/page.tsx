@@ -8,7 +8,6 @@ import {
   AdminPageHeader,
   PageContainer,
 } from "@/components/admin";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   oauthProviderApi,
@@ -48,8 +47,7 @@ const emptyFormData: ProviderFormData = {
 
 export default function OAuthProvidersPage() {
   const t = useTranslations("AdminPage");
-  const router = useRouter();
-  const { isAdmin, isInitialized } = useAuth();
+  const { isAdmin } = useAuth();
 
   const [providers, setProviders] = useState<OAuthProvider[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,13 +57,6 @@ export default function OAuthProvidersPage() {
     null,
   );
   const [formData, setFormData] = useState<ProviderFormData>(emptyFormData);
-
-  // Redirect non-admin users
-  useEffect(() => {
-    if (isInitialized && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, isInitialized, router]);
 
   const fetchProviders = useCallback(async () => {
     if (!isAdmin) return;
@@ -192,16 +183,6 @@ export default function OAuthProvidersPage() {
       setSaving(false);
     }
   };
-
-  if (!isInitialized || !isAdmin) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <RefreshCw className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
-      </AdminLayout>
-    );
-  }
 
   return (
     <AdminLayout>

@@ -1,45 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { AdminSidebar } from "./AdminSidebar";
-import { AdminTopbar } from "./AdminTopbar";
-import { useAuth } from "@/lib/context/auth-context";
-
-interface AdminLayoutProps {
-  children: React.ReactNode;
-  title?: string; // kept for backward compat; unused by new shell (breadcrumb is derived)
-}
-
-export function AdminLayout({ children }: AdminLayoutProps) {
-  const router = useRouter();
-  const { isAdmin, isInitialized, isSessionChecked } = useAuth();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    if (isInitialized && isSessionChecked && !isAdmin) {
-      router.push("/");
-    }
-  }, [isAdmin, router, isInitialized, isSessionChecked]);
-
-  if (!isInitialized || !isSessionChecked || !isAdmin) {
-    return (
-      <div className="w-full flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-site-accent animate-spin" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex h-[100dvh] overflow-hidden">
-      <AdminSidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <AdminTopbar onOpenMobile={() => setMobileOpen(true)} />
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-4 md:p-6 max-w-[1400px] mx-auto">{children}</div>
-        </main>
-      </div>
-    </div>
-  );
+/**
+ * AdminLayout is now a PASS-THROUGH — the actual shell (sidebar + topbar +
+ * auth gate) lives in AdminShell, which is mounted ONCE in the admin route
+ * group layout and persists across navigations.
+ *
+ * This component is kept for backward compat: all 26 admin pages still
+ * import and render <AdminLayout>. It simply renders children directly,
+ * avoiding a double-nested shell. Pages can be gradually migrated to drop
+ * this wrapper entirely.
+ */
+export function AdminLayout({
+  children,
+  title: _title,
+}: {
+  children?: React.ReactNode;
+  title?: unknown; // accepted for backward compat, ignored
+}) {
+  return <>{children}</>;
 }

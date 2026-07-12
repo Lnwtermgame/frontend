@@ -25,6 +25,19 @@ const languages = [
   { code: "fr", label: "Français", flagCode: "fr" },
 ];
 
+/**
+ * Inline flag using flag-icons CSS classes already loaded in root layout.
+ * No external HTTP — renders instantly regardless of network.
+ */
+function Flag({ code, className }: { code: string; className?: string }) {
+  return (
+    <span
+      className={`fi fi-${code} inline-block shrink-0 ${className ?? ""}`}
+      style={{ aspectRatio: "4/3" }}
+    />
+  );
+}
+
 export function LanguageSwitcher({
   variant = "desktop",
   className,
@@ -62,9 +75,6 @@ export function LanguageSwitcher({
     });
   };
 
-  const getFlagUrl = (code: string) =>
-    `https://kapowaz.github.io/square-flags/flags/${code}.svg`;
-
   if (variant === "mobile") {
     return (
       <div className={cn("space-y-3", className)}>
@@ -77,13 +87,7 @@ export function LanguageSwitcher({
           className="w-full flex items-center justify-between p-3 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/40 transition-all text-site-text"
         >
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded-sm overflow-hidden shrink-0 shadow-sm">
-              <img
-                src={getFlagUrl(currentLanguage.flagCode)}
-                alt={currentLanguage.label}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <Flag code={currentLanguage.flagCode} className="w-6 rounded-sm" />
             <span className="font-bold uppercase text-[13px] tracking-wide">
               {currentLanguage.label}
             </span>
@@ -135,12 +139,8 @@ export function LanguageSwitcher({
                               : "bg-site-raised border-site-border-soft hover:border-site-border text-site-muted hover:text-site-text",
                           )}
                         >
-                          <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0 shadow-sm">
-                            <img
-                              src={getFlagUrl(lang.flagCode)}
-                              alt={lang.label}
-                              className="w-full h-full object-cover"
-                            />
+                          <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0">
+                            <Flag code={lang.flagCode} className="w-full" />
                           </div>
                           <span
                             className={cn(
@@ -171,13 +171,10 @@ export function LanguageSwitcher({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-1.5 bg-transparent hover:bg-site-raised rounded-full transition-colors group cursor-pointer"
       >
-        <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity">
-          <img
-            src={getFlagUrl(currentLanguage.flagCode)}
-            alt={currentLanguage.label}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <Flag
+          code={currentLanguage.flagCode}
+          className="w-[18px] rounded-[2px] opacity-90 group-hover:opacity-100 transition-opacity"
+        />
         <span className="text-xs text-site-muted font-medium group-hover:text-site-text transition-colors uppercase tabular-nums tracking-wide">
           {currentLanguage.code} {currentLanguage.label}
         </span>
@@ -214,13 +211,10 @@ export function LanguageSwitcher({
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-[18px] h-[14px] rounded-[2px] overflow-hidden shrink-0 shadow-sm opacity-90">
-                        <img
-                          src={getFlagUrl(lang.flagCode)}
-                          alt={lang.label}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                      <Flag
+                        code={lang.flagCode}
+                        className="w-[18px] rounded-[2px] opacity-90"
+                      />
                       <span className="tracking-wide uppercase font-medium">
                         {lang.label}
                       </span>

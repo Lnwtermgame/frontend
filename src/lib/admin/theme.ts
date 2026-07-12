@@ -29,6 +29,9 @@ export const STATUS_CONFIG: Record<string, StatusConfig> = {
   INACTIVE: { labelKey: "inactive", semantic: "dim" },
   LOW_STOCK: { labelKey: "low_stock", semantic: "amber" },
   OUT_OF_STOCK: { labelKey: "out_of_stock", semantic: "rose" },
+  // Promotion
+  SCHEDULED: { labelKey: "scheduled", semantic: "blue" },
+  EXPIRED: { labelKey: "expired", semantic: "dim" },
   // User
   BANNED: { labelKey: "banned", semantic: "rose" },
 };

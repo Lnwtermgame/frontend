@@ -1204,6 +1204,8 @@
       "inactive": "ไม่ใช้งาน",
       "low_stock": "ใกล้หมด",
       "out_of_stock": "หมดสต็อก",
+      "scheduled": "กำหนดเวลา",
+      "expired": "หมดอายุ",
       "banned": "ระงับ",
       "unknown": "ไม่ทราบ"
     },

@@ -1204,6 +1204,8 @@
       "inactive": "Inactive",
       "low_stock": "Low stock",
       "out_of_stock": "Out of stock",
+      "scheduled": "Scheduled",
+      "expired": "Expired",
       "banned": "Banned",
       "unknown": "Unknown"
     },

@@ -6,15 +6,17 @@ import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
+  FilterBar,
+  DataTable,
+  StatusBadge,
+  type Column,
 } from "@/components/admin";
 import {
   Plus,
-  Search,
   Tag,
   Edit,
   Calendar,
   Trash2,
-  Info,
   Clock,
   ExternalLink,
   Settings,
@@ -64,32 +66,6 @@ export default function AdminPromotions() {
     }
   };
 
-  const getStatusStyles = (status: string) => {
-    switch (status) {
-      case "active":
-        return "text-green-400 bg-green-500/10 border-green-300";
-      case "scheduled":
-        return "text-site-accent bg-site-accent/10 border-site-accent/30";
-      case "expired":
-        return "text-gray-300 bg-site-raised border-gray-300";
-      default:
-        return "text-gray-300 bg-site-raised border-gray-300";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "active":
-        return "ใช้งาน";
-      case "scheduled":
-        return "กำหนดเวลา";
-      case "expired":
-        return "หมดอายุ";
-      default:
-        return status;
-    }
-  };
-
   const getPromotionTypeText = (type: string) => {
     switch (type) {
       case "flash":
@@ -103,6 +79,97 @@ export default function AdminPromotions() {
     }
   };
 
+  const columns: Column<Promotion>[] = [
+    {
+      key: "title",
+      header: "โปรโมชั่น",
+      render: (p) => (
+        <span className="font-medium text-site-text">{p.title}</span>
+      ),
+    },
+    {
+      key: "code",
+      header: "รหัส",
+      render: (p) => (
+        <span className="font-mono bg-site-raised border border-site-border px-1.5 py-0.5 text-site-text text-[11px] rounded">
+          {p.code}
+        </span>
+      ),
+    },
+    {
+      key: "type",
+      header: "ประเภท",
+      render: (p) => (
+        <span
+          className={`inline-block border px-1.5 py-0.5 text-[10px] font-medium rounded ${getPromotionTypeStyles(p.type)}`}
+        >
+          {getPromotionTypeText(p.type)}
+        </span>
+      ),
+    },
+    {
+      key: "discount",
+      header: "ส่วนลด",
+      render: (p) => (
+        <span className="font-medium text-site-text">{p.discount}</span>
+      ),
+    },
+    {
+      key: "usageCount",
+      header: "ใช้แล้ว",
+      sortable: true,
+      sortAccessor: (p) => p.usageCount,
+      render: (p) => <span className="text-site-text">{p.usageCount}</span>,
+    },
+    {
+      key: "dates",
+      header: "วันที่",
+      render: (p) => (
+        <div className="flex items-center text-site-dim text-[11px]">
+          <Calendar className="h-3 w-3 mr-1 text-site-dim" />
+          <span>
+            {new Date(p.startDate).toLocaleDateString("th-TH")} -{" "}
+            {new Date(p.endDate).toLocaleDateString("th-TH")}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      header: "สถานะ",
+      render: (p) => (
+        <StatusBadge status={p.status.toUpperCase()} />
+      ),
+    },
+    {
+      key: "actions",
+      header: "การดำเนินการ",
+      align: "right",
+      render: (p) => (
+        <div className="flex justify-end gap-1">
+          <button
+            title="แก้ไข"
+            className="p-1.5 bg-site-raised border border-site-border text-site-text hover:bg-site-accent hover:text-white hover:border-site-accent transition-colors rounded"
+          >
+            <Edit className="h-3.5 w-3.5" />
+          </button>
+          <button
+            title="ดู"
+            className="p-1.5 bg-site-raised border border-site-border text-site-text hover:bg-site-accent hover:text-white hover:border-site-accent transition-colors rounded"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+          </button>
+          <button
+            title="ลบ"
+            className="p-1.5 bg-site-raised border border-site-border text-site-text hover:bg-semantic-rose hover:text-white hover:border-semantic-rose transition-colors rounded"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <AdminLayout>
       <PageContainer>
@@ -110,189 +177,52 @@ export default function AdminPromotions() {
           title="จัดการโปรโมชั่น"
           description="จัดการรหัสส่วนลดและแคมเปญโปรโมชั่น"
           actions={
-            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-              <div className="relative w-full sm:max-w-xs">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-site-muted" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="ค้นหาโปรโมชั่นหรือรหัส..."
-                  className="bg-site-raised border border-site-border text-site-text pl-9 pr-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none rounded-lg"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <div className="relative w-full sm:max-w-xs">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Info className="h-4 w-4 text-site-muted" />
-                </div>
-                <select
-                  className="bg-site-raised border border-site-border text-site-text pl-9 pr-3 py-1.5 w-full appearance-none text-sm focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent focus:outline-none rounded-lg"
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                >
-                  <option value="all">ทุกสถานะ</option>
-                  <option value="active">ใช้งาน</option>
-                  <option value="scheduled">กำหนดเวลา</option>
-                  <option value="expired">หมดอายุ</option>
-                </select>
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-site-muted">
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </div>
-                </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Link href="/admin/promotions/settings">
-                  <button
-                    className="bg-site-surface border border-site-border rounded-2xl text-site-text w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-site-raised/5 transition-colors font-medium">
-                    <Settings className="h-4 w-4" />
-                    <span>ตั้งค่า</span>
-                  </button>
-                </Link>
-                <Link href="/admin/promotions/create">
-                  <button
-                    className="bg-black text-white border border-site-border rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium">
-                    <Plus className="h-4 w-4" />
-                    <span>สร้างโปรโมชั่น</span>
-                  </button>
-                </Link>
-              </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Link href="/admin/promotions/settings">
+                <button
+                  className="bg-site-surface border border-site-border rounded-lg text-site-text w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-site-raised transition-colors font-medium">
+                  <Settings className="h-4 w-4" />
+                  <span>ตั้งค่า</span>
+                </button>
+              </Link>
+              <Link href="/admin/promotions/create">
+                <button
+                  className="bg-black text-white border border-site-border rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium">
+                  <Plus className="h-4 w-4" />
+                  <span>สร้างโปรโมชั่น</span>
+                </button>
+              </Link>
             </div>
           }
         />
 
-        {/* Promotions Table */}
-        <motion.div
-          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden"
-          
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <div className="p-3 border-b-2 border-white/10 bg-site-surface">
-            <h3 className="text-base font-semibold text-white flex items-center">
-              <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-              <Tag className="mr-2 h-4 w-4 text-site-accent" />
-              รายการโปรโมชั่น
-            </h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-gray-400 text-xs border-b border-white/5">
-                  <th className="px-3 py-2 text-left">โปรโมชั่น</th>
-                  <th className="px-3 py-2 text-left">รหัส</th>
-                  <th className="px-3 py-2 text-left">ประเภท</th>
-                  <th className="px-3 py-2 text-left">ส่วนลด</th>
-                  <th className="px-3 py-2 text-left">ใช้แล้ว</th>
-                  <th className="px-3 py-2 text-left">วันที่</th>
-                  <th className="px-3 py-2 text-left">สถานะ</th>
-                  <th className="px-3 py-2 text-left">การดำเนินการ</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-site-border/30">
-                {filteredPromotions.length > 0 ? (
-                  filteredPromotions.map((promotion) => (
-                    <tr
-                      key={promotion.id}
-                      className="text-sm hover:bg-site-raised/5 transition-colors">
-                      <td className="px-3 py-2 font-medium text-white">
-                        {promotion.title}
-                      </td>
-                      <td className="px-3 py-2">
-                        <span className="font-mono bg-site-raised border-2 border-gray-300 px-1.5 py-0.5 text-white text-xs">
-                          {promotion.code}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2">
-                        <span
-                          className={`border-2 px-1.5 py-0.5 text-[10px] font-medium ${getPromotionTypeStyles(promotion.type)}`}>
-                          {getPromotionTypeText(promotion.type)}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2 text-white font-medium">
-                        {promotion.discount}
-                      </td>
-                      <td className="px-3 py-2 text-white">
-                        {promotion.usageCount}
-                      </td>
-                      <td className="px-3 py-2 text-gray-400 text-xs">
-                        <div className="flex items-center">
-                          <Calendar className="h-3 w-3 mr-1 text-gray-400" />
-                          <span className="text-[10px]">
-                            {new Date(promotion.startDate).toLocaleDateString(
-                              "th-TH",
-                            )}{" "}
-                            -{" "}
-                            {new Date(promotion.endDate).toLocaleDateString(
-                              "th-TH",
-                            )}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-3 py-2">
-                        <span
-                          className={`px-1.5 py-0.5 text-[10px] border-2 font-medium ${getStatusStyles(promotion.status)}`}>
-                          {getStatusText(promotion.status)}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2">
-                        <div className="flex space-x-1">
-                          <button className="p-1.5 bg-site-raised border-2 border-gray-300 text-white hover:bg-site-accent hover:text-white hover:border-white/10 transition-colors">
-                            <Edit className="h-3.5 w-3.5" />
-                          </button>
-                          <button className="p-1.5 bg-site-raised border-2 border-gray-300 text-white hover:bg-site-accent hover:text-white hover:border-white/10 transition-colors">
-                            <ExternalLink className="h-3.5 w-3.5" />
-                          </button>
-                          <button className="p-1.5 bg-site-raised border-2 border-gray-300 text-white hover:bg-red-500/100 hover:text-white hover:border-white/10 transition-colors">
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      className="px-3 py-6 text-center text-gray-400 text-sm"
-                      colSpan={8}
-                    >
-                      ไม่พบโปรโมชั่นที่ตรงกับเงื่อนไขการค้นหา
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="p-4 border-t border-white/5 flex justify-between items-center">
-            <div className="text-sm text-gray-400">
-              แสดง {filteredPromotions.length} จาก {promotions.length} โปรโมชั่น
-            </div>
-            <div className="flex space-x-1">
-              <button className="px-3 py-1 text-sm bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white hover:bg-site-raised/5 transition-colors font-medium">
-                ก่อนหน้า
-              </button>
-              <button className="px-3 py-1 text-sm bg-site-accent text-white border border-white/5 rounded-xl font-medium">
-                1
-              </button>
-              <button className="px-3 py-1 text-sm bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white hover:bg-site-raised/5 transition-colors font-medium">
-                ถัดไป
-              </button>
-            </div>
-          </div>
-        </motion.div>
+        <FilterBar
+          search={{
+            value: searchTerm,
+            onChange: setSearchTerm,
+            placeholder: "ค้นหาโปรโมชั่นหรือรหัส...",
+          }}
+          filters={[
+            {
+              key: "status",
+              value: selectedStatus,
+              onChange: setSelectedStatus,
+              options: [
+                { value: "all", label: "ทุกสถานะ" },
+                { value: "active", label: "ใช้งาน" },
+                { value: "scheduled", label: "กำหนดเวลา" },
+                { value: "expired", label: "หมดอายุ" },
+              ],
+            },
+          ]}
+        />
+
+        <DataTable
+          columns={columns}
+          data={filteredPromotions}
+          rowKey={(p) => p.id}
+          empty={{ icon: Tag, title: "ไม่พบโปรโมชั่นที่ตรงกับเงื่อนไขการค้นหา" }}
+        />
 
         {/* Active Promotions Summary */}
         <motion.div

@@ -7,6 +7,8 @@ import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
+  DataTable,
+  type Column,
 } from "@/components/admin";
 import {
   Layers,
@@ -16,10 +18,8 @@ import {
   Loader2,
   X,
   Save,
-  GripVertical,
   Package,
   AlertCircle,
-  CheckCircle2,
 } from "lucide-react";
 import { productApi, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
@@ -220,6 +220,121 @@ export default function AdminCategories() {
     }
   };
 
+  const columns: Column<Category>[] = [
+    {
+      key: "name",
+      header: "ชื่อหมวดหมู่ & ย่อ (Slug)",
+      sortable: true,
+      sortAccessor: (c) => c.name,
+      render: (c) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-bold text-[13px] text-site-text">
+            {c.name}
+          </span>
+          <code className="text-[11px] font-mono text-site-dim bg-site-raised px-2 py-0.5 rounded-md border border-site-border-soft w-fit">
+            /{c.slug}
+          </code>
+        </div>
+      ),
+    },
+    {
+      key: "description",
+      header: "คำอธิบาย",
+      render: (c) => (
+        <p
+          className="text-site-dim text-[12px] line-clamp-2 max-w-sm"
+          title={c.description || ""}
+        >
+          {c.description || (
+            <span className="text-site-dim italic">ไม่มีคำอธิบาย</span>
+          )}
+        </p>
+      ),
+    },
+    {
+      key: "productCount",
+      header: "สินค้า",
+      align: "center",
+      sortable: true,
+      sortAccessor: (c) => c.productCount || 0,
+      render: (c) => {
+        const count = c.productCount || 0;
+        return (
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
+              count > 0
+                ? "bg-site-accent/10 text-site-accent border border-site-accent/20"
+                : "bg-site-raised text-site-dim border border-site-border-soft"
+            }`}
+          >
+            <Package
+              className={`w-3.5 h-3.5 ${count > 0 ? "text-site-accent" : "text-site-dim"}`}
+            />
+            {count}
+          </span>
+        );
+      },
+    },
+    {
+      key: "order",
+      header: "จัดเรียง",
+      align: "center",
+      render: (c) => {
+        const index = categories.findIndex((x) => x.id === c.id);
+        return (
+          <div className="flex items-center justify-center gap-1 bg-site-raised rounded-xl border border-site-border-soft p-1">
+            <button
+              onClick={() => moveCategory(index, "up")}
+              disabled={index === 0}
+              className="p-1 rounded-lg text-site-dim hover:text-site-text hover:bg-site-surface disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+              title="เลื่อนขึ้น"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            </button>
+            <span className="text-[12px] font-bold text-site-text w-5 text-center">
+              {index + 1}
+            </span>
+            <button
+              onClick={() => moveCategory(index, "down")}
+              disabled={index === categories.length - 1}
+              className="p-1 rounded-lg text-site-dim hover:text-site-text hover:bg-site-surface disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+              title="เลื่อนลง"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        );
+      },
+    },
+    {
+      key: "actions",
+      header: "",
+      align: "right",
+      render: (c) => (
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={() => openEditModal(c)}
+            className="p-2 bg-site-raised border border-site-border-soft rounded-xl text-site-dim hover:text-site-text hover:bg-site-accent/20 hover:border-site-accent/30 transition-all"
+            title="แก้ไขหมวดหมู่"
+          >
+            <Edit className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleDelete(c)}
+            className="p-2 bg-site-raised border border-site-border-soft rounded-xl text-site-dim hover:text-semantic-rose hover:bg-semantic-rose/20 hover:border-semantic-rose/30 transition-all"
+            title="ลบหมวดหมู่"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
   <AdminLayout>
     <PageContainer className="pb-12">
@@ -284,121 +399,19 @@ export default function AdminCategories() {
           </div>
         </div>
 
-        <div className="overflow-x-auto min-h-[300px]">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-              <p className="text-gray-400 text-sm font-medium">กำลังโหลดข้อมูล...</p>
-            </div>
-          ) : categories.length > 0 ? (
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-site-surface border-b border-white/5">
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-center w-12">#</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">ชื่อหมวดหมู่ & ย่อ (Slug)</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider hidden md:table-cell">คำอธิบาย</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-center">สินค้า</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-center w-24">จัดเรียง</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-right">ดำเนินการ</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {categories.map((category, index) => (
-                  <tr
-                    key={category.id}
-                    className="group hover:bg-site-raised/50 transition-colors"
-                  >
-                    <td className="px-6 py-4 text-center">
-                      <GripVertical className="w-4 h-4 text-gray-600 mx-auto cursor-ns-resize hover:text-gray-400 transition-colors group-hover:text-site-accent/50" />
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1.5">
-                        <span className="font-bold text-[14px] text-white group-hover:text-site-accent transition-colors">
-                          {category.name}
-                        </span>
-                        <code className="text-[11px] font-mono text-gray-400 bg-site-surface px-2 py-0.5 rounded-md border border-white/5 w-fit group-hover:border-site-accent/20 transition-colors">
-                          /{category.slug}
-                        </code>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 hidden md:table-cell">
-                      <p className="text-gray-400 text-[13px] line-clamp-2 max-w-sm" title={category.description || ""}>
-                        {category.description || <span className="text-gray-700 italic">ไม่มีคำอธิบาย</span>}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex justify-center">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 ${(category.productCount || 0) > 0
-                            ? "bg-site-accent/10 text-site-accent border border-site-accent/20"
-                            : "bg-site-surface text-gray-400 border border-white/5"
-                          } rounded-lg text-[12px] font-bold transition-colors`}>
-                          <Package className={`w-3.5 h-3.5 ${(category.productCount || 0) > 0 ? "text-site-accent" : "text-gray-400"}`} />
-                          {category.productCount || 0}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-1 bg-site-surface rounded-xl border border-white/5 p-1">
-                        <button
-                          onClick={() => moveCategory(index, "up")}
-                          disabled={index === 0}
-                          className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-[#2a2d35] disabled:opacity-30 disabled:hover:bg-transparent transition-all"
-                          title="เลื่อนขึ้น"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
-                        </button>
-                        <span className="text-[13px] font-black text-gray-300 w-5 text-center">
-                          {index + 1}
-                        </span>
-                        <button
-                          onClick={() => moveCategory(index, "down")}
-                          disabled={index === categories.length - 1}
-                          className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-[#2a2d35] disabled:opacity-30 disabled:hover:bg-transparent transition-all"
-                          title="เลื่อนลง"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                        </button>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => openEditModal(category)}
-                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-blue-500/30 transition-all"
-                          title="แก้ไขหมวดหมู่"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(category)}
-                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/30 transition-all"
-                          title="ลบหมวดหมู่"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-site-raised rounded-full flex items-center justify-center mb-4 border border-white/5 shadow-inner">
-                <Layers className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-[16px] font-black text-white mb-2">ยังไม่มีหมวดหมู่ในระบบ</h3>
-              <p className="text-gray-400 text-[14px] max-w-sm mb-6">
-                คุณสามารถเพิ่มหมวดหมู่ใหม่ หรือรันคำสั่ง Seed เพื่อสร้างข้อมูลเริ่มต้นแบบอัตโนมัติ
-              </p>
-              <div className="bg-site-surface p-3 rounded-xl border border-white/5 flex items-center gap-3">
-                <div className="p-2 bg-site-accent/10 rounded-lg">
-                  <CheckCircle2 className="w-4 h-4 text-site-accent" />
-                </div>
-                <code className="text-[13px] font-mono text-site-accent font-bold">npm run db:seed</code>
-              </div>
-            </div>
-          )}
+        <div className="min-h-[300px]">
+          <DataTable
+            columns={columns}
+            data={categories}
+            rowKey={(c) => c.id}
+            loading={loading}
+            empty={{
+              icon: Layers,
+              title: "ยังไม่มีหมวดหมู่ในระบบ",
+              description:
+                "คุณสามารถเพิ่มหมวดหมู่ใหม่ หรือรันคำสั่ง Seed เพื่อสร้างข้อมูลเริ่มต้นแบบอัตโนมัติ (npm run db:seed)",
+            }}
+          />
         </div>
       </motion.div>
 

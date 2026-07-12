@@ -8,10 +8,6 @@ import {
   ArrowLeft,
   Package,
   Loader2,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Truck,
   User,
   Mail,
   Calendar,
@@ -27,43 +23,8 @@ import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
+  StatusBadge,
 } from "@/components/admin";
-
-const statusConfig: Record<
-  string,
-  { color: string; bgColor: string; icon: React.ReactNode }
-> = {
-  PENDING: {
-    color: "text-yellow-400",
-    bgColor: "bg-yellow-500/10",
-    icon: <Clock className="h-5 w-5" />,
-  },
-  PROCESSING: {
-    color: "text-site-accent",
-    bgColor: "bg-site-surface0/10",
-    icon: <Truck className="h-5 w-5" />,
-  },
-  COMPLETED: {
-    color: "text-green-400",
-    bgColor: "bg-green-500/10",
-    icon: <CheckCircle className="h-5 w-5" />,
-  },
-  FAILED: {
-    color: "text-red-400",
-    bgColor: "bg-red-500/10",
-    icon: <XCircle className="h-5 w-5" />,
-  },
-  CANCELLED: {
-    color: "text-red-400",
-    bgColor: "bg-red-500/10",
-    icon: <XCircle className="h-5 w-5" />,
-  },
-  REFUNDED: {
-    color: "text-gray-300",
-    bgColor: "bg-site-raised",
-    icon: <XCircle className="h-5 w-5" />,
-  },
-};
 
 const fulfillStatusConfig: Record<
   string,
@@ -201,13 +162,13 @@ export default function OrderViewPage() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-red-500/10 border border-red-500/30/30 rounded-xl p-6 text-center">
             <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />
-            <h2 className="text-xl font-bold text-white mb-2">ไม่พบคำสั่งซื้อ</h2>
+            <h2 className="text-xl font-bold text-site-text mb-2">ไม่พบคำสั่งซื้อ</h2>
             <p className="text-red-600 mb-4">
               {error || "ไม่พบข้อมูลคำสั่งซื้อที่ระบุ"}
             </p>
             <Link
               href="/admin/orders"
-              className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5">
+              className="inline-flex items-center bg-site-accent hover:bg-site-accent/90 text-white px-6 py-2 font-bold border border-site-border rounded-xl transition-all hover:-translate-y-0.5">
               <ArrowLeft size={18} className="mr-2" />
               {t("order_detail.back_to_orders")}
             </Link>
@@ -217,8 +178,6 @@ export default function OrderViewPage() {
     );
   }
 
-  const status = statusConfig[order.status] || statusConfig.PENDING;
-
   return (
     <AdminLayout>
       <PageContainer>
@@ -226,7 +185,7 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/orders"
-            className="p-1.5 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors">
+            className="p-1.5 bg-site-surface border border-site-border rounded-2xl hover:bg-site-raised/5 transition-colors">
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <AdminPageHeader
@@ -239,7 +198,7 @@ export default function OrderViewPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchOrder}
-            className="flex items-center gap-2 px-3 py-1.5 bg-site-accent/10 border border-white/5 rounded-xl font-bold hover:bg-site-accent/10/90 transition-all hover:-translate-y-0.5 text-sm">
+            className="flex items-center gap-2 px-3 py-1.5 bg-site-accent/10 border border-site-border rounded-xl font-bold hover:bg-site-accent/10/90 transition-all hover:-translate-y-0.5 text-sm">
             <RefreshCw className="h-3 w-3" />
             {t("common.refresh")}
           </button>
@@ -250,22 +209,14 @@ export default function OrderViewPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${status.bgColor} border border-white/5 rounded-xl p-3 flex items-center justify-between print:hidden`}>
-        <div className="flex items-center gap-2">
-          <div
-            className={`p-1.5 bg-site-surface border border-white/5 rounded-2xl ${status.color}`}>
-            {status.icon}
-          </div>
-          <div>
-            <p className="text-xs text-gray-400">{t("order_detail.order_status")}</p>
-            <p className={`text-base font-bold ${status.color}`}>
-              {t(`orders.status.${statusKeyMap[order.status] || order.status.toLowerCase()}`)}
-            </p>
-          </div>
+        className="bg-site-surface border border-site-border rounded-xl p-3 flex items-center justify-between print:hidden">
+        <div className="flex flex-col gap-1">
+          <p className="text-xs text-gray-400">{t("order_detail.order_status")}</p>
+          <StatusBadge status={order.status} />
         </div>
         <div className="text-right">
           <p className="text-xs text-gray-400">{t("order_detail.order_date")}</p>
-          <p className="font-bold text-white text-sm">{formatDate(order.createdAt)}</p>
+          <p className="font-bold text-site-text text-sm">{formatDate(order.createdAt)}</p>
         </div>
       </motion.div>
 
@@ -278,9 +229,9 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            className="bg-site-surface border border-site-border rounded-2xl overflow-hidden">
             <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
-              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+              <h2 className="font-bold text-site-text flex items-center gap-2 text-base">
                 <Package className="h-4 w-4 text-site-accent" />
                 {t("order_detail.items")}
               </h2>
@@ -300,15 +251,15 @@ export default function OrderViewPage() {
                         <img
                           src={item.product.imageUrl}
                           alt={productName}
-                          className="w-10 h-10 object-cover border border-white/5 rounded-xl"
+                          className="w-10 h-10 object-cover border border-site-border rounded-xl"
                         />
                       ) : (
-                        <div className="w-10 h-10 bg-site-raised border border-white/5 rounded-xl flex items-center justify-center font-bold text-gray-400 text-xs">
+                        <div className="w-10 h-10 bg-site-raised border border-site-border rounded-xl flex items-center justify-center font-bold text-gray-400 text-xs">
                           {index + 1}
                         </div>
                       )}
                       <div>
-                        <p className="font-bold text-white text-sm">
+                        <p className="font-bold text-site-text text-sm">
                           {productName}
                         </p>
                         {productTypeName && (
@@ -337,7 +288,7 @@ export default function OrderViewPage() {
                     </div>
                     <div className="text-right space-y-1">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 border border-white/5 rounded-xl text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}>
+                        className={`inline-flex items-center px-2 py-0.5 border border-site-border rounded-xl text-[10px] font-bold ${itemFulfillStatus.bgColor} ${itemFulfillStatus.color}`}>
                         {t(`orders.status.${statusKeyMap[item.fulfillStatus] || item.fulfillStatus.toLowerCase()}`)}
                       </span>
                       <p className="text-xs text-gray-400 font-mono">
@@ -355,9 +306,9 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            className="bg-site-surface border border-site-border rounded-2xl overflow-hidden">
             <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
-              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+              <h2 className="font-bold text-site-text flex items-center gap-2 text-base">
                 <CreditCard className="h-4 w-4 text-green-400" />
                 สรุปการชำระเงิน
               </h2>
@@ -373,8 +324,8 @@ export default function OrderViewPage() {
                   -{formatPrice(order.discountAmount)}
                 </span>
               </div>
-              <div className="border-t-[2px] border-white/5 pt-2">
-                <div className="flex justify-between text-lg font-bold text-white">
+              <div className="border-t-[2px] border-site-border pt-2">
+                <div className="flex justify-between text-lg font-bold text-site-text">
                   <span>ยอดสุทธิ</span>
                   <span className="text-site-accent">
                     {formatPrice(order.finalAmount)}
@@ -392,9 +343,9 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            className="bg-site-surface border border-site-border rounded-2xl overflow-hidden">
             <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
-              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+              <h2 className="font-bold text-site-text flex items-center gap-2 text-base">
                 <User className="h-4 w-4 text-site-accent" />
                 ข้อมูลลูกค้า
               </h2>
@@ -403,11 +354,11 @@ export default function OrderViewPage() {
               {order.user ? (
                 <>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-site-accent/10 border border-white/5 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-site-accent/10 border border-site-border rounded-xl flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-white text-sm">
+                      <p className="font-bold text-site-text text-sm">
                         {order.user.username || "ไม่ระบุชื่อ"}
                       </p>
                       <p className="text-xs text-gray-400">
@@ -415,7 +366,7 @@ export default function OrderViewPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-400 bg-site-surface p-2 border border-white/5">
+                  <div className="flex items-center gap-2 text-gray-400 bg-site-surface p-2 border border-site-border">
                     <Mail className="h-3 w-3" />
                     <span className="text-xs">{order.user.email}</span>
                   </div>
@@ -433,9 +384,9 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            className="bg-site-surface border border-site-border rounded-2xl overflow-hidden">
             <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
-              <h2 className="font-bold text-white flex items-center gap-2 text-base">
+              <h2 className="font-bold text-site-text flex items-center gap-2 text-base">
                 <FileText className="h-4 w-4 text-site-accent" />
                 ข้อมูลคำสั่งซื้อ
               </h2>
@@ -444,21 +395,21 @@ export default function OrderViewPage() {
               <div className="flex items-center gap-2 text-xs">
                 <Tag className="h-3 w-3 text-gray-400" />
                 <span className="text-gray-400">รหัสคำสั่งซื้อ:</span>
-                <span className="font-mono font-bold text-white">
+                <span className="font-mono font-bold text-site-text">
                   {order.id}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <Calendar className="h-3 w-3 text-gray-400" />
                 <span className="text-gray-400">สร้างเมื่อ:</span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-site-text">
                   {formatDate(order.createdAt)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <RefreshCw className="h-3 w-3 text-gray-400" />
                 <span className="text-gray-400">อัปเดตล่าสุด:</span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-site-text">
                   {formatDate(order.updatedAt)}
                 </span>
               </div>
@@ -470,9 +421,9 @@ export default function OrderViewPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
+            className="bg-site-surface border border-site-border rounded-2xl overflow-hidden">
             <div className="p-3 border-b-[3px] border-white/10 bg-site-raised">
-              <h2 className="font-bold text-white text-base">จัดการคำสั่งซื้อ</h2>
+              <h2 className="font-bold text-site-text text-base">จัดการคำสั่งซื้อ</h2>
             </div>
             <div className="p-3 space-y-3">
               {/* Status Update */}
@@ -483,7 +434,7 @@ export default function OrderViewPage() {
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-site-surface border border-white/5 rounded-2xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-site-accent text-sm">
+                  className="w-full bg-site-surface border border-site-border rounded-2xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-site-accent text-sm">
                   <option value="PENDING">รอดำเนินการ</option>
                   <option value="PROCESSING">กำลังดำเนินการ</option>
                   <option value="COMPLETED">สำเร็จ</option>
@@ -495,7 +446,7 @@ export default function OrderViewPage() {
               <button
                 onClick={handleUpdateStatus}
                 disabled={updating || selectedStatus === order.status}
-                className="w-full py-1.5 bg-site-accent hover:bg-site-accent/90 text-white font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="w-full py-1.5 bg-site-accent hover:bg-site-accent/90 text-white font-bold border border-site-border rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 style={{
                   boxShadow:
                     updating || selectedStatus === order.status
@@ -518,7 +469,7 @@ export default function OrderViewPage() {
                 <button
                   onClick={handleFulfill}
                   disabled={updating}
-                  className="w-full py-1.5 bg-green-500 hover:bg-green-500/90 text-white font-bold border border-white/5 rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
+                  className="w-full py-1.5 bg-green-500 hover:bg-green-500/90 text-white font-bold border border-site-border rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
                   style={{
                     boxShadow: updating ? "none" : "2px 2px 0 0 #000000",
                   }}
@@ -539,7 +490,7 @@ export default function OrderViewPage() {
                 order.status === "PROCESSING") && (
                   <button
                     onClick={() => setSelectedStatus("CANCELLED")}
-                    className="w-full py-1.5 bg-red-500/10 hover:bg-red-200 text-red-400 font-bold border border-white/5 rounded-xl border-red-500/30/30 transition-all hover:-translate-y-0.5 text-sm">
+                    className="w-full py-1.5 bg-red-500/10 hover:bg-red-200 text-red-400 font-bold border border-site-border rounded-xl border-red-500/30/30 transition-all hover:-translate-y-0.5 text-sm">
                     ยกเลิกคำสั่งซื้อ
                   </button>
                 )}

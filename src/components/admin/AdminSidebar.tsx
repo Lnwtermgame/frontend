@@ -4,7 +4,7 @@ import { usePathname, Link } from "@/i18n/routing";
 import {
   Home, TrendingUp, Package, Layers, ShoppingCart, CreditCard, Tag,
   FileText, Newspaper, HelpCircle, ImageIcon, Users, MessageSquare,
-  Bell, Mail, Settings, Key, Bot, DollarSign, Pin, PinOff, X, LogOut,
+  Bell, Mail, Settings, Key, Bot, Pin, PinOff, X, LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocalStorage } from "@/lib/hooks/use-local-storage";
@@ -87,13 +87,10 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
         pinned ? "w-52" : "w-16",
       )}
     >
-      {/* Brand + pin */}
-      <div className="flex items-center gap-2.5 px-3 h-14 border-b border-site-border-soft shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-site-accent flex items-center justify-center shrink-0">
-          <DollarSign className="w-4 h-4 text-site-bg" />
-        </div>
+      {/* Pin toggle */}
+      <div className="flex items-center px-3 h-14 border-b border-site-border-soft shrink-0">
         {pinned && (
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="text-sm font-bold text-site-text truncate leading-tight">
               {tAdmin("admin_cp")}
             </div>
@@ -101,7 +98,10 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
         )}
         <button
           onClick={() => setPinned(!pinned)}
-          className="ml-auto p-1.5 rounded-lg text-site-dim hover:text-site-text hover:bg-site-raised transition-colors"
+          className={cn(
+            "p-1.5 rounded-lg text-site-dim hover:text-site-text hover:bg-site-raised transition-colors",
+            pinned ? "ml-auto" : "mx-auto",
+          )}
           aria-label={pinned ? tAdmin("unpin") : tAdmin("pin")}
           title={pinned ? tAdmin("unpin") : tAdmin("pin")}
         >
@@ -191,12 +191,7 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCloseMobile} />
       <div className="relative w-[280px] h-full bg-site-surface border-r border-site-border shadow-2xl flex flex-col animate-in slide-in-from-left duration-200">
         <div className="flex items-center justify-between px-4 h-14 border-b border-site-border-soft shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-site-accent flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-site-bg" />
-            </div>
-            <span className="font-bold text-site-text">{tAdmin("admin_cp")}</span>
-          </div>
+          <span className="font-bold text-site-text">{tAdmin("admin_cp")}</span>
           <button onClick={onCloseMobile} className="p-1.5 rounded-lg text-site-dim hover:bg-site-raised">
             <X className="w-4 h-4" />
           </button>

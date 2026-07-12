@@ -21,6 +21,24 @@ export default function MainLayout({ children }: MainLayoutProps) {
     return <>{children}</>;
   }
 
+  // Admin pages render their own full-viewport shell (AdminShell) — skip
+  // the storefront Navbar/Footer/container so the shell isn't nested inside
+  // site-container.
+  const isAdmin = pathname.includes("/admin");
+  if (isAdmin) {
+    return (
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="w-6 h-6 border-2 border-site-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+        }
+      >
+        {children}
+      </Suspense>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

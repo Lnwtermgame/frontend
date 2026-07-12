@@ -243,7 +243,12 @@ export default async function RootLayout(
   );
 
   return (
-    <html lang={locale} style={{ colorScheme: "dark" }}>
+    <html
+      lang={locale}
+      style={{ colorScheme: "dark" }}
+      data-theme="dark"
+      suppressHydrationWarning
+    >
       <head>
         {/* react-grab for development */}
         {process.env.NODE_ENV === "development" && (

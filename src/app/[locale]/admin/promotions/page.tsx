@@ -9,6 +9,7 @@ import {
   FilterBar,
   DataTable,
   StatusBadge,
+  StatCard,
   type Column,
 } from "@/components/admin";
 import {
@@ -187,7 +188,7 @@ export default function AdminPromotions() {
               </Link>
               <Link href="/admin/promotions/create">
                 <button
-                  className="bg-black text-white border border-site-border rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-800 transition-colors font-medium">
+                  className="inline-flex items-center justify-center gap-2 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg w-full sm:w-auto px-3 py-1.5 text-sm hover:bg-site-accent-hover transition-colors font-bold">
                   <Plus className="h-4 w-4" />
                   <span>สร้างโปรโมชั่น</span>
                 </button>
@@ -226,67 +227,32 @@ export default function AdminPromotions() {
 
         {/* Active Promotions Summary */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-3 gap-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div
-            className="bg-site-surface border border-white/5 rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-white text-base font-medium">ใช้งานอยู่</h3>
-              <div className="p-1.5 bg-green-500/10 border-2 border-green-500/30/30 text-green-400">
-                <Clock className="h-4 w-4" />
-              </div>
-            </div>
-            <div className="mt-2 text-2xl font-bold text-white">
-              {
-                promotions.filter((p: Promotion) => p.status === "active")
-                  .length
-              }
-            </div>
-            <div className="mt-1 text-gray-400 text-xs">
-              โปรโมชั่นที่กำลังทำงาน
-            </div>
-          </div>
-
-          <div
-            className="bg-site-surface border border-white/5 rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-white text-base font-medium">กำหนดเวลา</h3>
-              <div className="p-1.5 bg-site-accent/10 border-2 border-site-accent text-site-accent">
-                <Calendar className="h-4 w-4" />
-              </div>
-            </div>
-            <div className="mt-2 text-2xl font-bold text-white">
-              {
-                promotions.filter((p: Promotion) => p.status === "scheduled")
-                  .length
-              }
-            </div>
-            <div className="mt-1 text-gray-400 text-xs">
-              โปรโมชั่นที่จะเริ่ม
-            </div>
-          </div>
-
-          <div
-            className="bg-site-surface border border-white/5 rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-white text-base font-medium">ใช้ทั้งหมด</h3>
-              <div className="p-1.5 bg-site-surface0/10 border-2 border-blue-500/30 text-site-accent">
-                <Tag className="h-4 w-4" />
-              </div>
-            </div>
-            <div className="mt-2 text-2xl font-bold text-white">
-              {promotions.reduce(
-                (total: number, p: Promotion) => total + p.usageCount,
-                0,
-              )}
-            </div>
-            <div className="mt-1 text-gray-400 text-xs">
-              จำนวนครั้งที่ใช้โปรโมชั่น
-            </div>
-          </div>
+          <StatCard
+            title="ใช้งานอยู่"
+            value={promotions.filter((p: Promotion) => p.status === "active").length}
+            icon={Clock}
+            semantic="green"
+          />
+          <StatCard
+            title="กำหนดเวลา"
+            value={promotions.filter((p: Promotion) => p.status === "scheduled").length}
+            icon={Calendar}
+            semantic="blue"
+          />
+          <StatCard
+            title="ใช้ทั้งหมด"
+            value={promotions.reduce(
+              (total: number, p: Promotion) => total + p.usageCount,
+              0,
+            )}
+            icon={Tag}
+            semantic="violet"
+          />
         </motion.div>
       </PageContainer>
     </AdminLayout>

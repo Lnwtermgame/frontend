@@ -2,14 +2,17 @@ const createNextIntlPlugin = require('next-intl/plugin');
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Pin Turbopack workspace root to this project. Without this, Next 16
-  // detects multiple lockfiles at the drive root (D:\...\pnpm-lock.yaml)
-  // and resolves the workspace root incorrectly, breaking file watching.
+  // Next.js 16 + Turbopack: when the app lives inside a monorepo where
+  // `next` is hoisted to the workspace root's node_modules, Turbopack
+  // needs the workspace root as its root so it can resolve `next`. Pin it
+  // explicitly to avoid mis-detection from other lockfiles on the drive.
   turbopack: {
-    root: __dirname,
+    root: path.resolve(__dirname, "../.."),
   },
   compiler: {
     removeConsole:

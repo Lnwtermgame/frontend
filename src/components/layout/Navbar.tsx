@@ -186,7 +186,7 @@ export default function Navbar() {
                                 )}
                             </div>
                         ) : (
-                            <Link href="/login" className="bg-site-accent text-white text-[12px] px-4 py-1.5 rounded-[6px] font-bold transition-colors hover:bg-site-accent-hover shadow-accent-glow">
+                            <Link href="/login" className="bg-site-accent text-white text-[12px] px-4 py-1.5 rounded-[6px] font-bold transition-colors hover:bg-site-accent-hover">
                                 {t("login_button")}
                             </Link>
                         )}
@@ -206,7 +206,7 @@ export default function Navbar() {
                                 </span>
                             </Link>
                         ) : (
-                            <Link href="/login" className="bg-site-accent text-white text-[12px] px-4 py-1.5 rounded-[6px] font-bold transition-colors hover:bg-site-accent-hover shadow-accent-glow">
+                            <Link href="/login" className="bg-site-accent text-white text-[12px] px-4 py-1.5 rounded-[6px] font-bold transition-colors hover:bg-site-accent-hover">
                                 {t("login_button")}
                             </Link>
                         )}

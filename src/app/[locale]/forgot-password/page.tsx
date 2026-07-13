@@ -95,7 +95,7 @@ function ForgotPasswordContent() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent hover:shadow-accent-glow font-bold"
+                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent font-bold"
                     disabled={isSubmitting}
                     isLoading={isSubmitting}
                     size="lg"

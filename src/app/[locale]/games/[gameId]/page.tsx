@@ -1016,14 +1016,14 @@ export default function GameDetailsPage() {
                               key={option.id}
                               onClick={() => setSelectedOption(option.id)}
                               className={`relative border p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] rounded-xl ${selectedOption === option.id
-                                ? "bg-site-accent/10 border-site-accent shadow-[0_0_15px_rgba(103,176,186,0.15)]"
+                                ? "bg-site-accent/10 border-site-accent"
                                 : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
                                 }`}
                               whileHover={{ y: -2 }}
                             >
                               {option.isPopular && (
                                 <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] md:text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full shadow-[0_2px_10px_rgba(255,51,102,0.4)] flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
+                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] md:text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
                                     <Flame size={10} className="text-yellow-200 fill-yellow-200" />
                                     {t("popular_badge")}
                                   </span>
@@ -1078,13 +1078,13 @@ export default function GameDetailsPage() {
                                 setIsOptionsModalOpen(false);
                               }}
                               className={`relative border p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] rounded-xl ${selectedOption === option.id
-                                ? "bg-site-accent/10 border-site-accent shadow-[0_0_15px_rgba(103,176,186,0.15)]"
+                                ? "bg-site-accent/10 border-site-accent"
                                 : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
                                 }`}
                             >
                               {option.isPopular && (
                                 <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] font-black tracking-wider px-2 py-0.5 rounded-full shadow-[0_2px_10px_rgba(255,51,102,0.4)] flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
+                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] font-black tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
                                     <Flame size={10} className="text-yellow-200 fill-yellow-200" />
                                     {t("popular_badge")}
                                   </span>
@@ -1135,7 +1135,7 @@ export default function GameDetailsPage() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight">
-                      <span className="w-1.5 h-5 bg-site-accent rounded-full flex-shrink-0 mt-1 md:mt-0 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
+                      <span className="w-1.5 h-5 bg-site-accent rounded-full flex-shrink-0 mt-1 md:mt-0"></span>
                       <span>{t("about_product", { name: game.title })}</span>
                     </h3>
                     <ProductDescription
@@ -1194,7 +1194,7 @@ export default function GameDetailsPage() {
           {relatedGamesByDev.length > 0 && (
             <div className="mb-8">
               <h2 className="text-xl font-bold text-white mb-4 flex items-center uppercase">
-                <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
+                <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2"></span>
                 {t("related_products")}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -1273,7 +1273,7 @@ export default function GameDetailsPage() {
 
           <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border p-4 md:p-6 sticky top-24 rounded-2xl shadow-ocean">
             <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center uppercase">
-              <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
+              <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2"></span>
               {purchaseTitle}
             </h3>
 
@@ -1413,7 +1413,7 @@ export default function GameDetailsPage() {
                         disabled={isBuying}
                         isLoading={isBuying}
                         size="full"
-                        className="bg-site-accent hover:bg-site-accent/90 text-white font-bold h-12 shadow-[0_0_15px_rgba(103,176,186,0.5)] border-none"
+                        className="bg-site-accent hover:bg-site-accent/90 text-white font-bold h-12 border-none"
                       >
                         {!isBuying && (
                           <>
@@ -1451,7 +1451,7 @@ export default function GameDetailsPage() {
       {/* Similar products */}
       <section className="mt-16 mb-10">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center uppercase">
-          <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2 shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
+          <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2"></span>
           {t("similar_products")}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -1731,7 +1731,7 @@ export default function GameDetailsPage() {
                           onClick={createOrder}
                           disabled={isBuying || !termsAccepted}
                           isLoading={isBuying}
-                          className="flex-1 bg-site-accent hover:bg-site-accent/90 text-white h-12 sm:h-14 text-base sm:text-lg font-bold disabled:opacity-50 border-none uppercase shadow-[0_0_15px_rgba(103,176,186,0.3)] transition-all"
+                          className="flex-1 bg-site-accent hover:bg-site-accent/90 text-white h-12 sm:h-14 text-base sm:text-lg font-bold disabled:opacity-50 border-none uppercase transition-all"
                         >
                           {!isBuying && <Check size={20} className="mr-2" />}
                           {t("confirm_button")}
@@ -1803,7 +1803,7 @@ export default function GameDetailsPage() {
                     return (
                       <label
                         key={opt.code}
-                        className={`border p-4 flex flex-col gap-3 transition-all rounded-xl ${isActive ? "bg-site-accent/10 border-site-accent shadow-[0_0_15px_rgba(103,176,186,0.15)]" : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
+                        className={`border p-4 flex flex-col gap-3 transition-all rounded-xl ${isActive ? "bg-site-accent/10 border-site-accent" : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
                           } ${!isAvailable
                             ? "opacity-50 cursor-not-allowed"
                             : "cursor-pointer"
@@ -1916,7 +1916,7 @@ export default function GameDetailsPage() {
                       onClick={() => setIsPaymentSelectOpen(false)}
                       disabled={!selectedPaymentOption}
                       fullWidth
-                      className="font-bold uppercase bg-site-accent hover:bg-site-accent/90 text-white border-none shadow-[0_0_15px_rgba(103,176,186,0.3)] transition-all"
+                      className="font-bold uppercase bg-site-accent hover:bg-site-accent/90 text-white border-none transition-all"
                     >
                       {t("confirm_selection_button")}
                     </Button>

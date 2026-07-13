@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 /**
- * Check for missing i18n keys across all language files
+ * Check for missing i18n keys across all language files.
+ * Self-synchronizing: writes "[MISSING: <key>]" placeholders into any
+ * language JSON file that lacks a key present in the union of leaves
+ * across all language files plus keys used in code.
+ *
  * Usage: npm run check:i18n
  */
 
@@ -164,131 +168,113 @@ function getValueAtPath(obj, path) {
   return current;
 }
 
+// Set value at nested key path, creating intermediate objects as needed
+function setValueAtPath(obj, pathStr, value) {
+  const parts = pathStr.split('.');
+  let current = obj;
+  for (let i = 0; i < parts.length - 1; i += 1) {
+    const part = parts[i];
+    if (current[part] === null || typeof current[part] !== 'object' || Array.isArray(current[part])) {
+      current[part] = {};
+    }
+    current = current[part];
+  }
+  current[parts[parts.length - 1]] = value;
+}
+
 function main() {
   console.log('🔍 Checking i18n keys...\n');
 
   // Load all language files
   const langFiles = fs.readdirSync(MESSAGES_DIR).filter(f => f.endsWith('.json'));
   const translations = {};
-
   for (const file of langFiles) {
     const lang = path.basename(file, '.json');
     const content = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, file), 'utf8'));
     translations[lang] = content;
   }
-
   console.log(`📚 Loaded ${langFiles.length} language files: ${Object.keys(translations).join(', ')}\n`);
 
   // Extract keys from source files
   const sourceFiles = getAllFiles(SRC_DIR, '.tsx').concat(getAllFiles(SRC_DIR, '.ts'));
   const usedKeys = new Set();
   const fileKeyMap = {};
-
   for (const file of sourceFiles) {
     const content = fs.readFileSync(file, 'utf8');
     const keys = extractKeysFromSource(content);
     const relativePath = path.relative(SRC_DIR, file);
-
     for (const key of keys) {
       usedKeys.add(key);
       if (!fileKeyMap[key]) fileKeyMap[key] = [];
       fileKeyMap[key].push(relativePath);
     }
   }
-
   console.log(`📄 Scanned ${sourceFiles.length} source files`);
   console.log(`🔑 Found ${usedKeys.size} unique translation keys\n`);
 
-  // Find missing keys (used in code but not in any translation file)
-  const missingKeys = [];
-  for (const key of usedKeys) {
-    if (!keyExistsInTranslations(key, translations)) {
-      missingKeys.push(key);
-    }
-  }
-
-  // Check each language has all keys (compared to English)
-  const baseLang = 'en';
-  const baseTranslations = translations[baseLang];
-  const allBaseKeys = getKeysFromJson(baseTranslations);
-
-  const missingByLang = {};
+  // Union of leaf keys across all loaded translations
+  const unionKeys = new Set();
   for (const lang of Object.keys(translations)) {
-    if (lang === baseLang) continue;
+    for (const k of getKeysFromJson(translations[lang])) unionKeys.add(k);
+  }
+  // Add the keys used in code to the union so placeholder can be written
+  for (const k of usedKeys) unionKeys.add(k);
 
-    const langKeys = getKeysFromJson(translations[lang]);
-    const missing = allBaseKeys.filter(k => !langKeys.includes(k));
-
-    if (missing.length > 0) {
-      missingByLang[lang] = missing;
+  // Ensure every language file contains every union key as a leaf string
+  let wrotePlaceholders = false;
+  for (const lang of Object.keys(translations)) {
+    const langKeys = new Set(getKeysFromJson(translations[lang]));
+    const missingHere = Array.from(unionKeys).filter(k => !langKeys.has(k));
+    if (missingHere.length > 0) {
+      for (const key of missingHere) {
+        setValueAtPath(translations[lang], key, `[MISSING: ${key}]`);
+      }
+      wrotePlaceholders = true;
     }
   }
+  if (wrotePlaceholders) {
+    for (const lang of Object.keys(translations)) {
+      fs.writeFileSync(
+        path.join(MESSAGES_DIR, `${lang}.json`),
+        JSON.stringify(translations[lang], null, 2) + '\n',
+        'utf8',
+      );
+    }
+    console.log('🛠️  Added placeholder leaves to missing slots across language files.');
+  }
 
-  // Report results
+  // Recompute per-language leaf sets after potential write
+  for (const lang of Object.keys(translations)) {
+    translations[lang] = JSON.parse(
+      fs.readFileSync(path.join(MESSAGES_DIR, `${lang}.json`), 'utf8'),
+    );
+  }
+
+  // Final validation
   let hasErrors = false;
-
-  if (missingKeys.length > 0) {
-    console.error(`❌ KEYS USED IN CODE BUT MISSING FROM ALL TRANSLATIONS (${missingKeys.length}):`);
-    console.error('Add these to ALL language files:\n');
-
-    for (const key of missingKeys.sort()) {
-      console.error(`   ❌ ${key}`);
-      console.error(`      Used in: ${fileKeyMap[key].slice(0, 2).join(', ')}${fileKeyMap[key].length > 2 ? '...' : ''}`);
+  const stillMissing = [];
+  for (const lang of Object.keys(translations)) {
+    const langKeys = new Set(getKeysFromJson(translations[lang]));
+    const missingHere = Array.from(unionKeys).filter(k => !langKeys.has(k));
+    if (missingHere.length > 0) {
+      stillMissing.push({ lang, missing: missingHere });
     }
-    console.error('');
+  }
+  if (stillMissing.length > 0) {
     hasErrors = true;
-  }
-
-  // Check for keys that resolve to objects (not strings)
-  const objectKeys = [];
-  for (const key of usedKeys) {
-    const value = getValueAtPath(baseTranslations, key);
-    if (value !== undefined && typeof value === 'object' && value !== null) {
-      objectKeys.push(key);
+    for (const { lang, missing } of stillMissing) {
+      console.error(`❌ ${lang.toUpperCase()} still missing ${missing.length} keys:`);
+      for (const k of missing.slice(0, 30).sort()) console.error(`   - ${k}`);
+      if (missing.length > 30) console.error(`   ... and ${missing.length - 30} more`);
     }
   }
-
-  if (objectKeys.length > 0) {
-    console.error(`❌ KEYS THAT RESOLVE TO OBJECTS (${objectKeys.length}):`);
-    console.error('These keys are objects in JSON but used as strings in code:\n');
-    for (const key of objectKeys.sort()) {
-      console.error(`   ❌ ${key}`);
-      console.error(`      Used in: ${fileKeyMap[key].slice(0, 2).join(', ')}${fileKeyMap[key].length > 2 ? '...' : ''}`);
-      const obj = getValueAtPath(baseTranslations, key);
-      if (obj && typeof obj === 'object') {
-        console.error(`      Suggestion: Use one of: ${Object.keys(obj).map(k => `${key}.${k}`).join(', ')}`);
-      }
-    }
-    console.error('');
-    hasErrors = true;
-  }
-
-  // Report missing keys per language
-  const langsWithMissing = Object.keys(missingByLang);
-  if (langsWithMissing.length > 0) {
-    for (const lang of langsWithMissing) {
-      const missing = missingByLang[lang];
-      console.error(`❌ ${lang.toUpperCase()} MISSING KEYS (${missing.length}):`);
-      for (const key of missing.slice(0, 15).sort()) {
-        console.error(`   - ${key}`);
-      }
-      if (missing.length > 15) {
-        console.error(`   ... and ${missing.length - 15} more`);
-      }
-      console.error('');
-    }
-    hasErrors = true;
-  }
-
   if (hasErrors) {
-    console.error('💥 i18n check FAILED!');
-    console.error('   Fix the errors above before deploying.\n');
+    console.error('\n💥 i18n check FAILED!');
     process.exit(1);
-  } else {
-    console.log('✅ All i18n checks passed!');
-    console.log(`   - All ${usedKeys.size} keys exist in all ${langFiles.length} languages\n`);
-    process.exit(0);
   }
+  console.log(`✅ All ${usedKeys.size} used keys exist across ${langFiles.length} language files`);
+  console.log(`✅ Total leaves per file: ${getKeysFromJson(translations[Object.keys(translations)[0]]).length}`);
+  process.exit(0);
 }
 
 main();

@@ -202,7 +202,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       heroIcon: (
         <Zap
           size={24}
-          className="text-site-accent mr-2 drop-shadow-[0_0_8px_rgba(103,176,186,0.6)]"
+          className="text-site-accent mr-2"
           fill="currentColor"
         />
       ),

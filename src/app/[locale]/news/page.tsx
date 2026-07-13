@@ -102,7 +102,7 @@ export default function NewsPage() {
               <Link
                 key={article.id}
                 href={`/news/${article.slug}`}
-                className="group bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden hover:shadow-lg shadow-pink-500/20 transition-shadow"
+                className="group bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden hover:shadow-lg transition-shadow"
               >
                 <div className="aspect-video bg-[#1A1C1E] overflow-hidden">
                   {article.coverImage ? (

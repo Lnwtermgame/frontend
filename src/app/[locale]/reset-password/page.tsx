@@ -132,7 +132,7 @@ function ResetPasswordContent() {
     "bg-orange-500",
     "bg-yellow-500",
     "bg-green-500",
-    "bg-site-accent shadow-accent-glow",
+    "bg-site-accent",
   ];
 
   if (isInvalid) {
@@ -319,7 +319,7 @@ function ResetPasswordContent() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent hover:shadow-accent-glow font-bold mt-2"
+                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent font-bold mt-2"
                     disabled={
                       isSubmitting ||
                       newPassword !== confirmPassword ||
@@ -354,7 +354,7 @@ function ResetPasswordContent() {
 
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] shadow-accent-glow transition-all"
+                  className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] transition-all"
                 >
                   {t("login_now")}
                   <ArrowRight size={18} />

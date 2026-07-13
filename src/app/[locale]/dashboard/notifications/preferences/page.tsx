@@ -273,7 +273,7 @@ export default function NotificationPreferencesPage() {
                   <button
                     onClick={handleSubscribePush}
                     disabled={isSubscribing}
-                    className="flex items-center justify-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-4 py-2 border border-transparent rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-[0_0_15px_rgba(103,176,186,0.3)] shrink-0"
+                    className="flex items-center justify-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-4 py-2 border border-transparent rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shrink-0"
                   >
                     {isSubscribing ? (
                       <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -326,7 +326,7 @@ export default function NotificationPreferencesPage() {
               <button
                 onClick={savePreferences}
                 disabled={isSaving}
-                className="flex items-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase shadow-[0_0_15px_rgba(103,176,186,0.2)]"
+                className="flex items-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase"
               >
                 {isSaving ? (
                   <>

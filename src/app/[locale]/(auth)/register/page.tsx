@@ -94,7 +94,7 @@ export default function RegisterPage() {
           </p>
           <Link
             href="/login"
-            className="inline-block bg-site-accent rounded-[6px] shadow-accent-glow hover:bg-site-accent-hover transition-colors px-6 py-2.5 font-bold text-white"
+            className="inline-block bg-site-accent rounded-[6px] hover:bg-site-accent-hover transition-colors px-6 py-2.5 font-bold text-white"
           >
             {t("go_to_login")}
           </Link>
@@ -114,7 +114,7 @@ export default function RegisterPage() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-[#222427] border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+            <div className="w-12 h-12 bg-[#222427] border border-site-border rounded-xl flex items-center justify-center">
               <Zap className="w-6 h-6 text-site-accent" fill="currentColor" />
             </div>
             <span className="text-2xl font-black text-white">
@@ -177,7 +177,7 @@ export default function RegisterPage() {
           <div className="bg-[#222427] border border-site-border p-5 md:p-8 rounded-2xl shadow-ocean">
             {/* Mobile Logo */}
             <div className="lg:hidden flex items-center justify-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-[#16181A] border border-site-border rounded-xl flex items-center justify-center shadow-accent-glow">
+              <div className="w-10 h-10 bg-[#16181A] border border-site-border rounded-xl flex items-center justify-center">
                 <Zap className="w-5 h-5 text-site-accent" fill="currentColor" />
               </div>
               <span className="text-xl font-black text-white">
@@ -264,7 +264,7 @@ export default function RegisterPage() {
                   }
                   errorText={passwordError}
                   className={
-                    passwordError ? "border-red-500/30 focus:border-red-500/30 focus:shadow-[0_0_12px_rgba(239,68,68,0.4)]" : ""
+                    passwordError ? "border-red-500/30 focus:border-red-500/30" : ""
                   }
                 />
               </div>

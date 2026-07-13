@@ -71,7 +71,7 @@ const NavItem = memo(function NavItem({
         {isActive && (
           <motion.div
             layoutId="active-indicator"
-            className="absolute right-3 w-1.5 h-1.5 bg-site-accent rounded-full shadow-[0_0_8px_rgba(103,176,186,0.8)]"
+            className="absolute right-3 w-1.5 h-1.5 bg-site-accent rounded-full"
             initial={false}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
@@ -249,7 +249,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className="lg:hidden fixed bottom-20 right-4 z-30 w-14 h-14 rounded-full bg-site-accent text-[#1A1C1E] flex items-center justify-center shadow-accent-glow hover:scale-105 active:scale-95 transition-all"
+        className="lg:hidden fixed bottom-20 right-4 z-30 w-14 h-14 rounded-full bg-site-accent text-[#1A1C1E] flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
       >
         <Menu className="w-6 h-6" />
       </button>

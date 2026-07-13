@@ -422,7 +422,7 @@ export default function InvoiceDetailPage() {
             </motion.button>
 
             <motion.button
-              className="px-4 py-2 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold inline-flex items-center transition-all shadow-[0_0_15px_rgba(103,176,186,0.3)] text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold inline-flex items-center transition-all text-sm"
               whileTap={{ scale: 0.95 }}
               onClick={handleDownloadPdf}
             >

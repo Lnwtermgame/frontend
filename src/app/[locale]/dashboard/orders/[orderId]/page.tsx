@@ -336,7 +336,7 @@ export default function OrderDetailsPage() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                     >
-                        <span className="w-1.5 h-5 bg-[var(--site-accent)] mr-2 rounded-full shadow-[0_0_10px_rgba(103,176,186,0.5)]"></span>
+                        <span className="w-1.5 h-5 bg-[var(--site-accent)] mr-2 rounded-full"></span>
                         {t("title")}
                     </motion.h2>
                 </div>

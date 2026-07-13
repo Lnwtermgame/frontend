@@ -270,7 +270,7 @@ function VerifyEmailContent() {
                 {status === "success" && (
                   <Link
                     href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] shadow-accent-glow transition-all"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] transition-all"
                   >
                     {t("go_to_account")}
                     <ArrowRight size={18} />

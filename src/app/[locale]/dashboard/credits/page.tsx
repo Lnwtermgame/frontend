@@ -285,7 +285,7 @@ export default function CreditsPage() {
                       onClick={() =>
                         toast.success(t("topup_upcoming"))
                       }
-                      className="flex-1 bg-[var(--site-accent)] text-white rounded-lg py-3 px-4 font-semibold flex items-center justify-center hover:bg-[var(--site-accent)]/90 transition-all text-sm shadow-[0_0_15px_rgba(103,176,186,0.3)]"
+                      className="flex-1 bg-[var(--site-accent)] text-white rounded-lg py-3 px-4 font-semibold flex items-center justify-center hover:bg-[var(--site-accent)]/90 transition-all text-sm"
                     >
                       <Coins size={18} className="mr-2" />
                       {t("topup_button")}

@@ -7,6 +7,7 @@ import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
+  AdminHeaderButton,
 } from "@/components/admin";
 import {
   FileText,
@@ -307,12 +308,14 @@ export default function AdminCmsPagesPage() {
               </p>
             </div>
           </div>
-          <button
+          <AdminHeaderButton
+            variant="primary"
             onClick={openCreateModal}
-            className="relative z-10 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl px-5 py-2.5 font-bold flex items-center gap-2 shadow-lg shadow-accent-glow hover:shadow-accent-glow transition-all border border-site-accent/30 group shrink-0">
-            <Plus size={18} className="group-hover:scale-110 transition-transform" />
+            className="shrink-0 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <Plus size={18} />
             <span>เพิ่มหน้าใหม่</span>
-          </button>
+          </AdminHeaderButton>
         </div>
 
         {/* Error Message */}
@@ -600,7 +603,7 @@ export default function AdminCmsPagesPage() {
                           </button>
                           <button
                             onClick={() => handleDelete(page.id)}
-                            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg hover:shadow-rose-500/25 transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
+                            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
                           >
                             <Trash2 className="w-4 h-4" /> ยืนยันการลบ
                           </button>
@@ -784,7 +787,7 @@ export default function AdminCmsPagesPage() {
                                 type="button"
                                 onClick={handleGenerateAIContent}
                                 disabled={isGeneratingAI || !aiTopic.trim()}
-                                className="flex-1 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl py-2.5 text-[13px] font-bold shadow-md shadow-accent-glow disabled:opacity-50 transition-all flex items-center justify-center gap-2 border border-site-accent/30"
+                                className="flex-1 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl py-2.5 text-[13px] font-bold shadow-md disabled:opacity-50 transition-all flex items-center justify-center gap-2 border border-site-accent/30"
                               >
                                 {isGeneratingAI ? (
                                   <>
@@ -917,7 +920,7 @@ export default function AdminCmsPagesPage() {
                           !formData.title?.trim() ||
                           !formData.content?.trim()
                         }
-                        className="flex-xl py-3 px-8 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg hover:shadow-accent-glow transition-all text-[14px] font-black border border-site-accent/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-xl py-3 px-8 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg transition-all text-[14px] font-black border border-site-accent/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? (
                           <>

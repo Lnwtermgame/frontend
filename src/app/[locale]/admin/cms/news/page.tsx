@@ -625,7 +625,7 @@ export default function AdminCmsNewsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={openCreateModal}
-              className="bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg hover:shadow-accent-glow flex items-center gap-2 px-5 py-2.5 transition-all font-bold text-sm">
+              className="bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg flex items-center gap-2 px-5 py-2.5 transition-all font-bold text-sm">
               <Plus className="h-4 w-4" />
               <span>เพิ่มข่าวใหม่</span>
             </button>
@@ -952,7 +952,7 @@ export default function AdminCmsNewsPage() {
                             </button>
                             <button
                               onClick={() => handleDelete(article.id)}
-                              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg hover:shadow-rose-500/25 transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
+                              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
                             >
                               <Trash2 className="w-4 h-4" /> ยืนยันการลบ
                             </button>

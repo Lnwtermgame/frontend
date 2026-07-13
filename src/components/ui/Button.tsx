@@ -8,9 +8,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-site-accent text-white border-none hover:bg-site-accent-hover shadow-accent-glow",
+          "bg-site-accent text-white border-none hover:bg-site-accent-hover",
         primary:
-          "bg-site-accent text-white border-none hover:bg-site-accent-hover shadow-accent-glow",
+          "bg-site-accent text-white border-none hover:bg-site-accent-hover",
         secondary:
           "bg-[#212328]/5 text-white border border-site-border hover:bg-[#212328]/10",
         outline:
@@ -18,7 +18,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-[#212328]/10 hover:text-white text-gray-400",
         link: "text-blue-400 underline-offset-4 hover:underline",
         danger:
-          "bg-red-500 text-white border border-red-400 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(239,68,68,0.3)]",
+          "bg-red-500 text-white border border-red-400 hover:-translate-y-0.5",
       },
       size: {
         default: "h-12 px-6 py-3 w-full sm:w-auto", // Mobile first: h-12, w-full

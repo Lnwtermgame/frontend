@@ -261,7 +261,7 @@ export default function SecurityPage() {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-6 md:h-7 bg-site-accent mr-1 rounded-full shadow-accent-glow"></span>
+          <span className="w-1.5 h-6 md:h-7 bg-site-accent mr-1 rounded-full"></span>
           <Shield className="text-site-accent h-6 w-6 md:h-7 md:w-7" />
           {t("title")}
         </motion.h2>
@@ -308,7 +308,7 @@ export default function SecurityPage() {
                           type="button"
                           onClick={handleRequestOTP}
                           disabled={isRequestingOTP || otpCooldown > 0}
-                          className="w-full py-2.5 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm hover:scale-[1.02] shadow-accent-glow transition-all"
+                          className="w-full py-2.5 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm hover:scale-[1.02] transition-all"
                         >
                           {isRequestingOTP ? (
                             <>
@@ -344,7 +344,7 @@ export default function SecurityPage() {
                               )
                             }
                             placeholder="123456"
-                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-base text-center tracking-[0.5em] transition-all"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-base text-center tracking-[0.5em] transition-all"
                             required
                             maxLength={6}
                           />
@@ -359,7 +359,7 @@ export default function SecurityPage() {
                             value={setupPassword}
                             onChange={(e) => setSetupPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
                             required
                             minLength={8}
                           />
@@ -379,7 +379,7 @@ export default function SecurityPage() {
                               setSetupConfirmPassword(e.target.value)
                             }
                             placeholder="••••••••"
-                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
                             required
                           />
                         </div>
@@ -406,7 +406,7 @@ export default function SecurityPage() {
                               !setupPassword ||
                               !setupConfirmPassword
                             }
-                            className="flex-1 py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] shadow-accent-glow transition-all order-1 md:order-2 text-sm"
+                            className="flex-1 py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] transition-all order-1 md:order-2 text-sm"
                           >
                             {isSettingPassword ? (
                               <>
@@ -451,7 +451,7 @@ export default function SecurityPage() {
                     </div>
                     <button
                       onClick={() => setShowPasswordSetup(true)}
-                      className="w-full py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold hover:scale-[1.02] shadow-accent-glow transition-all text-sm"
+                      className="w-full py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold hover:scale-[1.02] transition-all text-sm"
                     >
                       {t("change_password.button_setup")}
                     </button>
@@ -468,7 +468,7 @@ export default function SecurityPage() {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
                       required
                     />
                   </div>
@@ -482,7 +482,7 @@ export default function SecurityPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
                       required
                       minLength={8}
                     />
@@ -500,7 +500,7 @@ export default function SecurityPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent focus:shadow-accent-glow text-sm transition-all"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
                       required
                     />
                   </div>
@@ -526,7 +526,7 @@ export default function SecurityPage() {
                         !newPassword ||
                         !confirmPassword
                       }
-                      className="flex-1 py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] shadow-accent-glow transition-all order-1 md:order-2 text-sm"
+                      className="flex-1 py-3 px-4 bg-site-accent text-[#1A1C1E] rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] transition-all order-1 md:order-2 text-sm"
                     >
                       {isChangingPassword ? (
                         <>
@@ -658,7 +658,7 @@ export default function SecurityPage() {
               <button
                 onClick={logoutAllDevices}
                 disabled={isLoadingSettings}
-                className="w-full justify-center text-xs text-[#1A1C1E] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 font-bold border border-site-accent/50 p-2.5 bg-site-accent shadow-accent-glow rounded-lg hover:scale-[1.02] transition-all"
+                className="w-full justify-center text-xs text-[#1A1C1E] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 font-bold border border-site-accent/50 p-2.5 bg-site-accent rounded-lg hover:scale-[1.02] transition-all"
               >
                 {isLoadingSettings ? (
                   <>

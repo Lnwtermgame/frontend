@@ -19,6 +19,7 @@ import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
+  AdminHeaderButton,
 } from "@/components/admin";
 import {
   productApi,
@@ -456,36 +457,31 @@ export default function AdminProducts() {
         <AdminPageHeader
           title="จัดการสินค้า"
           actions={
-            <div className="flex gap-2.5 flex-wrap">
+            <>
               <AIGenerateAllButton products={products} categories={categories} />
-              <button
+              <AdminHeaderButton
+                variant="secondary"
                 onClick={() => setIsBulkPriceModalOpen(true)}
-                className="inline-flex items-center justify-center gap-2 bg-site-accent/10 border border-site-accent/20 text-site-accent rounded-lg px-4 py-2 hover:bg-site-accent/20 hover:border-site-accent/30 transition-all font-bold text-[13px]"
               >
                 <Settings className="h-4 w-4" />
                 <span>ตั้งราคาทั้งหมด</span>
-              </button>
-              <button
+              </AdminHeaderButton>
+              <AdminHeaderButton
+                variant="secondary"
                 onClick={() => setIsExportModalOpen(true)}
-                className="inline-flex items-center justify-center gap-2 bg-site-accent/10 border border-site-accent/20 text-site-accent rounded-lg px-4 py-2 hover:bg-site-accent/20 hover:border-site-accent/30 transition-all font-bold text-[13px]"
               >
                 <Download className="h-4 w-4" />
                 <span>Export</span>
-              </button>
-              <button
-                onClick={handleSyncSeagm}
-                className="inline-flex items-center justify-center gap-2 bg-site-raised border border-site-border text-site-muted rounded-lg px-4 py-2 hover:bg-site-surface hover:text-site-text transition-all font-bold text-[13px]"
-              >
+              </AdminHeaderButton>
+              <AdminHeaderButton variant="muted" onClick={handleSyncSeagm}>
                 <RefreshCw className="h-4 w-4" />
                 <span>ซิงค์ SEAGM</span>
-              </button>
-              <button
-                className="inline-flex items-center justify-center gap-2 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg px-4 py-2 hover:bg-site-accent-hover transition-all font-bold text-[13px]"
-              >
+              </AdminHeaderButton>
+              <AdminHeaderButton variant="primary">
                 <Plus className="h-4 w-4" />
                 <span>เพิ่มสินค้า</span>
-              </button>
-            </div>
+              </AdminHeaderButton>
+            </>
           }
         />
 

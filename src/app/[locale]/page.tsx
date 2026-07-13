@@ -292,7 +292,7 @@ export default function HomePage() {
                   </div>
                   <Link
                     href={slide.href}
-                    className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors shadow-accent-glow font-bold text-xs sm:text-sm md:text-base pointer-events-auto mt-1 [text-shadow:none]"
+                    className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors font-bold text-xs sm:text-sm md:text-base pointer-events-auto mt-1 [text-shadow:none]"
                   >
                     {slide.btnText}
                   </Link>
@@ -340,7 +340,7 @@ export default function HomePage() {
             <button
               key={i}
               onClick={() => setCurrentSlide(i)}
-              className={`h-2 md:h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "w-8 md:w-10 bg-site-accent shadow-accent-glow" : "w-2 md:w-2.5 bg-white/50 hover:bg-white border border-white/10"}`}
+              className={`h-2 md:h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "w-8 md:w-10 bg-site-accent" : "w-2 md:w-2.5 bg-white/50 hover:bg-white border border-white/10"}`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
@@ -443,10 +443,10 @@ export default function HomePage() {
                     <img
                       src="https://assets.lnwtermgame.com/v1/storage/buckets/698c7dfe0038ee35842b/files/69c1fc7f0020f8ff7e7a/view?project=698c7ca4000555520e6b"
                       alt="HOT"
-                      className="absolute -top-3 -left-3 z-20 h-[44px] w-auto drop-shadow-[0_2px_8px_rgba(255,51,102,0.5)] pointer-events-none"
+                      className="absolute -top-3 -left-3 z-20 h-[44px] w-auto pointer-events-none"
                     />
                   )}
-                  <div className="relative w-full aspect-square mb-3 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_12px_32px_-8px_rgba(103,176,186,0.2)] rounded-2xl overflow-hidden bg-[#2A2C30] ring-1 ring-white/5 group-hover:ring-site-accent/30">
+                  <div className="relative w-full aspect-square mb-3 transition-all duration-300 ease-out group-hover:-translate-y-1 rounded-2xl overflow-hidden bg-[#2A2C30] ring-1 ring-white/5 group-hover:ring-site-accent/30">
                     <img
                       src={game.imageUrl || gameImg(game.name.substring(0, 6), "1A1C20", "555555")}
                       alt={game.name}

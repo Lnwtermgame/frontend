@@ -692,7 +692,7 @@ export default function AdminSettingsPage() {
                 {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save size={14} />}
                 Save Draft
               </button>
-              <button onClick={publishSettings} disabled={publishing || saving || !isDraftDirty} className="flex items-center gap-2 bg-gradient-to-r from-site-accent to-site-accent/80 text-white px-4 py-2 rounded-xl text-sm font-medium hover:from-site-accent hover:to-site-accent/60 transition-all disabled:opacity-50 shadow-accent-glow">
+              <button onClick={publishSettings} disabled={publishing || saving || !isDraftDirty} className="flex items-center gap-2 bg-gradient-to-r from-site-accent to-site-accent/80 text-white px-4 py-2 rounded-xl text-sm font-medium hover:from-site-accent hover:to-site-accent/60 transition-all disabled:opacity-50">
                 {publishing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload size={14} />}
                 Publish Live
               </button>

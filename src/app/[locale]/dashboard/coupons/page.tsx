@@ -277,7 +277,7 @@ export default function CouponsPage() {
               </p>
               <Link
                 href="/games"
-                className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all shadow-[0_0_15px_rgba(103,176,186,0.3)] text-sm"
+                className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all text-sm"
               >
                 {t("start_shopping")}
               </Link>
@@ -473,7 +473,7 @@ export default function CouponsPage() {
                   />
                   <button
                     onClick={handleClaimCoupon}
-                    className="bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/80 text-white rounded-lg px-3 flex items-center justify-center transition-all shadow-[0_0_10px_rgba(103,176,186,0.2)]"
+                    className="bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/80 text-white rounded-lg px-3 flex items-center justify-center transition-all"
                   >
                     <Plus className="h-5 w-5" />
                   </button>

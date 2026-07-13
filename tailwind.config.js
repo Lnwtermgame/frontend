@@ -44,8 +44,6 @@ module.exports = {
       },
       boxShadow: {
         ocean: "0 4px 30px rgba(8, 23, 34, 0.5)",
-        glow: "0 0 20px rgba(34, 211, 238, 0.15)",
-        "accent-glow": "0 0 15px var(--site-accent-glow)",
       },
     },
   },

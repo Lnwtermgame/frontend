@@ -84,7 +84,7 @@ export function CookieNotice({ isTawkEnabled }: CookieNoticeProps) {
         <button
           type="button"
           onClick={dismiss}
-          className="h-10 rounded-[6px] bg-site-accent px-5 text-sm font-bold tracking-wide text-white transition-colors hover:bg-site-accent-hover shadow-accent-glow"
+          className="h-10 rounded-[6px] bg-site-accent px-5 text-sm font-bold tracking-wide text-white transition-colors hover:bg-site-accent-hover"
         >
           {t("acknowledge")}
         </button>

@@ -295,7 +295,7 @@ function LoginContent() {
                   <div
                     className={`relative bg-site-raised border rounded-lg transition-all ${
                       emailFocused
-                        ? "border-site-accent shadow-accent-glow"
+                        ? "border-site-accent"
                         : emailValid
                           ? "border-semantic-green/50"
                           : "border-site-border"
@@ -340,7 +340,7 @@ function LoginContent() {
                   <div
                     className={`relative bg-site-raised border rounded-lg transition-all ${
                       passwordFocused
-                        ? "border-site-accent shadow-accent-glow"
+                        ? "border-site-accent"
                         : "border-site-border"
                     }`}
                   >
@@ -389,7 +389,7 @@ function LoginContent() {
                   type="submit"
                   disabled={isLoading || !email || !password}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full h-12 mt-2 bg-site-accent hover:bg-site-accent-hover disabled:opacity-50 disabled:cursor-not-allowed text-site-bg font-bold rounded-lg transition-all inline-flex items-center justify-center gap-2 shadow-accent-glow"
+                  className="w-full h-12 mt-2 bg-site-accent hover:bg-site-accent-hover disabled:opacity-50 disabled:cursor-not-allowed text-site-bg font-bold rounded-lg transition-all inline-flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <>

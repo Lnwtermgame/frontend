@@ -165,7 +165,7 @@ export default function AccountPage() {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <span className="w-1.5 h-6 bg-site-accent mr-3 rounded-full shadow-accent-glow"></span>
+          <span className="w-1.5 h-6 bg-site-accent mr-3 rounded-full"></span>
           {t("title")}
         </motion.h2>
         <p className="text-gray-400 text-sm relative">
@@ -291,7 +291,7 @@ export default function AccountPage() {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-lg font-bold text-white flex items-center">
-                    <span className="w-1.5 h-5 bg-site-accent mr-3 rounded-full shadow-accent-glow"></span>
+                    <span className="w-1.5 h-5 bg-site-accent mr-3 rounded-full"></span>
                     {t("my_orders")}
                   </h2>
                   <Link
@@ -373,7 +373,7 @@ export default function AccountPage() {
             >
               <div className="p-6">
                 <h2 className="text-lg font-bold text-white mb-6 flex items-center">
-                  <span className="w-1.5 h-5 bg-purple-500 mr-3 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.8)]"></span>
+                  <span className="w-1.5 h-5 bg-purple-500 mr-3 rounded-full"></span>
                   {t("recent_purchases")}
                 </h2>
                 {recentlyPurchased.length > 0 ? (

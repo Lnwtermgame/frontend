@@ -210,7 +210,7 @@ export default function FavoritePage() {
                       onClick={() => toast.success(t("added_to_cart"))}
                       whileHover={{ y: -1 }}
                       whileTap={{ y: 0 }}
-                      className="w-full bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white py-2 rounded-lg flex items-center justify-center text-xs font-semibold transition-all shadow-[0_0_10px_rgba(103,176,186,0.2)]"
+                      className="w-full bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white py-2 rounded-lg flex items-center justify-center text-xs font-semibold transition-all"
                     >
                       <ShoppingCart size={14} className="mr-1.5" />
                       {t("buy_now")}
@@ -247,7 +247,7 @@ export default function FavoritePage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all shadow-[0_0_15px_rgba(103,176,186,0.3)] text-sm"
+            className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all text-sm"
           >
             {t("start_shopping")}
           </Link>

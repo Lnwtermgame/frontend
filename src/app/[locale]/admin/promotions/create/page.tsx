@@ -118,7 +118,7 @@ export default function AdminPromotionCreate() {
                     id="title"
                     name="title"
                     required
-                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     placeholder="เช่น ลด 30% ฤดูร้อน"
                     value={formData.title}
                     onChange={handleChange}
@@ -140,7 +140,7 @@ export default function AdminPromotionCreate() {
                       id="type"
                       name="type"
                       required
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-site-accent/60 focus:outline-none"
                       value={formData.type}
                       onChange={handleChange}
                     >
@@ -178,7 +178,7 @@ export default function AdminPromotionCreate() {
                     id="code"
                     name="code"
                     required
-                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none font-mono"
+                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none font-mono"
                     placeholder="เช่น SUMMER30"
                     value={formData.code}
                     onChange={handleChange}
@@ -204,7 +204,7 @@ export default function AdminPromotionCreate() {
                       id="discount"
                       name="discount"
                       required
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       placeholder="เช่น 30"
                       value={formData.discount}
                       onChange={handleChange}
@@ -227,7 +227,7 @@ export default function AdminPromotionCreate() {
                       type="text"
                       id="minPurchase"
                       name="minPurchase"
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       placeholder="เช่น 20"
                       value={formData.minPurchase}
                       onChange={handleChange}
@@ -258,7 +258,7 @@ export default function AdminPromotionCreate() {
                         id="startDate"
                         name="startDate"
                         required
-                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                         value={formData.startDate}
                         onChange={handleChange}
                       />
@@ -279,7 +279,7 @@ export default function AdminPromotionCreate() {
                         id="endDate"
                         name="endDate"
                         required
-                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                         value={formData.endDate}
                         onChange={handleChange}
                       />
@@ -302,7 +302,7 @@ export default function AdminPromotionCreate() {
                       type="number"
                       id="usageLimit"
                       name="usageLimit"
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
                       value={formData.usageLimit}
                       onChange={handleChange}
@@ -328,7 +328,7 @@ export default function AdminPromotionCreate() {
                       type="text"
                       id="maxDiscount"
                       name="maxDiscount"
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       placeholder="เช่น 50"
                       value={formData.maxDiscount}
                       onChange={handleChange}
@@ -386,7 +386,7 @@ export default function AdminPromotionCreate() {
                 id="description"
                 name="description"
                 rows={3}
-                className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent focus:outline-none"
+                className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                 placeholder="อธิบายรายละเอียดโปรโมชั่น..."
                 value={formData.description}
                 onChange={handleChange}

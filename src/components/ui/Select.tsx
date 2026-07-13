@@ -13,7 +13,7 @@ const selectTriggerVariants = cva(
         lg: "h-14",
       },
       error: {
-        true: "border-red-500/30",
+        true: "border-red-500/20 ring-1 ring-red-500/30",
         false: "",
       },
     },

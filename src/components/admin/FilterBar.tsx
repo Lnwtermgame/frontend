@@ -49,7 +49,7 @@ export function FilterBar({
               value={search.value}
               onChange={(e) => search.onChange(e.target.value)}
               placeholder={search.placeholder ?? t("actions.search")}
-              className="w-full h-9 pl-9 pr-3 bg-site-raised border border-site-border rounded-lg text-sm text-site-text placeholder:text-site-dim focus:outline-none focus:border-site-accent transition-colors"
+              className="w-full h-9 pl-9 pr-3 bg-site-raised border border-site-border rounded-lg text-sm text-site-text placeholder:text-site-dim focus:outline-none focus:border-site-accent/60 transition-colors"
             />
           </div>
         )}
@@ -58,7 +58,7 @@ export function FilterBar({
             key={f.key}
             value={f.value}
             onChange={(e) => f.onChange(e.target.value)}
-            className="h-9 px-3 bg-site-raised border border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:border-site-accent transition-colors cursor-pointer"
+            className="h-9 px-3 bg-site-raised border border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:border-site-accent/60 transition-colors cursor-pointer"
           >
             {f.options.map((o) => (
               <option key={o.value} value={o.value}>

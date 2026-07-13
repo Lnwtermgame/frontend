@@ -126,7 +126,7 @@ export default function MediaPickerPanel({
                                 }
                             }}
                             placeholder="ค้นหารูปภาพ / วิดีโอ..."
-                            className="w-full py-1.5 pl-7 pr-3 bg-site-raised border border-site-border/30 rounded-lg text-white text-xs placeholder-gray-500 focus:outline-none focus:border-site-accent/50"
+                            className="w-full py-1.5 pl-7 pr-3 bg-site-raised border border-site-border/30 rounded-lg text-white text-xs placeholder-gray-500 focus:outline-none focus:border-site-accent/30"
                         />
                     </div>
                     <button
@@ -269,7 +269,7 @@ export default function MediaPickerPanel({
                                                 <div
                                                     key={`vid-${idx}`}
                                                     className={`group relative rounded-lg overflow-hidden border transition-all ${isInserted
-                                                            ? "border-red-500/30 ring-1 ring-red-500/20"
+                                                            ? "border-red-500/20 ring-1 ring-red-500/30"
                                                             : "border-site-border/20 hover:border-red-500/30"
                                                         }`}
                                                 >
@@ -310,7 +310,7 @@ export default function MediaPickerPanel({
                                                             onClick={() =>
                                                                 handleInsertVideo(video.videoId, video.title)
                                                             }
-                                                            className="w-full py-1.5 text-[10px] font-medium bg-red-500/20 text-red-400 border border-red-500/30 rounded hover:bg-red-500/30 transition-colors"
+                                                            className="w-full py-1.5 text-[10px] font-medium bg-red-500/20 text-red-400 border border-red-500/20 rounded hover:bg-red-500/30 transition-colors"
                                                         >
                                                             📝 แทรกในเนื้อหา
                                                         </button>

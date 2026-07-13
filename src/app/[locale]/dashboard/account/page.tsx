@@ -249,7 +249,7 @@ export default function AccountPage() {
                           transition-all duration-200 whitespace-nowrap md:w-auto w-full
                           ${cooldownSeconds > 0 || isSendingVerification
                             ? "bg-[#212328]/5 text-gray-400 border-white/10 cursor-not-allowed"
-                            : "bg-red-500/20 text-red-400 border-red-500/30/30 hover:bg-red-500 hover:text-white hover:border-red-500/30 shadow-sm"
+                            : "bg-red-500/20 text-red-400 border-red-500/20 hover:bg-red-500 hover:text-white hover:border-red-500/20 shadow-sm"
                           }
                         `}
                       >
@@ -302,7 +302,7 @@ export default function AccountPage() {
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/30 transition-colors group">
                     <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                       <History size={18} className="text-yellow-400" />
                     </div>
@@ -315,7 +315,7 @@ export default function AccountPage() {
                     </div>
                     <div className="text-gray-400 text-xs font-medium">{t("order_status.pending")}</div>
                   </div>
-                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/30 transition-colors group">
                     <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                       <History size={18} className="text-blue-400" />
                     </div>
@@ -330,7 +330,7 @@ export default function AccountPage() {
                       {t("order_status.processing")}
                     </div>
                   </div>
-                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/30 transition-colors group">
                     <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                       <History size={18} className="text-green-400" />
                     </div>
@@ -345,7 +345,7 @@ export default function AccountPage() {
                       {t("order_status.completed")}
                     </div>
                   </div>
-                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/50 transition-colors group">
+                  <div className="p-4 bg-[#1A1C1E] rounded-xl border border-site-border hover:border-site-accent/30 transition-colors group">
                     <div className="w-10 h-10 rounded-lg bg-[#181A1D]0/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                       <History size={18} className="text-gray-400" />
                     </div>

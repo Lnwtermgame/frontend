@@ -1017,7 +1017,7 @@ export default function GameDetailsPage() {
                               onClick={() => setSelectedOption(option.id)}
                               className={`relative border p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] rounded-xl ${selectedOption === option.id
                                 ? "bg-site-accent/10 border-site-accent"
-                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
+                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/30 hover:bg-[#222427]"
                                 }`}
                               whileHover={{ y: -2 }}
                             >
@@ -1079,7 +1079,7 @@ export default function GameDetailsPage() {
                               }}
                               className={`relative border p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] rounded-xl ${selectedOption === option.id
                                 ? "bg-site-accent/10 border-site-accent"
-                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
+                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/30 hover:bg-[#222427]"
                                 }`}
                             >
                               {option.isPopular && (
@@ -1204,7 +1204,7 @@ export default function GameDetailsPage() {
                     key={relatedGame.id}
                   >
                     <motion.div
-                      className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/50"
+                      className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/30"
                       whileHover={{ y: -4 }}
                     >
                       <div className="relative aspect-square overflow-hidden bg-[#222427]">
@@ -1459,7 +1459,7 @@ export default function GameDetailsPage() {
             similarGames.map((similarGame) => (
               <Link href={`/games/${similarGame.slug}`} key={similarGame.id}>
                 <motion.div
-                  className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/50 transition-colors"
+                  className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/30 transition-colors"
                   whileHover={{ y: -4 }}
                 >
                   <div className="aspect-square relative overflow-hidden bg-[#222427]">
@@ -1803,7 +1803,7 @@ export default function GameDetailsPage() {
                     return (
                       <label
                         key={opt.code}
-                        className={`border p-4 flex flex-col gap-3 transition-all rounded-xl ${isActive ? "bg-site-accent/10 border-site-accent" : "bg-[#1A1C1E] border-site-border hover:border-site-accent/50 hover:bg-[#222427]"
+                        className={`border p-4 flex flex-col gap-3 transition-all rounded-xl ${isActive ? "bg-site-accent/10 border-site-accent" : "bg-[#1A1C1E] border-site-border hover:border-site-accent/30 hover:bg-[#222427]"
                           } ${!isAvailable
                             ? "opacity-50 cursor-not-allowed"
                             : "cursor-pointer"

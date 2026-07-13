@@ -173,8 +173,8 @@ export default function DynamicProductFields({
             autoComplete="off"
             className={`w-full bg-[#212328] border-[2px] px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:outline-none transition-all resize-none ${
               hasError
-                ? "border-red-500/30 focus:ring-red-500/20"
-                : "border-black focus:ring-site-accent/50 focus:border-site-accent"
+                ? "border-red-500/20 focus:ring-red-500/30"
+                : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
             }`}
           />
         ) : (
@@ -197,8 +197,8 @@ export default function DynamicProductFields({
                 field.prefix ? "pl-10" : ""
               } ${
                 hasError
-                  ? "border-red-500/30 focus:ring-red-500/20"
-                  : "border-black focus:ring-site-accent/50 focus:border-site-accent"
+                  ? "border-red-500/20 focus:ring-red-500/30"
+                  : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
               }`}
             />
           </div>
@@ -244,8 +244,8 @@ export default function DynamicProductFields({
           autoComplete="off"
           className={`w-full bg-[#212328] border-[2px] px-4 py-3 text-gray-900 focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
             hasError
-              ? "border-red-500/30 focus:ring-red-500/20"
-              : "border-black focus:ring-site-accent/50 focus:border-site-accent"
+              ? "border-red-500/20 focus:ring-red-500/30"
+              : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
           }`}
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
@@ -316,8 +316,8 @@ export default function DynamicProductFields({
                               childField.prefix ? "pl-10" : ""
                             } ${
                               childHasError
-                                ? "border-red-500/30 focus:ring-red-500/20"
-                                : "border-black focus:ring-site-accent/50 focus:border-site-accent"
+                                ? "border-red-500/20 focus:ring-red-500/30"
+                                : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
                             }`}
                             style={{
                               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
@@ -385,7 +385,7 @@ export default function DynamicProductFields({
   if (state.error) {
     return (
       <div
-        className="bg-red-500/10 border-[3px] border-red-500/30 p-6"
+        className="bg-red-500/10 border-[3px] border-red-500/20 p-6"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <div className="flex items-center gap-3 text-red-600">
@@ -457,7 +457,7 @@ export default function DynamicProductFields({
 
       {/* Helper text for direct top-up */}
       {state.productType === "DIRECT_TOPUP" && (
-        <div className="mt-6 p-4 bg-site-accent/10 border-[2px] border-site-accent">
+        <div className="mt-6 p-4 bg-site-accent/10 border-[2px] border-site-accent/60">
           <p className="text-sm text-gray-700">
             <strong className="text-gray-900">Important:</strong> Please
             double-check your information before proceeding. Incorrect details

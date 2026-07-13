@@ -112,7 +112,7 @@ export default function AdminOrders() {
           <select
             value={o.status}
             onChange={(e) => handleUpdateStatus(o.id, e.target.value)}
-            className="text-[10px] bg-transparent border border-site-border rounded px-1 py-0.5 text-site-dim cursor-pointer focus:outline-none focus:border-site-accent"
+            className="text-[10px] bg-transparent border border-site-border rounded px-1 py-0.5 text-site-dim cursor-pointer focus:outline-none focus:border-site-accent/60"
           >
             <option value="PENDING">{t("orders.status.pending")}</option>
             <option value="PROCESSING">{t("orders.status.processing")}</option>

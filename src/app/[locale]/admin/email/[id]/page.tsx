@@ -586,7 +586,7 @@ export default function EmailTemplateEditorPage() {
                           [key]: e.target.value,
                         })
                       }
-                      className="w-full px-2 py-1.5 border-[1px] border-gray-300 focus:outline-none focus:border-site-accent text-xs"
+                      className="w-full px-2 py-1.5 border-[1px] border-gray-300 focus:outline-none focus:border-site-accent/60 text-xs"
                     />
                   </div>
                 ))}

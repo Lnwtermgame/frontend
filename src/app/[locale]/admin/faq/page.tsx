@@ -696,7 +696,7 @@ export default function AdminFaqPage() {
                       value={aiTopic}
                       onChange={(e) => setAiTopic(e.target.value)}
                       placeholder="เช่น: การเติมเกม, วิธีชำระเงิน, การสั่งซื้อ"
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent"
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60"
                     />
                   </div>
                   <div className="md:col-span-3">
@@ -704,7 +704,7 @@ export default function AdminFaqPage() {
                     <select
                       value={aiCategoryId}
                       onChange={(e) => setAiCategoryId(e.target.value)}
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent cursor-pointer">
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60 cursor-pointer">
                       <option value="">เลือกหมวดหมู่...</option>
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -716,7 +716,7 @@ export default function AdminFaqPage() {
                     <select
                       value={aiCount}
                       onChange={(e) => setAiCount(Number(e.target.value))}
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent cursor-pointer">
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60 cursor-pointer">
                       {[3, 5, 10, 15, 20].map((n) => (
                         <option key={n} value={n}>{n} ข้อ</option>
                       ))}
@@ -731,7 +731,7 @@ export default function AdminFaqPage() {
                         aiService.setModel(e.target.value);
                       }}
                       disabled={isLoadingModels}
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent cursor-pointer disabled:opacity-50">
+                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60 cursor-pointer disabled:opacity-50">
                       {availableModels.map((m) => (
                         <option key={m.id} value={m.id}>{m.id}</option>
                       ))}
@@ -807,7 +807,7 @@ export default function AdminFaqPage() {
                             value={aiSystemPrompt}
                             onChange={(e) => setAiSystemPrompt(e.target.value)}
                             rows={6}
-                            className="w-full bg-site-surface border border-white/5 rounded-xl border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-site-accent resize-y"
+                            className="w-full bg-site-surface border border-white/5 rounded-xl border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-site-accent/60 resize-y"
                             placeholder="กำหนด system prompt สำหรับ AI..."
                           />
                           <p className="text-[10px] text-gray-400 mt-1">
@@ -1046,14 +1046,14 @@ export default function AdminFaqPage() {
                     placeholder="ค้นหาบทความ..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="py-1.5 pl-8 pr-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent"
+                    className="py-1.5 pl-8 pr-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent/60"
                   />
                 </div>
                 {/* Category Filter */}
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent/60">
                   <option value="ALL">ทุกหมวดหมู่</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -1065,7 +1065,7 @@ export default function AdminFaqPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent/60">
                   <option value="ALL">ทุกสถานะ</option>
                   <option value="ACTIVE">แสดง</option>
                   <option value="INACTIVE">ไม่แสดง</option>
@@ -1075,7 +1075,7 @@ export default function AdminFaqPage() {
                 <select
                   value={localeFilter}
                   onChange={(e) => setLocaleFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent">
+                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent/60">
                   <option value="ALL">ทุกภาษา</option>
                   {SUPPORTED_LOCALES.map((loc) => (
                     <option key={loc.code} value={loc.code}>
@@ -1279,7 +1279,7 @@ export default function AdminFaqPage() {
                         }}
                         placeholder="เช่น การสั่งซื้อ, การชำระเงิน"
                         required
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1297,7 +1297,7 @@ export default function AdminFaqPage() {
                           });
                         }}
                         placeholder="จะสร้างอัตโนมัติจากชื่อหมวดหมู่"
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1314,7 +1314,7 @@ export default function AdminFaqPage() {
                         }
                         placeholder="คำอธิบายสั้น ๆ เกี่ยวกับหมวดหมู่นี้"
                         rows={3}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors resize-none text-sm"
                       />
                     </div>
                     <div>
@@ -1331,7 +1331,7 @@ export default function AdminFaqPage() {
                           })
                         }
                         placeholder="เช่️ 🛒 💳 🎮"
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1348,7 +1348,7 @@ export default function AdminFaqPage() {
                           })
                         }
                         min={0}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
                       />
                     </div>
                     <div className="flex gap-2 pt-3">
@@ -1428,7 +1428,7 @@ export default function AdminFaqPage() {
                           })
                         }
                         required
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent transition-colors text-sm">
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent/60 transition-colors text-sm">
                         <option value="">เลือกหมวดหมู่</option>
                         {categories.map((cat) => (
                           <option key={cat.id} value={cat.id}>
@@ -1456,7 +1456,7 @@ export default function AdminFaqPage() {
                         }}
                         placeholder="หัวข้อคำถาม"
                         required
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
                       />
                     </div>
                     <div>
@@ -1484,7 +1484,7 @@ export default function AdminFaqPage() {
                           });
                         }}
                         placeholder="จะสร้างอัตโนมัติจากหัวข้อ"
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
                       />
                     </div>
 
@@ -1525,7 +1525,7 @@ export default function AdminFaqPage() {
                                 value={aiTopic}
                                 onChange={(e) => setAiTopic(e.target.value)}
                                 placeholder="เช่น วิธีเติมเพชร Free Fire, ขั้นตอนสั่งซื้อสินค้า"
-                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent"
+                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent/60"
                               />
                             </div>
 
@@ -1544,7 +1544,7 @@ export default function AdminFaqPage() {
                                   isLoadingModels ||
                                   availableModels.length === 0
                                 }
-                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent disabled:opacity-50">
+                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60 disabled:opacity-50">
                                 {isLoadingModels ? (
                                   <option value="">กำลังโหลด models...</option>
                                 ) : availableModels.length === 0 ? (
@@ -1676,7 +1676,7 @@ export default function AdminFaqPage() {
                         placeholder="คำตอบโดยละเอียด"
                         required
                         rows={6}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors resize-none text-sm"
                       />
                     </div>
                     <div>
@@ -1693,7 +1693,7 @@ export default function AdminFaqPage() {
                         }
                         placeholder="สรุปสั้น ๆ สำหรับแสดงในรายการ (ไม่บังคับ)"
                         rows={2}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent transition-colors resize-none text-sm"
+                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors resize-none text-sm"
                       />
                     </div>
                     <div className="flex gap-4">

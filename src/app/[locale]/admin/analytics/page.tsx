@@ -333,7 +333,7 @@ export default function AdminAnalyticsPage() {
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="h-9 px-3 bg-site-raised border border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:border-site-accent transition-colors cursor-pointer"
+                className="h-9 px-3 bg-site-raised border border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:border-site-accent/60 transition-colors cursor-pointer"
               >
                 <option value="24h">24 ชั่วโมง</option>
                 <option value="7d">7 วัน</option>

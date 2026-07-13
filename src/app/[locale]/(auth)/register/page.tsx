@@ -135,7 +135,7 @@ export default function RegisterPage() {
           {/* Benefits */}
           <div className="grid grid-cols-1 gap-4 pt-4">
             <motion.div
-              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/50 transition-colors"
+              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/30 transition-colors"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
@@ -151,7 +151,7 @@ export default function RegisterPage() {
             </motion.div>
 
             <motion.div
-              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/50 transition-colors"
+              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/30 transition-colors"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
@@ -264,7 +264,7 @@ export default function RegisterPage() {
                   }
                   errorText={passwordError}
                   className={
-                    passwordError ? "border-red-500/30 focus:border-red-500/30" : ""
+                    passwordError ? "border-red-500/20 focus:border-red-500/30 focus-visible:ring-1 focus-visible:ring-red-500/30" : ""
                   }
                 />
               </div>

@@ -213,6 +213,17 @@
     @apply w-full h-10 px-4 bg-site-surface border border-site-border rounded-lg text-sm text-site-text placeholder-site-dim transition-colors focus:outline-none focus:border-site-accent;
   }
 
+  /* Quiet border helpers — match the softened accent policy */
+  .site-input-focus {
+    @apply focus:outline-none focus:border-site-accent/60;
+  }
+  .site-input-success {
+    @apply border-semantic-green/30;
+  }
+  .site-input-error {
+    @apply border-red-500/30 ring-1 ring-red-500/30;
+  }
+
   /* Section heading */
   .site-heading {
     @apply text-lg md:text-xl font-bold text-site-text flex items-center gap-2;

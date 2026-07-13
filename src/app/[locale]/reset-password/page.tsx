@@ -146,7 +146,7 @@ function ResetPasswordContent() {
           <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
             <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
               <div className="flex items-center gap-4 relative z-10">
-                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30/20 flex items-center justify-center shrink-0 shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 shadow-sm">
                   <XCircle size={24} className="text-red-500" />
                 </div>
                 <div>
@@ -164,7 +164,7 @@ function ResetPasswordContent() {
 
               <Link
                 href="/forgot-password"
-                className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm"
+                className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm"
               >
                 <ArrowLeft size={18} />
                 {t("error_get_new_link")}

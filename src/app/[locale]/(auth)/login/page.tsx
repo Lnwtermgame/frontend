@@ -187,7 +187,7 @@ function LoginContent() {
             {/* Feature Highlights */}
             <div className="space-y-3 pt-2">
               <motion.div
-                className="flex items-center space-x-4 p-4 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/40 transition-colors group"
+                className="flex items-center space-x-4 p-4 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/30 transition-colors group"
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2 }}
               >
@@ -205,7 +205,7 @@ function LoginContent() {
               </motion.div>
 
               <motion.div
-                className="flex items-center space-x-4 p-4 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/40 transition-colors group"
+                className="flex items-center space-x-4 p-4 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/30 transition-colors group"
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2 }}
               >
@@ -295,9 +295,9 @@ function LoginContent() {
                   <div
                     className={`relative bg-site-raised border rounded-lg transition-all ${
                       emailFocused
-                        ? "border-site-accent"
+                        ? "border-site-accent/60"
                         : emailValid
-                          ? "border-semantic-green/50"
+                          ? "border-semantic-green/30"
                           : "border-site-border"
                     }`}
                   >
@@ -340,7 +340,7 @@ function LoginContent() {
                   <div
                     className={`relative bg-site-raised border rounded-lg transition-all ${
                       passwordFocused
-                        ? "border-site-accent"
+                        ? "border-site-accent/60"
                         : "border-site-border"
                     }`}
                   >
@@ -433,7 +433,7 @@ function LoginContent() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleOAuthLogin(provider)}
                           disabled={!provider.isEnabled}
-                          className="h-11 bg-site-raised border border-site-border text-site-text hover:bg-site-raised hover:border-site-accent/40 disabled:opacity-50 rounded-lg font-semibold text-sm transition-all inline-flex items-center justify-center gap-2.5"
+                          className="h-11 bg-site-raised border border-site-border text-site-text hover:bg-site-raised hover:border-site-accent/30 disabled:opacity-50 rounded-lg font-semibold text-sm transition-all inline-flex items-center justify-center gap-2.5"
                         >
                           {provider.iconUrl && (
                             <img

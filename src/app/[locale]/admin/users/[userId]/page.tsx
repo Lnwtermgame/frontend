@@ -389,7 +389,7 @@ export default function AdminUserManagerPage() {
                 onChange={(e) =>
                   setRoleDraft(e.target.value as "USER" | "ADMIN")
                 }
-                className="px-3 py-2 border border-white/5 rounded-xl border-gray-300 bg-site-raised focus:border-site-accent focus:outline-none"
+                className="px-3 py-2 border border-white/5 rounded-xl border-gray-300 bg-site-raised focus:border-site-accent/60 focus:outline-none"
                 disabled={mutating}
               >
                 <option value="USER">USER</option>
@@ -742,7 +742,7 @@ export default function AdminUserManagerPage() {
                 onChange={(e) => setAdminReason(e.target.value)}
                 rows={2}
                 placeholder="เช่น พบพฤติกรรมผิดปกติ / ตามคำขอผู้ใช้ / ความปลอดภัย"
-                className="mt-1 w-full border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none px-3 py-2 text-sm bg-site-raised"
+                className="mt-1 w-full border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none px-3 py-2 text-sm bg-site-raised"
               />
               <div className="mt-2 flex flex-wrap gap-2">
                 <button
@@ -760,7 +760,7 @@ export default function AdminUserManagerPage() {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
                   setAuditTypeFilter(e.target.value);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent focus:outline-none">
+                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none">
                 <option value="all">ทุกประเภท</option>
                 <option value="admin-suspend">admin-suspend</option>
                 <option value="admin-status-update">admin-status-update</option>
@@ -775,7 +775,7 @@ export default function AdminUserManagerPage() {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
                   setAuditResolvedFilter(e.target.value);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent focus:outline-none">
+                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none">
                 <option value="all">ทุกสถานะ</option>
                 <option value="resolved">Resolved</option>
                 <option value="unresolved">Unresolved</option>
@@ -787,7 +787,7 @@ export default function AdminUserManagerPage() {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
                   setAuditFromDate(e.target.value);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent focus:outline-none"
+                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none"
               />
               <input
                 type="date"
@@ -796,7 +796,7 @@ export default function AdminUserManagerPage() {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
                   setAuditToDate(e.target.value);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent focus:outline-none"
+                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none"
               />
             </div>
             <div className="overflow-x-auto">

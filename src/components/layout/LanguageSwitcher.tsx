@@ -84,7 +84,7 @@ export function LanguageSwitcher({
 
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center justify-between p-3 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/40 transition-all text-site-text"
+          className="w-full flex items-center justify-between p-3 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/30 transition-all text-site-text"
         >
           <div className="flex items-center gap-3">
             <Flag code={currentLanguage.flagCode} className="w-6 rounded-sm" />
@@ -135,7 +135,7 @@ export function LanguageSwitcher({
                           className={cn(
                             "flex flex-col items-center justify-center p-4 border rounded-xl transition-all",
                             locale === lang.code
-                              ? "bg-site-accent/10 border-site-accent/40 shadow-sm"
+                              ? "bg-site-accent/10 border-site-accent/30"
                               : "bg-site-raised border-site-border-soft hover:border-site-border text-site-muted hover:text-site-text",
                           )}
                         >

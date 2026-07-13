@@ -118,7 +118,7 @@ export function NavSearchBox() {
                     ref={inputRef}
                     type="text"
                     placeholder={t("Header.search_placeholder") || "Search for games, cards..."}
-                    className="bg-[#1E2023] border border-[#2E3035] focus:border-site-accent outline-none text-white text-[13px] pl-10 pr-9 py-2.5 w-[220px] xl:w-[280px] focus:w-full rounded-[10px] transition-all duration-300 placeholder:text-[#666] shadow-inner"
+                    className="bg-[#1E2023] border border-[#2E3035] focus:border-site-accent/60 outline-none text-white text-[13px] pl-10 pr-9 py-2.5 w-[220px] xl:w-[280px] focus:w-full rounded-[10px] transition-all duration-300 placeholder:text-[#666] shadow-inner"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setIsOpen(true)}

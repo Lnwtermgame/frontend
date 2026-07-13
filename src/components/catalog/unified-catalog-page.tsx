@@ -597,7 +597,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   placeholder={copy.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#181A1D] border border-transparent hover:border-white/10 text-white text-[13px] rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-site-accent transition-all placeholder:text-gray-600"
+                  className="w-full bg-[#181A1D] border border-transparent hover:border-white/10 text-white text-[13px] rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-site-accent/60 transition-all placeholder:text-gray-600"
                 />
                 <Search className="absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
               </div>

@@ -304,7 +304,7 @@ export default function OrdersPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             icon={<Search size={16} className="text-gray-400" />}
-            className="text-sm h-11 bg-[#1A1C1E] border-site-border text-white placeholder-gray-500 rounded-lg focus:border-site-accent"
+            className="text-sm h-11 bg-[#1A1C1E] border-site-border text-white placeholder-gray-500 rounded-lg focus:border-site-accent/60"
           />
         </div>
 

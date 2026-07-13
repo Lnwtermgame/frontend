@@ -525,7 +525,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent outline-none transition-all"
+                    className="w-full bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all"
                     placeholder="เช่น Mobile Legends Diamonds"
                   />
                 </div>

@@ -28,6 +28,7 @@ import {
   AvailableCategory,
   AIModel,
 } from "@/lib/services/ai-api";
+import { AdminHeaderButton } from "@/components/admin";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
 
@@ -805,15 +806,15 @@ export default function AIGenerateAllButton({
   return (
     <>
       {/* Trigger Button */}
-      <button
+      <AdminHeaderButton
+        variant="accentSoft"
         onClick={handleOpen}
         disabled={products.length === 0}
-        className="inline-flex items-center justify-center gap-2 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg px-4 py-2 hover:bg-site-accent-hover transition-all font-bold text-[13px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Wand2 className="h-4 w-4" />
         <span>AI Generate ทั้งหมด</span>
         <Sparkles className="h-3.5 w-3.5 opacity-70" />
-      </button>
+      </AdminHeaderButton>
 
       {/* Modal */}
       {isOpen &&
@@ -1172,7 +1173,7 @@ export default function AIGenerateAllButton({
                           {state.status === "completed" && (
                             <button
                               onClick={() => cancelProduct(index)}
-                              className="p-1.5 text-red-500 hover:text-white hover:bg-red-500 border border-red-300 hover:border-red-500/30 transition-all"
+                              className="p-1.5 text-red-500 hover:text-white hover:bg-red-500 border border-red-300 hover:border-red-500/20 transition-all"
                               title="ยกเลิก - ไม่ใช้ผลลัพธ์"
                             >
                               <XCircle className="w-4 h-4" />

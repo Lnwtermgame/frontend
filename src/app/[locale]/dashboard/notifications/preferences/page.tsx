@@ -263,7 +263,7 @@ export default function NotificationPreferencesPage() {
                     className="flex items-center justify-center bg-[#222427] hover:bg-red-500/10 text-gray-300 hover:text-red-500 hover:border-red-500/30/50 px-4 py-2 border border-site-border rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-sm shrink-0"
                   >
                     {isSubscribing ? (
-                      <div className="w-3.5 h-3.5 border-2 border-red-500/30 border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="w-3.5 h-3.5 border-2 border-red-500/20 border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
                       <X className="h-3.5 w-3.5 mr-2" />
                     )}

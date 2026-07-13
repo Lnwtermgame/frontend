@@ -396,7 +396,7 @@ export default function OAuthProvidersPage() {
                               key={presetName}
                               type="button"
                               onClick={() => handlePresetSelect(presetName)}
-                              className="px-3 py-1.5 text-xs bg-white/5 text-white border border-white/10 rounded-lg hover:border-site-accent/50 hover:text-site-accent transition-all font-medium">
+                              className="px-3 py-1.5 text-xs bg-white/5 text-white border border-white/10 rounded-lg hover:border-site-accent/30 hover:text-site-accent transition-all font-medium">
                               {DEFAULT_OAUTH_CONFIGS[presetName].displayName}
                             </button>
                           ))}

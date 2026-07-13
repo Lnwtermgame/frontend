@@ -99,7 +99,7 @@ export default function FaqArticlePage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-500/10 border-[3px] border-red-500/30 p-6 text-center"
+          className="bg-red-500/10 border-[3px] border-red-500/20 p-6 text-center"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <AlertCircle className="mx-auto text-red-600 mb-3" size={48} />

@@ -344,7 +344,7 @@ export default function SecurityPage() {
                               )
                             }
                             placeholder="123456"
-                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-base text-center tracking-[0.5em] transition-all"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent/60 text-base text-center tracking-[0.5em] transition-all"
                             required
                             maxLength={6}
                           />
@@ -359,7 +359,7 @@ export default function SecurityPage() {
                             value={setupPassword}
                             onChange={(e) => setSetupPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent/60 text-sm transition-all"
                             required
                             minLength={8}
                           />
@@ -379,7 +379,7 @@ export default function SecurityPage() {
                               setSetupConfirmPassword(e.target.value)
                             }
                             placeholder="••••••••"
-                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
+                            className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent/60 text-sm transition-all"
                             required
                           />
                         </div>
@@ -468,7 +468,7 @@ export default function SecurityPage() {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent/60 text-sm transition-all"
                       required
                     />
                   </div>
@@ -482,7 +482,7 @@ export default function SecurityPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent/60 text-sm transition-all"
                       required
                       minLength={8}
                     />
@@ -500,7 +500,7 @@ export default function SecurityPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent text-sm transition-all"
+                      className="w-full p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-white focus:outline-none focus:border-site-accent/60 text-sm transition-all"
                       required
                     />
                   </div>
@@ -786,7 +786,7 @@ export default function SecurityPage() {
                           {activity.suspicious && !activity.resolved ? (
                             <button
                               onClick={() => resolveActivity(activity.id)}
-                              className="w-full xl:w-auto text-sm font-bold bg-[#1A1C1E] text-white border border-site-border rounded-lg px-4 py-2 hover:bg-site-accent hover:text-[#1A1C1E] hover:border-site-accent/50 transition-all flex items-center justify-center gap-2"
+                              className="w-full xl:w-auto text-sm font-bold bg-[#1A1C1E] text-white border border-site-border rounded-lg px-4 py-2 hover:bg-site-accent hover:text-[#1A1C1E] hover:border-site-accent/30 transition-all flex items-center justify-center gap-2"
                             >
                               <Check size={16} />
                               {t("suspicious_activity.confirm_button")}

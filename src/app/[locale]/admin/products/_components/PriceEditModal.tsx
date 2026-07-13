@@ -236,7 +236,7 @@ export function PriceEditModal({
                         onChange={(e) =>
                           handlePriceChange(type.id, e.target.value)
                         }
-                        className="w-full text-right bg-site-raised border border-site-border rounded-lg pl-8 pr-3 py-2 text-[13px] font-bold text-site-text focus:border-site-accent focus:ring-1 focus:ring-site-accent/50 outline-none transition-all placeholder:text-site-dim"
+                        className="w-full text-right bg-site-raised border border-site-border rounded-lg pl-8 pr-3 py-2 text-[13px] font-bold text-site-text focus:border-site-accent/60 focus:ring-1 focus:ring-site-accent/50 outline-none transition-all placeholder:text-site-dim"
                         placeholder={seagmPrice.toString()}
                       />
                     </div>

@@ -470,7 +470,7 @@ export default function AdminCategories() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full bg-site-raised border border-site-border rounded-lg px-4 py-3 text-sm text-site-text focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent outline-none transition-all placeholder:text-site-dim"
+                  className="w-full bg-site-raised border border-site-border rounded-lg px-4 py-3 text-sm text-site-text focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all placeholder:text-site-dim"
                   placeholder="เช่น Steam, PlayStation, Mobile Games"
                   disabled={isSaving}
                   autoFocus
@@ -490,7 +490,7 @@ export default function AdminCategories() {
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") }))
                     }
-                    className="w-full bg-site-raised border border-site-border rounded-lg pl-[85px] pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent outline-none transition-all placeholder:text-site-dim"
+                    className="w-full bg-site-raised border border-site-border rounded-lg pl-[85px] pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all placeholder:text-site-dim"
                     placeholder="steam"
                     disabled={isSaving}
                   />
@@ -514,7 +514,7 @@ export default function AdminCategories() {
                     }))
                   }
                   rows={4}
-                  className="w-full bg-site-raised border border-site-border rounded-lg px-4 py-3 text-[13px] text-site-text focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent outline-none transition-all resize-none placeholder:text-site-dim leading-relaxed"
+                  className="w-full bg-site-raised border border-site-border rounded-lg px-4 py-3 text-[13px] text-site-text focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all resize-none placeholder:text-site-dim leading-relaxed"
                   placeholder="อธิบายลักษณะของสินค้านี้ เพื่อให้ AI ทำความเข้าใจหมวดหมู่นี้ได้ดียิ่งขึ้นเวลาเขียนคำอธิบายสินค้า..."
                   disabled={isSaving}
                 />

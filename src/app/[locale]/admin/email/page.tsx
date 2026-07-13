@@ -1170,7 +1170,7 @@ function EmailBrandingSection({
           type="text"
           value={value}
           onChange={(e) => update(field, e.target.value)}
-          className="flex-1 px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-xs font-mono"
+          className="flex-1 px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-xs font-mono"
         />
       </div>
     </div>
@@ -1193,7 +1193,7 @@ function EmailBrandingSection({
               value={form.logoUrl || ""}
               onChange={(e) => update("logoUrl", e.target.value || null)}
               placeholder="https://example.com/logo.png"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
             {form.logoUrl && (
               <div className="mt-2 p-3 bg-site-surface border border-white/5 rounded-xl border-white/5 flex items-center justify-center">
@@ -1221,7 +1221,7 @@ function EmailBrandingSection({
                 type="text"
                 value={form.siteName || ""}
                 onChange={(e) => update("siteName", e.target.value)}
-                className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+                className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -1235,7 +1235,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoWidth", parseInt(e.target.value))
                   }
-                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
                 />
               </div>
               <div>
@@ -1248,7 +1248,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoHeight", parseInt(e.target.value))
                   }
-                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
                 />
               </div>
             </div>
@@ -1325,7 +1325,7 @@ function EmailBrandingSection({
               value={form.headerText || ""}
               onChange={(e) => update("headerText", e.target.value || null)}
               placeholder="เช่น Lnwtermgame - บริการเติมเกมออนไลน์"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1395,7 +1395,7 @@ function EmailBrandingSection({
               value={form.footerText || ""}
               onChange={(e) => update("footerText", e.target.value || null)}
               placeholder="ข้อความแสดงใน Footer"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1407,7 +1407,7 @@ function EmailBrandingSection({
               value={form.copyrightText || ""}
               onChange={(e) => update("copyrightText", e.target.value || null)}
               placeholder={`© ${new Date().getFullYear()} Lnwtermgame. All rights reserved.`}
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1452,7 +1452,7 @@ function EmailBrandingSection({
               value={form.facebookUrl || ""}
               onChange={(e) => update("facebookUrl", e.target.value || null)}
               placeholder="https://facebook.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1462,7 +1462,7 @@ function EmailBrandingSection({
               value={form.lineUrl || ""}
               onChange={(e) => update("lineUrl", e.target.value || null)}
               placeholder="https://line.me/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1472,7 +1472,7 @@ function EmailBrandingSection({
               value={form.discordUrl || ""}
               onChange={(e) => update("discordUrl", e.target.value || null)}
               placeholder="https://discord.gg/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1482,7 +1482,7 @@ function EmailBrandingSection({
               value={form.twitterUrl || ""}
               onChange={(e) => update("twitterUrl", e.target.value || null)}
               placeholder="https://twitter.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1492,7 +1492,7 @@ function EmailBrandingSection({
               value={form.youtubeUrl || ""}
               onChange={(e) => update("youtubeUrl", e.target.value || null)}
               placeholder="https://youtube.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1502,7 +1502,7 @@ function EmailBrandingSection({
               value={form.instagramUrl || ""}
               onChange={(e) => update("instagramUrl", e.target.value || null)}
               placeholder="https://instagram.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1519,7 +1519,7 @@ function EmailBrandingSection({
               value={form.supportEmail || ""}
               onChange={(e) => update("supportEmail", e.target.value || null)}
               placeholder="support@example.com"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1531,7 +1531,7 @@ function EmailBrandingSection({
               value={form.supportPhone || ""}
               onChange={(e) => update("supportPhone", e.target.value || null)}
               placeholder="02-xxx-xxxx"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1541,7 +1541,7 @@ function EmailBrandingSection({
               value={form.websiteUrl || ""}
               onChange={(e) => update("websiteUrl", e.target.value || null)}
               placeholder="https://www.example.com"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1553,7 +1553,7 @@ function EmailBrandingSection({
               value={form.unsubscribeUrl || ""}
               onChange={(e) => update("unsubscribeUrl", e.target.value || null)}
               placeholder="https://www.example.com/unsubscribe"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1568,7 +1568,7 @@ function EmailBrandingSection({
               value={form.companyName || ""}
               onChange={(e) => update("companyName", e.target.value || null)}
               placeholder="บริษัท ตัวอย่าง จำกัด"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1580,7 +1580,7 @@ function EmailBrandingSection({
               value={form.companyAddress || ""}
               onChange={(e) => update("companyAddress", e.target.value || null)}
               placeholder="123 ถนนตัวอย่าง แขวง/ตำบล..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
             />
           </div>
         </div>

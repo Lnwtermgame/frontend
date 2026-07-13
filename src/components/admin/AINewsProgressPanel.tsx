@@ -431,7 +431,7 @@ export default function AINewsProgressPanel({
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       className={`flex items-start gap-2 p-2 border-l-2 text-xs font-mono ${log.type === "error"
-                        ? "bg-red-950 border-red-500/30 text-red-300"
+                        ? "bg-red-950 border-red-500/20 text-red-300"
                         : log.type === "success"
                           ? "bg-green-950 border-green-500/30 text-green-300"
                           : log.type === "warning"

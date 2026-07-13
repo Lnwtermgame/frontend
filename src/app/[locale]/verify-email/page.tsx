@@ -292,7 +292,7 @@ function VerifyEmailContent() {
                     <button
                       onClick={handleResend}
                       disabled={isResending || resendSuccess}
-                      className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-[#1A1C1E] disabled:hover:border-site-border"
+                      className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-[#1A1C1E] disabled:hover:border-site-border"
                     >
                       {isResending ? (
                         <>
@@ -316,7 +316,7 @@ function VerifyEmailContent() {
                 {status === "invalid_link" && (
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm"
                   >
                     {t("go_to_login")}
                     <ArrowRight size={18} className="text-site-accent" />
@@ -326,7 +326,7 @@ function VerifyEmailContent() {
                 {status === "error" && !showResendButton && (
                   <Link
                     href="/support"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/50 transition-all shadow-sm"
+                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm"
                   >
                     {t("contact_support")}
                   </Link>

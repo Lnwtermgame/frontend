@@ -209,7 +209,7 @@ export default function AdminPromotionSettings() {
                       max="30"
                       value={settings.expiringSoonDays}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       คูปองที่เหลือวันน้อยกว่านี้จะถูกทำเครื่องหมายว่า
@@ -248,7 +248,7 @@ export default function AdminPromotionSettings() {
                         max="10"
                         value={settings.maxCouponsPerOrder}
                         onChange={handleChange}
-                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       />
                     </div>
                   )}
@@ -274,7 +274,7 @@ export default function AdminPromotionSettings() {
                       min="0"
                       value={settings.minOrderValueForCoupons}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       ยอดสั่งซื้อขั้นต่ำเริ่มต้นที่ต้องการเพื่อใช้คูปอง
@@ -311,7 +311,7 @@ export default function AdminPromotionSettings() {
                       max="20"
                       value={settings.maxFailedAttempts}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       จำนวนครั้งที่ใช้คูปองผิดพลาดก่อนถูกบล็อกชั่วคราว
@@ -332,7 +332,7 @@ export default function AdminPromotionSettings() {
                       max="1440"
                       value={settings.blockDurationMinutes}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       ระยะเวลาบล็อกการใช้คูปองหลังจากความพยายามผิดพลาดมากเกินไป
@@ -361,7 +361,7 @@ export default function AdminPromotionSettings() {
                       max="16"
                       value={settings.defaultCouponLength}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                   </div>
 
@@ -412,7 +412,7 @@ export default function AdminPromotionSettings() {
                         max="30"
                         value={settings.expiryNotificationDays}
                         onChange={handleChange}
-                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent focus:outline-none"
+                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       />
                       <p className="text-gray-400 text-[10px] mt-1">
                         จำนวนวันก่อนหมดอายุที่จะส่งการแจ้งเตือน

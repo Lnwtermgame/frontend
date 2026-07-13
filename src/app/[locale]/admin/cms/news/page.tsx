@@ -1092,7 +1092,7 @@ export default function AdminCmsNewsPage() {
                                   value={aiTopic}
                                   onChange={(e) => setAiTopic(e.target.value)}
                                   placeholder="เช่น อัปเดตระบบใหม่, โปรโมชันประจำเดือน"
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent"
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent/60"
                                 />
                                 <p className="text-[10px] text-gray-400 mt-1">
                                   AI จะค้นหาข้อมูลจาก TheNewsAPI
@@ -1108,7 +1108,7 @@ export default function AdminCmsNewsPage() {
                                 <select
                                   value={aiVariation}
                                   onChange={(e) => setAiVariation(e.target.value)}
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent">
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60">
                                   {aiVariations.map((variation) => (
                                     <option
                                       key={variation.value}
@@ -1132,7 +1132,7 @@ export default function AdminCmsNewsPage() {
                                     aiService.setModel(e.target.value);
                                   }}
                                   disabled={isLoadingModels || availableModels.length === 0}
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent disabled:opacity-50">
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60 disabled:opacity-50">
                                   {isLoadingModels ? (
                                     <option value="">กำลังโหลด model...</option>
                                   ) : availableModels.length === 0 ? (
@@ -1158,7 +1158,7 @@ export default function AdminCmsNewsPage() {
                                 <select
                                   value={newsProvider}
                                   onChange={(e) => setNewsProvider(e.target.value as "thenewsapi" | "newsapi")}
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent">
+                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60">
                                   <option value="thenewsapi">TheNewsAPI (ค่าเริ่มต้น)</option>
                                   <option value="newsapi">NewsAPI.org (สำรอง)</option>
                                 </select>

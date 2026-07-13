@@ -301,7 +301,7 @@ function LoginContent() {
                           : "border-site-border"
                     }`}
                   >
-                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-site-dim pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-site-dim pointer-events-none">
                       <Mail className="h-4.5 w-4.5" />
                     </div>
                     <input
@@ -321,7 +321,7 @@ function LoginContent() {
                       <motion.div
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3.5"
                       >
                         <CheckCircle2 className="h-4.5 w-4.5 text-semantic-green" />
                       </motion.div>
@@ -344,7 +344,7 @@ function LoginContent() {
                         : "border-site-border"
                     }`}
                   >
-                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-site-dim pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-site-dim pointer-events-none">
                       <Lock className="h-4.5 w-4.5" />
                     </div>
                     <input
@@ -363,7 +363,7 @@ function LoginContent() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-site-dim hover:text-site-text transition-colors p-1"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-site-dim hover:text-site-text transition-colors"
                       tabIndex={-1}
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >

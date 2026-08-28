@@ -15,7 +15,7 @@ import {
   CreditCard,
   type LucideIcon,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { cmsApi, type NewsArticle } from "@/lib/services/cms-api";
 import { productApi, type Product } from "@/lib/services/product-api";
@@ -36,8 +36,22 @@ import {
 const gameImg = (label: string) =>
   `https://placehold.co/500x500/22262a/74807f?text=${encodeURIComponent(label)}&font=montserrat`;
 
+function formatDate(locale: string, dateStr: string | null | undefined): string | undefined {
+  if (!dateStr) return undefined;
+  try {
+    return new Date(dateStr).toLocaleDateString(locale, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return undefined;
+  }
+}
+
 export default function HomePage() {
   const t = useTranslations();
+  const locale = useLocale();
   const { settings, loading: settingsLoading } = usePublicSettings();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsArticle[]>([]);
@@ -229,20 +243,6 @@ export default function HomePage() {
   const isPageReady =
     !settingsLoading && !newsLoading && !productsLoading && !dealsLoading;
 
-  // Format date for news subtitle
-  const formatDate = (dateStr: string | null | undefined): string | undefined => {
-    if (!dateStr) return undefined;
-    try {
-      return new Date(dateStr).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-    } catch {
-      return undefined;
-    }
-  };
-
   // ═══════ LOADING SKELETON ═══════
   if (!isPageReady) {
     return (
@@ -292,7 +292,7 @@ export default function HomePage() {
           className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {heroSlides.map((slide) => (
+          {heroSlides.map((slide, i) => (
             <div
               key={slide.id}
               className="w-full flex-[0_0_100%] relative h-[180px] md:h-[220px]"
@@ -302,6 +302,7 @@ export default function HomePage() {
                 src={slide.image}
                 alt={slide.title}
                 className="absolute inset-0 w-full h-full object-cover opacity-30"
+                loading={i === 0 ? "eager" : "lazy"}
               />
               {/* Flat overlay */}
               <div className="absolute inset-0 bg-site-surface/70" />
@@ -460,7 +461,7 @@ export default function HomePage() {
                 key={news.id}
                 href={`/news/${news.slug}`}
                 title={news.title}
-                subtitle={formatDate(news.publishedAt || news.createdAt)}
+                subtitle={formatDate(locale, news.publishedAt || news.createdAt)}
               />
             ))
           )}

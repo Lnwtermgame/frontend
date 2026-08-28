@@ -18,6 +18,7 @@ export function OfferCard({ deal, href }: { deal: Deal; href: string }) {
           src={deal.img}
           alt={deal.name}
           className="w-9 h-9 rounded-6 object-cover bg-site-raised"
+          loading="lazy"
         />
         <div className="min-w-0">
           <p className="text-[13px] font-bold text-site-text line-clamp-1" title={deal.typeName}>

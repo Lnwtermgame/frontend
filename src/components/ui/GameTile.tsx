@@ -20,7 +20,7 @@ export function GameTile({
   return (
     <Link href={href || `/games/${slug}`} className="block group">
       <div className="w-full aspect-square rounded-8 overflow-hidden bg-site-raised border border-site-border-soft">
-        <img src={image} alt={name} className="w-full h-full object-cover" />
+        <img src={image} alt={name} className="w-full h-full object-cover" loading="lazy" />
       </div>
       <h3
         className="mt-2 text-[13px] text-center text-site-text font-bold leading-snug line-clamp-2 group-hover:text-site-accent transition-colors"

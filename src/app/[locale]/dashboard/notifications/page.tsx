@@ -10,8 +10,6 @@ import {
   Check,
   Clock,
   Info,
-  Gift,
-  Tag,
   Trash2,
   ShoppingBag,
   CreditCard,
@@ -20,7 +18,6 @@ import {
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Skeleton, SkeletonListRow } from "@/components/ui/Skeleton";
@@ -320,6 +317,7 @@ export default function NotificationsPage() {
                         onClick={(e) => markAsRead(notification.id, e)}
                         className="p-1.5 rounded-6 bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-status-success/50 hover:bg-status-success/10 transition-colors"
                         title={t("mark_read")}
+                        aria-label={t("mark_read")}
                       >
                         <Check size={14} />
                       </button>
@@ -330,6 +328,7 @@ export default function NotificationsPage() {
                       }
                       className="p-1.5 rounded-6 bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-status-danger/50 hover:bg-status-danger/10 transition-colors"
                       title={t("delete")}
+                      aria-label={t("delete")}
                     >
                       <Trash2 size={14} />
                     </button>

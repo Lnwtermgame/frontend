@@ -128,6 +128,7 @@ const UserSidebar = memo(function UserSidebar({
           <button
             onClick={onClose}
             className="lg:hidden w-7 h-7 rounded-4 bg-site-raised flex items-center justify-center hover:bg-site-surface transition-colors text-site-muted hover:text-site-text"
+            aria-label="Close menu"
           >
             <X className="w-4 h-4" />
           </button>
@@ -203,12 +204,24 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     };
   }, [isSidebarOpen]);
 
+  useEffect(() => {
+    if (!isSidebarOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsSidebarOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isSidebarOpen]);
+
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsSidebarOpen(true)}
         className="lg:hidden fixed bottom-20 right-4 z-30 w-14 h-14 rounded-8 bg-site-accent text-site-bg flex items-center justify-center transition-colors"
+        aria-label="Open menu"
       >
         <Menu className="w-6 h-6" />
       </button>

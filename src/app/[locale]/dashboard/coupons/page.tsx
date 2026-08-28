@@ -436,7 +436,7 @@ export default function CouponsPage() {
                       setNewCouponCode(e.target.value.toUpperCase());
                       setErrorMessage("");
                     }}
-                    onKeyPress={(e) => e.key === "Enter" && handleClaimCoupon()}
+                    onKeyDown={(e) => e.key === "Enter" && handleClaimCoupon()}
                     className="site-input flex-1 min-w-0"
                   />
                   <button

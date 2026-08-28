@@ -19,7 +19,7 @@ import { useTranslations } from "next-intl";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Skeleton, SkeletonListRow } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 // Cooldown time in seconds for resend verification email
 const RESEND_COOLDOWN_SECONDS = 60;

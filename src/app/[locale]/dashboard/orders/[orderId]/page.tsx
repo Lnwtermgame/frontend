@@ -11,7 +11,6 @@ import {
     Package,
     Copy,
     Check,
-    Download,
     CreditCard,
     Calendar,
     Mail,
@@ -19,17 +18,19 @@ import {
     XCircle,
     RefreshCw,
     MapPin,
-    Smartphone,
     Loader2,
     Eye,
     EyeOff,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
 import { orderApi, Order } from "@/lib/services/order-api";
 import { deliveryApi, OrderDeliveryStatus } from "@/lib/services/delivery-api";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function OrderDetailsPage() {
     const t = useTranslations("OrderDetail");
@@ -157,39 +158,39 @@ export default function OrderDetailsPage() {
         switch (s) {
             case "COMPLETED":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border border-green-500/30/20 rounded-full text-sm font-bold bg-green-500/10 text-green-500">
-                        <CheckCircle className="w-4 h-4 mr-1.5" /> {tCommon("member")}
-                    </span>
+                    <Badge variant="success">
+                        <CheckCircle className="w-3 h-3" /> {tCommon("member")}
+                    </Badge>
                 );
             case "PENDING":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border border-yellow-500/30/20 rounded-full text-sm font-bold bg-yellow-500/10 text-yellow-500">
-                        <Clock className="w-4 h-4 mr-1.5" /> {t("payment.status_pending")}
-                    </span>
+                    <Badge variant="warning">
+                        <Clock className="w-3 h-3" /> {t("payment.status_pending")}
+                    </Badge>
                 );
             case "PROCESSING":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border border-blue-500/20 rounded-full text-sm font-bold bg-blue-500/10 text-blue-500">
-                        <RefreshCw className="w-4 h-4 mr-1.5 animate-spin" /> {t("delivery.statuses.processing")}
-                    </span>
+                    <Badge variant="info">
+                        <RefreshCw className="w-3 h-3" /> {t("delivery.statuses.processing")}
+                    </Badge>
                 );
             case "CANCELLED":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border border-red-500/30/20 rounded-full text-sm font-bold bg-red-500/10 text-red-500">
-                        <XCircle className="w-4 h-4 mr-1.5" /> Cancelled
-                    </span>
+                    <Badge variant="danger">
+                        <XCircle className="w-3 h-3" /> Cancelled
+                    </Badge>
                 );
             case "FAILED":
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border border-red-500/30/20 rounded-full text-sm font-bold bg-red-500/10 text-red-500">
-                        <AlertCircle className="w-4 h-4 mr-1.5" /> Failed
-                    </span>
+                    <Badge variant="danger">
+                        <AlertCircle className="w-3 h-3" /> Failed
+                    </Badge>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center px-3 py-1 border border-gray-600 rounded-full text-sm font-bold bg-gray-800 text-gray-300">
+                    <Badge variant="neutral">
                         {status}
-                    </span>
+                    </Badge>
                 );
         }
     };
@@ -199,31 +200,31 @@ export default function OrderDetailsPage() {
         switch (status) {
             case "COMPLETED":
                 return (
-                    <span className="inline-flex items-center text-sm text-green-500 font-medium">
-                        <CheckCircle className="w-4 h-4 mr-1" /> {t("delivery.statuses.completed")}
+                    <span className="inline-flex items-center text-xs text-status-success font-medium">
+                        <CheckCircle className="w-3.5 h-3.5 mr-1" /> {t("delivery.statuses.completed")}
                     </span>
                 );
             case "PENDING":
                 return (
-                    <span className="inline-flex items-center text-sm text-yellow-500 font-medium">
-                        <Clock className="w-4 h-4 mr-1" /> {t("delivery.statuses.pending")}
+                    <span className="inline-flex items-center text-xs text-status-warning font-medium">
+                        <Clock className="w-3.5 h-3.5 mr-1" /> {t("delivery.statuses.pending")}
                     </span>
                 );
             case "PROCESSING":
                 return (
-                    <span className="inline-flex items-center text-sm text-blue-500 font-medium">
-                        <RefreshCw className="w-4 h-4 mr-1 animate-spin" /> {t("delivery.statuses.processing")}
+                    <span className="inline-flex items-center text-xs text-status-info font-medium">
+                        <RefreshCw className="w-3.5 h-3.5 mr-1" /> {t("delivery.statuses.processing")}
                     </span>
                 );
             case "FAILED":
                 return (
-                    <span className="inline-flex items-center text-sm text-red-500 font-medium">
-                        <XCircle className="w-4 h-4 mr-1" /> {t("delivery.statuses.failed")}
+                    <span className="inline-flex items-center text-xs text-status-danger font-medium">
+                        <XCircle className="w-3.5 h-3.5 mr-1" /> {t("delivery.statuses.failed")}
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center text-sm text-gray-400 font-medium">
+                    <span className="inline-flex items-center text-xs text-site-muted font-medium">
                         {status}
                     </span>
                 );
@@ -281,9 +282,9 @@ export default function OrderDetailsPage() {
     if (!isInitialized || !user) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="w-16 h-16 border-4 border-[var(--site-accent)] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="mt-4 text-gray-400">{tCommon("loading")}</p>
+                <div className="flex flex-col items-center gap-3">
+                    <Skeleton className="w-10 h-10 rounded-8" />
+                    <p className="text-site-muted">{tCommon("loading")}</p>
                 </div>
             </div>
         );
@@ -293,9 +294,9 @@ export default function OrderDetailsPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="w-16 h-16 border-4 border-[var(--site-accent)] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="mt-4 text-gray-400">{t("loading")}</p>
+                <div className="flex flex-col items-center gap-3">
+                    <Skeleton className="w-10 h-10 rounded-8" />
+                    <p className="text-site-muted">{t("loading")}</p>
                 </div>
             </div>
         );
@@ -304,15 +305,11 @@ export default function OrderDetailsPage() {
     // If order not found
     if (!order) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <AlertCircle className="w-16 h-16 text-gray-500 mb-4" />
-                <h2 className="text-xl font-bold text-white mb-2">{t("error_not_found")}</h2>
-                <p className="text-gray-400 mb-6">
-                    {t("error_not_found_desc")}
-                </p>
+            <div className="site-card p-12 text-center">
+                <EmptyState icon={AlertCircle} message={t("error_not_found")} description={t("error_not_found_desc")} />
                 <Link
                     href="/dashboard/orders"
-                    className="px-6 py-2.5 bg-[var(--site-accent)] hover:bg-[#5AA1AB] text-white rounded-lg font-medium transition-colors"
+                    className="site-btn inline-flex mt-4"
                 >
                     {t("back_to_orders")}
                 </Link>
@@ -323,31 +320,24 @@ export default function OrderDetailsPage() {
     return (
         <div>
             {/* Page Header */}
-            <div className="relative mb-6">
+            <div className="mb-6">
                 <div className="flex items-center gap-3 mb-2">
                     <Link
                         href="/dashboard/orders"
-                        className="p-1.5 -ml-1.5 rounded-lg hover:bg-[#212328]/5 text-gray-400 hover:text-white transition-colors border border-transparent hover:border-site-border"
+                        className="p-1.5 -ml-1.5 rounded-6 hover:bg-site-raised text-site-muted hover:text-site-text transition-colors border border-transparent hover:border-site-border-soft"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </Link>
-                    <motion.h2
-                        className="text-xl font-bold text-white relative flex items-center"
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                    >
-                        <span className="w-1.5 h-5 bg-[var(--site-accent)] mr-2 rounded-full"></span>
-                        {t("title")}
-                    </motion.h2>
+                    <SectionHeader level={1} title={t("title")} />
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400 ml-8">
+                <div className="flex items-center gap-2 text-sm text-site-muted ml-8">
                     <span>
                         {t("order_id_label")}:{" "}
-                        <span className="text-white font-mono font-semibold">
+                        <span className="text-site-text font-mono font-semibold">
                             {order.orderNumber}
                         </span>
                     </span>
-                    <span className="w-1 h-1 bg-[#181A1D]0 rounded-full"></span>
+                    <span className="w-1 h-1 bg-site-border rounded-full"></span>
                     <span>{formatDate(order.createdAt)}</span>
                 </div>
             </div>
@@ -356,24 +346,20 @@ export default function OrderDetailsPage() {
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Order Status & Items */}
-                    <motion.div
-                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        <div className="p-4 border-b border-site-border flex justify-between items-center bg-[#1A1C1E]">
-                            <h3 className="font-bold text-white flex items-center gap-2 text-base">
-                                <Package className="h-5 w-5 text-[var(--site-accent)]" />
+                    <div className="site-card overflow-hidden">
+                        <div className="p-4 border-b border-site-border-soft flex justify-between items-center bg-site-raised">
+                            <h3 className="font-bold text-site-text flex items-center gap-2 text-sm">
+                                <Package className="h-4 w-4 text-site-accent" />
                                 {t("items.title")}
                             </h3>
                             {getStatusBadge(order.status)}
                         </div>
 
-                        <div className="divide-y divide-site-border">
+                        <div className="divide-y divide-site-border-soft">
                             {order.items.map((item) => (
                                 <div key={item.id} className="p-4">
                                     <div className="flex flex-col sm:flex-row gap-4">
-                                        <div className="h-20 w-20 rounded-lg border border-site-border bg-[#1A1C1E] flex-shrink-0 overflow-hidden">
+                                        <div className="h-20 w-20 rounded-6 border border-site-border-soft bg-site-raised flex-shrink-0 overflow-hidden">
                                             <img
                                                 src={
                                                     item.product?.imageUrl ||
@@ -387,14 +373,14 @@ export default function OrderDetailsPage() {
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start mb-1">
                                                 <div>
-                                                    <h4 className="font-semibold text-white text-base">
+                                                    <h4 className="font-semibold text-site-text text-sm">
                                                         {item.product?.name
                                                             ? item.productType?.name
                                                                 ? `${item.product.name} - ${item.productType.name}`
                                                                 : item.product.name
                                                             : "Product"}
                                                     </h4>
-                                                    <p className="text-gray-400 text-sm font-medium mt-1">
+                                                    <p className="text-site-muted text-xs font-medium mt-1">
                                                         {t("items.quantity")} {item.quantity}
                                                     </p>
                                                     {item.playerInfo &&
@@ -402,18 +388,18 @@ export default function OrderDetailsPage() {
                                                         getDisplayPlayerInfo(
                                                             item.playerInfo as Record<string, unknown>,
                                                         ).length > 0 && (
-                                                            <div className="mt-3 p-3 bg-[#1A1C1E] border border-site-border rounded-lg text-xs">
-                                                                <p className="text-gray-500 text-[10px] mb-2 font-bold uppercase tracking-wider">
+                                                            <div className="mt-3 p-3 bg-site-raised border border-site-border-soft rounded-6 text-xs">
+                                                                <p className="text-site-dim text-[10px] mb-2 font-bold uppercase tracking-wider">
                                                                     {t("items.account_info")}
                                                                 </p>
                                                                 {getDisplayPlayerInfo(
                                                                     item.playerInfo as Record<string, unknown>,
                                                                 ).map(({ label, value }) => (
                                                                     <div key={label} className="flex gap-2">
-                                                                        <span className="text-gray-400 capitalize font-medium">
+                                                                        <span className="text-site-muted capitalize font-medium">
                                                                             {label}:
                                                                         </span>
-                                                                        <span className="font-mono text-white font-medium">
+                                                                        <span className="font-mono text-site-text font-medium">
                                                                             {value}
                                                                         </span>
                                                                     </div>
@@ -421,7 +407,7 @@ export default function OrderDetailsPage() {
                                                             </div>
                                                         )}
                                                 </div>
-                                                <p className="font-bold text-[var(--site-accent)] text-lg">
+                                                <p className="font-black text-site-text text-lg">
                                                     {formatPrice(item.priceAtPurchase)}
                                                 </p>
                                             </div>
@@ -429,7 +415,7 @@ export default function OrderDetailsPage() {
                                             {/* Delivery Status */}
                                             {deliveryStatus && (
                                                 <div className="mt-3 flex items-center gap-2">
-                                                    <span className="text-sm text-gray-400 font-medium">
+                                                    <span className="text-xs text-site-muted font-medium">
                                                         {t("items.delivery_status")}
                                                     </span>
                                                     {getDeliveryStatusBadge(item.fulfillStatus)}
@@ -440,8 +426,8 @@ export default function OrderDetailsPage() {
                                             {item.fulfillStatus === "COMPLETED" &&
                                                 item.pinCodes &&
                                                 item.pinCodes.length > 0 && (
-                                                    <div className="mt-4 bg-green-500/5 border border-green-500/30/20 rounded-xl p-4">
-                                                        <p className="text-xs text-green-500 uppercase font-bold mb-3 tracking-wider flex items-center gap-2">
+                                                    <div className="mt-4 bg-status-success/5 border border-status-success/20 rounded-8 p-4">
+                                                        <p className="text-[10px] text-status-success uppercase font-bold mb-3 tracking-wider flex items-center gap-2">
                                                             <CheckCircle size={14} />
                                                             {t("items.digital_codes")}
                                                         </p>
@@ -457,17 +443,17 @@ export default function OrderDetailsPage() {
                                                                 return (
                                                                     <div
                                                                         key={idx}
-                                                                        className="bg-[#1A1C1E] p-3 rounded-lg border border-site-border"
+                                                                        className="bg-site-raised p-3 rounded-6 border border-site-border-soft"
                                                                     >
                                                                         {/* card_number from SEAGM */}
                                                                         {codeValue && (
                                                                             <div className="flex items-center gap-3 group mb-2">
-                                                                                <span className="text-xs text-gray-500 min-w-[50px] font-medium">
+                                                                                <span className="text-[10px] text-site-dim min-w-[50px] font-bold uppercase">
                                                                                     {t("items.code_label")}
                                                                                 </span>
-                                                                                <div className="flex-1 flex items-center bg-[#222427] border border-site-border rounded-md overflow-hidden">
+                                                                                <div className="flex-1 flex items-center bg-site-surface border border-site-border-soft rounded-6 overflow-hidden">
                                                                                     <code
-                                                                                        className={`flex-1 px-3 py-2 font-mono text-white text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
+                                                                                        className={`flex-1 px-3 py-2 font-mono text-site-text text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
                                                                                     >
                                                                                         {codeValue}
                                                                                     </code>
@@ -475,7 +461,7 @@ export default function OrderDetailsPage() {
                                                                                         onClick={() =>
                                                                                             toggleCodeVisibility(codeId)
                                                                                         }
-                                                                                        className="p-2.5 text-gray-400 hover:text-white hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        className="p-2.5 text-site-muted hover:text-site-text hover:bg-site-raised transition-colors border-l border-site-border-soft"
                                                                                         title={
                                                                                             isRevealed ? t("items.hide_code") : t("items.show_code")
                                                                                         }
@@ -490,13 +476,13 @@ export default function OrderDetailsPage() {
                                                                                         onClick={() =>
                                                                                             copyToClipboard(codeValue)
                                                                                         }
-                                                                                        className="p-2.5 text-gray-400 hover:text-[var(--site-accent)] hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        className="p-2.5 text-site-muted hover:text-site-accent hover:bg-site-raised transition-colors border-l border-site-border-soft"
                                                                                         title="Copy Code"
                                                                                     >
                                                                                         {copiedCode === codeValue ? (
                                                                                             <Check
                                                                                                 size={16}
-                                                                                                className="text-green-500"
+                                                                                                className="text-status-success"
                                                                                             />
                                                                                         ) : (
                                                                                             <Copy size={16} />
@@ -508,12 +494,12 @@ export default function OrderDetailsPage() {
                                                                         {/* card_pin from SEAGM */}
                                                                         {pinValue && (
                                                                             <div className="flex items-center gap-3 group">
-                                                                                <span className="text-xs text-gray-500 min-w-[50px] font-medium">
+                                                                                <span className="text-[10px] text-site-dim min-w-[50px] font-bold uppercase">
                                                                                     {t("items.pin_label")}
                                                                                 </span>
-                                                                                <div className="flex-1 flex items-center bg-[#222427] border border-site-border rounded-md overflow-hidden">
+                                                                                <div className="flex-1 flex items-center bg-site-surface border border-site-border-soft rounded-6 overflow-hidden">
                                                                                     <code
-                                                                                        className={`flex-1 px-3 py-2 font-mono text-white text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
+                                                                                        className={`flex-1 px-3 py-2 font-mono text-site-text text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
                                                                                     >
                                                                                         {pinValue}
                                                                                     </code>
@@ -521,7 +507,7 @@ export default function OrderDetailsPage() {
                                                                                         onClick={() =>
                                                                                             toggleCodeVisibility(codeId)
                                                                                         }
-                                                                                        className="p-2.5 text-gray-400 hover:text-white hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        className="p-2.5 text-site-muted hover:text-site-text hover:bg-site-raised transition-colors border-l border-site-border-soft"
                                                                                         title={
                                                                                             isRevealed ? "Hide PIN" : "Show PIN"
                                                                                         }
@@ -536,13 +522,13 @@ export default function OrderDetailsPage() {
                                                                                         onClick={() =>
                                                                                             copyToClipboard(pinValue)
                                                                                         }
-                                                                                        className="p-2.5 text-gray-400 hover:text-[var(--site-accent)] hover:bg-[#212328]/5 transition-colors border-l border-site-border"
+                                                                                        className="p-2.5 text-site-muted hover:text-site-accent hover:bg-site-raised transition-colors border-l border-site-border-soft"
                                                                                         title="Copy PIN"
                                                                                     >
                                                                                         {copiedCode === pinValue ? (
                                                                                             <Check
                                                                                                 size={16}
-                                                                                                className="text-green-500"
+                                                                                                className="text-status-success"
                                                                                             />
                                                                                         ) : (
                                                                                             <Copy size={16} />
@@ -553,25 +539,25 @@ export default function OrderDetailsPage() {
                                                                         )}
                                                                         {/* serial number if exists */}
                                                                         {card.serial && (
-                                                                            <div className="flex items-center gap-3 group mt-3 pt-3 border-t border-site-border">
-                                                                                <span className="text-xs text-gray-500 min-w-[50px] font-medium">
+                                                                            <div className="flex items-center gap-3 group mt-3 pt-3 border-t border-site-border-soft">
+                                                                                <span className="text-[10px] text-site-dim min-w-[50px] font-bold uppercase">
                                                                                     {t("items.serial_label")}
                                                                                 </span>
                                                                                 <div className="flex-1 flex items-center justify-between">
-                                                                                    <code className="font-mono text-gray-300 text-xs tracking-wider break-all">
+                                                                                    <code className="font-mono text-site-muted text-xs tracking-wider break-all">
                                                                                         {card.serial}
                                                                                     </code>
                                                                                     <button
                                                                                         onClick={() =>
                                                                                             copyToClipboard(card.serial)
                                                                                         }
-                                                                                        className="p-1.5 text-gray-500 hover:text-[var(--site-accent)] transition-colors rounded-md hover:bg-[#212328]/5"
+                                                                                        className="p-1.5 text-site-dim hover:text-site-accent transition-colors rounded-6 hover:bg-site-raised"
                                                                                         title="Copy Serial"
                                                                                     >
                                                                                         {copiedCode === card.serial ? (
                                                                                             <Check
                                                                                                 size={14}
-                                                                                                className="text-green-500"
+                                                                                                className="text-status-success"
                                                                                             />
                                                                                         ) : (
                                                                                             <Copy size={14} />
@@ -582,19 +568,19 @@ export default function OrderDetailsPage() {
                                                                         )}
                                                                         {/* expiration date if exists */}
                                                                         {card.expired && (
-                                                                            <div className="mt-2 text-xs text-gray-500">
-                                                                                {t("items.expired_label")} <span className="text-gray-400">{card.expired}</span>
+                                                                            <div className="mt-2 text-xs text-site-dim">
+                                                                                {t("items.expired_label")} <span className="text-site-muted">{card.expired}</span>
                                                                             </div>
                                                                         )}
                                                                     </div>
                                                                 );
                                                             })}
                                                         </div>
-                                                        <div className="mt-3 flex items-start gap-2 p-2 bg-blue-500/10 border border-blue-500/20 rounded-md">
+                                                        <div className="mt-3 flex items-start gap-2 p-2 bg-status-info/10 border border-status-info/20 rounded-6">
                                                             <div className="mt-0.5">
-                                                                <AlertCircle size={14} className="text-blue-400" />
+                                                                <AlertCircle size={14} className="text-status-info" />
                                                             </div>
-                                                            <p className="text-xs text-blue-200 leading-relaxed font-medium">
+                                                            <p className="text-xs text-status-info leading-relaxed font-medium">
                                                                 {t("items.usage_hint")}
                                                             </p>
                                                         </div>
@@ -603,8 +589,8 @@ export default function OrderDetailsPage() {
 
                                             {/* Failed Status */}
                                             {item.fulfillStatus === "FAILED" && (
-                                                <div className="mt-4 bg-red-500/10 border border-red-500/30/20 rounded-xl p-4">
-                                                    <p className="text-sm text-red-400 flex items-center gap-2 font-medium">
+                                                <div className="mt-4 bg-status-danger/10 border border-status-danger/20 rounded-8 p-4">
+                                                    <p className="text-sm text-status-danger flex items-center gap-2 font-medium">
                                                         <AlertCircle size={16} />
                                                         {t("items.delivery_failed")}
                                                     </p>
@@ -615,107 +601,94 @@ export default function OrderDetailsPage() {
                                 </div>
                             ))}
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Payment Info */}
-                    <motion.div
-                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
-                            <h3 className="font-bold text-white flex items-center gap-2 text-base">
-                                <CreditCard className="h-5 w-5 text-[var(--site-accent)]" />
+                    <div className="site-card overflow-hidden">
+                        <div className="p-4 border-b border-site-border-soft bg-site-raised">
+                            <h3 className="font-bold text-site-text flex items-center gap-2 text-sm">
+                                <CreditCard className="h-4 w-4 text-site-accent" />
                                 {t("payment.title")}
                             </h3>
                         </div>
 
                         <div className="p-4 space-y-3">
                             <div className="flex justify-between text-sm font-medium">
-                                <span className="text-gray-400">{t("payment.subtotal")}</span>
-                                <span className="text-white">
+                                <span className="text-site-muted">{t("payment.subtotal")}</span>
+                                <span className="text-site-text font-black">
                                     {formatPrice(order.totalAmount)}
                                 </span>
                             </div>
                             {order.discountAmount > 0 && (
                                 <div className="flex justify-between text-sm font-medium">
-                                    <span className="text-gray-400">{t("payment.discount")}</span>
-                                    <span className="text-green-400">
+                                    <span className="text-site-muted">{t("payment.discount")}</span>
+                                    <span className="text-status-success font-black">
                                         -{formatPrice(order.discountAmount)}
                                     </span>
                                 </div>
                             )}
-                            <div className="border-t border-site-border my-3 pt-3 flex justify-between items-center">
-                                <span className="font-bold text-white text-base">
+                            <div className="border-t border-site-border-soft my-3 pt-3 flex justify-between items-center">
+                                <span className="font-bold text-site-text text-sm">
                                     {t("payment.total")}
                                 </span>
-                                <span className="font-black text-xl text-[var(--site-accent)]">
+                                <span className="font-black text-xl text-site-accent">
                                     {formatPrice(order.finalAmount)}
                                 </span>
                             </div>
 
                             {order.payment && (
-                                <div className="bg-[#1A1C1E] border border-site-border rounded-lg p-3 mt-4 text-sm flex items-center gap-3">
-                                    <div className="p-2 bg-[#222427] border border-site-border rounded-lg">
-                                        <CreditCard size={18} className="text-[var(--site-accent)]" />
+                                <div className="bg-site-raised border border-site-border-soft rounded-6 p-3 mt-4 text-sm flex items-center gap-3">
+                                    <div className="p-2 bg-site-surface border border-site-border-soft rounded-6">
+                                        <CreditCard size={18} className="text-site-accent" />
                                     </div>
                                     <div>
-                                        <p className="text-gray-500 text-xs font-semibold uppercase">{t("payment.method")}</p>
-                                        <p className="text-white font-medium">
+                                        <p className="text-site-dim text-[10px] font-bold uppercase">{t("payment.method")}</p>
+                                        <p className="text-site-text font-medium">
                                             {getPaymentMethodDisplay(order.payment.paymentMethod)}
                                         </p>
                                     </div>
                                     <div className="ml-auto">
-                                        <span
-                                            className={`px-2.5 py-1 text-xs font-bold rounded-full border ${order.payment.status === "COMPLETED"
-                                                ? "bg-green-500/10 border-green-500/30/20 text-green-500"
-                                                : order.payment.status === "PENDING"
-                                                    ? "bg-yellow-500/10 border-yellow-500/30/20 text-yellow-500"
-                                                    : "bg-gray-800 border-gray-600 text-gray-300"
-                                                }`}
-                                        >
+                                        <Badge variant={
+                                            order.payment.status === "COMPLETED" ? "success"
+                                                : order.payment.status === "PENDING" ? "warning"
+                                                    : "neutral"
+                                        }>
                                             {order.payment.status === "COMPLETED"
                                                 ? t("payment.status_paid")
                                                 : order.payment.status === "PENDING"
                                                     ? t("payment.status_pending")
                                                     : order.payment.status}
-                                        </span>
+                                        </Badge>
                                     </div>
                                 </div>
                             )}
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
 
                 {/* Sidebar */}
                 <div className="space-y-6">
                     {/* Order Actions */}
                     {order.status === "PENDING" && (
-                        <motion.div
-                            className="bg-[#222427] border border-red-500/30/20 rounded-xl overflow-hidden"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
-                            <div className="p-4 border-b border-red-500/30/20 bg-red-500/5">
-                                <h3 className="font-bold text-red-400 flex items-center gap-2 text-base">
-                                    <AlertCircle className="h-5 w-5" />
+                        <div className="site-card overflow-hidden border-status-danger/20">
+                            <div className="p-4 border-b border-status-danger/20 bg-status-danger/5">
+                                <h3 className="font-bold text-status-danger flex items-center gap-2 text-sm">
+                                    <AlertCircle className="h-4 w-4" />
                                     {t("actions.cancel")}
                                 </h3>
                             </div>
                             <div className="p-4">
-                                <p className="text-sm text-gray-400 mb-4 font-medium">
+                                <p className="text-xs text-site-muted mb-4 font-medium">
                                     {t("actions.cancel_hint")}
                                 </p>
                                 <button
                                     onClick={handleCancelOrder}
                                     disabled={isCancelling}
-                                    className="w-full flex items-center justify-center gap-2 p-3 border border-red-500/30/50 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors text-sm font-bold disabled:opacity-50"
+                                    className="w-full flex items-center justify-center gap-2 p-3 border border-status-danger/30 rounded-6 text-status-danger hover:bg-status-danger/10 transition-colors text-xs font-bold disabled:opacity-50"
                                 >
                                     {isCancelling ? (
                                         <>
-                                            <Loader2 size={16} className="animate-spin" />
+                                            <Loader2 size={16} className="opacity-50" />
                                             {t("actions.cancelling")}
                                         </>
                                     ) : (
@@ -726,119 +699,104 @@ export default function OrderDetailsPage() {
                                     )}
                                 </button>
                             </div>
-                        </motion.div>
+                        </div>
                     )}
 
                     {/* Customer Info */}
-                    <motion.div
-                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
-                            <h3 className="font-bold text-white flex items-center gap-2 text-base">
-                                <User className="h-5 w-5 text-purple-400" />
+                    <div className="site-card overflow-hidden">
+                        <div className="p-4 border-b border-site-border-soft bg-site-raised">
+                            <h3 className="font-bold text-site-text flex items-center gap-2 text-sm">
+                                <User className="h-4 w-4 text-site-accent" />
                                 {t("customer.title")}
                             </h3>
                         </div>
                         <div className="p-4 space-y-4">
                             <div className="flex items-start gap-3">
-                                <div className="mt-0.5 p-2 bg-[#1A1C1E] border border-site-border rounded-lg">
-                                    <User size={16} className="text-purple-400" />
+                                <div className="mt-0.5 p-2 bg-site-raised border border-site-border-soft rounded-6">
+                                    <User size={16} className="text-site-accent" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-500 font-semibold uppercase">{t("customer.username")}</p>
-                                    <p className="text-sm text-white font-medium mt-0.5">
+                                    <p className="text-[10px] text-site-dim font-bold uppercase">{t("customer.username")}</p>
+                                    <p className="text-sm text-site-text font-medium mt-0.5">
                                         {order.user?.username || user?.username || "-"}
                                     </p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="mt-0.5 p-2 bg-[#1A1C1E] border border-site-border rounded-lg">
-                                    <Mail size={16} className="text-purple-400" />
+                                <div className="mt-0.5 p-2 bg-site-raised border border-site-border-soft rounded-6">
+                                    <Mail size={16} className="text-site-accent" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-500 font-semibold uppercase">{t("customer.email")}</p>
-                                    <p className="text-sm text-white font-medium mt-0.5">
+                                    <p className="text-[10px] text-site-dim font-bold uppercase">{t("customer.email")}</p>
+                                    <p className="text-sm text-site-text font-medium mt-0.5">
                                         {order.user?.email || user?.email || "-"}
                                     </p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="mt-0.5 p-2 bg-[#1A1C1E] border border-site-border rounded-lg">
-                                    <Calendar size={16} className="text-purple-400" />
+                                <div className="mt-0.5 p-2 bg-site-raised border border-site-border-soft rounded-6">
+                                    <Calendar size={16} className="text-site-accent" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-500 font-semibold uppercase">{t("customer.date")}</p>
-                                    <p className="text-sm text-white font-medium mt-0.5">
+                                    <p className="text-[10px] text-site-dim font-bold uppercase">{t("customer.date")}</p>
+                                    <p className="text-sm text-site-text font-medium mt-0.5">
                                         {formatDate(order.createdAt)}
                                     </p>
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Delivery Info */}
                     {deliveryStatus && (
-                        <motion.div
-                            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
-                                <h3 className="font-bold text-white flex items-center gap-2 text-base">
-                                    <MapPin className="h-5 w-5 text-green-400" />
+                        <div className="site-card overflow-hidden">
+                            <div className="p-4 border-b border-site-border-soft bg-site-raised">
+                                <h3 className="font-bold text-site-text flex items-center gap-2 text-sm">
+                                    <MapPin className="h-4 w-4 text-site-accent" />
                                     {t("delivery.title")}
                                 </h3>
                             </div>
                             <div className="p-4">
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-400 font-medium">{t("delivery.status_summary")}</span>
+                                        <span className="text-xs text-site-muted font-medium">{t("delivery.status_summary")}</span>
                                         {getDeliveryStatusBadge(deliveryStatus.status)}
                                     </div>
                                     {deliveryStatus.completedAt && (
-                                        <div className="flex justify-between items-center bg-[#1A1C1E] p-3 rounded-lg border border-site-border mt-2">
-                                            <span className="text-xs text-gray-500 font-semibold uppercase">
+                                        <div className="flex justify-between items-center bg-site-raised p-3 rounded-6 border border-site-border-soft mt-2">
+                                            <span className="text-[10px] text-site-dim font-bold uppercase">
                                                 {t("delivery.completed_at")}
                                             </span>
-                                            <span className="text-sm text-white font-medium">
+                                            <span className="text-sm text-site-text font-medium">
                                                 {formatDate(deliveryStatus.completedAt)}
                                             </span>
                                         </div>
                                     )}
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     )}
 
                     {/* Quick Actions */}
-                    <motion.div
-                        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        <div className="p-4 border-b border-site-border bg-[#1A1C1E]">
-                            <h3 className="font-bold text-white text-base">{t("actions.title")}</h3>
+                    <div className="site-card overflow-hidden">
+                        <div className="p-4 border-b border-site-border-soft bg-site-raised">
+                            <h3 className="font-bold text-site-text text-sm">{t("actions.title")}</h3>
                         </div>
                         <div className="p-4 space-y-3">
                             <Link
                                 href="/support"
-                                className="w-full flex items-center gap-2 p-3 bg-[#1A1C1E] hover:bg-[#212328]/5 border border-site-border rounded-lg text-white transition-colors text-sm font-medium focus:border-[var(--site-accent)] focus:outline-none"
+                                className="w-full flex items-center gap-2 p-3 bg-site-raised hover:bg-site-surface border border-site-border-soft rounded-6 text-site-text transition-colors text-xs font-medium focus:border-site-accent focus:outline-none"
                             >
-                                <AlertCircle size={18} className="text-gray-400" />
+                                <AlertCircle size={18} className="text-site-muted" />
                                 {t("actions.report_issue")}
                             </Link>
                         </div>
-                    </motion.div>
+                    </div>
 
                     <div className="text-center mt-6">
                         <Link
                             href="/support"
-                            className="text-sm text-gray-400 hover:text-white underline hover:no-underline font-medium transition-colors"
+                            className="text-xs text-site-muted hover:text-site-text underline hover:no-underline font-medium transition-colors"
                         >
                             {t("actions.need_help")}
                         </Link>

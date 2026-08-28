@@ -13,6 +13,7 @@ module.exports = {
       colors: {
         site: {
           bg: "var(--site-bg)",
+          deep: "var(--site-deep)",
           surface: "var(--site-surface)",
           raised: "var(--site-raised)",
           border: "var(--site-border)",

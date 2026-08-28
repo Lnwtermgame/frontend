@@ -1,13 +1,11 @@
 "use client";
 
-import { Menu, Sun, Moon } from "lucide-react";
+import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useAdminTheme } from "./AdminThemeProvider";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/context/auth-context";
 
 export function AdminTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
-  const { theme, toggleTheme } = useAdminTheme();
   const pathname = usePathname();
   const t = useTranslations("Admin");
   const { user } = useAuth();
@@ -36,14 +34,6 @@ export function AdminTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
         )}
       </div>
       <div className="flex-1" />
-      <button
-        onClick={toggleTheme}
-        className="p-2 rounded-lg text-site-muted hover:bg-site-raised hover:text-site-text transition-colors"
-        aria-label={theme === "dark" ? t("switch_light") : t("switch_dark")}
-        title={theme === "dark" ? t("switch_light") : t("switch_dark")}
-      >
-        {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-      </button>
       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-semantic-violet to-semantic-blue flex items-center justify-center text-[10px] font-bold text-white uppercase">
         {user?.username?.charAt(0) ?? "A"}
       </div>

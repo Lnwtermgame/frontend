@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { useTheme, type Theme } from "@/lib/hooks/use-theme";
 
 const ThemeContext = createContext<{
@@ -11,23 +11,12 @@ const ThemeContext = createContext<{
 /**
  * Wraps the admin area.
  *
- * - Calls useTheme() ONCE (the single source of truth for data-theme).
- * - Exposes theme + toggleTheme via context so AdminTopbar can read it
- *   WITHOUT calling useTheme() again (which would create a second state
- *   instance and cause data-theme write races → flicker).
- * - On unmount: resets <html> to dark so the storefront never inherits
- *   admin's light theme.
+ * Dark-only: no longer writes any theme attribute to the DOM. Kept as a context
+ * provider so AdminTopbar (and any future admin component) can read the
+ * theme value without importing the hook directly.
  */
 export function AdminThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme, toggleTheme } = useTheme();
-
-  useEffect(() => {
-    return () => {
-      if (typeof document !== "undefined") {
-        document.documentElement.dataset.theme = "dark";
-      }
-    };
-  }, []);
 
   const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
 

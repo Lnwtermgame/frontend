@@ -8,11 +8,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark-first marketplace contract. Surfaces stay neutral; color communicates state. */
-:root,
-:root[data-theme="dark"] {
+/* Dark-only marketplace contract. Surfaces stay neutral; color communicates state. */
+:root {
   color-scheme: dark;
   --site-bg: #111315;
+  --site-deep: #0d0f10;
   --site-surface: #191c1f;
   --site-raised: #22262a;
   --site-border: #30363b;
@@ -27,25 +27,6 @@
   --status-success: #63c995;
   --status-warning: #e5b566;
   --status-danger: #e47c86;
-}
-
-:root[data-theme="light"] {
-  color-scheme: light;
-  --site-bg: #f7f9f8;
-  --site-surface: #ffffff;
-  --site-raised: #eef2f1;
-  --site-border: #d9e1df;
-  --site-border-soft: #e7edeb;
-  --site-accent: #187f7b;
-  --site-accent-hover: #126965;
-  --site-selection-bg: rgba(24, 127, 123, 0.18);
-  --site-text: #17201f;
-  --site-muted: #53615f;
-  --site-dim: #7a8986;
-  --status-info: #2c66a8;
-  --status-success: #18764f;
-  --status-warning: #8c5d16;
-  --status-danger: #b54450;
 }
 
 @layer base {
@@ -80,56 +61,6 @@
     @apply bg-site-accent;
   }
 
-  /* Keep legacy page utilities readable while screens migrate to the contract. */
-  :root[data-theme="dark"] .text-black,
-  :root[data-theme="dark"] .text-gray-900,
-  :root[data-theme="dark"] .text-gray-800,
-  :root[data-theme="dark"] .text-slate-900,
-  :root[data-theme="dark"] .text-slate-800 { color: var(--site-text) !important; }
-
-  :root[data-theme="dark"] .text-gray-700,
-  :root[data-theme="dark"] .text-slate-700 { color: #d8e0df !important; }
-
-  :root[data-theme="dark"] .text-gray-600,
-  :root[data-theme="dark"] .text-gray-500,
-  :root[data-theme="dark"] .text-gray-400,
-  :root[data-theme="dark"] .text-slate-600,
-  :root[data-theme="dark"] .text-slate-500 { color: var(--site-muted) !important; }
-
-  :root[data-theme="dark"] .bg-white,
-  :root[data-theme="dark"] .bg-gray-50,
-  :root[data-theme="dark"] .bg-gray-100,
-  :root[data-theme="dark"] .bg-slate-50,
-  :root[data-theme="dark"] .bg-slate-100 { background-color: var(--site-surface) !important; }
-
-  :root[data-theme="dark"] .bg-gray-200 { background-color: var(--site-raised) !important; }
-
-  :root[data-theme="dark"] .bg-gray-900,
-  :root[data-theme="dark"] .bg-gray-800,
-  :root[data-theme="dark"] .bg-slate-900,
-  :root[data-theme="dark"] .bg-slate-800 { background-color: var(--site-bg) !important; }
-
-  :root[data-theme="light"] .text-white { color: var(--site-text) !important; }
-  :root[data-theme="light"] .text-gray-100,
-  :root[data-theme="light"] .text-gray-200,
-  :root[data-theme="light"] .text-gray-300 { color: var(--site-muted) !important; }
-  :root[data-theme="light"] .bg-white { background-color: var(--site-surface) !important; }
-  :root[data-theme="light"] .bg-white\/5,
-  :root[data-theme="light"] .bg-white\/10,
-  :root[data-theme="light"] .bg-white\/20 { background-color: var(--site-raised) !important; }
-  :root[data-theme="light"] .border-white,
-  :root[data-theme="light"] .border-white\/5,
-  :root[data-theme="light"] .border-white\/10,
-  :root[data-theme="light"] .border-white\/20,
-  :root[data-theme="light"] .border-white\/30,
-  :root[data-theme="light"] .border-white\/40 { border-color: var(--site-border) !important; }
-
-  :root[data-theme="dark"] .border-black,
-  :root[data-theme="dark"] .border-gray-200,
-  :root[data-theme="dark"] .border-gray-300,
-  :root[data-theme="dark"] .border-slate-200,
-  :root[data-theme="dark"] .border-slate-300 { border-color: var(--site-border) !important; }
-
   ::selection {
     background-color: var(--site-selection-bg);
     color: var(--site-text);
@@ -142,15 +73,15 @@
   }
 
   .site-card {
-    @apply bg-site-surface border border-site-border rounded-12;
+    @apply bg-site-surface border border-site-border-soft rounded-8;
   }
 
   .site-btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-site-accent hover:bg-site-accent-hover text-site-bg text-sm font-semibold rounded-8 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-site-accent hover:bg-site-accent-hover text-site-bg text-sm font-semibold rounded-6 transition-colors;
   }
 
   .site-input {
-    @apply w-full h-10 px-3 bg-site-surface border border-site-border rounded-6 text-sm text-site-text placeholder-site-dim transition-colors focus:outline-none focus:border-site-accent focus:ring-2 focus:ring-site-accent/20;
+    @apply w-full h-10 px-3 bg-site-bg border border-site-border-soft rounded-6 text-sm text-site-text placeholder-site-dim transition-colors focus:outline-none focus:border-site-accent focus:ring-2 focus:ring-site-accent/20;
   }
 
   .site-heading {

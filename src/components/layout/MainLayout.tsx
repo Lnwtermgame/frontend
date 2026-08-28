@@ -2,8 +2,9 @@
 
 import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import Navbar from "./Navbar";
-import FooterNew from "./FooterNew";
+import { UtilityBar } from "./UtilityBar";
+import MainNav from "./MainNav";
+import Footer from "./Footer";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 interface MainLayoutProps {
@@ -41,7 +42,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <UtilityBar />
+      <MainNav />
       <main className="flex-1">
         <div className="site-container py-6">
           <Suspense
@@ -55,7 +57,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           </Suspense>
         </div>
       </main>
-      <FooterNew />
+      <Footer />
     </div>
   );
 }

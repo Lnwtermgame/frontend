@@ -15,7 +15,7 @@ const paymentMethods = [
     { key: "TrueMoney", label: "TrueMoney", icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/TrueMoney.png" },
 ];
 
-export default function FooterNew() {
+export default function Footer() {
     const t = useTranslations();
     const locale = useLocale();
     const currentLang = localeConfig[locale] || localeConfig.th;
@@ -39,29 +39,29 @@ export default function FooterNew() {
     const facebookUrl = settings?.social?.facebookUrl || null;
 
     return (
-        <footer className="bg-[#141517] text-gray-400 py-12 font-sans w-full">
+        <footer className="bg-site-deep border-t border-site-border-soft text-site-muted py-10 font-sans w-full">
             <div className="site-container">
 
                 {/* Top Section: Payment Logos & Language */}
-                <div className="flex flex-col md:flex-row justify-between items-center pb-8 border-b border-[#33353b] mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-center pb-8 border-b border-site-border-soft mb-8">
                     <div className="flex flex-wrap gap-3 items-center">
                         {paymentMethods.map(({ key, label, icon }) => (
                             <div
                                 key={key}
-                                className="w-[58px] h-[58px] rounded-full shadow-sm hover:opacity-80 transition-opacity cursor-pointer overflow-hidden bg-white"
+                                className="w-10 h-10 rounded-6 bg-white overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
                                 title={label}
                             >
                                 <img
                                     src={icon}
                                     alt={label}
-                                    width={58}
-                                    height={58}
+                                    width={40}
+                                    height={40}
                                     className="w-full h-full object-cover"
                                 />
                             </div>
                         ))}
                     </div>
-                    <div className="mt-4 md:mt-0 flex items-center gap-2 cursor-pointer text-white hover:text-site-accent transition-colors">
+                    <div className="mt-4 md:mt-0 flex items-center gap-2 cursor-pointer text-site-text hover:text-site-accent transition-colors">
                         <img src={currentLang.flag} alt={currentLang.code} className="w-[18px] rounded-[2px]" />
                         <span className="text-[13px] font-bold">{currentLang.label}</span>
                     </div>
@@ -73,30 +73,30 @@ export default function FooterNew() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:w-3/4">
                         {/* Column 1 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-white font-bold text-[14px] tracking-wide mb-1 uppercase">LNWTERMGAME</h3>
-                            <Link href="/about" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.about_us")}</Link>
-                            <Link href="/contact" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.contact_us")}</Link>
+                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">LNWTERMGAME</h3>
+                            <Link href="/about" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.about_us")}</Link>
+                            <Link href="/contact" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.contact_us")}</Link>
                         </div>
 
                         {/* Column 2 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-white font-bold text-[14px] tracking-wide mb-1">{t("Footer.customer")}</h3>
-                            <Link href="/refund" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.refund_policy")}</Link>
-                            <Link href="/privacy" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
-                            <Link href="/payment-issues" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.payment_issues")}</Link>
+                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">{t("Footer.customer")}</h3>
+                            <Link href="/refund" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.refund_policy")}</Link>
+                            <Link href="/privacy" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
+                            <Link href="/payment-issues" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.payment_issues")}</Link>
                         </div>
 
                         {/* Column 3 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-white font-bold text-[14px] tracking-wide mb-1">{t("Footer.policies")}</h3>
-                            <Link href="/terms" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.terms_of_service")}</Link>
-                            <Link href="/privacy" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
+                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">{t("Footer.policies")}</h3>
+                            <Link href="/terms" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.terms_of_service")}</Link>
+                            <Link href="/privacy" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
                         </div>
 
                         {/* Column 4 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-white font-bold text-[14px] tracking-wide mb-1">{t("Footer.services")}</h3>
-                            <Link href="/support" className="text-[13px] text-white hover:text-site-accent transition-colors">{t("Footer.features.support")}</Link>
+                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">{t("Footer.services")}</h3>
+                            <Link href="/support" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.features.support")}</Link>
                         </div>
                     </div>
 
@@ -105,7 +105,7 @@ export default function FooterNew() {
                         {/* Facebook Page Plugin */}
                         {facebookUrl && (
                             <div className="w-full max-w-[280px] flex flex-col items-start lg:items-end">
-                                <div className="bg-white rounded-[6px] shadow-sm border border-[#33353b]/50 overflow-hidden w-full">
+                                <div className="bg-white rounded-6 border border-site-border-soft overflow-hidden w-full">
                                     <iframe
                                         src={`https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(facebookUrl)}&tabs=&width=280&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false`}
                                         width="100%"
@@ -124,7 +124,7 @@ export default function FooterNew() {
                         {/* Social Links Row */}
                         {socialLinks.length > 0 && (
                             <div className="flex items-center gap-3 mt-6 justify-end">
-                                <span className="text-white text-[13px] font-bold mr-1">{t("Footer.contact_us")}</span>
+                                <span className="text-site-text text-[13px] font-bold mr-1">{t("Footer.contact_us")}</span>
                                 {socialLinks.map(({ url, label }) => (
                                     <SocialIcon
                                         key={label}
@@ -134,7 +134,7 @@ export default function FooterNew() {
                                         title={label}
                                         style={{ width: 36, height: 36 }}
                                         bgColor={socialBrandColors[label] || "#212328"}
-                                        className="!transition-all !duration-200 hover:!opacity-80 hover:!scale-110"
+                                        className="!transition-all !duration-200 hover:!opacity-80"
                                     />
                                 ))}
                             </div>
@@ -143,7 +143,7 @@ export default function FooterNew() {
                 </div>
 
                 {/* Bottom Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center py-6 border-t border-[#33353b] mt-8 text-[12px] text-gray-500">
+                <div className="flex flex-col md:flex-row justify-between items-center py-6 border-t border-site-border-soft mt-8 text-[11px] text-site-dim">
                     <div className="flex flex-col gap-1 mb-4 md:mb-0">
                         {logoUrl && (
                             <img
@@ -156,18 +156,18 @@ export default function FooterNew() {
 
                     <div className="flex flex-col text-center md:text-left gap-1 mt-4 md:mt-0">
                         <p>{t("Footer.payment_inquiry")}</p>
-                        <a href="mailto:contact@lnwtermgame.com" className="text-white hover:text-[#00a3ff]">contact@lnwtermgame.com</a>
+                        <a href="mailto:contact@lnwtermgame.com" className="text-site-text hover:text-site-accent transition-colors">contact@lnwtermgame.com</a>
                     </div>
 
                     <div className="flex flex-col text-center md:text-left gap-1 mt-4 md:mt-0">
                         <p>{t("Footer.sale_inquiry")}</p>
-                        <a href="mailto:sale@lnwtermgame.com" className="text-white hover:text-[#00a3ff]">sale@lnwtermgame.com</a>
+                        <a href="mailto:sale@lnwtermgame.com" className="text-site-text hover:text-site-accent transition-colors">sale@lnwtermgame.com</a>
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-gray-600 mt-6 pb-4">
+                <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-site-dim mt-6 pb-4">
                     <p>{t("Footer.copyright_notice")}</p>
-                    <p className="mt-2 md:mt-0 whitespace-nowrap text-[#00a3ff] font-bold">©2026 Copyright LNWTERMGAME</p>
+                    <p className="mt-2 md:mt-0 whitespace-nowrap text-site-accent font-bold">&copy;2026 Copyright LNWTERMGAME</p>
                 </div>
 
             </div>

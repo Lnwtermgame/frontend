@@ -23,8 +23,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 const categoryColors: Record<string, string> = {
   general: "bg-site-raised text-site-muted",
   promotion: "bg-site-accent/10 text-site-accent",
-  update: "bg-site-accent/10 text-site-accent",
-  event: "bg-site-accent/10 text-site-accent",
+  update: "bg-status-info/15 text-status-info",
+  event: "bg-status-warning/15 text-status-warning",
 };
 
 const markdownSchema = {

@@ -187,7 +187,7 @@ export default function SupportPage() {
                   <Link
                     key={article.id}
                     href={`/support/faq`}
-                    className="site-card p-4 flex justify-between items-center group hover:border-site-accent transition-colors"
+                    className="site-card p-4 flex justify-between items-center group hover:border-site-border transition-colors"
                   >
                     <span className="text-site-text text-sm line-clamp-1 flex-1">{article.title}</span>
                     <div className="flex items-center gap-2 ml-2 shrink-0">

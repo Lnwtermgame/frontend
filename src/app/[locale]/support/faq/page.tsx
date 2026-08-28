@@ -381,6 +381,7 @@ export default function FaqPage() {
                         expandedArticle === article.id ? null : article.id,
                       )
                     }
+                    aria-expanded={expandedArticle === article.id}
                     className="w-full text-left p-5 font-black text-white focus:outline-none flex justify-between items-center uppercase text-sm"
                   >
                     <div className="flex items-center gap-3">

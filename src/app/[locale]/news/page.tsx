@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Newspaper, Calendar, Eye, Loader2 } from "lucide-react";
+import { Newspaper, Calendar, Eye } from "lucide-react";
 import { cmsApi, NewsArticleListItem } from "@/lib/services";
 import { useTranslations } from "next-intl";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -12,8 +12,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 const categoryColors: Record<string, string> = {
   general: "bg-site-raised text-site-muted",
   promotion: "bg-site-accent/10 text-site-accent",
-  update: "bg-site-accent/10 text-site-accent",
-  event: "bg-site-accent/10 text-site-accent",
+  update: "bg-status-info/15 text-status-info",
+  event: "bg-status-warning/15 text-status-warning",
 };
 
 export default function NewsPage() {

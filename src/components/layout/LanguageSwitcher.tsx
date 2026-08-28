@@ -55,7 +55,7 @@ export function LanguageSwitcher({
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    setMounted(true);
+    const id = requestAnimationFrame(() => setMounted(true));
     function handleClickOutside(event: MouseEvent) {
       if (
         containerRef.current &&
@@ -65,7 +65,10 @@ export function LanguageSwitcher({
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      cancelAnimationFrame(id);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleLanguageChange = (newLocale: string) => {

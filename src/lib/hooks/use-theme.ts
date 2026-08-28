@@ -37,7 +37,8 @@ export function useTheme() {
   useEffect(() => {
     if (!isHydrated) return;
     if (stored && stored !== theme) {
-      setThemeState(stored);
+      const id = requestAnimationFrame(() => setThemeState(stored));
+      return () => cancelAnimationFrame(id);
     }
   }, [isHydrated, stored, theme]);
 

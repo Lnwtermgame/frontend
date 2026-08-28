@@ -980,7 +980,7 @@
     "subtitle": "아래 주제를 선택하거나 고객센터에 직접 문의하세요.",
     "title": "도움말 센터",
     "urgent_help": {
-      "description": "긴급한 도움이 필요하시면 라이브 채팅 또는 Line으로 문의하세요.",
+      "description": "긴급한 도움이 필요하면 LINE 또는 지원 티켓으로 문의해 주세요.",
       "title": "긴급 지원"
     },
     "visit": "보기",
@@ -1069,9 +1069,7 @@
       "필수 쿠키 (기본 웹사이트 기능에 필요)",
       "분석 쿠키 (플랫폼 개선에 사용)"
     ],
-    "noTawkItem": "라이브 채팅이 현재 비활성화되어 있습니다.",
     "privacy": "개인정보 처리방침",
-    "tawkItem": "라이브 채팅 쿠키 (Tawk.to)를 통한 빠른 고객 지원.",
     "title": "⚙️ 쿠키 설정"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "언제든지 도움을 드릴 준비가 되어 있습니다.",
       "delivery": "빠른 배송"
     },
-    "live_chat": "라이브 채팅",
+    "support_tickets": "고객센터 티켓",
     "payment_channels": "결제 수단",
     "privacy_policy": "개인정보 및 쿠키",
     "quick_links": "바로가기",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

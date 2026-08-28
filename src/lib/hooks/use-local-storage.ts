@@ -40,8 +40,11 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   useEffect(() => {
     if (!isInitialized) {
       const value = getStorageValue(key, initialValue);
-      setStoredValue(value);
-      setIsInitialized(true);
+      const id = requestAnimationFrame(() => {
+        setStoredValue(value);
+        setIsInitialized(true);
+      });
+      return () => cancelAnimationFrame(id);
     }
   }, [key, initialValue, isInitialized]);
 

@@ -944,10 +944,6 @@ function EmailLogsSection() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    fetchLogs();
-  }, [page]);
-
   const fetchLogs = async () => {
     setIsLoading(true);
     try {
@@ -963,6 +959,11 @@ function EmailLogsSection() {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    const id = setTimeout(() => fetchLogs(), 0);
+    return () => clearTimeout(id);
+  }, [page]);
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
@@ -1093,6 +1094,36 @@ const statColorClasses = {
 };
 
 // Email Branding Section Component
+function ColorInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div>
+      <label className="block text-xs font-bold mb-1">{label}</label>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-8 h-8 border border-white/5 rounded-xl cursor-pointer"
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-xs font-mono"
+        />
+      </div>
+    </div>
+  );
+}
+
 function EmailBrandingSection({
   branding,
   onSave,
@@ -1107,7 +1138,11 @@ function EmailBrandingSection({
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
   useEffect(() => {
-    if (branding) setForm(branding);
+    if (branding) {
+      // Defer to avoid cascading render (sync setState in effect)
+      const id = requestAnimationFrame(() => setForm(branding));
+      return () => cancelAnimationFrame(id);
+    }
   }, [branding]);
 
   const update = (key: keyof EmailBranding, value: any) => {
@@ -1148,34 +1183,6 @@ function EmailBrandingSection({
     setIsLoadingPreview(false);
   };
 
-  const ColorInput = ({
-    label,
-    value,
-    field,
-  }: {
-    label: string;
-    value: string;
-    field: keyof EmailBranding;
-  }) => (
-    <div>
-      <label className="block text-xs font-bold mb-1">{label}</label>
-      <div className="flex items-center gap-2">
-        <input
-          type="color"
-          value={value}
-          onChange={(e) => update(field, e.target.value)}
-          className="w-8 h-8 border border-white/5 rounded-xl cursor-pointer"
-        />
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => update(field, e.target.value)}
-          className="flex-1 px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-xs font-mono"
-        />
-      </div>
-    </div>
-  );
-
   return (
     <div className="space-y-4">
       {/* Logo & Branding */}
@@ -1193,7 +1200,7 @@ function EmailBrandingSection({
               value={form.logoUrl || ""}
               onChange={(e) => update("logoUrl", e.target.value || null)}
               placeholder="https://example.com/logo.png"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
             {form.logoUrl && (
               <div className="mt-2 p-3 bg-site-surface border border-white/5 rounded-xl border-white/5 flex items-center justify-center">
@@ -1221,7 +1228,7 @@ function EmailBrandingSection({
                 type="text"
                 value={form.siteName || ""}
                 onChange={(e) => update("siteName", e.target.value)}
-                className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+                className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -1235,7 +1242,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoWidth", parseInt(e.target.value))
                   }
-                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
                 />
               </div>
               <div>
@@ -1248,7 +1255,7 @@ function EmailBrandingSection({
                   onChange={(e) =>
                     update("logoHeight", parseInt(e.target.value))
                   }
-                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+                  className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
                 />
               </div>
             </div>
@@ -1276,27 +1283,27 @@ function EmailBrandingSection({
           <ColorInput
             label="สีหลัก"
             value={form.primaryColor || "#6366f1"}
-            field="primaryColor"
+            onChange={(v) => update("primaryColor", v)}
           />
           <ColorInput
             label="สีรอง"
             value={form.secondaryColor || "#8b5cf6"}
-            field="secondaryColor"
+            onChange={(v) => update("secondaryColor", v)}
           />
           <ColorInput
             label="สีพื้นหลัง"
             value={form.backgroundColor || "#f3f4f6"}
-            field="backgroundColor"
+            onChange={(v) => update("backgroundColor", v)}
           />
           <ColorInput
             label="สีข้อความ"
             value={form.textColor || "#374151"}
-            field="textColor"
+            onChange={(v) => update("textColor", v)}
           />
           <ColorInput
             label="สีลิงก์"
             value={form.linkColor || "#6366f1"}
-            field="linkColor"
+            onChange={(v) => update("linkColor", v)}
           />
         </div>
       </div>
@@ -1309,12 +1316,12 @@ function EmailBrandingSection({
           <ColorInput
             label="สีพื้นหลัง Header"
             value={form.headerBgColor || "#6366f1"}
-            field="headerBgColor"
+            onChange={(v) => update("headerBgColor", v)}
           />
           <ColorInput
             label="สีข้อความ Header"
             value={form.headerTextColor || "#ffffff"}
-            field="headerTextColor"
+            onChange={(v) => update("headerTextColor", v)}
           />
           <div className="md:col-span-2">
             <label className="block text-xs font-bold mb-1">
@@ -1325,7 +1332,7 @@ function EmailBrandingSection({
               value={form.headerText || ""}
               onChange={(e) => update("headerText", e.target.value || null)}
               placeholder="เช่น Lnwtermgame - บริการเติมเกมออนไลน์"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1379,12 +1386,12 @@ function EmailBrandingSection({
           <ColorInput
             label="สีพื้นหลัง Footer"
             value={form.footerBgColor || "#f9fafb"}
-            field="footerBgColor"
+            onChange={(v) => update("footerBgColor", v)}
           />
           <ColorInput
             label="สีข้อความ Footer"
             value={form.footerTextColor || "#6b7280"}
-            field="footerTextColor"
+            onChange={(v) => update("footerTextColor", v)}
           />
           <div>
             <label className="block text-xs font-bold mb-1">
@@ -1395,7 +1402,7 @@ function EmailBrandingSection({
               value={form.footerText || ""}
               onChange={(e) => update("footerText", e.target.value || null)}
               placeholder="ข้อความแสดงใน Footer"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1407,7 +1414,7 @@ function EmailBrandingSection({
               value={form.copyrightText || ""}
               onChange={(e) => update("copyrightText", e.target.value || null)}
               placeholder={`© ${new Date().getFullYear()} Lnwtermgame. All rights reserved.`}
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1452,7 +1459,7 @@ function EmailBrandingSection({
               value={form.facebookUrl || ""}
               onChange={(e) => update("facebookUrl", e.target.value || null)}
               placeholder="https://facebook.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1462,7 +1469,7 @@ function EmailBrandingSection({
               value={form.lineUrl || ""}
               onChange={(e) => update("lineUrl", e.target.value || null)}
               placeholder="https://line.me/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1472,7 +1479,7 @@ function EmailBrandingSection({
               value={form.discordUrl || ""}
               onChange={(e) => update("discordUrl", e.target.value || null)}
               placeholder="https://discord.gg/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1482,7 +1489,7 @@ function EmailBrandingSection({
               value={form.twitterUrl || ""}
               onChange={(e) => update("twitterUrl", e.target.value || null)}
               placeholder="https://twitter.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1492,7 +1499,7 @@ function EmailBrandingSection({
               value={form.youtubeUrl || ""}
               onChange={(e) => update("youtubeUrl", e.target.value || null)}
               placeholder="https://youtube.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1502,7 +1509,7 @@ function EmailBrandingSection({
               value={form.instagramUrl || ""}
               onChange={(e) => update("instagramUrl", e.target.value || null)}
               placeholder="https://instagram.com/..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1519,7 +1526,7 @@ function EmailBrandingSection({
               value={form.supportEmail || ""}
               onChange={(e) => update("supportEmail", e.target.value || null)}
               placeholder="support@example.com"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1531,7 +1538,7 @@ function EmailBrandingSection({
               value={form.supportPhone || ""}
               onChange={(e) => update("supportPhone", e.target.value || null)}
               placeholder="02-xxx-xxxx"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1541,7 +1548,7 @@ function EmailBrandingSection({
               value={form.websiteUrl || ""}
               onChange={(e) => update("websiteUrl", e.target.value || null)}
               placeholder="https://www.example.com"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1553,7 +1560,7 @@ function EmailBrandingSection({
               value={form.unsubscribeUrl || ""}
               onChange={(e) => update("unsubscribeUrl", e.target.value || null)}
               placeholder="https://www.example.com/unsubscribe"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>
@@ -1568,7 +1575,7 @@ function EmailBrandingSection({
               value={form.companyName || ""}
               onChange={(e) => update("companyName", e.target.value || null)}
               placeholder="บริษัท ตัวอย่าง จำกัด"
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
           <div>
@@ -1580,7 +1587,7 @@ function EmailBrandingSection({
               value={form.companyAddress || ""}
               onChange={(e) => update("companyAddress", e.target.value || null)}
               placeholder="123 ถนนตัวอย่าง แขวง/ตำบล..."
-              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none text-sm"
+              className="w-full px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 focus:border-site-accent focus:outline-none text-sm"
             />
           </div>
         </div>

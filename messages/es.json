@@ -980,7 +980,7 @@
     "subtitle": "Elige un tema o contacta a nuestro equipo directamente.",
     "title": "Centro de ayuda",
     "urgent_help": {
-      "description": "Para asistencia inmediata, contacta por Live Chat o Line.",
+      "description": "Para asistencia inmediata, contacta a nuestro equipo de soporte por LINE o envía un ticket de soporte.",
       "title": "Soporte urgente"
     },
     "visit": "Ver",
@@ -1069,9 +1069,7 @@
       "Cookies esenciales (necesarias para la funcionalidad básica)",
       "Cookies de análisis (para medir y mejorar nuestra plataforma)"
     ],
-    "noTawkItem": "El soporte por Live Chat está deshabilitado.",
     "privacy": "Política de privacidad",
-    "tawkItem": "Cookies de Live Chat (Tawk.to) para interacciones de soporte rápidas.",
     "title": "⚙️ Preferencias de cookies"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "Nuestro equipo está disponible las 24 horas.",
       "delivery": "Entrega rápida"
     },
-    "live_chat": "Chat en vivo",
+    "support_tickets": "Tickets de soporte",
     "payment_channels": "Métodos de pago",
     "privacy_policy": "Privacidad y cookies",
     "quick_links": "Enlaces rápidos",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

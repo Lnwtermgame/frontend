@@ -1,7 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const MESSAGES_DIR = path.join(__dirname, 'messages');
+const MESSAGES_DIR = path.join(__dirname, '../messages');
+
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
 
 // Helper to set nested object properties
 function setNestedValue(obj, pathStr, value) {
@@ -9,12 +13,68 @@ function setNestedValue(obj, pathStr, value) {
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
-    if (current[part] === undefined) {
+    if (!isPlainObject(current[part])) {
       current[part] = {};
     }
     current = current[part];
   }
-  current[parts[parts.length - 1]] = value;
+
+  const leaf = parts[parts.length - 1];
+  if (isPlainObject(current[leaf]) && !isPlainObject(value)) return;
+  current[leaf] = value;
+}
+
+function deepMerge(existing, updates) {
+  const merged = isPlainObject(existing) ? { ...existing } : {};
+
+  for (const [key, update] of Object.entries(updates)) {
+    const current = merged[key];
+    if (isPlainObject(current) && isPlainObject(update)) {
+      merged[key] = deepMerge(current, update);
+    } else if (isPlainObject(current) && !isPlainObject(update)) {
+      continue;
+    } else if (isPlainObject(update)) {
+      merged[key] = deepMerge({}, update);
+    } else {
+      merged[key] = update;
+    }
+  }
+
+  return merged;
+}
+
+function loadLocale(locale) {
+  const filePath = path.join(MESSAGES_DIR, `${locale}.json`);
+  if (!fs.existsSync(filePath)) return null;
+
+  const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  if (!isPlainObject(parsed)) {
+    throw new Error(`Locale ${locale}.json must contain a JSON object`);
+  }
+  return parsed;
+}
+
+function loadExistingLocales() {
+  const existingLocales = {};
+  if (!fs.existsSync(MESSAGES_DIR)) return existingLocales;
+
+  for (const fileName of fs.readdirSync(MESSAGES_DIR)) {
+    if (!fileName.endsWith('.json')) continue;
+    const locale = path.basename(fileName, '.json');
+    existingLocales[locale] = loadLocale(locale);
+  }
+  return existingLocales;
+}
+
+function writeLocale(locale, messages) {
+  if (!fs.existsSync(MESSAGES_DIR)) {
+    fs.mkdirSync(MESSAGES_DIR, { recursive: true });
+  }
+  fs.writeFileSync(
+    path.join(MESSAGES_DIR, `${locale}.json`),
+    JSON.stringify(messages, null, 2) + '\n',
+    'utf8',
+  );
 }
 
 // Function to sort keys alphabetically
@@ -690,8 +750,6 @@ const en = {
   "no_results_desc": "We couldn't find anything matching your criteria.",
   "ariaClose": "Close",
   "description": "Description",
-  "tawkItem": "Live Chat",
-  "noTawkItem": "Live Chat Unavailable",
   "acknowledge": "I Understand",
   "privacy": "Privacy Policy",
   "nav.main": "Main",
@@ -720,6 +778,7 @@ const en = {
   "logout": "Log Out",
   "Footer.language_thai": "Thai",
   "Footer.contact_us": "Contact Us",
+  "Footer.support_tickets": "Support Tickets",
   "Footer.partners": "Partners",
   "Footer.customer": "Customer Support",
   "Header.dealers": "Dealers",
@@ -1447,8 +1506,6 @@ const th = {
   "no_results_desc": "ไม่พบสิ่งที่ตรงกับเงื่อนไขที่คุณเลือก",
   "ariaClose": "ปิด",
   "description": "คำอธิบาย",
-  "tawkItem": "แชทออนไลน์ (Live Chat)",
-  "noTawkItem": "แชทออฟไลน์",
   "acknowledge": "ฉันรับทราบ",
   "privacy": "นโยบายความเป็นส่วนตัว",
   "nav.main": "หน้าหลัก",
@@ -1477,6 +1534,7 @@ const th = {
   "logout": "ออกจากระบบ",
   "Footer.language_thai": "ภาษาไทย",
   "Footer.contact_us": "ติดต่อเรา",
+  "Footer.support_tickets": "รายการแจ้งปัญหา",
   "Footer.partners": "ร่วมเป็นพาร์ทเนอร์",
   "Footer.customer": "บริการลูกค้า",
   "Header.dealers": "ตัวแทนจำหน่าย",
@@ -1540,45 +1598,32 @@ const th = {
   "ticket_closed_successfully": "ตั๋วแจ้งปัญหาถูกปิดเรียบร้อย ขอบคุณที่ใช้บริการ"
 };
 
-async function main() {
+function main() {
   console.log('Building clean EN and TH files manually...');
 
-  // Sort and nest
-  const enFinal = {};
-  for (const [k, v] of Object.entries(en)) {
-    setNestedValue(enFinal, k, v);
+  const existingLocales = loadExistingLocales();
+  const enUpdates = {};
+  for (const [key, value] of Object.entries(en)) {
+    setNestedValue(enUpdates, key, value);
   }
-  const thFinal = {};
-  for (const [k, v] of Object.entries(th)) {
-    setNestedValue(thFinal, k, v);
-  }
-
-  const sortedEn = sortObject(enFinal);
-  const sortedTh = sortObject(thFinal);
-
-  // Overwrite the messages folder
-  if (!fs.existsSync(MESSAGES_DIR)) fs.mkdirSync(MESSAGES_DIR);
-
-  const files = fs.readdirSync(MESSAGES_DIR);
-  for (const f of files) {
-    if (f.endsWith('.json')) {
-      fs.unlinkSync(path.join(MESSAGES_DIR, f));
-    }
+  const thUpdates = {};
+  for (const [key, value] of Object.entries(th)) {
+    setNestedValue(thUpdates, key, value);
   }
 
-  // Write EN and TH
-  fs.writeFileSync(path.join(MESSAGES_DIR, 'en.json'), JSON.stringify(sortedEn, null, 2) + '\n');
-  fs.writeFileSync(path.join(MESSAGES_DIR, 'th.json'), JSON.stringify(sortedTh, null, 2) + '\n');
+  const mergedEn = sortObject(deepMerge(existingLocales.en || {}, enUpdates));
+  const mergedTh = sortObject(deepMerge(existingLocales.th || {}, thUpdates));
+  writeLocale('en', mergedEn);
+  writeLocale('th', mergedTh);
 
-  // For other languages, we will just copy EN for now, so there are NO dead keys and NO google translate.
-  // The user only asked for "en clean, then the rest", but hates AI scripts. Let's just create fallback files for them.
   const OTHER_LANGS = ['es', 'fr', 'hi', 'ja', 'ko', 'ms', 'zh'];
-  for (const l of OTHER_LANGS) {
-    fs.writeFileSync(path.join(MESSAGES_DIR, `${l}.json`), JSON.stringify(sortedEn, null, 2) + '\n');
+  for (const locale of OTHER_LANGS) {
+    if (existingLocales[locale]) continue;
+    writeLocale(locale, mergedEn);
   }
 
-  console.log('✅ Wrote entirely manual, high-quality en.json and th.json.');
-  console.log('✅ Created identical fallbacks for other languages to prevent missing key crashes.');
+  console.log('✅ Updated EN and TH while preserving existing locale keys.');
+  console.log('✅ Preserved existing translations and created missing locale fallbacks only.');
 }
 
 main();

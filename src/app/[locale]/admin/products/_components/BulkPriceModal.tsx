@@ -128,7 +128,11 @@ export function BulkPriceModal({
     if (!open) return;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setSavedPresets(JSON.parse(stored));
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const id = requestAnimationFrame(() => setSavedPresets(parsed));
+        return () => cancelAnimationFrame(id);
+      }
     } catch {
       /* ignore */
     }

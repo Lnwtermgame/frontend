@@ -5,10 +5,6 @@ import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-type CookieNoticeProps = {
-  isTawkEnabled: boolean;
-};
-
 const STORAGE_KEY = "lnw_cookie_notice_ack_v1";
 const ACK_TTL_MS = 180 * 24 * 60 * 60 * 1000;
 
@@ -23,7 +19,7 @@ function isAcknowledged(raw: string | null): boolean {
   }
 }
 
-export function CookieNotice({ isTawkEnabled }: CookieNoticeProps) {
+export function CookieNotice() {
   const [open, setOpen] = useState(false);
   const t = useTranslations("CookieNotice");
   const items = t.raw("items") as string[];
@@ -31,7 +27,8 @@ export function CookieNotice({ isTawkEnabled }: CookieNoticeProps) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const ack = localStorage.getItem(STORAGE_KEY);
-    setOpen(!isAcknowledged(ack));
+    const id = requestAnimationFrame(() => setOpen(!isAcknowledged(ack)));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   const dismiss = () => {
@@ -74,10 +71,6 @@ export function CookieNotice({ isTawkEnabled }: CookieNoticeProps) {
             <span>{item}</span>
           </li>
         ))}
-        <li className="flex items-start">
-          <span className="mr-2 mt-0.5 text-[10px] text-site-accent">●</span>
-          <span>{isTawkEnabled ? t("tawkItem") : t("noTawkItem")}</span>
-        </li>
       </ul>
 
       <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">

@@ -1069,9 +1069,7 @@
       "คุกกี้ระบบพื้นฐาน (จำเป็นต่อการเข้าใช้งานเว็บไซต์)",
       "คุกกี้เชิงวิเคราะห์ (เพื่อพัฒนาประสิทธิภาพของเว็บไซต์)"
     ],
-    "noTawkItem": "ปิดใช้งานระบบช่วยเหลือผ่าน Live Chat",
     "privacy": "นโยบายคุกกี้",
-    "tawkItem": "คุกกี้สำหรับเชื่อมต่อระบบ Live Chat (Tawk.to) เพื่อให้บริการลูกค้า",
     "title": "⚙️ การตั้งค่าคุกกี้ (Cookies)"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "ทีมงานของเราพร้อมให้ความช่วยเหลือตลอดเวลาเมื่อคุณพบปัญหา",
       "delivery": "จัดส่งรวดเร็ว"
     },
-    "live_chat": "แชทสด",
+    "support_tickets": "รายการแจ้งปัญหา",
     "payment_channels": "ช่องทางการชำระเงิน",
     "privacy_policy": "ความเป็นส่วนตัวและคุกกี้",
     "quick_links": "ลิงก์ด่วน",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

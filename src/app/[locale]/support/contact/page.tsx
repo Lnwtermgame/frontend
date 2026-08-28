@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import {
-  MessageSquare,
+  MessageCircle,
   Mail,
   Phone,
   Globe,
@@ -18,6 +18,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
+import { getSecureExternalUrl } from "@/lib/secure-external-url";
 import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
@@ -28,8 +29,8 @@ export default function ContactPage() {
     settings?.general.supportEmail || "support@lnwtermgame.com";
   const supportPhone = settings?.general.supportPhone || "+66 2 123 45678";
   const facebookUrl = settings?.social.facebookUrl || "#";
-  const lineUrl = settings?.social.lineUrl || "#";
   const discordUrl = settings?.social.discordUrl || "#";
+  const lineUrl = getSecureExternalUrl(settings?.social.lineUrl);
 
   // Mock FAQs - In a real app, these should be from translations or API
   const faqs = [
@@ -401,17 +402,24 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="flex items-start">
-                <div className="bg-green-500 p-3 border border-site-border mr-4 shadow-md">
-                  <MessageSquare className="text-white" size={20} />
+              {lineUrl && (
+                <div className="flex items-start">
+                  <div className="bg-green-500 p-3 border border-site-border mr-4 shadow-md">
+                    <MessageCircle className="text-white" size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-black uppercase text-xs mb-1">LINE Support</h3>
+                    <a
+                      href={lineUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white hover:underline font-bold text-sm"
+                    >
+                      Contact us on LINE
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-white font-black uppercase text-xs mb-1">Live Chat</h3>
-                  <p className="text-gray-600 font-bold text-xs">
-                    Available during support hours via the chat icon below.
-                  </p>
-                </div>
-              </div>
+              )}
 
               <div className="flex items-start">
                 <div className="bg-pink-500 p-3 border border-site-border mr-4 shadow-md">
@@ -449,14 +457,16 @@ export default function ContactPage() {
                         <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
                       </svg>
                     </a>
-                    <a
-                      href={lineUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-[#2A2C30] hover:bg-green-500 p-2 border border-site-border transition-colors shadow-md"
-                    >
-                      <span className="font-black text-xs">LINE</span>
-                    </a>
+                    {lineUrl && (
+                      <a
+                        href={lineUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#2A2C30] hover:bg-green-500 p-2 border border-site-border transition-colors shadow-md"
+                      >
+                        <span className="font-black text-xs">LINE</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

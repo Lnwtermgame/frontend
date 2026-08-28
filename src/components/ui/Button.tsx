@@ -2,32 +2,49 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
+type AsChildProps = React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode };
+
+const Slot = React.forwardRef<HTMLElement, AsChildProps>(
+  function Slot({ children, ...slotProps }, forwardedRef) {
+    if (!React.isValidElement(children)) return null;
+    const childProps = (children.props ?? {}) as Record<string, unknown>;
+    const merged: Record<string, unknown> = { ...slotProps, ...childProps };
+    const childClassName =
+      typeof childProps.className === "string" ? childProps.className : undefined;
+    merged.className = cn(slotProps.className, childClassName);
+    if (forwardedRef && !childProps.ref) merged.ref = forwardedRef;
+    return React.cloneElement(children, merged);
+  },
+);
+
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap text-base font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gaming-dark disabled:pointer-events-none disabled:opacity-50 active:scale-95 rounded-lg",
+  "inline-flex items-center justify-center whitespace-nowrap text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-site-bg disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-site-accent text-white border-none hover:bg-site-accent-hover",
+          "bg-site-accent text-site-bg hover:bg-site-accent-hover border border-transparent",
         primary:
-          "bg-site-accent text-white border-none hover:bg-site-accent-hover",
+          "bg-site-accent text-site-bg hover:bg-site-accent-hover border border-transparent",
         secondary:
-          "bg-[#212328]/5 text-white border border-site-border hover:bg-[#212328]/10",
+          "bg-site-raised text-site-text border border-site-border hover:bg-site-surface",
         outline:
-          "border border-site-border bg-transparent hover:bg-[#212328]/5 text-white",
-        ghost: "hover:bg-[#212328]/10 hover:text-white text-gray-400",
-        link: "text-blue-400 underline-offset-4 hover:underline",
+          "border border-site-border bg-transparent text-site-text hover:bg-site-raised",
+        ghost:
+          "bg-transparent text-site-muted hover:bg-site-raised hover:text-site-text",
+        link:
+          "bg-transparent text-site-accent underline-offset-4 hover:underline px-0 py-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0",
         danger:
-          "bg-red-500 text-white border border-red-400 hover:-translate-y-0.5",
+          "bg-status-danger text-white border border-transparent hover:bg-status-danger/90",
       },
       size: {
-        default: "h-12 px-6 py-3 w-full sm:w-auto", // Mobile first: h-12, w-full
-        sm: "h-10 px-4 text-sm w-auto rounded-md",
-        md: "h-12 md:h-10 px-4 md:px-5 text-base md:text-sm rounded-lg",
-        lg: "h-14 md:h-12 px-6 text-lg md:text-base rounded-lg w-full sm:w-auto",
-        icon: "h-12 w-12 p-0 aspect-square",
-        "mobile-full": "w-full h-12 px-4 text-base rounded-lg sm:w-auto",
-        full: "w-full h-14 md:h-12 px-6", // Always full width on all screens
+        default: "h-11 px-5 rounded-8",
+        sm: "h-9 px-3 text-xs rounded-6",
+        md: "h-11 px-4 rounded-8",
+        lg: "h-12 px-6 text-base rounded-8",
+        icon: "h-11 w-11 p-0 rounded-8",
+        "mobile-full": "h-11 w-full px-4 rounded-8 sm:w-auto",
+        full: "h-12 w-full px-6 rounded-8",
       },
       fullWidth: {
         true: "w-full",
@@ -44,36 +61,39 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof buttonVariants> {
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
+  function Button(
     {
       className,
       variant,
       size,
       fullWidth,
       isLoading,
-      asChild,
+      asChild = false,
       children,
+      disabled,
       ...props
     },
     ref,
-  ) => {
-    return (
-      <button
-        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
-        ref={ref}
-        disabled={isLoading || props.disabled}
-        {...props}
-      >
+  ) {
+    const classes = cn(
+      buttonVariants({ variant, size, fullWidth }),
+      isLoading && "cursor-wait",
+      className,
+    );
+
+    const content = (
+      <>
         {isLoading && (
           <svg
-            className="animate-spin -ml-1 mr-3 h-4 w-4 text-current"
+            aria-hidden="true"
+            className="animate-spin h-4 w-4 text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -85,15 +105,36 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               r="10"
               stroke="currentColor"
               strokeWidth="4"
-            ></circle>
+            />
             <path
               className="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
+            />
           </svg>
         )}
         {children}
+      </>
+    );
+
+    if (asChild) {
+      return (
+        <Slot ref={ref as React.Ref<HTMLElement>} className={classes} {...props}>
+          {React.isValidElement(children)
+            ? React.cloneElement(children, { children: content } as Record<string, unknown>)
+            : children}
+        </Slot>
+      );
+    }
+
+    return (
+      <button
+        ref={ref}
+        className={classes}
+        disabled={isLoading || disabled}
+        {...props}
+      >
+        {content}
       </button>
     );
   },

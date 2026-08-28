@@ -153,7 +153,9 @@ export default function AINewsProgressPanel({
   // Update stage from progress
   useEffect(() => {
     if (progress?.stage) {
-      setCurrentStage(progress.stage as NewsStage);
+      const stage = progress.stage as NewsStage;
+      const id = requestAnimationFrame(() => setCurrentStage(stage));
+      return () => cancelAnimationFrame(id);
     }
   }, [progress]);
 
@@ -165,8 +167,8 @@ export default function AINewsProgressPanel({
   // Capture console logs during generation
   useEffect(() => {
     if (!isGenerating) {
-      setElapsed(0);
-      return;
+      const id = requestAnimationFrame(() => setElapsed(0));
+      return () => cancelAnimationFrame(id);
     }
 
     const startTime = Date.now();
@@ -241,16 +243,20 @@ export default function AINewsProgressPanel({
   // Reset logs when starting new generation
   useEffect(() => {
     if (isGenerating && logs.length === 0) {
-      setLogs([
-        {
-          id: "start",
-          timestamp: new Date(),
-          type: "info",
-          message: "Starting news content generation...",
-        },
-      ]);
+      const id = requestAnimationFrame(() =>
+        setLogs([
+          {
+            id: "start",
+            timestamp: new Date(),
+            type: "info",
+            message: "Starting news content generation...",
+          },
+        ]),
+      );
+      return () => cancelAnimationFrame(id);
     } else if (!isGenerating && currentStage === "idle") {
-      setLogs([]);
+      const id = requestAnimationFrame(() => setLogs([]));
+      return () => cancelAnimationFrame(id);
     }
   }, [isGenerating, currentStage, logs.length]);
 

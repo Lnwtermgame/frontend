@@ -57,8 +57,11 @@ export function PriceEditModal({
         type.sellingPrice || type.originPrice || type.unitPrice;
       prices[type.id] = defaultPrice.toString();
     });
-    setSellingPrices(prices);
-    setSelectedPricingOption(null);
+    const id = requestAnimationFrame(() => {
+      setSellingPrices(prices);
+      setSelectedPricingOption(null);
+    });
+    return () => cancelAnimationFrame(id);
   }, [open, product, types]);
 
   const handlePriceChange = (typeId: string, value: string) => {

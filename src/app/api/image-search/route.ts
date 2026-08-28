@@ -13,12 +13,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Clamp iterations to avoid unbounded upstream scraping (per-request abuse)
+    const safeIterations = Math.min(Math.max(Number(iterations) || 1, 1), 5);
+
     console.log("[Image Search] Searching for:", query);
 
     const results = await imageSearch({
       query,
       safe: true,
-      iterations,
+      iterations: safeIterations,
       retries: 2,
     });
 

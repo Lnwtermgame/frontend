@@ -230,7 +230,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    setIsSidebarOpen(false);
+    const id = requestAnimationFrame(() => setIsSidebarOpen(false));
+    return () => cancelAnimationFrame(id);
   }, [pathname]);
 
   useEffect(() => {

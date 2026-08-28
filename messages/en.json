@@ -980,7 +980,7 @@
     "subtitle": "Choose a topic below or contact our support team directly.",
     "title": "Help Center",
     "urgent_help": {
-      "description": "For immediate assistance, contact our support team via Live Chat or Line.",
+      "description": "For immediate assistance, contact our support team via LINE or submit a support ticket.",
       "title": "Urgent Support"
     },
     "visit": "View",
@@ -1069,9 +1069,7 @@
       "Essential cookies (required for basic website functionality)",
       "Analytics cookies (used to measure and improve our platform)"
     ],
-    "noTawkItem": "Live Chat support is currently disabled.",
     "privacy": "Privacy Policy",
-    "tawkItem": "Live Chat cookies (Tawk.to) to enable fast customer support interactions.",
     "title": "⚙️ Cookie Preferences"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "Our team is available around the clock to assist you with any inquiries.",
       "delivery": "Fast Delivery"
     },
-    "live_chat": "Live Chat",
+    "support_tickets": "Support Tickets",
     "payment_channels": "Payment Methods",
     "privacy_policy": "Privacy & Cookies",
     "quick_links": "Quick Links",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

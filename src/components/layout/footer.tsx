@@ -236,7 +236,7 @@ export function Footer() {
                       <MessageCircle size={12} className="text-emerald-400" />
                     </div>
                     <span className="text-xs font-medium">
-                      {tFooter("live_chat")}
+                      {tFooter("support_tickets")}
                     </span>
                   </Link>
                 )}

@@ -5,6 +5,7 @@ export { Pagination } from "./Pagination";
 export { FormModal } from "./FormModal";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { AdminPageHeader } from "./AdminPageHeader";
+export { AdminHeaderButton } from "./AdminHeaderButton";
 export { PageContainer } from "./PageContainer";
 export { StatCard } from "./StatCard";
 export { FilterBar } from "./FilterBar";

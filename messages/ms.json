@@ -980,7 +980,7 @@
     "subtitle": "Pilih topik di bawah atau hubungi pasukan sokongan kami secara terus.",
     "title": "Pusat Bantuan",
     "urgent_help": {
-      "description": "Untuk bantuan segera, hubungi pasukan sokongan kami melalui Live Chat atau Line.",
+      "description": "Untuk bantuan segera, hubungi pasukan sokongan kami melalui LINE atau hantar tiket sokongan.",
       "title": "Sokongan Segera"
     },
     "visit": "Lihat",
@@ -1069,9 +1069,7 @@
       "Kuki penting (diperlukan untuk fungsi asas laman web)",
       "Kuki analitik (digunakan untuk mengukur dan meningkatkan platform kami)"
     ],
-    "noTawkItem": "Sokongan Live Chat tidak tersedia pada masa ini.",
     "privacy": "Dasar Privasi",
-    "tawkItem": "Kuki Live Chat (Tawk.to) untuk interaksi sokongan pelanggan yang pantas.",
     "title": "⚙️ Keutamaan Kuki"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "Pasukan kami sedia membantu anda pada bila-bila masa.",
       "delivery": "Penghantaran Pantas"
     },
-    "live_chat": "Live Chat",
+    "support_tickets": "Tiket Sokongan",
     "payment_channels": "Kaedah Pembayaran",
     "privacy_policy": "Privasi & Kuki",
     "quick_links": "Pautan Pantas",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

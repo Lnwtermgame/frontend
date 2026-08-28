@@ -4,16 +4,16 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, Check } from "lucide-react";
 
 const selectTriggerVariants = cva(
-  "flex w-full items-center justify-between bg-[#212328] border-[2px] border-gray-300 px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:outline-none focus:border-black disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+  "flex w-full items-center justify-between bg-site-surface border border-site-border text-site-text placeholder:text-site-dim focus-visible:outline-none focus-visible:border-site-accent focus-visible:ring-2 focus-visible:ring-site-accent/20 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
   {
     variants: {
       size: {
-        default: "h-12",
-        sm: "h-10",
-        lg: "h-14",
+        default: "h-11 px-3 text-sm rounded-6",
+        sm: "h-9 px-3 text-sm rounded-6",
+        lg: "h-12 px-3 text-base rounded-8",
       },
       error: {
-        true: "border-red-500/20 ring-1 ring-red-500/30",
+        true: "border-status-danger focus-visible:border-status-danger focus-visible:ring-status-danger/20",
         false: "",
       },
     },
@@ -40,6 +40,7 @@ export interface SelectProps
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  id?: string;
 }
 
 export function Select({
@@ -53,15 +54,20 @@ export function Select({
   onChange,
   placeholder = "Select option",
   disabled,
+  id,
   ...props
 }: SelectProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const listboxId = React.useId();
+  const reactId = React.useId();
+  const triggerId = id ?? `select-${reactId}`;
+  const labelId = `${triggerId}-label`;
+  const hasError = error || !!errorText;
 
   const selectedOption = options.find(
     (opt) => String(opt.value) === String(value),
   );
-  const hasError = error || !!errorText;
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -73,11 +79,19 @@ export function Select({
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isOpen]);
 
   const handleSelect = (optionValue: string | number) => {
     onChange(String(optionValue));
@@ -88,9 +102,11 @@ export function Select({
     <div className="w-full space-y-1.5" ref={containerRef}>
       {label && (
         <label
+          id={labelId}
+          htmlFor={triggerId}
           className={cn(
-            "text-sm font-bold text-gray-700 thai-font block mb-1",
-            hasError && "text-red-500",
+            "text-sm font-medium text-site-text block",
+            hasError && "text-status-danger",
           )}
         >
           {label}
@@ -98,12 +114,17 @@ export function Select({
       )}
       <div className="relative">
         <button
+          id={triggerId}
           type="button"
           onClick={() => !disabled && setIsOpen(!isOpen)}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-labelledby={label ? labelId : undefined}
+          aria-controls={isOpen ? listboxId : undefined}
           className={cn(
-            selectTriggerVariants({ size, error: hasError, className }),
-            !selectedOption && "text-gray-500",
-            isOpen && "border-black",
+            selectTriggerVariants({ size, error: hasError }),
+            !selectedOption && "text-site-dim",
+            className,
           )}
           disabled={disabled}
         >
@@ -111,40 +132,53 @@ export function Select({
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <ChevronDown
-            size={20}
+            size={18}
             className={cn(
-              "text-gray-500 transition-transform duration-200 ml-2 flex-shrink-0",
+              "text-site-dim transition-transform ml-2 flex-shrink-0",
               isOpen && "rotate-180",
             )}
           />
         </button>
 
         {isOpen && (
-          <div
-            className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto bg-[#212328] border-[2px] border-black shadow-lg transition-opacity duration-150"
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-labelledby={label ? labelId : triggerId}
+            className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto bg-site-surface border border-site-border rounded-8"
           >
-            {options.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleSelect(option.value)}
-                className={cn(
-                  "w-full flex items-center justify-between px-3 py-2.5 text-left text-base hover:bg-[#1A1C1E] transition-colors",
-                  String(option.value) === String(value) &&
-                    "bg-yellow-500/20 font-bold",
-                )}
-              >
-                <span className="truncate mr-2">{option.label}</span>
-                {String(option.value) === String(value) && (
-                  <Check size={16} className="text-white flex-shrink-0" />
-                )}
-              </button>
-            ))}
-          </div>
+            {options.map((option) => {
+              const isSelected = String(option.value) === String(value);
+              return (
+                <li
+                  key={option.value}
+                  role="option"
+                  aria-selected={isSelected}
+                  tabIndex={0}
+                  onClick={() => handleSelect(option.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      handleSelect(option.value);
+                    }
+                  }}
+                  className={cn(
+                    "cursor-pointer flex items-center justify-between px-3 py-2 text-sm hover:bg-site-raised",
+                    isSelected && "bg-site-raised text-site-accent",
+                  )}
+                >
+                  <span className="truncate mr-2">{option.label}</span>
+                  {isSelected && (
+                    <Check size={16} className="text-site-accent flex-shrink-0" />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         )}
       </div>
       {errorText && (
-        <p className="text-sm text-red-500 font-medium thai-font mt-1">
+        <p role="alert" className="text-sm text-status-danger">
           {errorText}
         </p>
       )}

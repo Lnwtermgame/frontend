@@ -19,7 +19,6 @@ import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
 import { NextAuthProvider } from "@/components/providers/nextauth-provider";
 import { cn } from "@/lib/utils";
 import MainLayout from "@/components/layout/MainLayout";
-import { TawkTo } from "@/components/tawk-to";
 import { CookieNotice } from "@/components/cookie/CookieNotice";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
@@ -237,10 +236,6 @@ export default async function RootLayout(
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();
-  const isTawkEnabled = Boolean(
-    process.env.NEXT_PUBLIC_TAWK_TO_PROPERTY_ID &&
-    process.env.NEXT_PUBLIC_TAWK_TO_WIDGET_ID,
-  );
 
   return (
     <html
@@ -279,7 +274,7 @@ export default async function RootLayout(
                             <MainLayout>{props.children}</MainLayout>
                           </PublicSettingsProvider>
                         </CartProvider>
-                        <CookieNotice isTawkEnabled={isTawkEnabled} />
+                        <CookieNotice />
                         <Toaster
                           position="bottom-right"
                           containerStyle={{
@@ -317,7 +312,6 @@ export default async function RootLayout(
             </AuthProvider>
           </NextAuthProvider>
         </NextIntlClientProvider>
-        <TawkTo />
       </body>
     </html>
   );

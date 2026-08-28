@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      spacing: {
+        "4.5": "1.125rem",
+      },
       colors: {
         site: {
           bg: "var(--site-bg)",
@@ -20,30 +23,33 @@ module.exports = {
           muted: "var(--site-muted)",
           dim: "var(--site-dim)",
         },
-        semantic: {
-          blue: "var(--semantic-blue)",
-          violet: "var(--semantic-violet)",
-          green: "var(--semantic-green)",
-          amber: "var(--semantic-amber)",
-          rose: "var(--semantic-rose)",
+        status: {
+          info: "var(--status-info)",
+          success: "var(--status-success)",
+          warning: "var(--status-warning)",
+          danger: "var(--status-danger)",
         },
-        brutal: {
-          yellow: "#22D3EE",
-          pink: "#F472B6",
-          green: "#34D399",
-          blue: "#38BDF8",
+        // Compatibility aliases for existing screens. New work should use status.*.
+        semantic: {
+          blue: "var(--status-info)",
+          violet: "var(--status-info)",
+          green: "var(--status-success)",
+          amber: "var(--status-warning)",
+          rose: "var(--status-danger)",
         },
       },
       borderRadius: {
-        "12": "12px",
-        "10": "10px",
+        6: "6px",
+        8: "8px",
+        12: "12px",
       },
       fontFamily: {
         sans: ["'Manrope'", "'IBM Plex Sans Thai'", "'Poppins'", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {
-        ocean: "0 4px 30px rgba(8, 23, 34, 0.5)",
+        // Keep the legacy utility available without the former oversized glow.
+        ocean: "0 1px 2px rgba(0, 0, 0, 0.18)",
       },
     },
   },

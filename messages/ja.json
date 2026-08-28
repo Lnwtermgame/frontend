@@ -980,7 +980,7 @@
     "subtitle": "以下のトピックを選択するか、サポートチームに直接お問い合わせください。",
     "title": "ヘルプセンター",
     "urgent_help": {
-      "description": "緊急の場合はライブチャットまたはLineでお問い合わせください。",
+      "description": "お急ぎの場合は、LINEまたはサポートチケットからお問い合わせください。",
       "title": "緊急サポート"
     },
     "visit": "見る",
@@ -1069,9 +1069,7 @@
       "必須Cookie（サイトの基本機能に必要）",
       "分析Cookie（プラットフォームの改善に使用）"
     ],
-    "noTawkItem": "ライブチャットは現在無効です。",
     "privacy": "プライバシーポリシー",
-    "tawkItem": "ライブチャットCookie (Tawk.to) による迅速なカスタマーサポート。",
     "title": "⚙️ Cookie設定"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "いつでもお気軽にお問い合わせください。",
       "delivery": "高速配送"
     },
-    "live_chat": "ライブチャット",
+    "support_tickets": "サポートチケット",
     "payment_channels": "対応決済",
     "privacy_policy": "プライバシー＆Cookie",
     "quick_links": "クイックリンク",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

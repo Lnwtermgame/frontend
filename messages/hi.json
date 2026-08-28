@@ -980,7 +980,7 @@
     "subtitle": "नीचे विषय चुनें या सीधे सहायता टीम से संपर्क करें।",
     "title": "सहायता केंद्र",
     "urgent_help": {
-      "description": "तत्काल सहायता के लिए Live Chat या Line से संपर्क करें।",
+      "description": "तत्काल सहायता के लिए हमारी सहायता टीम से LINE पर संपर्क करें या सहायता टिकट भेजें।",
       "title": "तत्काल सहायता"
     },
     "visit": "देखें",
@@ -1069,9 +1069,7 @@
       "आवश्यक कुकीज़ (बुनियादी वेबसाइट कार्यक्षमता के लिए)",
       "विश्लेषण कुकीज़ (प्लेटफ़ॉर्म सुधार के लिए)"
     ],
-    "noTawkItem": "लाइव चैट अभी अक्षम है।",
     "privacy": "गोपनीयता नीति",
-    "tawkItem": "लाइव चैट कुकीज़ (Tawk.to) तेज़ ग्राहक सहायता के लिए।",
     "title": "⚙️ कुकी प्राथमिकताएं"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "हमारी टीम किसी भी पूछताछ के लिए हर समय उपलब्ध है।",
       "delivery": "तेज़ डिलीवरी"
     },
-    "live_chat": "लाइव चैट",
+    "support_tickets": "सहायता टिकट",
     "payment_channels": "भुगतान विधियां",
     "privacy_policy": "गोपनीयता और कुकीज़",
     "quick_links": "त्वरित लिंक",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

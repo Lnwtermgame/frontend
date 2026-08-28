@@ -42,7 +42,10 @@ export function FormModal({
   const resolvedSubmit = submitLabel ?? t("actions.save");
   const resolvedCancel = cancelLabel ?? t("actions.cancel");
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   // Close on Escape
   useEffect(() => {

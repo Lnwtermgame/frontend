@@ -3,16 +3,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const inputVariants = cva(
-  "flex w-full bg-[#1A1C1E] border border-site-border rounded-[6px] px-3 py-2 text-sm text-white ring-offset-site-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus:border-site-accent/60 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
+  "flex w-full bg-site-surface border border-site-border rounded-6 px-3 text-sm text-site-text ring-offset-site-bg placeholder:text-site-dim focus-visible:outline-none focus-visible:border-site-accent focus-visible:ring-2 focus-visible:ring-site-accent/20 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
   {
     variants: {
       size: {
-        default: "h-12", // Mobile friendly height
-        sm: "h-10",
-        lg: "h-14",
+        default: "h-11",
+        sm: "h-9",
+        lg: "h-12",
       },
       error: {
-        true: "border-red-500/20 focus-visible:border-red-500/30 focus-visible:ring-1 focus-visible:ring-red-500/30",
+        true: "border-status-danger focus-visible:border-status-danger focus-visible:ring-status-danger/20",
         false: "",
       },
     },
@@ -25,16 +25,16 @@ const inputVariants = cva(
 
 export interface InputProps
   extends
-  Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
-  VariantProps<typeof inputVariants> {
-  label?: string;
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+    VariantProps<typeof inputVariants> {
+  label?: React.ReactNode;
   errorText?: string;
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
+  function Input(
     {
       className,
       type,
@@ -44,19 +44,26 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       errorText,
       icon,
       iconPosition = "left",
+      id,
       ...props
     },
     ref,
-  ) => {
+  ) {
     const hasError = error || !!errorText;
+    const reactId = React.useId();
+    const inputId = id ?? `input-${reactId}`;
+    const labelId = `${inputId}-label`;
+    const describedBy = hasError && errorText ? `${inputId}-error` : undefined;
 
     return (
       <div className="w-full space-y-1.5">
         {label && (
           <label
+            id={labelId}
+            htmlFor={inputId}
             className={cn(
-              "text-sm font-bold text-white block mb-1.5",
-              hasError && "text-red-500",
+              "text-sm font-medium text-site-text block",
+              hasError && "text-status-danger",
             )}
           >
             {label}
@@ -64,28 +71,37 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           {icon && iconPosition === "left" && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+            <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-site-dim">
               {icon}
             </div>
           )}
           <input
+            id={inputId}
             type={type}
+            aria-invalid={hasError || undefined}
+            aria-describedby={describedBy}
+            aria-labelledby={label ? labelId : undefined}
             className={cn(
-              inputVariants({ size, error: hasError, className }),
+              inputVariants({ size, error: hasError }),
               icon && iconPosition === "left" && "pl-10",
               icon && iconPosition === "right" && "pr-10",
+              className,
             )}
             ref={ref}
             {...props}
           />
           {icon && iconPosition === "right" && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-site-dim">
               {icon}
             </div>
           )}
         </div>
         {errorText && (
-          <p className="text-sm text-red-500 font-medium thai-font mt-1">
+          <p
+            id={`${inputId}-error`}
+            role={hasError ? "alert" : undefined}
+            className="text-sm text-status-danger"
+          >
             {errorText}
           </p>
         )}

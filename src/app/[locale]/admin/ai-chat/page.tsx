@@ -186,7 +186,7 @@ export default function AdminAiChatPage() {
                   key={q}
                   type="button"
                   onClick={() => setInput(q)}
-                  className="w-full rounded-lg border border-white/10 px-3 py-2 text-left text-xs text-gray-300 transition hover:border-site-accent/40 hover:text-white"
+                  className="w-full rounded-lg border border-white/10 px-3 py-2 text-left text-xs text-gray-300 transition hover:border-site-accent/30 hover:text-white"
                 >
                   {q}
                 </button>

@@ -29,11 +29,17 @@ export function CopyPickerModal({
   const [mounted, setMounted] = useState(false);
   const [copyPickerSearch, setCopyPickerSearch] = useState("");
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   // Reset search each time the picker opens.
   useEffect(() => {
-    if (open) setCopyPickerSearch("");
+    if (open) {
+      const id = requestAnimationFrame(() => setCopyPickerSearch(""));
+      return () => cancelAnimationFrame(id);
+    }
   }, [open]);
 
   // Close on Escape.

@@ -37,8 +37,9 @@ function PendingPaymentContent() {
   useEffect(() => {
     const storedQr = sessionStorage.getItem(`qr_${orderId}`);
     if (storedQr) {
-      setQrUrl(storedQr);
+      const id = requestAnimationFrame(() => setQrUrl(storedQr));
       sessionStorage.removeItem(`qr_${orderId}`); // Clean up
+      return () => cancelAnimationFrame(id);
     }
   }, [orderId]);
 
@@ -95,7 +96,8 @@ function PendingPaymentContent() {
       router.push("/games");
       return;
     }
-    checkPaymentStatus();
+    const id = setTimeout(() => checkPaymentStatus(), 0);
+    return () => clearTimeout(id);
   }, [orderId, router, checkPaymentStatus]);
 
   // Polling interval (every 5s)

@@ -980,7 +980,7 @@
     "subtitle": "选择以下主题或直接联系客服。",
     "title": "帮助中心",
     "urgent_help": {
-      "description": "如需紧急帮助，请通过在线客服或 Line 联系我们。",
+      "description": "如需即时帮助，请通过 LINE 联系我们的支持团队或提交客服工单。",
       "title": "紧急支持"
     },
     "visit": "查看",
@@ -1069,9 +1069,7 @@
       "必要 Cookie（网站基本功能所需）",
       "分析 Cookie（用于改善平台体验）"
     ],
-    "noTawkItem": "在线客服功能暂时关闭。",
     "privacy": "隐私政策",
-    "tawkItem": "在线客服 Cookie (Tawk.to)，用于提供即时客服。",
     "title": "⚙️ Cookie 偏好设置"
   },
   "Footer": {
@@ -1100,7 +1098,7 @@
       "support_desc": "我们的团队随时为您提供帮助。",
       "delivery": "极速发货"
     },
-    "live_chat": "在线客服",
+    "support_tickets": "客服工单",
     "payment_channels": "支付方式",
     "privacy_policy": "隐私与 Cookie",
     "quick_links": "快速链接",
@@ -2010,8 +2008,6 @@
   "no_results_desc": "[MISSING: no_results_desc]",
   "ariaClose": "[MISSING: ariaClose]",
   "description": "[MISSING: description]",
-  "tawkItem": "[MISSING: tawkItem]",
-  "noTawkItem": "[MISSING: noTawkItem]",
   "acknowledge": "[MISSING: acknowledge]",
   "privacy": "[MISSING: privacy]",
   "news": "[MISSING: news]",

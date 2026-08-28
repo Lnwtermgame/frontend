@@ -112,43 +112,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
-    setIsOnline(navigator.onLine);
+    const id = requestAnimationFrame(() => setIsOnline(navigator.onLine));
 
     return () => {
+      cancelAnimationFrame(id);
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
   }, []);
-
-  // Auto-sync when user logs in or comes back online
-  useEffect(() => {
-    if (isAuthenticated && isOnline && syncStatus === "idle") {
-      syncCart("merge");
-    }
-  }, [isAuthenticated, isOnline]);
-
-  // Debounced auto-sync on cart changes
-  useEffect(() => {
-    if (!isAuthenticated || !isOnline) return;
-
-    // Clear existing timeout
-    if (syncTimeoutRef.current) {
-      clearTimeout(syncTimeoutRef.current);
-    }
-
-    // Set new timeout for auto-sync (debounce 2 seconds)
-    syncTimeoutRef.current = setTimeout(() => {
-      if (items.length > 0) {
-        syncCart("merge");
-      }
-    }, 2000);
-
-    return () => {
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current);
-      }
-    };
-  }, [items, isAuthenticated, isOnline]);
 
   // Sync cart with server
   const syncCart = useCallback(
@@ -333,6 +304,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
     },
     [setItems],
   );
+
+  // Auto-sync when user logs in or comes back online
+  useEffect(() => {
+    if (isAuthenticated && isOnline && syncStatus === "idle") {
+      const id = setTimeout(() => syncCart("merge"), 0);
+      return () => clearTimeout(id);
+    }
+  }, [isAuthenticated, isOnline]);
+
+  // Debounced auto-sync on cart changes
+  useEffect(() => {
+    if (!isAuthenticated || !isOnline) return;
+
+    // Clear existing timeout
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current);
+    }
+
+    // Set new timeout for auto-sync (debounce 2 seconds)
+    syncTimeoutRef.current = setTimeout(() => {
+      if (items.length > 0) {
+        syncCart("merge");
+      }
+    }, 2000);
+
+    return () => {
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+      }
+    };
+  }, [items, isAuthenticated, isOnline]);
 
   // Clear cart
   const clearCart = useCallback(() => {

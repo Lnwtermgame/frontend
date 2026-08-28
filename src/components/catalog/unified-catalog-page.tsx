@@ -14,7 +14,6 @@ import {
   Search,
   Signal,
   Smartphone,
-  Zap,
 } from "lucide-react";
 import { productApi, Product } from "@/lib/services/product-api";
 import { Sheet } from "@/components/ui/Sheet";
@@ -56,12 +55,8 @@ type ModeCopy = {
   subtitle: string;
   searchPlaceholder: string;
   gridTitle: string;
-  cta: string;
   primaryTitle: string;
   secondaryTitle?: string;
-  heroIcon: React.ReactNode;
-  promoTitle: string;
-  promoDescription: string;
 };
 
 function getProductType(mode: CatalogMode): Product["productType"] {
@@ -186,7 +181,6 @@ function getItemLink(mode: CatalogMode, slug: string): string {
 
 export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
   const t = useTranslations("Catalog");
-  const tCommon = useTranslations("Common");
 
   const modeCopy: Record<string, ModeCopy> = {
     games: {
@@ -194,54 +188,32 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
       subtitle: t("games.subtitle"),
       searchPlaceholder: t("search_placeholder"),
       gridTitle: t("games.title"),
-      cta: t("cta_topup"),
       primaryTitle: t("filter_category"),
       secondaryTitle: t("filter_category"),
-      heroIcon: (
-        <Zap
-          size={24}
-          className="text-site-accent mr-2"
-          fill="currentColor"
-        />
-      ),
-      promoTitle: t("games.title"),
-      promoDescription: t("games.subtitle"),
     },
     "mobile-recharge": {
       title: t("mobile.title"),
       subtitle: t("mobile.subtitle"),
       searchPlaceholder: t("search_placeholder"),
       gridTitle: t("mobile.title"),
-      cta: t("cta_topup"),
       primaryTitle: t("filter_category"),
       secondaryTitle: t("filter_category"),
-      heroIcon: <Smartphone size={24} className="text-site-accent mr-2" />,
-      promoTitle: t("mobile.title"),
-      promoDescription: t("mobile.subtitle"),
     },
     mobile: {
       title: t("mobile.title"),
       subtitle: t("mobile.subtitle"),
       searchPlaceholder: t("search_placeholder"),
       gridTitle: t("mobile.title"),
-      cta: t("cta_topup"),
       primaryTitle: t("filter_category"),
       secondaryTitle: t("filter_category"),
-      heroIcon: <Smartphone size={24} className="text-site-accent mr-2" />,
-      promoTitle: t("mobile.title"),
-      promoDescription: t("mobile.subtitle"),
     },
     card: {
       title: t("card.title"),
       subtitle: t("card.subtitle"),
       searchPlaceholder: t("search_placeholder"),
       gridTitle: t("card.title"),
-      cta: t("cta_buy"),
       primaryTitle: t("filter_category"),
       secondaryTitle: undefined,
-      heroIcon: <CreditCard size={24} className="text-site-accent mr-2" />,
-      promoTitle: t("card.title"),
-      promoDescription: t("card.subtitle"),
     },
   };
 
@@ -465,7 +437,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           <div className="bg-site-raised rounded-8 overflow-hidden mb-5 border border-site-border-soft pb-2">
             <div className="p-4 border-b border-site-border-soft">
               <h3 className="text-site-muted font-medium text-[13px] tracking-wide">
-                หมวดหมู่
+                {t("filter_category")}
               </h3>
             </div>
 
@@ -474,6 +446,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                 <button
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
+                  aria-pressed={selectedPrimary === option.id}
                   className={`w-full flex justify-between items-center text-left px-5 py-2.5 transition-colors group ${selectedPrimary === option.id
                     ? "bg-site-surface border-l-[3px] border-site-accent text-site-text"
                     : "bg-transparent border-l-[3px] border-transparent text-site-muted hover:bg-site-surface hover:text-site-text"
@@ -509,6 +482,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     <button
                       key={option.id}
                       onClick={() => setSelectedSecondary(option.id)}
+                      aria-pressed={selectedSecondary === option.id}
                       className={`w-full flex justify-between items-center text-left px-5 py-2.5 transition-colors group ${selectedSecondary === option.id
                         ? "bg-site-surface border-l-[3px] border-site-accent text-site-text"
                         : "bg-transparent border-l-[3px] border-transparent text-site-muted hover:bg-site-surface hover:text-site-text"
@@ -559,6 +533,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                 <input
                   type="text"
                   placeholder={copy.searchPlaceholder}
+                  aria-label={copy.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="site-input !h-9 w-full pl-11 pr-4 text-[13px]"
@@ -582,6 +557,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                 <button
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
+                  aria-pressed={selectedPrimary === option.id}
                   className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-6 border ${selectedPrimary === option.id
                     ? "bg-site-accent text-site-bg border-transparent"
                     : "bg-site-surface text-site-muted border-site-border-soft hover:text-site-text"
@@ -603,6 +579,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   <button
                     key={option.id}
                     onClick={() => setSelectedSecondary(option.id)}
+                    aria-pressed={selectedSecondary === option.id}
                     className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-6 border ${selectedSecondary === option.id
                       ? "bg-site-accent text-site-bg border-transparent"
                       : "bg-site-surface text-site-muted border-site-border-soft hover:text-site-text"
@@ -647,7 +624,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             )}
 
             {!loading && filteredItems.length === 0 && (
-              <EmptyState icon={PackageOpen} message={t("no_results")} />
+              <EmptyState icon={PackageOpen} message={t("no_results")} description={t("no_results_desc")} />
             )}
 
             {!loading && filteredItems.length > 0 && (
@@ -705,6 +682,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     setSelectedPrimary(option.id);
                     setIsFilterOpen(false);
                   }}
+                  aria-pressed={selectedPrimary === option.id}
                   className={`w-full flex items-center justify-between p-3.5 rounded-6 border font-bold transition-colors ${selectedPrimary === option.id
                     ? "bg-site-surface border-site-accent text-site-accent"
                     : "bg-site-raised border-site-border-soft text-site-muted hover:text-site-text"
@@ -737,6 +715,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       setSelectedSecondary(option.id);
                       setIsFilterOpen(false);
                     }}
+                    aria-pressed={selectedSecondary === option.id}
                     className={`w-full flex items-center justify-between p-3.5 rounded-6 border font-bold transition-colors ${selectedSecondary === option.id
                       ? "bg-site-surface border-site-accent text-site-accent"
                       : "bg-site-raised border-site-border-soft text-site-muted hover:text-site-text"

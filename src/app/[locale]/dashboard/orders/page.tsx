@@ -11,20 +11,21 @@ import {
   CheckCircle,
   AlertCircle,
   Filter,
-  FileText,
   Eye,
-  Calendar,
   Package,
   XCircle,
   Check,
 } from "lucide-react";
-import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Sheet } from "@/components/ui/Sheet";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton, SkeletonListRow } from "@/components/ui/Skeleton";
 
 export default function OrdersPage() {
   const t = useTranslations("Orders");
@@ -139,9 +140,9 @@ export default function OrdersPage() {
   if (!isInitialized || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-site-accent border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-400">{tCommon("loading")}</p>
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="w-10 h-10 rounded-8" />
+          <p className="text-site-muted">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -152,39 +153,39 @@ export default function OrdersPage() {
     switch (status) {
       case "COMPLETED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border border-green-500/30/20 rounded-full text-xs font-bold bg-green-500/10 text-green-500 whitespace-nowrap">
-            <CheckCircle className="w-3 h-3 mr-1" /> {t("status.completed")}
-          </span>
+          <Badge variant="success">
+            <CheckCircle className="w-3 h-3" /> {t("status.completed")}
+          </Badge>
         );
       case "PENDING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border border-yellow-500/30/20 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-500 whitespace-nowrap">
-            <Clock className="w-3 h-3 mr-1" /> {t("status.pending")}
-          </span>
+          <Badge variant="warning">
+            <Clock className="w-3 h-3" /> {t("status.pending")}
+          </Badge>
         );
       case "PROCESSING":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border border-blue-500/20 rounded-full text-xs font-bold bg-blue-500/10 text-blue-500 whitespace-nowrap">
-            <Clock className="w-3 h-3 mr-1" /> {t("status.processing")}
-          </span>
+          <Badge variant="info">
+            <Clock className="w-3 h-3" /> {t("status.processing")}
+          </Badge>
         );
       case "CANCELLED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border border-red-500/30/20 rounded-full text-xs font-bold bg-red-500/10 text-red-500 whitespace-nowrap">
-            <XCircle className="w-3 h-3 mr-1" /> {t("status.cancelled")}
-          </span>
+          <Badge variant="danger">
+            <XCircle className="w-3 h-3" /> {t("status.cancelled")}
+          </Badge>
         );
       case "REFUNDED":
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border border-gray-500/20 rounded-full text-xs font-bold bg-[#181A1D]0/10 text-gray-400 whitespace-nowrap">
-            <AlertCircle className="w-3 h-3 mr-1" /> {t("status.refunded")}
-          </span>
+          <Badge variant="neutral">
+            <AlertCircle className="w-3 h-3" /> {t("status.refunded")}
+          </Badge>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 border border-gray-600 rounded-full text-xs font-bold bg-gray-800 text-gray-300 whitespace-nowrap">
+          <Badge variant="neutral">
             {status}
-          </span>
+          </Badge>
         );
     }
   };
@@ -200,18 +201,14 @@ export default function OrdersPage() {
   // Render card view for mobile
   const renderCardView = () => {
     return (
-      <div className="grid grid-cols-1 gap-3 p-3">
+      <div className="grid grid-cols-1 gap-2 p-3">
         {filteredOrders.map((order) => (
-          <motion.div
+          <div
             key={order.id}
-            className="bg-[#1A1C1E] border border-site-border rounded-xl overflow-hidden"
-            whileHover={{ y: -3 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            className="site-card overflow-hidden"
           >
             <div className="flex items-start p-3">
-              <div className="h-14 w-14 border border-site-border rounded-lg mr-3 flex-shrink-0 bg-[#222427] overflow-hidden relative">
+              <div className="h-12 w-12 border border-site-border-soft rounded-6 mr-3 flex-shrink-0 bg-site-raised overflow-hidden relative">
                 {getSafeImageUrl(order.items[0]?.product?.imageUrl) ? (
                   <img
                     src={getSafeImageUrl(order.items[0]?.product?.imageUrl)!}
@@ -220,14 +217,14 @@ export default function OrdersPage() {
                   />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center">
-                    <Package className="h-6 w-6 text-gray-500" />
+                    <Package className="h-5 w-5 text-site-dim" />
                   </div>
                 )}
               </div>
 
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-white font-bold text-xs line-clamp-1">
+                  <h3 className="text-site-text font-bold text-xs line-clamp-1">
                     {order.items[0]?.product?.name
                       ? order.items[0]?.productType?.name
                         ? `${order.items[0].product.name} - ${order.items[0].productType.name}`
@@ -239,20 +236,20 @@ export default function OrdersPage() {
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <p className="text-gray-500 font-bold uppercase text-[10px]">{t("order_id_label")}</p>
-                    <p className="text-white font-medium">
+                    <p className="text-[11px] uppercase text-site-dim font-bold">{t("order_id_label")}</p>
+                    <p className="text-site-text font-medium">
                       {order.orderNumber}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-500 font-bold uppercase text-[10px]">{t("amount_label")}</p>
-                    <p className="text-[var(--site-accent)] font-bold">
+                    <p className="text-[11px] uppercase text-site-dim font-bold">{t("amount_label")}</p>
+                    <p className="text-site-accent font-bold">
                       {formatCurrency(order.finalAmount)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-500 font-bold uppercase text-[10px]">{t("date_label")}</p>
-                    <p className="text-gray-400">
+                    <p className="text-[11px] uppercase text-site-dim font-bold">{t("date_label")}</p>
+                    <p className="text-site-muted">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
@@ -260,7 +257,7 @@ export default function OrdersPage() {
 
                 <div className="flex justify-end mt-2">
                   <Link href={`/dashboard/orders/${order.id}`}>
-                    <Button variant="outline" size="sm" className="text-xs h-7 px-2 border-site-border text-white hover:bg-[#212328]/5">
+                    <Button variant="outline" size="sm" className="text-xs h-7 px-2 border-site-border-soft text-site-text hover:bg-site-raised">
                       <Eye className="h-3 w-3 mr-1" />
                       {t("view_details")}
                     </Button>
@@ -268,7 +265,7 @@ export default function OrdersPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     );
@@ -276,35 +273,17 @@ export default function OrdersPage() {
 
   return (
     <div>
-      {/* Page Header */}
-      <div className="relative mb-6">
-        <motion.h2
-          className="text-xl font-bold text-white mb-1 relative flex items-center"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <span className="w-1.5 h-5 bg-[var(--site-accent)] mr-2 rounded-full"></span>
-          {t("title")}
-        </motion.h2>
-        <p className="text-gray-400 text-sm relative">
-          {t("subtitle")}
-        </p>
-      </div>
+      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
 
       {/* Search and filter bar */}
-      <motion.div
-        className="flex flex-col md:flex-row gap-3 justify-between mb-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="flex flex-col md:flex-row gap-3 justify-between mb-6">
         <div className="relative md:w-80">
           <Input
             placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            icon={<Search size={16} className="text-gray-400" />}
-            className="text-sm h-11 bg-[#1A1C1E] border-site-border text-white placeholder-gray-500 rounded-lg focus:border-site-accent/60"
+            icon={<Search size={16} className="text-site-dim" />}
+            className="text-sm h-11 site-input"
           />
         </div>
 
@@ -314,7 +293,7 @@ export default function OrdersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 bg-[#1A1C1E] border border-site-border rounded-lg text-white text-sm focus:outline-none focus:border-[var(--site-accent)] h-11"
+              className="site-input px-4 py-2 h-11"
             >
               {STATUS_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -327,28 +306,28 @@ export default function OrdersPage() {
           {/* Mobile Filter Button */}
           <Button
             variant="outline"
-            className="md:hidden h-11 text-sm border-site-border text-white bg-[#1A1C1E] rounded-lg"
+            className="md:hidden h-11 text-sm border-site-border-soft text-site-text bg-site-surface rounded-6"
             onClick={() => setIsFilterOpen(true)}
           >
             <Filter size={16} className="mr-2" /> {t("filter_title")}
           </Button>
 
-          <div className="hidden md:flex bg-[#1A1C1E] border border-site-border rounded-lg p-1 h-11 items-center">
+          <div className="hidden md:flex bg-site-surface border border-site-border-soft rounded-6 p-1 h-11 items-center">
             <button
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${viewMode === "table" ? "bg-[#222427] text-[var(--site-accent)]" : "text-gray-400 hover:text-white"}`}
+              className={`px-4 py-1.5 rounded-4 text-sm font-medium transition-colors ${viewMode === "table" ? "bg-site-raised text-site-accent" : "text-site-muted hover:text-site-text"}`}
               onClick={() => setViewMode("table")}
             >
               {t("view_mode.table")}
             </button>
             <button
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${viewMode === "card" ? "bg-[#222427] text-[var(--site-accent)]" : "text-gray-400 hover:text-white"}`}
+              className={`px-4 py-1.5 rounded-4 text-sm font-medium transition-colors ${viewMode === "card" ? "bg-site-raised text-site-accent" : "text-site-muted hover:text-site-text"}`}
               onClick={() => setViewMode("card")}
             >
               {t("view_mode.card")}
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Mobile Filter Sheet */}
       <Sheet
@@ -358,8 +337,8 @@ export default function OrdersPage() {
       >
         <div className="space-y-6">
           <div>
-            <h3 className="font-bold text-white mb-3 flex items-center">
-              <Filter size={18} className="mr-2 text-[var(--site-accent)]" /> {t("table.status")}
+            <h3 className="font-bold text-site-text mb-3 flex items-center">
+              <Filter size={18} className="mr-2 text-site-accent" /> {t("table.status")}
             </h3>
             <div className="space-y-2">
               {STATUS_OPTIONS.map((option) => (
@@ -369,9 +348,9 @@ export default function OrdersPage() {
                     setStatusFilter(option.value);
                     setIsFilterOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between p-3 rounded-lg border font-medium transition-all ${statusFilter === option.value
-                    ? "bg-[var(--site-accent)]/10 border-[var(--site-accent)] text-[var(--site-accent)]"
-                    : "bg-[#1A1C1E] border-site-border text-gray-400 hover:border-gray-500"
+                  className={`w-full flex items-center justify-between p-3 rounded-6 border font-medium transition-colors ${statusFilter === option.value
+                    ? "bg-site-accent/10 border-site-accent text-site-accent"
+                    : "bg-site-surface border-site-border-soft text-site-muted hover:border-site-muted"
                     }`}
                 >
                   <span>{option.label}</span>
@@ -388,55 +367,47 @@ export default function OrdersPage() {
       </Sheet>
 
       {/* Orders list */}
-      <motion.div
-        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-      >
+      <div className="site-card overflow-hidden">
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="w-8 h-8 border-4 border-site-accent border-t-transparent rounded-full animate-spin"></div>
+          <div className="space-y-0 p-4">
+            {[1, 2, 3, 4].map((i) => <SkeletonListRow key={i} />)}
           </div>
         ) : viewMode === "table" ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-[#1A1C1E] border-b border-site-border">
+              <thead className="bg-site-raised border-b border-site-border-soft">
                 <tr>
-                  <th className="px-5 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider">
                     {t("table.order_number")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider">
                     {t("table.product")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider">
                     {t("table.date")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider">
                     {t("table.amount")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider">
                     {t("table.status")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-semibold text-gray-400"></th>
+                  <th className="px-5 py-3"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-site-border">
+              <tbody>
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
-                    <motion.tr
+                    <tr
                       key={order.id}
-                      className="hover:bg-[#212328]/5 transition-colors"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
+                      className="border-b border-site-border-soft last:border-b-0 hover:bg-site-raised transition-colors"
                     >
-                      <td className="px-5 py-4 text-sm font-medium text-white">
+                      <td className="px-5 py-3 text-sm font-medium text-site-text">
                         {order.orderNumber}
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 rounded-lg border border-site-border mr-3 bg-[#1A1C1E] overflow-hidden flex-shrink-0">
+                          <div className="h-9 w-9 rounded-6 border border-site-border-soft mr-3 bg-site-raised overflow-hidden flex-shrink-0">
                             {getSafeImageUrl(
                               order.items[0]?.product?.imageUrl,
                             ) ? (
@@ -451,11 +422,11 @@ export default function OrdersPage() {
                               />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center">
-                                <Package className="h-5 w-5 text-gray-500" />
+                                <Package className="h-4 w-4 text-site-dim" />
                               </div>
                             )}
                           </div>
-                          <span className="text-white text-sm line-clamp-1 font-medium">
+                          <span className="text-site-text text-sm line-clamp-1 font-medium">
                             {order.items[0]?.product?.name
                               ? order.items[0]?.productType?.name
                                 ? `${order.items[0].product.name} - ${order.items[0].productType.name}`
@@ -464,39 +435,33 @@ export default function OrdersPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-sm text-gray-400">
+                      <td className="px-5 py-3 text-sm text-site-muted">
                         {formatDate(order.createdAt)}
                       </td>
-                      <td className="px-5 py-4 text-sm text-[var(--site-accent)] font-semibold">
+                      <td className="px-5 py-3 text-sm text-site-accent font-semibold">
                         {formatCurrency(order.finalAmount)}
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3">
                         {renderStatusBadge(order.status)}
                       </td>
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-5 py-3 text-right">
                         <Link href={`/dashboard/orders/${order.id}`}>
-                          <Button variant="outline" size="sm" className="text-xs h-8 px-3 border-site-border text-white hover:bg-[#212328]/5 bg-transparent">
-                            <Eye className="h-4 w-4 mr-2" />
+                          <Button variant="outline" size="sm" className="text-xs h-7 px-3 border-site-border-soft text-site-text hover:bg-site-raised bg-transparent">
+                            <Eye className="h-3 w-3 mr-1.5" />
                             {t("view_short")}
                           </Button>
                         </Link>
                       </td>
-                    </motion.tr>
+                    </tr>
                   ))
                 ) : (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
-                      <div className="text-gray-500">
-                        <ShoppingBag className="h-12 w-12 mx-auto opacity-20 mb-4" />
-                        <p className="text-white text-lg font-medium mb-1">
-                          {t("no_orders")}
-                        </p>
-                        <p className="text-sm max-w-md mx-auto">
-                          {searchTerm
-                            ? t("no_search_results", { query: searchTerm })
-                            : t("no_orders_desc")}
-                        </p>
-                      </div>
+                      <EmptyState icon={ShoppingBag} message={
+                        searchTerm
+                          ? t("no_search_results", { query: searchTerm })
+                          : t("no_orders_desc")
+                      } />
                     </td>
                   </tr>
                 )}
@@ -506,7 +471,7 @@ export default function OrdersPage() {
         ) : (
           renderCardView()
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

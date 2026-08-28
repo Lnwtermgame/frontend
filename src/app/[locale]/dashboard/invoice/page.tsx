@@ -15,9 +15,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton, SkeletonListRow } from "@/components/ui/Skeleton";
 
 interface Invoice {
   id: string;
@@ -141,9 +144,9 @@ export default function InvoicePage() {
   if (!isInitialized || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="w-10 h-10 rounded-8" />
+          <p className="text-site-muted font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -156,48 +159,35 @@ export default function InvoicePage() {
       case "completed":
       case "paid":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-green-500/30/20 bg-green-500/10 text-[10px] font-medium text-green-500">
-            <CheckCircle className="w-3 h-3 mr-1" /> {t("status.paid")}
-          </span>
+          <Badge variant="success">
+            <CheckCircle className="w-3 h-3" /> {t("status.paid")}
+          </Badge>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-yellow-500/30/20 bg-yellow-500/10 text-[10px] font-medium text-yellow-500">
-            <Clock className="w-3 h-3 mr-1" /> {t("status.pending")}
-          </span>
+          <Badge variant="warning">
+            <Clock className="w-3 h-3" /> {t("status.pending")}
+          </Badge>
         );
       case "cancelled":
       case "refunded":
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-red-500/30/20 bg-red-500/10 text-[10px] font-medium text-red-500">
-            <AlertCircle className="w-3 h-3 mr-1" /> {t("status.cancelled")}
-          </span>
+          <Badge variant="danger">
+            <AlertCircle className="w-3 h-3" /> {t("status.cancelled")}
+          </Badge>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-gray-500/20 bg-[#181A1D]0/10 text-[10px] font-medium text-gray-400">
+          <Badge variant="neutral">
             {status}
-          </span>
+          </Badge>
         );
     }
   };
 
   return (
     <div>
-      {/* Page Header */}
-      <div className="relative mb-6">
-        <motion.h2
-          className="text-2xl font-bold text-white mb-2 relative flex items-center"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
-          {t("title")}
-        </motion.h2>
-        <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
-          {t("subtitle")}
-        </p>
-      </div>
+      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
 
       <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
         <div className="relative w-full sm:w-80">
@@ -206,130 +196,113 @@ export default function InvoicePage() {
             placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] pl-10 transition-all placeholder-gray-500"
+            className="site-input w-full pl-10"
           />
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-site-dim" />
         </div>
 
         <div className="relative w-full sm:w-auto ml-auto">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="appearance-none w-full sm:w-48 bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 pr-10 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] transition-all cursor-pointer"
+            className="site-input appearance-none w-full sm:w-48 pr-10 cursor-pointer"
           >
             <option value="all">{t("filter.all")}</option>
             <option value="paid">{t("filter.paid")}</option>
             <option value="pending">{t("filter.pending")}</option>
             <option value="cancelled">{t("filter.cancelled")}</option>
           </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-site-muted pointer-events-none" />
         </div>
       </div>
 
-      <motion.div
-        className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <div className="site-card overflow-hidden">
         {isLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="animate-pulse flex flex-col items-center">
-              <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
-              <p className="mt-4 text-sm text-gray-400">{tCommon("loading")}</p>
-            </div>
+          <div className="space-y-0 p-4">
+            {[1, 2, 3, 4].map((i) => <SkeletonListRow key={i} />)}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#1A1C1E] border-b border-site-border">
+              <thead className="bg-site-raised border-b border-site-border-soft">
                 <tr>
-                  <th className="px-5 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider whitespace-nowrap">
                     {t("table.invoice_number")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider whitespace-nowrap">
                     {t("table.date")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider whitespace-nowrap">
                     {t("table.order_number")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider whitespace-nowrap">
                     {t("table.amount")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider whitespace-nowrap">
                     {t("table.status")}
                   </th>
-                  <th className="px-5 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap text-right">
+                  <th className="px-5 py-3 text-[11px] uppercase text-site-dim font-bold tracking-wider whitespace-nowrap text-right">
                     {t("table.actions")}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-site-border/50">
+              <tbody>
                 {filteredInvoices.length > 0 ? (
-                  filteredInvoices.map((invoice, index) => (
-                    <motion.tr
+                  filteredInvoices.map((invoice) => (
+                    <tr
                       key={invoice.id}
-                      className="hover:bg-[#1A1C1E]/50 transition-colors group"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      className="border-b border-site-border-soft last:border-b-0 hover:bg-site-raised transition-colors group"
                     >
-                      <td className="px-5 py-4 text-sm font-medium text-white group-hover:text-[var(--site-accent)] transition-colors">
+                      <td className="px-5 py-3 text-sm font-medium text-site-text group-hover:text-site-accent transition-colors">
                         <div className="flex items-center gap-2">
-                          <FileText size={16} className="text-gray-500 group-hover:text-[var(--site-accent)] transition-colors" />
+                          <FileText size={14} className="text-site-dim group-hover:text-site-accent transition-colors" />
                           {invoice.invoiceNumber}
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-sm text-gray-400">
+                      <td className="px-5 py-3 text-sm text-site-muted">
                         {formatDate(invoice.issuedAt)}
                       </td>
-                      <td className="px-5 py-4 text-sm">
-                        <span className="bg-[#1A1C1E] text-gray-300 py-1 px-2.5 rounded-md border border-site-border font-mono text-xs">
+                      <td className="px-5 py-3 text-sm">
+                        <span className="bg-site-raised text-site-muted py-0.5 px-2 rounded-4 border border-site-border-soft font-mono text-xs">
                           {invoice.orderNumber}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-sm font-semibold text-[var(--site-accent)]">
+                      <td className="px-5 py-3 text-sm font-semibold text-site-accent">
                         {formatCurrency(invoice.totalAmount)}
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3">
                         {renderStatusBadge(invoice.status)}
                       </td>
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-5 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link href={`/dashboard/invoice/${invoice.id}`}>
                             <button
-                              className="p-2 rounded-lg border border-site-border bg-[#1A1C1E] hover:bg-[#2A2D31] hover:border-[var(--site-accent)]/50 text-gray-400 hover:text-[var(--site-accent)] transition-all shadow-sm"
+                              className="p-1.5 rounded-6 border border-site-border-soft bg-site-surface hover:bg-site-raised hover:border-site-accent/50 text-site-muted hover:text-site-accent transition-colors"
                               title={t("actions.view")}
                             >
-                              <Eye size={16} />
+                              <Eye size={14} />
                             </button>
                           </Link>
-                          {/* Removing download icon link for now or keeping it with same style as eye */}
                           <Link href={`/dashboard/invoice/${invoice.id}`}>
                             <button
-                              className="p-2 rounded-lg border border-site-border bg-[#1A1C1E] hover:bg-[#2A2D31] hover:border-[var(--site-accent)]/50 text-gray-400 hover:text-[var(--site-accent)] transition-all shadow-sm"
+                              className="p-1.5 rounded-6 border border-site-border-soft bg-site-surface hover:bg-site-raised hover:border-site-accent/50 text-site-muted hover:text-site-accent transition-colors"
                               title={t("actions.download")}
                             >
-                              <Download size={16} />
+                              <Download size={14} />
                             </button>
                           </Link>
                         </div>
                       </td>
-                    </motion.tr>
+                    </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-5 py-16 text-center">
-                      <div className="w-16 h-16 bg-[#1A1C1E] rounded-full border border-site-border flex items-center justify-center mx-auto mb-4 shadow-inner">
-                        <FileText size={28} className="text-gray-500" />
-                      </div>
-                      <p className="text-white text-lg font-medium mb-2">
-                        {t("no_invoices")}
-                      </p>
-                      <p className="text-sm text-gray-400 max-w-md mx-auto">
-                        {searchTerm
+                    <td colSpan={6} className="px-5 py-12 text-center">
+                      <EmptyState icon={FileText} message={
+                        searchTerm
                           ? t("no_search_results", { query: searchTerm })
-                          : t("no_invoices_desc")}
-                      </p>
+                          : t("no_invoices_desc")
+                      } />
                     </td>
                   </tr>
                 )}
@@ -337,7 +310,7 @@ export default function InvoicePage() {
             </table>
           </div>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

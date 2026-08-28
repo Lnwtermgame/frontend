@@ -16,9 +16,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton, SkeletonListRow } from "@/components/ui/Skeleton";
 
 export default function CouponsPage() {
   const t = useTranslations("Coupons");
@@ -195,9 +198,9 @@ export default function CouponsPage() {
   if (!isSessionChecked || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="w-10 h-10 rounded-8" />
+          <p className="text-site-muted font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -210,20 +213,7 @@ export default function CouponsPage() {
 
   return (
     <div>
-      {/* Page Header */}
-      <div className="relative mb-6">
-        <motion.h2
-          className="text-2xl font-bold text-white mb-2 relative flex items-center"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
-          {t("title")}
-        </motion.h2>
-        <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
-          {t("subtitle", { count: activeCouponCount })}
-        </p>
-      </div>
+      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle", { count: activeCouponCount })} />
 
       <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
         <div className="relative w-full sm:w-72">
@@ -232,82 +222,69 @@ export default function CouponsPage() {
             placeholder={t("search_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] pl-10 transition-all placeholder-gray-500"
+            className="site-input w-full pl-10"
           />
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-site-dim" />
         </div>
 
         <div className="relative w-full sm:w-auto ml-auto">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="appearance-none w-full sm:w-48 bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2.5 pr-10 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] transition-all cursor-pointer"
+            className="site-input appearance-none w-full sm:w-48 pr-10 cursor-pointer"
           >
             <option value="all">{t("filter.all")}</option>
             <option value="active">{t("filter.active")}</option>
             <option value="used">{t("filter.used")}</option>
             <option value="expired">{t("filter.expired")}</option>
           </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-site-muted pointer-events-none" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           {isLoading ? (
-            <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
-              <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => <SkeletonListRow key={i} />)}
             </div>
           ) : filteredCoupons.length === 0 ? (
-            <motion.div
-              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-8 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className="w-16 h-16 bg-[#1A1C1E] rounded-full border border-site-border flex items-center justify-center mx-auto mb-4">
-                <Ticket className="h-8 w-8 text-gray-500" />
-              </div>
-              <h2 className="text-xl font-bold text-white mb-2">
-                {t("no_coupons")}
-              </h2>
-              <p className="text-gray-400 text-sm mb-6 max-w-sm mx-auto">
-                {searchTerm
+            <div className="site-card p-8 text-center">
+              <EmptyState icon={Ticket} message={
+                searchTerm
                   ? t("no_search_results", { query: searchTerm })
-                  : t("no_coupons_desc")}
-              </p>
+                  : t("no_coupons_desc")
+              } />
               <Link
                 href="/games"
-                className="inline-flex items-center px-6 py-2.5 rounded-lg bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white font-semibold transition-all text-sm"
+                className="site-btn inline-flex mt-4"
               >
                 {t("start_shopping")}
               </Link>
-            </motion.div>
+            </div>
           ) : (
-            <div className="space-y-4">
-              {filteredCoupons.map((coupon, index) => {
+            <div className="space-y-3">
+              {filteredCoupons.map((coupon) => {
                 const status = getCouponStatus(coupon);
                 return (
-                  <motion.div
+                  <div
                     key={coupon.userCouponId || coupon.id}
-                    className="bg-[#222427] border border-site-border rounded-xl shadow-ocean overflow-hidden"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    className="site-card overflow-hidden"
                   >
                     <div
-                      className="p-4 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-[#1A1C1E]/50 transition-colors"
+                      className="p-4 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer hover:bg-site-raised transition-colors"
                       onClick={() => toggleCouponExpansion(coupon.id)}
                     >
                       <div className="flex items-center mb-3 sm:mb-0">
-                        <div className="h-12 w-12 bg-[#1A1C1E] border border-site-border rounded-lg flex items-center justify-center mr-4 shrink-0 text-[var(--site-accent)]">
-                          <Ticket className="h-6 w-6" />
+                        <div className="h-10 w-10 bg-site-raised border border-site-border-soft rounded-6 flex items-center justify-center mr-3 shrink-0 text-site-accent">
+                          <Ticket className="h-5 w-5" />
                         </div>
                         <div>
-                          <div className="text-white font-semibold text-base mb-1">
+                          <div className="text-site-text font-semibold text-sm mb-0.5">
                             {coupon.description ||
                               `${tCommon("member")} ${coupon.discountPercentage}%`}
                           </div>
-                          <div className="text-gray-400 text-sm">
+                          <div className="text-site-muted text-xs">
                             {coupon.minPurchase
                               ? t("details.min_purchase", { amount: formatCurrency(coupon.minPurchase) })
                               : t("details.no_min_purchase")}
@@ -315,76 +292,72 @@ export default function CouponsPage() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
-                        <div className="mr-4">
-                          <span
-                            className={`px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide border
-                            ${status === "active"
-                                ? "bg-green-500/10 text-green-500 border-green-500/30/20"
-                                : status === "used"
-                                  ? "bg-[#181A1D]0/10 text-gray-400 border-gray-500/20"
-                                  : "bg-red-500/10 text-red-500 border-red-500/30/20"
-                              }`}
-                          >
+                        <div className="mr-3">
+                          <Badge variant={
+                            status === "active" ? "success"
+                              : status === "used" ? "neutral"
+                                : "danger"
+                          }>
                             {status === "active"
                               ? t("status.active")
                               : status === "used"
                                 ? t("status.used")
                                 : t("status.expired")}
-                          </span>
+                          </Badge>
                         </div>
-                        <div className="p-1.5 rounded-lg bg-[#1A1C1E] border border-site-border">
+                        <div className="p-1.5 rounded-6 bg-site-raised border border-site-border-soft">
                           {expandedCoupons.includes(coupon.id) ? (
-                            <ChevronUp className="h-4 w-4 text-gray-400" />
+                            <ChevronUp className="h-4 w-4 text-site-muted" />
                           ) : (
-                            <ChevronDown className="h-4 w-4 text-gray-400" />
+                            <ChevronDown className="h-4 w-4 text-site-muted" />
                           )}
                         </div>
                       </div>
                     </div>
 
                     {expandedCoupons.includes(coupon.id) && (
-                      <div className="p-4 border-t border-site-border bg-[#1A1C1E]/50">
+                      <div className="p-4 border-t border-site-border-soft bg-site-raised/50">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="bg-[#1A1C1E] p-4 rounded-xl border border-site-border">
-                            <h3 className="text-white text-sm font-semibold mb-3 flex items-center gap-2">
-                              <Clock size={14} className="text-[var(--site-accent)]" />{" "}
+                          <div className="bg-site-surface p-4 rounded-8 border border-site-border-soft">
+                            <h3 className="text-site-text text-sm font-semibold mb-3 flex items-center gap-2">
+                              <Clock size={14} className="text-site-accent" />{" "}
                               {t("details.title")}
                             </h3>
                             <div className="space-y-2 text-sm">
-                              <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
-                                <span className="text-gray-400">
+                              <div className="flex justify-between items-center p-2 rounded-6 bg-site-raised border border-site-border-soft">
+                                <span className="text-site-muted">
                                   {t("details.discount")}
                                 </span>
-                                <span className="text-[var(--site-accent)] font-semibold">
+                                <span className="text-site-accent font-semibold">
                                   {coupon.discountPercentage}%
                                 </span>
                               </div>
                               {coupon.maxDiscount && (
-                                <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
-                                  <span className="text-gray-400">
+                                <div className="flex justify-between items-center p-2 rounded-6 bg-site-raised border border-site-border-soft">
+                                  <span className="text-site-muted">
                                     {t("details.max_discount")}
                                   </span>
-                                  <span className="text-white font-medium">
+                                  <span className="text-site-text font-medium">
                                     {formatCurrency(coupon.maxDiscount)}
                                   </span>
                                 </div>
                               )}
-                              <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
-                                <span className="text-gray-400">
+                              <div className="flex justify-between items-center p-2 rounded-6 bg-site-raised border border-site-border-soft">
+                                <span className="text-site-muted">
                                   {t("details.valid_until")}
                                 </span>
                                 <span
-                                  className={`font-medium ${status === "expired" ? "text-red-500" : "text-white"}`}
+                                  className={`font-medium ${status === "expired" ? "text-status-danger" : "text-site-text"}`}
                                 >
                                   {new Date(coupon.endDate).toLocaleDateString()}
                                 </span>
                               </div>
                               {coupon.isUsed && coupon.usedAt && (
-                                <div className="flex justify-between items-center p-2 rounded-lg bg-[#222427] border border-site-border">
-                                  <span className="text-gray-400">
+                                <div className="flex justify-between items-center p-2 rounded-6 bg-site-raised border border-site-border-soft">
+                                  <span className="text-site-muted">
                                     {t("details.used_at")}
                                   </span>
-                                  <span className="text-white font-medium">
+                                  <span className="text-site-text font-medium">
                                     {new Date(coupon.usedAt).toLocaleDateString()}
                                   </span>
                                 </div>
@@ -392,9 +365,9 @@ export default function CouponsPage() {
                             </div>
                           </div>
 
-                          <div className="bg-[#1A1C1E] p-4 rounded-xl border border-site-border flex flex-col justify-center">
+                          <div className="bg-site-surface p-4 rounded-8 border border-site-border-soft flex flex-col justify-center">
                             <div className="flex justify-between items-center mb-3">
-                              <h3 className="text-white text-sm font-semibold">
+                              <h3 className="text-site-text text-sm font-semibold">
                                 {t("add_coupon")}
                               </h3>
                               {status === "active" && (
@@ -403,7 +376,7 @@ export default function CouponsPage() {
                                     e.stopPropagation();
                                     copyToClipboard(coupon.code, coupon.id);
                                   }}
-                                  className="text-xs text-[var(--site-accent)] hover:text-white font-medium flex items-center transition-colors"
+                                  className="text-xs text-site-accent hover:text-site-text font-medium flex items-center transition-colors"
                                 >
                                   {copiedCode === coupon.id ? (
                                     <>
@@ -419,7 +392,7 @@ export default function CouponsPage() {
                                 </button>
                               )}
                             </div>
-                            <div className="p-3 bg-[#222427] border border-site-border rounded-lg font-mono text-[var(--site-accent)] text-lg select-all text-center tracking-widest font-bold">
+                            <div className="p-3 bg-site-raised border border-site-border-soft rounded-6 font-mono text-site-accent text-lg select-all text-center tracking-widest font-bold">
                               {coupon.code}
                             </div>
 
@@ -427,7 +400,7 @@ export default function CouponsPage() {
                               <div className="mt-4">
                                 <Link
                                   href="/games"
-                                  className="w-full rounded-lg bg-[#222427] border border-site-border hover:border-[var(--site-accent)]/50 hover:bg-[#2A2D31] text-white inline-flex items-center justify-center text-sm py-2.5 transition-all shadow-sm font-medium"
+                                  className="w-full rounded-6 bg-site-surface border border-site-border-soft hover:border-site-accent/50 hover:bg-site-raised text-site-text inline-flex items-center justify-center text-sm py-2.5 transition-colors font-medium"
                                 >
                                   {t("details.use_now")}
                                 </Link>
@@ -437,7 +410,7 @@ export default function CouponsPage() {
                         </div>
                       </div>
                     )}
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
@@ -445,18 +418,13 @@ export default function CouponsPage() {
         </div>
 
         <div className="space-y-6">
-          <motion.div
-            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h2 className="text-white font-bold mb-4 flex items-center gap-2 text-base">
-              <Plus size={18} className="text-[var(--site-accent)]" /> {t("add_coupon")}
+          <div className="site-card p-6">
+            <h2 className="text-site-text font-bold mb-4 flex items-center gap-2 text-sm">
+              <Plus size={16} className="text-site-accent" /> {t("add_coupon")}
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">
+                <label className="block text-xs text-site-muted mb-2 font-medium">
                   {t("code_label")}
                 </label>
                 <div className="flex gap-2">
@@ -469,88 +437,81 @@ export default function CouponsPage() {
                       setErrorMessage("");
                     }}
                     onKeyPress={(e) => e.key === "Enter" && handleClaimCoupon()}
-                    className="flex-1 min-w-0 bg-[#1A1C1E] border border-site-border rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--site-accent)] transition-all placeholder-gray-500"
+                    className="site-input flex-1 min-w-0"
                   />
                   <button
                     onClick={handleClaimCoupon}
-                    className="bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/80 text-white rounded-lg px-3 flex items-center justify-center transition-all"
+                    className="site-btn px-3 flex items-center justify-center"
                   >
                     <Plus className="h-5 w-5" />
                   </button>
                 </div>
                 {errorMessage && (
-                  <motion.div
-                    className={`mt-3 text-xs flex items-start p-2.5 rounded-lg border ${errorMessage.includes(t("validating")) || errorMessage.includes("กำลัง")
-                      ? "text-yellow-500 bg-yellow-500/10 border-yellow-500/30/20"
-                      : "text-red-500 bg-red-500/10 border-red-500/30/20"
+                  <div
+                    className={`mt-3 text-xs flex items-start p-2.5 rounded-6 border ${errorMessage.includes(t("validating")) || errorMessage.includes("\u0E01\u0E33\u0E25\u0E31\u0E07")
+                      ? "text-status-warning bg-status-warning/10 border-status-warning/20"
+                      : "text-status-danger bg-status-danger/10 border-status-danger/20"
                       }`}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
                   >
                     <AlertCircle className="h-4 w-4 mt-0.5 mr-2 flex-shrink-0" />
                     <span className="font-medium">{errorMessage}</span>
-                  </motion.div>
+                  </div>
                 )}
-                <p className="text-gray-500 text-xs mt-3 flex items-center gap-1.5">
-                  <AlertCircle className="h-3 w-3 text-[var(--site-accent)]" />
+                <p className="text-site-dim text-xs mt-3 flex items-center gap-1.5">
+                  <AlertCircle className="h-3 w-3 text-site-accent" />
                   {t("expiry_hint")}
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* How to Use Section */}
-          <motion.div
-            className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h2 className="text-white font-bold mb-4 flex items-center gap-2 text-base">
+          <div className="site-card p-6">
+            <h2 className="text-site-text font-bold mb-4 flex items-center gap-2 text-sm">
               {t("how_to_use.title")}
             </h2>
             <div className="space-y-4">
               <div className="flex items-start">
-                <div className="h-6 w-6 rounded-full bg-[#1A1C1E] border border-site-border text-[var(--site-accent)] flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
+                <div className="h-6 w-6 rounded-4 bg-site-raised border border-site-border-soft text-site-accent flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
                   1
                 </div>
                 <div className="mt-0.5">
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-site-muted text-sm">
                     {t("how_to_use.step1")}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start">
-                <div className="h-6 w-6 rounded-full bg-[#1A1C1E] border border-site-border text-[var(--site-accent)] flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
+                <div className="h-6 w-6 rounded-4 bg-site-raised border border-site-border-soft text-site-accent flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
                   2
                 </div>
                 <div className="mt-0.5">
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-site-muted text-sm">
                     {t("how_to_use.step2")}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start">
-                <div className="h-6 w-6 rounded-full bg-[#1A1C1E] border border-site-border text-[var(--site-accent)] flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
+                <div className="h-6 w-6 rounded-4 bg-site-raised border border-site-border-soft text-site-accent flex items-center justify-center mr-3 flex-shrink-0 text-xs font-semibold">
                   3
                 </div>
                 <div className="mt-0.5">
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-site-muted text-sm">
                     {t("how_to_use.step3")}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start mt-6 pt-4 border-t border-site-border">
-                <Clock className="h-4 w-4 text-gray-500 mr-2 mt-0.5" />
-                <span className="text-gray-500 text-xs leading-relaxed">
+              <div className="flex items-start mt-6 pt-4 border-t border-site-border-soft">
+                <Clock className="h-4 w-4 text-site-dim mr-2 mt-0.5" />
+                <span className="text-site-dim text-xs leading-relaxed">
                   {t("expiry_hint")}
                 </span>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

@@ -10,21 +10,20 @@ import {
   Check,
   Clock,
   Info,
-  AlertTriangle,
   Gift,
   Tag,
-  CheckCircle,
   Trash2,
   ShoppingBag,
   CreditCard,
   Megaphone,
-  Wifi,
-  WifiOff,
 } from "lucide-react";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton, SkeletonListRow } from "@/components/ui/Skeleton";
 
 export default function NotificationsPage() {
   const t = useTranslations("Notifications");
@@ -170,15 +169,15 @@ export default function NotificationsPage() {
   const renderIcon = (type: string) => {
     switch (type) {
       case "ORDER":
-        return <ShoppingBag className="text-blue-500" size={16} />;
+        return <ShoppingBag className="text-status-info" size={16} />;
       case "PAYMENT":
-        return <CreditCard className="text-green-500" size={16} />;
+        return <CreditCard className="text-status-success" size={16} />;
       case "PROMOTION":
-        return <Megaphone className="text-[var(--site-accent)]" size={16} />;
+        return <Megaphone className="text-site-accent" size={16} />;
       case "SYSTEM":
-        return <Info className="text-yellow-500" size={16} />;
+        return <Info className="text-status-warning" size={16} />;
       default:
-        return <Bell className="text-gray-400" size={16} />;
+        return <Bell className="text-site-muted" size={16} />;
     }
   };
 
@@ -186,15 +185,15 @@ export default function NotificationsPage() {
   const getIconBg = (type: string) => {
     switch (type) {
       case "ORDER":
-        return "bg-blue-500/10 border border-blue-500/20";
+        return "bg-status-info/10 border border-status-info/20";
       case "PAYMENT":
-        return "bg-green-500/10 border border-green-500/30/20";
+        return "bg-status-success/10 border border-status-success/20";
       case "PROMOTION":
-        return "bg-[var(--site-accent)]/10 border border-[var(--site-accent)]/20";
+        return "bg-site-accent/10 border border-site-accent/20";
       case "SYSTEM":
-        return "bg-yellow-500/10 border border-yellow-500/30/20";
+        return "bg-status-warning/10 border border-status-warning/20";
       default:
-        return "bg-[#1A1C1E] border border-site-border";
+        return "bg-site-raised border border-site-border-soft";
     }
   };
 
@@ -202,9 +201,9 @@ export default function NotificationsPage() {
   if (!isInitialized || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="w-10 h-10 rounded-8" />
+          <p className="text-site-muted font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -212,197 +211,149 @@ export default function NotificationsPage() {
 
   return (
     <div>
-      {/* Page Header */}
-      <div className="relative mb-6">
-        <div className="flex justify-between items-start">
+      {/* Page Header with unread badge */}
+      <div className="mb-4">
+        <div className="flex items-end justify-between mb-4">
           <div>
-            <motion.h2
-              className="text-2xl font-bold text-white mb-2 relative flex items-center"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
+            <h1 className="text-xl md:text-2xl font-extrabold text-site-text leading-none mb-1 flex items-center">
               {t("title")}
               {unreadCount > 0 && (
-                <span className="ml-3 bg-[var(--site-accent)]/10 text-[var(--site-accent)] border border-[var(--site-accent)]/20 rounded-md text-xs px-2 py-0.5 font-bold">
-                  {t("unread_badge", { count: unreadCount })}
+                <span className="ml-3">
+                  <Badge variant="info">
+                    {t("unread_badge", { count: unreadCount })}
+                  </Badge>
                 </span>
               )}
-            </motion.h2>
-            <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
+            </h1>
+            <p className="text-[11px] text-site-dim uppercase font-bold tracking-widest leading-none">
               {t("subtitle")}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             {unreadCount > 0 && (
-              <motion.button
+              <button
                 onClick={markAllAsRead}
-                whileHover={{ y: -2 }}
-                className="text-xs text-white hover:text-[var(--site-accent)] transition-colors bg-[#222427] border border-site-border rounded-lg px-3 py-1.5 font-medium hover:border-[var(--site-accent)]/50"
+                className="text-xs text-site-text hover:text-site-accent transition-colors bg-site-surface border border-site-border-soft rounded-6 px-3 py-1.5 font-medium hover:border-site-accent/50"
               >
                 {t("mark_all_read")}
-              </motion.button>
+              </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
-        <button
-          onClick={() => setFilter("all")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "all"
-              ? "bg-[#222427] text-white border-site-border shadow-sm"
-              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
-            }`}
-        >
-          {t("filters.all")}
-        </button>
-        <button
-          onClick={() => setFilter("unread")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "unread"
-              ? "bg-[#222427] text-white border-site-border shadow-sm"
-              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
-            }`}
-        >
-          {t("filters.unread")}
-        </button>
-        <button
-          onClick={() => setFilter("order")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "order"
-              ? "bg-[#222427] text-white border-site-border shadow-sm"
-              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
-            }`}
-        >
-          {t("filters.order")}
-        </button>
-        <button
-          onClick={() => setFilter("payment")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "payment"
-              ? "bg-[#222427] text-white border-site-border shadow-sm"
-              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
-            }`}
-        >
-          {t("filters.payment")}
-        </button>
-        <button
-          onClick={() => setFilter("promotion")}
-          className={`px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border ${filter === "promotion"
-              ? "bg-[#222427] text-white border-site-border shadow-sm"
-              : "bg-[#1A1C1E] border-transparent text-gray-400 hover:text-white"
-            }`}
-        >
-          {t("filters.promotion")}
-        </button>
+      {/* Filters - underline tab style */}
+      <div className="flex gap-0 mb-6 overflow-x-auto pb-0 scrollbar-none border-b border-site-border-soft">
+        {[
+          { key: "all", label: t("filters.all") },
+          { key: "unread", label: t("filters.unread") },
+          { key: "order", label: t("filters.order") },
+          { key: "payment", label: t("filters.payment") },
+          { key: "promotion", label: t("filters.promotion") },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${filter === tab.key
+              ? "text-site-text border-site-accent"
+              : "text-site-muted border-transparent hover:text-site-text"
+              }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Notifications List */}
-      <div className="space-y-3">
-        <AnimatePresence mode="popLayout">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
-              <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
-            </div>
-          ) : filteredNotifications.length > 0 ? (
-            filteredNotifications.map((notification) => (
-              <motion.div
-                key={notification.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className={`bg-[#222427] border border-site-border shadow-ocean rounded-xl relative group overflow-hidden transition-all hover:border-[var(--site-accent)]/50 ${!notification.isRead ? "before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[var(--site-accent)]" : ""
-                  }`}
-              >
-                <Link
-                  href={getNotificationLink(notification)}
-                  className="p-4 sm:p-5 flex items-start gap-4 cursor-pointer block"
-                >
-                  <div
-                    className={`p-2.5 rounded-xl flex-shrink-0 shadow-sm ${getIconBg(notification.type)}`}
-                  >
-                    {renderIcon(notification.type)}
-                  </div>
-
-                  <div className="flex-1 min-w-0 pr-8 sm:pr-0">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-0.5 gap-1 sm:gap-2">
-                      <h3
-                        className={`font-semibold text-sm sm:text-base truncate ${!notification.isRead ? "text-white" : "text-gray-300"}`}
-                      >
-                        {notification.title}
-                      </h3>
-                      <span className="text-xs text-gray-500 flex-shrink-0 flex items-center gap-1.5 font-medium">
-                        <Clock size={12} className="opacity-70" />
-                        {new Date(notification.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-
-                    <p
-                      className={`text-xs sm:text-sm mb-2 line-clamp-2 ${!notification.isRead ? "text-gray-300" : "text-gray-500"}`}
-                    >
-                      {notification.message}
-                    </p>
-
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-xs text-[var(--site-accent)] font-medium hover:underline inline-flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        {t("view_details")}
-                      </span>
-                    </div>
-
-                    {/* Action Buttons - Absolute visible on hover */}
-                    <div className="absolute right-4 top-4 sm:top-1/2 sm:-translate-y-1/2 flex flex-col sm:flex-row gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                      {!notification.isRead && (
-                        <button
-                          onClick={(e) => markAsRead(notification.id, e)}
-                          className="p-2 rounded-lg bg-[#1A1C1E] border border-site-border text-gray-400 hover:text-white hover:border-green-500/30/50 hover:bg-green-500/10 transition-all shadow-sm"
-                          title={t("mark_read")}
-                        >
-                          <Check size={16} />
-                        </button>
-                      )}
-                      <button
-                        onClick={(e) =>
-                          deleteNotification(notification.id, e)
-                        }
-                        className="p-2 rounded-lg bg-[#1A1C1E] border border-site-border text-gray-400 hover:text-white hover:border-red-500/30/50 hover:bg-red-500/10 transition-all shadow-sm"
-                        title={t("delete")}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-[#222427] border border-site-border rounded-xl shadow-ocean p-12 text-center"
+      <div className="space-y-2">
+        {isLoading ? (
+          <div className="space-y-2">
+            {[1, 2, 3, 4].map((i) => <SkeletonListRow key={i} />)}
+          </div>
+        ) : filteredNotifications.length > 0 ? (
+          filteredNotifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={`site-card relative group overflow-hidden transition-colors hover:bg-site-raised ${!notification.isRead ? "before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-site-accent" : ""
+                }`}
             >
-              <div className="w-16 h-16 bg-[#1A1C1E] border border-site-border rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bell size={28} className="text-gray-500" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">
-                {t("empty_title")}
-              </h3>
-              <p className="text-gray-400 text-sm max-w-sm mx-auto">
-                {filter !== "all"
-                  ? t("empty_filter_desc")
-                  : t("empty_desc")}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <Link
+                href={getNotificationLink(notification)}
+                className="p-4 sm:p-5 flex items-start gap-4 cursor-pointer block"
+              >
+                <div
+                  className={`p-2 rounded-6 flex-shrink-0 ${getIconBg(notification.type)}`}
+                >
+                  {renderIcon(notification.type)}
+                </div>
+
+                <div className="flex-1 min-w-0 pr-8 sm:pr-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-0.5 gap-1 sm:gap-2">
+                    <h3
+                      className={`font-semibold text-sm sm:text-base truncate ${!notification.isRead ? "text-site-text" : "text-site-muted"}`}
+                    >
+                      {notification.title}
+                    </h3>
+                    <span className="text-[11px] text-site-dim flex-shrink-0 flex items-center gap-1 font-medium">
+                      <Clock size={11} className="opacity-70" />
+                      {new Date(notification.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <p
+                    className={`text-xs sm:text-sm mb-2 line-clamp-2 ${!notification.isRead ? "text-site-muted" : "text-site-dim"}`}
+                  >
+                    {notification.message}
+                  </p>
+
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-xs text-site-accent font-medium hover:underline inline-flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      {t("view_details")}
+                    </span>
+                  </div>
+
+                  {/* Action Buttons - Absolute visible on hover */}
+                  <div className="absolute right-4 top-4 sm:top-1/2 sm:-translate-y-1/2 flex flex-col sm:flex-row gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                    {!notification.isRead && (
+                      <button
+                        onClick={(e) => markAsRead(notification.id, e)}
+                        className="p-1.5 rounded-6 bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-status-success/50 hover:bg-status-success/10 transition-colors"
+                        title={t("mark_read")}
+                      >
+                        <Check size={14} />
+                      </button>
+                    )}
+                    <button
+                      onClick={(e) =>
+                        deleteNotification(notification.id, e)
+                      }
+                      className="p-1.5 rounded-6 bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-status-danger/50 hover:bg-status-danger/10 transition-colors"
+                      title={t("delete")}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div className="site-card p-12 text-center">
+            <EmptyState icon={Bell} message={
+              filter !== "all"
+                ? t("empty_filter_desc")
+                : t("empty_desc")
+            } />
+          </div>
+        )}
       </div>
 
       {/* Preferences Link */}
       <div className="mt-8 text-center flex justify-center">
         <Link
           href="/dashboard/notifications/preferences"
-          className="text-gray-400 hover:text-white text-sm font-medium transition-colors inline-flex items-center px-4 py-2 rounded-lg bg-[#222427] border border-site-border hover:border-[var(--site-accent)]/50"
+          className="text-site-muted hover:text-site-text text-sm font-medium transition-colors inline-flex items-center px-4 py-2 rounded-6 bg-site-surface border border-site-border-soft hover:border-site-accent/50"
         >
           {t("manage_settings")}
         </Link>

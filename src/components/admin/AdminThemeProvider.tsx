@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useMemo } from "react";
 import { useTheme, type Theme } from "@/lib/hooks/use-theme";
 
 const ThemeContext = createContext<{
@@ -12,8 +12,8 @@ const ThemeContext = createContext<{
  * Wraps the admin area.
  *
  * Dark-only: no longer writes any theme attribute to the DOM. Kept as a context
- * provider so AdminTopbar (and any future admin component) can read the
- * theme value without importing the hook directly.
+ * provider so any admin component can read the theme value without importing
+ * the hook directly.
  */
 export function AdminThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme, toggleTheme } = useTheme();
@@ -23,13 +23,4 @@ export function AdminThemeProvider({ children }: { children: React.ReactNode }) 
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
-}
-
-/** Read theme from AdminThemeProvider context. Throws if used outside admin. */
-export function useAdminTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) {
-    throw new Error("useAdminTheme must be used within AdminThemeProvider");
-  }
-  return ctx;
 }

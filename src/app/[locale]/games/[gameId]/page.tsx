@@ -45,7 +45,7 @@ import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Skeleton, SkeletonHero, SkeletonGameTile } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useTranslations } from "next-intl";
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
@@ -204,6 +204,36 @@ export default function GameDetailsPage() {
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+
+  // Confirmation modal: escape-key close + body scroll lock
+  useEffect(() => {
+    if (!showConfirmModal) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowConfirmModal(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [showConfirmModal]);
+
+  // Payment selection modal: escape-key close + body scroll lock
+  useEffect(() => {
+    if (!isPaymentSelectOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsPaymentSelectOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isPaymentSelectOpen]);
 
   // Field label translation map
   const FIELD_LABEL_MAP: Record<string, string> = {
@@ -1296,8 +1326,10 @@ export default function GameDetailsPage() {
       {/* ── Tabs section (topup options expanded + game info) ── */}
       <div className="site-card overflow-hidden mb-8">
         {/* Tab bar */}
-        <div className="flex border-b border-site-border-soft overflow-x-auto hide-scrollbar">
+        <div role="tablist" className="flex border-b border-site-border-soft overflow-x-auto hide-scrollbar">
           <button
+            role="tab"
+            aria-selected={activeTab === "topup"}
             onClick={() => setActiveTab("topup")}
             className={`py-3.5 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors border-b-2 ${activeTab === "topup"
               ? "text-site-text border-site-accent"
@@ -1308,6 +1340,8 @@ export default function GameDetailsPage() {
             {optionsTabLabel}
           </button>
           <button
+            role="tab"
+            aria-selected={activeTab === "info"}
             onClick={() => setActiveTab("info")}
             className={`py-3.5 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors border-b-2 ${activeTab === "info"
               ? "text-site-text border-site-accent"
@@ -1325,7 +1359,7 @@ export default function GameDetailsPage() {
           </div>
         </div>
 
-        <div className="p-5 md:p-8">
+        <div role="tabpanel" className="p-5 md:p-8">
           {/* Desktop-only expanded top-up grid (in-tab view) */}
           <div
             className={activeTab === "topup" ? "hidden md:block" : "hidden"}

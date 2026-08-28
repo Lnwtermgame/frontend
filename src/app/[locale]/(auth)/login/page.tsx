@@ -225,7 +225,7 @@ function LoginContent() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-site-dim transition-colors hover:text-site-text focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-site-dim transition-colors hover:text-site-text focus-visible:ring-2 focus-visible:ring-site-accent/40 focus-visible:rounded-4"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   aria-pressed={showPassword}
                 >

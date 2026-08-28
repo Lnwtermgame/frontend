@@ -1,7 +1,8 @@
 "use client";
 
 import { Suspense } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { UtilityBar } from "./UtilityBar";
 import MainNav from "./MainNav";
 import Footer from "./Footer";

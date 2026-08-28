@@ -61,7 +61,7 @@ export default function Footer() {
                             </div>
                         ))}
                     </div>
-                    <div className="mt-4 md:mt-0 flex items-center gap-2 cursor-pointer text-site-text hover:text-site-accent transition-colors">
+                    <div className="mt-4 md:mt-0 flex items-center gap-2 text-site-text">
                         <img src={currentLang.flag} alt={currentLang.code} className="w-[18px] rounded-[2px]" />
                         <span className="text-[13px] font-bold">{currentLang.label}</span>
                     </div>

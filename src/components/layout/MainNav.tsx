@@ -1,18 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { ChevronDown, Coins, AlignJustify, X, User, LogOut, ShoppingCart, Shield } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { NavSearchBox } from "./NavSearchBox";
 
+function getUserInitial(user: { name?: string | null; username?: string | null; email?: string | null } | null | undefined): string {
+    return (user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase();
+}
+
 export default function MainNav() {
     const t = useTranslations();
-    const tAdmin = useTranslations();
     const pathname = usePathname();
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,6 +35,18 @@ export default function MainNav() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    useEffect(() => {
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                setShowUserMenu(false);
+            }
+        }
+        if (showUserMenu) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [showUserMenu]);
 
     const handleLogout = async () => {
         await logout();
@@ -92,10 +106,12 @@ export default function MainNav() {
                                 <button
                                     onClick={() => setShowUserMenu(!showUserMenu)}
                                     className="flex items-center gap-2 bg-site-raised border border-site-border-soft rounded-6 px-2 py-1.5 pr-3 cursor-pointer hover:bg-site-raised/80 transition-colors"
+                                    aria-haspopup="true"
+                                    aria-expanded={showUserMenu}
                                 >
                                     <div className="w-7 h-7 bg-site-accent text-site-bg rounded-full flex items-center justify-center overflow-hidden">
                                         <span className="text-[11px] font-bold">
-                                            {(user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
+                                            {getUserInitial(user)}
                                         </span>
                                     </div>
                                     <div className="flex flex-col hidden sm:block">
@@ -111,13 +127,13 @@ export default function MainNav() {
 
                                 {/* Dropdown Menu */}
                                 {showUserMenu && (
-                                    <div className="absolute right-0 top-full mt-2 flex flex-col bg-site-surface border border-site-border-soft rounded-8 shadow-lg w-[260px] overflow-hidden z-50">
+                                    <div className="absolute right-0 top-full mt-2 flex flex-col bg-site-surface border border-site-border-soft rounded-8 shadow-lg w-[260px] overflow-hidden z-[60]">
                                         {/* User Info Header */}
                                         <div className="p-3 border-b border-site-border-soft bg-site-raised/50">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded-full bg-site-accent text-site-bg flex items-center justify-center shrink-0">
                                                     <span className="font-bold text-base">
-                                                        {(user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
+                                                        {getUserInitial(user)}
                                                     </span>
                                                 </div>
                                                 <div className="min-w-0 flex-1">
@@ -164,7 +180,7 @@ export default function MainNav() {
                                 )}
                             </div>
                         ) : (
-                            <Link href="/login" className="site-btn !py-2 text-[12px]">
+                            <Link href="/login" className="site-btn text-[12px]">
                                 {t("login_button")}
                             </Link>
                         )}
@@ -178,7 +194,7 @@ export default function MainNav() {
                             <Link href="/dashboard/account" className="flex items-center gap-2 bg-site-raised px-3 py-1.5 rounded-6 border border-site-border-soft">
                                 <div className="w-5 h-5 bg-site-accent text-site-bg rounded-full flex items-center justify-center overflow-hidden">
                                     <span className="text-[9px] font-bold">
-                                        {(user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
+                                        {getUserInitial(user)}
                                     </span>
                                 </div>
                                 <span className="text-site-text text-[11px] font-medium truncate max-w-[70px]">
@@ -186,13 +202,14 @@ export default function MainNav() {
                                 </span>
                             </Link>
                         ) : (
-                            <Link href="/login" className="site-btn !py-2 text-[12px]">
+                            <Link href="/login" className="site-btn text-[12px]">
                                 {t("login_button")}
                             </Link>
                         )}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             className="text-site-text p-1 hover:text-site-accent transition-colors"
+                            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                         >
                             {mobileMenuOpen ? <X size={22} /> : <AlignJustify size={22} />}
                         </button>
@@ -216,7 +233,7 @@ export default function MainNav() {
                     <div className="h-[1px] bg-site-border-soft" />
 
                     <Link href="/article" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("Header.articles")}</Link>
-                    <Link href="/promotions" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{tAdmin("promotions")}</Link>
+                    <Link href="/promotions" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("promotions")}</Link>
 
                     {user && (
                         <>

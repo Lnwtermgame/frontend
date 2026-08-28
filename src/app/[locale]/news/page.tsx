@@ -2,23 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
 import { Newspaper, Calendar, Eye, Loader2 } from "lucide-react";
-import { cmsApi, NewsArticle, NewsArticleListItem } from "@/lib/services";
+import { cmsApi, NewsArticleListItem } from "@/lib/services";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 const categoryColors: Record<string, string> = {
-  general: "bg-[#1A1C1E] text-gray-700",
-  promotion: "bg-pink-100 text-pink-700",
-  update: "bg-blue-100 text-blue-700",
-  event: "bg-yellow-500/10 text-yellow-400",
+  general: "bg-site-raised text-site-muted",
+  promotion: "bg-site-accent/10 text-site-accent",
+  update: "bg-site-accent/10 text-site-accent",
+  event: "bg-site-accent/10 text-site-accent",
 };
 
 export default function NewsPage() {
   const t = useTranslations("News");
   const tCommon = useTranslations("Common");
   const [articles, setArticles] = useState<NewsArticleListItem[]>([]);
-  const [featured, setFeatured] = useState<NewsArticle[]>([]);
+  const [featured, setFeatured] = useState<NewsArticleListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const categoryLabels: Record<string, string> = {
@@ -56,11 +58,17 @@ export default function NewsPage() {
   if (loading) {
     return (
       <div className="page-container">
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-pink-500" />
-            <p className="text-gray-600">{tCommon("loading")}</p>
-          </div>
+        <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="site-card overflow-hidden">
+              <Skeleton className="aspect-[16/9] w-full rounded-none" />
+              <div className="p-4 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -69,32 +77,15 @@ export default function NewsPage() {
   return (
     <div className="page-container">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div className="flex items-center mb-4">
-          <Newspaper className="w-8 h-8 text-pink-500 mr-3" />
-          <h1 className="text-3xl font-bold text-white">
-            {t("title")}
-          </h1>
-        </div>
-        <p className="text-gray-600">
-          {t("subtitle")}
-        </p>
-      </motion.div>
+      <div className="mb-8">
+        <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+      </div>
 
       {/* Featured News */}
       {featured.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-12"
-        >
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-            <span className="w-1.5 h-6 bg-yellow-500 mr-2"></span>
+        <div className="mb-12">
+          <h2 className="text-base md:text-lg font-extrabold text-site-text leading-none mb-4 flex items-center">
+            <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
             {t("featured")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -102,125 +93,109 @@ export default function NewsPage() {
               <Link
                 key={article.id}
                 href={`/news/${article.slug}`}
-                className="group bg-[#212328] border border-site-border/30 rounded-[16px] overflow-hidden hover:shadow-lg transition-shadow"
+                className="group site-card overflow-hidden"
               >
-                <div className="aspect-video bg-[#1A1C1E] overflow-hidden">
+                <div className="aspect-[16/9] w-full bg-site-deep overflow-hidden">
                   {article.coverImage ? (
                     <img
                       src={article.coverImage}
                       alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      loading="lazy"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-site-border/30">
-                      <Newspaper className="w-12 h-12 text-gray-400" />
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Newspaper className="w-12 h-12 text-site-dim" />
                     </div>
                   )}
                 </div>
                 <div className="p-4">
                   <span
-                    className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase mb-2 ${
+                    className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase mb-2 rounded-4 ${
                       categoryColors[article.category] || categoryColors.general
                     }`}
                   >
                     {categoryLabels[article.category] || t("categories.general")}
                   </span>
-                  <h3 className="font-bold text-white line-clamp-2 group-hover:text-pink-500 transition-colors">
+                  <h3 className="text-[14px] font-bold text-site-text line-clamp-2 group-hover:text-site-accent transition-colors">
                     {article.title}
                   </h3>
                 </div>
               </Link>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* All News */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <span className="w-1.5 h-6 bg-pink-500 mr-2"></span>
+      <div>
+        <h2 className="text-base md:text-lg font-extrabold text-site-text leading-none mb-4 flex items-center">
+          <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
           {t("all_news")}
         </h2>
 
         {articles.length === 0 ? (
-          <div className="text-center py-16 bg-[#212328] border border-site-border/30 rounded-[16px]">
-            <Newspaper className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-600">{t("no_news")}</p>
-          </div>
+          <EmptyState icon={Newspaper} message={t("no_news")} />
         ) : (
-          <div className="space-y-4">
-            {articles.map((article, index) => (
-              <motion.div
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {articles.map((article) => (
+              <Link
                 key={article.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index }}
+                href={`/news/${article.slug}`}
+                className="group site-card overflow-hidden"
               >
-                <Link
-                  href={`/news/${article.slug}`}
-                  className="block bg-[#212328] border border-site-border/30 rounded-[16px] p-4 hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Cover */}
-                    <div className="w-full sm:w-32 h-40 sm:h-24 bg-[#1A1C1E] flex-shrink-0 border-[2px] border-gray-200 overflow-hidden">
-                      {article.coverImage ? (
-                        <img
-                          src={article.coverImage}
-                          alt={article.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Newspaper className="w-8 h-8 text-gray-400" />
-                        </div>
-                      )}
+                <div className="aspect-[16/9] w-full bg-site-deep overflow-hidden">
+                  {article.coverImage ? (
+                    <img
+                      src={article.coverImage}
+                      alt={article.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Newspaper className="w-8 h-8 text-site-dim" />
                     </div>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span
-                          className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase ${
-                            categoryColors[article.category] ||
-                            categoryColors.general
-                          }`}
-                        >
-                          {categoryLabels[article.category] || t("categories.general")}
-                        </span>
-                        {article.isFeatured && (
-                          <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase bg-yellow-500/10 text-yellow-400">
-                            {t("featured_badge")}
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="font-bold text-white mb-1 line-clamp-1 hover:text-pink-500 transition-colors">
-                        {article.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                        {article.excerpt}
-                      </p>
-                      <div className="flex items-center gap-4 text-[10px] font-bold text-gray-500 uppercase">
-                        <span className="flex items-center">
-                          <Calendar className="w-3 h-3 mr-1" />
-                          {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
-                        </span>
-                        <span className="flex items-center">
-                          <Eye className="w-3 h-3 mr-1" />
-                          {t("view_count", { count: article.viewCount || 0 })}
-                        </span>
-                      </div>
-                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span
+                      className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-4 ${
+                        categoryColors[article.category] ||
+                        categoryColors.general
+                      }`}
+                    >
+                      {categoryLabels[article.category] || t("categories.general")}
+                    </span>
+                    {article.isFeatured && (
+                      <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-4 bg-site-accent/10 text-site-accent">
+                        {t("featured_badge")}
+                      </span>
+                    )}
                   </div>
-                </Link>
-              </motion.div>
+                  <h3 className="text-[14px] font-bold text-site-text line-clamp-2 group-hover:text-site-accent transition-colors">
+                    {article.title}
+                  </h3>
+                  <p className="text-[12px] text-site-muted line-clamp-2 mt-1.5">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex items-center gap-3 text-[11px] text-site-dim mt-2">
+                    <span className="flex items-center">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
+                    </span>
+                    <span className="flex items-center">
+                      <Eye className="w-3 h-3 mr-1" />
+                      {t("view_count", { count: article.viewCount || 0 })}
+                    </span>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

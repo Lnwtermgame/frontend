@@ -121,28 +121,28 @@ export default async function CmsPage({ params }: CmsPageProps) {
 
   return (
     <div className="page-container">
-      <div className="max-w-4xl mx-auto bg-[#212328] rounded-2xl border border-gray-200 shadow-sm p-6 md:p-10">
+      <div className="max-w-4xl mx-auto site-card p-6 md:p-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-site-text mb-2">
             {page.title}
           </h1>
-          <div className="h-1 w-20 bg-pink-500"></div>
+          <div className="h-1 w-20 bg-site-accent"></div>
         </div>
 
         {/* Content */}
         <article
           className="prose prose-lg max-w-none
-            prose-headings:text-white prose-headings:font-bold
-            prose-p:text-gray-700
+            prose-headings:text-site-text prose-headings:font-bold
+            prose-p:text-site-muted
             prose-a:text-site-accent prose-a:no-underline hover:prose-a:underline
-            prose-strong:text-white
-            prose-ul:text-gray-700 prose-ol:text-gray-700
-            prose-li:marker:text-pink-500
-            prose-blockquote:border-l-4 prose-blockquote:border-pink-500 prose-blockquote:bg-[#181A1D] prose-blockquote:py-2 prose-blockquote:px-4
-            prose-table:border-[3px] prose-table:border-black
-            prose-th:bg-[#1A1C1E] prose-th:border-[2px] prose-th:border-black prose-th:p-3
-            prose-td:border-[2px] prose-td:border-black prose-td:p-3"
+            prose-strong:text-site-text
+            prose-ul:text-site-muted prose-ol:text-site-muted
+            prose-li:marker:text-site-accent
+            prose-blockquote:border-l-4 prose-blockquote:border-site-accent prose-blockquote:bg-site-raised prose-blockquote:py-2 prose-blockquote:px-4
+            prose-table:border-site-border
+            prose-th:bg-site-raised prose-th:border-site-border prose-th:p-3
+            prose-td:border-site-border prose-td:p-3"
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -160,12 +160,12 @@ export default async function CmsPage({ params }: CmsPageProps) {
                 <ol className="list-decimal pl-6 mb-4 space-y-1">{children}</ol>
               ),
               h2: ({ children }) => (
-                <h2 className="text-2xl font-bold text-white mt-8 mb-3">
+                <h2 className="text-2xl font-bold text-site-text mt-8 mb-3">
                   {children}
                 </h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-xl font-bold text-white mt-6 mb-2">
+                <h3 className="text-xl font-bold text-site-text mt-6 mb-2">
                   {children}
                 </h3>
               ),
@@ -176,8 +176,8 @@ export default async function CmsPage({ params }: CmsPageProps) {
         </article>
 
         {/* Last Updated */}
-        <div className="mt-12 pt-6 border-t-[2px] border-gray-200">
-          <p className="text-sm text-gray-500">
+        <div className="mt-12 pt-6 border-t border-site-border-soft">
+          <p className="text-sm text-site-dim">
             {t("last_updated")}:{" "}
             {new Date(page.updatedAt).toLocaleDateString()}
           </p>

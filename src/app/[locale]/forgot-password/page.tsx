@@ -2,11 +2,9 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
 import {
   Mail,
   ArrowLeft,
-  ArrowRight,
   Loader2,
   CheckCircle,
   Send,
@@ -49,109 +47,100 @@ function ForgotPasswordContent() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center px-4 py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
+    <div className="flex min-h-screen items-center justify-center bg-site-bg px-4 py-12">
+      <div className="w-full max-w-[400px] mx-auto">
+        <div className="site-card p-6">
           {/* Header */}
-          <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="w-12 h-12 rounded-xl bg-site-accent/10 border border-site-accent/20 flex items-center justify-center shrink-0 shadow-sm">
-                <Mail size={24} className="text-site-accent" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white mb-1 tracking-tight">
-                  {t("title")}
-                </h1>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Reset Password</p>
-              </div>
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-6 bg-site-accent/10 border border-site-accent/20">
+              <Mail size={20} className="text-site-accent" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-site-text">
+                {t("title")}
+              </h1>
+              <p className="text-[12px] text-site-muted uppercase tracking-wider">Reset Password</p>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="p-6 relative z-10">
-            {!isSuccess ? (
-              <>
-                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                  {t("subtitle")}
-                </p>
+          {!isSuccess ? (
+            <>
+              <p className="text-sm text-site-muted mb-5 leading-relaxed">
+                {t("subtitle")}
+              </p>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <Input
-                    id="email"
-                    type="email"
-                    label={t("email_placeholder")}
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={isSubmitting}
-                    icon={<Mail className="h-5 w-5" />}
-                    autoComplete="email"
-                  />
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Input
+                  id="email"
+                  type="email"
+                  label={t("email_placeholder")}
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isSubmitting}
+                  icon={<Mail className="h-4 w-4" />}
+                  autoComplete="email"
+                />
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-site-accent text-[#1A1C1E] hover:bg-site-accent hover:text-[#16181A] hover:scale-[1.02] active:scale-[0.98] border border-transparent font-bold"
-                    disabled={isSubmitting}
-                    isLoading={isSubmitting}
-                    size="lg"
-                  >
-                    {!isSubmitting && (
-                      <div className="flex items-center justify-center">
-                        <Send className="mr-2 h-4 w-4" />
-                        {t("send_link")}
-                      </div>
-                    )}
-                  </Button>
-                </form>
-              </>
-            ) : (
-              <div className="text-center py-6">
-                <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/30/20 flex items-center justify-center mx-auto mb-5 shadow-sm">
-                  <CheckCircle size={32} className="text-green-500" />
-                </div>
-                <h2 className="text-xl font-bold text-white mb-2 tracking-tight">
-                  {t("success_title")}
-                </h2>
-                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                  {t("success_desc")}
-                  <br className="mb-2" />
-                  <span className="font-mono text-xs bg-[#1A1C1E] text-site-accent px-3 py-1.5 border border-site-border rounded-lg inline-block mt-2">
-                    {email}
-                  </span>
-                </p>
-                <p className="text-xs text-gray-500 mb-8 max-w-[280px] mx-auto">
-                  {t("spam_hint")}
-                </p>
-
-                <button
-                  onClick={() => {
-                    setIsSuccess(false);
-                    setEmail("");
-                  }}
-                  className="text-site-accent hover:text-white font-bold transition-colors text-sm hover:underline underline-offset-4"
+                <Button
+                  type="submit"
+                  fullWidth
+                  size="lg"
+                  disabled={isSubmitting}
+                  isLoading={isSubmitting}
                 >
-                  {t("resend_email")}
-                </button>
+                  {!isSubmitting && (
+                    <div className="flex items-center justify-center">
+                      <Send className="mr-2 h-4 w-4" />
+                      {t("send_link")}
+                    </div>
+                  )}
+                </Button>
+              </form>
+            </>
+          ) : (
+            <div className="text-center py-4">
+              <div className="w-14 h-14 rounded-8 bg-status-success/10 border border-status-success/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={28} className="text-status-success" />
               </div>
-            )}
+              <h2 className="text-lg font-bold text-site-text mb-2">
+                {t("success_title")}
+              </h2>
+              <p className="text-sm text-site-muted mb-4 leading-relaxed">
+                {t("success_desc")}
+                <br className="mb-2" />
+                <span className="font-mono text-xs bg-site-bg text-site-accent px-3 py-1.5 border border-site-border-soft rounded-6 inline-block mt-2">
+                  {email}
+                </span>
+              </p>
+              <p className="text-[12px] text-site-dim mb-6 max-w-[280px] mx-auto">
+                {t("spam_hint")}
+              </p>
 
-            <div className="mt-8 pt-6 border-t border-site-border flex justify-center">
-              <Link
-                href="/login"
-                className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white font-medium transition-colors hover:bg-[#212328]/5 py-2 px-4 rounded-lg"
+              <button
+                onClick={() => {
+                  setIsSuccess(false);
+                  setEmail("");
+                }}
+                className="text-site-accent hover:text-site-accent-hover font-semibold transition-colors text-sm hover:underline underline-offset-4"
               >
-                <ArrowLeft size={16} />
-                {t("back_to_login")}
-              </Link>
+                {t("resend_email")}
+              </button>
             </div>
+          )}
+
+          <div className="mt-6 pt-5 border-t border-site-border-soft flex justify-center">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 text-[12px] text-site-muted hover:text-site-accent font-medium transition-colors"
+            >
+              <ArrowLeft size={14} />
+              {t("back_to_login")}
+            </Link>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -161,13 +150,13 @@ export default function ForgotPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[60vh] bg-transparent flex items-center justify-center">
+        <div className="min-h-[60vh] flex items-center justify-center bg-site-bg">
           <div className="text-center">
             <Loader2
               size={40}
               className="animate-spin mx-auto mb-4 text-site-accent"
             />
-            <p className="text-gray-400 font-medium text-sm">{t("loading")}</p>
+            <p className="text-site-muted font-medium text-sm">{t("loading")}</p>
           </div>
         </div>
       }

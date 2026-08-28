@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion } from "@/lib/framer-exports";
 import {
   CheckCircle,
   XCircle,
@@ -131,57 +130,50 @@ function VerifyEmailContent() {
   // Status configurations for different states
   const statusConfig = {
     loading: {
-      icon: <Loader2 size={40} className="animate-spin text-site-accent" />,
+      icon: <Loader2 size={32} className="animate-spin text-site-accent" />,
       title: t("loading"),
       message: t("loading_desc"),
-      bgColor: "bg-site-accent/10 border-site-accent/20",
-      textColor: "text-white",
+      iconBg: "bg-site-accent/10 border-site-accent/20",
     },
     success: {
-      icon: <CheckCircle size={40} className="text-green-500" />,
+      icon: <CheckCircle size={32} className="text-status-success" />,
       title: t("success_title"),
       message: message,
-      bgColor: "bg-green-500/10 border-green-500/30/20",
-      textColor: "text-white",
+      iconBg: "bg-status-success/10 border-status-success/20",
       showCountdown: true,
     },
     already_verified: {
-      icon: <CheckCircle size={40} className="text-blue-500" />,
+      icon: <CheckCircle size={32} className="text-semantic-blue" />,
       title: t("already_verified_title"),
       message: message || t("already_verified_title"),
-      bgColor: "bg-blue-500/10 border-blue-500/20",
-      textColor: "text-white",
+      iconBg: "bg-semantic-blue/10 border-semantic-blue/20",
       showCountdown: true,
     },
     expired: {
-      icon: <Clock size={40} className="text-red-500" />,
+      icon: <Clock size={32} className="text-status-danger" />,
       title: t("expired_title"),
       message: message || t("expired_title"),
-      bgColor: "bg-red-500/10 border-red-500/30/20",
-      textColor: "text-white",
+      iconBg: "bg-status-danger/10 border-status-danger/20",
       showResend: true,
     },
     invalid_token: {
-      icon: <AlertTriangle size={40} className="text-red-500" />,
+      icon: <AlertTriangle size={32} className="text-status-danger" />,
       title: t("invalid_token_title"),
       message: message || t("invalid_token_title"),
-      bgColor: "bg-red-500/10 border-red-500/30/20",
-      textColor: "text-white",
+      iconBg: "bg-status-danger/10 border-status-danger/20",
       showResend: true,
     },
     invalid_link: {
-      icon: <XCircle size={40} className="text-red-500" />,
+      icon: <XCircle size={32} className="text-status-danger" />,
       title: t("invalid_link_title"),
       message: message || t("invalid_link_title"),
-      bgColor: "bg-red-500/10 border-red-500/30/20",
-      textColor: "text-white",
+      iconBg: "bg-status-danger/10 border-status-danger/20",
     },
     error: {
-      icon: <XCircle size={40} className="text-red-500" />,
+      icon: <XCircle size={32} className="text-status-danger" />,
       title: t("error_title"),
       message: message || t("error_title"),
-      bgColor: "bg-red-500/10 border-red-500/30/20",
-      textColor: "text-white",
+      iconBg: "bg-status-danger/10 border-status-danger/20",
     },
   };
 
@@ -192,160 +184,145 @@ function VerifyEmailContent() {
   const showCountdown = ["success", "already_verified"].includes(status);
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-[#222427] border border-site-border shadow-ocean rounded-2xl overflow-hidden relative">
+    <div className="flex min-h-screen items-center justify-center bg-site-bg p-4">
+      <div className="w-full max-w-[400px] mx-auto">
+        <div className="site-card p-6">
           {/* Header */}
-          <div className="bg-[#1A1C1E] border-b border-site-border p-6 relative">
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="w-12 h-12 rounded-xl bg-site-accent/10 border border-site-accent/20 flex items-center justify-center shrink-0 shadow-sm">
-                <Mail size={24} className="text-site-accent" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white tracking-tight mb-1">
-                  {t("title")}
-                </h1>
-                <p className="text-xs text-gray-400 uppercase font-medium tracking-wider">Email Verification</p>
-              </div>
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-6 bg-site-accent/10 border border-site-accent/20">
+              <Mail size={20} className="text-site-accent" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-site-text">
+                {t("title")}
+              </h1>
+              <p className="text-[12px] text-site-muted uppercase tracking-wider">Email Verification</p>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="p-8 relative z-10">
-            <div className="text-center">
-              {/* Icon */}
-              <div
-                className={`w-20 h-20 ${currentStatus.bgColor} border rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm`}
-              >
-                {currentStatus.icon}
+          <div className="text-center">
+            {/* Icon */}
+            <div
+              className={`w-16 h-16 ${currentStatus.iconBg} border rounded-8 flex items-center justify-center mx-auto mb-5`}
+            >
+              {currentStatus.icon}
+            </div>
+
+            {/* Title */}
+            <h2 className="text-lg font-bold text-site-text mb-2">
+              {currentStatus.title}
+            </h2>
+
+            {/* Message */}
+            <p className="text-sm text-site-muted mb-5 leading-relaxed">
+              {currentStatus.message}
+            </p>
+
+            {/* Email display */}
+            {email && status !== "loading" && (
+              <div className="mb-5">
+                <span className="font-mono text-xs bg-site-bg text-site-accent px-3 py-1.5 border border-site-border-soft rounded-6 inline-block break-all">
+                  {decodeURIComponent(email)}
+                </span>
               </div>
+            )}
 
-              {/* Title */}
-              <h2
-                className={`text-xl font-bold ${currentStatus.textColor} mb-3 tracking-tight`}
-              >
-                {currentStatus.title}
-              </h2>
-
-              {/* Message */}
-              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                {currentStatus.message}
+            {/* Countdown for success states */}
+            {showCountdown && (
+              <p className="text-[12px] text-site-dim mb-5 font-medium">
+                {t("redirect_hint", { seconds: countdown })}
               </p>
+            )}
 
-              {/* Email display */}
-              {email && status !== "loading" && (
-                <div className="mb-6">
-                  <span className="font-mono text-sm bg-[#1A1C1E] text-site-accent px-4 py-2 border border-site-border rounded-lg inline-block break-all">
-                    {decodeURIComponent(email)}
-                  </span>
-                </div>
-              )}
-
-              {/* Countdown for success states */}
-              {showCountdown && (
-                <p className="text-xs text-gray-500 mb-6 font-medium">
-                  {t("redirect_hint", { seconds: countdown })}
+            {/* Resend success message */}
+            {resendSuccess && (
+              <div className="mb-5 p-3 rounded-6 bg-status-success/10 border border-status-success/20">
+                <p className="text-xs font-semibold text-status-success">
+                  {t("resend_success")}
                 </p>
-              )}
-
-              {/* Resend success message */}
-              {resendSuccess && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 rounded-lg bg-green-500/10 border border-green-500/30/20"
-                >
-                  <p className="text-sm font-medium text-green-500">
-                    {t("resend_success")}
-                  </p>
-                </motion.div>
-              )}
-
-              {/* Actions */}
-              <div className="flex flex-col gap-3 mt-4">
-                {status === "success" && (
-                  <Link
-                    href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-site-accent text-[#1A1C1E] px-6 py-3 border border-transparent rounded-lg font-bold hover:bg-site-accent hover:scale-[1.02] transition-all"
-                  >
-                    {t("go_to_account")}
-                    <ArrowRight size={18} />
-                  </Link>
-                )}
-
-                {status === "already_verified" && (
-                  <Link
-                    href="/dashboard/account"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-600 hover:scale-[1.02] transition-all shadow-sm"
-                  >
-                    {t("go_to_account")}
-                    <ArrowRight size={18} />
-                  </Link>
-                )}
-
-                {showResendButton && (
-                  <>
-                    <button
-                      onClick={handleResend}
-                      disabled={isResending || resendSuccess}
-                      className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-[#1A1C1E] disabled:hover:border-site-border"
-                    >
-                      {isResending ? (
-                        <>
-                          <Loader2 size={18} className="animate-spin text-site-accent" />
-                          <span className="text-gray-300">{t("sending")}</span>
-                        </>
-                      ) : (
-                        <>
-                          <RefreshCw size={18} className="text-site-accent" />
-                          {t("resend_button")}
-                        </>
-                      )}
-                    </button>
-
-                    <p className="text-xs text-gray-500 mt-2">
-                      {t("spam_hint")}
-                    </p>
-                  </>
-                )}
-
-                {status === "invalid_link" && (
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm"
-                  >
-                    {t("go_to_login")}
-                    <ArrowRight size={18} className="text-site-accent" />
-                  </Link>
-                )}
-
-                {status === "error" && !showResendButton && (
-                  <Link
-                    href="/support"
-                    className="inline-flex items-center justify-center gap-2 w-full bg-[#1A1C1E] text-white px-6 py-3 border border-site-border rounded-lg font-bold hover:bg-[#212328]/5 hover:border-site-accent/30 transition-all shadow-sm"
-                  >
-                    {t("contact_support")}
-                  </Link>
-                )}
-
-                {/* Always show login link for error states */}
-                {["expired", "invalid_token", "error"].includes(status) && (
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center justify-center gap-2 w-full mt-2 text-sm text-gray-400 hover:text-white font-medium transition-colors hover:bg-[#212328]/5 py-2 px-4 rounded-lg"
-                  >
-                    {t("back_to_login")}
-                  </Link>
-                )}
               </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex flex-col gap-3 mt-4">
+              {status === "success" && (
+                <Link
+                  href="/dashboard/account"
+                  className="site-btn w-full inline-flex"
+                >
+                  {t("go_to_account")}
+                  <ArrowRight size={16} />
+                </Link>
+              )}
+
+              {status === "already_verified" && (
+                <Link
+                  href="/dashboard/account"
+                  className="site-btn w-full inline-flex"
+                >
+                  {t("go_to_account")}
+                  <ArrowRight size={16} />
+                </Link>
+              )}
+
+              {showResendButton && (
+                <>
+                  <button
+                    onClick={handleResend}
+                    disabled={isResending || resendSuccess}
+                    className="w-full border border-site-border-soft bg-site-surface hover:border-site-border rounded-6 py-2.5 text-[13px] text-site-text transition-colors flex items-center justify-center gap-2 font-semibold disabled:opacity-50"
+                  >
+                    {isResending ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin text-site-accent" />
+                        <span className="text-site-muted">{t("sending")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw size={16} className="text-site-accent" />
+                        {t("resend_button")}
+                      </>
+                    )}
+                  </button>
+
+                  <p className="text-[12px] text-site-dim mt-1">
+                    {t("spam_hint")}
+                  </p>
+                </>
+              )}
+
+              {status === "invalid_link" && (
+                <Link
+                  href="/login"
+                  className="site-btn w-full inline-flex"
+                >
+                  {t("go_to_login")}
+                  <ArrowRight size={16} className="text-site-accent" />
+                </Link>
+              )}
+
+              {status === "error" && !showResendButton && (
+                <Link
+                  href="/support"
+                  className="w-full border border-site-border-soft bg-site-surface hover:border-site-border rounded-6 py-2.5 text-[13px] text-site-text transition-colors flex items-center justify-center gap-2 font-semibold"
+                >
+                  {t("contact_support")}
+                </Link>
+              )}
+
+              {/* Always show login link for error states */}
+              {["expired", "invalid_token", "error"].includes(status) && (
+                <Link
+                  href="/login"
+                  className="inline-flex items-center justify-center gap-2 w-full mt-1 text-[12px] text-site-muted hover:text-site-accent font-medium transition-colors"
+                >
+                  {t("back_to_login")}
+                </Link>
+              )}
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -356,13 +333,13 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[60vh] bg-transparent flex items-center justify-center">
+        <div className="min-h-[60vh] flex items-center justify-center bg-site-bg">
           <div className="text-center">
             <Loader2
               size={40}
               className="animate-spin mx-auto mb-4 text-site-accent"
             />
-            <p className="text-gray-400 font-medium text-sm">{t("loading")}</p>
+            <p className="text-site-muted font-medium text-sm">{t("loading")}</p>
           </div>
         </div>
       }

@@ -4,19 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { motion } from "@/lib/framer-exports";
 import {
   User,
   Mail,
   Lock,
   ArrowRight,
   CheckCircle,
-  Zap,
-  Gift,
-  Clock,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { publicSettingsApi } from "@/lib/services/public-settings-api";
 import { useTranslations } from "next-intl";
 
@@ -84,17 +80,17 @@ export default function RegisterPage() {
 
   if (!loadingSettings && !registrationEnabled) {
     return (
-      <div className="min-h-screen bg-[#16181A] flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-xl bg-[#222427] border border-site-border rounded-2xl p-8 text-center shadow-ocean">
-          <h1 className="text-2xl font-black text-white mb-3">
+      <div className="flex min-h-screen items-center justify-center bg-site-bg px-4 py-12">
+        <div className="w-full max-w-[400px] mx-auto site-card p-6 text-center">
+          <h1 className="text-xl font-bold text-site-text mb-2">
             {t("registration_disabled")}
           </h1>
-          <p className="text-gray-400 mb-6">
+          <p className="text-sm text-site-muted mb-5">
             {t("registration_disabled_desc")}
           </p>
           <Link
             href="/login"
-            className="inline-block bg-site-accent rounded-[6px] hover:bg-site-accent-hover transition-colors px-6 py-2.5 font-bold text-white"
+            className="site-btn inline-block"
           >
             {t("go_to_login")}
           </Link>
@@ -104,215 +100,139 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#16181A] flex items-center justify-center px-4 py-4 lg:py-12">
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
-        {/* Left Side - Branding */}
-        <motion.div
-          className="hidden lg:flex flex-col space-y-6"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-[#222427] border border-site-border rounded-xl flex items-center justify-center">
-              <Zap className="w-6 h-6 text-site-accent" fill="currentColor" />
-            </div>
-            <span className="text-2xl font-black text-white">
-              {siteName}
-            </span>
+    <div className="flex min-h-[100dvh] items-center justify-center bg-site-bg px-4 py-4 lg:py-12">
+      <div className="w-full max-w-[440px] mx-auto">
+        <div className="site-card p-6">
+          {/* Header */}
+          <div className="mb-6 text-center">
+            <p className="text-lg font-bold text-site-text">{siteName}</p>
+            <h2 className="mt-1 text-xl font-extrabold tracking-tight text-site-text">
+              {t("title")}
+            </h2>
+            <p className="mt-1 text-sm text-site-muted">
+              {t("subtitle")}
+            </p>
           </div>
 
-          <h1 className="text-4xl font-black text-white leading-tight">
-            {t("hero_title_1")}
-            <br />
-            {t("hero_title_2")} <span className="text-site-accent">{t("hero_title_3")}</span>
-          </h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              id="username"
+              label={t("username")}
+              type="text"
+              placeholder="yourname"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              minLength={3}
+              maxLength={50}
+              required
+              disabled={isLoading}
+              icon={<User className="h-4 w-4" />}
+              autoComplete="username"
+            />
 
-          <p className="text-gray-400 text-lg">
-            {t("hero_desc")}
-          </p>
+            <Input
+              id="email"
+              label={t("email._base")}
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+              icon={<Mail className="h-4 w-4" />}
+              autoComplete="email"
+            />
 
-          {/* Benefits */}
-          <div className="grid grid-cols-1 gap-4 pt-4">
-            <motion.div
-              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/30 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="w-10 h-10 bg-[#16181A] rounded-lg border border-site-border flex items-center justify-center">
-                <Gift className="w-5 h-5 text-site-accent" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold">{t("welcome_bonus")}</h3>
-                <p className="text-gray-400 text-sm">
-                  {t("welcome_bonus_desc")}
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="flex items-center space-x-4 p-4 bg-[#222427] border border-site-border rounded-xl hover:border-site-accent/30 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="w-10 h-10 bg-[#16181A] rounded-lg border border-site-border flex items-center justify-center">
-                <Clock className="w-5 h-5 text-site-accent" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold">{t("fast_247")}</h3>
-                <p className="text-gray-400 text-sm">
-                  {t("fast_247_desc")}
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Right Side - Register Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <div className="bg-[#222427] border border-site-border p-5 md:p-8 rounded-2xl shadow-ocean">
-            {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-[#16181A] border border-site-border rounded-xl flex items-center justify-center">
-                <Zap className="w-5 h-5 text-site-accent" fill="currentColor" />
-              </div>
-              <span className="text-xl font-black text-white">
-                {siteName}
-              </span>
-            </div>
-
-            <div className="text-center mb-4 lg:mb-8">
-              <h2 className="text-xl lg:text-2xl font-black text-white mb-2">
-                {t("title")}
-              </h2>
-              <p className="text-sm lg:text-base text-gray-400">
-                {t("subtitle")}
+            <div className="space-y-1.5">
+              <Input
+                id="password"
+                label={t("password")}
+                type="password"
+                placeholder={t("password_hint")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                minLength={8}
+                required
+                disabled={isLoading}
+                icon={<Lock className="h-4 w-4" />}
+                autoComplete="new-password"
+              />
+              <p className="text-[12px] text-site-muted">
+                {t("password_hint")}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-5">
+            <div className="space-y-1.5">
               <Input
-                id="username"
-                label={t("username")}
-                type="text"
-                placeholder="yourname"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                minLength={3}
-                maxLength={50}
+                id="confirmPassword"
+                label={t("confirm_password")}
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                icon={<User className="h-5 w-5" />}
-                autoComplete="username"
+                icon={
+                  <CheckCircle
+                    className={`h-4 w-4 transition-colors ${password &&
+                      confirmPassword &&
+                      password === confirmPassword
+                        ? "text-status-success"
+                        : "text-site-dim"
+                      }`}
+                  />
+                }
+                errorText={passwordError}
+                className={
+                  passwordError ? "border-status-danger focus-visible:border-status-danger focus-visible:ring-status-danger/20" : ""
+                }
               />
-
-              <Input
-                id="email"
-                label={t("email._base")}
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-                icon={<Mail className="h-5 w-5" />}
-                autoComplete="email"
-              />
-
-              <div className="space-y-1.5">
-                <Input
-                  id="password"
-                  label={t("password")}
-                  type="password"
-                  placeholder={t("password_hint")}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={8}
-                  required
-                  disabled={isLoading}
-                  icon={<Lock className="h-5 w-5" />}
-                  autoComplete="new-password"
-                />
-                <p className="text-xs text-gray-500">
-                  {t("password_hint")}
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <Input
-                  id="confirmPassword"
-                  label={t("confirm_password")}
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  icon={
-                    <CheckCircle
-                      className={`h-5 w-5 transition-colors ${password &&
-                        confirmPassword &&
-                        password === confirmPassword
-                        ? "text-green-400"
-                        : "text-gray-500"
-                        }`}
-                    />
-                  }
-                  errorText={passwordError}
-                  className={
-                    passwordError ? "border-red-500/20 focus:border-red-500/30 focus-visible:ring-1 focus-visible:ring-red-500/30" : ""
-                  }
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isLoading || !!passwordError}
-                isLoading={isLoading}
-                size="lg"
-              >
-                {!isLoading && (
-                  <>
-                    {t("register_button")} <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </Button>
-            </form>
-
-            <div className="mt-4 lg:mt-8 pt-4 lg:pt-6 border-t border-site-border text-center">
-              <p className="text-sm lg:text-base text-gray-400">
-                {t("already_have_account")}{" "}
-                <Link
-                  href="/login"
-                  className="text-site-accent hover:text-site-accent-hover font-bold transition-colors"
-                >
-                  {t("login_now")}
-                </Link>
-              </p>
             </div>
 
-            <div className="mt-4 lg:mt-6 text-center text-xs text-gray-400">
-              {t("terms_agreement")}{" "}
+            <Button
+              type="submit"
+              disabled={isLoading || !!passwordError}
+              isLoading={isLoading}
+              fullWidth
+              size="lg"
+            >
+              {!isLoading && (
+                <>
+                  {t("register_button")} <ArrowRight className="ml-1 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 pt-5 border-t border-site-border-soft text-center">
+            <p className="text-sm text-site-muted">
+              {t("already_have_account")}{" "}
               <Link
-                href="/terms"
-                className="text-gray-300 hover:text-white font-bold transition-colors"
+                href="/login"
+                className="font-semibold text-site-accent transition-colors hover:text-site-accent-hover"
               >
-                {t("terms")}
-              </Link>{" "}
-              {t("and")}{" "}
-              <Link
-                href="/privacy"
-                className="text-gray-300 hover:text-white font-bold transition-colors"
-              >
-                {t("privacy_policy")}
+                {t("login_now")}
               </Link>
-            </div>
+            </p>
           </div>
-        </motion.div>
+
+          <div className="mt-4 text-center text-[12px] text-site-muted">
+            {t("terms_agreement")}{" "}
+            <Link
+              href="/terms"
+              className="text-site-muted hover:text-site-accent font-semibold transition-colors"
+            >
+              {t("terms")}
+            </Link>{" "}
+            {t("and")}{" "}
+            <Link
+              href="/privacy"
+              className="text-site-muted hover:text-site-accent font-semibold transition-colors"
+            >
+              {t("privacy_policy")}
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -388,7 +388,7 @@ export default function CheckoutPage() {
               <span className="text-base font-bold text-site-text">
                 {t("grand_total")}
               </span>
-              <span className="text-2xl font-black text-site-accent">
+              <span className="text-2xl font-black text-site-text">
                 ฿{getTotalPrice().toFixed(2)}
               </span>
             </div>
@@ -399,7 +399,7 @@ export default function CheckoutPage() {
             <div className="mb-4 p-3 bg-status-danger/10 border border-status-danger/20 rounded-6">
               <div className="flex items-start gap-2 text-status-danger">
                 <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span className="text-xs font-bold">
+                <span className="text-sm font-bold">
                   {t("fill_required_fields")}
                 </span>
               </div>
@@ -410,7 +410,7 @@ export default function CheckoutPage() {
             <div className="mb-4 p-3 bg-status-success/10 border border-status-success/20 rounded-6">
               <div className="flex items-center gap-2 text-status-success">
                 <CheckCircle className="w-4 h-4 flex-shrink-0" />
-                <span className="text-xs font-bold">{t("info_complete")}</span>
+                <span className="text-sm font-bold">{t("info_complete")}</span>
               </div>
             </div>
           )}
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
           </Button>
 
           <div className="mt-4 text-center">
-            <p className="text-site-dim text-[11px]">
+            <p className="text-site-dim text-xs">
               {t("terms_agreement")}{" "}
               <Link href="/terms" className="underline hover:text-site-text">
                 {t("terms_of_service")}

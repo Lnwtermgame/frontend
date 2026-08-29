@@ -88,7 +88,7 @@ export default function MainNav() {
                                 {/* Avatar chip button */}
                                 <DropdownMenuTrigger asChild>
                                     <button
-                                        className="group flex items-center gap-2 bg-site-raised border border-site-border-soft rounded-6 px-2 py-1.5 pr-3 cursor-pointer hover:bg-site-raised/80 transition-colors outline-none"
+                                        className="group flex items-center gap-2 bg-site-raised border border-site-border-soft rounded-6 px-2 py-1.5 pr-3 cursor-pointer hover:bg-site-raised/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60"
                                     >
                                         <div className="w-7 h-7 bg-site-accent text-site-bg rounded-full flex items-center justify-center overflow-hidden">
                                             <span className="text-[11px] font-bold">
@@ -137,34 +137,30 @@ export default function MainNav() {
                                     {/* Menu Items */}
                                     <div className="flex flex-col gap-0.5">
                                         {isAdmin && (
-                                            <DropdownMenuItem
-                                                onSelect={() => router.push("/admin")}
-                                                className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
-                                            >
-                                                <Shield size={14} />
-                                                {t("admin_panel")}
+                                            <DropdownMenuItem asChild className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5">
+                                                <Link href="/admin">
+                                                    <Shield size={14} />
+                                                    {t("admin_panel")}
+                                                </Link>
                                             </DropdownMenuItem>
                                         )}
-                                        <DropdownMenuItem
-                                            onSelect={() => router.push("/dashboard/account")}
-                                            className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
-                                        >
-                                            <User size={14} />
-                                            {t("my_account")}
+                                        <DropdownMenuItem asChild className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5">
+                                            <Link href="/dashboard/account">
+                                                <User size={14} />
+                                                {t("my_account")}
+                                            </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onSelect={() => router.push("/dashboard/credits")}
-                                            className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
-                                        >
-                                            <Coins size={14} />
-                                            {t("credits")}
+                                        <DropdownMenuItem asChild className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5">
+                                            <Link href="/dashboard/credits">
+                                                <Coins size={14} />
+                                                {t("credits")}
+                                            </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onSelect={() => router.push("/dashboard/orders")}
-                                            className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
-                                        >
-                                            <ShoppingCart size={14} />
-                                            {t("order_history")}
+                                        <DropdownMenuItem asChild className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5">
+                                            <Link href="/dashboard/orders">
+                                                <ShoppingCart size={14} />
+                                                {t("order_history")}
+                                            </Link>
                                         </DropdownMenuItem>
                                     </div>
 

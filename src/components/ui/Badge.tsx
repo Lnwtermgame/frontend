@@ -7,11 +7,12 @@ import { cn } from "@/lib/utils";
  * imported from a lowercase `badge.tsx`) because `Badge.tsx` already existed
  * on this Windows checkout and the shadcn CLI would have clobbered it.
  *
- * Base = standard shadcn badge cva (outline-style border); colors come from
+ * Base = shadcn badge structure (outline-style border) with the project's
+ * original metrics (rounded-4, px-2, text-[10px] font-bold); colors come from
  * the project variant map below.
  */
 const badgeBase =
-  "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3";
+  "inline-flex items-center gap-1 rounded-4 border px-2 py-0.5 text-[10px] font-bold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3";
 
 const variantClass: Record<string, string> = {
   success: "border-status-success/40 bg-status-success/15 text-status-success",

@@ -97,7 +97,7 @@ export function LanguageSwitcher({
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent
-            className="max-w-sm gap-0 p-5 max-h-[85vh] overflow-y-auto"
+            className="bg-site-surface border-site-border rounded-8 sm:rounded-8 max-w-sm gap-0 p-5 max-h-[85vh] overflow-y-auto"
             aria-describedby={undefined}
           >
             <div className="flex justify-between items-center mb-6 border-b border-site-border-soft pb-4">

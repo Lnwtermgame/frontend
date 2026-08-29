@@ -1161,7 +1161,7 @@ export default function GameDetailsPage() {
                                   />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {field.options?.map((opt) => (
+                                  {field.options?.filter((opt) => opt.value !== "").map((opt) => (
                                     <SelectItem
                                       key={opt.value}
                                       value={opt.value}
@@ -1433,7 +1433,7 @@ export default function GameDetailsPage() {
         onOpenChange={setShowConfirmModal}
       >
         <DialogContent
-          className="max-w-4xl gap-0 overflow-hidden p-0 rounded-8 sm:rounded-8 flex flex-col max-h-[95vh] sm:max-h-[90vh]"
+          className="bg-site-surface border-site-border max-w-4xl gap-0 overflow-hidden p-0 rounded-8 sm:rounded-8 flex flex-col max-h-[95vh] sm:max-h-[90vh]"
           aria-describedby={undefined}
         >
           {verificationStatus && (
@@ -1675,7 +1675,7 @@ export default function GameDetailsPage() {
 
       {/* ── Payment Selection Modal ── */}
       <Dialog open={isPaymentSelectOpen} onOpenChange={setIsPaymentSelectOpen}>
-        <DialogContent className="max-w-5xl gap-0 p-4 sm:p-6 rounded-8 sm:rounded-8">
+        <DialogContent className="bg-site-surface border-site-border max-w-5xl gap-0 p-4 sm:p-6 rounded-8 sm:rounded-8">
           <div className="flex justify-between items-start gap-3 mb-5">
             <div>
               <DialogTitle className="text-2xl font-bold text-site-text uppercase">

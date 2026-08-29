@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "@/lib/framer-exports";
 import { SeagmField, productApi } from "@/lib/services/product-api";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
@@ -156,7 +155,7 @@ export default function DynamicProductFields({
         >
           {field.label}
           {field.required !== false && (
-            <span className="text-red-500 ml-1" aria-hidden="true">
+            <span className="text-status-danger ml-1" aria-hidden="true">
               *
             </span>
           )}
@@ -171,10 +170,10 @@ export default function DynamicProductFields({
             disabled={disabled}
             rows={3}
             autoComplete="off"
-            className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text placeholder-site-dim focus:ring-2 focus:outline-none transition-all resize-none ${
+            className={`w-full bg-site-surface border px-4 py-3 text-site-text placeholder-site-dim focus:ring-2 focus:outline-none transition-all resize-none rounded-6 ${
               hasError
-                ? "border-red-500/20 focus:ring-red-500/30"
-                : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
+                ? "border-status-danger/20 focus:ring-status-danger/30"
+                : "border-site-border focus:ring-site-accent/30 focus:border-site-accent/60"
             }`}
           />
         ) : (
@@ -193,25 +192,21 @@ export default function DynamicProductFields({
               placeholder={field.placeholder}
               disabled={disabled}
               autoComplete="off"
-              className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text placeholder-site-dim focus:ring-2 focus:outline-none transition-all ${
+              className={`w-full bg-site-surface border px-4 py-3 text-site-text placeholder-site-dim focus:ring-2 focus:outline-none transition-all rounded-6 ${
                 field.prefix ? "pl-10" : ""
               } ${
                 hasError
-                  ? "border-red-500/20 focus:ring-red-500/30"
-                  : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
+                  ? "border-status-danger/20 focus:ring-status-danger/30"
+                  : "border-site-border focus:ring-site-accent/30 focus:border-site-accent/60"
               }`}
             />
           </div>
         )}
         {hasError && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-red-500 text-sm flex items-center gap-1"
-          >
+          <p className="text-status-danger text-sm flex items-center gap-1">
             <AlertCircle className="w-4 h-4" />
             {errors[field.name]}
-          </motion.p>
+          </p>
         )}
       </div>
     );
@@ -230,7 +225,7 @@ export default function DynamicProductFields({
         >
           {field.label}
           {field.required !== false && (
-            <span className="text-red-500 ml-1" aria-hidden="true">
+            <span className="text-status-danger ml-1" aria-hidden="true">
               *
             </span>
           )}
@@ -242,10 +237,10 @@ export default function DynamicProductFields({
           onBlur={() => handleBlur(field.name)}
           disabled={disabled}
           autoComplete="off"
-          className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
+          className={`w-full bg-site-surface border px-4 py-3 text-site-text focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer rounded-6 ${
             hasError
-              ? "border-red-500/20 focus:ring-red-500/30"
-              : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
+              ? "border-status-danger/20 focus:ring-status-danger/30"
+              : "border-site-border focus:ring-site-accent/30 focus:border-site-accent/60"
           }`}
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
@@ -262,14 +257,10 @@ export default function DynamicProductFields({
           ))}
         </select>
         {hasError && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-red-500 text-sm flex items-center gap-1"
-          >
+          <p className="text-status-danger text-sm flex items-center gap-1">
             <AlertCircle className="w-4 h-4" />
             {errors[field.name]}
-          </motion.p>
+          </p>
         )}
 
         {/* Render child fields if this field has children and a value is selected */}
@@ -297,7 +288,7 @@ export default function DynamicProductFields({
                       <div key={childField.name} className="space-y-2">
                         <label className="block text-sm font-medium text-site-text">
                           {childField.label}
-                          <span className="text-red-500 ml-1">*</span>
+                          <span className="text-status-danger ml-1">*</span>
                         </label>
                         <div className="relative">
                           {childField.prefix && (
@@ -312,12 +303,12 @@ export default function DynamicProductFields({
                             }
                             onBlur={() => handleBlur(childField.name)}
                             disabled={disabled}
-                            className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
+                            className={`w-full bg-site-surface border px-4 py-3 text-site-text focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer rounded-6 ${
                               childField.prefix ? "pl-10" : ""
                             } ${
                               childHasError
-                                ? "border-red-500/20 focus:ring-red-500/30"
-                                : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
+                                ? "border-status-danger/20 focus:ring-status-danger/30"
+                                : "border-site-border focus:ring-site-accent/30 focus:border-site-accent/60"
                             }`}
                             style={{
                               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
@@ -337,14 +328,12 @@ export default function DynamicProductFields({
                           </select>
                         </div>
                         {childHasError && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-red-500 text-sm flex items-center gap-1"
+                          <p
+                            className="text-status-danger text-sm flex items-center gap-1"
                           >
                             <AlertCircle className="w-4 h-4" />
                             {errors[childField.name]}
-                          </motion.p>
+                          </p>
                         )}
                       </div>
                     );
@@ -372,8 +361,7 @@ export default function DynamicProductFields({
   if (state.loading) {
     return (
       <div
-        className="bg-site-surface border border-site-border/30 rounded-[16px] p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-site-surface border border-site-border rounded-8 p-6"
       >
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-8 h-8 text-site-accent animate-spin" />
@@ -385,14 +373,13 @@ export default function DynamicProductFields({
   if (state.error) {
     return (
       <div
-        className="bg-red-500/10 border-[3px] border-red-500/20 p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-status-danger/10 border border-status-danger/20 rounded-8 p-6"
       >
-        <div className="flex items-center gap-3 text-red-600">
+        <div className="flex items-center gap-3 text-status-danger">
           <AlertCircle className="w-6 h-6" />
           <div>
             <p className="font-medium">Failed to load product fields</p>
-            <p className="text-sm text-red-500">{state.error}</p>
+            <p className="text-sm text-status-danger">{state.error}</p>
           </div>
         </div>
       </div>
@@ -403,10 +390,9 @@ export default function DynamicProductFields({
   if (state.fields.length === 0) {
     return (
       <div
-        className="bg-green-500/20 border-[3px] border-green-500/30 p-6"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
+        className="bg-status-success/15 border border-status-success/20 rounded-8 p-6"
       >
-        <div className="flex items-center gap-3 text-green-400">
+        <div className="flex items-center gap-3 text-status-success">
           <CheckCircle2 className="w-6 h-6" />
           <div>
             <p className="font-medium">
@@ -414,7 +400,7 @@ export default function DynamicProductFields({
                 ? "No additional information required"
                 : "Product ready"}
             </p>
-            <p className="text-sm text-green-600">
+            <p className="text-sm text-status-success">
               {state.productType === "CARD"
                 ? "Gift card PIN will be delivered after payment."
                 : "This product doesn't require any additional fields."}
@@ -427,8 +413,7 @@ export default function DynamicProductFields({
 
   return (
     <div
-      className="bg-site-surface border border-site-border/30 rounded-[16px] p-6"
-      style={{ boxShadow: "4px 4px 0 0 #000000" }}
+      className="bg-site-surface border border-site-border rounded-8 p-6"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-site-text">
@@ -444,20 +429,15 @@ export default function DynamicProductFields({
 
       <div className="space-y-4">
         {state.fields.map((field) => (
-          <motion.div
-            key={field.name}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div key={field.name}>
             {renderField(field)}
-          </motion.div>
+          </div>
         ))}
       </div>
 
       {/* Helper text for direct top-up */}
       {state.productType === "DIRECT_TOPUP" && (
-        <div className="mt-6 p-4 bg-site-accent/10 border-[2px] border-site-accent/60">
+        <div className="mt-6 p-4 bg-site-accent/10 border border-site-accent/30 rounded-8">
           <p className="text-sm text-site-muted">
             <strong className="text-site-text">Important:</strong> Please
             double-check your information before proceeding. Incorrect details

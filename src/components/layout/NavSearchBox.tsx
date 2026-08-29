@@ -81,11 +81,11 @@ export function NavSearchBox() {
     };
 
     const renderProductImage = (product: Product, size: "sm" | "md" = "md") => {
-        const sizeClasses = size === "md" ? "w-10 h-10 rounded-[10px]" : "w-8 h-8 rounded-lg";
+        const sizeClasses = size === "md" ? "w-10 h-10 rounded-8" : "w-8 h-8 rounded-6";
 
         if (product.imageUrl || product.images?.[0]?.url) {
             return (
-                <div className={`${sizeClasses} bg-site-bg shadow-sm overflow-hidden flex-shrink-0 border border-site-border-soft`}>
+                <div className={`${sizeClasses} bg-site-bg overflow-hidden flex-shrink-0 border border-site-border-soft`}>
                     <img
                         src={product.imageUrl || product.images?.[0]?.url}
                         alt={product.name}
@@ -105,7 +105,7 @@ export function NavSearchBox() {
         }
 
         return (
-            <div className={`${sizeClasses} bg-site-surface shadow-sm flex items-center justify-center flex-shrink-0 border border-site-border-soft text-site-dim font-bold text-xs`}>
+            <div className={`${sizeClasses} bg-site-surface flex items-center justify-center flex-shrink-0 border border-site-border-soft text-site-dim font-bold text-xs`}>
                 {product.name.charAt(0).toUpperCase()}
             </div>
         );
@@ -118,7 +118,7 @@ export function NavSearchBox() {
                     ref={inputRef}
                     type="text"
                     placeholder={t("Header.search_placeholder") || "Search for games, cards..."}
-                    className="bg-site-surface border border-site-border-soft focus:border-site-accent/60 outline-none text-site-text text-[13px] pl-10 pr-9 py-2.5 w-[220px] xl:w-[280px] focus:w-full rounded-[10px] transition-all duration-300 placeholder:text-site-dim shadow-inner"
+                    className="bg-site-surface border border-site-border-soft focus:border-site-accent/60 outline-none text-site-text text-[13px] pl-10 pr-9 py-2.5 w-[220px] xl:w-[280px] focus:w-full rounded-8 transition-all duration-300 placeholder:text-site-dim"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setIsOpen(true)}
@@ -139,7 +139,7 @@ export function NavSearchBox() {
 
             {/* Expanded Dropdown Window */}
             {isOpen && (
-                <div className="absolute top-[calc(100%+12px)] right-0 w-[760px] max-w-[calc(100vw-32px)] bg-site-surface/95 border border-site-border shadow-2xl rounded-8 overflow-hidden z-[100] hidden md:flex max-h-[480px]">
+                <div className="absolute top-[calc(100%+12px)] right-0 w-[760px] max-w-[calc(100vw-32px)] bg-site-surface/95 border border-site-border rounded-8 overflow-hidden z-[100] hidden md:flex max-h-[480px]">
 
                     {loading ? (
                         <div className="w-full flex items-center justify-center p-12">
@@ -189,7 +189,7 @@ export function NavSearchBox() {
                                     {gameProducts.length > 0 && (
                                         <div>
                                             <h3 className="text-site-dim font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-site-bg/95 py-1 z-10">
-                                                <CreditCard size={14} className="text-blue-400" /> Games & Cards
+                                                <CreditCard size={14} className="text-status-info" /> Games & Cards
                                             </h3>
                                             <div className="space-y-1">
                                                 {gameProducts.map((game) => (
@@ -213,7 +213,7 @@ export function NavSearchBox() {
                                     {mobileProducts.length > 0 && (
                                         <div>
                                             <h3 className="text-site-dim font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-site-bg/95 py-1 z-10">
-                                                <Smartphone size={14} className="text-green-400" /> Mobile Recharge
+                                                <Smartphone size={14} className="text-status-success" /> Mobile Recharge
                                             </h3>
                                             <div className="space-y-1">
                                                 {mobileProducts.map((mobile) => (
@@ -244,7 +244,7 @@ export function NavSearchBox() {
                                         <button
                                             type="button"
                                             onClick={() => handleSearch({ preventDefault: () => { } } as any)}
-                                            className="w-full py-2 bg-site-accent/10 text-site-accent hover:bg-site-accent hover:text-site-bg transition-colors rounded-lg text-[12px] font-bold"
+                                            className="w-full py-2 bg-site-accent/10 text-site-accent hover:bg-site-accent hover:text-site-bg transition-colors rounded-6 text-[12px] font-bold"
                                         >
                                             View All Results
                                         </button>

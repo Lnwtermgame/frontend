@@ -128,8 +128,8 @@ function ResetPasswordContent() {
   const strengthLabels = t.raw("strength_labels");
   const strengthColors = [
     "bg-status-danger",
-    "bg-orange-500",
-    "bg-yellow-500",
+    "bg-status-warning",
+    "bg-status-warning",
     "bg-status-success",
     "bg-site-accent",
   ];

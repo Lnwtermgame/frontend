@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Search, X, Loader2, Gamepad2, Tag, Clock } from "lucide-react";
-import { motion } from "@/lib/framer-exports";
 import { Link, useRouter } from "@/i18n/routing";
 import { useOnClickOutside } from "@/lib/hooks/use-on-click-outside";
 import { productApi, Product } from "@/lib/services/product-api";
@@ -245,11 +244,11 @@ export function SmartSearchBar({
     switch (type) {
       case "game":
         return (
-          <Gamepad2 size={16} className="text-pink-500" aria-hidden="true" />
+          <Gamepad2 size={16} className="text-site-accent" aria-hidden="true" />
         );
       case "coupon":
         return (
-          <Tag size={16} className="text-yellow-500" aria-hidden="true" />
+          <Tag size={16} className="text-status-warning" aria-hidden="true" />
         );
       case "history":
         return <Clock size={16} className="text-site-dim" aria-hidden="true" />;
@@ -319,8 +318,7 @@ export function SmartSearchBar({
       {/* Dropdown Results */}
       {isDropdownOpen && (query.trim() || recentSearches.length > 0) && (
         <div
-          className="absolute mt-2 w-full bg-site-surface border border-site-border/30 rounded-[16px] rounded-8 z-50 overflow-hidden transition-opacity duration-200"
-          style={{ boxShadow: "4px 4px 0 0 #000000" }}
+          className="absolute mt-2 w-full bg-site-surface border border-site-border rounded-8 z-50 overflow-hidden transition-opacity duration-200"
         >
           <div className="p-1 max-h-80 overflow-y-auto">
             {/* Loading state */}
@@ -328,7 +326,7 @@ export function SmartSearchBar({
               <div className="p-4 flex items-center justify-center">
                 <Loader2
                   size={24}
-                  className="text-pink-500 animate-spin"
+                  className="text-site-accent animate-spin"
                 />
               </div>
             )}
@@ -360,13 +358,13 @@ export function SmartSearchBar({
                   >
                     <div
                       className={cn(
-                        "px-3 py-2 flex items-center hover:bg-yellow-500/30 rounded-lg mx-1 cursor-pointer transition-colors",
+                        "px-3 py-2 flex items-center hover:bg-site-raised rounded-6 mx-1 cursor-pointer transition-colors",
                         index === selectedResultIndex &&
-                        "bg-yellow-500/30",
+                        "bg-site-raised",
                       )}
                     >
                       {result.image ? (
-                        <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-site-bg flex-shrink-0 border-[2px] border-black">
+                        <div className="h-10 w-10 rounded-6 overflow-hidden mr-3 bg-site-bg flex-shrink-0 border border-site-border">
                           <img
                             src={result.image}
                             alt={result.title}
@@ -375,7 +373,7 @@ export function SmartSearchBar({
                         </div>
                       ) : (
                         <div
-                          className="h-10 w-10 rounded-lg bg-site-bg border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
+                          className="h-10 w-10 rounded-6 bg-site-bg border border-site-border flex items-center justify-center mr-3 flex-shrink-0"
                           aria-hidden="true"
                         >
                           {getIconForResult(result.type)}
@@ -406,14 +404,14 @@ export function SmartSearchBar({
                 {recentSearches.map((search, index) => (
                   <div
                     key={`recent-${index}`}
-                    className="px-3 py-2 hover:bg-yellow-500/30 rounded-lg mx-1 cursor-pointer transition-colors flex items-center justify-between"
+                    className="px-3 py-2 hover:bg-site-raised rounded-6 mx-1 cursor-pointer transition-colors flex items-center justify-between"
                     onClick={() => {
                       setQuery(search);
                       performSearch(search);
                     }}
                   >
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-lg bg-site-bg border-[2px] border-black flex items-center justify-center mr-2">
+                      <div className="w-8 h-8 rounded-6 bg-site-bg border border-site-border flex items-center justify-center mr-2">
                         <Clock
                           size={14}
                           className="text-site-dim"
@@ -442,7 +440,7 @@ export function SmartSearchBar({
                           );
                         }
                       }}
-                      className="text-site-dim hover:text-pink-500 transition-colors"
+                      className="text-site-dim hover:text-site-accent transition-colors"
                       aria-label={t("aria_label_remove_history")}
                     >
                       <X size={14} aria-hidden="true" />
@@ -455,7 +453,7 @@ export function SmartSearchBar({
 
           {/* Show all results action */}
           {query.trim() && results.length > 0 && (
-            <div className="px-3 py-2 border-t-[2px] border-site-border">
+            <div className="px-3 py-2 border-t border-site-border">
               <button
                 type="button"
                 onClick={() => {
@@ -464,7 +462,7 @@ export function SmartSearchBar({
                   router.push(`/games?search=${encodeURIComponent(query)}`);
                   setIsDropdownOpen(false);
                 }}
-                className="text-sm text-site-text hover:text-pink-500 font-bold w-full text-center thai-font transition-colors"
+                className="text-sm text-site-text hover:text-site-accent font-bold w-full text-center thai-font transition-colors"
               >
                 {t("view_all_results_for", { query })}
               </button>

@@ -170,8 +170,8 @@ function PendingPaymentContent() {
   if (status === "completed") {
     return (
       <div className="min-h-screen bg-site-bg flex items-center justify-center p-4">
-        <div className="bg-site-surface border-4 border-black p-10 rounded-8 shadow-lg text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
-          <CheckCircle className="w-20 h-20 mx-auto text-green-500 mb-6" />
+        <div className="bg-site-surface border border-site-border p-10 rounded-8 text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
+          <CheckCircle className="w-20 h-20 mx-auto text-status-success mb-6" />
           <h1 className="text-3xl font-bold mb-3 text-site-text font-display">
             {t("payment_success")}
           </h1>
@@ -185,8 +185,8 @@ function PendingPaymentContent() {
   if (status === "failed") {
     return (
       <div className="min-h-screen bg-site-bg flex items-center justify-center p-4">
-        <div className="bg-site-surface border-4 border-black p-10 rounded-8 shadow-lg text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
-          <XCircle className="w-20 h-20 mx-auto text-red-500 mb-6" />
+        <div className="bg-site-surface border border-site-border p-10 rounded-8 text-center max-w-md w-full animate-in fade-in zoom-in duration-300">
+          <XCircle className="w-20 h-20 mx-auto text-status-danger mb-6" />
           <h1 className="text-3xl font-bold mb-3 font-display">
             {t("payment_failed")}
           </h1>
@@ -196,13 +196,13 @@ function PendingPaymentContent() {
           <div className="flex flex-col gap-4">
             <button
               onClick={() => router.push("/games")}
-              className="bg-black text-site-text px-6 py-4 rounded-lg font-bold border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider"
+              className="bg-site-surface text-site-text px-6 py-4 rounded-6 font-bold border border-site-border hover:text-site-accent hover:border-site-accent transition-colors uppercase tracking-wider"
             >
               {t("try_again")}
             </button>
             <button
               onClick={() => router.push("/dashboard/orders/")}
-              className="bg-site-surface text-site-text px-6 py-4 rounded-lg font-bold border-2 border-black hover:bg-site-raised transition-colors uppercase tracking-wider"
+              className="bg-site-surface text-site-text px-6 py-4 rounded-6 font-bold border border-site-border hover:bg-site-raised transition-colors uppercase tracking-wider"
             >
               {t("view_orders")}
             </button>
@@ -230,10 +230,10 @@ function PendingPaymentContent() {
         </div>
 
         {/* Main Card */}
-        <div className="bg-site-surface border-4 border-black rounded-8 shadow-lg overflow-hidden flex flex-col md:flex-row max-w-3xl mx-auto">
+        <div className="bg-site-surface border border-site-border rounded-8 overflow-hidden flex flex-col md:flex-row max-w-3xl mx-auto">
 
           {/* Left Column: Details & Timer */}
-          <div className="p-5 md:p-6 md:w-1/2 flex flex-col justify-between border-b-4 md:border-b-0 md:border-r-4 border-black bg-site-bg/50">
+          <div className="p-5 md:p-6 md:w-1/2 flex flex-col justify-between border-b md:border-b-0 md:border-r border-site-border-soft bg-site-bg/50">
             <div>
               <div className="flex items-center gap-2 mb-4 text-site-accent">
                 <ShieldCheck className="w-5 h-5" />
@@ -262,11 +262,11 @@ function PendingPaymentContent() {
                     </div>
                     <button
                       onClick={copyReferenceNo}
-                      className="p-3 rounded-lg bg-site-bg border-2 border-transparent hover:border-black transition-all text-site-text"
+                      className="p-3 rounded-6 bg-site-bg border border-transparent hover:border-site-border transition-all text-site-text"
                       title="คัดลอก"
                     >
                       {copied ? (
-                        <Check className="w-5 h-5 text-green-600" />
+                        <Check className="w-5 h-5 text-status-success" />
                       ) : (
                         <Copy className="w-5 h-5" />
                       )}
@@ -281,7 +281,7 @@ function PendingPaymentContent() {
                 {t("time_remaining")}
               </p>
               <div
-                className={`text-4xl md:text-5xl font-black font-mono text-center transition-colors duration-300 ${isTimeCritical ? "text-red-500 animate-pulse" : "text-site-text"}`}
+                className={`text-4xl md:text-5xl font-black font-mono text-center transition-colors duration-300 ${isTimeCritical ? "text-status-danger animate-pulse" : "text-site-text"}`}
               >
                 {formatCountdown(countdown)}
               </div>
@@ -292,9 +292,9 @@ function PendingPaymentContent() {
           <div className="p-5 md:p-6 md:w-1/2 flex flex-col items-center justify-center bg-site-surface relative">
 
             {/* Status Indicator Bar */}
-            <div className="absolute top-0 left-0 right-0 bg-blue-50 border-b-2 border-black px-3 py-2 flex items-center justify-center gap-2">
-              <RefreshCcw className="w-4 h-4 text-site-accent animate-spin" />
-              <span className="font-bold text-site-accent text-xs tracking-wide">
+            <div className="absolute top-0 left-0 right-0 bg-status-info/15 border-b border-site-border-soft px-3 py-2 flex items-center justify-center gap-2">
+              <RefreshCcw className="w-4 h-4 text-status-info animate-spin" />
+              <span className="font-bold text-status-info text-xs tracking-wide">
                 รอการชำระเงิน... กำลังตรวจสอบ
               </span>
             </div>
@@ -321,7 +321,7 @@ function PendingPaymentContent() {
               ) : (
                 // External redirect fallback (Rare case or direct URL redirect)
                 <div className="text-center py-12">
-                  <div className="w-24 h-24 bg-site-bg rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-black">
+                  <div className="w-24 h-24 bg-site-bg rounded-full flex items-center justify-center mx-auto mb-6 border border-site-border">
                     <Clock className="w-10 h-10 text-site-text" />
                   </div>
                   <h3 className="text-2xl font-bold mb-3">
@@ -337,7 +337,7 @@ function PendingPaymentContent() {
         </div>
 
         <div className="text-center mt-8 text-sm font-medium text-site-muted">
-          มีปัญหาการชำระเงิน? <a href="#" className="underline font-bold text-site-text border-b border-transparent hover:border-black">ติดต่อแอดมิน</a>
+          มีปัญหาการชำระเงิน? <a href="#" className="underline font-bold text-site-text border-b border-transparent hover:border-site-border">ติดต่อแอดมิน</a>
         </div>
       </div>
     </div>

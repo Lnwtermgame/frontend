@@ -167,7 +167,7 @@ export default function FavoritePage() {
                   <div className="absolute top-2 right-2 z-10">
                     <button
                       onClick={(e) => removeFavorite(item.id, e)}
-                      className="w-7 h-7 bg-black/50 border border-site-border-soft rounded-4 text-site-text hover:bg-status-danger hover:border-status-danger/20 hover:text-site-bg flex items-center justify-center transition-colors"
+                      className="w-7 h-7 bg-site-bg/50 border border-site-border-soft rounded-4 text-site-text hover:bg-status-danger hover:border-status-danger/20 hover:text-site-bg flex items-center justify-center transition-colors"
                       title={t("remove_success")}
                     >
                       <Trash2 size={12} />

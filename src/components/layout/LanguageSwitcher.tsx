@@ -122,7 +122,7 @@ export function LanguageSwitcher({
                       </h3>
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="p-1.5 rounded-lg text-site-dim hover:text-site-text hover:bg-site-raised transition-colors"
+                        className="p-1.5 rounded-6 text-site-dim hover:text-site-text hover:bg-site-raised transition-colors"
                         aria-label="Close"
                       >
                         <span className="text-xl font-bold leading-none block w-5 h-5 text-center">
@@ -207,7 +207,7 @@ export function LanguageSwitcher({
                     key={lang.code}
                     onClick={() => handleLanguageChange(lang.code)}
                     className={cn(
-                      "w-full flex items-center justify-between px-3 py-2 text-[13px] rounded-lg transition-colors border",
+                      "w-full flex items-center justify-between px-3 py-2 text-[13px] rounded-6 transition-colors border",
                       active
                         ? "bg-site-accent/10 border-site-accent/30 font-medium text-site-accent"
                         : "border-transparent text-site-muted hover:text-site-text hover:bg-site-raised",

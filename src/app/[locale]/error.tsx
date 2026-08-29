@@ -21,8 +21,7 @@ export default function Error({
         <div className="min-h-[60vh] flex items-center justify-center px-4 py-16">
             <div className="text-center max-w-lg">
                 {/* Error icon */}
-                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 border border-site-border/30 rounded-[12px] bg-pink-500"
-                    style={{ boxShadow: "4px 4px 0 0 #000" }}>
+                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 border border-site-border rounded-8 bg-site-accent">
                     <svg
                         className="w-10 h-10 text-site-bg"
                         fill="none"
@@ -59,12 +58,12 @@ export default function Error({
 
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-                    <button onClick={reset} className="btn-pink-500 w-full sm:w-auto">
+                    <button onClick={reset} className="site-btn w-full sm:w-auto">
                         {t("generic.tryAgain", { defaultMessage: "Try Again" })}
                     </button>
                     <button
                         onClick={() => (window.location.href = "/")}
-                        className="btn-brutal w-full sm:w-auto"
+                        className="bg-site-surface border border-site-border-soft rounded-6 text-site-muted hover:text-site-text hover:border-site-border transition-colors px-6 py-3 font-bold w-full sm:w-auto"
                     >
                         {t("generic.goHome", { defaultMessage: "← Go Home" })}
                     </button>

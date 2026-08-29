@@ -127,7 +127,7 @@ export default function MainNav() {
 
                                 {/* Dropdown Menu */}
                                 {showUserMenu && (
-                                    <div className="absolute right-0 top-full mt-2 flex flex-col bg-site-surface border border-site-border-soft rounded-8 shadow-lg w-[260px] overflow-hidden z-[60]">
+                                    <div className="absolute right-0 top-full mt-2 flex flex-col bg-site-surface border border-site-border-soft rounded-8 w-[260px] overflow-hidden z-[60]">
                                         {/* User Info Header */}
                                         <div className="p-3 border-b border-site-border-soft bg-site-raised/50">
                                             <div className="flex items-center gap-3">

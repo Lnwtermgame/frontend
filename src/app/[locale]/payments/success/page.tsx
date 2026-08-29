@@ -113,9 +113,9 @@ function PaymentSuccessPageContent() {
             label: t("title"),
             title: t("title"),
             description: t("subtitle"),
-            icon: <CheckCircle2 className="h-10 w-10 text-emerald-600" />,
-            accent: "bg-emerald-100",
-            badge: "bg-emerald-100 text-emerald-800 border-emerald-300",
+            icon: <CheckCircle2 className="h-10 w-10 text-status-success" />,
+            accent: "bg-status-success/15",
+            badge: "bg-status-success/15 text-status-success border-status-success/30",
             panelTitle: "Order Ready",
         },
         processing: {
@@ -123,9 +123,9 @@ function PaymentSuccessPageContent() {
             title: "Verifying Payment",
             description:
                 "We are confirming your payment. Please wait a moment or refresh the page.",
-            icon: <Clock3 className="h-10 w-10 text-amber-600" />,
-            accent: "bg-amber-100",
-            badge: "bg-amber-100 text-amber-800 border-amber-300",
+            icon: <Clock3 className="h-10 w-10 text-status-warning" />,
+            accent: "bg-status-warning/15",
+            badge: "bg-status-warning/15 text-status-warning border-status-warning/30",
             panelTitle: "Processing Order",
         },
         declined: {
@@ -133,9 +133,9 @@ function PaymentSuccessPageContent() {
             title: "Payment Declined",
             description:
                 "Your payment was declined by the payment provider. Please try again with a different payment method or a higher amount.",
-            icon: <CircleX className="h-10 w-10 text-rose-600" />,
-            accent: "bg-rose-100",
-            badge: "bg-rose-100 text-rose-800 border-rose-300",
+            icon: <CircleX className="h-10 w-10 text-status-danger" />,
+            accent: "bg-status-danger/15",
+            badge: "bg-status-danger/15 text-status-danger border-status-danger/30",
             panelTitle: "Need Help?",
         },
         failed: {
@@ -143,30 +143,30 @@ function PaymentSuccessPageContent() {
             title: "Payment Not Found",
             description:
                 "We couldn't retrieve your payment information. Please contact support or try again.",
-            icon: <CircleX className="h-10 w-10 text-rose-600" />,
-            accent: "bg-rose-100",
-            badge: "bg-rose-100 text-rose-800 border-rose-300",
+            icon: <CircleX className="h-10 w-10 text-status-danger" />,
+            accent: "bg-status-danger/15",
+            badge: "bg-status-danger/15 text-status-danger border-status-danger/30",
             panelTitle: "Need Help?",
         },
         loading: {
             label: tCommon("loading"),
             title: "Checking Status...",
             description: "Please wait while we sync your order information.",
-            icon: <Loader2 className="h-10 w-10 animate-spin text-slate-600" />,
-            accent: "bg-slate-100",
-            badge: "bg-slate-100 text-slate-800 border-slate-300",
+            icon: <Loader2 className="h-10 w-10 animate-spin text-site-muted" />,
+            accent: "bg-site-raised",
+            badge: "bg-site-raised text-site-muted border-site-border-soft",
             panelTitle: "Fetching Data",
         },
     }[status];
 
     return (
         <main className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-transparent">
-            <div className="pointer-events-none absolute -left-24 top-20 h-56 w-56 rounded-full border border-site-border/30 rounded-[12px] bg-yellow-500/70" />
-            <div className="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full border border-site-border/30 rounded-[12px] bg-site-accent/60" />
+            <div className="pointer-events-none absolute -left-24 top-20 h-56 w-56 rounded-full border border-site-border/30 bg-status-warning/15" />
+            <div className="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full border border-site-border/30 bg-site-accent/15" />
 
             <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
                 <section className="w-full overflow-hidden border border-site-border/30 rounded-8 bg-site-surface">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-black bg-site-bg px-4 py-3 sm:px-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-site-border bg-site-bg px-4 py-3 sm:px-6">
                         <Link
                             href="/games"
                             className="inline-flex items-center gap-2 text-sm font-semibold text-site-muted transition-colors hover:text-site-text"
@@ -175,7 +175,7 @@ function PaymentSuccessPageContent() {
                             {t("back_home")}
                         </Link>
                         <span
-                            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${statusConfig.badge}`}
+                            className={`inline-flex items-center rounded-4 border px-3 py-1 text-xs font-semibold ${statusConfig.badge}`}
                         >
                             {statusConfig.label}
                         </span>
@@ -201,7 +201,7 @@ function PaymentSuccessPageContent() {
 
                             <div className="grid gap-3 sm:grid-cols-2">
                                 {orderId && (
-                                    <div className="rounded-8 border-2 border-black bg-site-surface p-3 shadow-lg">
+                                    <div className="rounded-8 border border-site-border bg-site-surface p-3">
                                         <p className="text-xs font-semibold uppercase tracking-wide text-site-dim">
                                             {t("order_number")}
                                         </p>
@@ -211,7 +211,7 @@ function PaymentSuccessPageContent() {
                                     </div>
                                 )}
                                 {referenceNo && (
-                                    <div className="rounded-8 border-2 border-black bg-site-surface p-3 shadow-lg">
+                                    <div className="rounded-8 border border-site-border bg-site-surface p-3">
                                         <p className="text-xs font-semibold uppercase tracking-wide text-site-dim">
                                             Reference No.
                                         </p>
@@ -241,9 +241,9 @@ function PaymentSuccessPageContent() {
                             </div>
                         </div>
 
-                        <aside className="border-t-[3px] border-black bg-site-raised p-5 sm:p-7 lg:border-l-[3px] lg:border-t-0">
+                        <aside className="border-t border-site-border bg-site-raised p-5 sm:p-7 lg:border-l lg:border-t-0">
                             <div className="space-y-4">
-                                <p className="inline-flex items-center gap-2 border-2 border-black bg-yellow-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-site-bg shadow-lg">
+                                <p className="inline-flex items-center gap-2 border border-site-border bg-status-warning/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-status-warning">
                                     <Sparkles className="h-3.5 w-3.5" />
                                     Payment Flow
                                 </p>
@@ -252,11 +252,11 @@ function PaymentSuccessPageContent() {
                                 </h2>
 
                                 <div className="space-y-3 text-sm text-site-muted">
-                                    <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-site-surface p-3 shadow-lg">
+                                    <div className="flex items-start gap-3 rounded-6 border border-site-border bg-site-surface p-3">
                                         <ReceiptText className="mt-0.5 h-4 w-4 shrink-0 text-site-text" />
                                         <p className="font-bold">{t("delivery_notice")}</p>
                                     </div>
-                                    <div className="flex items-start gap-3 rounded-lg border-2 border-black bg-site-surface p-3 shadow-lg">
+                                    <div className="flex items-start gap-3 rounded-6 border border-site-border bg-site-surface p-3">
                                         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-site-text" />
                                         <p className="font-bold">Secure payment powered by FeelFreePay</p>
                                     </div>
@@ -282,7 +282,7 @@ export default function PaymentSuccessPage() {
 function PaymentLoadingFallback() {
     return (
         <div className="flex min-h-screen items-center justify-center bg-site-bg">
-            <Loader2 className="h-8 w-8 animate-spin text-pink-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-site-accent" />
         </div>
     );
 }

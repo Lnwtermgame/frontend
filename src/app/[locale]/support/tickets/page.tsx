@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   supportApi,
@@ -62,27 +61,27 @@ export default function TicketsPage() {
   const statusLabels: Record<TicketStatus, { label: string; color: string }> = {
     OPEN: {
       label: t("status.open"),
-      color: "bg-site-accent border-black text-site-text",
+      color: "bg-site-accent/15 text-site-accent border-site-accent/30",
     },
     IN_PROGRESS: {
       label: t("status.pending"),
-      color: "bg-yellow-500 border-black text-site-text",
+      color: "bg-status-warning/15 text-status-warning border-status-warning/30",
     },
     WAITING_USER: {
       label: t("status.waiting_user"),
-      color: "bg-pink-500 border-black text-site-text",
+      color: "bg-site-accent/15 text-site-accent border-site-accent/30",
     },
     WAITING_ADMIN: {
       label: t("status.waiting_admin"),
-      color: "bg-site-accent border-black text-site-text",
+      color: "bg-site-accent/15 text-site-accent border-site-accent/30",
     },
     RESOLVED: {
       label: t("status.resolved"),
-      color: "bg-green-500 border-black text-site-text",
+      color: "bg-status-success/15 text-status-success border-status-success/30",
     },
     CLOSED: {
       label: t("status.closed"),
-      color: "bg-gray-300 border-black text-site-text",
+      color: "bg-site-raised text-site-muted border-site-border-soft",
     },
   };
 
@@ -206,10 +205,7 @@ export default function TicketsPage() {
   if (!supportTicketsEnabled) {
     return (
       <div className="page-container bg-transparent">
-        <div
-          className="mx-auto max-w-2xl border border-site-border rounded-[12px] bg-site-surface p-8 text-center"
-          
-        >
+        <div className="mx-auto max-w-2xl border border-site-border rounded-8 bg-site-surface p-8 text-center">
           <h1 className="text-2xl font-black text-site-text">
             {t("disabled.title")}
           </h1>
@@ -219,7 +215,7 @@ export default function TicketsPage() {
           <div className="mt-6">
             <Link
               href="/support/contact"
-              className="inline-flex border border-site-border rounded-[12px] bg-yellow-500 px-4 py-2 font-bold text-site-text"
+              className="inline-flex border border-site-border rounded-8 bg-status-warning/15 px-4 py-2 font-bold text-status-warning"
             >
               {t("disabled.cta")}
             </Link>
@@ -232,13 +228,7 @@ export default function TicketsPage() {
   return (
     <div className="page-container bg-transparent">
       {/* Header */}
-      <motion.div
-        className="bg-site-surface border border-site-border rounded-[16px] p-6 md:p-8 mb-8"
-        
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="bg-site-surface border border-site-border rounded-8 p-6 md:p-8 mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center mb-2">
@@ -249,8 +239,8 @@ export default function TicketsPage() {
                 <ArrowLeft size={18} className="mr-1" />
                 {t("back")}
               </Link>
-              <div className="bg-site-accent p-2 border border-site-border rounded-[12px] mr-3">
-                <MessageSquare className="h-6 w-6 text-site-text" />
+              <div className="bg-site-accent/15 p-2 border border-site-border rounded-8 mr-3">
+                <MessageSquare className="h-6 w-6 text-site-accent" />
               </div>
               <h1 className="text-2xl md:text-3xl font-black uppercase text-site-text">
                 {t("title")}
@@ -260,24 +250,18 @@ export default function TicketsPage() {
           </div>
           <button
             onClick={() => setShowNewTicketModal(true)}
-            className="bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs"
-            
+            className="site-btn inline-flex text-xs"
           >
             <Plus size={18} className="mr-2" />
             {t("create_new")}
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Error Message */}
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-pink-500 border border-site-border rounded-[12px] p-4 mb-6 flex items-center"
-          
-        >
-          <AlertCircle className="text-site-text mr-3" size={20} />
+        <div className="bg-status-danger/15 border border-status-danger/20 rounded-8 p-4 mb-6 flex items-center">
+          <AlertCircle className="text-status-danger mr-3" size={20} />
           <span className="text-site-text">{error}</span>
           <button
             onClick={() => setError(null)}
@@ -285,18 +269,15 @@ export default function TicketsPage() {
           >
             <X size={18} />
           </button>
-        </motion.div>
+        </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Ticket List */}
         <div className="lg:col-span-1">
-          <div
-            className="bg-site-surface border border-site-border rounded-[16px] overflow-hidden"
-            
-          >
+          <div className="bg-site-surface border border-site-border rounded-8 overflow-hidden">
             {/* Filter Tabs */}
-            <div className="p-4 border-b-[3px] border-black">
+            <div className="p-4 border-b border-site-border-soft">
               <div className="flex flex-wrap gap-2">
                 {[
                   "ALL",
@@ -311,9 +292,9 @@ export default function TicketsPage() {
                     onClick={() =>
                       setStatusFilter(status as TicketStatus | "ALL")
                     }
-                    className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase border transition-colors ${statusFilter === status
-                      ? "bg-black text-site-text border-black"
-                      : "bg-site-surface text-site-muted border-black hover:bg-site-raised"
+                    className={`px-3 py-1.5 rounded-4 text-[10px] font-black uppercase border transition-colors ${statusFilter === status
+                      ? "bg-site-accent text-site-bg border-site-accent"
+                      : "bg-site-surface text-site-muted border-site-border-soft hover:bg-site-raised"
                       }`}
                   >
                     {status === "ALL"
@@ -350,8 +331,8 @@ export default function TicketsPage() {
                   <button
                     key={ticket.id}
                     onClick={() => loadTicketDetail(ticket.id)}
-                    className={`w-full text-left p-4 border-b-[2px] border-black hover:bg-site-raised transition-colors ${selectedTicket?.id === ticket.id
-                      ? "bg-yellow-500 border-l-4 border-l-black"
+                    className={`w-full text-left p-4 border-b border-site-border-soft hover:bg-site-raised transition-colors ${selectedTicket?.id === ticket.id
+                      ? "bg-site-accent/10 border-l-4 border-l-site-accent"
                       : ""
                       }`}
                   >
@@ -360,7 +341,7 @@ export default function TicketsPage() {
                         {ticket.ticketNumber}
                       </span>
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full border font-black uppercase shadow-sm ${statusLabels[ticket.status].color}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-4 border font-black uppercase ${statusLabels[ticket.status].color}`}
                       >
                         {statusLabels[ticket.status].label}
                       </span>
@@ -386,12 +367,7 @@ export default function TicketsPage() {
         {/* Ticket Detail */}
         <div className="lg:col-span-2">
           {selectedTicket ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-site-surface border border-site-border rounded-[16px] overflow-hidden h-full flex flex-col"
-              
-            >
+            <div className="bg-site-surface border border-site-border rounded-8 overflow-hidden h-full flex flex-col">
               {isDetailLoading ? (
                 <div className="flex-1 flex items-center justify-center p-8">
                   <Loader2 className="animate-spin text-site-text" size={32} />
@@ -399,7 +375,7 @@ export default function TicketsPage() {
               ) : (
                 <>
                   {/* Ticket Header */}
-                  <div className="p-6 border-b-[3px] border-black">
+                  <div className="p-6 border-b border-site-border-soft">
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <span className="text-xs text-site-muted font-black uppercase">
@@ -411,7 +387,7 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span
-                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border shadow-sm ${statusLabels[selectedTicket.status].color}`}
+                          className={`px-3 py-1 rounded-4 text-[10px] font-black uppercase border ${statusLabels[selectedTicket.status].color}`}
                         >
                           {statusLabels[selectedTicket.status].label}
                         </span>
@@ -457,8 +433,8 @@ export default function TicketsPage() {
                   <div className="flex-1 p-6 overflow-y-auto max-h-[500px] space-y-4">
                     {/* Initial Message */}
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-site-accent border border-site-border flex items-center justify-center flex-shrink-0">
-                        <User size={16} className="text-site-text" />
+                      <div className="w-8 h-8 bg-site-accent/15 border border-site-border flex items-center justify-center flex-shrink-0">
+                        <User size={16} className="text-site-accent" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
@@ -482,20 +458,20 @@ export default function TicketsPage() {
                       <div key={message.id} className="flex gap-4">
                         <div
                           className={`w-8 h-8 border border-site-border flex items-center justify-center flex-shrink-0 ${message.sender === "admin"
-                            ? "bg-green-500"
+                            ? "bg-status-success/15"
                             : message.sender === "system"
-                              ? "bg-gray-300"
-                              : "bg-site-accent"
+                              ? "bg-site-raised"
+                              : "bg-site-accent/15"
                             }`}
                         >
                           {message.sender === "admin" ? (
-                            <span className="text-site-text text-xs font-bold">
+                            <span className="text-status-success text-xs font-bold">
                               S
                             </span>
                           ) : message.sender === "system" ? (
-                            <span className="text-site-text text-xs">@</span>
+                            <span className="text-site-muted text-xs">@</span>
                           ) : (
-                            <User size={16} className="text-site-text" />
+                            <User size={16} className="text-site-accent" />
                           )}
                         </div>
                         <div className="flex-1">
@@ -513,7 +489,7 @@ export default function TicketsPage() {
                           </div>
                           <div
                             className={`p-3 border border-site-border font-bold uppercase text-xs ${message.sender === "admin"
-                              ? "bg-green-500 text-site-text"
+                              ? "bg-status-success/15 text-site-text"
                               : message.sender === "system"
                                 ? "bg-site-surface text-site-text"
                                 : "bg-site-raised text-site-text"
@@ -528,20 +504,19 @@ export default function TicketsPage() {
 
                   {/* Reply Form */}
                   {!["CLOSED", "RESOLVED"].includes(selectedTicket.status) && (
-                    <div className="p-4 border-t-[3px] border-black">
+                    <div className="p-4 border-t border-site-border-soft">
                       <form onSubmit={handleSendReply} className="flex gap-3">
                         <input
                           type="text"
                           value={replyMessage}
                           onChange={(e) => setReplyMessage(e.target.value)}
                           placeholder={t("detail.reply") + "..."}
-                          className="flex-1 py-2 px-4 bg-site-surface border border-site-border text-site-text font-bold uppercase placeholder-site-dim focus:outline-none focus:bg-site-raised transition-colors text-xs"
+                          className="flex-1 site-input text-xs"
                         />
                         <button
                           type="submit"
                           disabled={isSendingReply || !replyMessage.trim()}
-                          className="bg-black text-site-text border border-site-border rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 font-black uppercase flex items-center hover:bg-gray-800 transition-colors text-[10px]"
-                          
+                          className="site-btn inline-flex disabled:opacity-50 disabled:cursor-not-allowed text-[10px]"
                         >
                           {isSendingReply ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -557,12 +532,9 @@ export default function TicketsPage() {
                   )}
                 </>
               )}
-            </motion.div>
+            </div>
           ) : (
-            <div
-              className="bg-site-surface border border-site-border rounded-[16px] p-12 text-center h-full flex flex-col items-center justify-center"
-              
-            >
+            <div className="bg-site-surface border border-site-border rounded-8 p-12 text-center h-full flex flex-col items-center justify-center">
               <MessageSquare className="text-site-dim mb-4" size={64} />
               <h3 className="text-xl font-bold text-site-text mb-2">
                 {t("select_ticket")}
@@ -576,147 +548,133 @@ export default function TicketsPage() {
       </div>
 
       {/* New Ticket Modal */}
-      <AnimatePresence>
-        {showNewTicketModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-site-surface border border-site-border rounded-[16px] w-full max-w-lg max-h-[90vh] overflow-y-auto"
-              
-            >
-              <div className="p-6 border-b-[3px] border-black">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-                    <h2 className="text-xl font-black uppercase text-site-text">
-                      {t("create.title")}
-                    </h2>
-                  </div>
-                  <button
-                    onClick={() => setShowNewTicketModal(false)}
-                    className="text-site-muted hover:text-site-text"
-                  >
-                    <X size={24} />
-                  </button>
+      {showNewTicketModal && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+          <div className="bg-site-surface border border-site-border rounded-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-site-border-soft">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
+                  <h2 className="text-xl font-black uppercase text-site-text">
+                    {t("create.title")}
+                  </h2>
                 </div>
+                <button
+                  onClick={() => setShowNewTicketModal(false)}
+                  className="text-site-muted hover:text-site-text"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
+              <div>
+                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                  {t("create.category")}
+                </label>
+                <select
+                  value={newTicket.category}
+                  onChange={(e) =>
+                    setNewTicket({
+                      ...newTicket,
+                      category: e.target.value as TicketCategory,
+                    })
+                  }
+                  className="site-input w-full xl:w-2/3"
+                >
+                  {Object.entries(categoryLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
-                    {t("create.category")}
-                  </label>
-                  <select
-                    value={newTicket.category}
-                    onChange={(e) =>
-                      setNewTicket({
-                        ...newTicket,
-                        category: e.target.value as TicketCategory,
-                      })
-                    }
-                    className="w-full xl:w-2/3 py-2.5 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold uppercase text-xs"
-                  >
-                    {Object.entries(categoryLabels).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                  {t("create.description")}
+                </label>
+                <input
+                  type="text"
+                  value={newTicket.subject}
+                  onChange={(e) =>
+                    setNewTicket({ ...newTicket, subject: e.target.value })
+                  }
+                  placeholder={t("create.subject_placeholder")}
+                  required
+                  className="site-input w-full text-xs"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
-                    {t("create.description")}
-                  </label>
-                  <input
-                    type="text"
-                    value={newTicket.subject}
-                    onChange={(e) =>
-                      setNewTicket({ ...newTicket, subject: e.target.value })
-                    }
-                    placeholder={t("create.subject_placeholder")}
-                    required
-                    className="w-full py-2.5 px-4 bg-site-surface border border-site-border text-site-text font-bold uppercase placeholder-site-dim focus:outline-none focus:bg-site-raised transition-colors text-xs"
-                  />
-                </div>
+              <div>
+                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                  {t("create.description_label")}
+                </label>
+                <textarea
+                  value={newTicket.description}
+                  onChange={(e) =>
+                    setNewTicket({
+                      ...newTicket,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder={t("create.description_placeholder")}
+                  required
+                  rows={5}
+                  className="site-input w-full text-xs resize-none"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
-                    {t("create.description_label")}
-                  </label>
-                  <textarea
-                    value={newTicket.description}
-                    onChange={(e) =>
-                      setNewTicket({
-                        ...newTicket,
-                        description: e.target.value,
-                      })
-                    }
-                    placeholder={t("create.description_placeholder")}
-                    required
-                    rows={5}
-                    className="w-full py-2.5 px-4 bg-site-surface border border-site-border text-site-text font-bold uppercase placeholder-site-dim focus:outline-none focus:bg-site-raised transition-colors text-xs resize-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                  {t("create.order_ref")}
+                </label>
+                <input
+                  type="text"
+                  value={newTicket.orderId || ""}
+                  onChange={(e) =>
+                    setNewTicket({
+                      ...newTicket,
+                      orderId: e.target.value || undefined,
+                    })
+                  }
+                  placeholder={t("create.order_ref_placeholder")}
+                  className="site-input w-full text-xs"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
-                    {t("create.order_ref")}
-                  </label>
-                  <input
-                    type="text"
-                    value={newTicket.orderId || ""}
-                    onChange={(e) =>
-                      setNewTicket({
-                        ...newTicket,
-                        orderId: e.target.value || undefined,
-                      })
-                    }
-                    placeholder={t("create.order_ref_placeholder")}
-                    className="w-full py-2.5 px-4 bg-site-surface border border-site-border text-site-text font-bold uppercase placeholder-site-dim focus:outline-none focus:bg-site-raised transition-colors text-xs"
-                  />
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowNewTicketModal(false)}
-                    className="flex-1 py-2.5 px-4 border border-site-border rounded-[12px] text-site-text hover:bg-site-raised transition-colors font-black uppercase text-xs"
-                  >
-                    {t("create.cancel")}
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={
-                      isSubmitting ||
-                      !newTicket.subject.trim() ||
-                      !newTicket.description.trim()
-                    }
-                    className="flex-1 py-2.5 px-4 bg-black text-site-text border border-site-border rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed font-black uppercase text-xs hover:bg-gray-800 transition-colors"
-                    
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <Loader2 size={18} className="animate-spin mr-2" />
-                        {tCommon("loading")}
-                      </span>
-                    ) : (
-                      t("create.submit")
-                    )}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowNewTicketModal(false)}
+                  className="flex-1 py-2.5 px-4 border border-site-border-soft rounded-8 text-site-muted hover:text-site-text hover:border-site-border transition-colors font-black uppercase text-xs"
+                >
+                  {t("create.cancel")}
+                </button>
+                <button
+                  type="submit"
+                  disabled={
+                    isSubmitting ||
+                    !newTicket.subject.trim() ||
+                    !newTicket.description.trim()
+                  }
+                  className="flex-1 site-btn disabled:opacity-50 disabled:cursor-not-allowed text-xs"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center">
+                      <Loader2 size={18} className="animate-spin mr-2" />
+                      {tCommon("loading")}
+                    </span>
+                  ) : (
+                    t("create.submit")
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

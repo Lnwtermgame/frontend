@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import {
   MessageCircle,
@@ -117,65 +116,44 @@ export default function ContactPage() {
   return (
     <div className="page-container bg-transparent">
       {/* Hero Section */}
-      <motion.div
-        className="bg-site-surface border border-site-border rounded-[16px] p-8 mb-8"
-        
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="bg-site-surface border border-site-border rounded-8 p-8 mb-8">
         <div className="max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="flex items-center justify-center mb-4">
-              <div className="bg-site-accent p-3 border border-site-border rounded-[12px] mr-3">
-                <Headphones className="h-8 w-8 text-site-text" />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-black text-site-text uppercase">
-                {t("title")}
-              </h1>
+          <div className="flex items-center justify-center mb-4">
+            <div className="bg-site-accent p-3 border border-site-border rounded-8 mr-3">
+              <Headphones className="h-8 w-8 text-site-text" />
             </div>
-            <p className="text-site-muted font-bold uppercase">
-              {t("subtitle")}
-            </p>
-          </motion.div>
+            <h1 className="text-3xl md:text-4xl font-black text-site-text uppercase">
+              {t("title")}
+            </h1>
+          </div>
+          <p className="text-site-muted font-bold uppercase">
+            {t("subtitle")}
+          </p>
         </div>
-      </motion.div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content - Contact form */}
         <div className="lg:col-span-2">
-          <div
-            className="bg-site-surface border border-site-border rounded-[16px] p-6 md:p-8"
-            
-          >
+          <div className="bg-site-surface border border-site-border rounded-8 p-6 md:p-8">
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
               <h2 className="text-2xl font-black text-site-text uppercase">{t("form.title")}</h2>
             </div>
 
             {formStatus === "success" ? (
-              <motion.div
-                className="bg-green-500 border border-site-border rounded-[12px] p-6 text-center"
-                
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <CheckCircle size={48} className="mx-auto text-site-text mb-4" />
+              <div className="bg-status-success/15 border border-status-success/20 rounded-8 p-6 text-center">
+                <CheckCircle size={48} className="mx-auto text-status-success mb-4" />
                 <h3 className="text-xl font-black text-site-text mb-2 uppercase">
                   {t("form.success")}
                 </h3>
                 <button
                   onClick={() => setFormStatus("idle")}
-                  className="bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-black hover:bg-gray-800 transition-colors uppercase"
-                  
+                  className="bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-site-border rounded-8 px-6 py-3 font-black transition-colors uppercase"
                 >
                   Send Another Message
                 </button>
-              </motion.div>
+              </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -193,7 +171,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
+                      className="site-input w-full"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -212,7 +190,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
+                      className="site-input w-full"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -232,7 +210,7 @@ export default function ContactPage() {
                       value={formData.category}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
+                      className="site-input w-full"
                     >
                       <option value="" disabled>
                         Select category
@@ -258,7 +236,7 @@ export default function ContactPage() {
                       name="orderId"
                       value={formData.orderId}
                       onChange={handleInputChange}
-                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
+                      className="site-input w-full"
                       placeholder="Optional"
                     />
                   </div>
@@ -278,7 +256,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     rows={6}
-                    className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors resize-none font-bold"
+                    className="site-input w-full resize-none"
                     placeholder="Describe your issue"
                   ></textarea>
                 </div>
@@ -286,12 +264,11 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={formStatus === "submitting"}
-                  className={`bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase ${formStatus === "submitting" ? "opacity-70 cursor-not-allowed" : ""}`}
-                  
+                  className={`site-btn inline-flex ${formStatus === "submitting" ? "opacity-70 cursor-not-allowed" : ""}`}
                 >
                   {formStatus === "submitting" ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
                       {t("form.sending")}
                     </>
                   ) : (
@@ -306,12 +283,9 @@ export default function ContactPage() {
           </div>
 
           {/* FAQs Preview */}
-          <div
-            className="mt-8 bg-site-surface border border-site-border rounded-[16px] p-6 md:p-8"
-            
-          >
+          <div className="mt-8 bg-site-surface border border-site-border rounded-8 p-6 md:p-8">
             <div className="flex items-center mb-6">
-              <span className="w-1.5 h-5 bg-yellow-500 mr-2"></span>
+              <span className="w-1.5 h-5 bg-status-warning mr-2"></span>
               <HelpCircle className="text-site-text mr-3" />
               <h2 className="text-2xl font-black text-site-text uppercase">
                 {tFaq("title")}
@@ -337,7 +311,7 @@ export default function ContactPage() {
                   </button>
 
                   {expandedFaqs.includes(index) && (
-                    <div className="p-4 pt-0 text-site-muted border-t-2 border-black font-bold">
+                    <div className="p-4 pt-0 text-site-muted border-t border-site-border-soft font-bold">
                       <p>{faq.answer}</p>
                     </div>
                   )}
@@ -359,12 +333,9 @@ export default function ContactPage() {
 
         {/* Sidebar - Contact info */}
         <div>
-          <div
-            className="bg-site-surface border border-site-border rounded-[16px] p-6 sticky top-4"
-            
-          >
+          <div className="bg-site-surface border border-site-border rounded-8 p-6 sticky top-4">
             <div className="flex items-center mb-6">
-              <span className="w-1.5 h-5 bg-pink-500 mr-2"></span>
+              <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
               <h2 className="text-xl font-black text-site-text uppercase">
                 {t("title")}
               </h2>
@@ -372,8 +343,8 @@ export default function ContactPage() {
 
             <div className="space-y-6">
               <div className="flex items-start">
-                <div className="bg-yellow-500 p-3 border border-site-border mr-4 shadow-md">
-                  <Clock className="text-site-text" size={20} />
+                <div className="bg-status-warning/15 p-3 border border-site-border mr-4">
+                  <Clock className="text-status-warning" size={20} />
                 </div>
                 <div>
                   <h3 className="text-site-text font-black uppercase text-xs mb-1">Support Hours</h3>
@@ -388,8 +359,8 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start">
-                <div className="bg-site-accent p-3 border border-site-border mr-4 shadow-md">
-                  <Mail className="text-site-text" size={20} />
+                <div className="bg-site-accent/15 p-3 border border-site-border mr-4">
+                  <Mail className="text-site-accent" size={20} />
                 </div>
                 <div>
                   <h3 className="text-site-text font-black uppercase text-xs mb-1">Email Support</h3>
@@ -404,8 +375,8 @@ export default function ContactPage() {
 
               {lineUrl && (
                 <div className="flex items-start">
-                  <div className="bg-green-500 p-3 border border-site-border mr-4 shadow-md">
-                    <MessageCircle className="text-site-text" size={20} />
+                  <div className="bg-status-success/15 p-3 border border-site-border mr-4">
+                    <MessageCircle className="text-status-success" size={20} />
                   </div>
                   <div>
                     <h3 className="text-site-text font-black uppercase text-xs mb-1">LINE Support</h3>
@@ -422,8 +393,8 @@ export default function ContactPage() {
               )}
 
               <div className="flex items-start">
-                <div className="bg-pink-500 p-3 border border-site-border mr-4 shadow-md">
-                  <Phone className="text-site-text" size={20} />
+                <div className="bg-site-accent/15 p-3 border border-site-border mr-4">
+                  <Phone className="text-site-accent" size={20} />
                 </div>
                 <div>
                   <h3 className="text-site-text font-black uppercase text-xs mb-1">Phone Support</h3>
@@ -437,8 +408,8 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start">
-                <div className="bg-yellow-500 p-3 border border-site-border mr-4 shadow-md">
-                  <Globe className="text-site-text" size={20} />
+                <div className="bg-status-warning/15 p-3 border border-site-border mr-4">
+                  <Globe className="text-status-warning" size={20} />
                 </div>
                 <div>
                   <h3 className="text-site-text font-black uppercase text-xs mb-1">{t("social.title")}</h3>
@@ -447,7 +418,7 @@ export default function ContactPage() {
                       href={facebookUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="bg-site-raised hover:bg-yellow-500 p-2 border border-site-border transition-colors shadow-md"
+                      className="bg-site-raised hover:bg-site-surface p-2 border border-site-border transition-colors"
                     >
                       <svg
                         className="w-5 h-5 text-site-text"
@@ -462,7 +433,7 @@ export default function ContactPage() {
                         href={lineUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-site-raised hover:bg-green-500 p-2 border border-site-border transition-colors shadow-md"
+                        className="bg-site-raised hover:bg-site-surface p-2 border border-site-border transition-colors"
                       >
                         <span className="font-black text-xs">LINE</span>
                       </a>
@@ -472,10 +443,10 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="mt-8 bg-yellow-500 border border-site-border rounded-[12px] p-4 shadow-md">
+            <div className="mt-8 bg-status-warning/15 border border-status-warning/20 rounded-8 p-4">
               <div className="flex items-center">
-                <AlertCircle size={18} className="text-site-text mr-2" />
-                <span className="text-site-text font-black uppercase text-xs">Important</span>
+                <AlertCircle size={18} className="text-status-warning mr-2" />
+                <span className="text-status-warning font-black uppercase text-xs">Important</span>
               </div>
               <p className="mt-2 text-site-muted text-xs font-bold leading-relaxed uppercase">
                 For fastest support response, please provide your order ID and

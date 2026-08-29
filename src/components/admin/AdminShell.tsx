@@ -37,7 +37,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden">
+    <div className="admin-dark flex h-[100dvh] overflow-hidden">
       <AdminSidebar
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}

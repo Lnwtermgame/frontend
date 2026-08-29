@@ -275,47 +275,41 @@ export default function HomePage() {
           {heroSlides.map((slide) => (
             <div key={slide.id} className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden">
 
-              {/* Left Side: Text Wrapper */}
-              <div
-                className="absolute left-0 top-0 bottom-0 w-[90%] sm:w-[80%] md:w-[45%] z-10 pointer-events-none md:drop-shadow-[15px_0_20px_rgba(0,0,0,0.85)]"
-              >
-                <div
-                  className={`w-full h-full flex flex-col justify-center pl-7 sm:pl-10 md:pl-20 pr-1 md:pr-10 relative pointer-events-auto bg-transparent md:bg-[#16181A] ${slide.bgRight} md:[clip-path:polygon(0_0,100%_0,calc(100%-15px)_100%,0_100%)] [text-shadow:-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000,1px_1px_0_#000,0_4px_8px_#000] md:[text-shadow:none]`}
-                >
-                  <h2 className="text-[14px] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-tight text-white font-bold mb-1 md:mb-2 md:drop-shadow-sm leading-tight">{slide.title}</h2>
-                  <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-4 mb-2 sm:mb-4 md:mb-6">
-                    <span className="text-[11px] sm:text-sm md:text-lg lg:text-xl text-gray-200">{slide.subtitle}</span>
-                    <div className="flex items-end text-site-accent">
-                      <span className="text-[10px] sm:text-xs md:text-sm lg:text-base mr-1 sm:mr-2 mb-0.5 sm:mb-1 text-white">{slide.highlightText}</span>
-                      <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none">{slide.highlight}</span>
-                    </div>
-                  </div>
-                  <Link
-                    href={slide.href}
-                    className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors font-bold text-xs sm:text-sm md:text-base pointer-events-auto mt-1 [text-shadow:none]"
-                  >
-                    {slide.btnText}
-                  </Link>
-                </div>
-              </div>
-
-              {/* Right Side: Image at original position with gradient blend on left edge */}
-              <div className="w-[65%] md:w-[60%] h-full absolute right-0 top-0 bottom-0 z-0 overflow-hidden pointer-events-none">
+              {/* Artwork — full bleed */}
+              <div className="absolute inset-0" aria-hidden="true">
                 <img
                   src={slide.image}
                   alt={slide.title}
                   className="w-full h-full object-cover object-center"
                 />
-                {/* Gradient overlay on left edge of image for smooth blending */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: `linear-gradient(to right, #16181A 0%, rgba(22,24,26,0.6) 15%, transparent 35%)`,
-                  }}
-                />
-
               </div>
 
+              {/* Readability scrim — solid at the copy side, easing out over the art */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(to right, #16181A 0%, rgba(22,24,26,0.96) 32%, rgba(22,24,26,0.72) 48%, rgba(22,24,26,0.18) 68%, rgba(22,24,26,0) 82%)`,
+                }}
+              />
+
+              {/* Copy */}
+              <div className="relative z-10 flex h-full max-w-[640px] flex-col justify-center pl-7 sm:pl-10 md:pl-16 pr-6">
+                <h2 className="text-[14px] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-tight text-white font-bold mb-1 md:mb-2 leading-tight">{slide.title}</h2>
+                <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-4 mb-2 sm:mb-4 md:mb-6">
+                  <span className="text-[11px] sm:text-sm md:text-lg lg:text-xl text-gray-200">{slide.subtitle}</span>
+                  <div className="flex items-end text-site-accent">
+                    <span className="text-[10px] sm:text-xs md:text-sm lg:text-base mr-1 sm:mr-2 mb-0.5 sm:mb-1 text-white">{slide.highlightText}</span>
+                    <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none">{slide.highlight}</span>
+                  </div>
+                </div>
+                <Link
+                  href={slide.href}
+                  className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors font-bold text-xs sm:text-sm md:text-base mt-1"
+                >
+                  {slide.btnText}
+                </Link>
+              </div>
             </div>
           ))}
         </div>

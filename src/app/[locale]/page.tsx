@@ -418,7 +418,7 @@ export default function HomePage() {
             {heroSlides.map((slide, i) => (
               <div
                 key={slide.id}
-                className="relative h-[300px] w-full flex-[0_0_100%] md:h-[380px]"
+                className="hero-slide relative h-[300px] w-full flex-[0_0_100%] md:h-[380px]"
               >
                 <img
                   src={slide.image}

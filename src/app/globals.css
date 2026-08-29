@@ -159,6 +159,13 @@
     transform: translateZ(0);
   }
 
+  /* Per-slide self-clip: a transformed child can escape an ancestor's
+     rounded overflow on fractional DPRs, but a layer cannot escape its own
+     clip-path. 7px = 8px frame radius minus 1px border (concentric). */
+  .hero-slide {
+    clip-path: inset(0 round 7px);
+  }
+
   .site-card {
     @apply bg-site-surface border border-site-border-soft rounded-8;
   }

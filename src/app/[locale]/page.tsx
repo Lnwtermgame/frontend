@@ -272,10 +272,7 @@ export default function HomePage() {
           never clip — stacked clip edges (clip-path × radius) rasterize at
           slightly different subpixels on fractional-DPR screens and read as
           a faint seam, so exactly ONE edge does the cutting. */}
-      <section
-        className="relative w-full bg-[#16181A] isolate"
-        style={{ borderRadius: 16 }}
-      >
+      <section className="relative w-full overflow-hidden isolate">
         <div
           className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}

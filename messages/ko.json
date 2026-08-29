@@ -2045,5 +2045,6 @@
   "status_update_error": "[MISSING: status_update_error]",
   "backup_code_error": "[MISSING: backup_code_error]",
   "ticket_created_successfully": "[MISSING: ticket_created_successfully]",
-  "ticket_closed_successfully": "[MISSING: ticket_closed_successfully]"
+  "ticket_closed_successfully": "[MISSING: ticket_closed_successfully]",
+  "redirect": "[MISSING: redirect]"
 }

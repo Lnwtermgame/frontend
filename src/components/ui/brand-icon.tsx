@@ -60,7 +60,7 @@ export function BrandIcon({
     return <span className={className}>{fallbackIcon}</span>;
   }
 
-  const colorClass = brandColorMap[lowerBrand] || "text-gray-500";
+  const colorClass = brandColorMap[lowerBrand] || "text-site-dim";
   return <Smartphone size={size} className={`${colorClass} ${className}`} />;
 }
 

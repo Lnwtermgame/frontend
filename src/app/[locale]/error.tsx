@@ -24,7 +24,7 @@ export default function Error({
                 <div className="inline-flex items-center justify-center w-20 h-20 mb-6 border border-site-border/30 rounded-[12px] bg-pink-500"
                     style={{ boxShadow: "4px 4px 0 0 #000" }}>
                     <svg
-                        className="w-10 h-10 text-white"
+                        className="w-10 h-10 text-site-bg"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -39,12 +39,12 @@ export default function Error({
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                <h1 className="text-2xl sm:text-3xl font-bold text-site-text mb-3">
                     {t("generic.title", { defaultMessage: "Something Went Wrong" })}
                 </h1>
 
                 {/* Description */}
-                <p className="text-gray-600 text-base sm:text-lg mb-2 max-w-md mx-auto">
+                <p className="text-site-muted text-base sm:text-lg mb-2 max-w-md mx-auto">
                     {t("generic.description", {
                         defaultMessage: "An unexpected error occurred. Please try again.",
                     })}
@@ -52,7 +52,7 @@ export default function Error({
 
                 {/* Error digest for support */}
                 {error.digest && (
-                    <p className="text-xs text-gray-400 mb-6 font-mono">
+                    <p className="text-xs text-site-dim mb-6 font-mono">
                         Error ID: {error.digest}
                     </p>
                 )}

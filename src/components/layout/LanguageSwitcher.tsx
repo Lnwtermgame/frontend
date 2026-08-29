@@ -87,7 +87,7 @@ export function LanguageSwitcher({
 
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center justify-between p-3 bg-site-surface border border-site-border-soft rounded-xl hover:border-site-accent/30 transition-all text-site-text"
+          className="w-full flex items-center justify-between p-3 bg-site-surface border border-site-border-soft rounded-8 hover:border-site-accent/30 transition-all text-site-text"
         >
           <div className="flex items-center gap-3">
             <Flag code={currentLanguage.flagCode} className="w-6 rounded-sm" />
@@ -107,14 +107,14 @@ export function LanguageSwitcher({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    className="absolute inset-0 bg-black/60"
                     onClick={() => setIsOpen(false)}
                   />
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="relative w-full max-w-sm bg-site-surface border border-site-border-soft rounded-2xl p-5 max-h-[85vh] overflow-y-auto flex flex-col shadow-2xl"
+                    className="relative w-full max-w-sm bg-site-surface border border-site-border-soft rounded-8 p-5 max-h-[85vh] overflow-y-auto flex flex-col shadow-2xl"
                   >
                     <div className="flex justify-between items-center mb-6 border-b border-site-border-soft pb-4">
                       <h3 className="font-bold text-sm uppercase tracking-wide text-site-text">
@@ -136,7 +136,7 @@ export function LanguageSwitcher({
                           key={lang.code}
                           onClick={() => handleLanguageChange(lang.code)}
                           className={cn(
-                            "flex flex-col items-center justify-center p-4 border rounded-xl transition-all",
+                            "flex flex-col items-center justify-center p-4 border rounded-8 transition-all",
                             locale === lang.code
                               ? "bg-site-accent/10 border-site-accent/30"
                               : "bg-site-raised border-site-border-soft hover:border-site-border text-site-muted hover:text-site-text",
@@ -197,7 +197,7 @@ export function LanguageSwitcher({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-48 bg-site-surface border border-site-border-soft rounded-xl shadow-2xl z-[110] overflow-hidden"
+            className="absolute right-0 mt-2 w-48 bg-site-surface border border-site-border-soft rounded-8 shadow-2xl z-[110] overflow-hidden"
           >
             <div className="p-2 space-y-1">
               {languages.map((lang) => {

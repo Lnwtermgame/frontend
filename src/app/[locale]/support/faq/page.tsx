@@ -191,7 +191,7 @@ export default function FaqPage() {
     const category = getCategoryById(categoryId);
     if (!category?.icon) {
       return (
-        <span className="bg-[#2A2C30] p-1.5 border border-site-border text-white">
+        <span className="bg-site-raised p-1.5 border border-site-border text-site-text">
           ?
         </span>
       );
@@ -203,20 +203,20 @@ export default function FaqPage() {
     <div className="page-container bg-transparent">
       {/* Hero Section */}
       <div
-        className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 mb-8"
+        className="bg-site-surface border border-site-border rounded-[16px] p-8 mb-8"
         
       >
         <div className="max-w-3xl mx-auto text-center">
           <div>
             <div className="flex items-center justify-center mb-4">
               <div className="bg-yellow-500 p-3 border border-site-border rounded-[12px] mr-3">
-                <HelpCircle className="h-8 w-8 text-white" />
+                <HelpCircle className="h-8 w-8 text-site-text" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-black text-white uppercase">
+              <h1 className="text-3xl md:text-4xl font-black text-site-text uppercase">
                 {t("title")}
               </h1>
             </div>
-            <p className="text-gray-600 font-bold uppercase">
+            <p className="text-site-muted font-bold uppercase">
               {t("subtitle")}
             </p>
 
@@ -228,15 +228,15 @@ export default function FaqPage() {
                   placeholder={t("search_placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-3 px-5 pl-12 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
+                  className="w-full py-3 px-5 pl-12 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
                 />
                 <Search
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-site-dim"
                   size={18}
                 />
                 {isSearching && (
                   <Loader2
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white animate-spin"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-site-text animate-spin"
                     size={18}
                   />
                 )}
@@ -251,11 +251,11 @@ export default function FaqPage() {
         <div
           className="bg-pink-500 border border-site-border rounded-[12px] p-4 mb-6 flex items-center shadow-md"
         >
-          <AlertCircle className="text-white mr-3" size={20} />
-          <span className="text-white font-black uppercase">{error}</span>
+          <AlertCircle className="text-site-text mr-3" size={20} />
+          <span className="text-site-text font-black uppercase">{error}</span>
           <button
             onClick={loadArticles}
-            className="ml-auto text-white hover:text-gray-700 flex items-center font-black uppercase text-xs"
+            className="ml-auto text-site-text hover:text-site-muted flex items-center font-black uppercase text-xs"
           >
             <Clock size={16} className="mr-1" />
             Retry
@@ -267,7 +267,7 @@ export default function FaqPage() {
       <div className="mb-6">
         <Link
           href="/support"
-          className="text-white hover:text-gray-700 transition-colors inline-flex items-center font-black uppercase text-xs"
+          className="text-site-text hover:text-site-muted transition-colors inline-flex items-center font-black uppercase text-xs"
         >
           <ArrowLeft size={18} className="mr-1" />
           {t("back_to_faq")}
@@ -278,10 +278,10 @@ export default function FaqPage() {
         {/* Sidebar - Categories */}
         <div className="lg:col-span-1">
           <div
-            className="bg-[#1A1C20] border border-site-border rounded-[16px] overflow-hidden shadow-md"
+            className="bg-site-surface border border-site-border rounded-[16px] overflow-hidden shadow-md"
           >
-            <div className="p-4 bg-[#2A2C30] border-b-[3px] border-black font-black uppercase text-xs">
-              <h3 className="text-white flex items-center">
+            <div className="p-4 bg-site-raised border-b-[3px] border-black font-black uppercase text-xs">
+              <h3 className="text-site-text flex items-center">
                 <Filter size={16} className="mr-2" />
                 {t("categories._base")}
               </h3>
@@ -293,15 +293,15 @@ export default function FaqPage() {
                   setExpandedArticle(null);
                 }}
                 className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === null
-                  ? "bg-yellow-500 border border-site-border text-white"
-                  : "text-gray-700 hover:bg-[#2A2C30]"
+                  ? "bg-yellow-500 border border-site-border text-site-text"
+                  : "text-site-muted hover:bg-site-raised"
                   }`}
               >
-                <span className="bg-[#2A2C30] border border-site-border p-1 text-white mr-3">
+                <span className="bg-site-raised border border-site-border p-1 text-site-text mr-3">
                   All
                 </span>
                 {t("all")}
-                <span className="ml-auto text-[10px] text-gray-600">
+                <span className="ml-auto text-[10px] text-site-muted">
                   {totalArticles}
                 </span>
               </button>
@@ -314,13 +314,13 @@ export default function FaqPage() {
                     setExpandedArticle(null);
                   }}
                   className={`w-full text-left px-4 py-2 flex items-center uppercase text-xs font-black transition-colors ${selectedCategory === category.id
-                    ? "bg-yellow-500 border border-site-border text-white"
-                    : "text-gray-700 hover:bg-[#2A2C30]"
+                    ? "bg-yellow-500 border border-site-border text-site-text"
+                    : "text-site-muted hover:bg-site-raised"
                     }`}
                 >
                   <span className="mr-3 text-lg">{category.icon || "📄"}</span>
                   <span className="flex-1">{category.name}</span>
-                  <span className="text-[10px] text-gray-600">
+                  <span className="text-[10px] text-site-muted">
                     {category.articleCount}
                   </span>
                 </button>
@@ -330,22 +330,22 @@ export default function FaqPage() {
 
           {/* Need help CTA */}
           <div
-            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-5 mt-6 shadow-md"
+            className="bg-site-surface border border-site-border rounded-[16px] p-5 mt-6 shadow-md"
           >
             <div className="flex items-center mb-4">
               <div className="bg-green-500 p-2 border border-site-border mr-2">
-                <MessageSquare size={20} className="text-white" />
+                <MessageSquare size={20} className="text-site-text" />
               </div>
-              <h3 className="text-white font-black uppercase text-sm">
+              <h3 className="text-site-text font-black uppercase text-sm">
                 {t("need_help.title")}
               </h3>
             </div>
-            <p className="text-gray-600 text-xs font-bold mb-4 uppercase">
+            <p className="text-site-muted text-xs font-bold mb-4 uppercase">
               {t("need_help.description")}
             </p>
             <Link
               href="/support/tickets"
-              className="bg-black text-white border border-site-border rounded-[12px] w-full py-2 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs shadow-md"
+              className="bg-black text-site-text border border-site-border rounded-[12px] w-full py-2 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase text-xs shadow-md"
             >
               {t("need_help.contact_support")}
             </Link>
@@ -357,13 +357,13 @@ export default function FaqPage() {
           {/* Loading */}
           {isLoading ? (
             <div
-              className="bg-[#1A1C20] border border-site-border rounded-[16px] p-12 text-center shadow-md"
+              className="bg-site-surface border border-site-border rounded-[16px] p-12 text-center shadow-md"
             >
               <Loader2
-                className="animate-spin mx-auto text-white mb-4"
+                className="animate-spin mx-auto text-site-text mb-4"
                 size={48}
               />
-              <p className="text-gray-600 font-bold uppercase">{tCommon("loading")}</p>
+              <p className="text-site-muted font-bold uppercase">{tCommon("loading")}</p>
             </div>
           ) : articles.length > 0 ? (
             <div className={`space-y-4 transition-opacity duration-200 ${isRefetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
@@ -371,8 +371,8 @@ export default function FaqPage() {
                 <div
                   key={article.id}
                   className={`border border-site-border rounded-[12px] overflow-hidden shadow-md transition-colors duration-200 ${expandedArticle === article.id
-                    ? "bg-[#2A2C30]"
-                    : "bg-[#1A1C20]"
+                    ? "bg-site-raised"
+                    : "bg-site-surface"
                     }`}
                 >
                   <button
@@ -382,7 +382,7 @@ export default function FaqPage() {
                       )
                     }
                     aria-expanded={expandedArticle === article.id}
-                    className="w-full text-left p-5 font-black text-white focus:outline-none flex justify-between items-center uppercase text-sm"
+                    className="w-full text-left p-5 font-black text-site-text focus:outline-none flex justify-between items-center uppercase text-sm"
                   >
                     <div className="flex items-center gap-3">
                       {article.isPinned && (
@@ -391,9 +391,9 @@ export default function FaqPage() {
                       <span>{article.title}</span>
                     </div>
                     {expandedArticle === article.id ? (
-                      <ChevronUp size={20} className="text-gray-600 flex-shrink-0" />
+                      <ChevronUp size={20} className="text-site-muted flex-shrink-0" />
                     ) : (
-                      <ChevronDown size={20} className="text-gray-600 flex-shrink-0" />
+                      <ChevronDown size={20} className="text-site-muted flex-shrink-0" />
                     )}
                   </button>
 
@@ -407,8 +407,8 @@ export default function FaqPage() {
                         className="overflow-hidden"
                       >
                         <div className="px-5 pb-5">
-                          <div className="border-t-[3px] border-black pt-4 text-gray-700">
-                            <div className="prose prose-sm max-w-none text-white font-bold">
+                          <div className="border-t-[3px] border-black pt-4 text-site-muted">
+                            <div className="prose prose-sm max-w-none text-site-text font-bold">
                               <ReactMarkdown
                                 remarkPlugins={[remarkGfm]}
                                 components={{
@@ -423,18 +423,18 @@ export default function FaqPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mt-4">
-                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-[#1A1C20] border border-site-border font-black uppercase">
+                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-site-surface border border-site-border font-black uppercase">
                                 <Eye size={12} />
                                 {article.viewCount}
                               </div>
-                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-[#1A1C20] border border-site-border font-black uppercase">
+                              <div className="flex items-center gap-1 text-[10px] px-2 py-1 bg-site-surface border border-site-border font-black uppercase">
                                 <Tag size={12} />
                                 {article.categoryName}
                               </div>
                             </div>
 
                             <div className="flex justify-between items-center mt-4 pt-3 border-t-[3px] border-black">
-                              <span className="text-[10px] font-black text-gray-600 uppercase">
+                              <span className="text-[10px] font-black text-site-muted uppercase">
                                 <Clock size={12} className="inline mr-1" />
                                 {new Date(article.createdAt).toLocaleDateString()}
                               </span>
@@ -443,8 +443,8 @@ export default function FaqPage() {
                                 <button
                                   onClick={() => handleVote(article.id, true)}
                                   className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border border-site-border shadow-md active:translate-y-[1px] transition-colors ${userVotes[article.id] === true
-                                    ? "bg-green-500 text-white"
-                                    : "bg-[#1A1C20] hover:bg-green-500"
+                                    ? "bg-green-500 text-site-text"
+                                    : "bg-site-surface hover:bg-green-500"
                                     }`}
                                 >
                                   <ThumbsUp size={12} className="mr-1" />
@@ -453,8 +453,8 @@ export default function FaqPage() {
                                 <button
                                   onClick={() => handleVote(article.id, false)}
                                   className={`text-[10px] font-black uppercase flex items-center px-3 py-1 border border-site-border shadow-md active:translate-y-[1px] transition-colors ${userVotes[article.id] === false
-                                    ? "bg-pink-500 text-white"
-                                    : "bg-[#1A1C20] hover:bg-pink-500"
+                                    ? "bg-pink-500 text-site-text"
+                                    : "bg-site-surface hover:bg-pink-500"
                                     }`}
                                 >
                                   <ThumbsDown size={12} className="mr-1" />
@@ -472,10 +472,10 @@ export default function FaqPage() {
             </div>
           ) : (
             <div
-              className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 text-center shadow-md"
+              className="bg-site-surface border border-site-border rounded-[16px] p-8 text-center shadow-md"
             >
-              <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-black text-white mb-2 uppercase">
+              <HelpCircle size={48} className="mx-auto text-site-dim mb-4" />
+              <h3 className="text-xl font-black text-site-text mb-2 uppercase">
                 {t("no_results", { query: searchQuery })}
               </h3>
               <button
@@ -483,7 +483,7 @@ export default function FaqPage() {
                   setSearchQuery("");
                   setSelectedCategory(null);
                 }}
-                className="bg-black text-white border border-site-border rounded-[12px] px-6 py-2 font-black hover:bg-gray-800 transition-colors uppercase text-xs shadow-md"
+                className="bg-black text-site-text border border-site-border rounded-[12px] px-6 py-2 font-black hover:bg-gray-800 transition-colors uppercase text-xs shadow-md"
               >
                 {t("view_all")}
               </button>

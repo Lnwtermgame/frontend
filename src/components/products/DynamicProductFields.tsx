@@ -152,7 +152,7 @@ export default function DynamicProductFields({
       <div key={field.name} className="space-y-2">
         <label
           htmlFor={field.name}
-          className="block text-sm font-medium text-gray-900"
+          className="block text-sm font-medium text-site-text"
         >
           {field.label}
           {field.required !== false && (
@@ -171,7 +171,7 @@ export default function DynamicProductFields({
             disabled={disabled}
             rows={3}
             autoComplete="off"
-            className={`w-full bg-[#212328] border-[2px] px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:outline-none transition-all resize-none ${
+            className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text placeholder-site-dim focus:ring-2 focus:outline-none transition-all resize-none ${
               hasError
                 ? "border-red-500/20 focus:ring-red-500/30"
                 : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
@@ -180,7 +180,7 @@ export default function DynamicProductFields({
         ) : (
           <div className="relative">
             {field.prefix && (
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-site-dim">
                 {field.prefix}
               </span>
             )}
@@ -193,7 +193,7 @@ export default function DynamicProductFields({
               placeholder={field.placeholder}
               disabled={disabled}
               autoComplete="off"
-              className={`w-full bg-[#212328] border-[2px] px-4 py-3 text-gray-900 placeholder-gray-400 focus:ring-2 focus:outline-none transition-all ${
+              className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text placeholder-site-dim focus:ring-2 focus:outline-none transition-all ${
                 field.prefix ? "pl-10" : ""
               } ${
                 hasError
@@ -226,7 +226,7 @@ export default function DynamicProductFields({
       <div key={field.name} className="space-y-2">
         <label
           htmlFor={field.name}
-          className="block text-sm font-medium text-gray-900"
+          className="block text-sm font-medium text-site-text"
         >
           {field.label}
           {field.required !== false && (
@@ -242,7 +242,7 @@ export default function DynamicProductFields({
           onBlur={() => handleBlur(field.name)}
           disabled={disabled}
           autoComplete="off"
-          className={`w-full bg-[#212328] border-[2px] px-4 py-3 text-gray-900 focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
+          className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
             hasError
               ? "border-red-500/20 focus:ring-red-500/30"
               : "border-black focus:ring-site-accent/30 focus:border-site-accent/60"
@@ -295,13 +295,13 @@ export default function DynamicProductFields({
 
                     return (
                       <div key={childField.name} className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-900">
+                        <label className="block text-sm font-medium text-site-text">
                           {childField.label}
                           <span className="text-red-500 ml-1">*</span>
                         </label>
                         <div className="relative">
                           {childField.prefix && (
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-site-dim">
                               {childField.prefix}
                             </span>
                           )}
@@ -312,7 +312,7 @@ export default function DynamicProductFields({
                             }
                             onBlur={() => handleBlur(childField.name)}
                             disabled={disabled}
-                            className={`w-full bg-[#212328] border-[2px] px-4 py-3 text-gray-900 focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
+                            className={`w-full bg-site-surface border-[2px] px-4 py-3 text-site-text focus:ring-2 focus:outline-none transition-all appearance-none cursor-pointer ${
                               childField.prefix ? "pl-10" : ""
                             } ${
                               childHasError
@@ -372,7 +372,7 @@ export default function DynamicProductFields({
   if (state.loading) {
     return (
       <div
-        className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+        className="bg-site-surface border border-site-border/30 rounded-[16px] p-6"
         style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         <div className="flex items-center justify-center py-8">
@@ -427,15 +427,15 @@ export default function DynamicProductFields({
 
   return (
     <div
-      className="bg-[#212328] border border-site-border/30 rounded-[16px] p-6"
+      className="bg-site-surface border border-site-border/30 rounded-[16px] p-6"
       style={{ boxShadow: "4px 4px 0 0 #000000" }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-site-text">
           Required Information
         </h3>
         {state.fromCache && (
-          <span className="text-xs text-gray-500 flex items-center gap-1">
+          <span className="text-xs text-site-dim flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" />
             Cached
           </span>
@@ -458,8 +458,8 @@ export default function DynamicProductFields({
       {/* Helper text for direct top-up */}
       {state.productType === "DIRECT_TOPUP" && (
         <div className="mt-6 p-4 bg-site-accent/10 border-[2px] border-site-accent/60">
-          <p className="text-sm text-gray-700">
-            <strong className="text-gray-900">Important:</strong> Please
+          <p className="text-sm text-site-muted">
+            <strong className="text-site-text">Important:</strong> Please
             double-check your information before proceeding. Incorrect details
             may result in failed delivery.
           </p>

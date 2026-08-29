@@ -45,7 +45,7 @@ export function CookieNotice() {
 
   return (
     <aside
-      className="fixed left-3 right-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[70] rounded-2xl border border-white/10 bg-[#0f1115]/95 backdrop-blur-xl p-5 shadow-2xl sm:left-4 sm:right-auto sm:bottom-4 sm:w-[26rem]"
+      className="fixed left-3 right-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[70] rounded-8 border border-site-border bg-site-surface/95 p-5 shadow-2xl sm:left-4 sm:right-auto sm:bottom-4 sm:w-[26rem]"
       role="dialog"
       aria-live="polite"
       aria-label={t("title")}
@@ -54,17 +54,17 @@ export function CookieNotice() {
         type="button"
         onClick={dismiss}
         aria-label={t("ariaClose")}
-        className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-[#212328]/10 hover:text-white"
+        className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-site-dim transition-colors hover:bg-site-raised hover:text-site-text"
       >
         <X size={18} />
       </button>
 
-      <h3 className="pr-9 text-sm font-bold text-white sm:text-base">{t("title")}</h3>
-      <p className="mt-2 text-xs text-gray-400 sm:text-sm">
+      <h3 className="pr-9 text-sm font-bold text-site-text sm:text-base">{t("title")}</h3>
+      <p className="mt-2 text-xs text-site-muted sm:text-sm">
         {t("description")}
       </p>
 
-      <ul className="mt-3 space-y-1.5 text-xs text-gray-400 sm:text-sm">
+      <ul className="mt-3 space-y-1.5 text-xs text-site-muted sm:text-sm">
         {items.map((item, index) => (
           <li key={index} className="flex items-start">
             <span className="mr-2 mt-0.5 text-[10px] text-site-accent">●</span>
@@ -77,13 +77,13 @@ export function CookieNotice() {
         <button
           type="button"
           onClick={dismiss}
-          className="h-10 rounded-[6px] bg-site-accent px-5 text-sm font-bold tracking-wide text-white transition-colors hover:bg-site-accent-hover"
+          className="h-10 rounded-[6px] bg-site-accent px-5 text-sm font-bold tracking-wide text-site-bg transition-colors hover:bg-site-accent-hover"
         >
           {t("acknowledge")}
         </button>
         <Link
           href="/privacy"
-          className="inline-flex h-10 items-center justify-center rounded-[6px] border border-white/10 bg-[#212328]/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-[#212328]/10"
+          className="inline-flex h-10 items-center justify-center rounded-[6px] border border-site-border bg-site-raised/5 px-5 text-sm font-semibold text-site-text transition-colors hover:bg-site-raised"
         >
           {t("privacy")}
         </Link>

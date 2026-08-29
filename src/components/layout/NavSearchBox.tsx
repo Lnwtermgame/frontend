@@ -85,7 +85,7 @@ export function NavSearchBox() {
 
         if (product.imageUrl || product.images?.[0]?.url) {
             return (
-                <div className={`${sizeClasses} bg-[#111315] shadow-sm overflow-hidden flex-shrink-0 border border-white/5`}>
+                <div className={`${sizeClasses} bg-site-bg shadow-sm overflow-hidden flex-shrink-0 border border-site-border-soft`}>
                     <img
                         src={product.imageUrl || product.images?.[0]?.url}
                         alt={product.name}
@@ -97,7 +97,7 @@ export function NavSearchBox() {
                             }
                         }}
                     />
-                    <div className="w-full h-full hidden items-center justify-center bg-[#1A1C20] text-gray-500 font-bold text-xs">
+                    <div className="w-full h-full hidden items-center justify-center bg-site-surface text-site-dim font-bold text-xs">
                         {product.name.charAt(0).toUpperCase()}
                     </div>
                 </div>
@@ -105,7 +105,7 @@ export function NavSearchBox() {
         }
 
         return (
-            <div className={`${sizeClasses} bg-[#1A1C20] shadow-sm flex items-center justify-center flex-shrink-0 border border-white/5 text-gray-500 font-bold text-xs`}>
+            <div className={`${sizeClasses} bg-site-surface shadow-sm flex items-center justify-center flex-shrink-0 border border-site-border-soft text-site-dim font-bold text-xs`}>
                 {product.name.charAt(0).toUpperCase()}
             </div>
         );
@@ -118,19 +118,19 @@ export function NavSearchBox() {
                     ref={inputRef}
                     type="text"
                     placeholder={t("Header.search_placeholder") || "Search for games, cards..."}
-                    className="bg-[#1E2023] border border-[#2E3035] focus:border-site-accent/60 outline-none text-white text-[13px] pl-10 pr-9 py-2.5 w-[220px] xl:w-[280px] focus:w-full rounded-[10px] transition-all duration-300 placeholder:text-[#666] shadow-inner"
+                    className="bg-site-surface border border-site-border-soft focus:border-site-accent/60 outline-none text-site-text text-[13px] pl-10 pr-9 py-2.5 w-[220px] xl:w-[280px] focus:w-full rounded-[10px] transition-all duration-300 placeholder:text-site-dim shadow-inner"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setIsOpen(true)}
                     onClick={() => setIsOpen(true)}
                 />
-                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555] group-focus-within:text-site-accent transition-colors" />
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-site-dim group-focus-within:text-site-accent transition-colors" />
 
                 {query && (
                     <button
                         type="button"
                         onClick={clearQuery}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-site-dim hover:text-site-text"
                     >
                         <X size={14} />
                     </button>
@@ -139,7 +139,7 @@ export function NavSearchBox() {
 
             {/* Expanded Dropdown Window */}
             {isOpen && (
-                <div className="absolute top-[calc(100%+12px)] right-0 w-[760px] max-w-[calc(100vw-32px)] bg-[#171A21]/95 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] rounded-2xl overflow-hidden z-[100] hidden md:flex max-h-[480px]">
+                <div className="absolute top-[calc(100%+12px)] right-0 w-[760px] max-w-[calc(100vw-32px)] bg-site-surface/95 border border-site-border shadow-2xl rounded-8 overflow-hidden z-[100] hidden md:flex max-h-[480px]">
 
                     {loading ? (
                         <div className="w-full flex items-center justify-center p-12">
@@ -148,8 +148,8 @@ export function NavSearchBox() {
                     ) : (
                         <>
                             {/* Left Column: Popular Games */}
-                            <div className="w-[55%] p-5 border-r border-white/5 bg-gradient-to-br from-[#1B1E24]/80 to-[#14161A]/80 flex flex-col">
-                                <h3 className="text-white/50 font-bold text-[11px] mb-4 uppercase tracking-[0.1em] flex items-center gap-2">
+                            <div className="w-[55%] p-5 border-r border-site-border-soft bg-site-bg flex flex-col">
+                                <h3 className="text-site-dim font-bold text-[11px] mb-4 uppercase tracking-[0.1em] flex items-center gap-2">
                                     <Gamepad2 size={14} className="text-site-accent" /> Popular Games
                                 </h3>
 
@@ -161,34 +161,34 @@ export function NavSearchBox() {
                                                     href={`/games/${game.slug || game.id}`}
                                                     key={game.id}
                                                     onClick={() => setIsOpen(false)}
-                                                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-all duration-200 group border border-transparent hover:border-white/5"
+                                                    className="flex items-center gap-3 p-2 rounded-8 hover:bg-site-raised transition-all duration-200 group border border-transparent hover:border-site-border-soft"
                                                 >
                                                     {renderProductImage(game, "md")}
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="text-gray-200 text-[12px] font-bold line-clamp-1 group-hover:text-site-accent transition-colors">
+                                                        <span className="text-site-text text-[12px] font-bold line-clamp-1 group-hover:text-site-accent transition-colors">
                                                             {game.name}
                                                         </span>
                                                         {game.category?.name && (
-                                                            <span className="text-[#666] text-[10px] truncate">{game.category.name}</span>
+                                                            <span className="text-site-dim text-[10px] truncate">{game.category.name}</span>
                                                         )}
                                                     </div>
                                                 </Link>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-gray-500 text-sm py-4">No popular games found.</p>
+                                        <p className="text-site-muted text-sm py-4">No popular games found.</p>
                                     )}
                                 </div>
                             </div>
 
                             {/* Right Column: ALL Results */}
-                            <div className="w-[45%] bg-[#121418]/80 p-5 flex flex-col">
-                                <div className="flex-1 overflow-y-auto pr-3 space-y-5 pb-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full">
+                            <div className="w-[45%] bg-site-bg p-5 flex flex-col">
+                                <div className="flex-1 overflow-y-auto pr-3 space-y-5 pb-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-site-border hover:[&::-webkit-scrollbar-thumb]:bg-site-muted [&::-webkit-scrollbar-thumb]:rounded-full">
 
                                     {/* Games & Cards Section */}
                                     {gameProducts.length > 0 && (
                                         <div>
-                                            <h3 className="text-white/50 font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-[#121418]/95 backdrop-blur-sm py-1 z-10">
+                                            <h3 className="text-site-dim font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-site-bg/95 py-1 z-10">
                                                 <CreditCard size={14} className="text-blue-400" /> Games & Cards
                                             </h3>
                                             <div className="space-y-1">
@@ -197,10 +197,10 @@ export function NavSearchBox() {
                                                         href={`/games/${game.slug || game.id}`}
                                                         key={game.id}
                                                         onClick={() => setIsOpen(false)}
-                                                        className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors group"
+                                                        className="flex items-center gap-3 p-2 rounded-8 hover:bg-site-raised transition-colors group"
                                                     >
                                                         {renderProductImage(game, "sm")}
-                                                        <span className="text-gray-300 hover:text-white text-[12px] font-medium line-clamp-1 group-hover:text-white transition-colors">
+                                                        <span className="text-site-muted hover:text-site-text text-[12px] font-medium line-clamp-1 group-hover:text-site-text transition-colors">
                                                             {game.name}
                                                         </span>
                                                     </Link>
@@ -212,7 +212,7 @@ export function NavSearchBox() {
                                     {/* Mobile Topup Section */}
                                     {mobileProducts.length > 0 && (
                                         <div>
-                                            <h3 className="text-white/50 font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-[#121418]/95 backdrop-blur-sm py-1 z-10">
+                                            <h3 className="text-site-dim font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-site-bg/95 py-1 z-10">
                                                 <Smartphone size={14} className="text-green-400" /> Mobile Recharge
                                             </h3>
                                             <div className="space-y-1">
@@ -221,10 +221,10 @@ export function NavSearchBox() {
                                                         href={`/games/${mobile.slug || mobile.id}`}
                                                         key={mobile.id}
                                                         onClick={() => setIsOpen(false)}
-                                                        className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors group"
+                                                        className="flex items-center gap-3 p-2 rounded-8 hover:bg-site-raised transition-colors group"
                                                     >
                                                         {renderProductImage(mobile, "sm")}
-                                                        <span className="text-gray-300 hover:text-white text-[12px] font-medium line-clamp-1 group-hover:text-white transition-colors">
+                                                        <span className="text-site-muted hover:text-site-text text-[12px] font-medium line-clamp-1 group-hover:text-site-text transition-colors">
                                                             {mobile.name}
                                                         </span>
                                                     </Link>
@@ -234,17 +234,17 @@ export function NavSearchBox() {
                                     )}
 
                                     {gameProducts.length === 0 && mobileProducts.length === 0 && (
-                                        <p className="text-gray-500 text-sm py-4">No results found for &quot;{query}&quot;.</p>
+                                        <p className="text-site-muted text-sm py-4">No results found for &quot;{query}&quot;.</p>
                                     )}
                                 </div>
 
                                 {/* View All Button */}
                                 {query && (
-                                    <div className="pt-4 mt-auto border-t border-white/5">
+                                    <div className="pt-4 mt-auto border-t border-site-border-soft">
                                         <button
                                             type="button"
                                             onClick={() => handleSearch({ preventDefault: () => { } } as any)}
-                                            className="w-full py-2 bg-site-accent/10 text-site-accent hover:bg-site-accent hover:text-white transition-colors rounded-lg text-[12px] font-bold"
+                                            className="w-full py-2 bg-site-accent/10 text-site-accent hover:bg-site-accent hover:text-site-bg transition-colors rounded-lg text-[12px] font-bold"
                                         >
                                             View All Results
                                         </button>

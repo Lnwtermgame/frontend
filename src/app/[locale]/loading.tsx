@@ -24,12 +24,12 @@ export default function Loading() {
                         }}
                     />
                     {/* Center dot */}
-                    <div className="absolute inset-[18px] border-[2px] border-black bg-[#212328]" />
+                    <div className="absolute inset-[18px] border-[2px] border-black bg-site-surface" />
                 </div>
 
                 {/* Loading text with typing dots */}
                 <div className="flex items-center gap-1">
-                    <span className="text-sm font-bold text-white tracking-wide uppercase">
+                    <span className="text-sm font-bold text-site-text tracking-wide uppercase">
                         Loading
                     </span>
                     <span className="flex gap-0.5">

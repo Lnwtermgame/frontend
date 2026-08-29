@@ -93,11 +93,11 @@ export default function FaqArticlePage() {
     return (
       <div className="page-container bg-transparent">
         <div
-          className="bg-[#1A1C20] border border-site-border rounded-[16px] p-12 text-center"
+          className="bg-site-surface border border-site-border rounded-[16px] p-12 text-center"
           
         >
-          <Loader2 className="animate-spin mx-auto text-white mb-4" size={48} />
-          <p className="text-gray-600">{t("loading")}</p>
+          <Loader2 className="animate-spin mx-auto text-site-text mb-4" size={48} />
+          <p className="text-site-muted">{t("loading")}</p>
         </div>
       </div>
     );
@@ -112,14 +112,14 @@ export default function FaqArticlePage() {
           className="bg-pink-500 border border-site-border rounded-[12px] p-6 text-center"
           
         >
-          <AlertCircle className="mx-auto text-white mb-3" size={48} />
-          <h2 className="text-xl font-bold text-white mb-2">{t("error._base")}</h2>
-          <p className="text-gray-800 mb-4">
+          <AlertCircle className="mx-auto text-site-text mb-3" size={48} />
+          <h2 className="text-xl font-bold text-site-text mb-2">{t("error._base")}</h2>
+          <p className="text-site-muted mb-4">
             {error || t("error._base")}
           </p>
           <Link
             href="/support/faq"
-            className="inline-flex items-center bg-black text-white border border-site-border rounded-[12px] px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center bg-black text-site-text border border-site-border rounded-[12px] px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
             
           >
             <ArrowLeft size={18} className="mr-2" />
@@ -134,22 +134,22 @@ export default function FaqArticlePage() {
     <div className="page-container bg-transparent">
       {/* Breadcrumb */}
       <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-site-muted">
           <Link
             href="/support"
-            className="hover:text-white transition-colors font-medium"
+            className="hover:text-site-text transition-colors font-medium"
           >
             {tNav("support")}
           </Link>
           <span className="mx-2">/</span>
           <Link
             href="/support/faq"
-            className="hover:text-white transition-colors font-medium"
+            className="hover:text-site-text transition-colors font-medium"
           >
             {tNav("faq")}
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-white font-medium">{article.title}</span>
+          <span className="text-site-text font-medium">{article.title}</span>
         </div>
       </div>
 
@@ -158,12 +158,12 @@ export default function FaqArticlePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-[#1A1C20] border border-site-border rounded-[16px] overflow-hidden"
+        className="bg-site-surface border border-site-border rounded-[16px] overflow-hidden"
         
       >
         {/* Header */}
         <div className="p-6 md:p-8 border-b-[3px] border-black">
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+          <div className="flex items-center gap-2 text-sm text-site-muted mb-3">
             <Link
               href={`/support/faq?category=${article.categoryId}`}
               className="flex items-center text-site-accent hover:underline font-medium"
@@ -172,17 +172,17 @@ export default function FaqArticlePage() {
               {article.category.name}
             </Link>
             {article.isPinned && (
-              <span className="text-white ml-2" title="Pinned">
+              <span className="text-site-text ml-2" title="Pinned">
                 📌
               </span>
             )}
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-site-text mb-4">
             {article.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-site-muted">
             <div className="flex items-center">
               <Clock size={14} className="mr-1.5" />
               {t("last_updated")}: {new Date(article.createdAt).toLocaleDateString()}
@@ -196,13 +196,13 @@ export default function FaqArticlePage() {
 
         {/* Content */}
         <div className="p-6 md:p-8">
-          <div className="prose max-w-none text-gray-800">
+          <div className="prose max-w-none text-site-muted">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
                 h2: (props) => (
                   <h2
-                    className="text-xl font-bold text-white mt-4 mb-2"
+                    className="text-xl font-bold text-site-text mt-4 mb-2"
                     {...props}
                   />
                 ),
@@ -234,7 +234,7 @@ export default function FaqArticlePage() {
 
           {/* Feedback Section */}
           <div className="mt-10 pt-6 border-t-[3px] border-black">
-            <h3 className="text-lg font-medium text-white mb-4">
+            <h3 className="text-lg font-medium text-site-text mb-4">
               {t("helpful")}
             </h3>
 
@@ -245,8 +245,8 @@ export default function FaqArticlePage() {
                 className="bg-green-500 border border-site-border rounded-[12px] p-4 flex items-center"
                 
               >
-                <CheckCircle className="text-white mr-3" size={20} />
-                <span className="text-white font-medium">
+                <CheckCircle className="text-site-text mr-3" size={20} />
+                <span className="text-site-text font-medium">
                   {t("thank_you")}
                 </span>
               </motion.div>
@@ -255,8 +255,8 @@ export default function FaqArticlePage() {
                 <button
                   onClick={() => handleVote(true)}
                   className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === true
-                    ? "bg-green-500 border-black text-white"
-                    : "bg-[#1A1C20] border-black text-white hover:bg-green-500"
+                    ? "bg-green-500 border-black text-site-text"
+                    : "bg-site-surface border-black text-site-text hover:bg-green-500"
                     }`}
                   
                 >
@@ -266,8 +266,8 @@ export default function FaqArticlePage() {
                 <button
                   onClick={() => handleVote(false)}
                   className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === false
-                    ? "bg-pink-500 border-black text-white"
-                    : "bg-[#1A1C20] border-black text-white hover:bg-pink-500"
+                    ? "bg-pink-500 border-black text-site-text"
+                    : "bg-site-surface border-black text-site-text hover:bg-pink-500"
                     }`}
                   
                 >
@@ -280,19 +280,19 @@ export default function FaqArticlePage() {
         </div>
 
         {/* Footer */}
-        <div className="p-6 md:p-8 bg-[#2A2C30] border-t-[3px] border-black">
+        <div className="p-6 md:p-8 bg-site-raised border-t-[3px] border-black">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
-              <h4 className="text-white font-medium mb-1">
+              <h4 className="text-site-text font-medium mb-1">
                 {t("still_need_help")}
               </h4>
-              <p className="text-gray-600 text-sm">
+              <p className="text-site-muted text-sm">
                 {t("contact_support_desc")}
               </p>
             </div>
             <Link
               href="/support/tickets"
-              className="bg-black text-white border border-site-border rounded-[12px] px-6 py-3 font-medium flex items-center hover:bg-gray-800 transition-colors"
+              className="bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-medium flex items-center hover:bg-gray-800 transition-colors"
               
             >
               <MessageSquare size={18} className="mr-2" />

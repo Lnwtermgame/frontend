@@ -118,7 +118,7 @@ export default function ContactPage() {
     <div className="page-container bg-transparent">
       {/* Hero Section */}
       <motion.div
-        className="bg-[#1A1C20] border border-site-border rounded-[16px] p-8 mb-8"
+        className="bg-site-surface border border-site-border rounded-[16px] p-8 mb-8"
         
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -132,13 +132,13 @@ export default function ContactPage() {
           >
             <div className="flex items-center justify-center mb-4">
               <div className="bg-site-accent p-3 border border-site-border rounded-[12px] mr-3">
-                <Headphones className="h-8 w-8 text-white" />
+                <Headphones className="h-8 w-8 text-site-text" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-black text-white uppercase">
+              <h1 className="text-3xl md:text-4xl font-black text-site-text uppercase">
                 {t("title")}
               </h1>
             </div>
-            <p className="text-gray-600 font-bold uppercase">
+            <p className="text-site-muted font-bold uppercase">
               {t("subtitle")}
             </p>
           </motion.div>
@@ -149,12 +149,12 @@ export default function ContactPage() {
         {/* Main content - Contact form */}
         <div className="lg:col-span-2">
           <div
-            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8"
+            className="bg-site-surface border border-site-border rounded-[16px] p-6 md:p-8"
             
           >
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-              <h2 className="text-2xl font-black text-white uppercase">{t("form.title")}</h2>
+              <h2 className="text-2xl font-black text-site-text uppercase">{t("form.title")}</h2>
             </div>
 
             {formStatus === "success" ? (
@@ -164,13 +164,13 @@ export default function ContactPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <CheckCircle size={48} className="mx-auto text-white mb-4" />
-                <h3 className="text-xl font-black text-white mb-2 uppercase">
+                <CheckCircle size={48} className="mx-auto text-site-text mb-4" />
+                <h3 className="text-xl font-black text-site-text mb-2 uppercase">
                   {t("form.success")}
                 </h3>
                 <button
                   onClick={() => setFormStatus("idle")}
-                  className="bg-black text-white border border-site-border rounded-[12px] px-6 py-3 font-black hover:bg-gray-800 transition-colors uppercase"
+                  className="bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-black hover:bg-gray-800 transition-colors uppercase"
                   
                 >
                   Send Another Message
@@ -182,7 +182,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-gray-700 mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-black uppercase text-xs"
                     >
                       {t("form.name")}
                     </label>
@@ -193,7 +193,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -201,7 +201,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-gray-700 mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-black uppercase text-xs"
                     >
                       {t("form.email")}
                     </label>
@@ -212,7 +212,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -222,7 +222,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="category"
-                      className="block text-gray-700 mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-black uppercase text-xs"
                     >
                       {t("form.subject")}
                     </label>
@@ -232,7 +232,7 @@ export default function ContactPage() {
                       value={formData.category}
                       onChange={handleInputChange}
                       required
-                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
                     >
                       <option value="" disabled>
                         Select category
@@ -248,7 +248,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="orderId"
-                      className="block text-gray-700 mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-black uppercase text-xs"
                     >
                       Order ID
                     </label>
@@ -258,7 +258,7 @@ export default function ContactPage() {
                       name="orderId"
                       value={formData.orderId}
                       onChange={handleInputChange}
-                      className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors font-bold"
+                      className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors font-bold"
                       placeholder="Optional"
                     />
                   </div>
@@ -267,7 +267,7 @@ export default function ContactPage() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-gray-700 mb-2 font-black uppercase text-xs"
+                    className="block text-site-muted mb-2 font-black uppercase text-xs"
                   >
                     {t("form.message")}
                   </label>
@@ -278,7 +278,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     rows={6}
-                    className="w-full py-3 px-4 bg-[#1A1C20] border border-site-border text-white focus:outline-none focus:bg-[#2A2C30] transition-colors resize-none font-bold"
+                    className="w-full py-3 px-4 bg-site-surface border border-site-border text-site-text focus:outline-none focus:bg-site-raised transition-colors resize-none font-bold"
                     placeholder="Describe your issue"
                   ></textarea>
                 </div>
@@ -286,7 +286,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={formStatus === "submitting"}
-                  className={`bg-black text-white border border-site-border rounded-[12px] px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase ${formStatus === "submitting" ? "opacity-70 cursor-not-allowed" : ""}`}
+                  className={`bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-black flex items-center justify-center hover:bg-gray-800 transition-colors uppercase ${formStatus === "submitting" ? "opacity-70 cursor-not-allowed" : ""}`}
                   
                 >
                   {formStatus === "submitting" ? (
@@ -307,13 +307,13 @@ export default function ContactPage() {
 
           {/* FAQs Preview */}
           <div
-            className="mt-8 bg-[#1A1C20] border border-site-border rounded-[16px] p-6 md:p-8"
+            className="mt-8 bg-site-surface border border-site-border rounded-[16px] p-6 md:p-8"
             
           >
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-yellow-500 mr-2"></span>
-              <HelpCircle className="text-white mr-3" />
-              <h2 className="text-2xl font-black text-white uppercase">
+              <HelpCircle className="text-site-text mr-3" />
+              <h2 className="text-2xl font-black text-site-text uppercase">
                 {tFaq("title")}
               </h2>
             </div>
@@ -322,11 +322,11 @@ export default function ContactPage() {
               {faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className={`border border-site-border overflow-hidden ${expandedFaqs.includes(index) ? "bg-[#2A2C30]" : "bg-[#1A1C20]"}`}
+                  className={`border border-site-border overflow-hidden ${expandedFaqs.includes(index) ? "bg-site-raised" : "bg-site-surface"}`}
                 >
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="w-full flex justify-between items-center p-4 text-left font-black text-white focus:outline-none uppercase text-sm"
+                    className="w-full flex justify-between items-center p-4 text-left font-black text-site-text focus:outline-none uppercase text-sm"
                   >
                     <span>{faq.question}</span>
                     {expandedFaqs.includes(index) ? (
@@ -337,7 +337,7 @@ export default function ContactPage() {
                   </button>
 
                   {expandedFaqs.includes(index) && (
-                    <div className="p-4 pt-0 text-gray-700 border-t-2 border-black font-bold">
+                    <div className="p-4 pt-0 text-site-muted border-t-2 border-black font-bold">
                       <p>{faq.answer}</p>
                     </div>
                   )}
@@ -348,7 +348,7 @@ export default function ContactPage() {
             <div className="mt-6 text-center">
               <Link
                 href="/support/faq"
-                className="text-white hover:underline inline-flex items-center font-black uppercase text-sm"
+                className="text-site-text hover:underline inline-flex items-center font-black uppercase text-sm"
               >
                 {tFaq("all")}
                 <ChevronDown className="ml-1" size={16} />
@@ -360,12 +360,12 @@ export default function ContactPage() {
         {/* Sidebar - Contact info */}
         <div>
           <div
-            className="bg-[#1A1C20] border border-site-border rounded-[16px] p-6 sticky top-4"
+            className="bg-site-surface border border-site-border rounded-[16px] p-6 sticky top-4"
             
           >
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-pink-500 mr-2"></span>
-              <h2 className="text-xl font-black text-white uppercase">
+              <h2 className="text-xl font-black text-site-text uppercase">
                 {t("title")}
               </h2>
             </div>
@@ -373,11 +373,11 @@ export default function ContactPage() {
             <div className="space-y-6">
               <div className="flex items-start">
                 <div className="bg-yellow-500 p-3 border border-site-border mr-4 shadow-md">
-                  <Clock className="text-white" size={20} />
+                  <Clock className="text-site-text" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-white font-black uppercase text-xs mb-1">Support Hours</h3>
-                  <p className="text-gray-600 font-bold text-xs">
+                  <h3 className="text-site-text font-black uppercase text-xs mb-1">Support Hours</h3>
+                  <p className="text-site-muted font-bold text-xs">
                     Mon - Fri: 9:00 - 22:00
                     <br />
                     Weekends: 10:00 - 20:00
@@ -389,13 +389,13 @@ export default function ContactPage() {
 
               <div className="flex items-start">
                 <div className="bg-site-accent p-3 border border-site-border mr-4 shadow-md">
-                  <Mail className="text-white" size={20} />
+                  <Mail className="text-site-text" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-white font-black uppercase text-xs mb-1">Email Support</h3>
+                  <h3 className="text-site-text font-black uppercase text-xs mb-1">Email Support</h3>
                   <a
                     href={`mailto:${supportEmail}`}
-                    className="text-white hover:underline font-bold text-sm block"
+                    className="text-site-text hover:underline font-bold text-sm block"
                   >
                     {supportEmail}
                   </a>
@@ -405,15 +405,15 @@ export default function ContactPage() {
               {lineUrl && (
                 <div className="flex items-start">
                   <div className="bg-green-500 p-3 border border-site-border mr-4 shadow-md">
-                    <MessageCircle className="text-white" size={20} />
+                    <MessageCircle className="text-site-text" size={20} />
                   </div>
                   <div>
-                    <h3 className="text-white font-black uppercase text-xs mb-1">LINE Support</h3>
+                    <h3 className="text-site-text font-black uppercase text-xs mb-1">LINE Support</h3>
                     <a
                       href={lineUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white hover:underline font-bold text-sm"
+                      className="text-site-text hover:underline font-bold text-sm"
                     >
                       Contact us on LINE
                     </a>
@@ -423,13 +423,13 @@ export default function ContactPage() {
 
               <div className="flex items-start">
                 <div className="bg-pink-500 p-3 border border-site-border mr-4 shadow-md">
-                  <Phone className="text-white" size={20} />
+                  <Phone className="text-site-text" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-white font-black uppercase text-xs mb-1">Phone Support</h3>
+                  <h3 className="text-site-text font-black uppercase text-xs mb-1">Phone Support</h3>
                   <a
                     href={`tel:${supportPhone}`}
-                    className="text-white hover:underline font-bold text-sm"
+                    className="text-site-text hover:underline font-bold text-sm"
                   >
                     {supportPhone}
                   </a>
@@ -438,19 +438,19 @@ export default function ContactPage() {
 
               <div className="flex items-start">
                 <div className="bg-yellow-500 p-3 border border-site-border mr-4 shadow-md">
-                  <Globe className="text-white" size={20} />
+                  <Globe className="text-site-text" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-white font-black uppercase text-xs mb-1">{t("social.title")}</h3>
+                  <h3 className="text-site-text font-black uppercase text-xs mb-1">{t("social.title")}</h3>
                   <div className="flex space-x-3 mt-2">
                     <a
                       href={facebookUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="bg-[#2A2C30] hover:bg-yellow-500 p-2 border border-site-border transition-colors shadow-md"
+                      className="bg-site-raised hover:bg-yellow-500 p-2 border border-site-border transition-colors shadow-md"
                     >
                       <svg
-                        className="w-5 h-5 text-white"
+                        className="w-5 h-5 text-site-text"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
@@ -462,7 +462,7 @@ export default function ContactPage() {
                         href={lineUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-[#2A2C30] hover:bg-green-500 p-2 border border-site-border transition-colors shadow-md"
+                        className="bg-site-raised hover:bg-green-500 p-2 border border-site-border transition-colors shadow-md"
                       >
                         <span className="font-black text-xs">LINE</span>
                       </a>
@@ -474,10 +474,10 @@ export default function ContactPage() {
 
             <div className="mt-8 bg-yellow-500 border border-site-border rounded-[12px] p-4 shadow-md">
               <div className="flex items-center">
-                <AlertCircle size={18} className="text-white mr-2" />
-                <span className="text-white font-black uppercase text-xs">Important</span>
+                <AlertCircle size={18} className="text-site-text mr-2" />
+                <span className="text-site-text font-black uppercase text-xs">Important</span>
               </div>
-              <p className="mt-2 text-gray-700 text-xs font-bold leading-relaxed uppercase">
+              <p className="mt-2 text-site-muted text-xs font-bold leading-relaxed uppercase">
                 For fastest support response, please provide your order ID and
                 any relevant screenshots.
               </p>

@@ -252,10 +252,10 @@ export function SmartSearchBar({
           <Tag size={16} className="text-yellow-500" aria-hidden="true" />
         );
       case "history":
-        return <Clock size={16} className="text-gray-400" aria-hidden="true" />;
+        return <Clock size={16} className="text-site-dim" aria-hidden="true" />;
       default:
         return (
-          <Search size={16} className="text-gray-400" aria-hidden="true" />
+          <Search size={16} className="text-site-dim" aria-hidden="true" />
         );
     }
   };
@@ -269,9 +269,9 @@ export function SmartSearchBar({
             aria-hidden="true"
           >
             {isLoading ? (
-              <Loader2 size={18} className="text-gray-400 animate-spin" />
+              <Loader2 size={18} className="text-site-dim animate-spin" />
             ) : (
-              <Search size={18} className="text-gray-400" />
+              <Search size={18} className="text-site-dim" />
             )}
           </div>
           <input
@@ -297,7 +297,7 @@ export function SmartSearchBar({
               }
             }}
             onKeyDown={handleKeyDown}
-            className="bg-[#212328] w-full border-[2px] border-gray-300 rounded-xl pl-11 pr-10 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black transition-all"
+            className="bg-site-surface w-full border-[2px] border-site-border rounded-8 pl-11 pr-10 py-3 text-site-text placeholder:text-site-dim focus:outline-none focus:border-site-accent transition-all"
             aria-expanded={isDropdownOpen}
           />
           {query && (
@@ -309,7 +309,7 @@ export function SmartSearchBar({
             >
               <X
                 size={18}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-site-dim hover:text-site-text transition-colors"
               />
             </button>
           )}
@@ -319,7 +319,7 @@ export function SmartSearchBar({
       {/* Dropdown Results */}
       {isDropdownOpen && (query.trim() || recentSearches.length > 0) && (
         <div
-          className="absolute mt-2 w-full bg-[#212328] border border-site-border/30 rounded-[16px] rounded-xl z-50 overflow-hidden transition-opacity duration-200"
+          className="absolute mt-2 w-full bg-site-surface border border-site-border/30 rounded-[16px] rounded-8 z-50 overflow-hidden transition-opacity duration-200"
           style={{ boxShadow: "4px 4px 0 0 #000000" }}
         >
           <div className="p-1 max-h-80 overflow-y-auto">
@@ -336,7 +336,7 @@ export function SmartSearchBar({
             {/* No results state */}
             {!isLoading && query.trim() && results.length === 0 && (
               <div className="p-4 text-center">
-                <p className="text-gray-500 text-sm thai-font">
+                <p className="text-site-muted text-sm thai-font">
                   {t("no_results_for", { query })}
                 </p>
               </div>
@@ -345,7 +345,7 @@ export function SmartSearchBar({
             {/* Search Results */}
             {!isLoading && results.length > 0 && (
               <div className="py-1">
-                <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">
+                <div className="px-3 py-1.5 text-xs text-site-dim font-bold thai-font">
                   {t("search_results")}
                 </div>
                 {results.map((result, index) => (
@@ -366,7 +366,7 @@ export function SmartSearchBar({
                       )}
                     >
                       {result.image ? (
-                        <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-[#1A1C1E] flex-shrink-0 border-[2px] border-black">
+                        <div className="h-10 w-10 rounded-lg overflow-hidden mr-3 bg-site-bg flex-shrink-0 border-[2px] border-black">
                           <img
                             src={result.image}
                             alt={result.title}
@@ -375,18 +375,18 @@ export function SmartSearchBar({
                         </div>
                       ) : (
                         <div
-                          className="h-10 w-10 rounded-lg bg-[#1A1C1E] border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
+                          className="h-10 w-10 rounded-lg bg-site-bg border-[2px] border-black flex items-center justify-center mr-3 flex-shrink-0"
                           aria-hidden="true"
                         >
                           {getIconForResult(result.type)}
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm text-white font-bold truncate thai-font">
+                        <div className="text-sm text-site-text font-bold truncate thai-font">
                           {result.title}
                         </div>
                         {result.subtitle && (
-                          <div className="text-xs text-gray-500 truncate">
+                          <div className="text-xs text-site-dim truncate">
                             {result.subtitle}
                           </div>
                         )}
@@ -400,7 +400,7 @@ export function SmartSearchBar({
             {/* Recent Searches */}
             {!query.trim() && recentSearches.length > 0 && (
               <div className="py-1">
-                <div className="px-3 py-1.5 text-xs text-gray-500 font-bold thai-font">
+                <div className="px-3 py-1.5 text-xs text-site-dim font-bold thai-font">
                   {t("recent_searches")}
                 </div>
                 {recentSearches.map((search, index) => (
@@ -413,14 +413,14 @@ export function SmartSearchBar({
                     }}
                   >
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-lg bg-[#1A1C1E] border-[2px] border-black flex items-center justify-center mr-2">
+                      <div className="w-8 h-8 rounded-lg bg-site-bg border-[2px] border-black flex items-center justify-center mr-2">
                         <Clock
                           size={14}
-                          className="text-gray-500"
+                          className="text-site-dim"
                           aria-hidden="true"
                         />
                       </div>
-                      <span className="text-sm text-white font-medium">
+                      <span className="text-sm text-site-text font-medium">
                         {search}
                       </span>
                     </div>
@@ -442,7 +442,7 @@ export function SmartSearchBar({
                           );
                         }
                       }}
-                      className="text-gray-400 hover:text-pink-500 transition-colors"
+                      className="text-site-dim hover:text-pink-500 transition-colors"
                       aria-label={t("aria_label_remove_history")}
                     >
                       <X size={14} aria-hidden="true" />
@@ -455,7 +455,7 @@ export function SmartSearchBar({
 
           {/* Show all results action */}
           {query.trim() && results.length > 0 && (
-            <div className="px-3 py-2 border-t-[2px] border-gray-200">
+            <div className="px-3 py-2 border-t-[2px] border-site-border">
               <button
                 type="button"
                 onClick={() => {
@@ -464,7 +464,7 @@ export function SmartSearchBar({
                   router.push(`/games?search=${encodeURIComponent(query)}`);
                   setIsDropdownOpen(false);
                 }}
-                className="text-sm text-white hover:text-pink-500 font-bold w-full text-center thai-font transition-colors"
+                className="text-sm text-site-text hover:text-pink-500 font-bold w-full text-center thai-font transition-colors"
               >
                 {t("view_all_results_for", { query })}
               </button>

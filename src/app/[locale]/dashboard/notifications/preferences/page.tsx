@@ -8,7 +8,6 @@ import {
   notificationApi,
   NotificationPreferences,
 } from "@/lib/services/notification-api";
-import { motion } from "@/lib/framer-exports";
 import {
   Bell,
   Mail,
@@ -25,6 +24,9 @@ import {
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function NotificationPreferencesPage() {
   const t = useTranslations("NotificationPreferences");
@@ -149,28 +151,28 @@ export default function NotificationPreferencesPage() {
       title: t("channels.email"),
       description: t("channels.email_desc"),
       icon: <Mail className="h-4 w-4" />,
-      accent: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+      accent: "bg-status-info/10 text-status-info border-status-info/20",
     },
     {
       key: "pushNotifications" as const,
       title: t("channels.web"),
       description: t("channels.web_desc"),
       icon: <Bell className="h-4 w-4" />,
-      accent: "bg-[var(--site-accent)]/10 text-[var(--site-accent)] border-[var(--site-accent)]/20",
+      accent: "bg-site-accent/10 text-site-accent border-site-accent/20",
     },
     {
       key: "orderUpdates" as const,
       title: t("types.orders"),
       description: t("types.orders_desc"),
       icon: <Globe className="h-4 w-4" />,
-      accent: "bg-green-500/10 text-green-500 border-green-500/30/20",
+      accent: "bg-status-success/10 text-status-success border-status-success/20",
     },
     {
       key: "promotions" as const,
       title: t("types.promotions"),
       description: t("types.promotions_desc"),
       icon: <Check className="h-4 w-4" />,
-      accent: "bg-yellow-500/10 text-yellow-500 border-yellow-500/30/20",
+      accent: "bg-status-warning/10 text-status-warning border-status-warning/20",
     },
   ];
 
@@ -178,9 +180,9 @@ export default function NotificationPreferencesPage() {
   if (!isInitialized || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#222427] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
+        <div className="flex flex-col items-center gap-3">
+          <Skeleton className="w-10 h-10 rounded-8" />
+          <p className="text-site-muted">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -192,38 +194,31 @@ export default function NotificationPreferencesPage() {
       <div className="flex items-center mb-6">
         <Link
           href="/dashboard/notifications"
-          className="mr-4 text-gray-400 hover:text-white transition-colors border border-site-border hover:border-[var(--site-accent)]/50 p-1.5 rounded-lg bg-[#222427] shadow-sm"
+          className="mr-4 text-site-muted hover:text-site-text transition-colors border border-site-border-soft hover:border-site-accent p-1.5 rounded-6 bg-site-surface"
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <motion.h2
-            className="text-2xl font-bold text-white flex items-center mb-1"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <span className="w-1.5 h-6 bg-[var(--site-accent)] mr-3 rounded-full"></span>
+          <h2 className="text-xl md:text-2xl font-extrabold text-site-text leading-none mb-1 flex items-center">
+            <span className="w-1.5 h-6 bg-site-accent mr-3 rounded-full"></span>
             {t("title")}
-          </motion.h2>
-          <p className="text-gray-400 text-sm ml-4 border-l-2 border-site-border pl-3">
+          </h2>
+          <p className="text-[11px] text-site-dim uppercase font-bold tracking-widest leading-none ml-4 pl-3.5 border-l-2 border-site-border-soft">
             {t("subtitle")}
           </p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16 bg-[#222427] border border-site-border rounded-xl shadow-ocean">
-          <div className="w-8 h-8 border-3 border-[#1A1C1E] border-t-[var(--site-accent)] rounded-full animate-spin"></div>
+        <div className="site-card p-12 text-center">
+          <Skeleton className="w-8 h-8 rounded-full mx-auto mb-4" />
+          <p className="text-site-muted">{tCommon("loading")}</p>
         </div>
       ) : (
-        <motion.div
-          className="bg-[#222427] border border-site-border shadow-ocean rounded-xl overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="p-4 sm:p-5 border-b border-site-border bg-[#1A1C1E]">
-            <h3 className="text-base font-bold text-white flex items-center">
-              <Bell size={18} className="text-[var(--site-accent)] mr-2.5" />
+        <div className="site-card overflow-hidden">
+          <div className="p-4 sm:p-5 border-b border-site-border-soft bg-site-raised">
+            <h3 className="text-base font-bold text-site-text flex items-center">
+              <Bell size={18} className="text-site-accent mr-2.5" />
               {t("title")}
             </h3>
           </div>
@@ -231,25 +226,21 @@ export default function NotificationPreferencesPage() {
           <div className="p-4 sm:p-5">
             {/* Push Notification Status */}
             {isPushSupported && (
-              <motion.div
-                className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#1A1C1E] border border-site-border rounded-xl mb-4 gap-4"
-              >
+              <div className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-site-surface border border-site-border-soft rounded-8 mb-4 gap-4">
                 <div className="flex items-start md:items-center w-full md:w-auto">
-                  <div className="h-10 w-10 min-w-[2.5rem] bg-[var(--site-accent)]/10 border border-[var(--site-accent)]/20 rounded-lg flex items-center justify-center mr-4 text-[var(--site-accent)] shrink-0 shadow-sm">
+                  <div className="h-10 w-10 min-w-[2.5rem] bg-site-accent/10 border border-site-accent/20 rounded-6 flex items-center justify-center mr-4 text-site-accent shrink-0">
                     <Smartphone className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <h4 className="text-white font-semibold text-sm">
+                      <h4 className="text-site-text font-semibold text-sm">
                         {t("channels.web")}
                       </h4>
                       {isPushSubscribed && (
-                        <span className="text-[10px] bg-green-500/10 text-green-500 px-2 py-0.5 border border-green-500/30/20 rounded-md font-bold uppercase tracking-wider">
-                          Enabled
-                        </span>
+                        <Badge variant="success">Enabled</Badge>
                       )}
                     </div>
-                    <p className="text-gray-400 text-xs font-medium pr-2 md:pr-0">
+                    <p className="text-site-muted text-xs font-medium pr-2 md:pr-0">
                       {isPushSubscribed
                         ? "Push notifications are currently enabled"
                         : "Enable push notifications to receive updates on your device"}
@@ -260,10 +251,10 @@ export default function NotificationPreferencesPage() {
                   <button
                     onClick={handleUnsubscribePush}
                     disabled={isSubscribing}
-                    className="flex items-center justify-center bg-[#222427] hover:bg-red-500/10 text-gray-300 hover:text-red-500 hover:border-red-500/30/50 px-4 py-2 border border-site-border rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shadow-sm shrink-0"
+                    className="flex items-center justify-center bg-site-surface hover:bg-status-danger/10 text-site-muted hover:text-status-danger hover:border-status-danger/30 px-4 py-2 border border-site-border-soft rounded-6 font-semibold transition-colors disabled:opacity-50 text-xs w-full md:w-auto uppercase shrink-0"
                   >
                     {isSubscribing ? (
-                      <div className="w-3.5 h-3.5 border-2 border-red-500/20 border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="w-3.5 h-3.5 border-2 border-status-danger/20 border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
                       <X className="h-3.5 w-3.5 mr-2" />
                     )}
@@ -273,36 +264,36 @@ export default function NotificationPreferencesPage() {
                   <button
                     onClick={handleSubscribePush}
                     disabled={isSubscribing}
-                    className="flex items-center justify-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-4 py-2 border border-transparent rounded-lg font-semibold transition-all disabled:opacity-50 text-xs w-full md:w-auto uppercase shrink-0"
+                    className="flex items-center justify-center bg-site-accent hover:bg-site-accent-hover text-site-bg px-4 py-2 border border-transparent rounded-6 font-semibold transition-colors disabled:opacity-50 text-xs w-full md:w-auto uppercase shrink-0"
                   >
                     {isSubscribing ? (
-                      <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="w-3.5 h-3.5 border-2 border-site-bg/30 border-t-transparent rounded-full animate-spin mr-2"></div>
                     ) : (
                       <Bell className="h-3.5 w-3.5 mr-2" />
                     )}
                     Enable
                   </button>
                 )}
-              </motion.div>
+              </div>
             )}
 
             <div className="space-y-3">
               {preferenceItems.map((item) => (
                 <div
                   key={item.key}
-                  className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-[#1A1C1E] border border-site-border rounded-xl transition-colors hover:border-[var(--site-accent)]/30 gap-4"
+                  className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-site-surface border border-site-border-soft rounded-8 transition-colors hover:border-site-accent/30 gap-4"
                 >
                   <div className="flex items-start md:items-center">
                     <div
-                      className={`h-10 w-10 min-w-[2.5rem] border ${item.accent} rounded-lg flex items-center justify-center mr-4 shrink-0 shadow-sm`}
+                      className={`h-10 w-10 min-w-[2.5rem] border ${item.accent} rounded-6 flex items-center justify-center mr-4 shrink-0`}
                     >
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-white font-semibold mb-1 md:mb-0.5 text-sm">
+                      <h4 className="text-site-text font-semibold mb-1 md:mb-0.5 text-sm">
                         {item.title}
                       </h4>
-                      <p className="text-gray-400 text-xs font-medium pr-6 md:pr-0">
+                      <p className="text-site-muted text-xs font-medium pr-6 md:pr-0">
                         {item.description}
                       </p>
                     </div>
@@ -315,22 +306,22 @@ export default function NotificationPreferencesPage() {
                         onChange={() => togglePreference(item.key)}
                         className="sr-only peer"
                       />
-                      <div className="relative w-11 h-6 bg-[#222427] border border-site-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-[#212328] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--site-accent)] peer-checked:border-[var(--site-accent)] shadow-inner"></div>
+                      <div className="relative w-11 h-6 bg-site-surface border border-site-border-soft peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-site-bg after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-site-muted peer-checked:after:bg-site-bg after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-site-accent peer-checked:border-site-accent shadow-inner"></div>
                     </label>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 pt-5 border-t border-site-border flex justify-end">
+            <div className="mt-6 pt-5 border-t border-site-border-soft flex justify-end">
               <button
                 onClick={savePreferences}
                 disabled={isSaving}
-                className="flex items-center bg-[var(--site-accent)] hover:bg-[var(--site-accent)]/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase"
+                className="flex items-center bg-site-accent hover:bg-site-accent-hover text-site-bg px-6 py-2.5 rounded-6 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase"
               >
                 {isSaving ? (
                   <>
-                    <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                    <div className="w-3.5 h-3.5 border-2 border-site-bg/30 border-t-transparent rounded-full animate-spin mr-2"></div>
                     {t("saving")}
                   </>
                 ) : (
@@ -342,7 +333,7 @@ export default function NotificationPreferencesPage() {
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );

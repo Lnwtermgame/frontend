@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useParams } from "next/navigation";
-import { motion } from "@/lib/framer-exports";
 import Link from "next/link";
 import { supportApi, FaqArticle } from "@/lib/services";
 import {
@@ -20,6 +19,9 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default function FaqArticlePage() {
   const t = useTranslations("SupportFAQDetail");
@@ -91,13 +93,12 @@ export default function FaqArticlePage() {
 
   if (isLoading) {
     return (
-      <div className="page-container bg-transparent">
-        <div
-          className="bg-site-surface border border-site-border rounded-[16px] p-12 text-center"
-          
-        >
-          <Loader2 className="animate-spin mx-auto text-site-text mb-4" size={48} />
-          <p className="text-site-muted">{t("loading")}</p>
+      <div className="page-container">
+        <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-site-accent" />
+            <p className="text-site-muted">{t("loading")}</p>
+          </div>
         </div>
       </div>
     );
@@ -105,171 +106,173 @@ export default function FaqArticlePage() {
 
   if (error || !article) {
     return (
-      <div className="page-container bg-transparent">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-pink-500 border border-site-border rounded-[12px] p-6 text-center"
-          
-        >
-          <AlertCircle className="mx-auto text-site-text mb-3" size={48} />
-          <h2 className="text-xl font-bold text-site-text mb-2">{t("error._base")}</h2>
-          <p className="text-site-muted mb-4">
-            {error || t("error._base")}
-          </p>
+      <div className="page-container">
+        <div className="max-w-4xl mx-auto text-center py-16">
+          <EmptyState
+            icon={AlertCircle}
+            message={t("error._base")}
+            description={error || undefined}
+          />
           <Link
             href="/support/faq"
-            className="inline-flex items-center bg-black text-site-text border border-site-border rounded-[12px] px-6 py-2 font-medium hover:bg-gray-800 transition-colors"
-            
+            className="inline-flex items-center mt-6 site-btn"
           >
             <ArrowLeft size={18} className="mr-2" />
             {t("back_to_faq")}
           </Link>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="page-container bg-transparent">
-      {/* Breadcrumb */}
-      <div className="mb-6">
-        <div className="flex items-center text-sm text-site-muted">
-          <Link
-            href="/support"
-            className="hover:text-site-text transition-colors font-medium"
-          >
-            {tNav("support")}
-          </Link>
-          <span className="mx-2">/</span>
-          <Link
-            href="/support/faq"
-            className="hover:text-site-text transition-colors font-medium"
-          >
-            {tNav("faq")}
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-site-text font-medium">{article.title}</span>
-        </div>
-      </div>
-
-      {/* Article */}
-      <motion.article
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-site-surface border border-site-border rounded-[16px] overflow-hidden"
-        
-      >
-        {/* Header */}
-        <div className="p-6 md:p-8 border-b-[3px] border-black">
-          <div className="flex items-center gap-2 text-sm text-site-muted mb-3">
+    <div className="page-container">
+      <div className="max-w-4xl mx-auto">
+        {/* Breadcrumb */}
+        <div className="mb-6">
+          <div className="flex items-center text-sm text-site-muted">
             <Link
-              href={`/support/faq?category=${article.categoryId}`}
-              className="flex items-center text-site-accent hover:underline font-medium"
+              href="/support"
+              className="hover:text-site-text transition-colors font-medium"
             >
-              <Tag size={14} className="mr-1" />
-              {article.category.name}
+              {tNav("support")}
             </Link>
-            {article.isPinned && (
-              <span className="text-site-text ml-2" title="Pinned">
-                📌
-              </span>
-            )}
-          </div>
-
-          <h1 className="text-2xl md:text-3xl font-bold text-site-text mb-4">
-            {article.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-4 text-sm text-site-muted">
-            <div className="flex items-center">
-              <Clock size={14} className="mr-1.5" />
-              {t("last_updated")}: {new Date(article.createdAt).toLocaleDateString()}
-            </div>
-            <div className="flex items-center">
-              <Eye size={14} className="mr-1.5" />
-              {article.viewCount} {t("views")}
-            </div>
+            <span className="mx-2">/</span>
+            <Link
+              href="/support/faq"
+              className="hover:text-site-text transition-colors font-medium"
+            >
+              {tNav("faq")}
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="text-site-text font-medium">{article.title}</span>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6 md:p-8">
-          <div className="prose max-w-none text-site-muted">
+        {/* Article Card */}
+        <div className="site-card p-6 md:p-10">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <Link
+                href={`/support/faq?category=${article.categoryId}`}
+                className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-4 bg-site-accent/10 text-site-accent hover:underline"
+              >
+                <Tag size={14} className="mr-1" />
+                {article.category.name}
+              </Link>
+              {article.isPinned && (
+                <Badge variant="warning">📌 Pinned</Badge>
+              )}
+            </div>
+
+            <h1 className="text-2xl md:text-3xl font-bold text-site-text mb-4">
+              {article.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-4 text-[11px] text-site-dim">
+              <div className="flex items-center">
+                <Clock size={14} className="mr-1.5" />
+                {t("last_updated")}: {new Date(article.createdAt).toLocaleDateString()}
+              </div>
+              <div className="flex items-center">
+                <Eye size={14} className="mr-1.5" />
+                {article.viewCount} {t("views")}
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <article
+            className="prose prose-lg max-w-none
+              prose-headings:text-site-text prose-headings:font-bold
+              prose-p:text-site-muted
+              prose-a:text-site-accent prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-site-text
+              prose-ul:text-site-muted prose-ol:text-site-muted
+              prose-li:marker:text-site-accent
+              prose-blockquote:border-l-4 prose-blockquote:border-site-accent prose-blockquote:bg-site-raised prose-blockquote:py-2 prose-blockquote:px-4
+              prose-table:border-site-border
+              prose-th:bg-site-raised prose-th:border-site-border prose-th:p-3
+              prose-td:border-site-border prose-td:p-3"
+          >
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                h2: (props) => (
-                  <h2
-                    className="text-xl font-bold text-site-text mt-4 mb-2"
-                    {...props}
-                  />
+                h2: ({ children }) => (
+                  <h2 className="text-xl font-bold text-site-text mt-8 mb-3">
+                    {children}
+                  </h2>
                 ),
-                p: (props) => (
-                  <p
-                    className="mb-3 leading-relaxed whitespace-pre-wrap"
-                    {...props}
-                  />
+                p: ({ children }) => (
+                  <p className="mb-4 leading-relaxed whitespace-pre-wrap">
+                    {children}
+                  </p>
                 ),
-                ul: (props) => (
-                  <ul className="list-disc pl-6 mb-3" {...props} />
+                ul: ({ children }) => (
+                  <ul className="list-disc pl-6 mb-4 space-y-1">{children}</ul>
                 ),
-                ol: (props) => (
-                  <ol className="list-decimal pl-6 mb-3" {...props} />
+                ol: ({ children }) => (
+                  <ol className="list-decimal pl-6 mb-4 space-y-1">
+                    {children}
+                  </ol>
                 ),
-                li: (props) => <li className="mb-1" {...props} />,
-                strong: (props) => (
-                  <strong className="font-semibold" {...props} />
+                li: ({ children }) => <li className="mb-1">{children}</li>,
+                strong: ({ children }) => (
+                  <strong className="font-bold text-site-text">{children}</strong>
                 ),
-                em: (props) => <em className="italic" {...props} />,
-                a: (props) => (
-                  <a className="text-site-accent underline" {...props} />
+                em: ({ children }) => <em className="italic">{children}</em>,
+                a: ({ children, href }) => (
+                  <a
+                    href={href}
+                    className="text-site-accent hover:underline"
+                    target={href?.startsWith("http") ? "_blank" : undefined}
+                    rel={
+                      href?.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                  >
+                    {children}
+                  </a>
                 ),
               }}
             >
               {article.content}
             </ReactMarkdown>
-          </div>
+          </article>
 
           {/* Feedback Section */}
-          <div className="mt-10 pt-6 border-t-[3px] border-black">
+          <div className="mt-10 pt-6 border-t border-site-border-soft">
             <h3 className="text-lg font-medium text-site-text mb-4">
               {t("helpful")}
             </h3>
 
             {showThankYou ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-green-500 border border-site-border rounded-[12px] p-4 flex items-center"
-                
-              >
-                <CheckCircle className="text-site-text mr-3" size={20} />
-                <span className="text-site-text font-medium">
+              <div className="bg-status-success/10 border border-status-success/20 rounded-8 p-4 flex items-center">
+                <CheckCircle className="text-status-success mr-3" size={20} />
+                <span className="text-status-success font-medium">
                   {t("thank_you")}
                 </span>
-              </motion.div>
+              </div>
             ) : (
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleVote(true)}
-                  className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === true
-                    ? "bg-green-500 border-black text-site-text"
-                    : "bg-site-surface border-black text-site-text hover:bg-green-500"
+                  className={`flex items-center px-4 py-2 border border-site-border-soft rounded-6 transition-colors ${userVote === true
+                    ? "bg-status-success/15 border-status-success/30 text-status-success"
+                    : "bg-site-surface text-site-text hover:bg-status-success/10 hover:text-status-success"
                     }`}
-                  
                 >
                   <ThumbsUp size={16} className="mr-2" />
                   {t("yes")} ({article.helpfulCount})
                 </button>
                 <button
                   onClick={() => handleVote(false)}
-                  className={`flex items-center px-4 py-2 border-[3px] transition-colors ${userVote === false
-                    ? "bg-pink-500 border-black text-site-text"
-                    : "bg-site-surface border-black text-site-text hover:bg-pink-500"
+                  className={`flex items-center px-4 py-2 border border-site-border-soft rounded-6 transition-colors ${userVote === false
+                    ? "bg-status-danger/15 border-status-danger/30 text-status-danger"
+                    : "bg-site-surface text-site-text hover:bg-status-danger/10 hover:text-status-danger"
                     }`}
-                  
                 >
                   <ThumbsDown size={16} className="mr-2" />
                   {t("no")} ({article.unhelpfulCount})
@@ -279,8 +282,8 @@ export default function FaqArticlePage() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="p-6 md:p-8 bg-site-raised border-t-[3px] border-black">
+        {/* Footer CTA */}
+        <div className="site-card p-6 md:p-8 mt-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <h4 className="text-site-text font-medium mb-1">
@@ -292,15 +295,14 @@ export default function FaqArticlePage() {
             </div>
             <Link
               href="/support/tickets"
-              className="bg-black text-site-text border border-site-border rounded-[12px] px-6 py-3 font-medium flex items-center hover:bg-gray-800 transition-colors"
-              
+              className="bg-site-surface text-site-text border border-site-border-soft rounded-6 px-6 py-3 font-medium flex items-center hover:bg-site-raised transition-colors"
             >
               <MessageSquare size={18} className="mr-2" />
               {t("contact_support")}
             </Link>
           </div>
         </div>
-      </motion.article>
+      </div>
     </div>
   );
 }

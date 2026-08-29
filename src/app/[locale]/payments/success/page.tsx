@@ -165,7 +165,7 @@ function PaymentSuccessPageContent() {
             <div className="pointer-events-none absolute -right-16 bottom-10 h-44 w-44 rounded-full border border-site-border/30 rounded-[12px] bg-site-accent/60" />
 
             <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
-                <section className="w-full overflow-hidden border border-site-border/30 rounded-[12px] bg-site-surface shadow-[8px_8px_0_0_#000000]">
+                <section className="w-full overflow-hidden border border-site-border/30 rounded-8 bg-site-surface">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-black bg-site-bg px-4 py-3 sm:px-6">
                         <Link
                             href="/games"

@@ -35,7 +35,7 @@ const buttonVariants = cva(
         link:
           "bg-transparent text-site-accent underline-offset-4 hover:underline px-0 py-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0",
         danger:
-          "bg-status-danger text-white border border-transparent hover:bg-status-danger/90",
+          "bg-status-danger text-site-bg border border-transparent hover:bg-status-danger/90",
       },
       size: {
         default: "h-11 px-5 rounded-8",

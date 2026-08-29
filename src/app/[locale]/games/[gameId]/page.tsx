@@ -45,7 +45,15 @@ import {
   SeagmField,
 } from "@/lib/services/product-api";
 import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/Button";
 import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
@@ -1062,29 +1070,43 @@ export default function GameDetailsPage() {
                       {option.fields.map((field) => (
                         <div key={field.name}>
                           {field.type === "select" ? (
-                            <Select
-                              label={
+                            <div className="space-y-1.5">
+                              <div className="text-sm font-medium text-site-text block">
                                 <span className="font-bold">
                                   {translateLabel(field.label)}{" "}
                                   {field.required && (
                                     <span className="text-status-danger">*</span>
                                   )}
                                 </span>
-                              }
-                              options={
-                                field.options?.map((opt) => ({
-                                  label: opt.label,
-                                  value: opt.value,
-                                })) || []
-                              }
-                              value={fieldValues[field.name] || ""}
-                              onChange={(value) =>
-                                handleFieldChange(field.name, value)
-                              }
-                              placeholder={t("choose_placeholder", {
-                                field: translateLabel(field.label),
-                              })}
-                            />
+                              </div>
+                              <Select
+                                value={fieldValues[field.name] || ""}
+                                onValueChange={(value) =>
+                                  handleFieldChange(field.name, value)
+                                }
+                              >
+                                <SelectTrigger
+                                  className="w-full"
+                                  aria-label={translateLabel(field.label)}
+                                >
+                                  <SelectValue
+                                    placeholder={t("choose_placeholder", {
+                                      field: translateLabel(field.label),
+                                    })}
+                                  />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {field.options?.map((opt) => (
+                                    <SelectItem
+                                      key={opt.value}
+                                      value={opt.value}
+                                    >
+                                      {opt.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           ) : (
                             <Input
                               label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
@@ -1571,43 +1593,48 @@ export default function GameDetailsPage() {
 
                   <div className="pt-4 border-t border-site-border-soft">
                     <div className="mb-4">
-                      <label className="flex items-start gap-2 cursor-pointer group">
-                        <input
-                          type="checkbox"
+                      <div className="flex items-start gap-2 group">
+                        <Checkbox
+                          id="terms"
                           checked={termsAccepted}
-                          onChange={(e) => setTermsAccepted(e.target.checked)}
-                          className="mt-0.5 w-4 h-4 rounded border-site-border bg-site-deep accent-site-accent flex-shrink-0 cursor-pointer"
+                          onCheckedChange={(v) => setTermsAccepted(v === true)}
+                          className="mt-0.5"
                         />
-                        <span className="text-[10px] text-site-muted group-hover:text-site-text transition-colors leading-tight font-medium">
-                          {t("terms_agreement_prefix")}{" "}
-                          <Link
-                            href="/terms"
-                            target="_blank"
-                            className="text-site-accent hover:underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {t("terms_label")}
-                          </Link>
-                          ,{" "}
-                          <Link
-                            href="/privacy"
-                            target="_blank"
-                            className="text-site-accent hover:underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {t("privacy_label")}
-                          </Link>{" "}
-                          <span className="text-site-dim">·</span>{" "}
-                          <Link
-                            href="/refund"
-                            target="_blank"
-                            className="text-site-accent hover:underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {t("refund_label")}
-                          </Link>
-                        </span>
-                      </label>
+                        <Label
+                          htmlFor="terms"
+                          className="text-[10px] font-medium text-site-muted leading-tight cursor-pointer"
+                        >
+                          <span className="block group-hover:text-site-text transition-colors">
+                            {t("terms_agreement_prefix")}{" "}
+                            <Link
+                              href="/terms"
+                              target="_blank"
+                              className="text-site-accent hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t("terms_label")}
+                            </Link>
+                            ,{" "}
+                            <Link
+                              href="/privacy"
+                              target="_blank"
+                              className="text-site-accent hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t("privacy_label")}
+                            </Link>{" "}
+                            <span className="text-site-dim">·</span>{" "}
+                            <Link
+                              href="/refund"
+                              target="_blank"
+                              className="text-site-accent hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {t("refund_label")}
+                            </Link>
+                          </span>
+                        </Label>
+                      </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3">

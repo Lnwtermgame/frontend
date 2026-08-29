@@ -39,6 +39,13 @@ import {
   SkeletonListRow,
   SkeletonNewsCard,
 } from "@/components/ui/Skeleton";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 const gameImg = () => "/images/placeholder-game.svg";
 
@@ -73,7 +80,7 @@ export default function HomePage() {
   const [couponsLoading, setCouponsLoading] = useState(true);
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
-  const [heroPaused, setHeroPaused] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const claimingRef = useRef(false);
 
   // Compact number formatter
@@ -162,14 +169,16 @@ export default function HomePage() {
         },
       ];
 
-  // Carousel auto-advance (pauses while the visitor is hovering/touching it)
+  // Track the active slide — embla fires "select" for autoplay, swipe,
+  // arrows and dots alike, so dots/arrows stay in sync with every input.
   useEffect(() => {
-    if (heroPaused) return;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [heroSlides.length, heroPaused]);
+    if (!carouselApi) return;
+    const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on("select", onSelect);
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
 
   // Fetch news
   useEffect(() => {
@@ -399,26 +408,26 @@ export default function HomePage() {
   return (
     <div className="space-y-8 py-2 pb-16">
       {/* ════════════════ HERO SLIDER ════════════════ */}
-      {/* Two layers: the section is the frame; the inner .hero-clip viewport
-          sits directly above the transformed track. clip-path cuts at the
-          compositor so the rounded corners always clip the artwork, even at
-          fractional DPRs where overflow+radius alone leaks. */}
-      <section
-        className="relative isolate rounded-8 border border-site-border-soft bg-site-deep"
-        onMouseEnter={() => setHeroPaused(true)}
-        onMouseLeave={() => setHeroPaused(false)}
-        onTouchStart={() => setHeroPaused(true)}
-        onTouchEnd={() => setHeroPaused(false)}
-      >
-        <div className="hero-clip">
-          <div
-            className="flex w-full flex-nowrap transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
+      {/* Embla (shadcn Carousel) owns the track: swipe, loop, autoplay
+          (pauses on hover via stopOnMouseEnter and resumes on its own because
+          stopOnInteraction is false). The section is the frame; .hero-clip on
+          the Carousel wrapper keeps the compositor-level rounded clip over the
+          moving track so artwork never leaks past the corners at fractional
+          DPRs. */}
+      <section className="relative rounded-8 border border-site-border-soft bg-site-deep">
+        <Carousel
+          className="hero-clip w-full"
+          opts={{ loop: true }}
+          plugins={[
+            Autoplay({ delay: 6000, stopOnInteraction: false, stopOnMouseEnter: true }),
+          ]}
+          setApi={setCarouselApi}
+        >
+          <CarouselContent className="m-0">
             {heroSlides.map((slide, i) => (
-              <div
+              <CarouselItem
                 key={slide.id}
-                className="hero-slide relative h-[300px] w-full flex-[0_0_100%] md:h-[380px]"
+                className="relative h-[300px] pl-0 md:h-[380px]"
               >
                 <img
                   src={slide.image}
@@ -477,25 +486,21 @@ export default function HomePage() {
                     {slide.btnText}
                   </Link>
                 </div>
-              </div>
+              </CarouselItem>
             ))}
-          </div>
-        </div>
+          </CarouselContent>
+        </Carousel>
 
         {/* Arrows — desktop only; mobile controls via dots */}
         <button
-          onClick={() =>
-            setCurrentSlide(
-              (p) => (p - 1 + heroSlides.length) % heroSlides.length,
-            )
-          }
+          onClick={() => carouselApi?.scrollPrev()}
           className="absolute left-4 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-site-border bg-site-bg/80 text-site-text backdrop-blur-sm transition-colors hover:border-site-accent hover:bg-site-accent hover:text-site-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 md:flex"
           aria-label={t("hero_prev_slide")}
         >
           <ChevronLeft size={18} />
         </button>
         <button
-          onClick={() => setCurrentSlide((p) => (p + 1) % heroSlides.length)}
+          onClick={() => carouselApi?.scrollNext()}
           className="absolute right-4 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-site-border bg-site-bg/80 text-site-text backdrop-blur-sm transition-colors hover:border-site-accent hover:bg-site-accent hover:text-site-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 md:flex"
           aria-label={t("hero_next_slide")}
         >
@@ -507,7 +512,7 @@ export default function HomePage() {
           {heroSlides.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentSlide(i)}
+              onClick={() => carouselApi?.scrollTo(i)}
               aria-label={t("hero_go_to_slide", { index: i + 1 })}
               aria-current={i === currentSlide}
               className={`h-1.5 rounded-full transition-all duration-300 ${

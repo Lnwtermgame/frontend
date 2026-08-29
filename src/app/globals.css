@@ -240,7 +240,8 @@
   --status-success-rgb: 62 207 142;
   --status-warning-rgb: 241 162 60;
   --status-danger-rgb: 240 106 138;
-  background-color: var(--site-bg);
+  /* No page background here: the body's bg flows through so the era content
+     never forms a darker patch against the surrounding shell. */
   font-family: "Manrope", "IBM Plex Sans Thai", "Poppins", sans-serif;
 }
 

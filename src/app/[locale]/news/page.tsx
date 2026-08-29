@@ -58,7 +58,7 @@ export default function NewsPage() {
   if (loading) {
     return (
       <div className="page-container">
-        <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+        <SectionHeader level={1} title={t("title")} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="site-card overflow-hidden">
@@ -78,7 +78,7 @@ export default function NewsPage() {
     <div className="page-container">
       {/* Header */}
       <div className="mb-8">
-        <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+        <SectionHeader level={1} title={t("title")} />
       </div>
 
       {/* Featured News */}

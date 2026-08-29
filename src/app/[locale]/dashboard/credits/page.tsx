@@ -192,7 +192,7 @@ export default function CreditsPage() {
 
   return (
     <div>
-      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+      <SectionHeader level={1} title={t("title")} />
 
       {isLoading ? (
         <div className="space-y-3">

@@ -255,7 +255,7 @@ export default function SecurityPage() {
 
   return (
     <div>
-      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+      <SectionHeader level={1} title={t("title")} />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
         {/* Left Column (2/3 width on large screens) */}

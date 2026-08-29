@@ -273,7 +273,7 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+      <SectionHeader level={1} title={t("title")} />
 
       {/* Search and filter bar */}
       <div className="flex flex-col md:flex-row gap-3 justify-between mb-6">

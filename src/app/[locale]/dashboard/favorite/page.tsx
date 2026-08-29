@@ -122,7 +122,7 @@ export default function FavoritePage() {
 
   return (
     <div>
-      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+      <SectionHeader level={1} title={t("title")} />
 
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
         <div className="relative w-full sm:w-72">

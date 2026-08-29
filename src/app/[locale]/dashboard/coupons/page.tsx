@@ -213,7 +213,7 @@ export default function CouponsPage() {
 
   return (
     <div>
-      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle", { count: activeCouponCount })} />
+      <SectionHeader level={1} title={t("title")} />
 
       <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
         <div className="relative w-full sm:w-72">

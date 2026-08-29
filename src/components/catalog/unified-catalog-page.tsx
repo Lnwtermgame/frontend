@@ -525,7 +525,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           {/* Page header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-site-raised border border-site-border-soft rounded-8 p-6 mb-6">
             <div>
-              <SectionHeader level={1} title={copy.title} sublabel={mode === "card" ? t("card_sublabel") : mode === "mobile-recharge" || mode === "mobile" ? t("mobile_sublabel") : t("games_sublabel")} />
+              <SectionHeader level={1} title={copy.title} />
               <p className="text-site-muted text-[13px] md:text-[14px] leading-relaxed max-w-lg">{copy.subtitle}</p>
             </div>
 

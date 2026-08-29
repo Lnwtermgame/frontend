@@ -159,7 +159,7 @@ export default function AccountPage() {
 
   return (
     <div className="bg-transparent min-h-full">
-      <SectionHeader level={1} title={t("title")} sublabel={t("subtitle")} />
+      <SectionHeader level={1} title={t("title")} />
 
       <div className="grid gap-4">
         <div className="w-full">

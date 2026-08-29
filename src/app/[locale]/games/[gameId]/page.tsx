@@ -1359,7 +1359,6 @@ export default function GameDetailsPage() {
         <section className="mb-10">
           <SectionHeader
             title={t("related_products")}
-            sublabel={t("related_products_sublabel")}
           />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {relatedGamesByDev.map((relatedGame) => (
@@ -1392,7 +1391,6 @@ export default function GameDetailsPage() {
       <section className="mt-8 mb-10">
         <SectionHeader
           title={t("similar_products")}
-          sublabel={t("similar_products_sublabel")}
         />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {similarGames.length > 0 ? (

@@ -362,7 +362,6 @@ export default function HomePage() {
         <section>
           <SectionHeader
             title={t("home_coupons")}
-            sublabel={t("home_sublabel_coupons")}
           />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -374,7 +373,6 @@ export default function HomePage() {
         <section>
           <SectionHeader
             title={t("special_offers")}
-            sublabel={t("home_sublabel_offers")}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -386,7 +384,6 @@ export default function HomePage() {
         <section>
           <SectionHeader
             title={t("popular_games")}
-            sublabel={t("home_sublabel_popular_games")}
           />
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -539,7 +536,6 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("home_coupons")}
-          sublabel={t("home_sublabel_coupons")}
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {coupons.length === 0 ? (
@@ -564,7 +560,6 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("special_offers")}
-          sublabel={t("home_sublabel_offers")}
           actionHref="/games"
           actionLabel={t("view_all")}
         />
@@ -588,7 +583,6 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("popular_games")}
-          sublabel={t("home_sublabel_popular_games")}
           actionHref="/games"
           actionLabel={t("view_all")}
         />
@@ -614,7 +608,6 @@ export default function HomePage() {
         {/* Popular Game Cards */}
         <PanelCard
           title={t("home_popular_card")}
-          sublabel={t("home_sublabel_popular_card")}
           actionHref="/card"
           actionLabel={t("view_all")}
         >
@@ -637,7 +630,6 @@ export default function HomePage() {
         {/* Popular Game Top-Up */}
         <PanelCard
           title={t("popular_games")}
-          sublabel={t("home_sublabel_popular_topup")}
           actionHref="/games"
           actionLabel={t("view_all")}
         >
@@ -660,7 +652,6 @@ export default function HomePage() {
         {/* New Game Cards */}
         <PanelCard
           title={t("home_new_card")}
-          sublabel={t("home_sublabel_new_card")}
           actionHref="/card"
           actionLabel={t("view_all")}
         >
@@ -682,7 +673,6 @@ export default function HomePage() {
         {/* New Game Top-Up */}
         <PanelCard
           title={t("home_new_topup")}
-          sublabel={t("home_sublabel_new_topup")}
           actionHref="/games"
           actionLabel={t("view_all")}
         >
@@ -706,7 +696,6 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("news_title")}
-          sublabel={t("home_sublabel_news")}
           actionHref="/news"
           actionLabel={t("view_all")}
         />

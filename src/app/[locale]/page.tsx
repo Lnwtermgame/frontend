@@ -267,14 +267,11 @@ export default function HomePage() {
   return (
     <div className="legacy-home space-y-6 py-6 pb-20 animate-[fadeIn_0.3s_ease-in-out]">
       {/* ════════════════ HERO SLIDER ════════════════ */}
-      {/* Single clip owner: each slide card carries the radius itself
-          (border-radius + overflow-hidden + isolate). The section and track
-          never clip — stacked clip edges (clip-path × radius) rasterize at
-          slightly different subpixels on fractional-DPR screens and read as
-          a faint seam, so exactly ONE edge does the cutting. */}
+      {/* clip-path (compositor-level) + layer promotion: overflow+radius alone
+          lets the translated track bleed past the corners on fractional DPRs. */}
       <section
-        className="relative w-full bg-[#16181A] isolate"
-        style={{ borderRadius: 16 }}
+        className="relative w-full overflow-hidden bg-[#16181A] isolate ring-1 ring-[#16181A]/50 ring-inset"
+        style={{ borderRadius: 16, clipPath: "inset(0 round 16px)", transform: "translateZ(0)" }}
       >
         <div
           className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
@@ -283,7 +280,8 @@ export default function HomePage() {
           {heroSlides.map((slide) => (
             <div
               key={slide.id}
-              className="w-full flex-[0_0_100%] relative isolate h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden rounded-[16px]"
+              className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden rounded-[16px]"
+              style={{ clipPath: "inset(0 round 16px)" }}
             >
 
               {/* Artwork — full bleed */}

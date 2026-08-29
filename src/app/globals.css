@@ -1,21 +1,10 @@
-/* Self-hosted fonts (Noto Sans Thai + JetBrains Mono via @fontsource).
-   Manrope + IBM Plex Sans Thai are era fonts scoped to .legacy-home only. */
+/* Self-hosted fonts (Noto Sans Thai + JetBrains Mono via @fontsource) */
 @import '@fontsource/noto-sans-thai/400.css';
 @import '@fontsource/noto-sans-thai/500.css';
 @import '@fontsource/noto-sans-thai/600.css';
 @import '@fontsource/noto-sans-thai/700.css';
 @import '@fontsource/noto-sans-thai/800.css';
 @import '@fontsource/noto-sans-thai/900.css';
-@import '@fontsource/manrope/400.css';
-@import '@fontsource/manrope/500.css';
-@import '@fontsource/manrope/600.css';
-@import '@fontsource/manrope/700.css';
-@import '@fontsource/manrope/800.css';
-@import '@fontsource/ibm-plex-sans-thai/300.css';
-@import '@fontsource/ibm-plex-sans-thai/400.css';
-@import '@fontsource/ibm-plex-sans-thai/500.css';
-@import '@fontsource/ibm-plex-sans-thai/600.css';
-@import '@fontsource/ibm-plex-sans-thai/700.css';
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/600.css';
@@ -210,9 +199,9 @@
 }
 
 /* ─── Era context for the restored legacy landing page ───
-   The "Refined Charcoal" palette + Manrope/IBM Plex Sans Thai fonts the page
-   was designed against, scoped to .legacy-home so the rest of the site keeps
-   the current contract. */
+   The "Refined Charcoal" palette the page was designed against, scoped to
+   .legacy-home so the rest of the site keeps the current contract.
+   Typography stays on the site-wide Noto Sans Thai stack. */
 .legacy-home {
   --site-bg: #141517;
   --site-surface: #1c1e21;
@@ -241,8 +230,8 @@
   --status-warning-rgb: 241 162 60;
   --status-danger-rgb: 240 106 138;
   /* No page background here: the body's bg flows through so the era content
-     never forms a darker patch against the surrounding shell. */
-  font-family: "Manrope", "IBM Plex Sans Thai", "Poppins", sans-serif;
+     never forms a darker patch against the surrounding shell. Font follows
+     the site-wide Noto Sans Thai stack. */
 }
 
 @keyframes fadeIn {

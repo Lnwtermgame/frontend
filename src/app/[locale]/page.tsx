@@ -280,7 +280,7 @@ export default function HomePage() {
           {heroSlides.map((slide) => (
             <div
               key={slide.id}
-              className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden"
+              className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden rounded-[16px]"
               style={{ clipPath: "inset(0 round 16px)" }}
             >
 

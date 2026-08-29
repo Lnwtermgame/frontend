@@ -217,7 +217,7 @@
   }
 
   .site-card {
-    @apply bg-site-surface border border-site-border-soft rounded-8;
+    @apply bg-site-surface border border-site-border-soft rounded-8 shadow-sm;
   }
 
   .site-btn {

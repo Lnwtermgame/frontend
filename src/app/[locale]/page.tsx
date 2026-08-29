@@ -145,27 +145,35 @@ export default function HomePage() {
         icon: trustIconMap[badge.icon] || ShieldCheck,
         title: badge.title,
         desc: badge.description || "",
+        tone:
+          badge.icon in trustIconMap
+            ? (badge.icon as TrustItem["tone"])
+            : undefined,
       }))
     : [
         {
           icon: ShieldCheck,
           title: t("trust_secure_title"),
           desc: t("trust_secure_desc"),
+          tone: "shield",
         },
         {
           icon: Zap,
           title: t("trust_fast_title"),
           desc: t("trust_fast_desc"),
+          tone: "zap",
         },
         {
           icon: Award,
           title: t("trust_price_title"),
           desc: t("trust_price_desc"),
+          tone: "award",
         },
         {
           icon: Headphones,
           title: t("trust_support_title"),
           desc: t("trust_support_desc"),
+          tone: "headphones",
         },
       ];
 
@@ -455,7 +463,7 @@ export default function HomePage() {
 
                 <div className="relative z-10 flex h-full max-w-[600px] flex-col justify-center px-6 md:px-12">
                   {slide.badge && (
-                    <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full border border-site-accent/40 bg-site-accent/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-site-accent">
+                    <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full border border-transparent bg-site-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
                       <Flame
                         size={12}
                         className="fill-current"

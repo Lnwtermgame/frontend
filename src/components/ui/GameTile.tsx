@@ -19,7 +19,7 @@ export function GameTile({
   const t = useTranslations();
   return (
     <Link href={href || `/games/${slug}`} className="block group">
-      <div className="w-full aspect-square rounded-8 overflow-hidden bg-site-raised border border-site-border-soft">
+      <div className="w-full aspect-square rounded-8 overflow-hidden bg-site-raised border border-site-border-soft transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
         <img src={image} alt={name} className="w-full h-full object-cover" loading="lazy" />
       </div>
       <h3

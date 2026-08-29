@@ -12,7 +12,7 @@ export interface Deal {
 
 export function OfferCard({ deal, href, badgeLabel }: { deal: Deal; href: string; badgeLabel: string }) {
   return (
-    <Link href={href} className="site-card p-3 hover:border-site-border transition-colors block">
+    <Link href={href} className="site-card p-3 hover:border-site-border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 block">
       <div className="flex items-center gap-3">
         <img
           src={deal.img}

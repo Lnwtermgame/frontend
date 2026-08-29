@@ -187,7 +187,24 @@ const createServiceClient = (service: string): AxiosInstance => {
         }
       }
 
-      const token = getAccessToken();
+      // Bootstrap the in-memory access token before the first authed call.
+      // On a hard page load the stored user hydrates synchronously while the
+      // access token is still empty, which used to send headerless requests
+      // (a wire-level 401) until the response interceptor refreshed+retried.
+      let token = getAccessToken();
+      if (!token && typeof window !== "undefined") {
+        const isAuthCall =
+          config.url?.includes("/login") ||
+          config.url?.includes("/register") ||
+          config.url?.includes("/refresh-token");
+        const hasStoredUser = localStorage.getItem("mali-gamepass-user");
+        if (hasStoredUser && !isAuthCall) {
+          // refreshAccessToken queues concurrent callers via failedQueue, so
+          // parallel headerless requests all await the same single refresh.
+          await refreshAccessToken().catch(() => null);
+          token = getAccessToken();
+        }
+      }
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }

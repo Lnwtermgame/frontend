@@ -57,6 +57,12 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/Button";
 import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -849,6 +855,65 @@ export default function GameDetailsPage() {
     );
   }
 
+  // Info tab content — rendered on mobile unconditionally and inside the
+  // desktop "info" tab (single source, two instances).
+  const infoContent = (
+    <div className="space-y-6">
+      <div>
+        <SectionHeader
+          title={t("about_product", { name: game.title })}
+        />
+        <ProductDescription
+          description={game.longDescription || game.description}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
+          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
+            <Package className="mr-2" size={16} />
+            {t("developer")}
+          </h4>
+          <p className="text-site-text font-medium">
+            {game.developer || t("unknown")}
+          </p>
+        </div>
+
+        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
+          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
+            <Award className="mr-2" size={16} />
+            {t("publisher")}
+          </h4>
+          <p className="text-site-text font-medium">
+            {game.publisher || t("unknown")}
+          </p>
+        </div>
+
+        {game.releaseDate && (
+          <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
+            <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
+              <Calendar className="mr-2" size={16} />
+              {t("release_date")}
+            </h4>
+            <p className="text-site-text font-medium">
+              {new Date(game.releaseDate).toLocaleDateString()}
+            </p>
+          </div>
+        )}
+
+        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
+          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
+            <Smartphone className="mr-2" size={16} />
+            {t("platforms")}
+          </h4>
+          <p className="text-site-text font-medium">
+            {game.platforms.join(", ")}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       {/* Back link */}
@@ -1218,45 +1283,38 @@ export default function GameDetailsPage() {
 
       {/* ── Tabs section (topup options expanded + game info) ── */}
       <div className="site-card overflow-hidden mb-8">
-        {/* Tab bar */}
-        <div role="tablist" className="flex border-b border-site-border-soft overflow-x-auto scrollbar-hide">
-          <button
-            role="tab"
-            aria-selected={activeTab === "topup"}
-            onClick={() => setActiveTab("topup")}
-            className={`py-3.5 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors border-b-2 ${activeTab === "topup"
-              ? "text-site-text border-site-accent"
-              : "text-site-muted border-transparent hover:text-site-text"
-              } hidden md:flex`}
-          >
-            <DollarSign size={18} className="mr-2" />
-            {optionsTabLabel}
-          </button>
-          <button
-            role="tab"
-            aria-selected={activeTab === "info"}
-            onClick={() => setActiveTab("info")}
-            className={`py-3.5 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors border-b-2 ${activeTab === "info"
-              ? "text-site-text border-site-accent"
-              : "text-site-muted border-transparent hover:text-site-text"
-              } hidden md:flex`}
-          >
-            <Info size={18} className="mr-2" />
-            {infoTabLabel}
-          </button>
-
-          {/* Mobile always shows info tab label */}
-          <div className="md:hidden py-3.5 px-6 text-sm font-semibold flex items-center w-full text-site-text border-b-2 border-site-accent">
-            <Info size={18} className="mr-2" />
-            {infoTabLabel}
-          </div>
+        {/* Mobile: no tab bar, info always shows */}
+        <div className="md:hidden py-3.5 px-6 text-sm font-semibold flex items-center w-full text-site-text border-b-2 border-site-accent">
+          <Info size={18} className="mr-2" />
+          {infoTabLabel}
         </div>
+        <div className="md:hidden p-5">{infoContent}</div>
 
-        <div role="tabpanel" className="p-5 md:p-8">
+        {/* Desktop tabs */}
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="hidden md:block"
+        >
+          <TabsList className="flex h-auto w-full items-stretch justify-start overflow-x-auto rounded-none border-b border-site-border-soft bg-transparent p-0 text-site-muted scrollbar-hide">
+            <TabsTrigger
+              value="topup"
+              className="flex-shrink-0 items-center whitespace-nowrap rounded-none border-b-2 border-transparent px-6 py-3.5 text-sm font-semibold text-site-muted transition-colors hover:text-site-text data-[state=active]:border-site-accent data-[state=active]:bg-transparent data-[state=active]:text-site-text data-[state=active]:shadow-none"
+            >
+              <DollarSign size={18} className="mr-2" />
+              {optionsTabLabel}
+            </TabsTrigger>
+            <TabsTrigger
+              value="info"
+              className="flex-shrink-0 items-center whitespace-nowrap rounded-none border-b-2 border-transparent px-6 py-3.5 text-sm font-semibold text-site-muted transition-colors hover:text-site-text data-[state=active]:border-site-accent data-[state=active]:bg-transparent data-[state=active]:text-site-text data-[state=active]:shadow-none"
+            >
+              <Info size={18} className="mr-2" />
+              {infoTabLabel}
+            </TabsTrigger>
+          </TabsList>
+
           {/* Desktop-only expanded top-up grid (in-tab view) */}
-          <div
-            className={activeTab === "topup" ? "hidden md:block" : "hidden"}
-          >
+          <TabsContent value="topup" className="mt-0 p-5 md:p-8">
             <div className="space-y-6">
               <div className="hidden md:flex items-center justify-between">
                 <p className="text-site-dim font-bold text-sm uppercase">
@@ -1287,68 +1345,13 @@ export default function GameDetailsPage() {
                 </div>
               )}
             </div>
-          </div>
+          </TabsContent>
 
-          {/* Info tab content */}
-          <div
-            className={activeTab === "info" ? "block" : "block md:hidden"}
-          >
-            <div className="space-y-6">
-              <div>
-                <SectionHeader
-                  title={t("about_product", { name: game.title })}
-                />
-                <ProductDescription
-                  description={game.longDescription || game.description}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-                  <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-                    <Package className="mr-2" size={16} />
-                    {t("developer")}
-                  </h4>
-                  <p className="text-site-text font-medium">
-                    {game.developer || t("unknown")}
-                  </p>
-                </div>
-
-                <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-                  <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-                    <Award className="mr-2" size={16} />
-                    {t("publisher")}
-                  </h4>
-                  <p className="text-site-text font-medium">
-                    {game.publisher || t("unknown")}
-                  </p>
-                </div>
-
-                {game.releaseDate && (
-                  <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-                    <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-                      <Calendar className="mr-2" size={16} />
-                      {t("release_date")}
-                    </h4>
-                    <p className="text-site-text font-medium">
-                      {new Date(game.releaseDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-
-                <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-                  <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-                    <Smartphone className="mr-2" size={16} />
-                    {t("platforms")}
-                  </h4>
-                  <p className="text-site-text font-medium">
-                    {game.platforms.join(", ")}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          {/* Info tab content (desktop instance) */}
+          <TabsContent value="info" className="mt-0 p-5 md:p-8">
+            {infoContent}
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* ── Related products (by developer/publisher) ── */}

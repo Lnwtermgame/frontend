@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { ChevronDown, Coins, AlignJustify, X, User, LogOut, ShoppingCart, Shield } from "lucide-react";
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -8,6 +8,13 @@ import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { NavSearchBox } from "./NavSearchBox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function getUserInitial(user: { name?: string | null; username?: string | null; email?: string | null } | null | undefined): string {
     return (user?.name?.charAt(0) || user?.username?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase();
@@ -18,35 +25,11 @@ export default function MainNav() {
     const pathname = usePathname();
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const userMenuRef = useRef<HTMLDivElement>(null);
     const { user, isSessionChecked, logout, isAdmin } = useAuth();
     const { settings } = usePublicSettings();
 
     const logoUrl = settings?.branding?.logoUrl;
     const siteName = settings?.general?.siteName || "";
-
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-                setShowUserMenu(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    useEffect(() => {
-        function handleKeyDown(event: KeyboardEvent) {
-            if (event.key === "Escape") {
-                setShowUserMenu(false);
-            }
-        }
-        if (showUserMenu) {
-            document.addEventListener("keydown", handleKeyDown);
-        }
-        return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [showUserMenu]);
 
     const handleLogout = async () => {
         await logout();
@@ -101,86 +84,101 @@ export default function MainNav() {
                         {!isSessionChecked ? (
                             <div className="w-[110px] h-8 bg-site-raised rounded-6 animate-pulse" />
                         ) : user ? (
-                            <div className="relative" ref={userMenuRef}>
+                            <DropdownMenu>
                                 {/* Avatar chip button */}
-                                <button
-                                    onClick={() => setShowUserMenu(!showUserMenu)}
-                                    className="flex items-center gap-2 bg-site-raised border border-site-border-soft rounded-6 px-2 py-1.5 pr-3 cursor-pointer hover:bg-site-raised/80 transition-colors"
-                                    aria-haspopup="true"
-                                    aria-expanded={showUserMenu}
-                                >
-                                    <div className="w-7 h-7 bg-site-accent text-site-bg rounded-full flex items-center justify-center overflow-hidden">
-                                        <span className="text-[11px] font-bold">
-                                            {getUserInitial(user)}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-col hidden sm:block">
-                                        <span className="text-site-text text-[12px] font-semibold leading-tight truncate max-w-[100px]">
-                                            {user?.username || user?.name || "Player"}
-                                        </span>
-                                        <span className="text-site-dim text-[10px] leading-tight">
-                                            {t("my_account")}
-                                        </span>
-                                    </div>
-                                    <ChevronDown size={14} className={`text-site-muted ml-1 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
-                                </button>
+                                <DropdownMenuTrigger asChild>
+                                    <button
+                                        className="group flex items-center gap-2 bg-site-raised border border-site-border-soft rounded-6 px-2 py-1.5 pr-3 cursor-pointer hover:bg-site-raised/80 transition-colors outline-none"
+                                    >
+                                        <div className="w-7 h-7 bg-site-accent text-site-bg rounded-full flex items-center justify-center overflow-hidden">
+                                            <span className="text-[11px] font-bold">
+                                                {getUserInitial(user)}
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-col hidden sm:block">
+                                            <span className="text-site-text text-[12px] font-semibold leading-tight truncate max-w-[100px]">
+                                                {user?.username || user?.name || "Player"}
+                                            </span>
+                                            <span className="text-site-dim text-[10px] leading-tight">
+                                                {t("my_account")}
+                                            </span>
+                                        </div>
+                                        <ChevronDown size={14} className="text-site-muted ml-1 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                                    </button>
+                                </DropdownMenuTrigger>
 
                                 {/* Dropdown Menu */}
-                                {showUserMenu && (
-                                    <div className="absolute right-0 top-full mt-2 flex flex-col bg-site-surface border border-site-border-soft rounded-8 w-[260px] overflow-hidden z-[60]">
-                                        {/* User Info Header */}
-                                        <div className="p-3 border-b border-site-border-soft bg-site-raised/50">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-full bg-site-accent text-site-bg flex items-center justify-center shrink-0">
-                                                    <span className="font-bold text-base">
-                                                        {getUserInitial(user)}
-                                                    </span>
+                                <DropdownMenuContent
+                                    align="end"
+                                    sideOffset={8}
+                                    className="w-[260px] rounded-8 border-site-border-soft bg-site-surface p-1.5 shadow-lg z-[60]"
+                                >
+                                    {/* User Info Header */}
+                                    <div className="-mx-1.5 -mt-1.5 mb-1.5 p-3 border-b border-site-border-soft bg-site-raised/50">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-10 w-10 rounded-full bg-site-accent text-site-bg flex items-center justify-center shrink-0">
+                                                <span className="font-bold text-base">
+                                                    {getUserInitial(user)}
+                                                </span>
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="font-semibold text-site-text text-[13px] truncate">
+                                                    {user?.username || user?.name || "Player"}
                                                 </div>
-                                                <div className="min-w-0 flex-1">
-                                                    <div className="font-semibold text-site-text text-[13px] truncate">
-                                                        {user?.username || user?.name || "Player"}
+                                                {user?.email && (
+                                                    <div className="text-site-dim text-[11px] truncate mt-0.5">
+                                                        {user.email}
                                                     </div>
-                                                    {user?.email && (
-                                                        <div className="text-site-dim text-[11px] truncate mt-0.5">
-                                                            {user.email}
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                )}
                                             </div>
                                         </div>
-
-                                        {/* Menu Items */}
-                                        <div className="p-1.5 flex flex-col gap-0.5">
-                                            {isAdmin && (
-                                                <Link href="/admin" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2 rounded-6 text-[13px] text-site-muted hover:text-site-text hover:bg-site-raised transition-colors">
-                                                    <Shield size={14} />
-                                                    {t("admin_panel")}
-                                                </Link>
-                                            )}
-                                            <Link href="/dashboard/account" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2 rounded-6 text-[13px] text-site-muted hover:text-site-text hover:bg-site-raised transition-colors">
-                                                <User size={14} />
-                                                {t("my_account")}
-                                            </Link>
-                                            <Link href="/dashboard/credits" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2 rounded-6 text-[13px] text-site-muted hover:text-site-text hover:bg-site-raised transition-colors">
-                                                <Coins size={14} />
-                                                {t("credits")}
-                                            </Link>
-                                            <Link href="/dashboard/orders" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2 rounded-6 text-[13px] text-site-muted hover:text-site-text hover:bg-site-raised transition-colors">
-                                                <ShoppingCart size={14} />
-                                                {t("order_history")}
-                                            </Link>
-                                        </div>
-
-                                        {/* Logout Section */}
-                                        <div className="p-1.5 border-t border-site-border-soft">
-                                            <button onClick={() => { setShowUserMenu(false); handleLogout(); }} className="flex items-center gap-3 px-3 py-2 rounded-6 text-[13px] text-status-danger hover:bg-status-danger/10 transition-colors text-left w-full">
-                                                <LogOut size={14} />
-                                                {t("logout")}
-                                            </button>
-                                        </div>
                                     </div>
-                                )}
-                            </div>
+
+                                    {/* Menu Items */}
+                                    <div className="flex flex-col gap-0.5">
+                                        {isAdmin && (
+                                            <DropdownMenuItem
+                                                onSelect={() => router.push("/admin")}
+                                                className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
+                                            >
+                                                <Shield size={14} />
+                                                {t("admin_panel")}
+                                            </DropdownMenuItem>
+                                        )}
+                                        <DropdownMenuItem
+                                            onSelect={() => router.push("/dashboard/account")}
+                                            className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
+                                        >
+                                            <User size={14} />
+                                            {t("my_account")}
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onSelect={() => router.push("/dashboard/credits")}
+                                            className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
+                                        >
+                                            <Coins size={14} />
+                                            {t("credits")}
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onSelect={() => router.push("/dashboard/orders")}
+                                            className="gap-3 rounded-6 px-3 py-2 text-[13px] text-site-muted focus:bg-site-raised focus:text-site-text [&_svg]:size-3.5"
+                                        >
+                                            <ShoppingCart size={14} />
+                                            {t("order_history")}
+                                        </DropdownMenuItem>
+                                    </div>
+
+                                    {/* Logout Section */}
+                                    <DropdownMenuSeparator className="bg-site-border-soft" />
+                                    <DropdownMenuItem
+                                        onSelect={handleLogout}
+                                        className="gap-3 rounded-6 px-3 py-2 text-[13px] text-status-danger focus:bg-status-danger/10 focus:text-status-danger [&_svg]:size-3.5"
+                                    >
+                                        <LogOut size={14} />
+                                        {t("logout")}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         ) : (
                             <Link href="/login" className="site-btn text-[12px]">
                                 {t("login_button")}

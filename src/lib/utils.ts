@@ -1,5 +1,16 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+// Teach tailwind-merge about the project's custom border-radius scale
+// (tailwind.config.js → theme.extend.borderRadius) so that e.g. a
+// `rounded-md` base class is correctly overridden by `rounded-8`.
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      rounded: [{ rounded: ["4", "6", "8", "12"] }],
+    },
+  },
+});
 
 /**
  * Combines multiple class names using clsx and then merges Tailwind classes using tailwind-merge.

@@ -1,7 +1,21 @@
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn("animate-pulse bg-site-raised rounded-6", className)} />;
+/**
+ * Skeleton — canonical shadcn base (`animate-pulse rounded-md bg-muted`;
+ * `bg-muted` resolves to site-raised via the token mirrors).
+ * The project's composed skeletons keep their named export API.
+ */
+export function Skeleton({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("animate-pulse rounded-md bg-muted", className)}
+      {...props}
+    />
+  );
 }
 
 export function SkeletonHero() {

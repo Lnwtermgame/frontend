@@ -267,7 +267,12 @@ export default function HomePage() {
   return (
     <div className="legacy-home space-y-6 py-6 pb-20 animate-[fadeIn_0.3s_ease-in-out]">
       {/* ════════════════ HERO SLIDER ════════════════ */}
-      <section className="relative w-full overflow-hidden bg-[#16181A] isolate ring-1 ring-[#16181A]/50 ring-inset" style={{ borderRadius: 16 }}>
+      {/* clip-path (compositor-level) + layer promotion: overflow+radius alone
+          lets the translated track bleed past the corners on fractional DPRs. */}
+      <section
+        className="relative w-full overflow-hidden bg-[#16181A] isolate ring-1 ring-[#16181A]/50 ring-inset"
+        style={{ borderRadius: 16, clipPath: "inset(0 round 16px)", transform: "translateZ(0)" }}
+      >
         <div
           className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}

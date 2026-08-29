@@ -50,6 +50,29 @@
   --status-success-rgb: 99 201 149;
   --status-warning-rgb: 229 181 102;
   --status-danger-rgb: 228 124 134;
+
+  /* shadcn/ui variables — mapped onto the site palette (dark-only).
+     HSL triplets computed from the hex tokens above. */
+  --background: 210 10% 7%;        /* #111315 site-bg  */
+  --foreground: 160 15% 96%;       /* #f3f6f5 site-text */
+  --primary: 177 47% 58%;          /* #63c7c2 site-accent */
+  --primary-foreground: 210 10% 7%;
+  --secondary: 210 11% 15%;        /* #22262a site-raised */
+  --secondary-foreground: 160 15% 96%;
+  --muted: 210 11% 15%;
+  --muted-foreground: 175 6% 67%;  /* #a4afae site-muted */
+  --accent: 210 11% 15%;
+  --accent-foreground: 160 15% 96%;
+  --destructive: 354 66% 69%;      /* #e47c86 status-danger */
+  --destructive-foreground: 210 10% 7%;
+  --border: 207 13% 17%;           /* #252b30 site-border-soft */
+  --input: 207 13% 17%;
+  --ring: 177 47% 58%;
+  --card: 210 11% 11%;             /* #191c1f site-surface */
+  --card-foreground: 160 15% 96%;
+  --popover: 210 11% 11%;
+  --popover-foreground: 160 15% 96%;
+  --radius: 0.5rem;
 }
 
 @layer base {

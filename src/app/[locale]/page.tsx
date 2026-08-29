@@ -278,7 +278,11 @@ export default function HomePage() {
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {heroSlides.map((slide) => (
-            <div key={slide.id} className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden">
+            <div
+              key={slide.id}
+              className="w-full flex-[0_0_100%] relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden"
+              style={{ clipPath: "inset(0 round 16px)" }}
+            >
 
               {/* Artwork — full bleed */}
               <div className="absolute inset-0" aria-hidden="true">

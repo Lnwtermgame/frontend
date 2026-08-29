@@ -207,7 +207,7 @@ export default function HomePage() {
   // ═══════ GLOBAL LOADING SKELETON ═══════
   if (!isPageReady) {
     return (
-      <div className="space-y-6 py-6 pb-20 animate-pulse">
+      <div className="legacy-home bg-site-bg space-y-6 py-6 pb-20 animate-pulse">
         {/* Hero skeleton */}
         <div className="w-full h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#1A1C20] rounded-[16px]" />
 
@@ -265,7 +265,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="space-y-6 py-6 pb-20 animate-[fadeIn_0.3s_ease-in-out]">
+    <div className="legacy-home bg-site-bg space-y-6 py-6 pb-20 animate-[fadeIn_0.3s_ease-in-out]">
       {/* ════════════════ HERO SLIDER ════════════════ */}
       <section className="relative w-full overflow-hidden bg-[#16181A] isolate ring-1 ring-[#16181A]/50 ring-inset" style={{ borderRadius: 16 }}>
         <div

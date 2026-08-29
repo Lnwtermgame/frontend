@@ -1,10 +1,21 @@
-/* Self-hosted fonts (Noto Sans Thai + JetBrains Mono via @fontsource) */
+/* Self-hosted fonts (Noto Sans Thai + JetBrains Mono via @fontsource).
+   Manrope + IBM Plex Sans Thai are era fonts scoped to .legacy-home only. */
 @import '@fontsource/noto-sans-thai/400.css';
 @import '@fontsource/noto-sans-thai/500.css';
 @import '@fontsource/noto-sans-thai/600.css';
 @import '@fontsource/noto-sans-thai/700.css';
 @import '@fontsource/noto-sans-thai/800.css';
 @import '@fontsource/noto-sans-thai/900.css';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+@import '@fontsource/manrope/700.css';
+@import '@fontsource/manrope/800.css';
+@import '@fontsource/ibm-plex-sans-thai/300.css';
+@import '@fontsource/ibm-plex-sans-thai/400.css';
+@import '@fontsource/ibm-plex-sans-thai/500.css';
+@import '@fontsource/ibm-plex-sans-thai/600.css';
+@import '@fontsource/ibm-plex-sans-thai/700.css';
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/600.css';
@@ -195,5 +206,49 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Era context for the restored legacy landing page ───
+   The "Refined Charcoal" palette + Manrope/IBM Plex Sans Thai fonts the page
+   was designed against, scoped to .legacy-home so the rest of the site keeps
+   the current contract. */
+.legacy-home {
+  --site-bg: #141517;
+  --site-surface: #1c1e21;
+  --site-raised: #25272b;
+  --site-border: #2d3034;
+  --site-border-soft: #232528;
+  --site-accent: #67b0ba;
+  --site-accent-hover: #5a9aa3;
+  --site-selection-bg: rgba(103, 176, 186, 0.4);
+  --site-text: #f4f5f7;
+  --site-muted: #9ca0aa;
+  --site-dim: #6b6f78;
+  --site-bg-rgb: 20 21 23;
+  --site-surface-rgb: 28 30 33;
+  --site-raised-rgb: 37 39 43;
+  --site-border-rgb: 45 48 52;
+  --site-border-soft-rgb: 35 37 40;
+  --site-accent-rgb: 103 176 186;
+  --site-accent-hover-rgb: 90 154 163;
+  --site-text-rgb: 244 245 247;
+  --site-muted-rgb: 156 160 170;
+  --site-dim-rgb: 107 111 120;
+  /* Era semantic colors surface through the status mirrors. */
+  --status-info-rgb: 91 141 239;
+  --status-success-rgb: 62 207 142;
+  --status-warning-rgb: 241 162 60;
+  --status-danger-rgb: 240 106 138;
+  background-color: var(--site-bg);
+  font-family: "Manrope", "IBM Plex Sans Thai", "Poppins", sans-serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

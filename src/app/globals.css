@@ -13,65 +13,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark-only marketplace contract. Surfaces stay neutral; color communicates state. */
+/* Light commerce contract. White cards on light gray; brand red accent; navy band. */
 :root {
-  color-scheme: dark;
-  --site-bg: #111315;
-  --site-deep: #0d0f10;
-  --site-surface: #191c1f;
-  --site-raised: #22262a;
-  --site-border: #30363b;
-  --site-border-soft: #252b30;
-  --site-accent: #63c7c2;
-  --site-accent-hover: #7bd7d1;
-  --site-selection-bg: rgba(99, 199, 194, 0.28);
-  --site-text: #f3f6f5;
-  --site-muted: #a4afae;
-  --site-dim: #74807f;
-  --status-info: #70a7e8;
-  --status-success: #63c995;
-  --status-warning: #e5b566;
-  --status-danger: #e47c86;
+  color-scheme: light;
+  --site-bg: #f4f5f7;
+  --site-deep: #232a35;
+  --site-surface: #ffffff;
+  --site-raised: #f8f9fb;
+  --site-border: #e6e8ec;
+  --site-border-soft: #eef0f3;
+  --site-accent: #e5262c;
+  --site-accent-hover: #c81f24;
+  --site-selection-bg: rgba(229, 38, 44, 0.16);
+  --site-text: #1f2937;
+  --site-muted: #5b6472;
+  --site-dim: #8b93a1;
+  --status-info: #2563eb;
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-danger: #dc2626;
 
-  /* RGB channel mirrors for Tailwind alpha modifiers (bg-site-accent/10 etc.).
-     Keep in sync with the hex values above. */
-  --site-bg-rgb: 17 19 21;
-  --site-deep-rgb: 13 15 16;
-  --site-surface-rgb: 25 28 31;
-  --site-raised-rgb: 34 38 42;
-  --site-border-rgb: 48 54 59;
-  --site-border-soft-rgb: 37 43 48;
-  --site-accent-rgb: 99 199 194;
-  --site-accent-hover-rgb: 123 215 209;
-  --site-text-rgb: 243 246 245;
-  --site-muted-rgb: 164 175 174;
-  --site-dim-rgb: 116 128 127;
-  --status-info-rgb: 112 167 232;
-  --status-success-rgb: 99 201 149;
-  --status-warning-rgb: 229 181 102;
-  --status-danger-rgb: 228 124 134;
+  /* RGB channel mirrors for Tailwind alpha modifiers — keep in sync. */
+  --site-bg-rgb: 244 245 247;
+  --site-deep-rgb: 35 42 53;
+  --site-surface-rgb: 255 255 255;
+  --site-raised-rgb: 248 249 251;
+  --site-border-rgb: 230 232 236;
+  --site-border-soft-rgb: 238 240 243;
+  --site-accent-rgb: 229 38 44;
+  --site-accent-hover-rgb: 200 31 36;
+  --site-text-rgb: 31 41 55;
+  --site-muted-rgb: 91 100 114;
+  --site-dim-rgb: 139 147 161;
+  --status-info-rgb: 37 99 235;
+  --status-success-rgb: 22 163 74;
+  --status-warning-rgb: 217 119 6;
+  --status-danger-rgb: 220 38 38;
 
-  /* shadcn/ui variables — mapped onto the site palette (dark-only).
-     HSL triplets computed from the hex tokens above. */
-  --background: 210 10% 7%;        /* #111315 site-bg  */
-  --foreground: 160 15% 96%;       /* #f3f6f5 site-text */
-  --primary: 177 47% 58%;          /* #63c7c2 site-accent */
-  --primary-foreground: 210 10% 7%;
-  --secondary: 210 11% 15%;        /* #22262a site-raised */
-  --secondary-foreground: 160 15% 96%;
-  --muted: 210 11% 15%;
-  --muted-foreground: 175 6% 67%;  /* #a4afae site-muted */
-  --accent: 210 11% 15%;
-  --accent-foreground: 160 15% 96%;
-  --destructive: 354 66% 69%;      /* #e47c86 status-danger */
-  --destructive-foreground: 210 10% 7%;
-  --border: 207 13% 17%;           /* #252b30 site-border-soft */
-  --input: 207 13% 17%;
-  --ring: 177 47% 58%;
-  --card: 210 11% 11%;             /* #191c1f site-surface */
-  --card-foreground: 160 15% 96%;
-  --popover: 210 11% 11%;
-  --popover-foreground: 160 15% 96%;
+  /* shadcn/ui variables — mapped onto the light palette (HSL of the hex above). */
+  --background: 220 16% 96%;        /* #f4f5f7 */
+  --foreground: 215 28% 17%;        /* #1f2937 */
+  --primary: 358 79% 52%;           /* #e5262c */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 27% 98%;         /* #f8f9fb */
+  --secondary-foreground: 215 28% 17%;
+  --muted: 220 27% 98%;
+  --muted-foreground: 217 11% 40%;  /* #5b6472 */
+  --accent: 220 27% 98%;
+  --accent-foreground: 215 28% 17%;
+  --destructive: 0 72% 51%;         /* #dc2626 */
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 91%;            /* #e6e8ec */
+  --input: 220 13% 91%;
+  --ring: 358 79% 52%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 28% 17%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 28% 17%;
   --radius: 0.5rem;
 }
 

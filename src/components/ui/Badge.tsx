@@ -15,11 +15,11 @@ const badgeBase =
   "inline-flex items-center gap-1 rounded-4 border px-2 py-0.5 text-[10px] font-bold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3";
 
 const variantClass: Record<string, string> = {
-  success: "border-status-success/40 bg-status-success/15 text-status-success",
-  info: "border-status-info/40 bg-status-info/15 text-status-info",
-  neutral: "border-site-border bg-site-raised text-site-muted",
-  danger: "border-status-danger/40 bg-status-danger/15 text-status-danger",
-  warning: "border-status-warning/40 bg-status-warning/15 text-status-warning",
+  success: "border-transparent bg-green-700 text-white",
+  info: "border-transparent bg-blue-700 text-white",
+  warning: "border-transparent bg-amber-700 text-white",
+  danger: "border-transparent bg-red-700 text-white",
+  neutral: "border-site-border bg-site-raised text-site-text",
 };
 
 export type BadgeVariant = keyof typeof variantClass;

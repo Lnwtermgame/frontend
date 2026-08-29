@@ -31,7 +31,7 @@ export function GameTile({
       <div className="mt-1.5 flex justify-center">
         {instant ? (
           <Badge variant="success">
-            <Zap size={10} /> {t("status_instant")}
+            <Zap size={10} className="fill-current" /> {t("status_instant")}
           </Badge>
         ) : (
           <Badge variant="neutral">{t("status_30_60_mins")}</Badge>

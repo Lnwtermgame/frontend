@@ -29,8 +29,8 @@ export function OfferCard({ deal, href, badgeLabel }: { deal: Deal; href: string
           </p>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
-          <Badge variant="success">{badgeLabel}</Badge>
-          <span className="text-status-success text-[13px] font-bold tabular-nums">-{deal.discount}%</span>
+          <Badge variant="danger">{badgeLabel}</Badge>
+          <span className="text-status-danger text-[13px] font-bold tabular-nums">-{deal.discount}%</span>
         </div>
       </div>
     </Link>

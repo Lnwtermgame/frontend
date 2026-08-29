@@ -3,8 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { useState, useRef, useEffect, useTransition } from "react";
-import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Languages, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +47,6 @@ export function LanguageSwitcher({
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage =
@@ -55,7 +54,6 @@ export function LanguageSwitcher({
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
     function handleClickOutside(event: MouseEvent) {
       if (
         containerRef.current &&
@@ -66,7 +64,6 @@ export function LanguageSwitcher({
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      cancelAnimationFrame(id);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
@@ -98,72 +95,46 @@ export function LanguageSwitcher({
           <ChevronDown size={18} className="text-site-dim" />
         </button>
 
-        {mounted &&
-          createPortal(
-            <AnimatePresence>
-              {isOpen && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/60"
-                    onClick={() => setIsOpen(false)}
-                  />
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="relative w-full max-w-sm bg-site-surface border border-site-border-soft rounded-8 p-5 max-h-[85vh] overflow-y-auto flex flex-col shadow-2xl"
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent
+            className="max-w-sm gap-0 p-5 max-h-[85vh] overflow-y-auto"
+            aria-describedby={undefined}
+          >
+            <div className="flex justify-between items-center mb-6 border-b border-site-border-soft pb-4">
+              <DialogTitle className="font-bold text-sm uppercase tracking-wide text-site-text">
+                {t("language_selector")}
+              </DialogTitle>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLanguageChange(lang.code)}
+                  className={cn(
+                    "flex flex-col items-center justify-center p-4 border rounded-8 transition-all",
+                    locale === lang.code
+                      ? "bg-site-accent/10 border-site-accent/30"
+                      : "bg-site-raised border-site-border-soft hover:border-site-border text-site-muted hover:text-site-text",
+                  )}
+                >
+                  <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0">
+                    <Flag code={lang.flagCode} className="w-full" />
+                  </div>
+                  <span
+                    className={cn(
+                      "text-[11px] uppercase font-bold tracking-wide",
+                      locale === lang.code
+                        ? "text-site-accent"
+                        : "text-site-muted",
+                    )}
                   >
-                    <div className="flex justify-between items-center mb-6 border-b border-site-border-soft pb-4">
-                      <h3 className="font-bold text-sm uppercase tracking-wide text-site-text">
-                        {t("language_selector")}
-                      </h3>
-                      <button
-                        onClick={() => setIsOpen(false)}
-                        className="p-1.5 rounded-6 text-site-dim hover:text-site-text hover:bg-site-raised transition-colors"
-                        aria-label="Close"
-                      >
-                        <span className="text-xl font-bold leading-none block w-5 h-5 text-center">
-                          ×
-                        </span>
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {languages.map((lang) => (
-                        <button
-                          key={lang.code}
-                          onClick={() => handleLanguageChange(lang.code)}
-                          className={cn(
-                            "flex flex-col items-center justify-center p-4 border rounded-8 transition-all",
-                            locale === lang.code
-                              ? "bg-site-accent/10 border-site-accent/30"
-                              : "bg-site-raised border-site-border-soft hover:border-site-border text-site-muted hover:text-site-text",
-                          )}
-                        >
-                          <div className="w-8 h-8 mb-2 rounded-sm overflow-hidden shrink-0">
-                            <Flag code={lang.flagCode} className="w-full" />
-                          </div>
-                          <span
-                            className={cn(
-                              "text-[11px] uppercase font-bold tracking-wide",
-                              locale === lang.code
-                                ? "text-site-accent"
-                                : "text-site-muted",
-                            )}
-                          >
-                            {lang.label}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
-              )}
-            </AnimatePresence>,
-            document.body,
-          )}
+                    {lang.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

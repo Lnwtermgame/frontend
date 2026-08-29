@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -22,7 +22,6 @@ import {
   AlertCircle,
   Check,
   AlertTriangle,
-  X,
   User,
   ShieldAlert,
   ChevronRight,
@@ -32,7 +31,12 @@ import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
 import { PackageOption, type PackageOptionData } from "@/components/products/PackageOption";
 import { formatTHB } from "@/lib/format";
-import { useFocusTrap } from "@/lib/hooks/use-focus-trap";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 import {
   productApi,
@@ -200,43 +204,6 @@ export default function GameDetailsPage() {
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const confirmDialogRef = useRef<HTMLDivElement>(null);
-  const paymentDialogRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(confirmDialogRef, showConfirmModal);
-  useFocusTrap(paymentDialogRef, isPaymentSelectOpen);
-
-  // Confirmation modal: escape-key close + body scroll lock + initial focus
-  useEffect(() => {
-    if (!showConfirmModal) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setShowConfirmModal(false);
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    confirmDialogRef.current?.focus();
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [showConfirmModal]);
-
-  // Payment selection modal: escape-key close + body scroll lock + initial focus
-  useEffect(() => {
-    if (!isPaymentSelectOpen) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsPaymentSelectOpen(false);
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    paymentDialogRef.current?.focus();
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isPaymentSelectOpen]);
-
   // Field label translation map
   const FIELD_LABEL_MAP: Record<string, string> = {
     "Player ID": "Player ID",
@@ -1436,20 +1403,16 @@ export default function GameDetailsPage() {
       </section>
 
       {/* ── Confirmation Modal ── */}
-      {showConfirmModal && verificationStatus && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-2 sm:p-4"
-          onClick={() => setShowConfirmModal(false)}
+      <Dialog
+        open={showConfirmModal && verificationStatus !== null}
+        onOpenChange={setShowConfirmModal}
+      >
+        <DialogContent
+          className="max-w-4xl gap-0 overflow-hidden p-0 rounded-8 sm:rounded-8 flex flex-col max-h-[95vh] sm:max-h-[90vh]"
+          aria-describedby={undefined}
         >
-          <div
-            ref={confirmDialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("confirm_order_title")}
-            tabIndex={-1}
-            className="bg-site-surface border border-site-border w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-8 focus:outline-none"
-            onClick={(e) => e.stopPropagation()}
-          >
+          {verificationStatus && (
+            <>
             <div
               className={`border-b border-site-border p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-status-danger/10" : "bg-site-accent/10"}`}
             >
@@ -1459,18 +1422,12 @@ export default function GameDetailsPage() {
                 ) : (
                   <Check size={22} className="text-site-accent" />
                 )}
-                <h2 className="text-base sm:text-lg font-bold text-site-text uppercase">
+                <DialogTitle className="text-base sm:text-lg font-bold text-site-text uppercase">
                   {!verificationStatus.supported
                     ? t("unverified_account_warning")
                     : t("confirm_order_title")}
-                </h2>
+                </DialogTitle>
               </div>
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="p-1.5 hover:bg-site-raised rounded-6 transition-colors text-site-text"
-              >
-                <X size={20} />
-              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto">
@@ -1681,41 +1638,24 @@ export default function GameDetailsPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* ── Payment Selection Modal ── */}
-      {isPaymentSelectOpen && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-          onClick={() => setIsPaymentSelectOpen(false)}
-        >
-          <div
-            ref={paymentDialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("payment_selection_title")}
-            tabIndex={-1}
-            className="bg-site-surface w-full max-w-5xl border border-site-border p-4 sm:p-6 rounded-8 focus:outline-none"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-start gap-3 mb-5">
-              <div>
-                <h3 className="text-2xl font-bold text-site-text uppercase">
-                  {t("payment_selection_title")}
-                </h3>
-                <p className="text-sm text-site-muted mt-1 font-medium">
-                  {t("payment_selection_desc")}
-                </p>
-              </div>
-              <button
-                onClick={() => setIsPaymentSelectOpen(false)}
-                className="p-2 hover:bg-site-raised rounded-6 transition-colors text-site-text"
-              >
-                <X size={18} />
-              </button>
+      <Dialog open={isPaymentSelectOpen} onOpenChange={setIsPaymentSelectOpen}>
+        <DialogContent className="max-w-5xl gap-0 p-4 sm:p-6 rounded-8 sm:rounded-8">
+          <div className="flex justify-between items-start gap-3 mb-5">
+            <div>
+              <DialogTitle className="text-2xl font-bold text-site-text uppercase">
+                {t("payment_selection_title")}
+              </DialogTitle>
+              <DialogDescription className="text-sm text-site-muted mt-1 font-medium">
+                {t("payment_selection_desc")}
+              </DialogDescription>
             </div>
+          </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1">
@@ -1858,9 +1798,8 @@ export default function GameDetailsPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

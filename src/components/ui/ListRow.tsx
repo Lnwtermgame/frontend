@@ -6,11 +6,13 @@ export function ListRow({
   title,
   subtitle,
   icon,
+  meta,
 }: {
   href: string;
   title: string;
   subtitle?: string;
   icon?: string;
+  meta?: string;
 }) {
   return (
     <Link
@@ -24,6 +26,7 @@ export function ListRow({
         <p className="text-[13px] text-site-muted font-medium line-clamp-1">{title}</p>
         {subtitle && <p className="text-[11px] text-site-dim line-clamp-1">{subtitle}</p>}
       </div>
+      {meta && <span className="text-[11px] text-site-dim shrink-0">{meta}</span>}
       <ChevronRight size={14} className="text-site-dim shrink-0" />
     </Link>
   );

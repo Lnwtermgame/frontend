@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Link } from "@/i18n/routing";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useRouter } from "@/i18n/routing";
 import {
   ChevronRight,
   ChevronLeft,
@@ -16,11 +16,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
+import toast from "react-hot-toast";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { cmsApi, type NewsArticle } from "@/lib/services/cms-api";
 import { productApi, type Product } from "@/lib/services/product-api";
+import { couponApi, type Coupon } from "@/lib/services";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { OfferCard, type Deal } from "@/components/ui/OfferCard";
+import { CouponCard } from "@/components/ui/CouponCard";
 import { GameTile } from "@/components/ui/GameTile";
 import { PanelCard } from "@/components/ui/PanelCard";
 import { ListRow } from "@/components/ui/ListRow";
@@ -29,8 +33,10 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import {
   SkeletonHero,
   SkeletonOfferCard,
+  SkeletonCouponCard,
   SkeletonGameTile,
   SkeletonListRow,
+  SkeletonNewsCard,
 } from "@/components/ui/Skeleton";
 
 const gameImg = (label: string) =>
@@ -52,15 +58,26 @@ function formatDate(locale: string, dateStr: string | null | undefined): string 
 export default function HomePage() {
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
+  const { user } = useAuth();
   const { settings, loading: settingsLoading } = usePublicSettings();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsArticle[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [cardProducts, setCardProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const [discountedProducts, setDiscountedProducts] = useState<Deal[]>([]);
   const [dealsLoading, setDealsLoading] = useState(true);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [couponsLoading, setCouponsLoading] = useState(true);
+  const [claimingId, setClaimingId] = useState<string | null>(null);
+  const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
+
+  // Compact number formatter
+  const compact = useMemo(() => {
+    const fmt = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
+    return (n: number) => fmt.format(n);
+  }, [locale]);
 
   const defaultSlides = [
     {
@@ -165,7 +182,7 @@ export default function HomePage() {
     fetchNews();
   }, []);
 
-  // Fetch products (DIRECT_TOPUP + CARD from same response)
+  // Fetch products (all types from same response)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -177,15 +194,7 @@ export default function HomePage() {
           sortOrder: "desc",
         });
         if (response.success && response.data) {
-          const directTopUp = response.data.filter(
-            (p) => p.productType === "DIRECT_TOPUP",
-          );
-          setProducts(directTopUp.slice(0, 12));
-
-          const cards = response.data.filter(
-            (p) => p.productType === "CARD",
-          );
-          setCardProducts(cards.slice(0, 6));
+          setAllProducts(response.data);
         }
       } catch (error) {
         console.error("[HomePage] Failed to fetch products:", error);
@@ -240,14 +249,106 @@ export default function HomePage() {
     fetchDeals();
   }, []);
 
+  // Fetch coupons
+  useEffect(() => {
+    const fetchCoupons = async () => {
+      try {
+        setCouponsLoading(true);
+        const response = await couponApi.getAvailableCoupons(1, 5);
+        if (response.success && response.data) {
+          setCoupons(response.data);
+          // Pre-populate claimed state
+          const preClaimed = new Set<string>();
+          response.data.forEach((c) => {
+            if (c.isClaimed) preClaimed.add(c.id);
+          });
+          setClaimedIds(preClaimed);
+        }
+      } catch (error) {
+        console.error("[HomePage] Failed to fetch coupons:", error);
+      } finally {
+        setCouponsLoading(false);
+      }
+    };
+    fetchCoupons();
+  }, []);
+
+  // Derived lists from allProducts
+  const popularTopup = useMemo(() => {
+    return allProducts
+      .filter((p) => p.productType === "DIRECT_TOPUP")
+      .sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0))
+      .slice(0, 6);
+  }, [allProducts]);
+
+  const popularCards = useMemo(() => {
+    return allProducts
+      .filter((p) => p.productType === "CARD")
+      .sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0))
+      .slice(0, 6);
+  }, [allProducts]);
+
+  const newCards = useMemo(() => {
+    return allProducts
+      .filter((p) => p.productType === "CARD")
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 5);
+  }, [allProducts]);
+
+  const newTopup = useMemo(() => {
+    return allProducts
+      .filter((p) => p.productType === "DIRECT_TOPUP")
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 5);
+  }, [allProducts]);
+
+  // Games grid (top 12 DIRECT_TOPUP by salesCount)
+  const gamesGrid = useMemo(() => {
+    return allProducts
+      .filter((p) => p.productType === "DIRECT_TOPUP")
+      .sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0))
+      .slice(0, 12);
+  }, [allProducts]);
+
+  // Coupon claim handler
+  const handleClaimCoupon = async (id: string) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    try {
+      setClaimingId(id);
+      const response = await couponApi.claimCoupon(id);
+      if (response.success) {
+        setClaimedIds((prev) => new Set(prev).add(id));
+      } else {
+        toast.error(response.message || "Failed to claim coupon");
+      }
+    } catch (error) {
+      const message = couponApi.getErrorMessage(error);
+      toast.error(message);
+    } finally {
+      setClaimingId(null);
+    }
+  };
+
   const isPageReady =
-    !settingsLoading && !newsLoading && !productsLoading && !dealsLoading;
+    !settingsLoading && !newsLoading && !productsLoading && !dealsLoading && !couponsLoading;
 
   // ═══════ LOADING SKELETON ═══════
   if (!isPageReady) {
     return (
       <div className="space-y-8 py-2 pb-16">
         <SkeletonHero />
+
+        <section>
+          <SectionHeader title={t("home_coupons")} sublabel="AVAILABLE COUPONS" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonCouponCard key={i} />
+            ))}
+          </div>
+        </section>
 
         <section>
           <SectionHeader title={t("special_offers")} sublabel="SPECIAL PROMOTIONS" />
@@ -268,16 +369,19 @@ export default function HomePage() {
         </section>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="site-card p-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <SkeletonListRow key={i} />
-            ))}
-          </div>
-          <div className="site-card p-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <SkeletonListRow key={i} />
-            ))}
-          </div>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="site-card p-4">
+              {Array.from({ length: 3 }).map((_, j) => (
+                <SkeletonListRow key={j} />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonNewsCard key={i} />
+          ))}
         </div>
       </div>
     );
@@ -295,20 +399,20 @@ export default function HomePage() {
           {heroSlides.map((slide, i) => (
             <div
               key={slide.id}
-              className="w-full flex-[0_0_100%] relative h-[180px] md:h-[220px]"
+              className="w-full flex-[0_0_100%] relative h-[280px] md:h-[360px]"
             >
-              {/* Background image */}
+              {/* Background image — full bleed */}
               <img
                 src={slide.image}
                 alt={slide.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-30"
+                className="absolute inset-0 w-full h-full object-cover"
                 loading={i === 0 ? "eager" : "lazy"}
               />
-              {/* Flat overlay */}
-              <div className="absolute inset-0 bg-site-surface/70" />
+              {/* Flat scrim */}
+              <div className="absolute inset-0 bg-site-bg/55" />
               {/* Content */}
               <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-10">
-                <h2 className="text-xl md:text-2xl font-extrabold text-site-text">
+                <h2 className="text-2xl md:text-3xl font-extrabold text-site-text">
                   {slide.title}
                 </h2>
                 <p className="text-[13px] text-site-muted mt-1">
@@ -374,6 +478,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ════════════════ COUPONS ════════════════ */}
+      <section>
+        <SectionHeader title={t("home_coupons")} sublabel="AVAILABLE COUPONS" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {coupons.length === 0 ? (
+            <EmptyState icon={Tag} message={t("no_deals")} />
+          ) : (
+            coupons.map((coupon) => (
+              <CouponCard
+                key={coupon.id}
+                coupon={coupon}
+                onClaim={handleClaimCoupon}
+                claiming={claimingId === coupon.id}
+                claimed={claimedIds.has(coupon.id)}
+                claimLabel={t("home_coupon_claim")}
+                claimedLabel={t("home_coupon_claimed")}
+              />
+            ))
+          )}
+        </div>
+      </section>
+
       {/* ════════════════ SPECIAL OFFERS ════════════════ */}
       <section>
         <SectionHeader
@@ -397,7 +523,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════ POPULAR GAMES ════════════════ */}
+      {/* ════════════════ POPULAR GAMES GRID ════════════════ */}
       <section>
         <SectionHeader
           title={t("popular_games")}
@@ -406,10 +532,10 @@ export default function HomePage() {
           actionLabel={t("view_all")}
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {products.length === 0 ? (
+          {gamesGrid.length === 0 ? (
             <EmptyState icon={PackageOpen} message={t("no_products")} />
           ) : (
-            products.map((game) => (
+            gamesGrid.map((game) => (
               <GameTile
                 key={game.id}
                 slug={game.slug}
@@ -422,51 +548,142 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════ TWO-COLUMN PANELS ════════════════ */}
+      {/* ════════════════ 2×2 PANELS ════════════════ */}
       <div className="grid md:grid-cols-2 gap-4">
-        {/* Prepaid Card Panel */}
+        {/* Popular Game Cards */}
         <PanelCard
-          title={t("nav_prepaid_card")}
-          sublabel="DIGITAL CARD"
+          title={t("home_popular_card")}
+          sublabel="POPULAR GAME CARD"
           actionHref="/card"
           actionLabel={t("view_all")}
         >
-          {cardProducts.length === 0 ? (
+          {popularCards.length === 0 ? (
             <EmptyState icon={CreditCard} message={t("no_products")} />
           ) : (
-            cardProducts.map((p) => (
+            popularCards.slice(0, 5).map((p) => (
               <ListRow
                 key={p.id}
                 href={`/card/${p.slug}`}
                 title={p.name}
-                subtitle={p.category?.name}
+                subtitle={p.gameDetails?.region || p.category?.name}
+                icon={p.imageUrl || undefined}
+                meta={compact(p.salesCount || 0)}
+              />
+            ))
+          )}
+        </PanelCard>
+
+        {/* Popular Game Top-Up */}
+        <PanelCard
+          title={t("popular_games")}
+          sublabel="POPULAR GAME TOP-UP"
+          actionHref="/games"
+          actionLabel={t("view_all")}
+        >
+          {popularTopup.length === 0 ? (
+            <EmptyState icon={PackageOpen} message={t("no_products")} />
+          ) : (
+            popularTopup.slice(0, 5).map((p) => (
+              <ListRow
+                key={p.id}
+                href={`/games/${p.slug}`}
+                title={p.name}
+                subtitle={p.gameDetails?.region || p.category?.name}
+                icon={p.imageUrl || undefined}
+                meta={compact(p.salesCount || 0)}
+              />
+            ))
+          )}
+        </PanelCard>
+
+        {/* New Game Cards */}
+        <PanelCard
+          title={t("home_new_card")}
+          sublabel="NEW GAME CARD"
+          actionHref="/card"
+          actionLabel={t("view_all")}
+        >
+          {newCards.length === 0 ? (
+            <EmptyState icon={CreditCard} message={t("no_products")} />
+          ) : (
+            newCards.slice(0, 5).map((p) => (
+              <ListRow
+                key={p.id}
+                href={`/card/${p.slug}`}
+                title={p.name}
+                subtitle={p.gameDetails?.region}
                 icon={p.imageUrl || undefined}
               />
             ))
           )}
         </PanelCard>
 
-        {/* News Panel */}
+        {/* New Game Top-Up */}
         <PanelCard
-          title={t("news_title")}
-          sublabel="NEWS"
-          actionHref="/news"
+          title={t("home_new_topup")}
+          sublabel="NEW GAME TOP-UP"
+          actionHref="/games"
           actionLabel={t("view_all")}
         >
-          {newsItems.length === 0 ? (
-            <EmptyState icon={Newspaper} message={t("no_news")} />
+          {newTopup.length === 0 ? (
+            <EmptyState icon={PackageOpen} message={t("no_products")} />
           ) : (
-            newsItems.slice(0, 6).map((news) => (
+            newTopup.slice(0, 5).map((p) => (
               <ListRow
-                key={news.id}
-                href={`/news/${news.slug}`}
-                title={news.title}
-                subtitle={formatDate(locale, news.publishedAt || news.createdAt)}
+                key={p.id}
+                href={`/games/${p.slug}`}
+                title={p.name}
+                subtitle={p.gameDetails?.region}
+                icon={p.imageUrl || undefined}
               />
             ))
           )}
         </PanelCard>
       </div>
+
+      {/* ════════════════ NEWS COVER GRID ════════════════ */}
+      <section>
+        <SectionHeader
+          title={t("news_title")}
+          sublabel="NEWS & PROMOTIONS"
+          actionHref="/news"
+          actionLabel={t("view_all")}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {newsItems.length === 0 ? (
+            <EmptyState icon={Newspaper} message={t("no_news")} />
+          ) : (
+            newsItems.map((news) => (
+              <Link
+                key={news.id}
+                href={`/news/${news.slug}`}
+                className="site-card overflow-hidden group block"
+              >
+                {news.coverImage ? (
+                  <img
+                    src={news.coverImage}
+                    alt={news.title}
+                    className="aspect-[16/9] w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="aspect-[16/9] w-full bg-site-raised flex items-center justify-center">
+                    <Newspaper size={24} className="text-site-dim" />
+                  </div>
+                )}
+                <div className="p-3">
+                  <p className="text-[13px] font-bold text-site-text line-clamp-2 group-hover:text-site-accent transition-colors">
+                    {news.title}
+                  </p>
+                  <p className="text-[11px] text-site-dim mt-1">
+                    {formatDate(locale, news.publishedAt || news.createdAt)}
+                  </p>
+                </div>
+              </Link>
+            ))
+          )}
+        </div>
+      </section>
 
       {/* ════════════════ TRUST STRIP ════════════════ */}
       <TrustStrip items={trustItems} />

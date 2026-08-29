@@ -5,14 +5,21 @@ import { Link } from "@/i18n/routing";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { SocialIcon } from "react-social-icons";
 
-const localeConfig: Record<string, { flag: string; code: string; label: string }> = {
-    th: { flag: "https://flagcdn.com/w20/th.png", code: "TH", label: "ภาษาไทย" },
-    en: { flag: "https://flagcdn.com/w20/gb.png", code: "EN", label: "English" },
+const localeConfig: Record<string, { flagCode: string; code: string; label: string }> = {
+    th: { flagCode: "th", code: "TH", label: "ภาษาไทย" },
+    en: { flagCode: "gb", code: "EN", label: "English" },
+    zh: { flagCode: "cn", code: "ZH", label: "中文" },
+    ja: { flagCode: "jp", code: "JA", label: "日本語" },
+    ko: { flagCode: "kr", code: "KO", label: "한국어" },
+    ms: { flagCode: "my", code: "MS", label: "Melayu" },
+    hi: { flagCode: "in", code: "HI", label: "हिन्दी" },
+    es: { flagCode: "es", code: "ES", label: "Español" },
+    fr: { flagCode: "fr", code: "FR", label: "Français" },
 };
 
 const paymentMethods = [
-    { key: "PromptPay", label: "PromptPay", icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/PromptPay.png" },
-    { key: "TrueMoney", label: "TrueMoney", icon: "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/TrueMoney.png" },
+    { key: "PromptPay", label: "PromptPay", icon: "/images/payments/promptpay.png" },
+    { key: "TrueMoney", label: "TrueMoney", icon: "/images/payments/truemoney.png" },
 ];
 
 export default function Footer() {
@@ -62,7 +69,11 @@ export default function Footer() {
                         ))}
                     </div>
                     <div className="mt-4 md:mt-0 flex items-center gap-2 text-site-text">
-                        <img src={currentLang.flag} alt={currentLang.code} className="w-[18px] rounded-[2px]" />
+                        <span
+                            className={`fi fi-${currentLang.flagCode} inline-block shrink-0 w-[18px] rounded-[2px]`}
+                            style={{ aspectRatio: "4/3" }}
+                            aria-label={currentLang.label}
+                        />
                         <span className="text-[13px] font-bold">{currentLang.label}</span>
                     </div>
                 </div>
@@ -73,14 +84,14 @@ export default function Footer() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:w-3/4">
                         {/* Column 1 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">LNWTERMGAME</h3>
+                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">LNWTERMGAME</h3>
                             <Link href="/about" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.about_us")}</Link>
                             <Link href="/contact" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.contact_us")}</Link>
                         </div>
 
                         {/* Column 2 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">{t("Footer.customer")}</h3>
+                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">{t("Footer.customer")}</h3>
                             <Link href="/refund" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.refund_policy")}</Link>
                             <Link href="/privacy" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
                             <Link href="/payment-issues" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.payment_issues")}</Link>
@@ -88,14 +99,14 @@ export default function Footer() {
 
                         {/* Column 3 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">{t("Footer.policies")}</h3>
+                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">{t("Footer.policies")}</h3>
                             <Link href="/terms" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.terms_of_service")}</Link>
                             <Link href="/privacy" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
                         </div>
 
                         {/* Column 4 */}
                         <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-bold text-[13px] uppercase tracking-wide mb-2">{t("Footer.services")}</h3>
+                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">{t("Footer.services")}</h3>
                             <Link href="/support" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.features.support")}</Link>
                         </div>
                     </div>

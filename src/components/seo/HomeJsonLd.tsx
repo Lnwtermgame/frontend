@@ -13,7 +13,7 @@ export function HomeJsonLd() {
             "@type": "SearchAction",
             target: {
                 "@type": "EntryPoint",
-                urlTemplate: `${SITE_URL}/games?q={search_term_string}`,
+                urlTemplate: `${SITE_URL}/games?search={search_term_string}`,
             },
             "query-input": "required name=search_term_string",
         },

@@ -123,7 +123,7 @@ function transformProduct(product: Product): CatalogItem {
     title: product.name,
     image:
       product.imageUrl ||
-      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+      "/images/placeholder-game.svg",
     price: startingPrice,
     discountPercent:
       discountRates.length > 0 ? Math.max(...discountRates) : undefined,
@@ -219,11 +219,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
 
   const copy = modeCopy[mode] || modeCopy["games"];
   const searchParams = useSearchParams();
+  const urlSearch = searchParams.get("search") || "";
   const [items, setItems] = useState<CatalogItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || "",
-  );
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
   const [selectedPrimary, setSelectedPrimary] = useState("all");
   const [selectedSecondary, setSelectedSecondary] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -232,8 +231,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
     const fetchItems = async () => {
       try {
         setLoading(true);
+        // Search hits the server so results are never capped to one page.
         const response = await productApi.getProducts({
           isActive: true,
+          search: urlSearch || undefined,
           limit: 100,
           sortBy: "salesCount",
           sortOrder: "desc",
@@ -257,7 +258,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
     };
 
     fetchItems();
-  }, [mode]);
+  }, [mode, urlSearch]);
 
   useEffect(() => {
     const query = searchParams.get("search");
@@ -524,7 +525,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           {/* Page header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-site-raised border border-site-border-soft rounded-8 p-6 mb-6">
             <div>
-              <SectionHeader level={1} title={copy.title} sublabel={mode === "games" ? "GAMES CATALOG" : mode === "card" ? "GIFT CARDS" : "MOBILE RECHARGE"} />
+              <SectionHeader level={1} title={copy.title} sublabel={mode === "card" ? t("card_sublabel") : mode === "mobile-recharge" || mode === "mobile" ? t("mobile_sublabel") : t("games_sublabel")} />
               <p className="text-site-muted text-[13px] md:text-[14px] leading-relaxed max-w-lg">{copy.subtitle}</p>
             </div>
 

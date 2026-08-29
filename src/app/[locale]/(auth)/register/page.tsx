@@ -106,7 +106,7 @@ export default function RegisterPage() {
           {/* Header */}
           <div className="mb-6 text-center">
             <p className="text-lg font-bold text-site-text">{siteName}</p>
-            <h2 className="mt-1 text-xl font-extrabold tracking-tight text-site-text">
+            <h2 className="mt-1 text-xl font-bold tracking-tight text-site-text">
               {t("title")}
             </h2>
             <p className="mt-1 text-sm text-site-muted">

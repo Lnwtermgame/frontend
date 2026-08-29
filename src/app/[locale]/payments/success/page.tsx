@@ -247,7 +247,7 @@ function PaymentSuccessPageContent() {
                                     <Sparkles className="h-3.5 w-3.5" />
                                     Payment Flow
                                 </p>
-                                <h2 className="text-lg font-extrabold text-site-text">
+                                <h2 className="text-lg font-bold text-site-text">
                                     {statusConfig.panelTitle}
                                 </h2>
 

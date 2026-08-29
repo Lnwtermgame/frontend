@@ -5,6 +5,7 @@ import { Link, useRouter } from "@/i18n/routing";
 import {
   ChevronRight,
   ChevronLeft,
+  Flame,
   Zap,
   ShieldCheck,
   Award,
@@ -39,10 +40,12 @@ import {
   SkeletonNewsCard,
 } from "@/components/ui/Skeleton";
 
-const gameImg = (label: string) =>
-  `https://placehold.co/500x500/22262a/74807f?text=${encodeURIComponent(label)}&font=montserrat`;
+const gameImg = () => "/images/placeholder-game.svg";
 
-function formatDate(locale: string, dateStr: string | null | undefined): string | undefined {
+function formatDate(
+  locale: string,
+  dateStr: string | null | undefined,
+): string | undefined {
   if (!dateStr) return undefined;
   try {
     return new Date(dateStr).toLocaleDateString(locale, {
@@ -66,17 +69,19 @@ export default function HomePage() {
   const [newsLoading, setNewsLoading] = useState(true);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  const [discountedProducts, setDiscountedProducts] = useState<Deal[]>([]);
-  const [dealsLoading, setDealsLoading] = useState(true);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [couponsLoading, setCouponsLoading] = useState(true);
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
+  const [heroPaused, setHeroPaused] = useState(false);
   const claimingRef = useRef(false);
 
   // Compact number formatter
   const compact = useMemo(() => {
-    const fmt = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
+    const fmt = new Intl.NumberFormat(locale, {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    });
     return (n: number) => fmt.format(n);
   }, [locale]);
 
@@ -85,23 +90,23 @@ export default function HomePage() {
       id: "1",
       title: "Zenless Zone Zero",
       subtitle: t("hero_zzz_subtitle"),
+      badge: t("promotion_badge"),
       highlightText: t("hero_zzz_highlight_text"),
       highlight: "30%",
-      image:
-        "https://placehold.co/800x600/22262a/74807f?text=ZZZ+Character+Art",
+      image: "/images/placeholder-hero.svg",
       btnText: t("hero_btn_text"),
-      href: "/games/zzz",
+      href: "/games",
     },
     {
       id: "2",
       title: "Genshin Impact",
       subtitle: t("hero_genshin_subtitle"),
+      badge: t("promotion_badge"),
       highlightText: t("hero_genshin_highlight_text"),
       highlight: "20%",
-      image:
-        "https://placehold.co/800x600/22262a/74807f?text=Genshin+Character+Art",
+      image: "/images/placeholder-hero.svg",
       btnText: t("hero_btn_text"),
-      href: "/games/genshin",
+      href: "/games",
     },
   ];
 
@@ -110,12 +115,12 @@ export default function HomePage() {
         id: slide.id,
         title: slide.title,
         subtitle: slide.subtitle || "",
-        highlightText: slide.badgeText ? "HOT" : "",
-        highlight: slide.badgeText || "",
+        badge: slide.badgeText || "",
+        highlightText: "",
+        highlight: "",
         image: slide.image,
         btnText:
-          settings.homepage.sectionLabels?.heroButtonText ||
-          t("hero_btn_text"),
+          settings.homepage.sectionLabels?.heroButtonText || t("hero_btn_text"),
         href: slide.link || "/games",
       }))
     : defaultSlides;
@@ -157,13 +162,14 @@ export default function HomePage() {
         },
       ];
 
-  // Carousel auto-advance
+  // Carousel auto-advance (pauses while the visitor is hovering/touching it)
   useEffect(() => {
+    if (heroPaused) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, [heroSlides.length]);
+  }, [heroSlides.length, heroPaused]);
 
   // Fetch news
   useEffect(() => {
@@ -206,52 +212,35 @@ export default function HomePage() {
     fetchProducts();
   }, []);
 
-  // Fetch deals
-  useEffect(() => {
-    const fetchDeals = async () => {
-      try {
-        setDealsLoading(true);
-        const response = await productApi.getProducts({
-          isActive: true,
-          limit: 50,
-        });
-        if (response.success && response.data) {
-          const deals = response.data
-            .map((p) => {
-              const discountedType = p.types
-                ?.filter(
-                  (t) => t.discountRate != null && t.discountRate > 0,
-                )
-                .sort(
-                  (a, b) => (b.discountRate || 0) - (a.discountRate || 0),
-                )[0];
-              if (!discountedType) return null;
-              return {
-                id: p.id,
-                slug: p.slug,
-                name: p.name,
-                typeName: discountedType.name,
-                discount: discountedType.discountRate!,
-                img:
-                  p.imageUrl ||
-                  gameImg(p.name.substring(0, 6)),
-              };
-            })
-            .filter(Boolean) as Deal[];
-          deals.sort((a, b) => b.discount - a.discount);
-          setDiscountedProducts(deals.slice(0, 10));
-        }
-      } catch (error) {
-        console.error("[HomePage] Failed to fetch deals:", error);
-      } finally {
-        setDealsLoading(false);
-      }
-    };
-    fetchDeals();
-  }, []);
+  // Deals derived from the same product list — no extra API round-trip
+  const discountedProducts = useMemo<Deal[]>(() => {
+    const deals = allProducts
+      .map((p) => {
+        const discountedType = p.types
+          ?.filter((t) => t.discountRate != null && t.discountRate > 0)
+          .sort((a, b) => (b.discountRate || 0) - (a.discountRate || 0))[0];
+        if (!discountedType) return null;
+        return {
+          id: p.id,
+          slug: p.slug,
+          name: p.name,
+          typeName: discountedType.name,
+          discount: discountedType.discountRate!,
+          img: p.imageUrl || gameImg(),
+        };
+      })
+      .filter(Boolean) as Deal[];
+    return deals.sort((a, b) => b.discount - a.discount).slice(0, 10);
+  }, [allProducts]);
 
-  // Fetch coupons
+  // Fetch coupons — endpoint is auth-gated (order service `authenticate`),
+  // so skip for guests instead of guaranteed-401 on every visit.
   useEffect(() => {
+    if (!user) {
+      setCoupons([]);
+      setCouponsLoading(false);
+      return;
+    }
     const fetchCoupons = async () => {
       try {
         setCouponsLoading(true);
@@ -272,7 +261,7 @@ export default function HomePage() {
       }
     };
     fetchCoupons();
-  }, []);
+  }, [user]);
 
   // Derived lists from allProducts
   const popularTopup = useMemo(() => {
@@ -292,14 +281,20 @@ export default function HomePage() {
   const newCards = useMemo(() => {
     return allProducts
       .filter((p) => p.productType === "CARD")
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
       .slice(0, 5);
   }, [allProducts]);
 
   const newTopup = useMemo(() => {
     return allProducts
       .filter((p) => p.productType === "DIRECT_TOPUP")
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
       .slice(0, 5);
   }, [allProducts]);
 
@@ -337,7 +332,7 @@ export default function HomePage() {
   };
 
   const isPageReady =
-    !settingsLoading && !newsLoading && !productsLoading && !dealsLoading && !couponsLoading;
+    !settingsLoading && !newsLoading && !productsLoading && !couponsLoading;
 
   // ═══════ LOADING SKELETON ═══════
   if (!isPageReady) {
@@ -346,7 +341,10 @@ export default function HomePage() {
         <SkeletonHero />
 
         <section>
-          <SectionHeader title={t("home_coupons")} sublabel="AVAILABLE COUPONS" />
+          <SectionHeader
+            title={t("home_coupons")}
+            sublabel={t("home_sublabel_coupons")}
+          />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
               <SkeletonCouponCard key={i} />
@@ -355,7 +353,10 @@ export default function HomePage() {
         </section>
 
         <section>
-          <SectionHeader title={t("special_offers")} sublabel="SPECIAL PROMOTIONS" />
+          <SectionHeader
+            title={t("special_offers")}
+            sublabel={t("home_sublabel_offers")}
+          />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
               <SkeletonOfferCard key={i} />
@@ -364,7 +365,10 @@ export default function HomePage() {
         </section>
 
         <section>
-          <SectionHeader title={t("popular_games")} sublabel="GAME TOP-UP POPULAR" />
+          <SectionHeader
+            title={t("popular_games")}
+            sublabel={t("home_sublabel_popular_games")}
+          />
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonGameTile key={i} />
@@ -395,88 +399,122 @@ export default function HomePage() {
   return (
     <div className="space-y-8 py-2 pb-16">
       {/* ════════════════ HERO SLIDER ════════════════ */}
-      <section className="relative overflow-hidden rounded-8 border border-site-border-soft bg-site-surface">
-        <div
-          className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {heroSlides.map((slide, i) => (
-            <div
-              key={slide.id}
-              className="w-full flex-[0_0_100%] relative h-[280px] md:h-[360px]"
-            >
-              {/* Background image — full bleed */}
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="absolute inset-0 w-full h-full object-cover"
-                loading={i === 0 ? "eager" : "lazy"}
-              />
-              {/* Flat scrim */}
-              <div className="absolute inset-0 bg-site-bg/55" />
-              {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-10">
-                <h2 className="text-2xl md:text-3xl font-extrabold text-site-text">
-                  {slide.title}
-                </h2>
-                <p className="text-[13px] text-site-muted mt-1">
-                  {slide.subtitle}
-                </p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  {slide.highlightText && (
-                    <span className="text-sm text-site-muted">
-                      {slide.highlightText}
+      {/* Two layers: the section is the frame; the inner .hero-clip viewport
+          sits directly above the transformed track. clip-path cuts at the
+          compositor so the rounded corners always clip the artwork, even at
+          fractional DPRs where overflow+radius alone leaks. */}
+      <section
+        className="relative isolate rounded-8 border border-site-border-soft bg-site-deep"
+        onMouseEnter={() => setHeroPaused(true)}
+        onMouseLeave={() => setHeroPaused(false)}
+        onTouchStart={() => setHeroPaused(true)}
+        onTouchEnd={() => setHeroPaused(false)}
+      >
+        <div className="hero-clip">
+          <div
+            className="flex w-full flex-nowrap transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {heroSlides.map((slide, i) => (
+              <div
+                key={slide.id}
+                className="relative h-[300px] w-full flex-[0_0_100%] md:h-[380px]"
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  draggable={false}
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+                {/* Readability shelf: solid on the text side, art shows through right */}
+                <div
+                  aria-hidden="true"
+                  className="hero-scrim absolute inset-0"
+                />
+                <div
+                  aria-hidden="true"
+                  className="hero-fade-bottom absolute inset-0"
+                />
+
+                <div className="relative z-10 flex h-full max-w-[600px] flex-col justify-center px-6 md:px-12">
+                  {slide.badge && (
+                    <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full border border-site-accent/40 bg-site-accent/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-site-accent">
+                      <Flame
+                        size={12}
+                        className="fill-current"
+                        aria-hidden="true"
+                      />
+                      {slide.badge}
                     </span>
                   )}
-                  <span className="text-2xl md:text-3xl font-black text-site-accent">
-                    {slide.highlight}
-                  </span>
+                  <h2 className="text-2xl font-extrabold leading-tight text-site-text md:text-4xl">
+                    {slide.title}
+                  </h2>
+                  {slide.subtitle && (
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-site-muted md:text-sm">
+                      {slide.subtitle}
+                    </p>
+                  )}
+                  {(slide.highlight || slide.highlightText) && (
+                    <div className="mt-2 flex items-baseline gap-2">
+                      {slide.highlightText && (
+                        <span className="text-sm font-medium text-site-muted">
+                          {slide.highlightText}
+                        </span>
+                      )}
+                      {slide.highlight && (
+                        <span className="text-3xl font-extrabold leading-none text-site-accent md:text-4xl">
+                          {slide.highlight}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <Link
+                    href={slide.href}
+                    className="site-btn mt-4 w-fit text-[12px] md:text-sm"
+                  >
+                    {slide.btnText}
+                  </Link>
                 </div>
-                <Link
-                  href={slide.href}
-                  className="site-btn w-fit mt-3 text-[12px] md:text-sm"
-                >
-                  {slide.btnText}
-                </Link>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Navigation Arrows */}
+        {/* Arrows — desktop only; mobile controls via dots */}
         <button
           onClick={() =>
             setCurrentSlide(
               (p) => (p - 1 + heroSlides.length) % heroSlides.length,
             )
           }
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-site-raised/90 border border-site-border rounded-6 flex items-center justify-center text-site-text transition-colors z-10"
-          aria-label="Previous slide"
+          className="absolute left-4 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-site-border bg-site-bg/80 text-site-text backdrop-blur-sm transition-colors hover:border-site-accent hover:bg-site-accent hover:text-site-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 md:flex"
+          aria-label={t("hero_prev_slide")}
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft size={18} />
         </button>
         <button
-          onClick={() =>
-            setCurrentSlide((p) => (p + 1) % heroSlides.length)
-          }
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-site-raised/90 border border-site-border rounded-6 flex items-center justify-center text-site-text transition-colors z-10"
-          aria-label="Next slide"
+          onClick={() => setCurrentSlide((p) => (p + 1) % heroSlides.length)}
+          className="absolute right-4 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-site-border bg-site-bg/80 text-site-text backdrop-blur-sm transition-colors hover:border-site-accent hover:bg-site-accent hover:text-site-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 md:flex"
+          aria-label={t("hero_next_slide")}
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={18} />
         </button>
 
-        {/* Slide Dots */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        {/* Dots */}
+        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
           {heroSlides.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentSlide(i)}
+              aria-label={t("hero_go_to_slide", { index: i + 1 })}
+              aria-current={i === currentSlide}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 i === currentSlide
-                  ? "w-6 bg-site-accent"
-                  : "w-1.5 bg-site-border hover:bg-site-muted"
+                  ? "w-7 bg-site-accent"
+                  : "w-2.5 bg-site-text/30 hover:bg-site-text/60"
               }`}
-              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
@@ -484,7 +522,10 @@ export default function HomePage() {
 
       {/* ════════════════ COUPONS ════════════════ */}
       <section>
-        <SectionHeader title={t("home_coupons")} sublabel="AVAILABLE COUPONS" />
+        <SectionHeader
+          title={t("home_coupons")}
+          sublabel={t("home_sublabel_coupons")}
+        />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {coupons.length === 0 ? (
             <EmptyState icon={Tag} message={t("home_no_coupons")} />
@@ -508,7 +549,7 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("special_offers")}
-          sublabel="SPECIAL PROMOTIONS"
+          sublabel={t("home_sublabel_offers")}
           actionHref="/games"
           actionLabel={t("view_all")}
         />
@@ -532,7 +573,7 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("popular_games")}
-          sublabel="GAME TOP-UP POPULAR"
+          sublabel={t("home_sublabel_popular_games")}
           actionHref="/games"
           actionLabel={t("view_all")}
         />
@@ -545,7 +586,7 @@ export default function HomePage() {
                 key={game.id}
                 slug={game.slug}
                 name={game.name}
-                image={game.imageUrl || gameImg(game.name.substring(0, 6))}
+                image={game.imageUrl || gameImg()}
                 instant={game.gameDetails?.autoDelivery}
               />
             ))
@@ -558,7 +599,7 @@ export default function HomePage() {
         {/* Popular Game Cards */}
         <PanelCard
           title={t("home_popular_card")}
-          sublabel="POPULAR GAME CARD"
+          sublabel={t("home_sublabel_popular_card")}
           actionHref="/card"
           actionLabel={t("view_all")}
         >
@@ -581,7 +622,7 @@ export default function HomePage() {
         {/* Popular Game Top-Up */}
         <PanelCard
           title={t("popular_games")}
-          sublabel="POPULAR GAME TOP-UP"
+          sublabel={t("home_sublabel_popular_topup")}
           actionHref="/games"
           actionLabel={t("view_all")}
         >
@@ -604,7 +645,7 @@ export default function HomePage() {
         {/* New Game Cards */}
         <PanelCard
           title={t("home_new_card")}
-          sublabel="NEW GAME CARD"
+          sublabel={t("home_sublabel_new_card")}
           actionHref="/card"
           actionLabel={t("view_all")}
         >
@@ -626,7 +667,7 @@ export default function HomePage() {
         {/* New Game Top-Up */}
         <PanelCard
           title={t("home_new_topup")}
-          sublabel="NEW GAME TOP-UP"
+          sublabel={t("home_sublabel_new_topup")}
           actionHref="/games"
           actionLabel={t("view_all")}
         >
@@ -650,7 +691,7 @@ export default function HomePage() {
       <section>
         <SectionHeader
           title={t("news_title")}
-          sublabel="NEWS & PROMOTIONS"
+          sublabel={t("home_sublabel_news")}
           actionHref="/news"
           actionLabel={t("view_all")}
         />
@@ -677,7 +718,7 @@ export default function HomePage() {
                   </div>
                 )}
                 <div className="p-3">
-                  <p className="text-[13px] font-bold text-site-text line-clamp-2 group-hover:text-site-accent transition-colors">
+                  <p className="text-[13px] font-semibold text-site-text line-clamp-2 group-hover:text-site-accent transition-colors">
                     {news.title}
                   </p>
                   <p className="text-[11px] text-site-dim mt-1">

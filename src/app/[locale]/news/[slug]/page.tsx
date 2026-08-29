@@ -392,7 +392,7 @@ export default function NewsArticlePage() {
         {/* Other News */}
         {recentNews.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-base md:text-lg font-extrabold text-site-text leading-none mb-4 flex items-center">
+            <h2 className="text-base md:text-lg font-bold text-site-text leading-none mb-4 flex items-center">
               <Newspaper className="w-5 h-5 mr-2 text-site-muted" />
               {t("other_news")}
             </h2>

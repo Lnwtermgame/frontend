@@ -149,7 +149,7 @@ export default function AccountPage() {
         amount: item.productType?.name || `${item.quantity} items`,
         image:
           item.product?.imageUrl ||
-          "https://placehold.co/60x60/5C3FC9/white?text=Game",
+          "/images/placeholder-game.svg",
       })),
     )
     .slice(0, 5);
@@ -276,7 +276,7 @@ export default function AccountPage() {
                   <div className="w-9 h-9 rounded-6 bg-status-warning/10 flex items-center justify-center mx-auto mb-3">
                     <History size={16} className="text-status-warning" />
                   </div>
-                  <div className="text-xl font-black text-site-text mb-1">
+                  <div className="text-xl font-bold text-site-text mb-1">
                     {isLoading ? (
                       <Skeleton className="h-6 w-8 mx-auto" />
                     ) : (
@@ -289,7 +289,7 @@ export default function AccountPage() {
                   <div className="w-9 h-9 rounded-6 bg-status-info/10 flex items-center justify-center mx-auto mb-3">
                     <History size={16} className="text-status-info" />
                   </div>
-                  <div className="text-xl font-black text-site-text mb-1">
+                  <div className="text-xl font-bold text-site-text mb-1">
                     {isLoading ? (
                       <Skeleton className="h-6 w-8 mx-auto" />
                     ) : (
@@ -304,7 +304,7 @@ export default function AccountPage() {
                   <div className="w-9 h-9 rounded-6 bg-status-success/10 flex items-center justify-center mx-auto mb-3">
                     <History size={16} className="text-status-success" />
                   </div>
-                  <div className="text-xl font-black text-site-text mb-1">
+                  <div className="text-xl font-bold text-site-text mb-1">
                     {isLoading ? (
                       <Skeleton className="h-6 w-8 mx-auto" />
                     ) : (
@@ -319,7 +319,7 @@ export default function AccountPage() {
                   <div className="w-9 h-9 rounded-6 bg-site-raised flex items-center justify-center mx-auto mb-3">
                     <History size={16} className="text-site-muted" />
                   </div>
-                  <div className="text-xl font-black text-site-text mb-1">
+                  <div className="text-xl font-bold text-site-text mb-1">
                     {isLoading ? (
                       <Skeleton className="h-6 w-8 mx-auto" />
                     ) : (

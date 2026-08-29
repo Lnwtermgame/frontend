@@ -2,23 +2,23 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const SITE_URL =
     process.env.NEXT_PUBLIC_SITE_URL || "https://lnwtermgame.com";
 
-const SEGMENT_LABELS: Record<string, string> = {
-    games: "Games",
-    card: "Gift Cards",
-    "mobile-recharge": "Mobile Recharge",
-    news: "News",
-    support: "Support",
-    dashboard: "Dashboard",
-    terms: "Terms of Service",
-    privacy: "Privacy Policy",
-    about: "About",
-    contact: "Contact",
-    help: "Help",
-    faq: "FAQ",
+const SEGMENT_LABEL_KEYS: Record<string, string> = {
+    games: "Navigation.games",
+    card: "Navigation.card",
+    "mobile-recharge": "Navigation.mobile_recharge",
+    news: "Navigation.news",
+    support: "Navigation.support",
+    dashboard: "my_account",
+    terms: "Footer.terms_of_service",
+    privacy: "Footer.privacy_policy",
+    about: "Footer.about_us",
+    contact: "Footer.contact_us",
+    faq: "Navigation.faq",
 };
 
 /**
@@ -29,6 +29,7 @@ const SEGMENT_LABELS: Record<string, string> = {
  */
 export function BreadcrumbJsonLd() {
     const pathname = usePathname();
+    const t = useTranslations();
 
     useEffect(() => {
         if (!pathname || pathname === "/") return;
@@ -46,7 +47,7 @@ export function BreadcrumbJsonLd() {
             {
                 "@type": "ListItem",
                 position: 1,
-                name: "Home",
+                name: t("Navigation.home"),
                 item: SITE_URL,
             },
         ];
@@ -57,9 +58,10 @@ export function BreadcrumbJsonLd() {
 
         pathSegments.forEach((segment, index) => {
             currentPath += `/${segment}`;
-            const label =
-                SEGMENT_LABELS[segment] ||
-                decodeURIComponent(segment)
+            const labelKey = SEGMENT_LABEL_KEYS[segment];
+            const label = labelKey
+                ? t(labelKey)
+                : decodeURIComponent(segment)
                     .replace(/-/g, " ")
                     .replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -89,7 +91,7 @@ export function BreadcrumbJsonLd() {
                 existing.remove();
             }
         };
-    }, [pathname]);
+    }, [pathname, t]);
 
     return null;
 }

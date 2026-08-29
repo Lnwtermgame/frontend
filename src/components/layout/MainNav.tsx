@@ -79,7 +79,7 @@ export default function MainNav() {
                                     className="h-9 w-auto object-contain max-w-[200px]"
                                 />
                             ) : (
-                                <span className="text-site-accent font-extrabold text-lg">
+                                <span className="text-site-accent font-extrabold text-lg tracking-tight">
                                     {siteName || "LNWTERMGAME"}
                                 </span>
                             )}
@@ -115,7 +115,7 @@ export default function MainNav() {
                                         </span>
                                     </div>
                                     <div className="flex flex-col hidden sm:block">
-                                        <span className="text-site-text text-[12px] font-bold leading-tight truncate max-w-[100px]">
+                                        <span className="text-site-text text-[12px] font-semibold leading-tight truncate max-w-[100px]">
                                             {user?.username || user?.name || "Player"}
                                         </span>
                                         <span className="text-site-dim text-[10px] leading-tight">
@@ -137,12 +137,14 @@ export default function MainNav() {
                                                     </span>
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="font-bold text-site-text text-[13px] truncate">
+                                                    <div className="font-semibold text-site-text text-[13px] truncate">
                                                         {user?.username || user?.name || "Player"}
                                                     </div>
-                                                    <div className="text-site-dim text-[11px] truncate mt-0.5">
-                                                        {user?.email || "user@example.com"}
-                                                    </div>
+                                                    {user?.email && (
+                                                        <div className="text-site-dim text-[11px] truncate mt-0.5">
+                                                            {user.email}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -209,7 +211,7 @@ export default function MainNav() {
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             className="text-site-text p-1 hover:text-site-accent transition-colors"
-                            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                            aria-label={mobileMenuOpen ? t("menu_close") : t("menu_open")}
                         >
                             {mobileMenuOpen ? <X size={22} /> : <AlignJustify size={22} />}
                         </button>
@@ -220,20 +222,14 @@ export default function MainNav() {
             {/* MOBILE MENU */}
             {mobileMenuOpen && (
                 <div className="lg:hidden bg-site-surface border-t border-site-border-soft p-4 space-y-3">
-                    <Link href="/games" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("topup_system")}</Link>
-                    <Link href="/games/all" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("games.title")}</Link>
+                    <Link href="/games" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("nav_game_topup")}</Link>
                     <Link href="/card" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("Catalog.card.title")}</Link>
-                    <Link href="/lucky" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("lucky_games")}</Link>
+                    <Link href="/mobile-recharge" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("nav_mobile_topup")}</Link>
                     <Link href="/news" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("Header.news")}</Link>
 
                     <div className="h-[1px] bg-site-border-soft" />
 
                     <LanguageSwitcher variant="mobile" />
-
-                    <div className="h-[1px] bg-site-border-soft" />
-
-                    <Link href="/article" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("Header.articles")}</Link>
-                    <Link href="/promotions" className="block text-site-muted hover:text-site-accent transition-colors text-[14px]" onClick={() => setMobileMenuOpen(false)}>{t("promotions")}</Link>
 
                     {user && (
                         <>

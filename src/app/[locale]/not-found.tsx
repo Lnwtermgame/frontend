@@ -12,7 +12,7 @@ export default function NotFound() {
             <div className="text-center max-w-lg">
                 {/* Big 404 badge */}
                 <div className="inline-flex items-center justify-center mb-6">
-                    <span className="text-[120px] sm:text-[160px] font-extrabold leading-none text-site-text select-none"
+                    <span className="text-[120px] sm:text-[160px] font-bold leading-none text-site-text select-none"
                         style={{ textShadow: "6px 6px 0 var(--pink-500)" }}>
                         404
                     </span>

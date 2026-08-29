@@ -21,7 +21,7 @@ export function OfferCard({ deal, href, badgeLabel }: { deal: Deal; href: string
           loading="lazy"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-bold text-site-text line-clamp-1" title={deal.typeName}>
+          <p className="text-[13px] font-semibold text-site-text line-clamp-1" title={deal.typeName}>
             {deal.typeName}
           </p>
           <p className="text-[11px] text-site-dim line-clamp-1" title={deal.name}>
@@ -30,7 +30,7 @@ export function OfferCard({ deal, href, badgeLabel }: { deal: Deal; href: string
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
           <Badge variant="success">{badgeLabel}</Badge>
-          <span className="text-status-success text-[13px] font-black">-{deal.discount}%</span>
+          <span className="text-status-success text-[13px] font-bold tabular-nums">-{deal.discount}%</span>
         </div>
       </div>
     </Link>

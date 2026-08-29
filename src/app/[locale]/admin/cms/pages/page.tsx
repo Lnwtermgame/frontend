@@ -300,7 +300,7 @@ export default function AdminCmsPagesPage() {
               <FileText className="w-8 h-8 text-site-accent" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-white tracking-wide mb-1">
+              <h1 className="text-2xl font-extrabold text-white tracking-wide mb-1">
                 จัดการหน้าเว็บ (CMS)
               </h1>
               <p className="text-sm text-gray-400 font-medium">
@@ -390,7 +390,7 @@ export default function AdminCmsPagesPage() {
                   <span className="text-gray-400 text-sm font-medium">{stat.label}</span>
                   {stat.icon}
                 </div>
-                <div className={`text-3xl font-black tracking-tight ${stat.color}`}>
+                <div className={`text-3xl font-extrabold tracking-tight ${stat.color}`}>
                   {stat.value}
                 </div>
               </div>
@@ -451,7 +451,7 @@ export default function AdminCmsPagesPage() {
                 <FileText className="h-5 w-5 text-gray-400" />
               </div>
               <div>
-                <h3 className="text-[15px] font-black text-white tracking-wide">
+                <h3 className="text-[15px] font-bold text-white tracking-wide">
                   รายการหน้าเว็บไซต์ทั้งหมด
                 </h3>
                 <p className="text-[12px] text-gray-400 font-medium">
@@ -472,7 +472,7 @@ export default function AdminCmsPagesPage() {
                 <div className="w-16 h-16 bg-site-raised rounded-full flex items-center justify-center mb-4 border border-white/5 shadow-inner">
                   <FileText className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-[16px] font-black text-white mb-2">ไม่พบหน้าเว็บ</h3>
+                <h3 className="text-[16px] font-bold text-white mb-2">ไม่พบหน้าเว็บ</h3>
                 <p className="text-gray-400 text-[14px] max-w-sm mb-6">
                   ยังไม่มีหน้าเว็บที่ตรงกับเงื่อนไขการค้นหา
                 </p>
@@ -499,12 +499,12 @@ export default function AdminCmsPagesPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2 flex-wrap">
                         {page.isPublished ? (
-                          <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-black border border-site-accent/20 rounded-md">
+                          <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-bold border border-site-accent/20 rounded-md">
                             <CheckCircle size={10} className="mr-1" />
                             เผยแพร่
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-black border border-white/10 rounded-md">
+                          <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-bold border border-white/10 rounded-md">
                             ฉบับร่าง
                           </span>
                         )}
@@ -603,7 +603,7 @@ export default function AdminCmsPagesPage() {
                           </button>
                           <button
                             onClick={() => handleDelete(page.id)}
-                            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
+                            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-bold border border-rose-400/50 flex items-center gap-2"
                           >
                             <Trash2 className="w-4 h-4" /> ยืนยันการลบ
                           </button>
@@ -637,7 +637,7 @@ export default function AdminCmsPagesPage() {
               >
                 {/* Header */}
                 <div className="p-5 border-b border-white/5 bg-site-surface flex items-center justify-between shrink-0">
-                  <h3 className="text-[15px] font-black text-white tracking-wide flex items-center gap-2.5">
+                  <h3 className="text-[15px] font-bold text-white tracking-wide flex items-center gap-2.5">
                     <div className="p-1.5 bg-site-accent/10 rounded-lg">
                       <FileText className="h-4 w-4 text-site-accent" />
                     </div>
@@ -920,7 +920,7 @@ export default function AdminCmsPagesPage() {
                           !formData.title?.trim() ||
                           !formData.content?.trim()
                         }
-                        className="flex-xl py-3 px-8 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg transition-all text-[14px] font-black border border-site-accent/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-xl py-3 px-8 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg transition-all text-[14px] font-bold border border-site-accent/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? (
                           <>

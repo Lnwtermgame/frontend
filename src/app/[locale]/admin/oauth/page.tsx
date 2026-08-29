@@ -232,12 +232,12 @@ export default function OAuthProvidersPage() {
           <div
             className="bg-site-surface border border-white/5 rounded-2xl p-4">
             <p className="text-gray-400 text-xs mb-1">ทั้งหมด</p>
-            <p className="text-2xl font-black text-white">{providers.length}</p>
+            <p className="text-2xl font-extrabold text-white">{providers.length}</p>
           </div>
           <div
             className="bg-site-surface border border-white/5 rounded-2xl p-4">
             <p className="text-gray-400 text-xs mb-1">เปิดใช้งาน</p>
-            <p className="text-2xl font-black text-green-600">
+            <p className="text-2xl font-extrabold text-green-600">
               {providers.filter((p) => p.isEnabled).length}
             </p>
           </div>

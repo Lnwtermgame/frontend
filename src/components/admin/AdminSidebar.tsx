@@ -114,7 +114,7 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
         {categories.map((cat) => (
           <div key={cat.title} className="mb-3">
             {pinned && (
-              <h3 className="px-2 mb-1.5 text-[9px] font-bold text-site-dim uppercase tracking-widest">
+              <h3 className="px-2 mb-1.5 text-[9px] font-bold text-site-dim uppercase tracking-wide">
                 {cat.title}
               </h3>
             )}
@@ -199,7 +199,7 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }: { mobileOpen: boolea
         <nav className="flex-1 overflow-y-auto py-3 px-2">
           {categories.map((cat) => (
             <div key={cat.title} className="mb-3">
-              <h3 className="px-2 mb-1.5 text-[9px] font-bold text-site-dim uppercase tracking-widest">
+              <h3 className="px-2 mb-1.5 text-[9px] font-bold text-site-dim uppercase tracking-wide">
                 {cat.title}
               </h3>
               {cat.items.map((item) => {

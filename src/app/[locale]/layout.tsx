@@ -14,54 +14,12 @@ import { PaymentProvider } from "@/lib/context/payment-context";
 import { SupportProvider } from "@/lib/context/support-context";
 import { SecurityProvider } from "@/lib/context/security-context";
 import { DeliveryProvider } from "@/lib/context/delivery-context";
-import { CartProvider } from "@/lib/context/cart-context";
 import { PublicSettingsProvider } from "@/lib/context/public-settings-context";
 import { NextAuthProvider } from "@/components/providers/nextauth-provider";
-import { cn } from "@/lib/utils";
 import MainLayout from "@/components/layout/MainLayout";
 import { CookieNotice } from "@/components/cookie/CookieNotice";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
-
-import { Kanit } from "next/font/google";
-
-const kanit = Kanit({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["thai", "latin"],
-  variable: "--font-kanit",
-  display: "swap",
-});
-
-// Import Noto Sans SC for Chinese language support
-import "@fontsource/noto-sans-sc/300.css";
-import "@fontsource/noto-sans-sc/400.css";
-import "@fontsource/noto-sans-sc/500.css";
-import "@fontsource/noto-sans-sc/700.css";
-
-// Import Noto Sans JP for Japanese language support
-import "@fontsource/noto-sans-jp/300.css";
-import "@fontsource/noto-sans-jp/400.css";
-import "@fontsource/noto-sans-jp/500.css";
-import "@fontsource/noto-sans-jp/700.css";
-
-// Import Noto Sans KR for Korean language support
-import "@fontsource/noto-sans-kr/300.css";
-import "@fontsource/noto-sans-kr/400.css";
-import "@fontsource/noto-sans-kr/500.css";
-import "@fontsource/noto-sans-kr/700.css";
-
-// Import Noto Sans Devanagari for Hindi language support
-import "@fontsource/noto-sans-devanagari/300.css";
-import "@fontsource/noto-sans-devanagari/400.css";
-import "@fontsource/noto-sans-devanagari/500.css";
-import "@fontsource/noto-sans-devanagari/700.css";
-
-// We keep Poppins for English generic text
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/500.css";
-import "@fontsource/poppins/600.css";
-import "@fontsource/poppins/700.css";
-import "@fontsource/poppins/800.css";
 
 export const viewport: Viewport = {
   themeColor: "#000000",
@@ -253,14 +211,15 @@ export default async function RootLayout(
           />
         )}
         <HomeJsonLd />
-        <BreadcrumbJsonLd />
       </head>
       <body
         suppressHydrationWarning
-        className={cn(`min-h-screen bg-site-bg text-site-text font-sans antialiased ${kanit.variable}`)}
+        className="min-h-screen bg-site-bg text-site-text font-sans antialiased"
       >
         <ReactGrabInit />
         <NextIntlClientProvider messages={messages}>
+          {/* Renders null — injects BreadcrumbList JSON-LD via effect */}
+          <BreadcrumbJsonLd />
           <NextAuthProvider>
             <AuthProvider>
               <NotificationProvider>
@@ -268,11 +227,9 @@ export default async function RootLayout(
                   <PaymentProvider>
                     <SupportProvider>
                       <DeliveryProvider>
-                        <CartProvider>
-                          <PublicSettingsProvider>
-                            <MainLayout>{props.children}</MainLayout>
-                          </PublicSettingsProvider>
-                        </CartProvider>
+                        <PublicSettingsProvider>
+                          <MainLayout>{props.children}</MainLayout>
+                        </PublicSettingsProvider>
                         <CookieNotice />
                         <Toaster
                           position="bottom-right"
@@ -282,23 +239,23 @@ export default async function RootLayout(
                           toastOptions={{
                             duration: 4000,
                             style: {
-                              background: "#1E2130",
-                              color: "#FFFFFF",
-                              border: "1px solid rgba(255,255,255,0.08)",
+                              background: "var(--site-surface)",
+                              color: "var(--site-text)",
+                              border: "1px solid var(--site-border)",
                               boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
                               borderRadius: "12px",
                               padding: "12px 16px",
                             },
                             success: {
                               iconTheme: {
-                                primary: "#5498D2",
-                                secondary: "#FFFFFF",
+                                primary: "var(--status-success)",
+                                secondary: "var(--site-bg)",
                               },
                             },
                             error: {
                               iconTheme: {
-                                primary: "#EF4444",
-                                secondary: "#FFFFFF",
+                                primary: "var(--status-danger)",
+                                secondary: "var(--site-bg)",
                               },
                             },
                           }}

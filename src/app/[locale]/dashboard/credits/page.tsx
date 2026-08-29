@@ -209,7 +209,7 @@ export default function CreditsPage() {
                     <Coins size={28} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black text-site-text">
+                    <h2 className="text-xl font-bold text-site-text">
                       {t("balance_label", { count: balance.toLocaleString() })}
                     </h2>
                     <p className="text-site-muted text-xs font-medium mt-1">
@@ -228,7 +228,7 @@ export default function CreditsPage() {
                         +{earnedCredits.toLocaleString()}
                       </Badge>
                     </div>
-                    <div className="text-xl font-black text-site-text">
+                    <div className="text-xl font-bold text-site-text">
                       {earnedCredits.toLocaleString()}
                     </div>
                   </div>
@@ -242,7 +242,7 @@ export default function CreditsPage() {
                         -{spentCredits.toLocaleString()}
                       </Badge>
                     </div>
-                    <div className="text-xl font-black text-site-text">
+                    <div className="text-xl font-bold text-site-text">
                       {spentCredits.toLocaleString()}
                     </div>
                   </div>
@@ -256,7 +256,7 @@ export default function CreditsPage() {
                         {transactions.length}
                       </Badge>
                     </div>
-                    <div className="text-xl font-black text-site-text">
+                    <div className="text-xl font-bold text-site-text">
                       {transactions.length}
                     </div>
                   </div>

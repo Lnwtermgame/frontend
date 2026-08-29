@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600" viewBox="0 0 1600 600" role="img" aria-label="Promotion banner placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#191c1f"/>
+      <stop offset="0.6" stop-color="#1d2b2a"/>
+      <stop offset="1" stop-color="#173230"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="600" fill="url(#g)"/>
+  <g opacity="0.22" fill="none" stroke="#63c7c2" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1290 220 h220 a84 84 0 0 1 80 106 l-22 90 a48 48 0 0 1 -84 20 l-36 -42 h-96 l-36 42 a48 48 0 0 1 -84 -20 l-22 -90 a84 84 0 0 1 80 -106 z" transform="translate(-60 20) scale(0.98)"/>
+  </g>
+  <g opacity="0.35" fill="#63c7c2">
+    <circle cx="1180" cy="140" r="5"/>
+    <circle cx="1420" cy="480" r="7"/>
+    <circle cx="1530" cy="200" r="4"/>
+    <circle cx="1080" cy="430" r="4"/>
+  </g>
+  <text x="120" y="540" font-family="sans-serif" font-size="24" font-weight="700" fill="#48544f">PROMOTION BANNER</text>
+</svg>

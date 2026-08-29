@@ -1,5 +1,10 @@
-/* Custom Fonts (Manrope + IBM Plex Sans Thai via Google Fonts) */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+/* Self-hosted fonts (Noto Sans Thai + JetBrains Mono via @fontsource) */
+@import '@fontsource/noto-sans-thai/400.css';
+@import '@fontsource/noto-sans-thai/500.css';
+@import '@fontsource/noto-sans-thai/600.css';
+@import '@fontsource/noto-sans-thai/700.css';
+@import '@fontsource/noto-sans-thai/800.css';
+@import '@fontsource/noto-sans-thai/900.css';
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/600.css';
@@ -27,6 +32,24 @@
   --status-success: #63c995;
   --status-warning: #e5b566;
   --status-danger: #e47c86;
+
+  /* RGB channel mirrors for Tailwind alpha modifiers (bg-site-accent/10 etc.).
+     Keep in sync with the hex values above. */
+  --site-bg-rgb: 17 19 21;
+  --site-deep-rgb: 13 15 16;
+  --site-surface-rgb: 25 28 31;
+  --site-raised-rgb: 34 38 42;
+  --site-border-rgb: 48 54 59;
+  --site-border-soft-rgb: 37 43 48;
+  --site-accent-rgb: 99 199 194;
+  --site-accent-hover-rgb: 123 215 209;
+  --site-text-rgb: 243 246 245;
+  --site-muted-rgb: 164 175 174;
+  --site-dim-rgb: 116 128 127;
+  --status-info-rgb: 112 167 232;
+  --status-success-rgb: 99 201 149;
+  --status-warning-rgb: 229 181 102;
+  --status-danger-rgb: 228 124 134;
 }
 
 @layer base {
@@ -35,9 +58,14 @@
   }
 
   body {
-    @apply bg-site-bg text-site-text font-sans;
+    @apply bg-site-bg text-site-text font-sans font-normal;
     min-height: 100vh;
   }
+
+  /* Weight scale (Noto Sans Thai 400–900, real files — never synthesize):
+     400 body copy · 500 subtle emphasis · 600 buttons/labels/card titles
+     700 section headings + prices · 800 display only (hero, wordmark,
+     totals ≥ 24px). 900 stays unloaded. Numbers use .tabular-nums. */
 
   *,
   *::before,
@@ -70,6 +98,42 @@
 @layer components {
   .site-container {
     @apply max-w-[1200px] mx-auto px-4 sm:px-6;
+  }
+
+  .page-container {
+    @apply w-full;
+  }
+
+  /* Hero readability shelf — fades from the token background on the text
+     side to transparent over the artwork, so any admin-uploaded slide image
+     (bright or dark) keeps the copy legible. */
+  .hero-scrim {
+    background: linear-gradient(
+      90deg,
+      var(--site-bg) 0%,
+      color-mix(in srgb, var(--site-bg) 92%, transparent) 36%,
+      color-mix(in srgb, var(--site-bg) 45%, transparent) 58%,
+      transparent 78%
+    );
+  }
+
+  .hero-fade-bottom {
+    background: linear-gradient(
+      180deg,
+      transparent 55%,
+      color-mix(in srgb, var(--site-bg) 88%, transparent) 100%
+    );
+  }
+
+  /* Hard clip for the hero track. overflow-hidden alone still lets the
+     transformed slide layer bleed past the radius on fractional-DPR
+     displays; clip-path cuts at the compositor and never leaks.
+     7px = 8px frame radius minus the 1px border (concentric radii). */
+  .hero-clip {
+    overflow: hidden;
+    border-radius: inherit;
+    clip-path: inset(0 round 7px);
+    transform: translateZ(0);
   }
 
   .site-card {

@@ -22,13 +22,13 @@ export function SectionHeader({
           className={
             level === 1
               ? "text-xl md:text-2xl font-extrabold text-site-text leading-none mb-1"
-              : "text-base md:text-lg font-extrabold text-site-text leading-none mb-1"
+              : "text-base md:text-lg font-bold text-site-text leading-none mb-1"
           }
         >
           {title}
         </Title>
         {sublabel && (
-          <p className="text-[11px] text-site-dim uppercase font-bold tracking-widest leading-none">
+          <p className="text-[11px] text-site-dim uppercase font-semibold tracking-wide leading-none">
             {sublabel}
           </p>
         )}

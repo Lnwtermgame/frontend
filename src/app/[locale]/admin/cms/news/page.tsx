@@ -613,7 +613,7 @@ export default function AdminCmsNewsPage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white tracking-wide flex items-center gap-3">
+            <h1 className="text-2xl font-extrabold text-white tracking-wide flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-site-accent/20 to-site-accent/20 rounded-xl border border-white/5">
                 <Newspaper className="h-6 w-6 text-site-accent" />
               </div>
@@ -705,7 +705,7 @@ export default function AdminCmsNewsPage() {
               </div>
               <div className="relative z-10 min-w-0">
                 <p className="text-gray-400 text-sm font-medium mb-1 truncate">{stat.label}</p>
-                <div className="text-2xl font-black text-white tracking-tight">
+                <div className="text-2xl font-extrabold text-white tracking-tight">
                   {stat.value}
                 </div>
               </div>
@@ -777,7 +777,7 @@ export default function AdminCmsNewsPage() {
                 <Newspaper className="h-5 w-5 text-gray-400" />
               </div>
               <div>
-                <h3 className="text-[15px] font-black text-white tracking-wide">
+                <h3 className="text-[15px] font-bold text-white tracking-wide">
                   รายการข่าวทั้งหมด
                 </h3>
                 <p className="text-[12px] text-gray-400 font-medium">
@@ -798,7 +798,7 @@ export default function AdminCmsNewsPage() {
                 <div className="w-16 h-16 bg-site-raised rounded-full flex items-center justify-center mb-4 border border-white/5 shadow-inner">
                   <Newspaper className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-[16px] font-black text-white mb-2">ไม่พบข่าวสาร</h3>
+                <h3 className="text-[16px] font-bold text-white mb-2">ไม่พบข่าวสาร</h3>
                 <p className="text-gray-400 text-[14px] max-w-sm mb-6">
                   คุณสามารถเพิ่มข่าวใหม่ได้เลย หรือลองเปลี่ยนเงื่อนไขการค้นหา
                 </p>
@@ -845,23 +845,23 @@ export default function AdminCmsNewsPage() {
                       <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[6rem]">
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {article.isPublished ? (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-black border border-site-accent/20 rounded-md">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-bold border border-site-accent/20 rounded-md">
                               <CheckCircle size={10} className="mr-1" />
                               เผยแพร่
                             </span>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-black border border-white/10 rounded-md">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-bold border border-white/10 rounded-md">
                               ฉบับร่าง
                             </span>
                           )}
                           {article.isFeatured && (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-black border border-site-accent/20 rounded-md">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-bold border border-site-accent/20 rounded-md">
                               <Pin size={10} className="mr-1" />
                               เด่น
                             </span>
                           )}
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 text-[11px] font-black border border-white/5 rounded-md ${category.color}`}>
+                            className={`inline-flex items-center px-2 py-0.5 text-[11px] font-bold border border-white/5 rounded-md ${category.color}`}>
                             {category.label}
                           </span>
                         </div>
@@ -952,7 +952,7 @@ export default function AdminCmsNewsPage() {
                             </button>
                             <button
                               onClick={() => handleDelete(article.id)}
-                              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-black border border-rose-400/50 flex items-center gap-2"
+                              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-bold border border-rose-400/50 flex items-center gap-2"
                             >
                               <Trash2 className="w-4 h-4" /> ยืนยันการลบ
                             </button>
@@ -986,7 +986,7 @@ export default function AdminCmsNewsPage() {
 
                   {/* Sticky Header */}
                   <div className="p-5 border-b border-white/5 bg-site-surface flex items-center justify-between shrink-0 z-10">
-                    <h3 className="text-[15px] font-black text-white tracking-wide flex items-center gap-2.5">
+                    <h3 className="text-[15px] font-bold text-white tracking-wide flex items-center gap-2.5">
                       <div className="p-1.5 bg-site-accent/10 rounded-lg">
                         <Newspaper className="h-4 w-4 text-site-accent" />
                       </div>

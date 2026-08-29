@@ -42,17 +42,23 @@ const nextConfig = {
       },
     ];
   },
-  // Disable static generation for pages that use client-side context
+  // Legacy OAuth entry paths → auth service. Destination follows the gateway
+  // env so it works outside local dev (localhost fallback for `next dev`).
   async redirects() {
+    const authServiceUrl =
+      process.env.AUTH_SERVICE_URL ||
+      process.env.GATEWAY_URL ||
+      process.env.NEXT_PUBLIC_GATEWAY_URL ||
+      "http://localhost:10000";
     return [
       {
         source: "/sign-in-with-facebook",
-        destination: "http://localhost:10000/v1/auth/facebook/login",
+        destination: `${authServiceUrl}/v1/auth/facebook/login`,
         permanent: true,
       },
       {
         source: "/sign-in-with-gmail",
-        destination: "http://localhost:10000/v1/auth/gmail/login",
+        destination: `${authServiceUrl}/v1/auth/gmail/login`,
         permanent: true,
       },
     ];

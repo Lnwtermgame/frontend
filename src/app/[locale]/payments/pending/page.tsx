@@ -281,7 +281,7 @@ function PendingPaymentContent() {
                 {t("time_remaining")}
               </p>
               <div
-                className={`text-4xl md:text-5xl font-black font-mono text-center transition-colors duration-300 ${isTimeCritical ? "text-status-danger animate-pulse" : "text-site-text"}`}
+                className={`text-4xl md:text-5xl font-extrabold font-mono text-center transition-colors duration-300 ${isTimeCritical ? "text-status-danger animate-pulse" : "text-site-text"}`}
               >
                 {formatCountdown(countdown)}
               </div>
@@ -314,7 +314,7 @@ function PendingPaymentContent() {
 
                   <div className="mt-4 flex items-center justify-center gap-2 w-full opacity-60">
                     <div className="h-px bg-site-border flex-1"></div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-site-dim">PromptPay</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-site-dim">PromptPay</span>
                     <div className="h-px bg-site-border flex-1"></div>
                   </div>
                 </>

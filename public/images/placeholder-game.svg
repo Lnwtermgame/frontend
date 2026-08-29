@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Game artwork placeholder">
+  <rect width="400" height="400" fill="#191c1f"/>
+  <rect x="12" y="12" width="376" height="376" rx="16" fill="#22262a"/>
+  <g opacity="0.5" fill="none" stroke="#63c7c2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M132 158 h136 a52 52 0 0 1 50 66 l-14 56 a30 30 0 0 1 -52 12 l-22 -26 h-60 l-22 26 a30 30 0 0 1 -52 -12 l-14 -56 a52 52 0 0 1 50 -66 z"/>
+    <line x1="152" y1="212" x2="184" y2="212"/>
+    <line x1="168" y1="196" x2="168" y2="228"/>
+    <circle cx="248" cy="202" r="7" fill="#63c7c2" stroke="none"/>
+    <circle cx="274" cy="224" r="7" fill="#63c7c2" stroke="none"/>
+  </g>
+  <text x="200" y="316" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="700" fill="#74807f">GAME ARTWORK</text>
+</svg>

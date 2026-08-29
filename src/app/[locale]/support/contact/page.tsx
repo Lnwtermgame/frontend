@@ -122,7 +122,7 @@ export default function ContactPage() {
             <div className="bg-site-accent p-3 border border-site-border rounded-8 mr-3">
               <Headphones className="h-8 w-8 text-site-text" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-site-text uppercase">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-site-text uppercase">
               {t("title")}
             </h1>
           </div>
@@ -138,18 +138,18 @@ export default function ContactPage() {
           <div className="bg-site-surface border border-site-border rounded-8 p-6 md:p-8">
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-              <h2 className="text-2xl font-black text-site-text uppercase">{t("form.title")}</h2>
+              <h2 className="text-2xl font-extrabold text-site-text uppercase">{t("form.title")}</h2>
             </div>
 
             {formStatus === "success" ? (
               <div className="bg-status-success/15 border border-status-success/20 rounded-8 p-6 text-center">
                 <CheckCircle size={48} className="mx-auto text-status-success mb-4" />
-                <h3 className="text-xl font-black text-site-text mb-2 uppercase">
+                <h3 className="text-xl font-bold text-site-text mb-2 uppercase">
                   {t("form.success")}
                 </h3>
                 <button
                   onClick={() => setFormStatus("idle")}
-                  className="bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-site-border rounded-8 px-6 py-3 font-black transition-colors uppercase"
+                  className="bg-site-surface border border-site-border-soft text-site-muted hover:text-site-text hover:border-site-border rounded-8 px-6 py-3 font-bold transition-colors uppercase"
                 >
                   Send Another Message
                 </button>
@@ -160,7 +160,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-site-muted mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-bold uppercase text-xs"
                     >
                       {t("form.name")}
                     </label>
@@ -179,7 +179,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-site-muted mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-bold uppercase text-xs"
                     >
                       {t("form.email")}
                     </label>
@@ -200,7 +200,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="category"
-                      className="block text-site-muted mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-bold uppercase text-xs"
                     >
                       {t("form.subject")}
                     </label>
@@ -226,7 +226,7 @@ export default function ContactPage() {
                   <div>
                     <label
                       htmlFor="orderId"
-                      className="block text-site-muted mb-2 font-black uppercase text-xs"
+                      className="block text-site-muted mb-2 font-bold uppercase text-xs"
                     >
                       Order ID
                     </label>
@@ -245,7 +245,7 @@ export default function ContactPage() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-site-muted mb-2 font-black uppercase text-xs"
+                    className="block text-site-muted mb-2 font-bold uppercase text-xs"
                   >
                     {t("form.message")}
                   </label>
@@ -287,7 +287,7 @@ export default function ContactPage() {
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-status-warning mr-2"></span>
               <HelpCircle className="text-site-text mr-3" />
-              <h2 className="text-2xl font-black text-site-text uppercase">
+              <h2 className="text-2xl font-extrabold text-site-text uppercase">
                 {tFaq("title")}
               </h2>
             </div>
@@ -300,7 +300,7 @@ export default function ContactPage() {
                 >
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="w-full flex justify-between items-center p-4 text-left font-black text-site-text focus:outline-none uppercase text-sm"
+                    className="w-full flex justify-between items-center p-4 text-left font-bold text-site-text focus:outline-none uppercase text-sm"
                   >
                     <span>{faq.question}</span>
                     {expandedFaqs.includes(index) ? (
@@ -322,7 +322,7 @@ export default function ContactPage() {
             <div className="mt-6 text-center">
               <Link
                 href="/support/faq"
-                className="text-site-text hover:underline inline-flex items-center font-black uppercase text-sm"
+                className="text-site-text hover:underline inline-flex items-center font-bold uppercase text-sm"
               >
                 {tFaq("all")}
                 <ChevronDown className="ml-1" size={16} />
@@ -336,7 +336,7 @@ export default function ContactPage() {
           <div className="bg-site-surface border border-site-border rounded-8 p-6 sticky top-4">
             <div className="flex items-center mb-6">
               <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-              <h2 className="text-xl font-black text-site-text uppercase">
+              <h2 className="text-xl font-bold text-site-text uppercase">
                 {t("title")}
               </h2>
             </div>
@@ -347,7 +347,7 @@ export default function ContactPage() {
                   <Clock className="text-status-warning" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-site-text font-black uppercase text-xs mb-1">Support Hours</h3>
+                  <h3 className="text-site-text font-bold uppercase text-xs mb-1">Support Hours</h3>
                   <p className="text-site-muted font-bold text-xs">
                     Mon - Fri: 9:00 - 22:00
                     <br />
@@ -363,7 +363,7 @@ export default function ContactPage() {
                   <Mail className="text-site-accent" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-site-text font-black uppercase text-xs mb-1">Email Support</h3>
+                  <h3 className="text-site-text font-bold uppercase text-xs mb-1">Email Support</h3>
                   <a
                     href={`mailto:${supportEmail}`}
                     className="text-site-text hover:underline font-bold text-sm block"
@@ -379,7 +379,7 @@ export default function ContactPage() {
                     <MessageCircle className="text-status-success" size={20} />
                   </div>
                   <div>
-                    <h3 className="text-site-text font-black uppercase text-xs mb-1">LINE Support</h3>
+                    <h3 className="text-site-text font-bold uppercase text-xs mb-1">LINE Support</h3>
                     <a
                       href={lineUrl}
                       target="_blank"
@@ -397,7 +397,7 @@ export default function ContactPage() {
                   <Phone className="text-site-accent" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-site-text font-black uppercase text-xs mb-1">Phone Support</h3>
+                  <h3 className="text-site-text font-bold uppercase text-xs mb-1">Phone Support</h3>
                   <a
                     href={`tel:${supportPhone}`}
                     className="text-site-text hover:underline font-bold text-sm"
@@ -412,7 +412,7 @@ export default function ContactPage() {
                   <Globe className="text-status-warning" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-site-text font-black uppercase text-xs mb-1">{t("social.title")}</h3>
+                  <h3 className="text-site-text font-bold uppercase text-xs mb-1">{t("social.title")}</h3>
                   <div className="flex space-x-3 mt-2">
                     <a
                       href={facebookUrl}
@@ -435,7 +435,7 @@ export default function ContactPage() {
                         rel="noopener noreferrer"
                         className="bg-site-raised hover:bg-site-surface p-2 border border-site-border transition-colors"
                       >
-                        <span className="font-black text-xs">LINE</span>
+                        <span className="font-bold text-xs">LINE</span>
                       </a>
                     )}
                   </div>
@@ -446,7 +446,7 @@ export default function ContactPage() {
             <div className="mt-8 bg-status-warning/15 border border-status-warning/20 rounded-8 p-4">
               <div className="flex items-center">
                 <AlertCircle size={18} className="text-status-warning mr-2" />
-                <span className="text-status-warning font-black uppercase text-xs">Important</span>
+                <span className="text-status-warning font-bold uppercase text-xs">Important</span>
               </div>
               <p className="mt-2 text-site-muted text-xs font-bold leading-relaxed uppercase">
                 For fastest support response, please provide your order ID and

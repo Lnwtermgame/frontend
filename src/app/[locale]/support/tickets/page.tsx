@@ -206,7 +206,7 @@ export default function TicketsPage() {
     return (
       <div className="page-container bg-transparent">
         <div className="mx-auto max-w-2xl border border-site-border rounded-8 bg-site-surface p-8 text-center">
-          <h1 className="text-2xl font-black text-site-text">
+          <h1 className="text-2xl font-extrabold text-site-text">
             {t("disabled.title")}
           </h1>
           <p className="mt-3 text-sm text-site-muted">
@@ -242,7 +242,7 @@ export default function TicketsPage() {
               <div className="bg-site-accent/15 p-2 border border-site-border rounded-8 mr-3">
                 <MessageSquare className="h-6 w-6 text-site-accent" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-black uppercase text-site-text">
+              <h1 className="text-2xl md:text-3xl font-extrabold uppercase text-site-text">
                 {t("title")}
               </h1>
             </div>
@@ -292,7 +292,7 @@ export default function TicketsPage() {
                     onClick={() =>
                       setStatusFilter(status as TicketStatus | "ALL")
                     }
-                    className={`px-3 py-1.5 rounded-4 text-[10px] font-black uppercase border transition-colors ${statusFilter === status
+                    className={`px-3 py-1.5 rounded-4 text-[10px] font-bold uppercase border transition-colors ${statusFilter === status
                       ? "bg-site-accent text-site-bg border-site-accent"
                       : "bg-site-surface text-site-muted border-site-border-soft hover:bg-site-raised"
                       }`}
@@ -337,11 +337,11 @@ export default function TicketsPage() {
                       }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <span className="text-xs text-site-muted font-black uppercase">
+                      <span className="text-xs text-site-muted font-bold uppercase">
                         {ticket.ticketNumber}
                       </span>
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-4 border font-black uppercase ${statusLabels[ticket.status].color}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-4 border font-bold uppercase ${statusLabels[ticket.status].color}`}
                       >
                         {statusLabels[ticket.status].label}
                       </span>
@@ -350,10 +350,10 @@ export default function TicketsPage() {
                       {ticket.subject}
                     </h4>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-site-muted font-black uppercase">
+                      <span className="text-[10px] text-site-muted font-bold uppercase">
                         {categoryLabels[ticket.category]}
                       </span>
-                      <span className="text-[10px] text-site-muted font-black uppercase">
+                      <span className="text-[10px] text-site-muted font-bold uppercase">
                         {new Date(ticket.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -378,16 +378,16 @@ export default function TicketsPage() {
                   <div className="p-6 border-b border-site-border-soft">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <span className="text-xs text-site-muted font-black uppercase">
+                        <span className="text-xs text-site-muted font-bold uppercase">
                           {selectedTicket.ticketNumber}
                         </span>
-                        <h2 className="text-xl font-black uppercase text-site-text mt-1">
+                        <h2 className="text-xl font-bold uppercase text-site-text mt-1">
                           {selectedTicket.subject}
                         </h2>
                       </div>
                       <div className="flex items-center gap-2">
                         <span
-                          className={`px-3 py-1 rounded-4 text-[10px] font-black uppercase border ${statusLabels[selectedTicket.status].color}`}
+                          className={`px-3 py-1 rounded-4 text-[10px] font-bold uppercase border ${statusLabels[selectedTicket.status].color}`}
                         >
                           {statusLabels[selectedTicket.status].label}
                         </span>
@@ -404,7 +404,7 @@ export default function TicketsPage() {
                           )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-[10px] text-site-muted font-black uppercase">
+                    <div className="flex flex-wrap gap-4 text-[10px] text-site-muted font-bold uppercase">
                       <div className="flex items-center">
                         <Tag size={14} className="mr-1.5" />
                         {categoryLabels[selectedTicket.category]}
@@ -438,10 +438,10 @@ export default function TicketsPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-site-text font-black uppercase text-[10px]">
+                          <span className="text-site-text font-bold uppercase text-[10px]">
                             {t("user_you")}
                           </span>
-                          <span className="text-[10px] text-site-muted font-black uppercase">
+                          <span className="text-[10px] text-site-muted font-bold uppercase">
                             {new Date(
                               selectedTicket.createdAt,
                             ).toLocaleString()}
@@ -476,14 +476,14 @@ export default function TicketsPage() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-site-text font-black uppercase text-[10px]">
+                            <span className="text-site-text font-bold uppercase text-[10px]">
                               {message.sender === "admin"
                                 ? message.senderName || t("support_team")
                                 : message.sender === "system"
                                   ? t("system")
                                   : t("user_you")}
                             </span>
-                            <span className="text-[10px] font-black uppercase text-site-muted">
+                            <span className="text-[10px] font-bold uppercase text-site-muted">
                               {new Date(message.createdAt).toLocaleString()}
                             </span>
                           </div>
@@ -555,7 +555,7 @@ export default function TicketsPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-                  <h2 className="text-xl font-black uppercase text-site-text">
+                  <h2 className="text-xl font-bold uppercase text-site-text">
                     {t("create.title")}
                   </h2>
                 </div>
@@ -570,7 +570,7 @@ export default function TicketsPage() {
 
             <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
               <div>
-                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
                   {t("create.category")}
                 </label>
                 <select
@@ -592,7 +592,7 @@ export default function TicketsPage() {
               </div>
 
               <div>
-                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
                   {t("create.description")}
                 </label>
                 <input
@@ -608,7 +608,7 @@ export default function TicketsPage() {
               </div>
 
               <div>
-                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
                   {t("create.description_label")}
                 </label>
                 <textarea
@@ -627,7 +627,7 @@ export default function TicketsPage() {
               </div>
 
               <div>
-                <label className="block text-site-dim mb-2 font-black uppercase text-[10px]">
+                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
                   {t("create.order_ref")}
                 </label>
                 <input
@@ -648,7 +648,7 @@ export default function TicketsPage() {
                 <button
                   type="button"
                   onClick={() => setShowNewTicketModal(false)}
-                  className="flex-1 py-2.5 px-4 border border-site-border-soft rounded-8 text-site-muted hover:text-site-text hover:border-site-border transition-colors font-black uppercase text-xs"
+                  className="flex-1 py-2.5 px-4 border border-site-border-soft rounded-8 text-site-muted hover:text-site-text hover:border-site-border transition-colors font-bold uppercase text-xs"
                 >
                   {t("create.cancel")}
                 </button>

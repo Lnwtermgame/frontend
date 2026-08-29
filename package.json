@@ -1,5 +1,5 @@
 {
-  "name": "temp-project",
+  "name": "gametopup-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,12 +13,7 @@
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.2.8",
-    "@fontsource/noto-sans-devanagari": "^5.2.8",
-    "@fontsource/noto-sans-jp": "^5.2.9",
-    "@fontsource/noto-sans-kr": "^5.2.9",
-    "@fontsource/noto-sans-sc": "^5.2.9",
     "@fontsource/noto-sans-thai": "^5.2.5",
-    "@fontsource/poppins": "^5.2.7",
     "@mudbill/duckduckgo-images-api": "^2.0.1",
     "@radix-ui/react-scroll-area": "^1.2.8",
     "@radix-ui/react-tabs": "^1.1.11",

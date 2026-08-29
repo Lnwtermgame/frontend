@@ -203,7 +203,7 @@ export default function NotificationPreferencesPage() {
             <span className="w-1.5 h-6 bg-site-accent mr-3 rounded-full"></span>
             {t("title")}
           </h2>
-          <p className="text-[11px] text-site-dim uppercase font-bold tracking-widest leading-none ml-4 pl-3.5 border-l-2 border-site-border-soft">
+          <p className="text-[11px] text-site-dim uppercase font-bold tracking-wide leading-none ml-4 pl-3.5 border-l-2 border-site-border-soft">
             {t("subtitle")}
           </p>
         </div>

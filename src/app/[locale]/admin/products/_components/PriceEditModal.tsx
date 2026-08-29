@@ -132,7 +132,7 @@ export function PriceEditModal({
         <div className="space-y-5">
           {/* Fast Pricing Options */}
           <div className="bg-site-surface border border-site-border-soft rounded-xl p-4 mb-2">
-            <h4 className="text-[12px] font-bold text-site-text tracking-widest uppercase mb-3 flex items-center gap-2">
+            <h4 className="text-[12px] font-bold text-site-text tracking-wide uppercase mb-3 flex items-center gap-2">
               <Zap className="h-4 w-4 text-site-accent" />
               เครื่องมือตั้งราคาด่วน
             </h4>

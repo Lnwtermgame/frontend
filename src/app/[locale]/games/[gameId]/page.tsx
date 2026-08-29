@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +9,6 @@ import { orderApi } from "@/lib/services/order-api";
 import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";
 import {
   ChevronLeft,
-  Flame,
   ShoppingCart,
   Heart,
   Share2,
@@ -31,6 +30,9 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
+import { PackageOption, type PackageOptionData } from "@/components/products/PackageOption";
+import { formatTHB } from "@/lib/format";
+import { useFocusTrap } from "@/lib/hooks/use-focus-trap";
 import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 import {
   productApi,
@@ -48,7 +50,6 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useTranslations } from "next-intl";
-import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
 
 // Game details interface matching the UI expectations
 interface GameDetails {
@@ -63,8 +64,6 @@ interface GameDetails {
   publisher?: string;
   releaseDate?: string;
   platforms: string[];
-  rating: number;
-  ratingCount?: number;
   screenshots?: string[];
   topUpOptions: TopUpOption[];
   relatedGames: string[];
@@ -97,12 +96,11 @@ function transformProductToGameDetails(
 ): GameDetails {
   // Map product types to topUpOptions (if available)
   const topUpOptions: TopUpOption[] = productTypes.map(
-    (type: ProductType, index: number) => ({
+    (type: ProductType) => ({
       id: type.id,
       title: type.name,
       price: type.displayPrice,
       originalPrice: type.originPrice || type.displayPrice,
-      isPopular: index === 0,
       fields: type.fields,
     }),
   );
@@ -122,7 +120,7 @@ function transformProductToGameDetails(
       `${product.name} offers a convenient way to purchase in-game currency and items.`,
     mainImage:
       product.imageUrl ||
-      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
+      "/images/placeholder-game.svg",
     coverImage: product.coverImageUrl,
     category:
       product.category?.name ||
@@ -132,8 +130,6 @@ function transformProductToGameDetails(
     platforms: gameDetails?.platforms?.length
       ? gameDetails.platforms
       : ["iOS", "Android"],
-    rating: 4.5,
-    ratingCount: product.reviewCount || 0,
     screenshots: product.images?.map((img) => img.url) || [],
     topUpOptions: topUpOptions.length > 0 ? topUpOptions : [],
     relatedGames: [],
@@ -204,8 +200,12 @@ export default function GameDetailsPage() {
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const confirmDialogRef = useRef<HTMLDivElement>(null);
+  const paymentDialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(confirmDialogRef, showConfirmModal);
+  useFocusTrap(paymentDialogRef, isPaymentSelectOpen);
 
-  // Confirmation modal: escape-key close + body scroll lock
+  // Confirmation modal: escape-key close + body scroll lock + initial focus
   useEffect(() => {
     if (!showConfirmModal) return;
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -214,13 +214,14 @@ export default function GameDetailsPage() {
     document.addEventListener("keydown", handleKeyDown);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    confirmDialogRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
     };
   }, [showConfirmModal]);
 
-  // Payment selection modal: escape-key close + body scroll lock
+  // Payment selection modal: escape-key close + body scroll lock + initial focus
   useEffect(() => {
     if (!isPaymentSelectOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -229,6 +230,7 @@ export default function GameDetailsPage() {
     document.addEventListener("keydown", handleKeyDown);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    paymentDialogRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
@@ -286,15 +288,6 @@ export default function GameDetailsPage() {
       method: opt.method,
     };
   }, [selectedPaymentOption, paymentOptions, selectedTopUp]);
-
-  const formatTHB = (amount: number) => {
-    return new Intl.NumberFormat("th-TH", {
-      style: "currency",
-      currency: "THB",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount || 0);
-  };
 
   // TrueWallet minimum amount constraint ( FeelFreePay requirement )
   const TRUEMONEY_MIN_AMOUNT = 20;
@@ -840,7 +833,7 @@ export default function GameDetailsPage() {
   /* ------------------------------------------------------------------ */
   if (loading) {
     return (
-      <div className="page-container space-y-6">
+      <div className="space-y-6">
         <Skeleton className="h-5 w-24" />
         <div className="grid md:grid-cols-[1fr_380px] gap-4 items-start">
           <div className="site-card p-5 space-y-4">
@@ -881,31 +874,8 @@ export default function GameDetailsPage() {
     );
   }
 
-  // Compute price range for JSON-LD
-  const priceLow = game?.topUpOptions?.length
-    ? Math.min(...game.topUpOptions.map((o) => o.price))
-    : undefined;
-  const priceHigh = game?.topUpOptions?.length
-    ? Math.max(...game.topUpOptions.map((o) => o.price))
-    : undefined;
-
   return (
-    <div className="page-container">
-      {/* Product JSON-LD for SEO */}
-      {game && product && (
-        <ProductJsonLd
-          name={game.title}
-          description={game.metaDescription || game.shortDescription || game.description}
-          image={game.mainImage}
-          slug={product.slug || product.id}
-          priceLow={priceLow}
-          priceHigh={priceHigh}
-          category={game.category}
-          rating={game.rating}
-          ratingCount={game.ratingCount}
-        />
-      )}
-
+    <div className="space-y-6">
       {/* Back link */}
       <div className="mb-6">
         <Link
@@ -928,8 +898,7 @@ export default function GameDetailsPage() {
                 game.coverImage ||
                 (game.screenshots && game.screenshots.length > 0
                   ? game.screenshots[0]
-                  : game.mainImage) ||
-                `https://placehold.co/800x400?text=${encodeURIComponent(game.title)}`
+                  : game.mainImage)
               }
               alt={game.title}
               width={800}
@@ -942,7 +911,7 @@ export default function GameDetailsPage() {
           {/* Title row with favourite/share actions */}
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <h1 className="text-xl font-extrabold text-site-text leading-tight">
+              <h1 className="text-xl font-bold text-site-text leading-tight">
                 {game.title}
               </h1>
 
@@ -993,7 +962,7 @@ export default function GameDetailsPage() {
 
         {/* RIGHT CARD – package selection, price, CTA (sticky on desktop) */}
         <div className="site-card p-5 md:sticky md:top-20 space-y-5">
-          <h3 className="text-base font-extrabold text-site-text uppercase">
+          <h3 className="text-base font-bold text-site-text uppercase">
             {purchaseTitle}
           </h3>
 
@@ -1018,8 +987,8 @@ export default function GameDetailsPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     {selected && (
-                      <span className="text-site-text font-black text-lg">
-                        ฿{Number(selected.price || 0).toFixed(2)}
+                      <span className="text-site-text font-bold text-lg">
+                        {formatTHB(Number(selected.price || 0))}
                       </span>
                     )}
                     <ChevronRight size={18} className="text-site-muted" />
@@ -1042,54 +1011,20 @@ export default function GameDetailsPage() {
                 description={t("no_options_desc")}
               />
             ) : (
-              <Grid cols={2} md={2} gap={3}>
-                {game.topUpOptions.map((option: any) => (
-                  <div
-                    key={option.id}
-                    onClick={() => setSelectedOption(option.id)}
-                    className={`relative border p-3 cursor-pointer transition-colors flex flex-col justify-center items-center gap-1.5 min-h-[90px] rounded-8 ${selectedOption === option.id
-                      ? "bg-site-accent/10 border-site-accent"
-                      : "bg-site-surface border-site-border-soft hover:border-site-border"
-                      }`}
-                  >
-                    {option.isPopular && (
-                      <div className="absolute -top-2.5 left-0 right-0 flex justify-center z-10">
-                        <Badge variant="danger" className="gap-1 text-[9px]">
-                          <Flame size={10} className="fill-current" />
-                          {t("popular_badge")}
-                        </Badge>
-                      </div>
-                    )}
-
-                    <h4 className="text-site-text font-bold text-center text-[12px] leading-tight line-clamp-2">
-                      {option.title}
-                    </h4>
-
-                    <div className="text-center">
-                      {option.originalPrice > option.price ? (
-                        <div className="flex flex-col items-center">
-                          <span className="line-through text-site-dim text-[10px]">
-                            ฿{Number(option.originalPrice || 0).toFixed(2)}
-                          </span>
-                          <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-site-text"}`}>
-                            ฿{Number(option.price || 0).toFixed(2)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-site-text"}`}>
-                          ฿{Number(option.price || 0).toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-
-                    {selectedOption === option.id && (
-                      <div className="absolute bottom-1.5 right-1.5 text-site-accent">
-                        <Check size={14} />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </Grid>
+              <div role="radiogroup" aria-label={t("select_package")}>
+                <Grid cols={2} md={2} gap={3}>
+                  {game.topUpOptions.map((option: PackageOptionData) => (
+                    <PackageOption
+                      key={option.id}
+                      option={option}
+                      selected={selectedOption === option.id}
+                      onSelect={setSelectedOption}
+                      popularLabel={t("popular_badge")}
+                      size="sm"
+                    />
+                  ))}
+                </Grid>
+              </div>
             )}
           </div>
 
@@ -1099,55 +1034,23 @@ export default function GameDetailsPage() {
             onClose={() => setIsOptionsModalOpen(false)}
             title={t("select_package")}
           >
-            <div className="grid grid-cols-2 gap-3 pb-8">
-              {game.topUpOptions.map((option: any) => (
-                <div
+            <div
+              role="radiogroup"
+              aria-label={t("select_package")}
+              className="grid grid-cols-2 gap-3 pb-8"
+            >
+              {game.topUpOptions.map((option: PackageOptionData) => (
+                <PackageOption
                   key={option.id}
-                  onClick={() => {
-                    setSelectedOption(option.id);
+                  option={option}
+                  selected={selectedOption === option.id}
+                  onSelect={(id) => {
+                    setSelectedOption(id);
                     setIsOptionsModalOpen(false);
                   }}
-                  className={`relative border p-3 cursor-pointer transition-colors flex flex-col justify-center items-center gap-1.5 min-h-[100px] rounded-8 ${selectedOption === option.id
-                    ? "bg-site-accent/10 border-site-accent"
-                    : "bg-site-surface border-site-border-soft hover:border-site-border"
-                    }`}
-                >
-                  {option.isPopular && (
-                    <div className="absolute -top-2.5 left-0 right-0 flex justify-center z-10">
-                      <Badge variant="danger" className="gap-1 text-[9px]">
-                        <Flame size={10} className="fill-current" />
-                        {t("popular_badge")}
-                      </Badge>
-                    </div>
-                  )}
-
-                  <h4 className="text-site-text font-bold text-center text-[12px] leading-tight line-clamp-2">
-                    {option.title}
-                  </h4>
-
-                  <div className="text-center">
-                    {option.originalPrice > option.price ? (
-                      <div className="flex flex-col items-center">
-                        <span className="line-through text-site-dim text-[10px]">
-                          ฿{Number(option.originalPrice || 0).toFixed(2)}
-                        </span>
-                        <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-site-text"}`}>
-                          ฿{Number(option.price || 0).toFixed(2)}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-site-text"}`}>
-                        ฿{Number(option.price || 0).toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-
-                  {selectedOption === option.id && (
-                    <div className="absolute bottom-1.5 right-1.5 text-site-accent">
-                      <Check size={14} />
-                    </div>
-                  )}
-                </div>
+                  popularLabel={t("popular_badge")}
+                  size="md"
+                />
               ))}
             </div>
           </Sheet>
@@ -1184,7 +1087,6 @@ export default function GameDetailsPage() {
                         value={mobilePhoneNumber}
                         onChange={(e) => setMobilePhoneNumber(e.target.value)}
                         placeholder={t("mobile_number_placeholder")}
-                        disabled={!isAuthenticated}
                       />
                     )}
 
@@ -1212,8 +1114,9 @@ export default function GameDetailsPage() {
                               onChange={(value) =>
                                 handleFieldChange(field.name, value)
                               }
-                              placeholder={`Choose ${translateLabel(field.label)}`}
-                              disabled={!isAuthenticated}
+                              placeholder={t("choose_placeholder", {
+                                field: translateLabel(field.label),
+                              })}
                             />
                           ) : (
                             <Input
@@ -1225,9 +1128,10 @@ export default function GameDetailsPage() {
                               }
                               placeholder={
                                 field.placeholder ||
-                                `Enter your ${translateLabel(field.label)}`
+                                t("enter_placeholder", {
+                                  field: translateLabel(field.label),
+                                })
                               }
-                              disabled={!isAuthenticated}
                             />
                           )}
                         </div>
@@ -1256,15 +1160,15 @@ export default function GameDetailsPage() {
                       {option.originalPrice > option.price ? (
                         <div className="flex items-center gap-2">
                           <span className="line-through text-site-dim text-xs">
-                            ฿{Number(option.originalPrice || 0).toFixed(2)}
+                            {formatTHB(Number(option.originalPrice || 0))}
                           </span>
-                          <span className="text-site-text font-black text-lg">
-                            ฿{Number(option.price || 0).toFixed(2)}
+                          <span className="text-site-text font-bold text-lg">
+                            {formatTHB(Number(option.price || 0))}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-site-text font-black text-lg">
-                          ฿{Number(option.price || 0).toFixed(2)}
+                        <span className="text-site-text font-bold text-lg">
+                          {formatTHB(Number(option.price || 0))}
                         </span>
                       )}
                     </div>
@@ -1326,7 +1230,7 @@ export default function GameDetailsPage() {
       {/* ── Tabs section (topup options expanded + game info) ── */}
       <div className="site-card overflow-hidden mb-8">
         {/* Tab bar */}
-        <div role="tablist" className="flex border-b border-site-border-soft overflow-x-auto hide-scrollbar">
+        <div role="tablist" className="flex border-b border-site-border-soft overflow-x-auto scrollbar-hide">
           <button
             role="tab"
             aria-selected={activeTab === "topup"}
@@ -1366,7 +1270,7 @@ export default function GameDetailsPage() {
           >
             <div className="space-y-6">
               <div className="hidden md:flex items-center justify-between">
-                <p className="text-site-dim font-black text-sm uppercase">
+                <p className="text-site-dim font-bold text-sm uppercase">
                   {t("select_package")}
                 </p>
               </div>
@@ -1378,53 +1282,17 @@ export default function GameDetailsPage() {
                   description={t("no_options_desc")}
                 />
               ) : (
-                <div className="hidden md:block">
+                <div role="radiogroup" aria-label={t("select_package")} className="hidden md:block">
                   <Grid cols={2} md={3} gap={3} className="md:gap-4">
-                    {game.topUpOptions.map((option: any) => (
-                      <div
+                    {game.topUpOptions.map((option: PackageOptionData) => (
+                      <PackageOption
                         key={option.id}
-                        onClick={() => setSelectedOption(option.id)}
-                        className={`relative border p-3 md:p-4 cursor-pointer transition-colors flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] rounded-8 ${selectedOption === option.id
-                          ? "bg-site-accent/10 border-site-accent"
-                          : "bg-site-surface border-site-border-soft hover:border-site-border"
-                          }`}
-                      >
-                        {option.isPopular && (
-                          <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
-                            <Badge variant="danger" className="gap-1 text-[9px] md:text-[10px]">
-                              <Flame size={10} className="fill-current" />
-                              {t("popular_badge")}
-                            </Badge>
-                          </div>
-                        )}
-
-                        <h4 className="text-site-text font-bold text-center text-[13px] md:text-base leading-tight line-clamp-2">
-                          {option.title}
-                        </h4>
-
-                        <div className="text-center">
-                          {option.originalPrice > option.price ? (
-                            <div className="flex flex-col items-center">
-                              <span className="line-through text-site-dim text-[10px] md:text-xs">
-                                ฿{Number(option.originalPrice || 0).toFixed(2)}
-                              </span>
-                              <span className={`font-bold text-sm md:text-base ${selectedOption === option.id ? "text-site-accent" : "text-site-text"}`}>
-                                ฿{Number(option.price || 0).toFixed(2)}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className={`font-bold text-sm md:text-base ${selectedOption === option.id ? "text-site-accent" : "text-site-text"}`}>
-                              ฿{Number(option.price || 0).toFixed(2)}
-                            </span>
-                          )}
-                        </div>
-
-                        {selectedOption === option.id && (
-                          <div className="absolute bottom-2 right-2 text-site-accent">
-                            <Check size={14} className="md:w-4 md:h-4" />
-                          </div>
-                        )}
-                      </div>
+                        option={option}
+                        selected={selectedOption === option.id}
+                        onSelect={setSelectedOption}
+                        popularLabel={t("popular_badge")}
+                        size="lg"
+                      />
                     ))}
                   </Grid>
                 </div>
@@ -1499,7 +1367,7 @@ export default function GameDetailsPage() {
         <section className="mb-10">
           <SectionHeader
             title={t("related_products")}
-            sublabel="RELATED PRODUCTS"
+            sublabel={t("related_products_sublabel")}
           />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {relatedGamesByDev.map((relatedGame) => (
@@ -1512,7 +1380,7 @@ export default function GameDetailsPage() {
                   <img
                     src={
                       relatedGame.imageUrl ||
-                      `https://placehold.co/300x300?text=${encodeURIComponent(relatedGame.name)}`
+                      "/images/placeholder-game.svg"
                     }
                     alt={relatedGame.name}
                     loading="lazy"
@@ -1532,7 +1400,7 @@ export default function GameDetailsPage() {
       <section className="mt-8 mb-10">
         <SectionHeader
           title={t("similar_products")}
-          sublabel="SIMILAR PRODUCTS"
+          sublabel={t("similar_products_sublabel")}
         />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {similarGames.length > 0 ? (
@@ -1546,7 +1414,7 @@ export default function GameDetailsPage() {
                   <img
                     src={
                       similarGame.imageUrl ||
-                      `https://placehold.co/300x300?text=${encodeURIComponent(similarGame.name)}`
+                      "/images/placeholder-game.svg"
                     }
                     alt={similarGame.name}
                     loading="lazy"
@@ -1574,7 +1442,12 @@ export default function GameDetailsPage() {
           onClick={() => setShowConfirmModal(false)}
         >
           <div
-            className="bg-site-surface border border-site-border w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-8"
+            ref={confirmDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("confirm_order_title")}
+            tabIndex={-1}
+            className="bg-site-surface border border-site-border w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-8 focus:outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             <div
@@ -1627,15 +1500,15 @@ export default function GameDetailsPage() {
                       <Package size={16} className="text-site-accent" />
                       {t("product_details_title")}
                     </h3>
-                    <div className="space-y-2 text-sm font-medium">
+                    <div className="space-y-2 text-sm font-medium tabular-nums">
                       <div className="flex justify-between items-center">
-                        <span className="text-site-muted">Product:</span>
+                        <span className="text-site-muted">{t("product_label")}</span>
                         <span className="text-site-text text-right max-w-[60%]">
                           {verificationStatus.productName}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-site-muted">Package:</span>
+                        <span className="text-site-muted">{t("package_label")}</span>
                         <span className="text-site-text">
                           {verificationStatus.optionName}
                         </span>
@@ -1656,7 +1529,7 @@ export default function GameDetailsPage() {
                               key={key}
                               className="bg-site-deep p-2 border border-site-border-soft rounded-6"
                             >
-                              <span className="text-[10px] text-site-dim block uppercase font-bold">
+                              <span className="text-[10px] text-site-dim block uppercase font-semibold">
                                 {key}
                               </span>
                               <span className="font-mono font-bold text-site-text text-sm truncate block mt-0.5">
@@ -1694,13 +1567,13 @@ export default function GameDetailsPage() {
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-site-text text-sm">
-                        {priceSummary.label || "Select Method"}
+                        {priceSummary.label || t("select_method")}
                       </span>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => setIsPaymentSelectOpen(true)}
-                        className="text-[10px] py-1 px-2 h-auto font-bold uppercase"
+                        className="text-[10px] py-1 px-2 h-auto font-semibold uppercase"
                       >
                         {t("change_button")}
                       </Button>
@@ -1708,17 +1581,17 @@ export default function GameDetailsPage() {
                   </div>
 
                   <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-                    <div className="space-y-2 text-sm font-medium">
+                    <div className="space-y-2 text-sm font-medium tabular-nums">
                       <div className="flex justify-between text-site-muted">
                         <span>{t("subtotal_label")}</span>
                         <span className="text-site-text">
-                          ฿{Number(priceSummary.base || verificationStatus.price || 0).toFixed(2)}
+                          {formatTHB(Number(priceSummary.base || verificationStatus.price || 0))}
                         </span>
                       </div>
                       <div className="flex justify-between text-site-muted">
                         <span>{t("fee_label")}</span>
                         <span className="text-site-text">
-                          +฿{Number(priceSummary.fee || 0).toFixed(2)}
+                          +{formatTHB(Number(priceSummary.fee || 0))}
                         </span>
                       </div>
                       <div className="border-t border-site-border-soft pt-2 mt-2">
@@ -1726,8 +1599,8 @@ export default function GameDetailsPage() {
                           <span className="font-bold text-site-text">
                             {t("total_label")}
                           </span>
-                          <span className="text-2xl sm:text-3xl font-black text-site-accent">
-                            ฿{Number(priceSummary.total || verificationStatus.price || 0).toFixed(2)}
+                          <span className="text-2xl sm:text-3xl font-extrabold text-site-accent">
+                            {formatTHB(Number(priceSummary.total || verificationStatus.price || 0))}
                           </span>
                         </div>
                       </div>
@@ -1767,9 +1640,9 @@ export default function GameDetailsPage() {
                           >
                             {t("privacy_label")}
                           </Link>{" "}
-                          and{" "}
+                          <span className="text-site-dim">·</span>{" "}
                           <Link
-                            href="/refund-policy"
+                            href="/refund"
                             target="_blank"
                             className="text-site-accent hover:underline"
                             onClick={(e) => e.stopPropagation()}
@@ -1819,7 +1692,12 @@ export default function GameDetailsPage() {
           onClick={() => setIsPaymentSelectOpen(false)}
         >
           <div
-            className="bg-site-surface w-full max-w-5xl border border-site-border p-4 sm:p-6 rounded-8"
+            ref={paymentDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("payment_selection_title")}
+            tabIndex={-1}
+            className="bg-site-surface w-full max-w-5xl border border-site-border p-4 sm:p-6 rounded-8 focus:outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start gap-3 mb-5">
@@ -1881,12 +1759,12 @@ export default function GameDetailsPage() {
                               {opt.label}
                               {!isAvailable && (
                                 <Badge variant="danger" className="text-[10px]">
-                                  Min {TRUEMONEY_MIN_AMOUNT}฿
+                                  {t("min_amount_badge", { amount: TRUEMONEY_MIN_AMOUNT })}
                                 </Badge>
                               )}
                             </div>
                             <div className="text-[10px] text-site-muted mt-1 font-medium">
-                              Gateway: {opt.gateway.name}
+                              {t("gateway_label", { name: opt.gateway.name })}
                             </div>
                             {unavailableReason && (
                               <div className="text-[10px] text-status-danger mt-1 font-medium">
@@ -1908,13 +1786,13 @@ export default function GameDetailsPage() {
 
                       <div className="border-t border-site-border-soft pt-2 text-[10px] text-site-muted space-y-1 font-medium">
                         <div className="flex justify-between">
-                          <span>FEE %</span>
+                          <span>{t("fee_percent_label")}</span>
                           <span className="text-site-text">
                             {Number(opt.surchargePercent || 0).toFixed(2)}%
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span>FLAT FEE</span>
+                          <span>{t("flat_fee_label")}</span>
                           <span className="text-site-text">{formatTHB(Number(opt.flatFee || 0))}</span>
                         </div>
                       </div>
@@ -1928,25 +1806,25 @@ export default function GameDetailsPage() {
                   {t("transaction_summary_title")}
                 </h4>
 
-                <div className="space-y-2 text-sm font-medium">
+                <div className="space-y-2 text-sm font-medium tabular-nums">
                   <div className="flex justify-between text-site-muted">
-                    <span>Product:</span>
+                    <span>{t("product_label")}</span>
                     <span className="text-site-text max-w-[55%] text-right truncate">
                       {game?.title || "-"}
                     </span>
                   </div>
                   <div className="flex justify-between text-site-muted">
-                    <span>Package:</span>
+                    <span>{t("package_label")}</span>
                     <span className="text-site-text max-w-[55%] text-right truncate">
                       {selectedTopUp?.title || "-"}
                     </span>
                   </div>
                   <div className="flex justify-between text-site-muted">
-                    <span>Subtotal:</span>
+                    <span>{t("subtotal_label")}</span>
                     <span className="text-site-text">{formatTHB(Number(priceSummary.base || 0))}</span>
                   </div>
                   <div className="flex justify-between text-site-muted">
-                    <span>Fee:</span>
+                    <span>{t("fee_label")}</span>
                     <span className="text-site-text">{formatTHB(Number(priceSummary.fee || 0))}</span>
                   </div>
                 </div>
@@ -1955,7 +1833,7 @@ export default function GameDetailsPage() {
                   <span className="text-sm text-site-muted uppercase">
                     {t("total_label")}
                   </span>
-                  <span className="text-2xl font-black text-site-accent">
+                  <span className="text-2xl font-extrabold text-site-accent">
                     {formatTHB(Number(priceSummary.total || 0))}
                   </span>
                 </div>

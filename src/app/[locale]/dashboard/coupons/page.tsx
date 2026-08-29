@@ -392,7 +392,7 @@ export default function CouponsPage() {
                                 </button>
                               )}
                             </div>
-                            <div className="p-3 bg-site-raised border border-site-border-soft rounded-6 font-mono text-site-accent text-lg select-all text-center tracking-widest font-bold">
+                            <div className="p-3 bg-site-raised border border-site-border-soft rounded-6 font-mono text-site-accent text-lg select-all text-center tracking-wide font-bold">
                               {coupon.code}
                             </div>
 

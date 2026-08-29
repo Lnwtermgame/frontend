@@ -11,32 +11,35 @@ module.exports = {
         "4.5": "1.125rem",
       },
       colors: {
+        // Alpha-ready mappings (rgb(var(--x-rgb) / <alpha-value>)) so Tailwind
+        // opacity modifiers like bg-site-accent/10 actually render. The -rgb
+        // mirrors live next to the hex tokens in globals.css.
         site: {
-          bg: "var(--site-bg)",
-          deep: "var(--site-deep)",
-          surface: "var(--site-surface)",
-          raised: "var(--site-raised)",
-          border: "var(--site-border)",
-          "border-soft": "var(--site-border-soft)",
-          accent: "var(--site-accent)",
-          "accent-hover": "var(--site-accent-hover)",
-          text: "var(--site-text)",
-          muted: "var(--site-muted)",
-          dim: "var(--site-dim)",
+          bg: "rgb(var(--site-bg-rgb) / <alpha-value>)",
+          deep: "rgb(var(--site-deep-rgb) / <alpha-value>)",
+          surface: "rgb(var(--site-surface-rgb) / <alpha-value>)",
+          raised: "rgb(var(--site-raised-rgb) / <alpha-value>)",
+          border: "rgb(var(--site-border-rgb) / <alpha-value>)",
+          "border-soft": "rgb(var(--site-border-soft-rgb) / <alpha-value>)",
+          accent: "rgb(var(--site-accent-rgb) / <alpha-value>)",
+          "accent-hover": "rgb(var(--site-accent-hover-rgb) / <alpha-value>)",
+          text: "rgb(var(--site-text-rgb) / <alpha-value>)",
+          muted: "rgb(var(--site-muted-rgb) / <alpha-value>)",
+          dim: "rgb(var(--site-dim-rgb) / <alpha-value>)",
         },
         status: {
-          info: "var(--status-info)",
-          success: "var(--status-success)",
-          warning: "var(--status-warning)",
-          danger: "var(--status-danger)",
+          info: "rgb(var(--status-info-rgb) / <alpha-value>)",
+          success: "rgb(var(--status-success-rgb) / <alpha-value>)",
+          warning: "rgb(var(--status-warning-rgb) / <alpha-value>)",
+          danger: "rgb(var(--status-danger-rgb) / <alpha-value>)",
         },
         // Compatibility aliases for existing screens. New work should use status.*.
         semantic: {
-          blue: "var(--status-info)",
-          violet: "var(--status-info)",
-          green: "var(--status-success)",
-          amber: "var(--status-warning)",
-          rose: "var(--status-danger)",
+          blue: "rgb(var(--status-info-rgb) / <alpha-value>)",
+          violet: "rgb(var(--status-info-rgb) / <alpha-value>)",
+          green: "rgb(var(--status-success-rgb) / <alpha-value>)",
+          amber: "rgb(var(--status-warning-rgb) / <alpha-value>)",
+          rose: "rgb(var(--status-danger-rgb) / <alpha-value>)",
         },
       },
       borderRadius: {
@@ -46,7 +49,7 @@ module.exports = {
         12: "12px",
       },
       fontFamily: {
-        sans: ["'Manrope'", "'IBM Plex Sans Thai'", "'Poppins'", "sans-serif"],
+        sans: ["'Noto Sans Thai'", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {

@@ -1,4 +1,6 @@
 import type { Coupon } from "@/lib/services";
+import { useTranslations } from "next-intl";
+import { Loader2 } from "lucide-react";
 import { Badge } from "./Badge";
 
 export function CouponCard({
@@ -16,13 +18,14 @@ export function CouponCard({
   claimLabel: string;
   claimedLabel: string;
 }) {
+  const t = useTranslations();
   return (
     <div className="site-card p-3 flex flex-col">
       <div>
-        <span className="text-site-accent text-xl font-black">
+        <span className="text-site-accent text-xl font-bold tabular-nums">
           {coupon.discountPercentage}%
         </span>
-        <span className="text-[10px] text-site-accent font-bold ml-0.5">OFF</span>
+        <span className="text-[10px] text-site-accent font-semibold ml-0.5">{t("coupon_off")}</span>
       </div>
       <p className="text-[11px] text-site-muted line-clamp-2 mt-1 min-h-[26px]">
         {coupon.description || coupon.code}
@@ -38,9 +41,13 @@ export function CouponCard({
             disabled={claiming}
             aria-busy={claiming}
             aria-label={claimLabel}
-            className="w-full border border-site-border-soft rounded-6 py-1.5 text-[11px] font-bold text-site-text hover:border-site-border transition-colors disabled:opacity-50"
+            className="w-full border border-site-border-soft rounded-6 py-1.5 text-[11px] font-semibold text-site-text hover:border-site-border transition-colors disabled:opacity-50"
           >
-            {claiming ? "..." : claimLabel}
+            {claiming ? (
+              <Loader2 size={14} className="animate-spin mx-auto" aria-hidden="true" />
+            ) : (
+              claimLabel
+            )}
           </button>
         )}
       </div>

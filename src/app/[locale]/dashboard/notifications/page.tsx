@@ -222,7 +222,7 @@ export default function NotificationsPage() {
                 </span>
               )}
             </h1>
-            <p className="text-[11px] text-site-dim uppercase font-bold tracking-widest leading-none">
+            <p className="text-[11px] text-site-dim uppercase font-bold tracking-wide leading-none">
               {t("subtitle")}
             </p>
           </div>

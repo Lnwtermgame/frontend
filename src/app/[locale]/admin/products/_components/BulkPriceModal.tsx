@@ -408,7 +408,7 @@ export function BulkPriceModal({
           <div className="bg-site-surface border border-site-border-soft rounded-xl overflow-hidden">
             <div className="px-5 py-3 border-b border-site-border-soft flex items-center gap-2">
               <Eye className="h-4 w-4 text-site-accent" />
-              <h4 className="text-[12px] font-bold text-site-muted uppercase tracking-widest">
+              <h4 className="text-[12px] font-bold text-site-muted uppercase tracking-wide">
                 Live Preview (ตัวอย่างราคา)
               </h4>
             </div>

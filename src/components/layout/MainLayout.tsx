@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { UtilityBar } from "./UtilityBar";
 import MainNav from "./MainNav";
 import Footer from "./Footer";
+import { SupportFab } from "@/components/support/SupportFab";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 
 interface MainLayoutProps {
@@ -57,8 +58,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
             {children}
           </Suspense>
         </div>
-      </main>
-      <Footer />
+        </main>
+        <SupportFab />
+        <Footer />
     </div>
   );
 }

@@ -12,60 +12,90 @@ export function NavSearchBox() {
     const router = useRouter();
     const [query, setQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [products, setProducts] = useState<Product[]>([]);
+    const [popular, setPopular] = useState<Product[]>([]);
+    const [searchResults, setSearchResults] = useState<Product[] | null>(null);
     const [loading, setLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     useOnClickOutside(containerRef as React.RefObject<HTMLDivElement>, () => setIsOpen(false));
 
+    // Popular products: fetched once when the dropdown first opens.
     useEffect(() => {
-        const fetchProducts = async () => {
+        if (!isOpen || popular.length > 0) return;
+        const fetchPopular = async () => {
             setLoading(true);
             try {
                 const response = await productApi.getProducts({
                     isActive: true,
-                    limit: 50,
+                    limit: 8,
+                    sortBy: "salesCount",
+                    sortOrder: "desc",
                 });
                 if (response.success) {
-                    setProducts(response.data);
+                    setPopular(response.data);
                 }
             } catch (error) {
-                console.error("Failed to load products for search", error);
+                console.error("Failed to load popular products", error);
             } finally {
                 setLoading(false);
             }
         };
+        fetchPopular();
+    }, [isOpen, popular.length]);
 
-        // Only fetch once when opened for the first time
-        if (isOpen && products.length === 0 && !loading) {
-            fetchProducts();
+    // Server-side search with debounce — results are never limited to a
+    // pre-fetched client-side list.
+    useEffect(() => {
+        const trimmed = query.trim();
+        if (!isOpen || trimmed.length < 2) {
+            setSearchResults(null);
+            return;
         }
-    }, [isOpen, products.length, loading]);
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            setLoading(true);
+            try {
+                const response = await productApi.getProducts({
+                    isActive: true,
+                    search: trimmed,
+                    limit: 8,
+                    signal: controller.signal,
+                });
+                if (response.success) {
+                    setSearchResults(response.data);
+                }
+            } catch (error) {
+                const code = (error as { code?: string })?.code;
+                if (code !== "ERR_CANCELED" && code !== "ABORT_ERR") {
+                    console.error("Product search failed", error);
+                }
+            } finally {
+                setLoading(false);
+            }
+        }, 300);
+        return () => {
+            clearTimeout(timer);
+            controller.abort();
+        };
+    }, [query, isOpen]);
 
-    const filteredProducts = useMemo(() => {
-        if (!query.trim()) return products;
-        const lowerQuery = query.toLowerCase();
-        return products.filter((p) =>
-            p.name.toLowerCase().includes(lowerQuery) ||
-            p.category?.name.toLowerCase().includes(lowerQuery)
-        );
-    }, [products, query]);
+    const displayProducts = searchResults ?? popular;
 
     // Derived lists
     const popularGames = useMemo(() => {
-        return filteredProducts
+        return displayProducts
             .filter((p) => p.productType === "DIRECT_TOPUP" || p.productType === "CARD")
             .slice(0, 8);
-    }, [filteredProducts]);
+    }, [displayProducts]);
 
     const gameProducts = useMemo(() => {
-        return filteredProducts.filter((p) => p.productType === "DIRECT_TOPUP" || p.productType === "CARD");
-    }, [filteredProducts]);
+        return displayProducts.filter((p) => p.productType === "DIRECT_TOPUP" || p.productType === "CARD");
+    }, [displayProducts]);
 
     const mobileProducts = useMemo(() => {
-        return filteredProducts.filter((p) => p.productType === "MOBILE_RECHARGE");
-    }, [filteredProducts]);
+        return displayProducts.filter((p) => p.productType === "MOBILE_RECHARGE");
+    }, [displayProducts]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -150,7 +180,7 @@ export function NavSearchBox() {
                             {/* Left Column: Popular Games */}
                             <div className="w-[55%] p-5 border-r border-site-border-soft bg-site-bg flex flex-col">
                                 <h3 className="text-site-dim font-bold text-[11px] mb-4 uppercase tracking-[0.1em] flex items-center gap-2">
-                                    <Gamepad2 size={14} className="text-site-accent" /> Popular Games
+                                    <Gamepad2 size={14} className="text-site-accent" /> {searchResults ? t("search_results") : t("search_popular_games")}
                                 </h3>
 
                                 <div className="flex-1 overflow-y-auto pr-2 pb-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full">
@@ -176,7 +206,7 @@ export function NavSearchBox() {
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-site-muted text-sm py-4">No popular games found.</p>
+                                        <p className="text-site-muted text-sm py-4">{t("search_no_popular")}</p>
                                     )}
                                 </div>
                             </div>
@@ -189,7 +219,7 @@ export function NavSearchBox() {
                                     {gameProducts.length > 0 && (
                                         <div>
                                             <h3 className="text-site-dim font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-site-bg/95 py-1 z-10">
-                                                <CreditCard size={14} className="text-status-info" /> Games & Cards
+                                                <CreditCard size={14} className="text-status-info" /> {t("search_games_cards")}
                                             </h3>
                                             <div className="space-y-1">
                                                 {gameProducts.map((game) => (
@@ -213,7 +243,7 @@ export function NavSearchBox() {
                                     {mobileProducts.length > 0 && (
                                         <div>
                                             <h3 className="text-site-dim font-bold text-[11px] mb-3 uppercase tracking-[0.1em] flex items-center gap-2 sticky top-0 bg-site-bg/95 py-1 z-10">
-                                                <Smartphone size={14} className="text-status-success" /> Mobile Recharge
+                                                <Smartphone size={14} className="text-status-success" /> {t("Navigation.mobile_recharge")}
                                             </h3>
                                             <div className="space-y-1">
                                                 {mobileProducts.map((mobile) => (
@@ -234,7 +264,7 @@ export function NavSearchBox() {
                                     )}
 
                                     {gameProducts.length === 0 && mobileProducts.length === 0 && (
-                                        <p className="text-site-muted text-sm py-4">No results found for &quot;{query}&quot;.</p>
+                                        <p className="text-site-muted text-sm py-4">{t("search_no_results", { query })}</p>
                                     )}
                                 </div>
 
@@ -246,7 +276,7 @@ export function NavSearchBox() {
                                             onClick={() => handleSearch({ preventDefault: () => { } } as any)}
                                             className="w-full py-2 bg-site-accent/10 text-site-accent hover:bg-site-accent hover:text-site-bg transition-colors rounded-6 text-[12px] font-bold"
                                         >
-                                            View All Results
+                                            {t("search_view_all")}
                                         </button>
                                     </div>
                                 )}

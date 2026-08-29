@@ -23,7 +23,7 @@ export function GameTile({
         <img src={image} alt={name} className="w-full h-full object-cover" loading="lazy" />
       </div>
       <h3
-        className="mt-2 text-[13px] text-center text-site-text font-bold leading-snug line-clamp-2 group-hover:text-site-accent transition-colors"
+        className="mt-2 text-[13px] text-center text-site-text font-semibold leading-snug line-clamp-2 group-hover:text-site-accent transition-colors"
         title={name}
       >
         {name}

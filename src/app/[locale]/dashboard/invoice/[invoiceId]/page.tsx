@@ -569,7 +569,7 @@ export default function InvoiceDetailPage() {
                       <td className="py-4 px-4 text-right text-site-muted text-sm">
                         ฿{item.unitPrice.toFixed(2)}
                       </td>
-                      <td className="py-4 px-4 text-right font-black text-site-text text-base">
+                      <td className="py-4 px-4 text-right font-bold text-site-text text-base">
                         ฿{item.total.toFixed(2)}
                       </td>
                     </tr>
@@ -592,7 +592,7 @@ export default function InvoiceDetailPage() {
                   </div>
                   <div className="flex justify-between items-center pt-2">
                     <span className="text-site-text font-semibold">{t("grand_total")}:</span>
-                    <span className="text-xl font-black text-site-accent">฿{invoice.totalAmount.toFixed(2)}</span>
+                    <span className="text-xl font-bold text-site-accent">฿{invoice.totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

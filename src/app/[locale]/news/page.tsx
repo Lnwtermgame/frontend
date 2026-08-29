@@ -84,7 +84,7 @@ export default function NewsPage() {
       {/* Featured News */}
       {featured.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-base md:text-lg font-extrabold text-site-text leading-none mb-4 flex items-center">
+          <h2 className="text-base md:text-lg font-bold text-site-text leading-none mb-4 flex items-center">
             <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
             {t("featured")}
           </h2>
@@ -129,7 +129,7 @@ export default function NewsPage() {
 
       {/* All News */}
       <div>
-        <h2 className="text-base md:text-lg font-extrabold text-site-text leading-none mb-4 flex items-center">
+        <h2 className="text-base md:text-lg font-bold text-site-text leading-none mb-4 flex items-center">
           <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
           {t("all_news")}
         </h2>

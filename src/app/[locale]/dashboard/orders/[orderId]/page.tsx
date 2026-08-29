@@ -363,7 +363,7 @@ export default function OrderDetailsPage() {
                                             <img
                                                 src={
                                                     item.product?.imageUrl ||
-                                                    `https://placehold.co/100x100?text=${encodeURIComponent(item.product?.name || "Product")}`
+                                                    "/images/placeholder-game.svg"
                                                 }
                                                 alt={item.product?.name}
                                                 className="h-full w-full object-cover"
@@ -407,7 +407,7 @@ export default function OrderDetailsPage() {
                                                             </div>
                                                         )}
                                                 </div>
-                                                <p className="font-black text-site-text text-lg">
+                                                <p className="font-bold text-site-text text-lg">
                                                     {formatPrice(item.priceAtPurchase)}
                                                 </p>
                                             </div>
@@ -453,7 +453,7 @@ export default function OrderDetailsPage() {
                                                                                 </span>
                                                                                 <div className="flex-1 flex items-center bg-site-surface border border-site-border-soft rounded-6 overflow-hidden">
                                                                                     <code
-                                                                                        className={`flex-1 px-3 py-2 font-mono text-site-text text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
+                                                                                        className={`flex-1 px-3 py-2 font-mono text-site-text text-sm tracking-wide break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
                                                                                     >
                                                                                         {codeValue}
                                                                                     </code>
@@ -499,7 +499,7 @@ export default function OrderDetailsPage() {
                                                                                 </span>
                                                                                 <div className="flex-1 flex items-center bg-site-surface border border-site-border-soft rounded-6 overflow-hidden">
                                                                                     <code
-                                                                                        className={`flex-1 px-3 py-2 font-mono text-site-text text-sm tracking-widest break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
+                                                                                        className={`flex-1 px-3 py-2 font-mono text-site-text text-sm tracking-wide break-all select-none transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70 hover:blur-[2px]" : ""}`}
                                                                                     >
                                                                                         {pinValue}
                                                                                     </code>
@@ -615,14 +615,14 @@ export default function OrderDetailsPage() {
                         <div className="p-4 space-y-3">
                             <div className="flex justify-between text-sm font-medium">
                                 <span className="text-site-muted">{t("payment.subtotal")}</span>
-                                <span className="text-site-text font-black">
+                                <span className="text-site-text font-bold">
                                     {formatPrice(order.totalAmount)}
                                 </span>
                             </div>
                             {order.discountAmount > 0 && (
                                 <div className="flex justify-between text-sm font-medium">
                                     <span className="text-site-muted">{t("payment.discount")}</span>
-                                    <span className="text-status-success font-black">
+                                    <span className="text-status-success font-bold">
                                         -{formatPrice(order.discountAmount)}
                                     </span>
                                 </div>
@@ -631,7 +631,7 @@ export default function OrderDetailsPage() {
                                 <span className="font-bold text-site-text text-sm">
                                     {t("payment.total")}
                                 </span>
-                                <span className="font-black text-xl text-site-accent">
+                                <span className="font-bold text-xl text-site-accent">
                                     {formatPrice(order.finalAmount)}
                                 </span>
                             </div>

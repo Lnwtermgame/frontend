@@ -138,7 +138,7 @@ function LoginContent() {
           {/* Logo / branding */}
           <div className="mb-6 flex flex-col items-center text-center">
             <p className="text-lg font-bold text-site-text">{siteName}</p>
-            <h1 className="mt-1 text-xl font-extrabold tracking-tight text-site-text">
+            <h1 className="mt-1 text-xl font-bold tracking-tight text-site-text">
               {t("title")}
             </h1>
             <p className="mt-1 text-sm text-site-muted">{t("subtitle")}</p>

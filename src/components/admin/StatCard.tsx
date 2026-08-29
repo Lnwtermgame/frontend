@@ -57,7 +57,7 @@ export function StatCard({
         )}
       </div>
       <div className="mt-3">
-        <span className="text-xl font-extrabold text-site-text tracking-tight">
+        <span className="text-xl font-bold text-site-text tracking-tight">
           {value}
         </span>
         {subtitle && (

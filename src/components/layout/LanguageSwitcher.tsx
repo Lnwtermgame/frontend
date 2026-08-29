@@ -15,7 +15,7 @@ interface LanguageSwitcherProps {
 
 const languages = [
   { code: "th", label: "ไทย", flagCode: "th" },
-  { code: "en", label: "English", flagCode: "us" },
+  { code: "en", label: "English", flagCode: "gb" },
   { code: "zh", label: "中文", flagCode: "cn" },
   { code: "ja", label: "日本語", flagCode: "jp" },
   { code: "ko", label: "한국어", flagCode: "kr" },
@@ -118,7 +118,7 @@ export function LanguageSwitcher({
                   >
                     <div className="flex justify-between items-center mb-6 border-b border-site-border-soft pb-4">
                       <h3 className="font-bold text-sm uppercase tracking-wide text-site-text">
-                        Select Language
+                        {t("language_selector")}
                       </h3>
                       <button
                         onClick={() => setIsOpen(false)}

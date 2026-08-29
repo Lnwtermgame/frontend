@@ -180,6 +180,16 @@ export default function HomePage() {
     };
   }, [carouselApi]);
 
+  // Embla measures the container on init, which can run before the hero's
+  // final layout (this page mounts the carousel after the data skeleton).
+  // Re-measure once the API exists and again after the first paint.
+  useEffect(() => {
+    if (!carouselApi) return;
+    carouselApi.reInit();
+    const raf = requestAnimationFrame(() => carouselApi.reInit());
+    return () => cancelAnimationFrame(raf);
+  }, [carouselApi, heroSlides.length]);
+
   // Fetch news
   useEffect(() => {
     const fetchNews = async () => {

@@ -1,6 +1,5 @@
 import { Link } from "@/i18n/routing";
 import { Badge } from "./Badge";
-import { useTranslations } from "next-intl";
 
 export interface Deal {
   id: string;
@@ -11,8 +10,7 @@ export interface Deal {
   img: string;
 }
 
-export function OfferCard({ deal, href }: { deal: Deal; href: string }) {
-  const t = useTranslations();
+export function OfferCard({ deal, href, badgeLabel }: { deal: Deal; href: string; badgeLabel: string }) {
   return (
     <Link href={href} className="site-card p-3 hover:border-site-border transition-colors block">
       <div className="flex items-center gap-3">
@@ -31,7 +29,7 @@ export function OfferCard({ deal, href }: { deal: Deal; href: string }) {
           </p>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
-          <Badge variant="success">{t("promotion_badge")}</Badge>
+          <Badge variant="success">{badgeLabel}</Badge>
           <span className="text-status-success text-[13px] font-black">-{deal.discount}%</span>
         </div>
       </div>

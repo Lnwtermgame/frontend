@@ -36,6 +36,8 @@ export function CouponCard({
           <button
             onClick={() => onClaim(coupon.id)}
             disabled={claiming}
+            aria-busy={claiming}
+            aria-label={claimLabel}
             className="w-full border border-site-border-soft rounded-6 py-1.5 text-[11px] font-bold text-site-text hover:border-site-border transition-colors disabled:opacity-50"
           >
             {claiming ? "..." : claimLabel}

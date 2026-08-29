@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useRouter } from "@/i18n/routing";
 import {
   ChevronRight,
@@ -72,6 +72,7 @@ export default function HomePage() {
   const [couponsLoading, setCouponsLoading] = useState(true);
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const [claimedIds, setClaimedIds] = useState<Set<string>>(new Set());
+  const claimingRef = useRef(false);
 
   // Compact number formatter
   const compact = useMemo(() => {
@@ -278,14 +279,14 @@ export default function HomePage() {
     return allProducts
       .filter((p) => p.productType === "DIRECT_TOPUP")
       .sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0))
-      .slice(0, 6);
+      .slice(0, 5);
   }, [allProducts]);
 
   const popularCards = useMemo(() => {
     return allProducts
       .filter((p) => p.productType === "CARD")
       .sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0))
-      .slice(0, 6);
+      .slice(0, 5);
   }, [allProducts]);
 
   const newCards = useMemo(() => {
@@ -316,6 +317,8 @@ export default function HomePage() {
       router.push("/login");
       return;
     }
+    if (claimingRef.current) return;
+    claimingRef.current = true;
     try {
       setClaimingId(id);
       const response = await couponApi.claimCoupon(id);
@@ -329,6 +332,7 @@ export default function HomePage() {
       toast.error(message);
     } finally {
       setClaimingId(null);
+      claimingRef.current = false;
     }
   };
 
@@ -483,7 +487,7 @@ export default function HomePage() {
         <SectionHeader title={t("home_coupons")} sublabel="AVAILABLE COUPONS" />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {coupons.length === 0 ? (
-            <EmptyState icon={Tag} message={t("no_deals")} />
+            <EmptyState icon={Tag} message={t("home_no_coupons")} />
           ) : (
             coupons.map((coupon) => (
               <CouponCard
@@ -517,6 +521,7 @@ export default function HomePage() {
                 key={deal.id}
                 deal={deal}
                 href={`/games/${deal.slug}`}
+                badgeLabel={t("promotion_badge")}
               />
             ))
           )}
@@ -560,7 +565,7 @@ export default function HomePage() {
           {popularCards.length === 0 ? (
             <EmptyState icon={CreditCard} message={t("no_products")} />
           ) : (
-            popularCards.slice(0, 5).map((p) => (
+            popularCards.map((p) => (
               <ListRow
                 key={p.id}
                 href={`/card/${p.slug}`}
@@ -583,7 +588,7 @@ export default function HomePage() {
           {popularTopup.length === 0 ? (
             <EmptyState icon={PackageOpen} message={t("no_products")} />
           ) : (
-            popularTopup.slice(0, 5).map((p) => (
+            popularTopup.map((p) => (
               <ListRow
                 key={p.id}
                 href={`/games/${p.slug}`}
@@ -606,7 +611,7 @@ export default function HomePage() {
           {newCards.length === 0 ? (
             <EmptyState icon={CreditCard} message={t("no_products")} />
           ) : (
-            newCards.slice(0, 5).map((p) => (
+            newCards.map((p) => (
               <ListRow
                 key={p.id}
                 href={`/card/${p.slug}`}
@@ -628,7 +633,7 @@ export default function HomePage() {
           {newTopup.length === 0 ? (
             <EmptyState icon={PackageOpen} message={t("no_products")} />
           ) : (
-            newTopup.slice(0, 5).map((p) => (
+            newTopup.map((p) => (
               <ListRow
                 key={p.id}
                 href={`/games/${p.slug}`}

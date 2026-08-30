@@ -189,6 +189,13 @@
     @apply w-full h-10 px-3 bg-site-bg border border-site-border-soft rounded-6 text-sm text-site-text placeholder-site-dim transition-colors focus:outline-none focus:border-site-accent focus:ring-2 focus:ring-site-accent;
   }
 
+  /* Multi-line fields must size from their rows attribute — the h-10 above
+     otherwise squashes every <textarea> to one line and the text floats. */
+  textarea.site-input {
+    @apply h-auto py-2.5 leading-relaxed;
+    min-height: 110px;
+  }
+
   .site-heading {
     @apply text-lg md:text-xl font-bold text-site-text flex items-center gap-2;
   }

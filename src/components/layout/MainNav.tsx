@@ -84,7 +84,7 @@ export default function MainNav() {
                         {!isSessionChecked ? (
                             <div className="w-[110px] h-8 bg-site-raised rounded-6 animate-pulse" />
                         ) : user ? (
-                            <DropdownMenu>
+                            <DropdownMenu modal={false}>
                                 {/* Avatar chip button */}
                                 <DropdownMenuTrigger asChild>
                                     <button

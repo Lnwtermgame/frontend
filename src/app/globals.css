@@ -77,7 +77,11 @@
 
 @layer base {
   html {
+    scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
+    /* Reserve the scrollbar gutter so Radix overlays (dropdown/dialog scroll
+       lock) never remove it and shift the layout mid-interaction. */
+    scrollbar-gutter: stable;
   }
 
   body {

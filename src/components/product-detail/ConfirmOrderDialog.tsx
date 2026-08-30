@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Check, ShieldAlert, AlertCircle, Package, User, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";

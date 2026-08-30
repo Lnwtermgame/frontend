@@ -29,6 +29,7 @@ import {
   AIModel,
 } from "@/lib/services/ai-api";
 import { AdminHeaderButton } from "@/components/admin";
+import { lockBodyScroll } from "@/lib/scroll-lock";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
 
@@ -246,14 +247,8 @@ export default function AIGenerateAllButton({
 
   // Lock body scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+    if (!isOpen) return;
+    return lockBodyScroll();
   }, [isOpen]);
 
   // Open modal

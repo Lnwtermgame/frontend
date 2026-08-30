@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Script from "next/script";
 import { ReactGrabInit } from "@/components/ReactGrabInit";
+import { ScrollLockManager } from "@/lib/scroll-lock";
 import { Toaster } from "react-hot-toast";
 import "../globals.css";
 import "flag-icons/css/flag-icons.min.css";
@@ -217,6 +218,9 @@ export default async function RootLayout(
         className="min-h-screen bg-site-bg text-site-text font-sans antialiased"
       >
         <ReactGrabInit />
+        {/* Renders null — one policy for every body scroll lock (dropdowns
+            keep the scrollbar; modals compensate it) */}
+        <ScrollLockManager />
         <NextIntlClientProvider messages={messages}>
           {/* Renders null — injects BreadcrumbList JSON-LD via effect */}
           <BreadcrumbJsonLd />

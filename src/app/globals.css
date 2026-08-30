@@ -79,28 +79,16 @@
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
-    /* Reserve the scrollbar gutter so Radix overlays (dropdown/dialog scroll
-       lock) never remove it and shift the layout mid-interaction. */
-    scrollbar-gutter: stable;
+    /* No `scrollbar-gutter` here on purpose: Chrome discards the reserved
+       gutter the moment a scroll lock sets overflow:hidden, so it double-books
+       with react-remove-scroll's margin compensation and shifts the layout.
+       All locks are governed by <ScrollLockManager /> in
+       src/lib/scroll-lock.ts instead. */
   }
 
   body {
     @apply bg-site-bg text-site-text font-sans font-normal;
     min-height: 100vh;
-  }
-
-  /* Radix <Select> has no modal={false}; its scroll lock (react-remove-scroll)
-     hides the viewport scrollbar and compensates with a body margin, which
-     reads as a flicker on every open. Zero the compensation and keep the page
-     scrollable for non-modal locks — real modals (dialog / alertdialog) keep
-     the standard lock. */
-  body[data-scroll-locked]:not(:has([role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"])) {
-    overflow: visible !important;
-    overscroll-behavior: auto;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-top: 0 !important;
-    padding-right: 0 !important;
   }
 
   /* Weight scale (Noto Sans Thai 400–900, real files — never synthesize):

@@ -2,7 +2,7 @@
 
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { PackageOption, type PackageOptionData } from "@/components/products/PackageOption";
+import { PackageOption } from "@/components/products/PackageOption";
 import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
 import { EmptyState } from "@/components/ui/EmptyState";

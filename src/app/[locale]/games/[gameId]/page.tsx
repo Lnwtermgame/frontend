@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "@/lib/framer-exports";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +10,7 @@ import { orderApi } from "@/lib/services/order-api";
 import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";
 import {
   ChevronLeft,
+  Flame,
   ShoppingCart,
   Heart,
   Share2,
@@ -19,27 +21,19 @@ import {
   Smartphone,
   Info,
   DollarSign,
+  Gift,
   AlertCircle,
   Check,
   AlertTriangle,
-  Minus,
-  Plus,
-  Star,
+  X,
   User,
   ShieldAlert,
   ChevronRight,
   ShieldCheck,
+  ReceiptText,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProductDescription from "@/components/products/ProductDescription";
-import { PackageOption, type PackageOptionData } from "@/components/products/PackageOption";
-import { formatTHB } from "@/lib/format";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 import {
   productApi,
@@ -48,29 +42,13 @@ import {
   SeagmField,
 } from "@/lib/services/product-api";
 import { Input } from "@/components/ui/Input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/legacy-select";
 import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Grid } from "@/components/ui/Grid";
 import { Sheet } from "@/components/ui/Sheet";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/Badge";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { useTranslations } from "next-intl";
+import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
 
 // Game details interface matching the UI expectations
 interface GameDetails {
@@ -85,10 +63,9 @@ interface GameDetails {
   publisher?: string;
   releaseDate?: string;
   platforms: string[];
-  screenshots?: string[];
-  rating?: number;
+  rating: number;
   ratingCount?: number;
-  soldCount?: number;
+  screenshots?: string[];
   topUpOptions: TopUpOption[];
   relatedGames: string[];
   features?: string[];
@@ -109,7 +86,6 @@ interface TopUpOption {
   title: string;
   price: number;
   originalPrice: number;
-  hasStock?: boolean;
   isPopular?: boolean;
   fields?: SeagmField[];
 }
@@ -121,12 +97,12 @@ function transformProductToGameDetails(
 ): GameDetails {
   // Map product types to topUpOptions (if available)
   const topUpOptions: TopUpOption[] = productTypes.map(
-    (type: ProductType) => ({
+    (type: ProductType, index: number) => ({
       id: type.id,
       title: type.name,
       price: type.displayPrice,
       originalPrice: type.originPrice || type.displayPrice,
-      hasStock: type.hasStock !== false,
+      isPopular: index === 0,
       fields: type.fields,
     }),
   );
@@ -144,12 +120,9 @@ function transformProductToGameDetails(
     longDescription:
       product.description ||
       `${product.name} offers a convenient way to purchase in-game currency and items.`,
-    rating: product.averageRating,
-    ratingCount: product.reviewCount,
-    soldCount: product.salesCount,
     mainImage:
       product.imageUrl ||
-      "/images/placeholder-game.svg",
+      `https://placehold.co/400x400?text=${encodeURIComponent(product.name)}`,
     coverImage: product.coverImageUrl,
     category:
       product.category?.name ||
@@ -159,6 +132,8 @@ function transformProductToGameDetails(
     platforms: gameDetails?.platforms?.length
       ? gameDetails.platforms
       : ["iOS", "Android"],
+    rating: 4.5,
+    ratingCount: product.reviewCount || 0,
     screenshots: product.images?.map((img) => img.url) || [],
     topUpOptions: topUpOptions.length > 0 ? topUpOptions : [],
     relatedGames: [],
@@ -206,7 +181,6 @@ export default function GameDetailsPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
   const [paymentOptions, setPaymentOptions] = useState<PaymentMethodOption[]>(
     [],
   );
@@ -230,6 +204,7 @@ export default function GameDetailsPage() {
   const [relatedGamesByDev, setRelatedGamesByDev] = useState<Product[]>([]);
   const [isBuying, setIsBuying] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+
   // Field label translation map
   const FIELD_LABEL_MAP: Record<string, string> = {
     "Player ID": "Player ID",
@@ -281,6 +256,15 @@ export default function GameDetailsPage() {
       method: opt.method,
     };
   }, [selectedPaymentOption, paymentOptions, selectedTopUp]);
+
+  const formatTHB = (amount: number) => {
+    return new Intl.NumberFormat("th-TH", {
+      style: "currency",
+      currency: "THB",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount || 0);
+  };
 
   // TrueWallet minimum amount constraint ( FeelFreePay requirement )
   const TRUEMONEY_MIN_AMOUNT = 20;
@@ -484,6 +468,8 @@ export default function GameDetailsPage() {
 
       // Handle redirect payments (LinePay, TrueMoney)
       // Backend returns HTML form that auto-submits to payment page
+      // Handle redirect payments (LinePay, TrueMoney)
+      // Backend returns HTML form that auto-submits to payment page
       if (paymentFormHtml) {
         // Safely parse payment form HTML — avoid raw innerHTML XSS
         const parser = new DOMParser();
@@ -557,7 +543,7 @@ export default function GameDetailsPage() {
           {
             productId: product.id,
             productTypeId: selectedOption,
-            quantity,
+            quantity: 1,
             playerInfo,
           },
         ],
@@ -719,11 +705,11 @@ export default function GameDetailsPage() {
         setGame(gameData);
 
         if (gameData.topUpOptions.length > 0) {
-          const inStockOption = gameData.topUpOptions.find(
-            (option) => option.hasStock !== false,
+          const popularOption = gameData.topUpOptions.find(
+            (option) => option.isPopular,
           );
           setSelectedOption(
-            (inStockOption || gameData.topUpOptions[0]).id,
+            popularOption ? popularOption.id : gameData.topUpOptions[0].id,
           );
         }
 
@@ -821,43 +807,30 @@ export default function GameDetailsPage() {
     descTag.setAttribute("content", metaDesc);
   }, [game]);
 
-  /* ------------------------------------------------------------------ */
-  /*  LOADING STATE                                                      */
-  /* ------------------------------------------------------------------ */
   if (loading) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-5 w-24" />
-        <div className="grid md:grid-cols-[1fr_380px] gap-4 items-start">
-          <div className="site-card p-5 space-y-4">
-            <Skeleton className="w-full aspect-video rounded-8" />
-            <Skeleton className="h-7 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-          </div>
-          <div className="site-card p-5 space-y-4">
-            <Skeleton className="h-5 w-1/2" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
+      <div className="page-container flex items-center justify-center h-96 bg-transparent">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-site-border border-t-site-accent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 font-medium">{tCommon("loading")}</p>
         </div>
       </div>
     );
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  ERROR / NOT FOUND                                                  */
-  /* ------------------------------------------------------------------ */
   if (error || !game) {
     return (
-      <div className="page-container">
-        <EmptyState
-          icon={AlertCircle}
-          message={t("error.not_found")}
-          description={error || t("error.not_found_desc")}
-        />
-        <div className="flex justify-center mt-4">
+      <div className="page-container bg-transparent">
+        <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border p-8 text-center rounded-2xl shadow-ocean">
+          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">
+            {t("error.not_found")}
+          </h2>
+          <p className="text-gray-400 mb-6">
+            {error || t("error.not_found_desc")}
+          </p>
           <Link href={backHref}>
-            <Button variant="outline">
+            <Button variant="outline" className="text-white border-site-border hover:bg-site-border">
               <ChevronLeft size={18} className="mr-2" />
               {backLabel}
             </Button>
@@ -867,189 +840,405 @@ export default function GameDetailsPage() {
     );
   }
 
-  // Info tab content — rendered on mobile unconditionally and inside the
-  // desktop "info" tab (single source, two instances).
-  const infoContent = (
-    <div className="space-y-6">
-      <div>
-        <SectionHeader
-          title={t("about_product", { name: game.title })}
-        />
-        <ProductDescription
-          description={game.longDescription || game.description}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-            <Package className="mr-2" size={16} />
-            {t("developer")}
-          </h4>
-          <p className="text-site-text font-medium">
-            {game.developer || t("unknown")}
-          </p>
-        </div>
-
-        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-            <Award className="mr-2" size={16} />
-            {t("publisher")}
-          </h4>
-          <p className="text-site-text font-medium">
-            {game.publisher || t("unknown")}
-          </p>
-        </div>
-
-        {game.releaseDate && (
-          <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-            <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-              <Calendar className="mr-2" size={16} />
-              {t("release_date")}
-            </h4>
-            <p className="text-site-text font-medium">
-              {new Date(game.releaseDate).toLocaleDateString()}
-            </p>
-          </div>
-        )}
-
-        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-            <Smartphone className="mr-2" size={16} />
-            {t("platforms")}
-          </h4>
-          <p className="text-site-text font-medium">
-            {game.platforms.join(", ")}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  // Compute price range for JSON-LD
+  const priceLow = game?.topUpOptions?.length
+    ? Math.min(...game.topUpOptions.map((o) => o.price))
+    : undefined;
+  const priceHigh = game?.topUpOptions?.length
+    ? Math.max(...game.topUpOptions.map((o) => o.price))
+    : undefined;
 
   return (
-    <div className="space-y-6">
+    <div className="page-container bg-transparent">
+      {/* Product JSON-LD for SEO */}
+      {game && product && (
+        <ProductJsonLd
+          name={game.title}
+          description={game.metaDescription || game.shortDescription || game.description}
+          image={game.mainImage}
+          slug={product.slug || product.id}
+          priceLow={priceLow}
+          priceHigh={priceHigh}
+          category={game.category}
+          rating={game.rating}
+          ratingCount={game.ratingCount}
+        />
+      )}
+
       {/* Back link */}
       <div className="mb-6">
         <Link
           href={backHref}
-          className="text-site-muted hover:text-site-text transition-colors inline-flex items-center font-medium text-sm"
+          className="text-gray-400 hover:text-white transition-colors inline-flex items-center font-medium"
         >
           <ChevronLeft size={18} className="mr-1" />
           {backLabel}
         </Link>
       </div>
 
-      {/* ── Two-column hero/top layout ── */}
-      <div className="grid md:grid-cols-[1fr_380px] gap-4 items-start mb-8">
-        {/* LEFT CARD – cover, title, badges, description */}
-        <div className="site-card p-5 space-y-4">
-          {/* Cover image */}
-          <div className="relative w-full overflow-hidden rounded-8 border border-site-border-soft">
-            <Image
-              src={
-                game.coverImage ||
-                (game.screenshots && game.screenshots.length > 0
-                  ? game.screenshots[0]
-                  : game.mainImage)
-              }
-              alt={game.title}
-              width={800}
-              height={400}
-              className="w-full h-auto object-cover"
-              sizes="(max-width: 768px) 100vw, 700px"
-            />
-          </div>
+      {/* Game Hero */}
+      <div className="bg-[#222427]/50 backdrop-blur-md border border-site-border overflow-hidden mb-8 rounded-2xl shadow-ocean">
+        <div className="relative min-h-[18rem] md:h-96 overflow-hidden">
+          <Image
+            src={
+              game.coverImage ||
+              (game.screenshots && game.screenshots.length > 0
+                ? game.screenshots[0]
+                : game.mainImage) ||
+              `https://placehold.co/800x400?text=${encodeURIComponent(game.title)}`
+            }
+            alt={game.title}
+            fill
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
-          {/* Title row with favourite/share actions */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl font-bold text-site-text leading-tight">
-                {game.title}
-              </h1>
+          {/* Game info overlay */}
+          <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
+            <div className="flex flex-row items-center md:items-end gap-3 md:gap-6">
+              <div className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden border border-site-border flex-shrink-0 rounded-2xl shadow-ocean">
+                <Image
+                  src={
+                    game.mainImage ||
+                    `https://placehold.co/200x200?text=${encodeURIComponent(game.title)}`
+                  }
+                  alt={game.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 min-w-0 flex flex-col justify-center md:justify-end gap-1.5 md:gap-2">
+                <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">
+                  {game.title}
+                </h1>
 
-              <div className="flex flex-wrap items-center gap-2 mt-2">
-                <Badge variant="neutral" className="gap-1.5">
-                  {getCountryFlagCode(game.category) && (
-                    <CountryFlag
-                      code={getCountryFlagCode(game.category)}
-                      size="S"
-                    />
-                  )}
-                  {game.category}
-                </Badge>
-
-                {/* Social proof — SEAGM-style rating + sold count (real data only) */}
-                {typeof game.rating === "number" && game.rating > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-site-text">
-                    <Star
-                      size={12}
-                      className="fill-amber-400 text-amber-400"
-                      aria-hidden="true"
-                    />
-                    {game.rating.toFixed(1)}
-                    {typeof game.ratingCount === "number" &&
-                      game.ratingCount > 0 && (
-                        <span className="font-normal text-site-dim">
-                          ({game.ratingCount})
-                        </span>
-                      )}
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                  <span className="bg-[#111315]/80 backdrop-blur-md text-white px-3 py-1 font-bold border border-white/10 rounded-full text-[11px] md:text-xs inline-flex items-center gap-1.5 shadow-lg tracking-widest uppercase">
+                    {getCountryFlagCode(game.category) && (
+                      <CountryFlag
+                        code={getCountryFlagCode(game.category)}
+                        size="S"
+                      />
+                    )}
+                    <span className="text-site-accent">{game.category}</span>
                   </span>
-                )}
-                {typeof game.soldCount === "number" && game.soldCount > 0 && (
-                  <span className="text-[12px] text-site-muted">
-                    {t("sold_count", { count: game.soldCount })}
-                  </span>
-                )}
+                </div>
+
+                <p className="text-gray-300 text-sm md:text-base font-medium drop-shadow-sm mt-1">
+                  {t("by_developer", {
+                    developer: game.publisher || game.developer || t("unknown"),
+                  })}
+                </p>
               </div>
 
-              <p className="text-[13px] text-site-muted mt-2">
-                {t("by_developer", {
-                  developer: game.publisher || game.developer || t("unknown"),
-                })}{" "}
-                ·{" "}
-                <Link
-                  href="/refund"
-                  className="hover:text-site-text transition-colors underline underline-offset-2"
+              <div className="absolute top-4 right-4 flex space-x-2 md:static md:mt-0">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleToggleFavorite}
+                  className={`w-9 h-9 md:w-10 md:h-10 border-site-border bg-[#222427]/80 hover:bg-site-border backdrop-blur-sm shadow-ocean rounded-xl ${isFavorite ? "text-red-500 border-red-500/30/50 bg-red-500/10" : "text-gray-300"
+                    }`}
                 >
-                  {t("refund_label")}
-                </Link>
-              </p>
+                  <Heart size={18} className={isFavorite ? "fill-red-500" : ""} />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCopyLink}
+                  className={`w-9 h-9 md:w-10 md:h-10 border-site-border bg-[#222427]/80 hover:bg-site-border backdrop-blur-sm shadow-ocean rounded-xl ${copied ? "text-green-400 border-green-500/30/50 bg-green-500/10" : "text-gray-300"
+                    }`}
+                >
+                  {copied ? <Check size={18} className="text-green-400" /> : <Share2 size={18} />}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border overflow-hidden rounded-2xl shadow-ocean">
+            <div className="flex border-b border-site-border/50 overflow-x-auto hide-scrollbar bg-[#1A1C1E]/50">
+              <button
+                onClick={() => setActiveTab("topup")}
+                className={`hidden md:flex py-4 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors ${activeTab === "topup" ? "text-site-accent border-b-2 border-site-accent bg-site-accent/5" : "text-gray-400 hover:text-white hover:bg-[#212328]/5"}`}
+              >
+                <DollarSign size={18} className="mr-2" />
+                {optionsTabLabel}
+              </button>
+              <button
+                onClick={() => setActiveTab("info")}
+                className={`hidden md:flex py-4 px-6 text-sm font-semibold items-center whitespace-nowrap flex-shrink-0 transition-colors ${activeTab === "info" ? "text-site-accent border-b-2 border-site-accent bg-site-accent/5" : "text-gray-400 hover:text-white hover:bg-[#212328]/5"}`}
+              >
+                <Info size={18} className="mr-2" />
+                {infoTabLabel}
+              </button>
+
+              <div className="md:hidden py-4 px-6 text-sm font-semibold flex items-center w-full bg-site-accent/10 border-b-2 border-site-accent text-site-accent">
+                <Info size={18} className="mr-2" />
+                {infoTabLabel}
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleToggleFavorite}
-                className={`w-9 h-9 ${isFavorite ? "text-status-danger border-status-danger/30 bg-status-danger/10" : "text-site-muted"}`}
+            <div className="p-4 md:p-8">
+              <div
+                className={activeTab === "topup" ? "hidden md:block" : "hidden"}
               >
-                <Heart size={18} className={isFavorite ? "fill-current" : ""} />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleCopyLink}
-                className={`w-9 h-9 ${copied ? "text-status-success border-status-success/30 bg-status-success/10" : "text-site-muted"}`}
+                <div className="space-y-6">
+                  <div className="hidden md:flex items-center justify-between">
+                    <p className="text-gray-600 font-black">
+                      {t("select_package")}
+                    </p>
+                  </div>
+
+                  {game.topUpOptions.length === 0 ? (
+                    <div className="text-center py-8 bg-[#1A1C1E] border border-site-border rounded-xl">
+                      <AlertCircle
+                        className="mx-auto text-gray-500 mb-2"
+                        size={32}
+                      />
+                      <p className="text-gray-400 font-medium">
+                        {t("no_options")}
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {t("no_options_desc")}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="hidden md:block">
+                        <Grid cols={2} md={3} gap={3} className="md:gap-4">
+                          {game.topUpOptions.map((option: any) => (
+                            <motion.div
+                              key={option.id}
+                              onClick={() => setSelectedOption(option.id)}
+                              className={`relative border p-2.5 md:p-4 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[100px] md:min-h-[120px] rounded-xl ${selectedOption === option.id
+                                ? "bg-site-accent/10 border-site-accent"
+                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/30 hover:bg-[#222427]"
+                                }`}
+                              whileHover={{ y: -2 }}
+                            >
+                              {option.isPopular && (
+                                <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
+                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] md:text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
+                                    <Flame size={10} className="text-yellow-200 fill-yellow-200" />
+                                    {t("popular_badge")}
+                                  </span>
+                                </div>
+                              )}
+
+                              <h4 className="text-white font-bold text-center text-[13px] md:text-base leading-tight line-clamp-2">
+                                {option.title}
+                              </h4>
+
+                              <div className="text-center">
+                                {option.originalPrice > option.price ? (
+                                  <div className="flex flex-col items-center">
+                                    <span className="line-through text-gray-500 text-[10px] md:text-xs">
+                                      ฿
+                                      {Number(
+                                        option.originalPrice || 0,
+                                      ).toFixed(2)}
+                                    </span>
+                                    <span className={`font-bold text-sm md:text-base ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
+                                      ฿{Number(option.price || 0).toFixed(2)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className={`font-bold text-sm md:text-base ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
+                                    ฿{Number(option.price || 0).toFixed(2)}
+                                  </span>
+                                )}
+                              </div>
+
+                              {selectedOption === option.id && (
+                                <div className="absolute bottom-2 right-2 text-site-accent">
+                                  <Check size={14} className="md:w-4 md:h-4" />
+                                </div>
+                              )}
+                            </motion.div>
+                          ))}
+                        </Grid>
+                      </div>
+
+                      <Sheet
+                        isOpen={isOptionsModalOpen}
+                        onClose={() => setIsOptionsModalOpen(false)}
+                        title={t("select_package")}
+                      >
+                        <div className="grid grid-cols-2 gap-3 pb-8">
+                          {game.topUpOptions.map((option: any) => (
+                            <motion.div
+                              key={option.id}
+                              onClick={() => {
+                                setSelectedOption(option.id);
+                                setIsOptionsModalOpen(false);
+                              }}
+                              className={`relative border p-3 cursor-pointer transition-all flex flex-col justify-center items-center gap-2 min-h-[110px] rounded-xl ${selectedOption === option.id
+                                ? "bg-site-accent/10 border-site-accent"
+                                : "bg-[#1A1C1E] border-site-border hover:border-site-accent/30 hover:bg-[#222427]"
+                                }`}
+                            >
+                              {option.isPopular && (
+                                <div className="absolute -top-3 left-0 right-0 flex justify-center z-10">
+                                  <span className="bg-gradient-to-r from-[#FF3366] to-[#FF6B35] text-white text-[9px] font-black tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/20 uppercase whitespace-nowrap">
+                                    <Flame size={10} className="text-yellow-200 fill-yellow-200" />
+                                    {t("popular_badge")}
+                                  </span>
+                                </div>
+                              )}
+
+                              <h4 className="text-white font-bold text-center text-[13px] leading-tight line-clamp-2">
+                                {option.title}
+                              </h4>
+
+                              <div className="text-center">
+                                {option.originalPrice > option.price ? (
+                                  <div className="flex flex-col items-center">
+                                    <span className="line-through text-gray-500 text-[10px]">
+                                      ฿
+                                      {Number(
+                                        option.originalPrice || 0,
+                                      ).toFixed(2)}
+                                    </span>
+                                    <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
+                                      ฿{Number(option.price || 0).toFixed(2)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className={`font-bold text-sm ${selectedOption === option.id ? "text-site-accent" : "text-white"}`}>
+                                    ฿{Number(option.price || 0).toFixed(2)}
+                                  </span>
+                                )}
+                              </div>
+
+                              {selectedOption === option.id && (
+                                <div className="absolute bottom-2 right-2 text-site-accent">
+                                  <Check size={14} />
+                                </div>
+                              )}
+                            </motion.div>
+                          ))}
+                        </div>
+                      </Sheet>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div
+                className={activeTab === "info" ? "block" : "block md:hidden"}
               >
-                {copied ? <Check size={18} /> : <Share2 size={18} />}
-              </Button>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 flex items-start md:items-center gap-2 leading-tight">
+                      <span className="w-1.5 h-5 bg-site-accent rounded-full flex-shrink-0 mt-1 md:mt-0"></span>
+                      <span>{t("about_product", { name: game.title })}</span>
+                    </h3>
+                    <ProductDescription
+                      description={game.longDescription || game.description}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                      <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                        <Package className="mr-2 text-gray-400" size={18} />
+                        {t("developer")}
+                      </h4>
+                      <p className="text-white font-medium">
+                        {game.developer || t("unknown")}
+                      </p>
+                    </div>
+
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                      <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                        <Award className="mr-2 text-gray-400" size={18} />
+                        {t("publisher")}
+                      </h4>
+                      <p className="text-white font-medium">
+                        {game.publisher || t("unknown")}
+                      </p>
+                    </div>
+
+                    {game.releaseDate && (
+                      <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                        <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                          <Calendar className="mr-2 text-gray-400" size={18} />
+                          {t("release_date")}
+                        </h4>
+                        <p className="text-white font-medium">
+                          {new Date(game.releaseDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 md:p-4 rounded-xl">
+                      <h4 className="text-gray-400 font-medium mb-2 flex items-center text-sm uppercase">
+                        <Smartphone className="mr-2 text-gray-400" size={18} />
+                        {t("platforms")}
+                      </h4>
+                      <p className="text-white font-medium">
+                        {game.platforms.join(", ")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Short description */}
-          <p className="text-[13px] text-site-muted leading-relaxed">
-            {game.shortDescription || game.description}
-          </p>
+          {relatedGamesByDev.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-white mb-4 flex items-center uppercase">
+                <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2"></span>
+                {t("related_products")}
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {relatedGamesByDev.map((relatedGame) => (
+                  <Link
+                    href={`/games/${relatedGame.slug}`}
+                    key={relatedGame.id}
+                  >
+                    <motion.div
+                      className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/30"
+                      whileHover={{ y: -4 }}
+                    >
+                      <div className="relative aspect-square overflow-hidden bg-[#222427]">
+                        <img
+                          src={
+                            relatedGame.imageUrl ||
+                            `https://placehold.co/300x300?text=${encodeURIComponent(relatedGame.name)}`
+                          }
+                          alt={relatedGame.name}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <h3 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">
+                            {relatedGame.name}
+                          </h3>
+                          <div className="flex items-center mt-1">
+                            <span className="text-[10px] bg-site-accent/20 text-site-accent px-2 py-0.5 border border-site-accent/30 font-medium uppercase rounded-full">
+                              {relatedGame.gameDetails?.developer || "GAME"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* RIGHT CARD – package selection, price, CTA (sticky on desktop) */}
-        <div className="site-card p-5 md:sticky md:top-20 space-y-5">
-          <h3 className="text-base font-bold text-site-text uppercase">
-            {purchaseTitle}
-          </h3>
-
-          {/* Mobile trigger to open options sheet */}
-          <div className="md:hidden">
+        {/* Right column */}
+        <div className="order-first lg:order-last">
+          <div className="md:hidden mb-4">
             {(() => {
               const selected = game.topUpOptions.find(
                 (opt) => opt.id === selectedOption,
@@ -1057,629 +1246,455 @@ export default function GameDetailsPage() {
               return (
                 <div
                   onClick={() => setIsOptionsModalOpen(true)}
-                  className="bg-site-raised border border-site-border-soft p-3 flex items-center justify-between cursor-pointer rounded-6 transition-colors hover:border-site-border"
+                  className="relative bg-[#222427]/80 backdrop-blur-md border border-site-border p-4 flex items-center justify-between cursor-pointer group rounded-2xl shadow-ocean"
                 >
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-medium text-site-dim uppercase block mb-0.5">
+                  <div className="flex-1">
+                    <span className="text-[10px] font-medium text-gray-400 uppercase block mb-1">
                       {t("selected_package_label")}
                     </span>
-                    <h4 className="text-site-text font-bold text-sm leading-tight truncate">
+                    <h4 className="text-white font-bold text-base leading-tight">
                       {selected?.title || t("select_package")}
                     </h4>
                   </div>
                   <div className="flex items-center gap-3">
                     {selected && (
-                      <span className="text-site-text font-bold text-lg">
-                        {formatTHB(Number(selected.price || 0))}
+                      <span className="text-site-accent font-bold text-lg">
+                        ฿{Number(selected.price || 0).toFixed(2)}
                       </span>
                     )}
-                    <ChevronRight size={18} className="text-site-muted" />
+                    <div className="bg-site-accent/10 p-1 border border-site-accent/30 rounded-lg group-hover:bg-site-accent/20 text-site-accent">
+                      <ChevronRight size={20} />
+                    </div>
                   </div>
                 </div>
               );
             })()}
           </div>
 
-          {/* Desktop package selector */}
-          <div className="hidden md:block space-y-4">
-            <p className="text-site-dim font-bold text-xs uppercase">
-              {t("select_package")}
-            </p>
+          <div className="bg-[#222427]/80 backdrop-blur-md border border-site-border p-4 md:p-6 sticky top-24 rounded-2xl shadow-ocean">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center uppercase">
+              <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2"></span>
+              {purchaseTitle}
+            </h3>
 
-            {game.topUpOptions.length === 0 ? (
-              <EmptyState
-                icon={AlertCircle}
-                message={t("no_options")}
-                description={t("no_options_desc")}
-              />
-            ) : (
-              <div role="radiogroup" aria-label={t("select_package")}>
-                <Grid cols={2} md={2} gap={3}>
-                  {game.topUpOptions.map((option: PackageOptionData) => (
-                    <PackageOption
-                      key={option.id}
-                      option={option}
-                      selected={selectedOption === option.id}
-                      onSelect={setSelectedOption}
-                      popularLabel={t("popular_badge")}
-                      size="sm"
-                    />
-                  ))}
-                </Grid>
-              </div>
-            )}
-          </div>
+            {selectedOption &&
+              (() => {
+                const option = game.topUpOptions.find(
+                  (opt: any) => opt.id === selectedOption,
+                );
+                if (!option) return null;
 
-          {/* Mobile options sheet */}
-          <Sheet
-            isOpen={isOptionsModalOpen}
-            onClose={() => setIsOptionsModalOpen(false)}
-            title={t("select_package")}
-          >
-            <div
-              role="radiogroup"
-              aria-label={t("select_package")}
-              className="grid grid-cols-2 gap-3 pb-8"
-            >
-              {game.topUpOptions.map((option: PackageOptionData) => (
-                <PackageOption
-                  key={option.id}
-                  option={option}
-                  selected={selectedOption === option.id}
-                  onSelect={(id) => {
-                    setSelectedOption(id);
-                    setIsOptionsModalOpen(false);
-                  }}
-                  popularLabel={t("popular_badge")}
-                  size="md"
-                />
-              ))}
-            </div>
-          </Sheet>
-
-          {/* Dynamic fields & extra inputs */}
-          {selectedOption &&
-            (() => {
-              const option = game.topUpOptions.find(
-                (opt: any) => opt.id === selectedOption,
-              );
-              if (!option) return null;
-
-              return (
-                <div className="space-y-4">
-                  {!isAuthenticated && (
-                    <div className="bg-status-warning/15 border border-status-warning/30 p-3 text-sm flex items-center gap-2 rounded-6">
-                      <AlertTriangle
-                        size={16}
-                        className="text-status-warning flex-shrink-0"
-                      />
-                      <span className="text-status-warning font-medium">
-                        {t("login_required_notice")}
-                      </span>
-                    </div>
-                  )}
-
-                  {isMobileRechargeRoute &&
-                    !(option.fields || []).some((field) =>
-                      /phone|user id/i.test(`${field.name} ${field.label}`),
-                    ) && (
-                      <Input
-                        label={t("mobile_number_label")}
-                        type="tel"
-                        value={mobilePhoneNumber}
-                        onChange={(e) => setMobilePhoneNumber(e.target.value)}
-                        placeholder={t("mobile_number_placeholder")}
-                      />
+                return (
+                  <div className="space-y-6">
+                    {!isAuthenticated && (
+                      <div className="bg-yellow-500/10 border border-yellow-500/30/30 p-3 text-sm flex items-center gap-2 rounded-xl">
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-500 flex-shrink-0"
+                        />
+                        <span className="text-yellow-200/90 font-medium">
+                          {t("login_required_notice")}
+                        </span>
+                      </div>
                     )}
 
-                  {option.fields && option.fields.length > 0 && (
-                    <div className="space-y-3">
-                      {option.fields.map((field) => (
-                        <div key={field.name}>
-                          {field.type === "select" ? (
-                            <div className="space-y-1.5">
-                              <div className="text-sm font-medium text-site-text block">
-                                <span className="font-bold">
-                                  {translateLabel(field.label)}{" "}
-                                  {field.required && (
-                                    <span className="text-status-danger">*</span>
-                                  )}
-                                </span>
-                              </div>
+                    {isMobileRechargeRoute &&
+                      !(option.fields || []).some((field) =>
+                        /phone|user id/i.test(`${field.name} ${field.label}`),
+                      ) && (
+                        <Input
+                          label={t("mobile_number_label")}
+                          type="tel"
+                          value={mobilePhoneNumber}
+                          onChange={(e) => setMobilePhoneNumber(e.target.value)}
+                          placeholder={t("mobile_number_placeholder")}
+                          disabled={!isAuthenticated}
+                        />
+                      )}
+
+                    {option.fields && option.fields.length > 0 && (
+                      <div className="space-y-4">
+                        {option.fields.map((field) => (
+                          <div key={field.name}>
+                            {field.type === "select" ? (
                               <Select
+                                label={
+                                  <span className="font-bold">
+                                    {translateLabel(field.label)}{" "}
+                                    {field.required && (
+                                      <span className="text-red-500">*</span>
+                                    )}
+                                  </span>
+                                }
+                                options={
+                                  field.options?.map((opt) => ({
+                                    label: opt.label,
+                                    value: opt.value,
+                                  })) || []
+                                }
                                 value={fieldValues[field.name] || ""}
-                                onValueChange={(value) =>
+                                onChange={(value) =>
                                   handleFieldChange(field.name, value)
                                 }
-                              >
-                                <SelectTrigger
-                                  className="w-full"
-                                  aria-label={translateLabel(field.label)}
-                                >
-                                  <SelectValue
-                                    placeholder={t("choose_placeholder", {
-                                      field: translateLabel(field.label),
-                                    })}
-                                  />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {field.options?.filter((opt) => opt.value !== "").map((opt) => (
-                                    <SelectItem
-                                      key={opt.value}
-                                      value={opt.value}
-                                    >
-                                      {opt.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          ) : (
-                            <Input
-                              label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
-                              type="text"
-                              value={fieldValues[field.name] || ""}
-                              onChange={(e) =>
-                                handleFieldChange(field.name, e.target.value)
-                              }
-                              placeholder={
-                                field.placeholder ||
-                                t("enter_placeholder", {
-                                  field: translateLabel(field.label),
-                                })
-                              }
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                                placeholder={`Choose ${translateLabel(field.label)}`}
+                                disabled={!isAuthenticated}
+                              />
+                            ) : (
+                              <Input
+                                label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
+                                type="text"
+                                value={fieldValues[field.name] || ""}
+                                onChange={(e) =>
+                                  handleFieldChange(field.name, e.target.value)
+                                }
+                                placeholder={
+                                  field.placeholder ||
+                                  `Enter your ${translateLabel(field.label)}`
+                                }
+                                disabled={!isAuthenticated}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-                  {/* Selected package summary */}
-                  <div className="flex justify-between items-start gap-4">
-                    <span className="text-site-muted flex-shrink-0 pt-0.5 font-medium text-sm">
-                      {t("selected_package_label")}
-                    </span>
-                    <div className="text-right min-w-0">
-                      <span className="text-site-text font-bold block leading-tight break-words text-sm">
-                        {option.title}
+                    <div className="flex justify-between items-start gap-4">
+                      <span className="text-gray-400 flex-shrink-0 pt-0.5 font-medium">
+                        {t("selected_package_label")}
                       </span>
-                    </div>
-                  </div>
-
-                  {/* Quantity stepper (SEAGM-style, capped at 10) */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-site-muted font-medium text-sm">
-                      {t("quantity_label")}
-                    </span>
-                    <div className="flex items-center border border-site-border-soft rounded-6 bg-site-bg">
-                      <button
-                        type="button"
-                        aria-label="-"
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        disabled={quantity <= 1}
-                        className="px-3 py-1.5 text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-l-6"
-                      >
-                        <Minus size={14} aria-hidden="true" />
-                      </button>
-                      <span className="px-4 text-site-text font-semibold text-sm tabular-nums">
-                        {quantity}
-                      </span>
-                      <button
-                        type="button"
-                        aria-label="+"
-                        onClick={() => setQuantity((q) => Math.min(10, q + 1))}
-                        disabled={quantity >= 10}
-                        className="px-3 py-1.5 text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-r-6"
-                      >
-                        <Plus size={14} aria-hidden="true" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Price breakdown */}
-                  <div className="py-3 border-y border-site-border-soft space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-site-muted font-medium text-sm">
-                        {t("price_label")}
-                      </span>
-                      {option.originalPrice > option.price ? (
-                        <div className="flex items-center gap-2">
-                          <span className="line-through text-site-dim text-xs">
-                            {formatTHB(Number(option.originalPrice || 0))}
-                          </span>
-                          <span className="text-site-text font-bold text-lg tabular-nums">
-                            {formatTHB(Number(option.price || 0) * quantity)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-site-text font-bold text-lg tabular-nums">
-                          {formatTHB(Number(option.price || 0) * quantity)}
+                      <div className="text-right min-w-0">
+                        <span className="text-white font-bold block leading-tight break-words">
+                          {option.title}
                         </span>
+                      </div>
+                    </div>
+
+                    <div className="py-4 border-y border-site-border">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-400 font-medium">
+                          {t("price_label")}
+                        </span>
+                        {option.originalPrice > option.price ? (
+                          <div>
+                            <span className="line-through text-gray-500 text-sm mr-2">
+                              ฿{Number(option.originalPrice || 0).toFixed(2)}
+                            </span>
+                            <span className="text-site-accent font-bold text-xl">
+                              ฿{Number(option.price || 0).toFixed(2)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-site-accent font-bold text-xl">
+                            ฿{Number(option.price || 0).toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+
+                      {option.originalPrice > option.price && (
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-gray-400 font-medium">
+                            {t("savings_label")}
+                          </span>
+                          <span className="text-green-400 font-bold">
+                            ฿
+                            {(
+                              Number(option.originalPrice || 0) -
+                              Number(option.price || 0)
+                            ).toFixed(2)}
+                          </span>
+                        </div>
                       )}
                     </div>
 
-                    {option.originalPrice > option.price && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-site-muted font-medium text-sm">
-                          {t("savings_label")}
-                        </span>
-                        <Badge variant="success">
-                          -฿{(
-                            Number(option.originalPrice || 0) -
-                            Number(option.price || 0)
-                          ).toFixed(2)}
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
+                    <div className="space-y-4">
+                      <Button
+                        onClick={handleBuyNow}
+                        disabled={isBuying}
+                        isLoading={isBuying}
+                        size="full"
+                        className="bg-site-accent hover:bg-site-accent/90 text-white font-bold h-12 border-none"
+                      >
+                        {!isBuying && (
+                          <>
+                            <ShoppingCart
+                              size={18}
+                              className="mr-2"
+                              aria-hidden="true"
+                            />
+                            {isAuthenticated
+                              ? t("buy_now_button")
+                              : t("login_to_buy_button")}
+                          </>
+                        )}
+                      </Button>
+                    </div>
 
-                  {/* CTA */}
-                  <Button
-                    onClick={handleBuyNow}
-                    disabled={isBuying}
-                    isLoading={isBuying}
-                    size="full"
-                    className="font-bold"
-                  >
-                    {!isBuying && (
-                      <>
-                        <ShoppingCart
-                          size={18}
-                          className="mr-2"
-                          aria-hidden="true"
+                    <div className="bg-site-accent/5 border border-site-accent/20 p-3 text-sm rounded-xl">
+                      <div className="flex items-center">
+                        <Clock
+                          size={16}
+                          className="text-site-accent mr-2 flex-shrink-0"
                         />
-                        {isAuthenticated
-                          ? t("buy_now_button")
-                          : t("login_to_buy_button")}
-                      </>
-                    )}
-                  </Button>
-
-                  <div className="bg-site-accent/5 border border-site-accent/20 p-3 text-sm rounded-6">
-                    <div className="flex items-center">
-                      <Clock
-                        size={16}
-                        className="text-site-accent mr-2 flex-shrink-0"
-                      />
-                      <span className="text-site-accent/90 font-medium">
-                        {t("auto_delivery_hint")}
-                      </span>
+                        <span className="text-site-accent/90 font-medium">
+                          {t("auto_delivery_hint")}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })()}
-        </div>
-      </div>
-
-      {/* ── Tabs section (topup options expanded + game info) ── */}
-      <div className="site-card overflow-hidden mb-8">
-        {/* Mobile: no tab bar, info always shows */}
-        <div className="md:hidden py-3.5 px-6 text-sm font-semibold flex items-center w-full text-site-text border-b-2 border-site-accent">
-          <Info size={18} className="mr-2" />
-          {infoTabLabel}
-        </div>
-        <div className="md:hidden p-5">{infoContent}</div>
-
-        {/* Desktop tabs */}
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="hidden md:block"
-        >
-          <TabsList className="flex h-auto w-full items-stretch justify-start overflow-x-auto rounded-none border-b border-site-border-soft bg-transparent p-0 text-site-muted scrollbar-hide">
-            <TabsTrigger
-              value="topup"
-              className="flex-shrink-0 items-center whitespace-nowrap rounded-none border-b-2 border-transparent px-6 py-3.5 text-sm font-semibold text-site-muted transition-colors hover:text-site-text data-[state=active]:border-site-accent data-[state=active]:bg-transparent data-[state=active]:text-site-text data-[state=active]:shadow-none"
-            >
-              <DollarSign size={18} className="mr-2" />
-              {optionsTabLabel}
-            </TabsTrigger>
-            <TabsTrigger
-              value="info"
-              className="flex-shrink-0 items-center whitespace-nowrap rounded-none border-b-2 border-transparent px-6 py-3.5 text-sm font-semibold text-site-muted transition-colors hover:text-site-text data-[state=active]:border-site-accent data-[state=active]:bg-transparent data-[state=active]:text-site-text data-[state=active]:shadow-none"
-            >
-              <Info size={18} className="mr-2" />
-              {infoTabLabel}
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Desktop-only expanded top-up grid (in-tab view) */}
-          <TabsContent value="topup" className="mt-0 p-5 md:p-8">
-            <div className="space-y-6">
-              <div className="hidden md:flex items-center justify-between">
-                <p className="text-site-dim font-bold text-sm uppercase">
-                  {t("select_package")}
-                </p>
-              </div>
-
-              {game.topUpOptions.length === 0 ? (
-                <EmptyState
-                  icon={AlertCircle}
-                  message={t("no_options")}
-                  description={t("no_options_desc")}
-                />
-              ) : (
-                <div role="radiogroup" aria-label={t("select_package")} className="hidden md:block">
-                  <Grid cols={2} md={3} gap={3} className="md:gap-4">
-                    {game.topUpOptions.map((option: PackageOptionData) => (
-                      <PackageOption
-                        key={option.id}
-                        option={option}
-                        selected={selectedOption === option.id}
-                        onSelect={setSelectedOption}
-                        popularLabel={t("popular_badge")}
-                        size="lg"
-                      />
-                    ))}
-                  </Grid>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-
-          {/* Info tab content (desktop instance) */}
-          <TabsContent value="info" className="mt-0 p-5 md:p-8">
-            {infoContent}
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* ── Related products (by developer/publisher) ── */}
-      {relatedGamesByDev.length > 0 && (
-        <section className="mb-10">
-          <SectionHeader
-            title={t("related_products")}
-            sublabel={t("related_products_sublabel")}
-          />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {relatedGamesByDev.map((relatedGame) => (
-              <Link
-                href={`/games/${relatedGame.slug}`}
-                key={relatedGame.id}
-                className="group"
-              >
-                <div className="aspect-square rounded-8 overflow-hidden bg-site-raised border border-site-border-soft transition-colors hover:border-site-border">
-                  <img
-                    src={
-                      relatedGame.imageUrl ||
-                      "/images/placeholder-game.svg"
-                    }
-                    alt={relatedGame.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-[13px] text-center font-bold line-clamp-2 text-site-text group-hover:text-site-accent transition-colors mt-2">
-                  {relatedGame.name}
-                </p>
-              </Link>
-            ))}
+                );
+              })()}
           </div>
-        </section>
-      )}
+        </div>
+      </div>
 
-      {/* ── Similar products ── */}
-      <section className="mt-8 mb-10">
-        <SectionHeader
-          title={t("similar_products")}
-          sublabel={t("similar_products_sublabel")}
-        />
+      {/* Similar products */}
+      <section className="mt-16 mb-10">
+        <h2 className="text-xl font-bold text-white mb-4 flex items-center uppercase">
+          <span className="w-1.5 h-5 bg-site-accent rounded-full mr-2"></span>
+          {t("similar_products")}
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {similarGames.length > 0 ? (
             similarGames.map((similarGame) => (
-              <Link
-                href={`/games/${similarGame.slug}`}
-                key={similarGame.id}
-                className="group"
-              >
-                <div className="aspect-square rounded-8 overflow-hidden bg-site-raised border border-site-border-soft transition-colors hover:border-site-border">
-                  <img
-                    src={
-                      similarGame.imageUrl ||
-                      "/images/placeholder-game.svg"
-                    }
-                    alt={similarGame.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-[13px] text-center font-bold line-clamp-2 text-site-text group-hover:text-site-accent transition-colors mt-2">
-                  {similarGame.name}
-                </p>
+              <Link href={`/games/${similarGame.slug}`} key={similarGame.id}>
+                <motion.div
+                  className="bg-[#1A1C1E] border border-site-border overflow-hidden group cursor-pointer rounded-2xl shadow-ocean hover:border-site-accent/30 transition-colors"
+                  whileHover={{ y: -4 }}
+                >
+                  <div className="aspect-square relative overflow-hidden bg-[#222427]">
+                    <img
+                      src={
+                        similarGame.imageUrl ||
+                        `https://placehold.co/300x300?text=${encodeURIComponent(similarGame.name)}`
+                      }
+                      alt={similarGame.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <h3 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">
+                        {similarGame.name}
+                      </h3>
+                      <div className="flex items-center mt-1">
+                        <span className="text-[10px] bg-site-accent/20 text-site-accent px-2 py-0.5 border border-site-accent/30 font-medium uppercase rounded-full">
+                          {similarGame.gameDetails?.developer ||
+                            similarGame.category?.name ||
+                            "GAME"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
               </Link>
             ))
           ) : (
-            <EmptyState
-              icon={AlertCircle}
-              message={t("no_similar_found")}
-            />
+            <div className="col-span-full text-center py-8 text-gray-500 font-medium">
+              {t("no_similar_found")}
+            </div>
           )}
         </div>
       </section>
 
-      {/* ── Confirmation Modal ── */}
-      <Dialog
-        open={showConfirmModal && verificationStatus !== null}
-        onOpenChange={setShowConfirmModal}
-      >
-        <DialogContent
-          className="bg-site-surface border-site-border max-w-4xl gap-0 overflow-hidden p-0 rounded-8 sm:rounded-8 flex flex-col max-h-[95vh] sm:max-h-[90vh]"
-          aria-describedby={undefined}
-        >
-          {verificationStatus && (
-            <>
-            <div
-              className={`border-b border-site-border p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-status-danger/10" : "bg-site-accent/10"}`}
+      {/* Confirmation Modal */}
+      <AnimatePresence>
+        {showConfirmModal && verificationStatus && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-md"
+            onClick={() => setShowConfirmModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#222427] border border-site-border w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-2xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center gap-2">
-                {!verificationStatus.supported ? (
-                  <ShieldAlert size={22} className="text-status-danger" />
-                ) : (
-                  <Check size={22} className="text-site-accent" />
-                )}
-                <DialogTitle className="text-base sm:text-lg font-bold text-site-text uppercase">
-                  {!verificationStatus.supported
-                    ? t("unverified_account_warning")
-                    : t("confirm_order_title")}
-                </DialogTitle>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto">
-              {!verificationStatus.supported && (
-                <div className="bg-status-danger/10 border-b border-status-danger/30 p-3">
-                  <div className="flex items-start gap-2">
-                    <AlertCircle
-                      size={18}
-                      className="text-status-danger mt-0.5 flex-shrink-0"
-                    />
-                    <div className="flex-1">
-                      <p className="font-bold text-status-danger text-sm">
-                        {t("unverified_account_warning")}
-                      </p>
-                      <p className="text-xs text-status-danger/80 mt-0.5 font-medium">
-                        {t("verify_info_hint")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="p-4 sm:p-5 space-y-4 border-b lg:border-b-0 lg:border-r border-site-border">
-                  <div className="bg-site-raised border border-site-border-soft p-3 sm:p-4 rounded-8">
-                    <h3 className="font-bold text-site-text text-sm mb-3 flex items-center gap-1.5 uppercase">
-                      <Package size={16} className="text-site-accent" />
-                      {t("product_details_title")}
-                    </h3>
-                    <div className="space-y-2 text-sm font-medium tabular-nums">
-                      <div className="flex justify-between items-center">
-                        <span className="text-site-muted">{t("product_label")}</span>
-                        <span className="text-site-text text-right max-w-[60%]">
-                          {verificationStatus.productName}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-site-muted">{t("package_label")}</span>
-                        <span className="text-site-text">
-                          {verificationStatus.optionName}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {Object.keys(verificationStatus.playerInfo).length > 0 && (
-                    <div className="bg-site-raised border border-site-border-soft p-3 sm:p-4 rounded-8">
-                      <h3 className="font-bold text-site-text text-sm mb-2 flex items-center gap-1.5 uppercase">
-                        <User size={16} className="text-site-accent" />
-                        {t("account_info_title")}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {Object.entries(verificationStatus.playerInfo).map(
-                          ([key, value]) => (
-                            <div
-                              key={key}
-                              className="bg-site-deep p-2 border border-site-border-soft rounded-6"
-                            >
-                              <span className="text-[10px] text-site-dim block uppercase font-semibold">
-                                {key}
-                              </span>
-                              <span className="font-mono font-bold text-site-text text-sm truncate block mt-0.5">
-                                {value}
-                              </span>
-                            </div>
-                          ),
-                        )}
-                      </div>
-                    </div>
+              <div
+                className={`border-b border-site-border p-3 sm:p-4 flex items-center justify-between flex-shrink-0 ${!verificationStatus.supported ? "bg-red-500/10" : "bg-site-accent/10"}`}
+              >
+                <div className="flex items-center gap-2">
+                  {!verificationStatus.supported ? (
+                    <ShieldAlert size={22} className="text-red-500" />
+                  ) : (
+                    <Check size={22} className="text-site-accent" />
                   )}
+                  <h2 className="text-base sm:text-lg font-bold text-white uppercase">
+                    {!verificationStatus.supported
+                      ? t("unverified_account_warning")
+                      : t("confirm_order_title")}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="p-1.5 hover:bg-[#212328]/10 rounded-lg transition-colors text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
 
-                  <div className="bg-status-danger/10 border border-status-danger/30 p-3 rounded-8">
+              <div className="flex-1 overflow-y-auto">
+                {!verificationStatus.supported && (
+                  <div className="bg-red-500/10 border-b border-red-500/30/30 p-3">
                     <div className="flex items-start gap-2">
                       <AlertCircle
-                        size={16}
-                        className="text-status-danger mt-0.5 flex-shrink-0"
+                        size={18}
+                        className="text-red-500 mt-0.5 flex-shrink-0"
                       />
-                      <div>
-                        <p className="font-bold text-status-danger text-xs">
-                          {t("no_refund_warning_title")}
+                      <div className="flex-1">
+                        <p className="font-bold text-red-400 text-sm">
+                          {t("unverified_account_warning")}
                         </p>
-                        <p className="text-xs text-status-danger/80 mt-0.5 leading-relaxed font-medium">
-                          {t("no_refund_warning_desc")}
+                        <p className="text-xs text-red-300 mt-0.5 font-medium">
+                          {t("verify_info_hint")}
                         </p>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="p-4 sm:p-5 space-y-4 bg-site-raised">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-site-muted font-bold uppercase">
-                      {t("payment_method_label")}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-site-text text-sm">
-                        {priceSummary.label || t("select_method")}
-                      </span>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setIsPaymentSelectOpen(true)}
-                        className="text-[10px] py-1 px-2 h-auto font-semibold uppercase"
-                      >
-                        {t("change_button")}
-                      </Button>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  <div className="p-4 sm:p-5 space-y-4 border-b lg:border-b-0 lg:border-r border-site-border">
+                    <div className="bg-[#1A1C1E] border border-site-border p-3 sm:p-4 rounded-xl">
+                      <h3 className="font-bold text-white text-sm mb-3 flex items-center gap-1.5 uppercase">
+                        <Package size={16} className="text-site-accent" />
+                        {t("product_details_title")}
+                      </h3>
+                      <div className="space-y-2 text-sm font-medium">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400">Product:</span>
+                          <span className="text-white text-right max-w-[60%]">
+                            {verificationStatus.productName}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400">Package:</span>
+                          <span className="text-white">
+                            {verificationStatus.optionName}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-                    <div className="space-y-2 text-sm font-medium tabular-nums">
-                      <div className="flex justify-between text-site-muted">
-                        <span>{t("subtotal_label")}</span>
-                        <span className="text-site-text">
-                          {formatTHB(Number(priceSummary.base || verificationStatus.price || 0))}
-                        </span>
+                    {Object.keys(verificationStatus.playerInfo).length > 0 && (
+                      <div className="bg-[#1A1C1E] border border-site-border p-3 sm:p-4 rounded-xl">
+                        <h3 className="font-bold text-white text-sm mb-2 flex items-center gap-1.5 uppercase">
+                          <User size={16} className="text-site-accent" />
+                          {t("account_info_title")}
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Object.entries(verificationStatus.playerInfo).map(
+                            ([key, value]) => (
+                              <div
+                                key={key}
+                                className="bg-[#16181A] p-2 border border-site-border rounded-lg"
+                              >
+                                <span className="text-[10px] text-gray-500 block uppercase font-bold">
+                                  {key}
+                                </span>
+                                <span className="font-mono font-bold text-white text-sm truncate block mt-0.5">
+                                  {value}
+                                </span>
+                              </div>
+                            ),
+                          )}
+                        </div>
                       </div>
-                      <div className="flex justify-between text-site-muted">
-                        <span>{t("fee_label")}</span>
-                        <span className="text-site-text">
-                          +{formatTHB(Number(priceSummary.fee || 0))}
-                        </span>
-                      </div>
-                      <div className="border-t border-site-border-soft pt-2 mt-2">
-                        <div className="flex justify-between items-baseline">
-                          <span className="font-bold text-site-text">
-                            {t("total_label")}
-                          </span>
-                          <span className="text-2xl sm:text-3xl font-extrabold text-site-accent">
-                            {formatTHB(Number(priceSummary.total || verificationStatus.price || 0))}
-                          </span>
+                    )}
+
+                    <div className="bg-red-500/10 border border-red-500/30/30 p-3 rounded-xl">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle
+                          size={16}
+                          className="text-red-500 mt-0.5 flex-shrink-0"
+                        />
+                        <div>
+                          <p className="font-bold text-red-400 text-xs">
+                            {t("no_refund_warning_title")}
+                          </p>
+                          <p className="text-xs text-red-300/80 mt-0.5 leading-relaxed font-medium">
+                            {t("no_refund_warning_desc")}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-status-info/10 border border-status-info/30 p-2.5 text-[10px] text-status-info flex items-start gap-2 font-medium uppercase rounded-8">
-                    <ShieldCheck size={14} className="mt-0.5 flex-shrink-0" />
-                    <span>{t("secure_payment_notice")}</span>
-                  </div>
-
-                  <div className="pt-4 border-t border-site-border-soft">
-                    <div className="mb-4">
-                      <div className="flex items-start gap-2 group">
-                        <Checkbox
-                          id="terms"
-                          checked={termsAccepted}
-                          onCheckedChange={(v) => setTermsAccepted(v === true)}
-                          className="mt-0.5"
-                        />
-                        <Label
-                          htmlFor="terms"
-                          className="text-[10px] font-medium text-site-muted leading-tight cursor-pointer"
+                  <div className="p-4 sm:p-5 space-y-4 bg-[#1A1C1E]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-400 font-bold uppercase">
+                        {t("payment_method_label")}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-sm">
+                          {priceSummary.label || "Select Method"}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setIsPaymentSelectOpen(true)}
+                          className="text-[10px] py-1 px-2 h-auto font-bold uppercase border-site-border text-white hover:bg-site-border hover:text-white"
                         >
-                          <span className="block group-hover:text-site-text transition-colors">
+                          {t("change_button")}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="bg-[#222427] border border-site-border p-4 rounded-xl">
+                      <div className="space-y-2 text-sm font-medium">
+                        <div className="flex justify-between text-gray-400">
+                          <span>{t("subtotal_label")}</span>
+                          <span className="text-white">
+                            ฿
+                            {Number(
+                              priceSummary.base ||
+                              verificationStatus.price ||
+                              0,
+                            ).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-gray-400">
+                          <span>{t("fee_label")}</span>
+                          <span className="text-pink-400">
+                            +฿{Number(priceSummary.fee || 0).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="border-t border-site-border pt-2 mt-2">
+                          <div className="flex justify-between items-baseline">
+                            <span className="font-bold text-white">
+                              {t("total_label")}
+                            </span>
+                            <span className="text-2xl sm:text-3xl font-bold text-site-accent">
+                              ฿
+                              {Number(
+                                priceSummary.total ||
+                                verificationStatus.price ||
+                                0,
+                              ).toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-sky-500/10 border border-sky-500/30 p-2.5 text-[10px] text-sky-400 flex items-start gap-2 font-medium uppercase rounded-xl">
+                      <ShieldCheck size={14} className="mt-0.5 flex-shrink-0" />
+                      <span>{t("secure_payment_notice")}</span>
+                    </div>
+
+                    <div className="pt-4 border-t border-site-border">
+                      <div className="mb-4">
+                        <label className="flex items-start gap-2 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={termsAccepted}
+                            onChange={(e) => setTermsAccepted(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 rounded border-site-border bg-[#1A1C1E] accent-site-accent flex-shrink-0 cursor-pointer"
+                          />
+                          <span className="text-[10px] text-gray-400 group-hover:text-gray-300 transition-colors leading-tight font-medium">
                             {t("terms_agreement_prefix")}{" "}
                             <Link
                               href="/terms"
@@ -1698,9 +1713,9 @@ export default function GameDetailsPage() {
                             >
                               {t("privacy_label")}
                             </Link>{" "}
-                            <span className="text-site-dim">·</span>{" "}
+                            and{" "}
                             <Link
-                              href="/refund"
+                              href="/refund-policy"
                               target="_blank"
                               className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
@@ -1708,200 +1723,218 @@ export default function GameDetailsPage() {
                               {t("refund_label")}
                             </Link>
                           </span>
-                        </Label>
+                        </label>
                       </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button
+                          onClick={createOrder}
+                          disabled={isBuying || !termsAccepted}
+                          isLoading={isBuying}
+                          className="flex-1 bg-site-accent hover:bg-site-accent/90 text-white h-12 sm:h-14 text-base sm:text-lg font-bold disabled:opacity-50 border-none uppercase transition-all"
+                        >
+                          {!isBuying && <Check size={20} className="mr-2" />}
+                          {t("confirm_button")}
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowConfirmModal(false)}
+                          disabled={isBuying}
+                          className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-bold border-site-border bg-transparent text-white hover:bg-site-border hover:text-white uppercase transition-all"
+                        >
+                          {t("cancel_button")}
+                        </Button>
+                      </div>
+
+                      <p className="text-center text-[10px] text-gray-500 mt-3 font-medium uppercase">
+                        {t("confirm_hint")}
+                      </p>
                     </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button
-                        onClick={createOrder}
-                        disabled={isBuying || !termsAccepted}
-                        isLoading={isBuying}
-                        className="flex-1 h-12 sm:h-14 text-base sm:text-lg font-bold uppercase"
-                      >
-                        {!isBuying && <Check size={20} className="mr-2" />}
-                        {t("confirm_button")}
-                      </Button>
-
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowConfirmModal(false)}
-                        disabled={isBuying}
-                        className="sm:w-auto w-full h-12 sm:h-14 px-6 sm:px-8 font-bold uppercase"
-                      >
-                        {t("cancel_button")}
-                      </Button>
-                    </div>
-
-                    <p className="text-center text-[10px] text-site-dim mt-3 font-medium uppercase">
-                      {t("confirm_hint")}
-                    </p>
                   </div>
                 </div>
               </div>
-            </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* ── Payment Selection Modal ── */}
-      <Dialog open={isPaymentSelectOpen} onOpenChange={setIsPaymentSelectOpen}>
-        <DialogContent className="bg-site-surface border-site-border max-w-5xl gap-0 p-4 sm:p-6 rounded-8 sm:rounded-8">
-          <div className="flex justify-between items-start gap-3 mb-5">
-            <div>
-              <DialogTitle className="text-2xl font-bold text-site-text uppercase">
-                {t("payment_selection_title")}
-              </DialogTitle>
-              <DialogDescription className="text-sm text-site-muted mt-1 font-medium">
-                {t("payment_selection_desc")}
-              </DialogDescription>
-            </div>
-          </div>
+      <AnimatePresence>
+        {isPaymentSelectOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-md"
+            onClick={() => setIsPaymentSelectOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-[#222427] w-full max-w-5xl border border-site-border shadow-2xl p-4 sm:p-6 rounded-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start gap-3 mb-5">
+                <div>
+                  <h3 className="text-2xl font-bold text-white uppercase">
+                    {t("payment_selection_title")}
+                  </h3>
+                  <p className="text-sm text-gray-400 mt-1 font-medium">
+                    {t("payment_selection_desc")}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsPaymentSelectOpen(false)}
+                  className="p-2 hover:bg-[#212328]/10 rounded-lg transition-colors text-white"
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1">
-                {paymentOptions.map((opt: PaymentMethodOption) => {
-                  const isActive = selectedPaymentOption === opt.code;
-                  const totalAmount = priceSummary.total;
-                  const isAvailable = isPaymentMethodAvailable(opt.method, totalAmount);
-                  const unavailableReason = getPaymentMethodUnavailableReason(opt.method, totalAmount);
+              <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1">
+                  {paymentOptions.map((opt: PaymentMethodOption) => {
+                    const isActive = selectedPaymentOption === opt.code;
+                    const totalAmount = priceSummary.total;
+                    const isAvailable = isPaymentMethodAvailable(opt.method, totalAmount);
+                    const unavailableReason = getPaymentMethodUnavailableReason(opt.method, totalAmount);
 
-                  return (
-                    <label
-                      key={opt.code}
-                      className={`border p-4 flex flex-col gap-3 transition-colors rounded-8 ${isActive
-                        ? "bg-site-accent/10 border-site-accent"
-                        : "bg-site-surface border-site-border-soft hover:border-site-border"
-                        } ${!isAvailable
-                          ? "opacity-50 cursor-not-allowed"
-                          : "cursor-pointer"
-                        }`}
-                      onClick={() => {
-                        if (isAvailable) {
-                          setSelectedPaymentOption(opt.code);
-                        }
-                      }}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start gap-2">
-                          <input
-                            type="radio"
-                            name="paymentOptionModal"
-                            value={opt.code}
-                            checked={isActive}
-                            onChange={() =>
-                              isAvailable && setSelectedPaymentOption(opt.code)
-                            }
-                            disabled={!isAvailable}
-                            className="mt-1 accent-site-accent disabled:cursor-not-allowed bg-site-deep border-site-border"
-                          />
-                          <div>
-                            <div className="text-site-text font-bold text-base flex items-center gap-2">
-                              {opt.label}
-                              {!isAvailable && (
-                                <Badge variant="danger" className="text-[10px]">
-                                  {t("min_amount_badge", { amount: TRUEMONEY_MIN_AMOUNT })}
-                                </Badge>
+                    return (
+                      <label
+                        key={opt.code}
+                        className={`border p-4 flex flex-col gap-3 transition-all rounded-xl ${isActive ? "bg-site-accent/10 border-site-accent" : "bg-[#1A1C1E] border-site-border hover:border-site-accent/30 hover:bg-[#222427]"
+                          } ${!isAvailable
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer"
+                          }`}
+                        onClick={() => {
+                          if (isAvailable) {
+                            setSelectedPaymentOption(opt.code);
+                          }
+                        }}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-2">
+                            <input
+                              type="radio"
+                              name="paymentOptionModal"
+                              value={opt.code}
+                              checked={isActive}
+                              onChange={() =>
+                                isAvailable && setSelectedPaymentOption(opt.code)
+                              }
+                              disabled={!isAvailable}
+                              className="mt-1 accent-site-accent disabled:cursor-not-allowed bg-[#16181A] border-site-border"
+                            />
+                            <div>
+                              <div className="text-white font-bold text-base flex items-center gap-2">
+                                {opt.label}
+                                {!isAvailable && (
+                                  <span className="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded border border-red-500/20">
+                                    Min {TRUEMONEY_MIN_AMOUNT}฿
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[10px] text-gray-400 mt-1 font-medium">
+                                Gateway: {opt.gateway.name}
+                              </div>
+                              {unavailableReason && (
+                                <div className="text-[10px] text-red-400 mt-1 font-medium">
+                                  {unavailableReason}
+                                </div>
                               )}
                             </div>
-                            <div className="text-[10px] text-site-muted mt-1 font-medium">
-                              {t("gateway_label", { name: opt.gateway.name })}
-                            </div>
-                            {unavailableReason && (
-                              <div className="text-[10px] text-status-danger mt-1 font-medium">
-                                {unavailableReason}
-                              </div>
-                            )}
                           </div>
+                          {isActive && isAvailable && (
+                            <Check size={16} className="text-site-accent" />
+                          )}
                         </div>
-                        {isActive && isAvailable && (
-                          <Check size={16} className="text-site-accent" />
-                        )}
-                      </div>
 
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] uppercase border border-site-border-soft px-2 py-0.5 bg-site-deep text-site-muted font-bold rounded-4 ${!isAvailable ? "opacity-50" : ""}`}>
-                          {opt.method}
-                        </span>
-                      </div>
-
-                      <div className="border-t border-site-border-soft pt-2 text-[10px] text-site-muted space-y-1 font-medium">
-                        <div className="flex justify-between">
-                          <span>{t("fee_percent_label")}</span>
-                          <span className="text-site-text">
-                            {Number(opt.surchargePercent || 0).toFixed(2)}%
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[11px] uppercase border border-site-border px-2 py-0.5 bg-[#16181A] text-gray-400 font-bold rounded ${!isAvailable ? "opacity-50" : ""}`}>
+                            {opt.method}
                           </span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>{t("flat_fee_label")}</span>
-                          <span className="text-site-text">{formatTHB(Number(opt.flatFee || 0))}</span>
+
+                        <div className="border-t border-site-border/50 pt-2 text-[10px] text-gray-400 space-y-1 font-medium">
+                          <div className="flex justify-between">
+                            <span>FEE %</span>
+                            <span className="text-white">
+                              {Number(opt.surchargePercent || 0).toFixed(2)}%
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>FLAT FEE</span>
+                            <span className="text-white">{formatTHB(Number(opt.flatFee || 0))}</span>
+                          </div>
                         </div>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
+                      </label>
+                    );
+                  })}
+                </div>
 
-              <div className="border border-site-border-soft p-4 bg-site-raised rounded-8 h-fit space-y-4">
-                <h4 className="text-lg font-bold text-site-text uppercase">
-                  {t("transaction_summary_title")}
-                </h4>
+                <div className="border border-site-border p-4 bg-[#1A1C1E] rounded-xl h-fit space-y-4">
+                  <h4 className="text-lg font-bold text-white uppercase">
+                    {t("transaction_summary_title")}
+                  </h4>
 
-                <div className="space-y-2 text-sm font-medium tabular-nums">
-                  <div className="flex justify-between text-site-muted">
-                    <span>{t("product_label")}</span>
-                    <span className="text-site-text max-w-[55%] text-right truncate">
-                      {game?.title || "-"}
+                  <div className="space-y-2 text-sm font-medium">
+                    <div className="flex justify-between text-gray-400">
+                      <span>Product:</span>
+                      <span className="text-white max-w-[55%] text-right truncate">
+                        {game?.title || "-"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-gray-400">
+                      <span>Package:</span>
+                      <span className="text-white max-w-[55%] text-right truncate">
+                        {selectedTopUp?.title || "-"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-gray-400">
+                      <span>Subtotal:</span>
+                      <span className="text-white">{formatTHB(Number(priceSummary.base || 0))}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-400">
+                      <span>Fee:</span>
+                      <span className="text-pink-400">{formatTHB(Number(priceSummary.fee || 0))}</span>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-site-border pt-3 flex justify-between items-end font-bold">
+                    <span className="text-sm text-gray-400 uppercase">
+                      {t("total_label")}
+                    </span>
+                    <span className="text-2xl font-bold text-site-accent">
+                      {formatTHB(Number(priceSummary.total || 0))}
                     </span>
                   </div>
-                  <div className="flex justify-between text-site-muted">
-                    <span>{t("package_label")}</span>
-                    <span className="text-site-text max-w-[55%] text-right truncate">
-                      {selectedTopUp?.title || "-"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-site-muted">
-                    <span>{t("subtotal_label")}</span>
-                    <span className="text-site-text">{formatTHB(Number(priceSummary.base || 0))}</span>
-                  </div>
-                  <div className="flex justify-between text-site-muted">
-                    <span>{t("fee_label")}</span>
-                    <span className="text-site-text">{formatTHB(Number(priceSummary.fee || 0))}</span>
-                  </div>
-                </div>
 
-                <div className="border-t border-site-border-soft pt-3 flex justify-between items-end font-bold">
-                  <span className="text-sm text-site-muted uppercase">
-                    {t("total_label")}
-                  </span>
-                  <span className="text-2xl font-extrabold text-site-accent">
-                    {formatTHB(Number(priceSummary.total || 0))}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-2 pt-1">
-                  <Button
-                    onClick={() => setIsPaymentSelectOpen(false)}
-                    disabled={!selectedPaymentOption}
-                    fullWidth
-                    className="font-bold uppercase"
-                  >
-                    {t("confirm_selection_button")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsPaymentSelectOpen(false)}
-                    fullWidth
-                    className="font-bold uppercase"
-                  >
-                    {t("close_window_button")}
-                  </Button>
+                  <div className="flex flex-col gap-2 pt-1">
+                    <Button
+                      onClick={() => setIsPaymentSelectOpen(false)}
+                      disabled={!selectedPaymentOption}
+                      fullWidth
+                      className="font-bold uppercase bg-site-accent hover:bg-site-accent/90 text-white border-none transition-all"
+                    >
+                      {t("confirm_selection_button")}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsPaymentSelectOpen(false)}
+                      fullWidth
+                      className="font-bold uppercase border-site-border bg-transparent text-white hover:bg-site-border hover:text-white transition-all"
+                    >
+                      {t("close_window_button")}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-        </DialogContent>
-      </Dialog>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

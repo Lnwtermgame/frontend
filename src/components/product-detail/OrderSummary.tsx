@@ -1,33 +1,23 @@
 "use client";
 
-import { Minus, Plus, ShoppingCart, Clock, AlertTriangle, ChevronRight } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Clock, AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { formatTHB } from "@/lib/format";
-import type { SeagmField } from "@/lib/services/product-api";
 import type { PriceSummary, TopUpOption } from "./types";
 
 export interface OrderSummaryProps {
   option: TopUpOption | null;
   isAuthenticated: boolean;
-  fieldValues: Record<string, string>;
-  onFieldChange: (name: string, value: string) => void;
-  translateLabel: (label: string) => string;
-  isMobileRechargeRoute: boolean;
-  mobilePhoneNumber: string;
-  onMobilePhoneChange: (value: string) => void;
   quantity: number;
   onQuantityChange: (quantity: number) => void;
   priceSummary: PriceSummary;
   isBuying: boolean;
   onBuy: () => void;
-  onOpenPackages: () => void;
 }
 
-export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChange, translateLabel, isMobileRechargeRoute, mobilePhoneNumber, onMobilePhoneChange, quantity, onQuantityChange, priceSummary, isBuying, onBuy, onOpenPackages }: OrderSummaryProps) {
+export function OrderSummary({ option, isAuthenticated, quantity, onQuantityChange, priceSummary, isBuying, onBuy }: OrderSummaryProps) {
   const t = useTranslations("ProductDetail");
 
   return (
@@ -56,111 +46,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
             </div>
           )}
 
-          {/* Mobile package trigger (visible only on small screens) */}
-          <div className="md:hidden">
-            <button
-              type="button"
-              onClick={onOpenPackages}
-              className="w-full text-left bg-site-raised border border-site-border-soft p-3 flex items-center justify-between cursor-pointer rounded-6 transition-colors hover:border-site-border"
-            >
-              <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-medium text-site-dim uppercase block mb-0.5">
-                  {t("selected_package_label")}
-                </span>
-                <h4 className="text-site-text font-bold text-sm leading-tight truncate">
-                  {option.title || t("select_package")}
-                </h4>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-site-text font-bold text-lg">
-                  {formatTHB(Number(option.price || 0))}
-                </span>
-                <ChevronRight size={18} className="text-site-muted" />
-              </div>
-            </button>
-          </div>
-
-          {/* Mobile recharge phone input */}
-          {isMobileRechargeRoute &&
-            !(option.fields || []).some((field: SeagmField) =>
-              /phone|user id/i.test(`${field.name} ${field.label}`),
-            ) && (
-              <Input
-                label={t("mobile_number_label")}
-                type="tel"
-                value={mobilePhoneNumber}
-                onChange={(e) => onMobilePhoneChange(e.target.value)}
-                placeholder={t("mobile_number_placeholder")}
-              />
-            )}
-
-          {/* Dynamic fields from option.fields */}
-          {option.fields && option.fields.length > 0 && (
-            <div className="space-y-3">
-              {option.fields.map((field: SeagmField) => (
-                <div key={field.name}>
-                  {field.type === "select" ? (
-                    <div className="space-y-1.5">
-                      <div className="text-sm font-medium text-site-text block">
-                        <span className="font-bold">
-                          {translateLabel(field.label)}{" "}
-                          {field.required && (
-                            <span className="text-status-danger">*</span>
-                          )}
-                        </span>
-                      </div>
-                      <Select
-                        value={fieldValues[field.name] || ""}
-                        onValueChange={(value) =>
-                          onFieldChange(field.name, value)
-                        }
-                      >
-                        <SelectTrigger
-                          className="w-full"
-                          aria-label={translateLabel(field.label)}
-                        >
-                          <SelectValue
-                            placeholder={t("choose_placeholder", {
-                              field: translateLabel(field.label),
-                            })}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {field.options
-                            ?.filter((opt) => opt.value !== "")
-                            .map((opt) => (
-                              <SelectItem
-                                key={opt.value}
-                                value={opt.value}
-                              >
-                                {opt.label}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  ) : (
-                    <Input
-                      label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
-                      type="text"
-                      value={fieldValues[field.name] || ""}
-                      onChange={(e) =>
-                        onFieldChange(field.name, e.target.value)
-                      }
-                      placeholder={
-                        field.placeholder ||
-                        t("enter_placeholder", {
-                          field: translateLabel(field.label),
-                        })
-                      }
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Selected package summary */}
+          {/* Selected package */}
           <div className="flex justify-between items-start gap-4">
             <span className="text-site-muted flex-shrink-0 pt-0.5 font-medium text-sm">
               {t("selected_package_label")}

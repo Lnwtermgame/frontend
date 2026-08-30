@@ -16,16 +16,16 @@ import {
 import { Button } from "@/components/ui/Button";
 import { useTranslations } from "next-intl";
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
-import { Skeleton, SkeletonHero } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { GameDetails, TopUpOption, PriceSummary, VerificationStatus } from "@/components/product-detail/types";
 import { ProductHero } from "@/components/product-detail/ProductHero";
 import { OrderSummary } from "@/components/product-detail/OrderSummary";
 import { ConfirmOrderDialog } from "@/components/product-detail/ConfirmOrderDialog";
 import { PaymentMethodDialog } from "@/components/product-detail/PaymentMethodDialog";
+import { PurchaseForm } from "@/components/product-detail/PurchaseForm";
 import { ProductInfoPanel } from "@/components/product-detail/ProductInfoPanel";
 import { RelatedProducts } from "@/components/product-detail/RelatedProducts";
-import { PackageSheet } from "@/components/product-detail/PackageSelector";
 
 // Helper function to transform Product to GameDetails
 function transformProductToGameDetails(
@@ -104,7 +104,6 @@ export default function GameDetailsPage() {
   const [paymentOptions, setPaymentOptions] = useState<PaymentMethodOption[]>([]);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState<string | null>(null);
   const [isPaymentSelectOpen, setIsPaymentSelectOpen] = useState(false);
-  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
@@ -681,11 +680,19 @@ export default function GameDetailsPage() {
   // --- Loading state ---
   if (loading) {
     return (
-      <div className="page-container space-y-6">
-        <SkeletonHero />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="page-container space-y-8">
+        {/* Compact header skeleton */}
+        <div className="site-card p-4 sm:p-5 flex items-center gap-4">
+          <Skeleton className="w-16 h-16 sm:w-20 sm:h-20 rounded-8 shrink-0" />
+          <div className="flex-1 space-y-2.5">
+            <Skeleton className="h-5 w-2/3" />
+            <Skeleton className="h-3 w-1/3" />
+            <Skeleton className="h-3 w-1/4" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           <div className="lg:col-span-2">
-            <Skeleton className="h-64 w-full rounded-8" />
+            <Skeleton className="h-96 w-full rounded-8" />
           </div>
           <div>
             <Skeleton className="h-96 w-full rounded-8" />
@@ -731,7 +738,7 @@ export default function GameDetailsPage() {
         />
       )}
 
-      <div className="mb-6">
+      <div className="mb-4">
         <Link
           href={backHref}
           className="text-site-muted hover:text-site-text transition-colors inline-flex items-center font-medium"
@@ -741,52 +748,49 @@ export default function GameDetailsPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      {/* Compact product header — SEAGM-style */}
+      <ProductHero
+        game={game}
+        isFavorite={isFavorite}
+        copied={copied}
+        onToggleFavorite={handleToggleFavorite}
+        onCopyLink={handleCopyLink}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
+        {/* Purchase flow: package grid + player information */}
         <div className="lg:col-span-2">
-          <ProductHero
-            game={game}
-            isFavorite={isFavorite}
-            copied={copied}
-            onToggleFavorite={handleToggleFavorite}
-            onCopyLink={handleCopyLink}
-          />
-        </div>
-        <div>
-          <OrderSummary
+          <PurchaseForm
             option={selectedTopUp}
-            isAuthenticated={isAuthenticated}
+            options={game.topUpOptions}
+            selectedId={selectedOption}
+            onSelect={(id) => setSelectedOption(id)}
             fieldValues={fieldValues}
             onFieldChange={handleFieldChange}
             translateLabel={translateLabel}
             isMobileRechargeRoute={isMobileRechargeRoute}
             mobilePhoneNumber={mobilePhoneNumber}
             onMobilePhoneChange={(v) => setMobilePhoneNumber(v)}
+          />
+        </div>
+
+        {/* Sticky order summary */}
+        <div>
+          <OrderSummary
+            option={selectedTopUp}
+            isAuthenticated={isAuthenticated}
             quantity={quantity}
             onQuantityChange={(q) => setQuantity(q)}
             priceSummary={priceSummary}
             isBuying={isBuying}
             onBuy={handleBuyNow}
-            onOpenPackages={() => setIsOptionsModalOpen(true)}
           />
         </div>
       </div>
 
-      <ProductInfoPanel
-        game={game}
-        options={game.topUpOptions}
-        selectedId={selectedOption}
-        onSelect={(id) => setSelectedOption(id)}
-      />
+      <ProductInfoPanel game={game} />
 
       <RelatedProducts related={relatedGamesByDev} similar={similarGames} />
-
-      <PackageSheet
-        open={isOptionsModalOpen}
-        onOpenChange={(o) => setIsOptionsModalOpen(o)}
-        options={game.topUpOptions}
-        selectedId={selectedOption}
-        onSelect={(id) => setSelectedOption(id)}
-      />
 
       <ConfirmOrderDialog
         open={showConfirmModal}

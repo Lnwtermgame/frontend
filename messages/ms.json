@@ -856,7 +856,10 @@
     "similar_products_sublabel": "Produk Serupa",
     "quantity_label": "Kuantiti",
     "sold_count": "Terjual: {count}",
-    "out_of_stock": "Habis"
+    "out_of_stock": "Habis",
+    "add_favorite": "Tambah ke kegemaran",
+    "remove_favorite": "Alih keluar dari kegemaran",
+    "share_link": "Kongsi pautan"
   },
   "News": {
     "all_news": "Semua Berita",
@@ -2104,5 +2107,9 @@
   "search_view_all": "Lihat Semua Hasil",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]"
 }

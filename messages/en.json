@@ -856,7 +856,10 @@
     "similar_products_sublabel": "Similar Products",
     "quantity_label": "Quantity",
     "sold_count": "Sold: {count}",
-    "out_of_stock": "Sold out"
+    "out_of_stock": "Sold out",
+    "add_favorite": "Add to favorites",
+    "remove_favorite": "Remove from favorites",
+    "share_link": "Share link"
   },
   "News": {
     "all_news": "All News",
@@ -2104,5 +2107,9 @@
   "search_view_all": "View All Results",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]"
 }

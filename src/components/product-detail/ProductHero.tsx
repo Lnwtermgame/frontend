@@ -23,6 +23,7 @@ export function ProductHero({
   onCopyLink: () => void;
 }) {
   const t = useTranslations("ProductDetail");
+  const flagCode = getCountryFlagCode(game.category);
 
   return (
     <div className="site-card p-5 space-y-4">
@@ -33,7 +34,8 @@ export function ProductHero({
             game.coverImage ||
             (game.screenshots && game.screenshots.length > 0
               ? game.screenshots[0]
-              : game.mainImage)
+              : game.mainImage) ||
+            "/images/placeholder-game.svg"
           }
           alt={game.title}
           width={800}
@@ -52,9 +54,9 @@ export function ProductHero({
 
           <div className="flex flex-wrap items-center gap-2 mt-2">
             <Badge variant="neutral" className="gap-1.5">
-              {getCountryFlagCode(game.category) && (
+              {flagCode && (
                 <CountryFlag
-                  code={getCountryFlagCode(game.category)}
+                  code={flagCode}
                   size="S"
                 />
               )}
@@ -104,6 +106,8 @@ export function ProductHero({
             variant="outline"
             size="icon"
             onClick={onToggleFavorite}
+            aria-pressed={isFavorite}
+            aria-label={isFavorite ? t("remove_favorite") : t("add_favorite")}
             className={`w-9 h-9 ${isFavorite ? "text-status-danger border-status-danger/30 bg-status-danger/10" : "text-site-muted"}`}
           >
             <Heart size={18} className={isFavorite ? "fill-current" : ""} />
@@ -112,6 +116,7 @@ export function ProductHero({
             variant="outline"
             size="icon"
             onClick={onCopyLink}
+            aria-label={t("share_link")}
             className={`w-9 h-9 ${copied ? "text-status-success border-status-success/30 bg-status-success/10" : "text-site-muted"}`}
           >
             {copied ? <Check size={18} /> : <Share2 size={18} />}
@@ -120,7 +125,7 @@ export function ProductHero({
       </div>
 
       {/* Short description */}
-      <p className="text-[13px] text-site-muted leading-relaxed">
+      <p className="text-[13px] text-site-muted leading-relaxed line-clamp-3">
         {game.shortDescription || game.description}
       </p>
     </div>

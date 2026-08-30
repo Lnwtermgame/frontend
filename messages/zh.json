@@ -856,7 +856,10 @@
     "similar_products_sublabel": "相似商品",
     "quantity_label": "数量",
     "sold_count": "已售 {count}",
-    "out_of_stock": "售罄"
+    "out_of_stock": "售罄",
+    "add_favorite": "加入收藏",
+    "remove_favorite": "取消收藏",
+    "share_link": "分享链接"
   },
   "News": {
     "all_news": "全部新闻",
@@ -2104,5 +2107,9 @@
   "search_view_all": "查看全部结果",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]"
 }

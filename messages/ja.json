@@ -856,7 +856,10 @@
     "similar_products_sublabel": "類似商品",
     "quantity_label": "数量",
     "sold_count": "販売数: {count}",
-    "out_of_stock": "売り切れ"
+    "out_of_stock": "売り切れ",
+    "add_favorite": "お気に入りに追加",
+    "remove_favorite": "お気に入りから削除",
+    "share_link": "リンクを共有"
   },
   "News": {
     "all_news": "すべてのニュース",
@@ -2104,5 +2107,9 @@
   "search_view_all": "すべての結果を見る",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]"
 }

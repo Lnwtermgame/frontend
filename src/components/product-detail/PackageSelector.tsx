@@ -3,7 +3,6 @@
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PackageOption } from "@/components/products/PackageOption";
-import { Grid } from "@/components/ui/Grid";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { TopUpOption } from "./types";
 
@@ -29,26 +28,23 @@ export function PackageSelector({
   }
 
   return (
-    <div className="space-y-4">
-      <p className="text-site-dim font-bold text-xs uppercase">
-        {t("select_package")}
-      </p>
-      <div role="radiogroup" aria-label={t("select_package")}>
-        <Grid cols={2} md={3} gap={3}>
-          {options.map((option) => (
-            <PackageOption
-              key={option.id}
-              option={option}
-              selected={selectedId === option.id}
-              onSelect={onSelect}
-              popularLabel={t("popular_badge")}
-              soldOut={option.hasStock === false}
-              soldOutLabel={t("out_of_stock")}
-              size="lg"
-            />
-          ))}
-        </Grid>
-      </div>
+    <div
+      role="radiogroup"
+      aria-label={t("select_package")}
+      className="grid grid-cols-1 md:grid-cols-2 gap-2.5"
+    >
+      {options.map((option) => (
+        <PackageOption
+          key={option.id}
+          option={option}
+          selected={selectedId === option.id}
+          onSelect={onSelect}
+          popularLabel={t("popular_badge")}
+          soldOut={option.hasStock === false}
+          soldOutLabel={t("out_of_stock")}
+          size="lg"
+        />
+      ))}
     </div>
   );
 }

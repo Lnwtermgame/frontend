@@ -6,7 +6,7 @@ import { Link, useRouter } from "@/i18n/routing";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { orderApi } from "@/lib/services/order-api";
 import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";
-import { ChevronLeft, AlertCircle } from "lucide-react";
+import { ChevronLeft, AlertCircle, DollarSign } from "lucide-react";
 import toast from "react-hot-toast";
 import {
   productApi,
@@ -23,7 +23,7 @@ import { ProductHero } from "@/components/product-detail/ProductHero";
 import { OrderSummary } from "@/components/product-detail/OrderSummary";
 import { ConfirmOrderDialog } from "@/components/product-detail/ConfirmOrderDialog";
 import { PaymentMethodDialog } from "@/components/product-detail/PaymentMethodDialog";
-import { PurchaseForm } from "@/components/product-detail/PurchaseForm";
+import { PackageSelector } from "@/components/product-detail/PackageSelector";
 import { ProductInfoPanel } from "@/components/product-detail/ProductInfoPanel";
 import { RelatedProducts } from "@/components/product-detail/RelatedProducts";
 
@@ -758,27 +758,32 @@ export default function GameDetailsPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
-        {/* Purchase flow: package grid + player information */}
+        {/* Package selection */}
         <div className="lg:col-span-2">
-          <PurchaseForm
+          <div className="site-card p-5 md:p-6 space-y-6">
+            <div className="flex items-center gap-2 text-sm font-bold text-site-text uppercase tracking-wide">
+              <DollarSign size={16} className="text-site-accent" aria-hidden="true" />
+              {t("topup_options")}
+            </div>
+            <PackageSelector
+              options={game.topUpOptions}
+              selectedId={selectedOption}
+              onSelect={(id) => setSelectedOption(id)}
+            />
+          </div>
+        </div>
+
+        {/* Sticky order summary: player info + totals + buy */}
+        <div>
+          <OrderSummary
             option={selectedTopUp}
-            options={game.topUpOptions}
-            selectedId={selectedOption}
-            onSelect={(id) => setSelectedOption(id)}
+            isAuthenticated={isAuthenticated}
             fieldValues={fieldValues}
             onFieldChange={handleFieldChange}
             translateLabel={translateLabel}
             isMobileRechargeRoute={isMobileRechargeRoute}
             mobilePhoneNumber={mobilePhoneNumber}
             onMobilePhoneChange={(v) => setMobilePhoneNumber(v)}
-          />
-        </div>
-
-        {/* Sticky order summary */}
-        <div>
-          <OrderSummary
-            option={selectedTopUp}
-            isAuthenticated={isAuthenticated}
             quantity={quantity}
             onQuantityChange={(q) => setQuantity(q)}
             priceSummary={priceSummary}

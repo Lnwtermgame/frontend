@@ -3,13 +3,22 @@
 import { Minus, Plus, ShoppingCart, Clock, AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { formatTHB } from "@/lib/format";
+import type { SeagmField } from "@/lib/services/product-api";
 import type { PriceSummary, TopUpOption } from "./types";
 
 export interface OrderSummaryProps {
   option: TopUpOption | null;
   isAuthenticated: boolean;
+  fieldValues: Record<string, string>;
+  onFieldChange: (name: string, value: string) => void;
+  translateLabel: (label: string) => string;
+  isMobileRechargeRoute: boolean;
+  mobilePhoneNumber: string;
+  onMobilePhoneChange: (value: string) => void;
   quantity: number;
   onQuantityChange: (quantity: number) => void;
   priceSummary: PriceSummary;
@@ -17,8 +26,14 @@ export interface OrderSummaryProps {
   onBuy: () => void;
 }
 
-export function OrderSummary({ option, isAuthenticated, quantity, onQuantityChange, priceSummary, isBuying, onBuy }: OrderSummaryProps) {
+export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChange, translateLabel, isMobileRechargeRoute, mobilePhoneNumber, onMobilePhoneChange, quantity, onQuantityChange, priceSummary, isBuying, onBuy }: OrderSummaryProps) {
   const t = useTranslations("ProductDetail");
+
+  const showPhoneInput =
+    isMobileRechargeRoute &&
+    !(option?.fields || []).some((field: SeagmField) =>
+      /phone|user id/i.test(`${field.name} ${field.label}`),
+    );
 
   return (
     <div className="site-card p-5 md:sticky md:top-20 space-y-5">
@@ -43,6 +58,83 @@ export function OrderSummary({ option, isAuthenticated, quantity, onQuantityChan
               <span className="text-status-warning font-medium">
                 {t("login_required_notice")}
               </span>
+            </div>
+          )}
+
+          {/* Mobile recharge phone input */}
+          {showPhoneInput && (
+            <Input
+              label={t("mobile_number_label")}
+              type="tel"
+              value={mobilePhoneNumber}
+              onChange={(e) => onMobilePhoneChange(e.target.value)}
+              placeholder={t("mobile_number_placeholder")}
+            />
+          )}
+
+          {/* Dynamic fields from option.fields */}
+          {option.fields && option.fields.length > 0 && (
+            <div className="space-y-3">
+              {option.fields.map((field: SeagmField) => (
+                <div key={field.name}>
+                  {field.type === "select" ? (
+                    <div className="space-y-1.5">
+                      <div className="text-sm font-medium text-site-text block">
+                        <span className="font-bold">
+                          {translateLabel(field.label)}{" "}
+                          {field.required && (
+                            <span className="text-status-danger">*</span>
+                          )}
+                        </span>
+                      </div>
+                      <Select
+                        value={fieldValues[field.name] || ""}
+                        onValueChange={(value) =>
+                          onFieldChange(field.name, value)
+                        }
+                      >
+                        <SelectTrigger
+                          className="w-full"
+                          aria-label={translateLabel(field.label)}
+                        >
+                          <SelectValue
+                            placeholder={t("choose_placeholder", {
+                              field: translateLabel(field.label),
+                            })}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {field.options
+                            ?.filter((opt) => opt.value !== "")
+                            .map((opt) => (
+                              <SelectItem
+                                key={opt.value}
+                                value={opt.value}
+                              >
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ) : (
+                    <Input
+                      label={`${translateLabel(field.label)} ${field.required ? "*" : ""}`}
+                      type="text"
+                      value={fieldValues[field.name] || ""}
+                      onChange={(e) =>
+                        onFieldChange(field.name, e.target.value)
+                      }
+                      placeholder={
+                        field.placeholder ||
+                        t("enter_placeholder", {
+                          field: translateLabel(field.label),
+                        })
+                      }
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           )}
 

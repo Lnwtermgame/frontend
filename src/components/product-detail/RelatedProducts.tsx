@@ -5,6 +5,7 @@ import { PackageOpen } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GameTile } from "@/components/ui/GameTile";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { productImage } from "@/lib/product-image";
 import type { Product } from "@/lib/services/product-api";
 
 const isInstant = (p: Product) => p.productType === "DIRECT_TOPUP";
@@ -33,7 +34,7 @@ export function RelatedProducts({
                 key={p.id}
                 slug={p.slug || p.id}
                 name={p.name}
-                image={p.imageUrl || "/images/placeholder-game.svg"}
+                image={productImage(p.name, p.imageUrl)}
                 instant={isInstant(p)}
               />
             ))}
@@ -54,7 +55,7 @@ export function RelatedProducts({
                 key={p.id}
                 slug={p.slug || p.id}
                 name={p.name}
-                image={p.imageUrl || "/images/placeholder-game.svg"}
+                image={productImage(p.name, p.imageUrl)}
                 instant={isInstant(p)}
               />
             ))

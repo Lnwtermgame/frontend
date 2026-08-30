@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Link, useRouter } from "@/i18n/routing";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { orderApi } from "@/lib/services/order-api";
+import { productImage } from "@/lib/product-image";
 import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";
 import { ChevronLeft, AlertCircle, DollarSign } from "lucide-react";
 import toast from "react-hot-toast";
@@ -52,7 +53,7 @@ function transformProductToGameDetails(
       product.description ||
       `${product.name} offers a convenient way to purchase in-game currency and items.`,
     shortDescription: product.shortDescription,
-    mainImage: product.imageUrl || "/images/placeholder-game.svg",
+    mainImage: productImage(product.name, product.imageUrl),
     coverImage: product.coverImageUrl,
     category:
       product.category?.name ||

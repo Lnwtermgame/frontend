@@ -16,6 +16,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { productApi, Product } from "@/lib/services/product-api";
+import { productImage } from "@/lib/product-image";
 import { Sheet } from "@/components/ui/Sheet";
 import { BrandIcon } from "@/components/ui/brand-icon";
 import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
@@ -121,9 +122,7 @@ function transformProduct(product: Product): CatalogItem {
     id: product.id,
     slug: product.slug,
     title: product.name,
-    image:
-      product.imageUrl ||
-      "/images/placeholder-game.svg",
+    image: productImage(product.name, product.imageUrl),
     price: startingPrice,
     discountPercent:
       discountRates.length > 0 ? Math.max(...discountRates) : undefined,

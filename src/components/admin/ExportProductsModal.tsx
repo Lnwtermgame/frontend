@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { createPortal } from "react-dom";
-import { motion } from "@/lib/framer-exports";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import {
     X,
     Download,
@@ -425,33 +425,33 @@ export default function ExportProductsModal({
         downloadFile(content, `products_export_${timestamp}.csv`, "text/csv");
     };
 
-    if (!isOpen || typeof window === "undefined") return null;
+    if (!isOpen) return null;
 
-    return createPortal(
-        <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
-            style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}
-            onClick={(e) => {
-                if (e.target === e.currentTarget) onClose();
+    return (
+        <DialogPrimitive.Root
+            open={isOpen}
+            onOpenChange={(next) => {
+                if (!next) onClose();
             }}
         >
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-site-raised border border-site-border/30 rounded-[16px] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-lg"
-            >
+            <DialogPortal>
+                <DialogOverlay className="bg-black/50 z-[9998]" />
+                <DialogPrimitive.Content
+                    className="fixed left-1/2 top-1/2 z-[9999] w-[calc(100%-2rem)] max-w-2xl max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-site-raised border border-site-border/30 rounded-[16px] shadow-lg focus:outline-none"
+                    aria-describedby={undefined}
+                >
                 {/* Header */}
                 <div className="p-4 border-b-[3px] border-black bg-site-accent flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <DialogPrimitive.Title className="text-lg font-bold text-white flex items-center gap-2">
                         <Download className="h-5 w-5" />
                         Export ข้อมูลสินค้า
-                    </h3>
-                    <button
-                        onClick={onClose}
-                        className="p-2 bg-site-raised border-[2px] border-black hover:bg-site-raised transition-colors"
+                    </DialogPrimitive.Title>
+                    <DialogPrimitive.Close
+                        className="p-2 bg-site-raised border-[2px] border-black hover:bg-site-raised transition-colors focus:outline-none"
+                        aria-label="Close"
                     >
                         <X className="h-5 w-5" />
-                    </button>
+                    </DialogPrimitive.Close>
                 </div>
 
                 {/* Content */}
@@ -651,8 +651,8 @@ export default function ExportProductsModal({
                         </button>
                     </div>
                 </div>
-            </motion.div>
-        </div>,
-        document.body,
+                </DialogPrimitive.Content>
+            </DialogPortal>
+        </DialogPrimitive.Root>
     );
 }

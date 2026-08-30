@@ -57,7 +57,11 @@ export function PaymentMethodDialog({
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4">
           {/* Left grid: payment method cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1">
+          <div
+            role="radiogroup"
+            aria-label={t("payment_selection_title")}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[58vh] overflow-y-auto pr-1"
+          >
             {options.map((opt) => {
               const isActive = selectedCode === opt.code;
               const totalAmount = priceSummary.total;
@@ -73,14 +77,9 @@ export function PaymentMethodDialog({
                       : "bg-site-surface border-site-border-soft hover:border-site-border"
                   } ${
                     !isAvailable
-                      ? "opacity-50 cursor-not-allowed"
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
                       : "cursor-pointer"
                   }`}
-                  onClick={() => {
-                    if (isAvailable) {
-                      onSelect(opt.code);
-                    }
-                  }}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-2">

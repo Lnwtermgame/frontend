@@ -977,12 +977,42 @@ export default function GameDetailsPage() {
                   )}
                   {game.category}
                 </Badge>
+
+                {/* Social proof — SEAGM-style rating + sold count (real data only) */}
+                {typeof game.rating === "number" && game.rating > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-site-text">
+                    <Star
+                      size={12}
+                      className="fill-amber-400 text-amber-400"
+                      aria-hidden="true"
+                    />
+                    {game.rating.toFixed(1)}
+                    {typeof game.ratingCount === "number" &&
+                      game.ratingCount > 0 && (
+                        <span className="font-normal text-site-dim">
+                          ({game.ratingCount})
+                        </span>
+                      )}
+                  </span>
+                )}
+                {typeof game.soldCount === "number" && game.soldCount > 0 && (
+                  <span className="text-[12px] text-site-muted">
+                    {t("sold_count", { count: game.soldCount })}
+                  </span>
+                )}
               </div>
 
               <p className="text-[13px] text-site-muted mt-2">
                 {t("by_developer", {
                   developer: game.publisher || game.developer || t("unknown"),
-                })}
+                })}{" "}
+                ·{" "}
+                <Link
+                  href="/refund"
+                  className="hover:text-site-text transition-colors underline underline-offset-2"
+                >
+                  {t("refund_label")}
+                </Link>
               </p>
             </div>
 

@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { Check, ShieldAlert, AlertCircle, Package, User, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { formatTHB } from "@/lib/format";
-import type { PriceSummary } from "./types";
+import type { PriceSummary, VerificationStatus } from "./types";
 
 export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSummary, termsAccepted, onTermsChange, isBuying, onConfirm, onChangePayment }: {
   open: boolean;
   onClose: () => void;
-  verificationStatus: { supported: boolean; productName: string; optionName: string; playerInfo: Record<string, string>; price?: number } | null;
+  verificationStatus: VerificationStatus | null;
   priceSummary: PriceSummary;
   termsAccepted: boolean;
   onTermsChange: (accepted: boolean) => void;
@@ -27,7 +27,6 @@ export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSum
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent
         className="bg-site-surface border-site-border max-w-4xl gap-0 overflow-hidden p-0 rounded-8 sm:rounded-8 flex flex-col max-h-[95vh] sm:max-h-[90vh]"
-        aria-describedby={undefined}
       >
         {verificationStatus && (
           <>
@@ -45,12 +44,11 @@ export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSum
                     ? t("unverified_account_warning")
                     : t("confirm_order_title")}
                 </DialogTitle>
+                <DialogDescription className="sr-only">
+                  {t("confirm_order_title")}
+                </DialogDescription>
               </div>
             </div>
-
-            <DialogDescription className="sr-only">
-              {t("confirm_order_title")}
-            </DialogDescription>
 
             <div className="flex-1 overflow-y-auto">
               {!verificationStatus.supported && (
@@ -211,6 +209,7 @@ export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSum
                             <Link
                               href="/terms"
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -220,6 +219,7 @@ export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSum
                             <Link
                               href="/privacy"
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -229,6 +229,7 @@ export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSum
                             <Link
                               href="/refund-policy"
                               target="_blank"
+                              rel="noopener noreferrer"
                               className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}
                             >

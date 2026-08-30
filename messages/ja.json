@@ -771,6 +771,7 @@
     "about_product": "商品説明",
     "account_info_title": "アカウント情報",
     "auto_delivery_hint": "自動即時配送",
+    "auto_delivery_short": "自動発送",
     "back": "戻る",
     "buy_now_button": "今すぐ購入",
     "by_developer": "開発元：{developer}",
@@ -2113,5 +2114,6 @@
   "add_favorite": "[MISSING: add_favorite]",
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
-  "out_of_stock": "[MISSING: out_of_stock]"
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]"
 }

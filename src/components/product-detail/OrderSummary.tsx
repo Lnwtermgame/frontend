@@ -1,6 +1,6 @@
 "use client";
 
-import { Minus, Plus, ShoppingCart, Clock, AlertTriangle } from "lucide-react";
+import { Minus, Plus, ShoppingCart, AlertTriangle, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -10,6 +10,11 @@ import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 import { formatTHB } from "@/lib/format";
 import type { SeagmField } from "@/lib/services/product-api";
 import type { PriceSummary, TopUpOption } from "./types";
+
+// Filled-input treatment for this card only — the global Input/Select stay
+// as they are (see docs/superpowers/specs/2026-08-31-order-summary-soft-receipt-design.md).
+const filledInput =
+  "bg-site-raised border-transparent rounded-10 focus-visible:border-site-accent focus-visible:bg-site-deep";
 
 export interface OrderSummaryProps {
   option: TopUpOption | null;
@@ -37,10 +42,17 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
     );
 
   return (
-    <div className="site-card p-5 md:sticky md:top-20 space-y-5">
-      <h3 className="text-base font-bold text-site-text uppercase">
-        {t("purchase_summary")}
-      </h3>
+    <div className="site-card p-5 md:sticky md:top-20 space-y-4">
+      {/* Header + instant-delivery pill */}
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="text-base font-bold text-site-text uppercase">
+          {t("purchase_summary")}
+        </h3>
+        <span className="inline-flex items-center gap-1.5 flex-shrink-0 text-[11px] font-semibold text-status-success bg-status-success/10 border border-status-success/25 rounded-full px-2.5 py-1">
+          <Zap size={11} aria-hidden="true" />
+          {t("auto_delivery_short")}
+        </span>
+      </div>
 
       {/* No option selected – muted hint */}
       {!option && (
@@ -70,6 +82,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
               value={mobilePhoneNumber}
               onChange={(e) => onMobilePhoneChange(e.target.value)}
               placeholder={t("mobile_number_placeholder")}
+              className={filledInput}
             />
           )}
 
@@ -95,7 +108,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
                         }
                       >
                         <SelectTrigger
-                          className="w-full"
+                          className={`w-full h-11 ${filledInput}`}
                           aria-label={translateLabel(field.label)}
                         >
                           <SelectValue
@@ -140,6 +153,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
                           field: translateLabel(field.label),
                         })
                       }
+                      className={filledInput}
                     />
                   )}
                 </div>
@@ -147,35 +161,34 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
             </div>
           )}
 
-          {/* Selected package */}
-          <div className="flex justify-between items-start gap-4">
-            <span className="text-site-muted flex-shrink-0 pt-0.5 font-medium text-sm">
+          {/* ── receipt lines ── */}
+          <div className="border-t border-dashed border-site-border" />
+
+          <div className="flex justify-between items-center gap-4">
+            <span className="text-site-muted font-medium text-sm flex-shrink-0">
               {t("selected_package_label")}
             </span>
-            <div className="text-right min-w-0">
-              <span className="text-site-text font-bold block leading-tight break-words text-sm">
-                {option.title}
-              </span>
-            </div>
+            <span className="text-site-text font-semibold text-sm text-right min-w-0 truncate">
+              {option.title}
+            </span>
           </div>
 
-          {/* Quantity stepper (SEAGM-style, capped 1..10) */}
           <div className="flex justify-between items-center">
             <span className="text-site-muted font-medium text-sm">
               {t("quantity_label")}
             </span>
-            <div className="flex items-center border border-site-border-soft rounded-6 bg-site-bg">
+            <div className="flex items-center bg-site-deep border border-site-border-soft rounded-full">
               <button
                 type="button"
                 aria-label="-"
                 onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
-                className="px-3 py-1.5 text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-l-6"
+                className="w-7 h-7 flex items-center justify-center text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-full"
               >
-                <Minus size={14} aria-hidden="true" />
+                <Minus size={13} aria-hidden="true" />
               </button>
               <span
-                className="px-4 text-site-text font-semibold text-sm tabular-nums"
+                className="min-w-[30px] text-center text-site-text font-semibold text-sm tabular-nums"
                 aria-live="polite"
               >
                 {quantity}
@@ -185,69 +198,52 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
                 aria-label="+"
                 onClick={() => onQuantityChange(Math.min(10, quantity + 1))}
                 disabled={quantity >= 10}
-                className="px-3 py-1.5 text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-r-6"
+                className="w-7 h-7 flex items-center justify-center text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-full"
               >
-                <Plus size={14} aria-hidden="true" />
+                <Plus size={13} aria-hidden="true" />
               </button>
             </div>
           </div>
 
-          {/* Price breakdown */}
-          <div className="py-3 border-y border-site-border-soft space-y-2">
-            {/* Subtotal */}
+          <div className="border-t border-dashed border-site-border" />
+
+          {/* Tinted total */}
+          <div className="bg-site-accent/10 border border-site-accent/20 rounded-10 p-3.5 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-site-muted font-medium text-sm">
+              <span className="text-site-muted font-medium text-[13px]">
                 {t("subtotal_label")}
               </span>
-              <span className="text-site-text font-semibold text-sm tabular-nums">
+              <span className="text-site-text font-semibold text-[13px] tabular-nums">
                 {formatTHB(priceSummary.subtotal)}
               </span>
             </div>
 
-            {/* Fee (only when > 0) */}
             {priceSummary.fee > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-site-muted font-medium text-sm">
+                <span className="text-site-muted font-medium text-[13px]">
                   {t("fee_label")}
                 </span>
-                <span className="text-site-text font-semibold text-sm tabular-nums">
+                <span className="text-site-text font-semibold text-[13px] tabular-nums">
                   {formatTHB(priceSummary.fee)}
                 </span>
               </div>
             )}
 
-            {/* Original-price strikethrough + current price when discounted */}
             {option.originalPrice > option.price && (
-              <>
-                <div className="flex justify-between items-center">
-                  <span className="text-site-muted font-medium text-sm">
-                    {t("price_label")}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="line-through text-site-dim text-xs">
-                      {formatTHB(Number(option.originalPrice || 0) * quantity)}
-                    </span>
-                    <span className="text-site-text font-bold text-lg tabular-nums">
-                      {formatTHB(Number(option.price || 0) * quantity)}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-site-muted font-medium text-sm">
-                    {t("savings_label")}
-                  </span>
-                  <span className="text-status-success font-bold text-sm tabular-nums">
-                    -{formatTHB(
-                      (Number(option.originalPrice || 0) -
-                        Number(option.price || 0)) *
-                        quantity,
-                    )}
-                  </span>
-                </div>
-              </>
+              <div className="flex justify-between items-center">
+                <span className="text-site-muted font-medium text-[13px]">
+                  {t("savings_label")}
+                </span>
+                <span className="text-status-success font-bold text-[13px] tabular-nums">
+                  -{formatTHB(
+                    (Number(option.originalPrice || 0) -
+                      Number(option.price || 0)) *
+                      quantity,
+                  )}
+                </span>
+              </div>
             )}
 
-            {/* Total */}
             <div className="flex justify-between items-center pt-1">
               <span className="text-site-text font-bold text-sm">
                 {t("total_label")}
@@ -264,7 +260,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
             disabled={isBuying}
             isLoading={isBuying}
             fullWidth
-            className="font-bold"
+            className="font-bold h-[46px] rounded-12 shadow-[0_10px_26px_-10px_rgba(99,199,194,0.55)]"
           >
             {!isBuying && (
               <>
@@ -280,18 +276,9 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
             )}
           </Button>
 
-          {/* Auto-delivery hint */}
-          <div className="bg-site-accent/5 border border-site-accent/20 p-3 text-sm rounded-6">
-            <div className="flex items-center">
-              <Clock
-                size={16}
-                className="text-site-accent mr-2 flex-shrink-0"
-              />
-              <span className="text-site-accent/90 font-medium">
-                {t("auto_delivery_hint")}
-              </span>
-            </div>
-          </div>
+          <p className="text-center text-[11px] text-site-dim font-medium">
+            {t("auto_delivery_hint")}
+          </p>
         </div>
       )}
     </div>

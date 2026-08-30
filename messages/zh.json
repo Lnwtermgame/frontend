@@ -771,6 +771,7 @@
     "about_product": "商品介绍",
     "account_info_title": "账号信息",
     "auto_delivery_hint": "自动即时发货",
+    "auto_delivery_short": "自动发货",
     "back": "返回",
     "buy_now_button": "立即购买",
     "by_developer": "开发商：{developer}",
@@ -2113,5 +2114,6 @@
   "add_favorite": "[MISSING: add_favorite]",
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
-  "out_of_stock": "[MISSING: out_of_stock]"
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]"
 }

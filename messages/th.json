@@ -843,7 +843,7 @@
     "unknown": "ไม่ระบุข้อมูล",
     "unverified_account_warning": "กรุณายืนยันอีเมลของคุณก่อนทำรายการสั่งซื้อ",
     "verify_info_hint": "กรุณาตรวจสอบความถูกต้องของ Player ID ก่อนทำรายการ",
-    "choose_placeholder": "เลือก{field}",
+    "choose_placeholder": "เลือก {field}",
     "enter_placeholder": "กรอก{field}",
     "product_label": "สินค้า",
     "package_label": "แพ็กเกจ",

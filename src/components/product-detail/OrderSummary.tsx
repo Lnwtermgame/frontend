@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CountryFlag, getCountryFlagCode } from "@/components/ui/country-flag";
 
 import { formatTHB } from "@/lib/format";
 import type { SeagmField } from "@/lib/services/product-api";
@@ -111,7 +112,15 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
                                 key={opt.value}
                                 value={opt.value}
                               >
-                                {opt.label}
+                                <span className="inline-flex items-center gap-2">
+                                  {/* Region flag; falls back to the globe icon for
+                                      names without a country (Asia, NA/EU, Global) */}
+                                  <CountryFlag
+                                    code={getCountryFlagCode(opt.label)}
+                                    size="S"
+                                  />
+                                  {opt.label}
+                                </span>
                               </SelectItem>
                             ))}
                         </SelectContent>

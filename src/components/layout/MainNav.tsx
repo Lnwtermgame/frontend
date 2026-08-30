@@ -95,7 +95,7 @@ export default function MainNav() {
                                                 {getUserInitial(user)}
                                             </span>
                                         </div>
-                                        <div className="flex flex-col hidden sm:block">
+                                        <div className="hidden flex-col sm:flex">
                                             <span className="text-site-text text-[12px] font-semibold leading-tight truncate max-w-[100px]">
                                                 {user?.username || user?.name || "Player"}
                                             </span>

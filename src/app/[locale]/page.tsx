@@ -11,9 +11,26 @@ import { useTranslations } from "next-intl";
 import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { cmsApi, type NewsArticle } from "@/lib/services/cms-api";
 import { productApi, type Product } from "@/lib/services/product-api";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 const gameImg = (label: string, bg: string, fg: string, w = 500, h = 500) =>
   `https://placehold.co/${w}x${h}/${bg}/${fg}?text=${encodeURIComponent(label)}&font=montserrat`;
+
+// Slide CTAs must never land on a missing route: links outside the real
+// storefront prefixes (e.g. admin-typed "/promotions/1") fall back to /games.
+const HERO_LINK_ALLOWLIST = ["/games", "/card", "/mobile-recharge", "/news", "/support"];
+function safeHeroLink(link?: string): string {
+  const path = (link || "").split("?")[0];
+  return HERO_LINK_ALLOWLIST.some((p) => path === p || path.startsWith(p + "/"))
+    ? path
+    : "/games";
+}
 
 export default function HomePage() {
   const t = useTranslations();
@@ -36,10 +53,9 @@ export default function HomePage() {
       subtitle: t("hero_zzz_subtitle"),
       highlightText: t("hero_zzz_highlight_text"),
       highlight: "30%",
-      image: "https://placehold.co/800x600/FFFFFF/000000?text=ZZZ+Character+Art",
+      image: "/images/placeholder-hero.svg",
       btnText: t("hero_btn_text"),
-      href: "/games/zzz",
-      bgRight: "md:bg-gradient-to-r md:from-[#141517] md:to-[#222427]",
+      href: "/games",
     },
     {
       id: "2",
@@ -47,21 +63,14 @@ export default function HomePage() {
       subtitle: t("hero_genshin_subtitle"),
       highlightText: t("hero_genshin_highlight_text"),
       highlight: "20%",
-      image: "https://placehold.co/800x600/FFFFFF/000000?text=Genshin+Character+Art",
+      image: "/images/placeholder-hero.svg",
       btnText: t("hero_btn_text"),
-      href: "/games/genshin",
-      bgRight: "md:bg-gradient-to-r md:from-[#141517] md:to-[#222427]",
+      href: "/games",
     },
   ];
 
   const heroSlides = settings?.homepage?.heroSlides?.length
     ? settings.homepage.heroSlides.map((slide) => {
-      let gradientClass = "md:bg-gradient-to-r md:from-[#141517] md:to-[#222427]";
-      if (slide.color === "yellow") gradientClass = "md:bg-gradient-to-r md:from-[#1A180E] md:to-[#2F2913]";
-      if (slide.color === "blue") gradientClass = "md:bg-gradient-to-r md:from-[#0E1528] md:to-[#172445]";
-      if (slide.color === "pink") gradientClass = "md:bg-gradient-to-r md:from-[#280E1A] md:to-[#45172D]";
-      if (slide.color === "green") gradientClass = "md:bg-gradient-to-r md:from-[#0E281A] md:to-[#17452D]";
-
       return {
         id: slide.id,
         title: slide.title,
@@ -70,8 +79,7 @@ export default function HomePage() {
         highlight: slide.badgeText || "",
         image: slide.image,
         btnText: settings.homepage.sectionLabels?.heroButtonText || t("hero_btn_text"),
-        href: slide.link || "/games",
-        bgRight: gradientClass,
+        href: safeHeroLink(slide.link),
       };
     })
     : defaultSlides;
@@ -112,12 +120,25 @@ export default function HomePage() {
 
 
 
+  // Embla api drives dots/arrows; autoplay handled by the plugin
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [heroSlides.length]);
+    if (!carouselApi) return;
+    const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on("select", onSelect);
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
+
+  // Embla measures on init — re-measure once mounted and after slides settle
+  useEffect(() => {
+    if (!carouselApi) return;
+    carouselApi.reInit();
+    const raf = requestAnimationFrame(() => carouselApi.reInit());
+    return () => cancelAnimationFrame(raf);
+  }, [carouselApi, heroSlides.length]);
 
   // Fetch real news articles from CMS
   useEffect(() => {
@@ -267,83 +288,84 @@ export default function HomePage() {
   return (
     <div className="legacy-home space-y-6 py-6 pb-20 animate-[fadeIn_0.3s_ease-in-out]">
       {/* ════════════════ HERO SLIDER ════════════════ */}
-      {/* Single clip owner: each slide card carries the radius itself
-          (border-radius + overflow-hidden + isolate). The section and track
-          never clip — stacked clip edges (clip-path × radius) rasterize at
-          slightly different subpixels on fractional-DPR screens and read as
-          a faint seam, so exactly ONE edge does the cutting. */}
-      <section className="relative w-full overflow-hidden isolate">
-        <div
-          className="flex flex-nowrap w-full transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+      {/* Embla viewport clips square (off-slide content only); each slide card
+          carries its own rounded-16 corners baked into its own paint. */}
+      <section className="relative w-full isolate">
+        <Carousel
+          className="w-full"
+          opts={{ loop: true }}
+          plugins={[Autoplay({ delay: 6000, stopOnInteraction: false, stopOnMouseEnter: true })]}
+          setApi={setCarouselApi}
         >
-          {heroSlides.map((slide) => (
-            <div
-              key={slide.id}
-              className="w-full flex-[0_0_100%] relative isolate h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-[#16181A] overflow-hidden rounded-[16px]"
-            >
+          <CarouselContent className="m-0">
+            {heroSlides.map((slide) => (
+              <CarouselItem key={slide.id} className="pl-0">
+                <div className="relative h-[260px] sm:h-[300px] md:h-[350px] lg:h-[400px] overflow-hidden rounded-[16px] bg-[#16181A]">
+                  {/* Artwork — full bleed */}
+                  <div className="absolute inset-0" aria-hidden="true">
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </div>
 
-              {/* Artwork — full bleed */}
-              <div className="absolute inset-0" aria-hidden="true">
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover object-center"
-                />
-              </div>
+                  {/* Readability scrim — solid at the copy side, easing out over the art */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0"
+                    style={{
+                      background: `linear-gradient(to right, #16181A 0%, rgba(22,24,26,0.96) 32%, rgba(22,24,26,0.72) 48%, rgba(22,24,26,0.18) 68%, rgba(22,24,26,0) 82%)`,
+                    }}
+                  />
 
-              {/* Readability scrim — solid at the copy side, easing out over the art */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(to right, #16181A 0%, rgba(22,24,26,0.96) 32%, rgba(22,24,26,0.72) 48%, rgba(22,24,26,0.18) 68%, rgba(22,24,26,0) 82%)`,
-                }}
-              />
-
-              {/* Copy */}
-              <div className="relative z-10 flex h-full max-w-[640px] flex-col justify-center pl-7 sm:pl-10 md:pl-16 pr-6">
-                <h2 className="text-[14px] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-tight text-white font-bold mb-1 md:mb-2 leading-tight">{slide.title}</h2>
-                <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-4 mb-2 sm:mb-4 md:mb-6">
-                  <span className="text-[11px] sm:text-sm md:text-lg lg:text-xl text-gray-200">{slide.subtitle}</span>
-                  <div className="flex items-end text-site-accent">
-                    <span className="text-[10px] sm:text-xs md:text-sm lg:text-base mr-1 sm:mr-2 mb-0.5 sm:mb-1 text-white">{slide.highlightText}</span>
-                    <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none">{slide.highlight}</span>
+                  {/* Copy */}
+                  <div className="relative z-10 flex h-full max-w-[640px] flex-col justify-center pl-7 sm:pl-10 md:pl-16 pr-6">
+                    <h2 className="text-[14px] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-tight text-white font-bold mb-1 md:mb-2 leading-tight">{slide.title}</h2>
+                    <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-4 mb-2 sm:mb-4 md:mb-6">
+                      <span className="text-[11px] sm:text-sm md:text-lg lg:text-xl text-gray-200">{slide.subtitle}</span>
+                      <div className="flex items-end text-site-accent">
+                        <span className="text-[10px] sm:text-xs md:text-sm lg:text-base mr-1 sm:mr-2 mb-0.5 sm:mb-1 text-white">{slide.highlightText}</span>
+                        <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none">{slide.highlight}</span>
+                      </div>
+                    </div>
+                    <Link
+                      href={slide.href}
+                      className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors font-bold text-xs sm:text-sm md:text-base mt-1"
+                    >
+                      {slide.btnText}
+                    </Link>
                   </div>
                 </div>
-                <Link
-                  href={slide.href}
-                  className="bg-site-accent hover:bg-site-accent-hover border border-transparent text-white w-fit px-4 sm:px-8 md:px-10 lg:px-14 py-1.5 sm:py-2.5 md:py-3 rounded-[6px] transition-colors font-bold text-xs sm:text-sm md:text-base mt-1"
-                >
-                  {slide.btnText}
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-        {/* Navigation Arrows */}
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+
+        {/* Arrows — desktop; mobile uses dots + swipe */}
         <button
-          onClick={() => setCurrentSlide((p) => (p - 1 + heroSlides.length) % heroSlides.length)}
-          className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 w-8 md:w-10 h-8 md:h-10 bg-black/60 border border-white/20 hover:bg-black/90 hover:scale-110 flex items-center justify-center text-white transition-all duration-200 z-10 backdrop-blur-sm rounded-full"
-          aria-label="Previous slide"
+          onClick={() => carouselApi?.scrollPrev()}
+          className="absolute left-2 md:left-4 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/90 md:flex"
+          aria-label={t("hero_prev_slide")}
         >
           <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
         </button>
         <button
-          onClick={() => setCurrentSlide((p) => (p + 1) % heroSlides.length)}
-          className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 w-8 md:w-10 h-8 md:h-10 bg-black/60 border border-white/20 hover:bg-black/90 hover:scale-110 flex items-center justify-center text-white transition-all duration-200 z-10 backdrop-blur-sm rounded-full"
-          aria-label="Next slide"
+          onClick={() => carouselApi?.scrollNext()}
+          className="absolute right-2 md:right-4 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/90 md:flex"
+          aria-label={t("hero_next_slide")}
         >
           <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
         </button>
-        {/* Slide Dots */}
-        <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2.5">
+
+        {/* Dots */}
+        <div className="absolute bottom-3 md:bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2.5">
           {heroSlides.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentSlide(i)}
-              className={`h-2 md:h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "w-8 md:w-10 bg-site-accent" : "w-2 md:w-2.5 bg-white/50 hover:bg-white border border-white/10"}`}
-              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => carouselApi?.scrollTo(i)}
+              aria-label={t("hero_go_to_slide", { index: i + 1 })}
+              className={`h-2 md:h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "w-8 md:w-10 bg-site-accent" : "w-2 md:w-2.5 bg-white/50 hover:bg-white"}`}
             />
           ))}
         </div>

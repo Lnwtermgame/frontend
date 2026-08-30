@@ -38,7 +38,7 @@ const buttonVariants = cva(
           "bg-status-danger text-site-bg border border-transparent hover:bg-status-danger/90",
       },
       size: {
-        default: "h-11 px-5 rounded-8",
+        default: "h-11 px-5 rounded-10",
         sm: "h-9 px-3 text-xs rounded-6",
         md: "h-11 px-4 rounded-8",
         lg: "h-12 px-6 text-base rounded-8",

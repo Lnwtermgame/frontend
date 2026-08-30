@@ -69,12 +69,12 @@ export function PackageOption({
       onClick={() => {
         if (!soldOut) onSelect(option.id);
       }}
-      className={`relative border ${sizing.card} transition-colors flex flex-col justify-center items-center rounded-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 ${
+      className={`relative border ${sizing.card} transition-colors flex flex-col justify-center items-center rounded-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 ${
         soldOut
           ? "opacity-50 cursor-not-allowed bg-site-surface border-site-border-soft"
           : selected
             ? "bg-site-accent/10 border-site-accent cursor-pointer"
-            : "bg-site-surface border-site-border-soft hover:border-site-border cursor-pointer"
+            : "bg-site-raised/60 border-site-border-soft hover:border-site-border cursor-pointer"
       }`}
     >
       {soldOut ? (
@@ -108,20 +108,12 @@ export function PackageOption({
             <span className={`line-through text-site-dim ${sizing.original}`}>
               ฿{Number(option.originalPrice || 0).toFixed(2)}
             </span>
-            <span
-              className={`font-bold ${sizing.price} ${
-                selected ? "text-site-accent" : "text-site-text"
-              }`}
-            >
+            <span className={`font-bold text-site-accent ${sizing.price}`}>
               ฿{Number(option.price || 0).toFixed(2)}
             </span>
           </div>
         ) : (
-          <span
-            className={`font-bold ${sizing.price} ${
-              selected ? "text-site-accent" : "text-site-text"
-            }`}
-          >
+          <span className={`font-bold text-site-accent ${sizing.price}`}>
             ฿{Number(option.price || 0).toFixed(2)}
           </span>
         )}

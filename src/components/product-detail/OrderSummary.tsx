@@ -10,7 +10,7 @@ import { formatTHB } from "@/lib/format";
 import type { SeagmField } from "@/lib/services/product-api";
 import type { PriceSummary, TopUpOption } from "./types";
 
-export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChange, translateLabel, isMobileRechargeRoute, mobilePhoneNumber, onMobilePhoneChange, quantity, onQuantityChange, priceSummary, isBuying, onBuy, onOpenPackages }: {
+export interface OrderSummaryProps {
   option: TopUpOption | null;
   isAuthenticated: boolean;
   fieldValues: Record<string, string>;
@@ -25,7 +25,9 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
   isBuying: boolean;
   onBuy: () => void;
   onOpenPackages: () => void;
-}) {
+}
+
+export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChange, translateLabel, isMobileRechargeRoute, mobilePhoneNumber, onMobilePhoneChange, quantity, onQuantityChange, priceSummary, isBuying, onBuy, onOpenPackages }: OrderSummaryProps) {
   const t = useTranslations("ProductDetail");
 
   return (
@@ -56,9 +58,10 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
 
           {/* Mobile package trigger (visible only on small screens) */}
           <div className="md:hidden">
-            <div
+            <button
+              type="button"
               onClick={onOpenPackages}
-              className="bg-site-raised border border-site-border-soft p-3 flex items-center justify-between cursor-pointer rounded-6 transition-colors hover:border-site-border"
+              className="w-full text-left bg-site-raised border border-site-border-soft p-3 flex items-center justify-between cursor-pointer rounded-6 transition-colors hover:border-site-border"
             >
               <div className="flex-1 min-w-0">
                 <span className="text-[10px] font-medium text-site-dim uppercase block mb-0.5">
@@ -74,7 +77,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
                 </span>
                 <ChevronRight size={18} className="text-site-muted" />
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Mobile recharge phone input */}
@@ -246,7 +249,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
                   <span className="text-site-muted font-medium text-sm">
                     {t("savings_label")}
                   </span>
-                  <span className="text-green-600 font-bold text-sm tabular-nums">
+                  <span className="text-status-success font-bold text-sm tabular-nums">
                     -{formatTHB(
                       (Number(option.originalPrice || 0) -
                         Number(option.price || 0)) *

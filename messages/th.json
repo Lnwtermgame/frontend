@@ -853,7 +853,10 @@
     "flat_fee_label": "ค่าธรรมเนียมคงที่",
     "min_amount_badge": "ขั้นต่ำ {amount}฿",
     "related_products_sublabel": "สินค้าแนะนำ",
-    "similar_products_sublabel": "สินค้าใกล้เคียง"
+    "similar_products_sublabel": "สินค้าใกล้เคียง",
+    "quantity_label": "ปริมาณ",
+    "sold_count": "ขายแล้ว {count}",
+    "out_of_stock": "ขายหมด"
   },
   "News": {
     "all_news": "ข่าวสารทั้งหมด",

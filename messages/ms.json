@@ -853,7 +853,10 @@
     "flat_fee_label": "Yuran Tetap",
     "min_amount_badge": "Min {amount}฿",
     "related_products_sublabel": "Produk Berkaitan",
-    "similar_products_sublabel": "Produk Serupa"
+    "similar_products_sublabel": "Produk Serupa",
+    "quantity_label": "Kuantiti",
+    "sold_count": "Terjual: {count}",
+    "out_of_stock": "Habis"
   },
   "News": {
     "all_news": "Semua Berita",

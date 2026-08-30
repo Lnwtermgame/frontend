@@ -853,7 +853,10 @@
     "flat_fee_label": "固定手数料",
     "min_amount_badge": "最低 {amount}฿",
     "related_products_sublabel": "関連商品",
-    "similar_products_sublabel": "類似商品"
+    "similar_products_sublabel": "類似商品",
+    "quantity_label": "数量",
+    "sold_count": "販売数: {count}",
+    "out_of_stock": "売り切れ"
   },
   "News": {
     "all_news": "すべてのニュース",

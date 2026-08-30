@@ -853,7 +853,10 @@
     "flat_fee_label": "고정 수수료",
     "min_amount_badge": "최소 {amount}฿",
     "related_products_sublabel": "관련 상품",
-    "similar_products_sublabel": "유사 상품"
+    "similar_products_sublabel": "유사 상품",
+    "quantity_label": "수량",
+    "sold_count": "판매: {count}",
+    "out_of_stock": "품절"
   },
   "News": {
     "all_news": "전체 뉴스",

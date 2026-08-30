@@ -853,7 +853,10 @@
     "flat_fee_label": "Tarifa fija",
     "min_amount_badge": "Mín {amount}฿",
     "related_products_sublabel": "Productos relacionados",
-    "similar_products_sublabel": "Productos similares"
+    "similar_products_sublabel": "Productos similares",
+    "quantity_label": "Cantidad",
+    "sold_count": "Vendidos: {count}",
+    "out_of_stock": "Agotado"
   },
   "News": {
     "all_news": "Todas las noticias",

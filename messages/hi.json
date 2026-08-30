@@ -853,7 +853,10 @@
     "flat_fee_label": "निश्चित शुल्क",
     "min_amount_badge": "न्यूनतम {amount}฿",
     "related_products_sublabel": "संबंधित उत्पाद",
-    "similar_products_sublabel": "समान उत्पाद"
+    "similar_products_sublabel": "समान उत्पाद",
+    "quantity_label": "मात्रा",
+    "sold_count": "बिक गए: {count}",
+    "out_of_stock": "बिक चुका"
   },
   "News": {
     "all_news": "सभी समाचार",

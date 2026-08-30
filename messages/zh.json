@@ -853,7 +853,10 @@
     "flat_fee_label": "固定费用",
     "min_amount_badge": "最低 {amount}฿",
     "related_products_sublabel": "相关商品",
-    "similar_products_sublabel": "相似商品"
+    "similar_products_sublabel": "相似商品",
+    "quantity_label": "数量",
+    "sold_count": "已售 {count}",
+    "out_of_stock": "售罄"
   },
   "News": {
     "all_news": "全部新闻",

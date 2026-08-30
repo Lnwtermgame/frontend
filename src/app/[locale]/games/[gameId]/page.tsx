@@ -22,6 +22,9 @@ import {
   AlertCircle,
   Check,
   AlertTriangle,
+  Minus,
+  Plus,
+  Star,
   User,
   ShieldAlert,
   ChevronRight,
@@ -83,6 +86,9 @@ interface GameDetails {
   releaseDate?: string;
   platforms: string[];
   screenshots?: string[];
+  rating?: number;
+  ratingCount?: number;
+  soldCount?: number;
   topUpOptions: TopUpOption[];
   relatedGames: string[];
   features?: string[];
@@ -103,6 +109,7 @@ interface TopUpOption {
   title: string;
   price: number;
   originalPrice: number;
+  hasStock?: boolean;
   isPopular?: boolean;
   fields?: SeagmField[];
 }
@@ -119,6 +126,7 @@ function transformProductToGameDetails(
       title: type.name,
       price: type.displayPrice,
       originalPrice: type.originPrice || type.displayPrice,
+      hasStock: type.hasStock !== false,
       fields: type.fields,
     }),
   );
@@ -136,6 +144,9 @@ function transformProductToGameDetails(
     longDescription:
       product.description ||
       `${product.name} offers a convenient way to purchase in-game currency and items.`,
+    rating: product.averageRating,
+    ratingCount: product.reviewCount,
+    soldCount: product.salesCount,
     mainImage:
       product.imageUrl ||
       "/images/placeholder-game.svg",
@@ -195,6 +206,7 @@ export default function GameDetailsPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
   const [paymentOptions, setPaymentOptions] = useState<PaymentMethodOption[]>(
     [],
   );
@@ -545,7 +557,7 @@ export default function GameDetailsPage() {
           {
             productId: product.id,
             productTypeId: selectedOption,
-            quantity: 1,
+            quantity,
             playerInfo,
           },
         ],
@@ -707,11 +719,11 @@ export default function GameDetailsPage() {
         setGame(gameData);
 
         if (gameData.topUpOptions.length > 0) {
-          const popularOption = gameData.topUpOptions.find(
-            (option) => option.isPopular,
+          const inStockOption = gameData.topUpOptions.find(
+            (option) => option.hasStock !== false,
           );
           setSelectedOption(
-            popularOption ? popularOption.id : gameData.topUpOptions[0].id,
+            (inStockOption || gameData.topUpOptions[0]).id,
           );
         }
 
@@ -1205,6 +1217,36 @@ export default function GameDetailsPage() {
                     </div>
                   </div>
 
+                  {/* Quantity stepper (SEAGM-style, capped at 10) */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-site-muted font-medium text-sm">
+                      {t("quantity_label")}
+                    </span>
+                    <div className="flex items-center border border-site-border-soft rounded-6 bg-site-bg">
+                      <button
+                        type="button"
+                        aria-label="-"
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        disabled={quantity <= 1}
+                        className="px-3 py-1.5 text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-l-6"
+                      >
+                        <Minus size={14} aria-hidden="true" />
+                      </button>
+                      <span className="px-4 text-site-text font-semibold text-sm tabular-nums">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        aria-label="+"
+                        onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+                        disabled={quantity >= 10}
+                        className="px-3 py-1.5 text-site-text hover:bg-site-raised disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-r-6"
+                      >
+                        <Plus size={14} aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Price breakdown */}
                   <div className="py-3 border-y border-site-border-soft space-y-2">
                     <div className="flex justify-between items-center">
@@ -1216,13 +1258,13 @@ export default function GameDetailsPage() {
                           <span className="line-through text-site-dim text-xs">
                             {formatTHB(Number(option.originalPrice || 0))}
                           </span>
-                          <span className="text-site-text font-bold text-lg">
-                            {formatTHB(Number(option.price || 0))}
+                          <span className="text-site-text font-bold text-lg tabular-nums">
+                            {formatTHB(Number(option.price || 0) * quantity)}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-site-text font-bold text-lg">
-                          {formatTHB(Number(option.price || 0))}
+                        <span className="text-site-text font-bold text-lg tabular-nums">
+                          {formatTHB(Number(option.price || 0) * quantity)}
                         </span>
                       )}
                     </div>

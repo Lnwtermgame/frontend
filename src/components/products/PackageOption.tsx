@@ -21,12 +21,16 @@ export function PackageOption({
   selected,
   onSelect,
   popularLabel,
+  soldOut,
+  soldOutLabel,
   size = "sm",
 }: {
   option: PackageOptionData;
   selected: boolean;
   onSelect: (id: string) => void;
   popularLabel: string;
+  soldOut?: boolean;
+  soldOutLabel?: string;
   size?: "sm" | "md" | "lg";
 }) {
   const sizing = {
@@ -61,14 +65,27 @@ export function PackageOption({
       type="button"
       role="radio"
       aria-checked={selected}
-      onClick={() => onSelect(option.id)}
-      className={`relative border ${sizing.card} cursor-pointer transition-colors flex flex-col justify-center items-center rounded-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 ${
-        selected
-          ? "bg-site-accent/10 border-site-accent"
-          : "bg-site-surface border-site-border-soft hover:border-site-border"
+      aria-disabled={soldOut || undefined}
+      onClick={() => {
+        if (!soldOut) onSelect(option.id);
+      }}
+      className={`relative border ${sizing.card} transition-colors flex flex-col justify-center items-center rounded-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 ${
+        soldOut
+          ? "opacity-50 cursor-not-allowed bg-site-surface border-site-border-soft"
+          : selected
+            ? "bg-site-accent/10 border-site-accent cursor-pointer"
+            : "bg-site-surface border-site-border-soft hover:border-site-border cursor-pointer"
       }`}
     >
-      {option.isPopular && (
+      {soldOut ? (
+        <span
+          className={`absolute ${sizing.badge} left-0 right-0 flex justify-center z-10`}
+        >
+          <Badge variant="neutral" className="gap-1">
+            {soldOutLabel}
+          </Badge>
+        </span>
+      ) : option.isPopular ? (
         <span
           className={`absolute ${sizing.badge} left-0 right-0 flex justify-center z-10`}
         >
@@ -77,7 +94,7 @@ export function PackageOption({
             {popularLabel}
           </Badge>
         </span>
-      )}
+      ) : null}
 
       <h4
         className={`text-site-text font-semibold text-center leading-tight line-clamp-2 ${sizing.title}`}

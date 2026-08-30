@@ -26,6 +26,7 @@ import {
   AvailableCategory,
   AIModel,
 } from "@/lib/services/ai-api";
+import { AdminHeaderButton } from "@/components/admin";
 
 interface AIGenerateButtonProps {
   productName: string;
@@ -280,11 +281,10 @@ export default function AIGenerateButton({
   return (
     <>
       {/* Main Generate Button */}
-      <button
+      <AdminHeaderButton
+        variant="primary"
         onClick={handleOpenModal}
         disabled={disabled || progress.isGenerating}
-        className="group relative inline-flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden hover:-translate-y-0.5"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         {progress.isGenerating ? (
           <>
@@ -298,7 +298,7 @@ export default function AIGenerateButton({
             <Sparkles className="w-3.5 h-3.5 opacity-70" />
           </>
         )}
-      </button>
+      </AdminHeaderButton>
 
       {/* Debug Panel Modal */}
       <AnimatePresence>

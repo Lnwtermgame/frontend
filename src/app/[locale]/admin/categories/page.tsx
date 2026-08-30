@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import { motion } from "@/lib/framer-exports";
 import {
   AdminLayout,
@@ -429,34 +430,35 @@ export default function AdminCategories() {
       </div>
 
     {/* Create/Edit Modal */}
-    {isModalOpen &&
-      typeof window !== "undefined" &&
-      createPortal(
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
-          onClick={() => !isSaving && closeModal()}
+    <DialogPrimitive.Root
+      open={isModalOpen}
+      onOpenChange={(open) => {
+        if (!open && !isSaving) closeModal();
+      }}
+    >
+      <DialogPortal>
+        <DialogOverlay className="bg-black/60 backdrop-blur-sm z-[9999]" />
+        <DialogPrimitive.Content
+          className="fixed left-1/2 top-1/2 z-[9999] flex w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col bg-site-surface border border-site-border rounded-12 shadow-2xl max-w-lg overflow-hidden focus:outline-none"
+          onEscapeKeyDown={(e) => isSaving && e.preventDefault()}
+          onPointerDownOutside={(e) => isSaving && e.preventDefault()}
+          onInteractOutside={(e) => isSaving && e.preventDefault()}
+          aria-describedby={undefined}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-site-surface border border-site-border rounded-12 shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
             {/* Modal Header */}
             <div className="p-5 border-b border-site-border-soft flex items-center justify-between shrink-0">
-              <h3 className="text-sm font-bold text-site-text flex items-center gap-2.5">
+              <DialogPrimitive.Title className="text-sm font-bold text-site-text flex items-center gap-2.5">
                 <div className="p-1.5 bg-site-accent/10 rounded-lg">
                   <Layers className="h-4 w-4 text-site-accent" />
                 </div>
                 {editingCategory ? "แก้ไขข้อมูลหมวดหมู่" : "เพิ่มหมวดหมู่เกมใหม่"}
-              </h3>
-              <button
-                onClick={closeModal}
+              </DialogPrimitive.Title>
+              <DialogPrimitive.Close
                 disabled={isSaving}
                 className="p-2 bg-site-raised border border-site-border rounded-lg hover:bg-site-raised transition-all text-site-dim disabled:opacity-50"
               >
                 <X className="h-4 w-4" />
-              </button>
+              </DialogPrimitive.Close>
             </div>
 
             {/* Modal Body */}
@@ -553,10 +555,9 @@ export default function AdminCategories() {
                     : "สร้างหมวดหมู่ใหม่"}
               </button>
             </div>
-          </motion.div>
-        </div>,
-        document.body,
-      )}
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    </DialogPrimitive.Root>
     </PageContainer>
   </AdminLayout>
   );

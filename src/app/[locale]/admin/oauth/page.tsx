@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import { motion } from "@/lib/framer-exports";
 import {
   AdminLayout,
@@ -353,31 +354,34 @@ export default function OAuthProvidersPage() {
         )}
 
         {/* Create/Edit Modal */}
-        {showModal &&
-          typeof window !== "undefined" &&
-          createPortal(
-            <div
-              className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] p-4"
-              onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
+        <DialogPrimitive.Root
+          open={showModal}
+          onOpenChange={(open) => {
+            if (!open && !saving) setShowModal(false);
+          }}
+        >
+          <DialogPortal>
+            <DialogOverlay className="bg-black/60 z-[100]" />
+            <DialogPrimitive.Content
+              className="fixed left-1/2 top-1/2 z-[100] flex w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col bg-site-raised border border-white/10 rounded-3xl max-w-lg max-h-[90vh] shadow-2xl overflow-hidden focus:outline-none"
+              onEscapeKeyDown={(e) => saving && e.preventDefault()}
+              onPointerDownOutside={(e) => saving && e.preventDefault()}
+              onInteractOutside={(e) => saving && e.preventDefault()}
+              aria-describedby={undefined}
             >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                className="bg-site-raised border border-white/10 rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
 
                 {/* Header */}
                 <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <DialogPrimitive.Title className="text-xl font-bold text-white flex items-center gap-2">
                     <Globe className="w-6 h-6 text-site-accent" />
                     {editingProvider
                       ? `แก้ไข ${editingProvider.displayName}`
                       : "เพิ่ม OAuth Provider"}
-                  </h2>
-                  <button
-                    onClick={() => setShowModal(false)}
+                  </DialogPrimitive.Title>
+                  <DialogPrimitive.Close
                     className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors hidden sm:block">
                     <X className="w-4 h-4 text-gray-400" />
-                  </button>
+                  </DialogPrimitive.Close>
                 </div>
 
                 {/* Content */}
@@ -522,10 +526,9 @@ export default function OAuthProvidersPage() {
                     </button>
                   </div>
                 </form>
-              </motion.div>
-            </div>,
-            document.body,
-          )}
+            </DialogPrimitive.Content>
+          </DialogPortal>
+        </DialogPrimitive.Root>
       </PageContainer>
     </AdminLayout>
   );

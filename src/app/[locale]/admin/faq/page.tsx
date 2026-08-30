@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import {
   AdminLayout,
@@ -1227,30 +1228,31 @@ export default function AdminFaqPage() {
       </div>
 
       {/* Category Modal */}
-      {mounted &&
-        createPortal(
-          <AnimatePresence>
-            {showCategoryModal && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-site-surface border border-white/5 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      {mounted && (
+        <DialogPrimitive.Root
+          open={showCategoryModal}
+          onOpenChange={(open) => {
+            if (!open && !isSubmitting) setShowCategoryModal(false);
+          }}
+        >
+          <DialogPortal>
+            <DialogOverlay className="bg-black/70 z-[80]" />
+            <DialogPrimitive.Content
+              className="fixed left-1/2 top-1/2 z-[90] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 bg-site-surface border border-white/5 rounded-2xl max-w-lg max-h-[90vh] overflow-y-auto focus:outline-none"
+              onEscapeKeyDown={(e) => isSubmitting && e.preventDefault()}
+              onPointerDownOutside={(e) => isSubmitting && e.preventDefault()}
+              onInteractOutside={(e) => isSubmitting && e.preventDefault()}
+              aria-describedby={undefined}
+            >
                   <div className="p-4 border-b-[2px] border-white/10">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-bold text-white">
+                      <DialogPrimitive.Title className="text-lg font-bold text-white">
                         {editingCategory ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}
-                      </h2>
-                      <button
-                        onClick={() => setShowCategoryModal(false)}
+                      </DialogPrimitive.Title>
+                      <DialogPrimitive.Close
                         className="text-gray-400 hover:text-white">
                         <X size={20} />
-                      </button>
+                      </DialogPrimitive.Close>
                     </div>
                   </div>
                   <form
@@ -1376,38 +1378,37 @@ export default function AdminFaqPage() {
                       </button>
                     </div>
                   </form>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>,
-          document.body,
-        )}
+            </DialogPrimitive.Content>
+          </DialogPortal>
+        </DialogPrimitive.Root>
+      )}
 
       {/* Article Modal */}
-      {mounted &&
-        createPortal(
-          <AnimatePresence>
-            {showArticleModal && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-site-surface border border-white/5 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      {mounted && (
+        <DialogPrimitive.Root
+          open={showArticleModal}
+          onOpenChange={(open) => {
+            if (!open && !isSubmitting) setShowArticleModal(false);
+          }}
+        >
+          <DialogPortal>
+            <DialogOverlay className="bg-black/70 z-[80]" />
+            <DialogPrimitive.Content
+              className="fixed left-1/2 top-1/2 z-[90] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 bg-site-surface border border-white/5 rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto focus:outline-none"
+              onEscapeKeyDown={(e) => isSubmitting && e.preventDefault()}
+              onPointerDownOutside={(e) => isSubmitting && e.preventDefault()}
+              onInteractOutside={(e) => isSubmitting && e.preventDefault()}
+              aria-describedby={undefined}
+            >
                   <div className="p-4 border-b-[2px] border-white/10">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-bold text-white">
+                      <DialogPrimitive.Title className="text-lg font-bold text-white">
                         {editingArticle ? "แก้ไขบทความ" : "เพิ่มบทความ"}
-                      </h2>
-                      <button
-                        onClick={() => setShowArticleModal(false)}
+                      </DialogPrimitive.Title>
+                      <DialogPrimitive.Close
                         className="text-gray-400 hover:text-white">
                         <X size={20} />
-                      </button>
+                      </DialogPrimitive.Close>
                     </div>
                   </div>
                   <form
@@ -1758,12 +1759,10 @@ export default function AdminFaqPage() {
                       </button>
                     </div>
                   </form>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>,
-          document.body,
-        )}
+            </DialogPrimitive.Content>
+          </DialogPortal>
+        </DialogPrimitive.Root>
+      )}
     </PageContainer>
     </AdminLayout>
   );

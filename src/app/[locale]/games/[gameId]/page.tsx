@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
+import { useParams } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { orderApi } from "@/lib/services/order-api";
 import { paymentApi, PaymentMethodOption } from "@/lib/services/payment-api";

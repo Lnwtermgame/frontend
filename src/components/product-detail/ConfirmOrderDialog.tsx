@@ -227,7 +227,7 @@ export function ConfirmOrderDialog({ open, onClose, verificationStatus, priceSum
                             </Link>{" "}
                             <span className="text-site-dim">&middot;</span>{" "}
                             <Link
-                              href="/refund"
+                              href="/refund-policy"
                               target="_blank"
                               className="text-site-accent hover:underline"
                               onClick={(e) => e.stopPropagation()}

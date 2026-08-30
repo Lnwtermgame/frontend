@@ -93,7 +93,7 @@ export function ProductHero({
             })}{" "}
             ·{" "}
             <Link
-              href="/refund"
+              href="/refund-policy"
               className="hover:text-site-text transition-colors underline underline-offset-2"
             >
               {t("refund_label")}

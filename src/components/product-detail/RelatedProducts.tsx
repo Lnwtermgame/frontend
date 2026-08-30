@@ -7,6 +7,8 @@ import { GameTile } from "@/components/ui/GameTile";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { Product } from "@/lib/services/product-api";
 
+const isInstant = (p: Product) => p.productType === "DIRECT_TOPUP";
+
 export function RelatedProducts({
   related,
   similar,
@@ -32,10 +34,7 @@ export function RelatedProducts({
                 slug={p.slug || p.id}
                 name={p.name}
                 image={p.imageUrl || "/images/placeholder-game.svg"}
-                instant={
-                  (p.productType as string | undefined) === "DIRECT_TOPUP" ||
-                  !(p.productType as string | undefined)
-                }
+                instant={isInstant(p)}
               />
             ))}
           </div>
@@ -56,10 +55,7 @@ export function RelatedProducts({
                 slug={p.slug || p.id}
                 name={p.name}
                 image={p.imageUrl || "/images/placeholder-game.svg"}
-                instant={
-                  (p.productType as string | undefined) === "DIRECT_TOPUP" ||
-                  !(p.productType as string | undefined)
-                }
+                instant={isInstant(p)}
               />
             ))
           ) : (

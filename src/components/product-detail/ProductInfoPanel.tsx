@@ -1,7 +1,7 @@
 "use client";
 
 import { DollarSign, Info, Package, Award, Calendar, Smartphone } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductDescription from "@/components/products/ProductDescription";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -20,6 +20,7 @@ export function ProductInfoPanel({
   onSelect: (id: string) => void;
 }) {
   const t = useTranslations("ProductDetail");
+  const locale = useLocale();
 
   const infoContent = (
     <div className="space-y-6">
@@ -60,20 +61,32 @@ export function ProductInfoPanel({
               {t("release_date")}
             </h4>
             <p className="text-site-text font-medium">
-              {new Date(game.releaseDate).toLocaleDateString()}
+              {new Date(game.releaseDate).toLocaleDateString(locale)}
             </p>
           </div>
         )}
 
-        <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
-          <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
-            <Smartphone className="mr-2" size={16} />
-            {t("platforms")}
-          </h4>
-          <p className="text-site-text font-medium">
-            {game.platforms.join(", ")}
-          </p>
-        </div>
+        {game.platforms.length > 0 ? (
+          <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
+            <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
+              <Smartphone className="mr-2" size={16} />
+              {t("platforms")}
+            </h4>
+            <p className="text-site-text font-medium">
+              {game.platforms.join(", ")}
+            </p>
+          </div>
+        ) : (
+          <div className="bg-site-surface border border-site-border-soft p-4 rounded-8">
+            <h4 className="text-site-muted font-medium mb-2 flex items-center text-xs uppercase tracking-wider">
+              <Smartphone className="mr-2" size={16} />
+              {t("platforms")}
+            </h4>
+            <p className="text-site-text font-medium">
+              {t("unknown")}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

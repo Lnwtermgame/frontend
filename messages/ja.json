@@ -773,7 +773,7 @@
     "auto_delivery_hint": "自動即時配送",
     "back": "戻る",
     "buy_now_button": "今すぐ購入",
-    "by_developer": "開発元：",
+    "by_developer": "開発元：{developer}",
     "cancel_button": "キャンセル",
     "change_button": "選択を変更",
     "close_window_button": "閉じる",

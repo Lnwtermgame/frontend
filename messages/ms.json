@@ -773,7 +773,7 @@
     "auto_delivery_hint": "Penghantaran Automatik Serta-merta",
     "back": "Kembali",
     "buy_now_button": "Beli Sekarang",
-    "by_developer": "Pembangun: ",
+    "by_developer": "Pembangun: {developer}",
     "cancel_button": "Batal",
     "change_button": "Tukar Pilihan",
     "close_window_button": "Tutup Tetingkap",

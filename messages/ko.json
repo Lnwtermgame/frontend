@@ -773,7 +773,7 @@
     "auto_delivery_hint": "자동 즉시 배송",
     "back": "뒤로",
     "buy_now_button": "지금 구매",
-    "by_developer": "개발사: ",
+    "by_developer": "개발사: {developer}",
     "cancel_button": "취소",
     "change_button": "선택 변경",
     "close_window_button": "창 닫기",

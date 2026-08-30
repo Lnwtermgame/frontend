@@ -773,7 +773,7 @@
     "auto_delivery_hint": "สินค้าระบบจัดส่งอัตโนมัติ",
     "back": "ย้อนกลับ",
     "buy_now_button": "ซื้อทันที",
-    "by_developer": "ผู้พัฒนา : ",
+    "by_developer": "ผู้พัฒนา: {developer}",
     "cancel_button": "ยกเลิก",
     "change_button": "เปลี่ยนตัวเลือก",
     "close_window_button": "ปิดหน้าต่าง",

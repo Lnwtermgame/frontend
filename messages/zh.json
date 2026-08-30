@@ -773,7 +773,7 @@
     "auto_delivery_hint": "自动即时发货",
     "back": "返回",
     "buy_now_button": "立即购买",
-    "by_developer": "开发商：",
+    "by_developer": "开发商：{developer}",
     "cancel_button": "取消",
     "change_button": "更换选择",
     "close_window_button": "关闭窗口",

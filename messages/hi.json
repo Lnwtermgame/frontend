@@ -773,7 +773,7 @@
     "auto_delivery_hint": "तत्काल स्वचालित डिलीवरी",
     "back": "वापस",
     "buy_now_button": "अभी खरीदें",
-    "by_developer": "डेवलपर: ",
+    "by_developer": "डेवलपर: {developer}",
     "cancel_button": "रद्द करें",
     "change_button": "चयन बदलें",
     "close_window_button": "विंडो बंद करें",

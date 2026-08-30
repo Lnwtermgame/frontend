@@ -773,7 +773,7 @@
     "auto_delivery_hint": "Entrega automática instantánea",
     "back": "Atrás",
     "buy_now_button": "Comprar ahora",
-    "by_developer": "Desarrollador: ",
+    "by_developer": "Desarrollador: {developer}",
     "cancel_button": "Cancelar",
     "change_button": "Cambiar selección",
     "close_window_button": "Cerrar ventana",

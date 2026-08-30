@@ -17,25 +17,29 @@ import {
   MessageSquare,
   Plus,
   Clock,
-  CheckCircle,
   AlertCircle,
-  ChevronRight,
   ArrowLeft,
   Send,
   X,
   Loader2,
-  RefreshCcw,
   Tag,
   FileText,
   User,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function TicketsPage() {
   const t = useTranslations("SupportTickets");
   const tCommon = useTranslations("Common");
   const router = useRouter();
-  const { user, isAuthenticated, isInitialized } = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
   const { settings: publicSettings } = usePublicSettings();
   const supportTicketsEnabled =
     publicSettings?.features.enableSupportTickets ?? true;
@@ -205,8 +209,8 @@ export default function TicketsPage() {
   if (!supportTicketsEnabled) {
     return (
       <div className="page-container bg-transparent">
-        <div className="mx-auto max-w-2xl border border-site-border rounded-8 bg-site-surface p-8 text-center">
-          <h1 className="text-2xl font-extrabold text-site-text">
+        <div className="site-card mx-auto max-w-2xl p-8 text-center my-8">
+          <h1 className="text-xl font-bold text-site-text">
             {t("disabled.title")}
           </h1>
           <p className="mt-3 text-sm text-site-muted">
@@ -215,7 +219,7 @@ export default function TicketsPage() {
           <div className="mt-6">
             <Link
               href="/support/contact"
-              className="inline-flex border border-site-border rounded-8 bg-status-warning/15 px-4 py-2 font-bold text-status-warning"
+              className="inline-flex bg-status-warning/15 border border-status-warning/30 rounded-10 px-4 py-2 font-semibold text-status-warning text-sm hover:bg-status-warning/20 transition-colors"
             >
               {t("disabled.cta")}
             </Link>
@@ -227,42 +231,43 @@ export default function TicketsPage() {
 
   return (
     <div className="page-container bg-transparent">
-      {/* Header */}
-      <div className="bg-site-surface border border-site-border rounded-8 p-6 md:p-8 mb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="flex items-center mb-2">
-              <Link
-                href="/support"
-                className="text-site-muted hover:text-site-text mr-4 flex items-center font-medium"
-              >
-                <ArrowLeft size={18} className="mr-1" />
-                {t("back")}
-              </Link>
-              <div className="bg-site-accent/15 p-2 border border-site-border rounded-8 mr-3">
-                <MessageSquare className="h-6 w-6 text-site-accent" />
-              </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold uppercase text-site-text">
-                {t("title")}
-              </h1>
-            </div>
-            <p className="text-site-muted font-bold uppercase text-xs">{t("subtitle")}</p>
+      {/* Back link — own line, like the product page */}
+      <div className="mb-4">
+        <Link
+          href="/support"
+          className="text-site-muted hover:text-site-text transition-colors inline-flex items-center font-medium"
+        >
+          <ArrowLeft size={18} className="mr-1" />
+          {t("back")}
+        </Link>
+      </div>
+
+      {/* Page header — airy, no wrapping card */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-12 bg-site-accent/10 border border-site-accent/20 flex items-center justify-center flex-shrink-0">
+            <MessageSquare className="h-5 w-5 text-site-accent" />
           </div>
-          <button
-            onClick={() => setShowNewTicketModal(true)}
-            className="site-btn inline-flex text-xs"
-          >
-            <Plus size={18} className="mr-2" />
-            {t("create_new")}
-          </button>
+          <div>
+            <h1 className="text-lg sm:text-xl font-bold text-site-text leading-tight">
+              {t("title")}
+            </h1>
+            <p className="text-[12px] text-site-muted mt-0.5">
+              {t("subtitle")}
+            </p>
+          </div>
         </div>
+        <Button onClick={() => setShowNewTicketModal(true)} size="md">
+          <Plus size={16} className="mr-2" />
+          {t("create_new")}
+        </Button>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="bg-status-danger/15 border border-status-danger/20 rounded-8 p-4 mb-6 flex items-center">
+        <div className="bg-status-danger/15 border border-status-danger/20 rounded-10 p-4 mb-6 flex items-center">
           <AlertCircle className="text-status-danger mr-3" size={20} />
-          <span className="text-site-text">{error}</span>
+          <span className="text-site-text text-sm">{error}</span>
           <button
             onClick={() => setError(null)}
             className="ml-auto text-site-text hover:text-site-muted"
@@ -275,8 +280,8 @@ export default function TicketsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Ticket List */}
         <div className="lg:col-span-1">
-          <div className="bg-site-surface border border-site-border rounded-8 overflow-hidden">
-            {/* Filter Tabs */}
+          <div className="site-card overflow-hidden">
+            {/* Filter pills */}
             <div className="p-4 border-b border-site-border-soft">
               <div className="flex flex-wrap gap-2">
                 {[
@@ -292,9 +297,9 @@ export default function TicketsPage() {
                     onClick={() =>
                       setStatusFilter(status as TicketStatus | "ALL")
                     }
-                    className={`px-3 py-1.5 rounded-4 text-[10px] font-bold uppercase border transition-colors ${statusFilter === status
-                      ? "bg-site-accent text-site-bg border-site-accent"
-                      : "bg-site-surface text-site-muted border-site-border-soft hover:bg-site-raised"
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${statusFilter === status
+                      ? "bg-site-accent/15 text-site-accent border-site-accent/40"
+                      : "bg-transparent text-site-muted border-site-border-soft hover:text-site-text hover:border-site-border"
                       }`}
                   >
                     {status === "ALL"
@@ -305,23 +310,27 @@ export default function TicketsPage() {
               </div>
             </div>
 
-            {/* Ticket List */}
+            {/* Ticket rows */}
             <div className="max-h-[600px] overflow-y-auto">
               {isLoading ? (
                 <div className="p-8 text-center">
                   <Loader2
-                    className="animate-spin mx-auto text-site-text mb-3"
-                    size={32}
+                    className="animate-spin mx-auto text-site-accent mb-3"
+                    size={28}
                   />
-                  <p className="text-site-muted">{tCommon("loading")}</p>
+                  <p className="text-site-muted text-sm">{tCommon("loading")}</p>
                 </div>
               ) : filteredTickets.length === 0 ? (
                 <div className="p-8 text-center">
-                  <FileText className="mx-auto text-site-dim mb-3" size={48} />
-                  <p className="text-site-muted mb-2">{t("no_tickets")}</p>
+                  <div className="w-12 h-12 rounded-full bg-site-raised flex items-center justify-center mx-auto mb-3">
+                    <FileText className="text-site-dim" size={22} />
+                  </div>
+                  <p className="text-site-muted text-sm mb-2">
+                    {t("no_tickets")}
+                  </p>
                   <button
                     onClick={() => setShowNewTicketModal(true)}
-                    className="text-site-text hover:underline font-medium"
+                    className="text-site-accent hover:text-site-accent-hover text-sm font-medium"
                   >
                     {t("create_new")}
                   </button>
@@ -331,29 +340,27 @@ export default function TicketsPage() {
                   <button
                     key={ticket.id}
                     onClick={() => loadTicketDetail(ticket.id)}
-                    className={`w-full text-left p-4 border-b border-site-border-soft hover:bg-site-raised transition-colors ${selectedTicket?.id === ticket.id
-                      ? "bg-site-accent/10 border-l-4 border-l-site-accent"
-                      : ""
+                    className={`w-full text-left px-4 py-3 border-b border-site-border-soft last:border-b-0 transition-colors ${selectedTicket?.id === ticket.id
+                      ? "bg-site-accent/10 border-l-2 border-l-site-accent"
+                      : "hover:bg-site-raised/60"
                       }`}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <span className="text-xs text-site-muted font-bold uppercase">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-[11px] text-site-dim font-medium">
                         {ticket.ticketNumber}
                       </span>
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-4 border font-bold uppercase ${statusLabels[ticket.status].color}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold ${statusLabels[ticket.status].color}`}
                       >
                         {statusLabels[ticket.status].label}
                       </span>
                     </div>
-                    <h4 className="text-site-text font-bold text-sm mb-1 uppercase line-clamp-1">
+                    <h4 className="text-site-text font-medium text-sm mb-1 line-clamp-1">
                       {ticket.subject}
                     </h4>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-site-muted font-bold uppercase">
-                        {categoryLabels[ticket.category]}
-                      </span>
-                      <span className="text-[10px] text-site-muted font-bold uppercase">
+                    <div className="flex items-center justify-between text-[11px] text-site-muted">
+                      <span>{categoryLabels[ticket.category]}</span>
+                      <span className="tabular-nums">
                         {new Date(ticket.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -367,27 +374,27 @@ export default function TicketsPage() {
         {/* Ticket Detail */}
         <div className="lg:col-span-2">
           {selectedTicket ? (
-            <div className="bg-site-surface border border-site-border rounded-8 overflow-hidden h-full flex flex-col">
+            <div className="site-card overflow-hidden h-full flex flex-col">
               {isDetailLoading ? (
                 <div className="flex-1 flex items-center justify-center p-8">
-                  <Loader2 className="animate-spin text-site-text" size={32} />
+                  <Loader2 className="animate-spin text-site-accent" size={28} />
                 </div>
               ) : (
                 <>
-                  {/* Ticket Header */}
-                  <div className="p-6 border-b border-site-border-soft">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <span className="text-xs text-site-muted font-bold uppercase">
+                  {/* Ticket header */}
+                  <div className="p-5 md:p-6 border-b border-site-border-soft">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="min-w-0">
+                        <span className="text-[11px] text-site-dim font-medium">
                           {selectedTicket.ticketNumber}
                         </span>
-                        <h2 className="text-xl font-bold uppercase text-site-text mt-1">
+                        <h2 className="text-lg font-bold text-site-text mt-0.5 leading-snug">
                           {selectedTicket.subject}
                         </h2>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         <span
-                          className={`px-3 py-1 rounded-4 text-[10px] font-bold uppercase border ${statusLabels[selectedTicket.status].color}`}
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border ${statusLabels[selectedTicket.status].color}`}
                         >
                           {statusLabels[selectedTicket.status].label}
                         </span>
@@ -396,33 +403,33 @@ export default function TicketsPage() {
                         ) && (
                             <button
                               onClick={handleCloseTicket}
-                              className="p-2 text-site-muted hover:text-site-text hover:bg-site-raised transition-colors"
+                              className="p-2 text-site-muted hover:text-site-text hover:bg-site-raised rounded-full transition-colors"
                               title={t("detail.closed_notice")}
                             >
-                              <X size={18} />
+                              <X size={16} />
                             </button>
                           )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-[10px] text-site-muted font-bold uppercase">
-                      <div className="flex items-center">
-                        <Tag size={14} className="mr-1.5" />
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-site-muted">
+                      <span className="flex items-center">
+                        <Tag size={13} className="mr-1.5" />
                         {categoryLabels[selectedTicket.category]}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock size={14} className="mr-1.5" />
+                      </span>
+                      <span className="flex items-center tabular-nums">
+                        <Clock size={13} className="mr-1.5" />
                         {t("created_at", {
                           date: new Date(
                             selectedTicket.createdAt,
                           ).toLocaleString(),
                         })}
-                      </div>
+                      </span>
                       {selectedTicket.orderId && (
                         <Link
                           href={`/dashboard/orders/${selectedTicket.orderId}`}
-                          className="text-site-text hover:underline flex items-center font-medium"
+                          className="text-site-accent hover:text-site-accent-hover flex items-center font-medium"
                         >
-                          <FileText size={14} className="mr-1.5" />
+                          <FileText size={13} className="mr-1.5" />
                           {t("order_ref_label", { id: selectedTicket.orderId })}
                         </Link>
                       )}
@@ -430,24 +437,24 @@ export default function TicketsPage() {
                   </div>
 
                   {/* Messages */}
-                  <div className="flex-1 p-6 overflow-y-auto max-h-[500px] space-y-4">
-                    {/* Initial Message */}
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-site-accent/15 border border-site-border flex items-center justify-center flex-shrink-0">
-                        <User size={16} className="text-site-accent" />
+                  <div className="flex-1 p-5 md:p-6 overflow-y-auto max-h-[500px] space-y-4">
+                    {/* Initial message */}
+                    <div className="flex gap-3">
+                      <div className="w-8 h-8 rounded-full bg-site-accent/15 flex items-center justify-center flex-shrink-0">
+                        <User size={15} className="text-site-accent" />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-site-text font-bold uppercase text-[10px]">
+                          <span className="text-site-text font-semibold text-xs">
                             {t("user_you")}
                           </span>
-                          <span className="text-[10px] text-site-muted font-bold uppercase">
+                          <span className="text-[11px] text-site-dim tabular-nums">
                             {new Date(
                               selectedTicket.createdAt,
                             ).toLocaleString()}
                           </span>
                         </div>
-                        <div className="bg-site-raised border border-site-border p-3 text-site-text font-bold uppercase text-xs">
+                        <div className="bg-site-raised rounded-10 rounded-tl-sm p-3 text-site-text text-sm leading-relaxed">
                           {selectedTicket.description}
                         </div>
                       </div>
@@ -455,44 +462,42 @@ export default function TicketsPage() {
 
                     {/* Replies */}
                     {selectedTicket.messages.map((message) => (
-                      <div key={message.id} className="flex gap-4">
+                      <div key={message.id} className="flex gap-3">
                         <div
-                          className={`w-8 h-8 border border-site-border flex items-center justify-center flex-shrink-0 ${message.sender === "admin"
-                            ? "bg-status-success/15"
+                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${message.sender === "admin"
+                            ? "bg-status-success/15 text-status-success"
                             : message.sender === "system"
-                              ? "bg-site-raised"
-                              : "bg-site-accent/15"
+                              ? "bg-site-raised text-site-muted"
+                              : "bg-site-accent/15 text-site-accent"
                             }`}
                         >
-                          {message.sender === "admin" ? (
-                            <span className="text-status-success text-xs font-bold">
-                              S
-                            </span>
-                          ) : message.sender === "system" ? (
-                            <span className="text-site-muted text-xs">@</span>
-                          ) : (
-                            <User size={16} className="text-site-accent" />
-                          )}
+                          {message.sender === "admin"
+                            ? (message.senderName || "S").charAt(0).toUpperCase()
+                            : message.sender === "system"
+                              ? "@"
+                              : (
+                                <User size={15} />
+                              )}
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-site-text font-bold uppercase text-[10px]">
+                            <span className="text-site-text font-semibold text-xs">
                               {message.sender === "admin"
                                 ? message.senderName || t("support_team")
                                 : message.sender === "system"
                                   ? t("system")
                                   : t("user_you")}
                             </span>
-                            <span className="text-[10px] font-bold uppercase text-site-muted">
+                            <span className="text-[11px] text-site-dim tabular-nums">
                               {new Date(message.createdAt).toLocaleString()}
                             </span>
                           </div>
                           <div
-                            className={`p-3 border border-site-border font-bold uppercase text-xs ${message.sender === "admin"
-                              ? "bg-status-success/15 text-site-text"
+                            className={`p-3 rounded-10 text-sm leading-relaxed ${message.sender === "admin"
+                              ? "bg-status-success/10 border border-status-success/20 text-site-text rounded-tl-sm"
                               : message.sender === "system"
-                                ? "bg-site-surface text-site-text"
-                                : "bg-site-raised text-site-text"
+                                ? "bg-site-surface border border-site-border-soft text-site-muted rounded-tl-sm"
+                                : "bg-site-raised text-site-text rounded-tl-sm"
                               }`}
                           >
                             {message.content}
@@ -502,7 +507,7 @@ export default function TicketsPage() {
                     ))}
                   </div>
 
-                  {/* Reply Form */}
+                  {/* Reply form */}
                   {!["CLOSED", "RESOLVED"].includes(selectedTicket.status) && (
                     <div className="p-4 border-t border-site-border-soft">
                       <form onSubmit={handleSendReply} className="flex gap-3">
@@ -511,22 +516,22 @@ export default function TicketsPage() {
                           value={replyMessage}
                           onChange={(e) => setReplyMessage(e.target.value)}
                           placeholder={t("detail.reply") + "..."}
-                          className="flex-1 site-input text-xs"
+                          className="flex-1 site-input"
                         />
-                        <button
+                        <Button
                           type="submit"
                           disabled={isSendingReply || !replyMessage.trim()}
-                          className="site-btn inline-flex disabled:opacity-50 disabled:cursor-not-allowed text-[10px]"
+                          size="md"
                         >
                           {isSendingReply ? (
-                            <Loader2 size={18} className="animate-spin" />
+                            <Loader2 size={16} className="animate-spin" />
                           ) : (
                             <>
-                              <Send size={18} className="mr-2" />
+                              <Send size={15} className="mr-2" />
                               {t("detail.send_reply")}
                             </>
                           )}
-                        </button>
+                        </Button>
                       </form>
                     </div>
                   )}
@@ -534,12 +539,14 @@ export default function TicketsPage() {
               )}
             </div>
           ) : (
-            <div className="bg-site-surface border border-site-border rounded-8 p-12 text-center h-full flex flex-col items-center justify-center">
-              <MessageSquare className="text-site-dim mb-4" size={64} />
-              <h3 className="text-xl font-bold text-site-text mb-2">
+            <div className="site-card p-12 text-center h-full flex flex-col items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-site-accent/10 border border-site-accent/20 flex items-center justify-center mb-4">
+                <MessageSquare className="text-site-accent" size={24} />
+              </div>
+              <h3 className="text-base font-bold text-site-text mb-1.5">
                 {t("select_ticket")}
               </h3>
-              <p className="text-site-muted max-w-sm">
+              <p className="text-sm text-site-muted max-w-sm">
                 {t("select_ticket_desc")}
               </p>
             </div>
@@ -547,134 +554,124 @@ export default function TicketsPage() {
         </div>
       </div>
 
-      {/* New Ticket Modal */}
-      {showNewTicketModal && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-          <div className="bg-site-surface border border-site-border rounded-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-site-border-soft">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="w-1.5 h-5 bg-site-accent mr-2"></span>
-                  <h2 className="text-xl font-bold uppercase text-site-text">
-                    {t("create.title")}
-                  </h2>
-                </div>
-                <button
-                  onClick={() => setShowNewTicketModal(false)}
-                  className="text-site-muted hover:text-site-text"
-                >
-                  <X size={24} />
-                </button>
-              </div>
+      {/* New Ticket Dialog */}
+      <Dialog
+        open={showNewTicketModal}
+        onOpenChange={(o) => setShowNewTicketModal(o)}
+      >
+        <DialogContent className="bg-site-surface border-site-border rounded-12 sm:rounded-12 max-w-lg gap-0 p-0 overflow-hidden">
+          <DialogHeader className="p-5 border-b border-site-border-soft">
+            <DialogTitle className="text-base font-bold text-site-text">
+              {t("create.title")}
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleCreateTicket} className="p-5 space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-site-muted mb-1.5">
+                {t("create.category")}
+              </label>
+              <select
+                value={newTicket.category}
+                onChange={(e) =>
+                  setNewTicket({
+                    ...newTicket,
+                    category: e.target.value as TicketCategory,
+                  })
+                }
+                className="site-input w-full xl:w-2/3"
+              >
+                {Object.entries(categoryLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <form onSubmit={handleCreateTicket} className="p-6 space-y-4">
-              <div>
-                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
-                  {t("create.category")}
-                </label>
-                <select
-                  value={newTicket.category}
-                  onChange={(e) =>
-                    setNewTicket({
-                      ...newTicket,
-                      category: e.target.value as TicketCategory,
-                    })
-                  }
-                  className="site-input w-full xl:w-2/3"
-                >
-                  {Object.entries(categoryLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <label className="block text-xs font-medium text-site-muted mb-1.5">
+                {t("create.description")}
+              </label>
+              <input
+                type="text"
+                value={newTicket.subject}
+                onChange={(e) =>
+                  setNewTicket({ ...newTicket, subject: e.target.value })
+                }
+                placeholder={t("create.subject_placeholder")}
+                required
+                className="site-input w-full"
+              />
+            </div>
 
-              <div>
-                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
-                  {t("create.description")}
-                </label>
-                <input
-                  type="text"
-                  value={newTicket.subject}
-                  onChange={(e) =>
-                    setNewTicket({ ...newTicket, subject: e.target.value })
-                  }
-                  placeholder={t("create.subject_placeholder")}
-                  required
-                  className="site-input w-full text-xs"
-                />
-              </div>
+            <div>
+              <label className="block text-xs font-medium text-site-muted mb-1.5">
+                {t("create.description_label")}
+              </label>
+              <textarea
+                value={newTicket.description}
+                onChange={(e) =>
+                  setNewTicket({
+                    ...newTicket,
+                    description: e.target.value,
+                  })
+                }
+                placeholder={t("create.description_placeholder")}
+                required
+                rows={5}
+                className="site-input w-full resize-none"
+              />
+            </div>
 
-              <div>
-                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
-                  {t("create.description_label")}
-                </label>
-                <textarea
-                  value={newTicket.description}
-                  onChange={(e) =>
-                    setNewTicket({
-                      ...newTicket,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder={t("create.description_placeholder")}
-                  required
-                  rows={5}
-                  className="site-input w-full text-xs resize-none"
-                />
-              </div>
+            <div>
+              <label className="block text-xs font-medium text-site-muted mb-1.5">
+                {t("create.order_ref")}
+              </label>
+              <input
+                type="text"
+                value={newTicket.orderId || ""}
+                onChange={(e) =>
+                  setNewTicket({
+                    ...newTicket,
+                    orderId: e.target.value || undefined,
+                  })
+                }
+                placeholder={t("create.order_ref_placeholder")}
+                className="site-input w-full"
+              />
+            </div>
 
-              <div>
-                <label className="block text-site-dim mb-2 font-bold uppercase text-[10px]">
-                  {t("create.order_ref")}
-                </label>
-                <input
-                  type="text"
-                  value={newTicket.orderId || ""}
-                  onChange={(e) =>
-                    setNewTicket({
-                      ...newTicket,
-                      orderId: e.target.value || undefined,
-                    })
-                  }
-                  placeholder={t("create.order_ref_placeholder")}
-                  className="site-input w-full text-xs"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowNewTicketModal(false)}
-                  className="flex-1 py-2.5 px-4 border border-site-border-soft rounded-8 text-site-muted hover:text-site-text hover:border-site-border transition-colors font-bold uppercase text-xs"
-                >
-                  {t("create.cancel")}
-                </button>
-                <button
-                  type="submit"
-                  disabled={
-                    isSubmitting ||
-                    !newTicket.subject.trim() ||
-                    !newTicket.description.trim()
-                  }
-                  className="flex-1 site-btn disabled:opacity-50 disabled:cursor-not-allowed text-xs"
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <Loader2 size={18} className="animate-spin mr-2" />
-                      {tCommon("loading")}
-                    </span>
-                  ) : (
-                    t("create.submit")
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowNewTicketModal(false)}
+                className="flex-1 py-2.5 px-4 border border-site-border-soft rounded-10 text-site-muted hover:text-site-text hover:border-site-border transition-colors font-medium text-sm"
+              >
+                {t("create.cancel")}
+              </button>
+              <Button
+                type="submit"
+                disabled={
+                  isSubmitting ||
+                  !newTicket.subject.trim() ||
+                  !newTicket.description.trim()
+                }
+                className="flex-1"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center">
+                    <Loader2 size={16} className="animate-spin mr-2" />
+                    {tCommon("loading")}
+                  </span>
+                ) : (
+                  t("create.submit")
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

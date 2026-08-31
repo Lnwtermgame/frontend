@@ -1,15 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Search, ChevronDown, Check } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { AIModel } from "@/lib/services/ai-api";
 
@@ -41,7 +40,17 @@ export function ModelSelect({
   className,
 }: ModelSelectProps) {
   const t = useTranslations("Admin");
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const selectedModelObj = useMemo(
+    () => models.find((m) => m.id === value),
+    [models, value]
+  );
+  const displayLabel = selectedModelObj
+    ? selectedModelObj.name || selectedModelObj.id
+    : value;
 
   const { visible, total } = useMemo(() => {
     const sorted = [...models].sort((a, b) => {
@@ -62,26 +71,67 @@ export function ModelSelect({
     return { visible: capped, total: models.length };
   }, [models, query, value]);
 
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setQuery("");
+    }
+  };
+
   return (
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={cn("w-full", className)} aria-label="AI Model">
-        <SelectValue placeholder={loading ? t("ai.loading_models") : t("ai.select_model")} />
-        <ChevronDown className="h-4 w-4 opacity-50" />
-      </SelectTrigger>
-      <SelectContent>
-        <div className="sticky top-0 z-10 bg-popover p-2 border-b border-border-soft">
+    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger asChild disabled={disabled || loading}>
+        <button
+          type="button"
+          role="combobox"
+          aria-expanded={open}
+          aria-haspopup="listbox"
+          aria-label="AI Model"
+          disabled={disabled || loading}
+          className={cn(
+            "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            !displayLabel && "text-muted-foreground",
+            className
+          )}
+        >
+          <span className="truncate text-left flex-1">
+            {displayLabel ||
+              (loading ? t("ai.loading_models") : t("ai.select_model"))}
+          </span>
+          <ChevronDown className="h-4 w-4 opacity-50 shrink-0 ml-2" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[280px] p-0 overflow-hidden"
+      >
+        <div className="bg-popover p-2 border-b border-border-soft">
           <div className="relative">
             <Search
               size={13}
               className="absolute left-2.5 top-1/2 -translate-y-1/2 text-site-dim pointer-events-none"
             />
             <input
+              ref={inputRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                // Keep typing in the search box; Escape still closes via Radix
-                if (e.key !== "Escape") e.stopPropagation();
+                if (e.key === "Escape") {
+                  setOpen(false);
+                  return;
+                }
+                // Prevent dropdown menu keyboard navigation from stealing typing events
+                e.stopPropagation();
               }}
+              onClick={(e) => e.stopPropagation()}
               placeholder={t("ai.search_models")}
               className="w-full h-8 pl-7 pr-2 bg-background border border-input rounded-md text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring"
             />
@@ -93,23 +143,36 @@ export function ModelSelect({
             })}
           </p>
         </div>
-        <div className="max-h-[320px] overflow-y-auto">
+        <div className="max-h-[300px] overflow-y-auto p-1">
           {visible.length === 0 ? (
             <p className="py-4 text-center text-xs text-site-dim">
               {t("ai.no_models")}
             </p>
           ) : (
-            visible.map((m) => (
-              <SelectItem key={m.id} value={m.id}>
-                <span className="flex items-center gap-2 text-xs">
-                  {m.id === value && <Check size={12} className="text-site-accent" />}
-                  <span className="truncate">{m.name || m.id}</span>
-                </span>
-              </SelectItem>
-            ))
+            visible.map((m) => {
+              const isSelected = m.id === value;
+              return (
+                <DropdownMenuItem
+                  key={m.id}
+                  onSelect={() => {
+                    onValueChange(m.id);
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "flex items-center justify-between text-xs py-2 px-2.5 cursor-pointer rounded-sm",
+                    isSelected && "bg-accent text-accent-foreground font-medium"
+                  )}
+                >
+                  <span className="truncate mr-2">{m.name || m.id}</span>
+                  {isSelected && (
+                    <Check size={14} className="text-site-accent shrink-0" />
+                  )}
+                </DropdownMenuItem>
+              );
+            })
           )}
         </div>
-      </SelectContent>
-    </Select>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

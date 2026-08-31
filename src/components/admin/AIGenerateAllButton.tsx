@@ -19,6 +19,7 @@ import {
   Star,
   TrendingUp,
   Layers,
+  ChevronDown,
 } from "lucide-react";
 import {
   DialogOverlay,
@@ -156,6 +157,7 @@ export default function AIGenerateAllButton({
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [isLoadingModels, setIsLoadingModels] = useState(false);
   const [isCheckingPreflight, setIsCheckingPreflight] = useState(false);
+  const [showPreflight, setShowPreflight] = useState(false);
   const [preflight, setPreflight] = useState<PreflightStatus>({
     configured: false,
     networkOk: false,
@@ -884,50 +886,92 @@ export default function AIGenerateAllButton({
                 </div>
               </div>
 
-              {/* Preflight */}
+              {/* Preflight (collapsed by default, toggle to expand) */}
               <div className="p-3.5 rounded-8 border border-site-border-soft bg-site-surface/80 space-y-2.5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="text-xs font-semibold text-site-text uppercase tracking-wider">
-                    Preflight Check
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => void runPreflight()}
-                    disabled={isCheckingPreflight || isRunning}
-                    className="h-7 text-xs"
-                  >
-                    {isCheckingPreflight ? "กำลังตรวจสอบ..." : "ตรวจสอบอีกครั้ง"}
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <Badge
-                    variant={preflight.configured ? "success" : "danger"}
-                    className="justify-center py-1 w-full text-xs"
-                  >
-                    Config: {preflight.configured ? "พร้อม" : "ไม่พร้อม"}
-                  </Badge>
-                  <Badge
-                    variant={preflight.modelReady ? "success" : "warning"}
-                    className="justify-center py-1 w-full text-xs"
-                  >
-                    Model: {preflight.modelReady ? "พร้อม" : "ยังไม่พร้อม"}
-                  </Badge>
-                  <Badge
-                    variant={preflight.networkOk ? "success" : "danger"}
-                    className="justify-center py-1 w-full text-xs"
-                  >
-                    Network: {preflight.networkOk ? "เชื่อมต่อได้" : "เชื่อมต่อไม่ได้"}
-                  </Badge>
-                </div>
-                <p
-                  className={cn(
-                    "text-xs font-medium",
-                    preflight.ready ? "text-status-success" : "text-status-warning"
-                  )}
+                <button
+                  type="button"
+                  onClick={() => setShowPreflight((v) => !v)}
+                  className="w-full flex flex-wrap items-center justify-between gap-2 cursor-pointer select-none text-left"
+                  aria-expanded={showPreflight}
                 >
-                  สถานะ: {preflight.message}
-                </p>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        "w-2 h-2 rounded-full shrink-0",
+                        preflight.ready
+                          ? "bg-status-success"
+                          : "bg-status-warning"
+                      )}
+                    />
+                    <span className="text-xs font-semibold text-site-text uppercase tracking-wider">
+                      Preflight Check
+                    </span>
+                    <span
+                      className={cn(
+                        "text-xs font-medium",
+                        preflight.ready
+                          ? "text-status-success"
+                          : "text-status-warning"
+                      )}
+                    >
+                      · {preflight.message}
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 text-site-dim transition-transform",
+                      showPreflight && "rotate-180"
+                    )}
+                  />
+                </button>
+                {showPreflight && (
+                  <>
+                    <div className="flex justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => void runPreflight()}
+                        disabled={isCheckingPreflight || isRunning}
+                        className="h-7 text-xs"
+                      >
+                        {isCheckingPreflight
+                          ? "กำลังตรวจสอบ..."
+                          : "ตรวจสอบอีกครั้ง"}
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <Badge
+                        variant={preflight.configured ? "success" : "danger"}
+                        className="justify-center py-1 w-full text-xs"
+                      >
+                        Config: {preflight.configured ? "พร้อม" : "ไม่พร้อม"}
+                      </Badge>
+                      <Badge
+                        variant={preflight.modelReady ? "success" : "warning"}
+                        className="justify-center py-1 w-full text-xs"
+                      >
+                        Model: {preflight.modelReady ? "พร้อม" : "ยังไม่พร้อม"}
+                      </Badge>
+                      <Badge
+                        variant={preflight.networkOk ? "success" : "danger"}
+                        className="justify-center py-1 w-full text-xs"
+                      >
+                        Network:{" "}
+                        {preflight.networkOk ? "เชื่อมต่อได้" : "เชื่อมต่อไม่ได้"}
+                      </Badge>
+                    </div>
+                    <p
+                      className={cn(
+                        "text-xs font-medium",
+                        preflight.ready
+                          ? "text-status-success"
+                          : "text-status-warning"
+                      )}
+                    >
+                      สถานะ: {preflight.message}
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Skip complete checkbox + completeness summary */}

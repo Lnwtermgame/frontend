@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-
-const LITELLM_API_BASE_URL =
-  process.env.LITELLM_API_URL || "https://litellm.ddns.net";
-const LITELLM_API_KEY = process.env.LITELLM_API_KEY || "";
+import { litellmBaseUrl, litellmApiKey } from "@/lib/litellm";
 
 export async function GET() {
+  const LITELLM_API_KEY = litellmApiKey();
   if (!LITELLM_API_KEY) {
     return NextResponse.json(
       { error: "LiteLLM API key not configured on server", data: [] },
@@ -13,7 +11,7 @@ export async function GET() {
   }
 
   try {
-    const response = await fetch(`${LITELLM_API_BASE_URL}/v1/models`, {
+    const response = await fetch(`${litellmBaseUrl()}/v1/models`, {
       headers: {
         Authorization: `Bearer ${LITELLM_API_KEY}`,
       },

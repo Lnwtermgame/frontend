@@ -771,9 +771,10 @@
     "about_product": "Product Description",
     "account_info_title": "Account Information",
     "auto_delivery_hint": "Instant Automatic Delivery",
+    "auto_delivery_short": "Instant delivery",
     "back": "Back",
     "buy_now_button": "Buy Now",
-    "by_developer": "Developer: ",
+    "by_developer": "Developer: {developer}",
     "cancel_button": "Cancel",
     "change_button": "Change Selection",
     "close_window_button": "Close Window",
@@ -853,7 +854,14 @@
     "flat_fee_label": "Flat Fee",
     "min_amount_badge": "Min {amount}฿",
     "related_products_sublabel": "Related Products",
-    "similar_products_sublabel": "Similar Products"
+    "similar_products_sublabel": "Similar Products",
+    "quantity_label": "Quantity",
+    "sold_count": "Sold: {count}",
+    "out_of_stock": "Sold out",
+    "add_favorite": "Add to favorites",
+    "remove_favorite": "Remove from favorites",
+    "share_link": "Share link",
+    "screenshots_hint": "Screenshots · scroll to browse"
   },
   "News": {
     "all_news": "All News",
@@ -1181,6 +1189,13 @@
   "logout": "Logout",
   "login_button": "Login / Register",
   "Admin": {
+    "ai": {
+      "loading_models": "Loading models...",
+      "select_model": "Select a model",
+      "search_models": "Search models...",
+      "model_count": "Showing {visible} of {total} models",
+      "no_models": "No models found"
+    },
     "nav": {
       "main": "Dashboard",
       "products_sales": "Products & Sales",
@@ -2101,5 +2116,20 @@
   "search_view_all": "View All Results",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

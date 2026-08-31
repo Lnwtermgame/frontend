@@ -771,9 +771,10 @@
     "about_product": "รายละเอียดผลิตภัณฑ์",
     "account_info_title": "ข้อมูลบัญชีของคุณ",
     "auto_delivery_hint": "สินค้าระบบจัดส่งอัตโนมัติ",
+    "auto_delivery_short": "ส่งอัตโนมัติ",
     "back": "ย้อนกลับ",
     "buy_now_button": "ซื้อทันที",
-    "by_developer": "ผู้พัฒนา : ",
+    "by_developer": "ผู้พัฒนา: {developer}",
     "cancel_button": "ยกเลิก",
     "change_button": "เปลี่ยนตัวเลือก",
     "close_window_button": "ปิดหน้าต่าง",
@@ -843,7 +844,7 @@
     "unknown": "ไม่ระบุข้อมูล",
     "unverified_account_warning": "กรุณายืนยันอีเมลของคุณก่อนทำรายการสั่งซื้อ",
     "verify_info_hint": "กรุณาตรวจสอบความถูกต้องของ Player ID ก่อนทำรายการ",
-    "choose_placeholder": "เลือก{field}",
+    "choose_placeholder": "เลือก {field}",
     "enter_placeholder": "กรอก{field}",
     "product_label": "สินค้า",
     "package_label": "แพ็กเกจ",
@@ -853,7 +854,14 @@
     "flat_fee_label": "ค่าธรรมเนียมคงที่",
     "min_amount_badge": "ขั้นต่ำ {amount}฿",
     "related_products_sublabel": "สินค้าแนะนำ",
-    "similar_products_sublabel": "สินค้าใกล้เคียง"
+    "similar_products_sublabel": "สินค้าใกล้เคียง",
+    "quantity_label": "ปริมาณ",
+    "sold_count": "ขายแล้ว {count}",
+    "out_of_stock": "ขายหมด",
+    "add_favorite": "เพิ่มในรายการโปรด",
+    "remove_favorite": "นำออกจากรายการโปรด",
+    "share_link": "แชร์ลิงก์",
+    "screenshots_hint": "ภาพหน้าจอ · เลื่อนดูได้"
   },
   "News": {
     "all_news": "ข่าวสารทั้งหมด",
@@ -1181,6 +1189,13 @@
   "logout": "ออกจากระบบ",
   "login_button": "เข้าสู่ระบบ / สมัครสมาชิก",
   "Admin": {
+    "ai": {
+      "loading_models": "กำลังโหลดโมเดล...",
+      "select_model": "เลือกโมเดล",
+      "search_models": "ค้นหาโมเดล...",
+      "model_count": "แสดง {visible} จาก {total} โมเดล",
+      "no_models": "ไม่พบโมเดล"
+    },
     "nav": {
       "main": "แดชบอร์ด",
       "products_sales": "สินค้าและยอดขาย",
@@ -2101,5 +2116,20 @@
   "search_view_all": "ดูผลลัพธ์ทั้งหมด",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

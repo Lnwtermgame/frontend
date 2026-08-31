@@ -84,7 +84,7 @@ export default function MainNav() {
                         {!isSessionChecked ? (
                             <div className="w-[110px] h-8 bg-site-raised rounded-6 animate-pulse" />
                         ) : user ? (
-                            <DropdownMenu>
+                            <DropdownMenu modal={false}>
                                 {/* Avatar chip button */}
                                 <DropdownMenuTrigger asChild>
                                     <button
@@ -95,7 +95,7 @@ export default function MainNav() {
                                                 {getUserInitial(user)}
                                             </span>
                                         </div>
-                                        <div className="flex flex-col hidden sm:block">
+                                        <div className="hidden flex-col sm:flex">
                                             <span className="text-site-text text-[12px] font-semibold leading-tight truncate max-w-[100px]">
                                                 {user?.username || user?.name || "Player"}
                                             </span>

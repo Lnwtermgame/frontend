@@ -771,9 +771,10 @@
     "about_product": "상품 설명",
     "account_info_title": "계정 정보",
     "auto_delivery_hint": "자동 즉시 배송",
+    "auto_delivery_short": "자동 배송",
     "back": "뒤로",
     "buy_now_button": "지금 구매",
-    "by_developer": "개발사: ",
+    "by_developer": "개발사: {developer}",
     "cancel_button": "취소",
     "change_button": "선택 변경",
     "close_window_button": "창 닫기",
@@ -853,7 +854,14 @@
     "flat_fee_label": "고정 수수료",
     "min_amount_badge": "최소 {amount}฿",
     "related_products_sublabel": "관련 상품",
-    "similar_products_sublabel": "유사 상품"
+    "similar_products_sublabel": "유사 상품",
+    "quantity_label": "수량",
+    "sold_count": "판매: {count}",
+    "out_of_stock": "품절",
+    "add_favorite": "즐겨찾기 추가",
+    "remove_favorite": "즐겨찾기 제거",
+    "share_link": "링크 공유",
+    "screenshots_hint": "스크린샷 · 스크롤하여 보기"
   },
   "News": {
     "all_news": "전체 뉴스",
@@ -1181,6 +1189,13 @@
   "logout": "로그아웃",
   "login_button": "로그인 / 회원가입",
   "Admin": {
+    "ai": {
+      "loading_models": "모델 로딩 중...",
+      "select_model": "모델 선택",
+      "search_models": "모델 검색...",
+      "model_count": "전체 {total}개 중 {visible}개 표시",
+      "no_models": "모델 없음"
+    },
     "nav": {
       "main": "대시보드",
       "products_sales": "상품 및 판매",
@@ -2101,5 +2116,20 @@
   "search_view_all": "모든 결과 보기",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

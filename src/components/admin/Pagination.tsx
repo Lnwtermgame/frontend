@@ -1,8 +1,9 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/Button";
 
 interface PaginationProps {
   page: number;
@@ -11,6 +12,13 @@ interface PaginationProps {
   pageSize: number;
   onPageChange: (page: number) => void;
 }
+
+// shadcn button idiom (outline + icon base) rescaled to the compact admin
+// pager metrics and pinned to the dark admin tokens.
+const NAV_BUTTON = cn(
+  buttonVariants({ variant: "outline", size: "icon" }),
+  "h-7 w-7 rounded-lg bg-site-surface p-1.5 text-site-muted hover:text-site-text disabled:opacity-40",
+);
 
 export function Pagination({
   page,
@@ -43,7 +51,7 @@ export function Pagination({
         <button
           onClick={() => canPrev && onPageChange(page - 1)}
           disabled={!canPrev}
-          className="p-1.5 rounded-lg border border-site-border bg-site-surface text-site-muted hover:bg-site-raised hover:text-site-text disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className={NAV_BUTTON}
           aria-label={t("pagination.prev")}
         >
           <ChevronLeft className="w-3.5 h-3.5" />
@@ -55,7 +63,7 @@ export function Pagination({
         <button
           onClick={() => canNext && onPageChange(page + 1)}
           disabled={!canNext}
-          className="p-1.5 rounded-lg border border-site-border bg-site-surface text-site-muted hover:bg-site-raised hover:text-site-text disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className={NAV_BUTTON}
           aria-label={t("pagination.next")}
         >
           <ChevronRight className="w-3.5 h-3.5" />

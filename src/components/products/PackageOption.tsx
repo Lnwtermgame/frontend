@@ -12,48 +12,32 @@ export interface PackageOptionData {
 }
 
 /**
- * One selectable package card. A real <button> with radio semantics so the
- * purchase path is keyboard-accessible (the three render sites previously
- * duplicated non-focusable <div onClick> cards).
+ * One selectable package — a slim SEAGM-style row: selection box, name,
+ * then struck-through original + accent price on the right. A real
+ * <button> with radio semantics so the purchase path stays keyboard-
+ * accessible.
  */
 export function PackageOption({
   option,
   selected,
   onSelect,
   popularLabel,
-  size = "sm",
+  soldOut,
+  soldOutLabel,
+  size = "lg",
 }: {
   option: PackageOptionData;
   selected: boolean;
   onSelect: (id: string) => void;
   popularLabel: string;
+  soldOut?: boolean;
+  soldOutLabel?: string;
   size?: "sm" | "md" | "lg";
 }) {
   const sizing = {
-    sm: {
-      card: "p-3 min-h-[90px] gap-1.5",
-      title: "text-[12px]",
-      price: "text-sm",
-      original: "text-[10px]",
-      badge: "-top-2.5 text-[9px]",
-      check: "bottom-1.5 right-1.5",
-    },
-    md: {
-      card: "p-3 min-h-[100px] gap-1.5",
-      title: "text-[12px]",
-      price: "text-sm",
-      original: "text-[10px]",
-      badge: "-top-2.5 text-[9px]",
-      check: "bottom-1.5 right-1.5",
-    },
-    lg: {
-      card: "p-3 md:p-4 min-h-[100px] md:min-h-[120px] gap-2",
-      title: "text-[13px] md:text-base",
-      price: "text-sm md:text-base",
-      original: "text-[10px] md:text-xs",
-      badge: "-top-3 text-[9px] md:text-[10px]",
-      check: "bottom-2 right-2",
-    },
+    sm: "px-3 py-2 gap-2.5",
+    md: "px-3.5 py-2.5 gap-3",
+    lg: "px-3.5 py-2.5 md:px-4 md:py-3 gap-3",
   }[size];
 
   return (
@@ -61,60 +45,70 @@ export function PackageOption({
       type="button"
       role="radio"
       aria-checked={selected}
-      onClick={() => onSelect(option.id)}
-      className={`relative border ${sizing.card} cursor-pointer transition-colors flex flex-col justify-center items-center rounded-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 ${
-        selected
-          ? "bg-site-accent/10 border-site-accent"
-          : "bg-site-surface border-site-border-soft hover:border-site-border"
+      aria-disabled={soldOut || undefined}
+      onClick={() => {
+        if (!soldOut) onSelect(option.id);
+      }}
+      className={`relative border ${sizing} transition-colors flex items-center rounded-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/60 ${
+        soldOut
+          ? "opacity-50 cursor-not-allowed bg-site-surface border-site-border-soft"
+          : selected
+            ? "bg-site-accent/10 border-site-accent cursor-pointer"
+            : "bg-site-raised/60 border-site-border-soft hover:border-site-border cursor-pointer"
       }`}
     >
-      {option.isPopular && (
-        <span
-          className={`absolute ${sizing.badge} left-0 right-0 flex justify-center z-10`}
-        >
-          <Badge variant="danger" className={`gap-1 ${size === "lg" ? "" : "text-[9px]"}`}>
-            <Flame size={10} className="fill-current" />
-            {popularLabel}
-          </Badge>
-        </span>
-      )}
+      {/* Selection box */}
+      <span
+        aria-hidden="true"
+        className={`flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-4 border transition-colors ${
+          selected
+            ? "bg-site-accent border-site-accent"
+            : "bg-site-deep border-site-border"
+        }`}
+      >
+        {selected && (
+          <Check size={12} strokeWidth={3} className="text-site-bg" />
+        )}
+      </span>
 
+      {/* Name */}
       <h4
-        className={`text-site-text font-semibold text-center leading-tight line-clamp-2 ${sizing.title}`}
+        className={`flex-1 min-w-0 text-left truncate text-[13px] leading-snug ${
+          soldOut ? "text-site-muted line-through" : "text-site-text font-medium"
+        }`}
       >
         {option.title}
       </h4>
 
-      <div className="text-center tabular-nums">
-        {option.originalPrice > option.price ? (
-          <div className="flex flex-col items-center">
-            <span className={`line-through text-site-dim ${sizing.original}`}>
-              ฿{Number(option.originalPrice || 0).toFixed(2)}
-            </span>
-            <span
-              className={`font-bold ${sizing.price} ${
-                selected ? "text-site-accent" : "text-site-text"
-              }`}
-            >
-              ฿{Number(option.price || 0).toFixed(2)}
-            </span>
-          </div>
-        ) : (
-          <span
-            className={`font-bold ${sizing.price} ${
-              selected ? "text-site-accent" : "text-site-text"
-            }`}
-          >
-            ฿{Number(option.price || 0).toFixed(2)}
+      {/* Compact inline badges */}
+      {soldOut ? (
+        <Badge variant="neutral" className="flex-shrink-0">
+          {soldOutLabel}
+        </Badge>
+      ) : (
+        option.isPopular && (
+          <Badge variant="danger" className="flex-shrink-0 gap-1 text-[9px]">
+            <Flame size={10} className="fill-current" />
+            {popularLabel}
+          </Badge>
+        )
+      )}
+
+      {/* Prices — original struck through, current in accent */}
+      <div className="flex items-baseline justify-end gap-2 flex-shrink-0 tabular-nums ml-1">
+        {option.originalPrice > option.price && (
+          <span className="line-through text-site-dim text-[11px]">
+            ฿{Number(option.originalPrice || 0).toFixed(2)}
           </span>
         )}
-      </div>
-
-      {selected && (
-        <span className={`absolute ${sizing.check} text-site-accent`}>
-          <Check size={14} className={size === "lg" ? "md:w-4 md:h-4" : ""} />
+        <span
+          className={`font-bold text-sm ${
+            soldOut ? "text-site-muted" : "text-site-accent"
+          }`}
+        >
+          ฿{Number(option.price || 0).toFixed(2)}
         </span>
-      )}
+      </div>
     </button>
   );
 }

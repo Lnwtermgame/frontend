@@ -1,12 +1,26 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronDown, ChevronUp, ChevronsUpDown, Loader2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ChevronsUpDown,
+  Loader2,
+  LucideIcon,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Pagination } from "./Pagination";
 import { EmptyState } from "./EmptyState";
-import { LucideIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 export interface Column<T> {
   key: string;
@@ -44,6 +58,11 @@ const ALIGN: Record<string, string> = {
   right: "text-right",
   center: "text-center",
 };
+
+// Admin look for the shadcn Checkbox (unchecked border was accent-colored by
+// default — pin it to the admin border token; checked state already resolves
+// to bg-primary = site-accent).
+const CHECKBOX = "border-site-border";
 
 export function DataTable<T>({
   columns,
@@ -111,113 +130,112 @@ export function DataTable<T>({
 
   return (
     <div className="bg-site-surface border border-site-border-soft rounded-12 overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-site-border-soft">
-              {selectable && (
-                <th className="px-4 py-2.5 w-10">
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    onChange={toggleAll}
-                    className="rounded border-site-border"
-                  />
-                </th>
-              )}
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  onClick={() => handleSort(col)}
+      <Table>
+        <TableHeader>
+          <TableRow className="border-site-border-soft hover:bg-transparent">
+            {selectable && (
+              <TableHead className="h-auto w-10 px-4 py-2.5">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={toggleAll}
+                  className={CHECKBOX}
+                />
+              </TableHead>
+            )}
+            {columns.map((col) => (
+              <TableHead
+                key={col.key}
+                onClick={() => handleSort(col)}
+                className={cn(
+                  "h-auto px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim select-none",
+                  ALIGN[col.align ?? "left"],
+                  col.sortable && "cursor-pointer hover:text-site-text",
+                  col.width,
+                )}
+              >
+                <span className="inline-flex items-center gap-1">
+                  {col.header}
+                  {col.sortable &&
+                    (sortKey === col.key && sortDir === "asc" ? (
+                      <ChevronUp className="w-3 h-3 text-site-accent" />
+                    ) : sortKey === col.key && sortDir === "desc" ? (
+                      <ChevronDown className="w-3 h-3 text-site-accent" />
+                    ) : (
+                      <ChevronsUpDown className="w-3 h-3 opacity-40" />
+                    ))}
+                </span>
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell
+                colSpan={columns.length + (selectable ? 1 : 0)}
+                className="py-12"
+              >
+                <div className="flex items-center justify-center">
+                  <Loader2 className="w-5 h-5 text-site-accent animate-spin" />
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : sortedData.length === 0 ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell
+                colSpan={columns.length + (selectable ? 1 : 0)}
+                className="py-2"
+              >
+                <EmptyState
+                  icon={empty?.icon}
+                  title={empty?.title ?? t("table.empty")}
+                  description={empty?.description}
+                />
+              </TableCell>
+            </TableRow>
+          ) : (
+            sortedData.map((row) => {
+              const id = rowKey(row);
+              const selected = selectedIds.includes(id);
+              return (
+                <TableRow
+                  key={id}
+                  onClick={() => onRowClick?.(row)}
                   className={cn(
-                    "px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim select-none",
-                    ALIGN[col.align ?? "left"],
-                    col.sortable && "cursor-pointer hover:text-site-text",
-                    col.width,
+                    "border-site-border-soft text-xs",
+                    onRowClick && "cursor-pointer",
+                    selected ? "bg-site-accent/5" : "hover:bg-site-raised/50",
                   )}
                 >
-                  <span className="inline-flex items-center gap-1">
-                    {col.header}
-                    {col.sortable &&
-                      (sortKey === col.key && sortDir === "asc" ? (
-                        <ChevronUp className="w-3 h-3 text-site-accent" />
-                      ) : sortKey === col.key && sortDir === "desc" ? (
-                        <ChevronDown className="w-3 h-3 text-site-accent" />
-                      ) : (
-                        <ChevronsUpDown className="w-3 h-3 opacity-40" />
-                      ))}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-site-border-soft">
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={columns.length + (selectable ? 1 : 0)}
-                  className="py-12"
-                >
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="w-5 h-5 text-site-accent animate-spin" />
-                  </div>
-                </td>
-              </tr>
-            ) : sortedData.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length + (selectable ? 1 : 0)}
-                  className="py-2"
-                >
-                  <EmptyState
-                    icon={empty?.icon}
-                    title={empty?.title ?? t("table.empty")}
-                    description={empty?.description}
-                  />
-                </td>
-              </tr>
-            ) : (
-              sortedData.map((row) => {
-                const id = rowKey(row);
-                const selected = selectedIds.includes(id);
-                return (
-                  <tr
-                    key={id}
-                    onClick={() => onRowClick?.(row)}
-                    className={cn(
-                      "text-xs transition-colors",
-                      onRowClick && "cursor-pointer",
-                      selected ? "bg-site-accent/5" : "hover:bg-site-raised/50",
-                    )}
-                  >
-                    {selectable && (
-                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                        <input
-                          type="checkbox"
-                          checked={selected}
-                          onChange={() => toggleRow(id)}
-                          className="rounded border-site-border"
-                        />
-                      </td>
-                    )}
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className={cn(
-                          "px-4 py-3 text-site-text",
-                          ALIGN[col.align ?? "left"],
-                        )}
-                      >
-                        {col.render ? col.render(row) : String((row as any)[col.key] ?? "")}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+                  {selectable && (
+                    <TableCell
+                      className="px-4 py-3"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Checkbox
+                        checked={selected}
+                        onCheckedChange={() => toggleRow(id)}
+                        className={CHECKBOX}
+                      />
+                    </TableCell>
+                  )}
+                  {columns.map((col) => (
+                    <TableCell
+                      key={col.key}
+                      className={cn(
+                        "px-4 py-3 text-site-text",
+                        ALIGN[col.align ?? "left"],
+                      )}
+                    >
+                      {col.render ? col.render(row) : String((row as any)[col.key] ?? "")}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
+          )}
+        </TableBody>
+      </Table>
       {pagination && onPageChange && (
         <Pagination
           page={pagination.page}

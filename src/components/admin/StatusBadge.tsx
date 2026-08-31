@@ -10,6 +10,16 @@ interface StatusBadgeProps {
   className?: string;
 }
 
+/**
+ * shadcn badge base, inlined (same reason as ui/Badge.tsx — the shadcn CLI
+ * would collide with the existing `Badge.tsx` on this Windows checkout, so no
+ * lowercase `badge.tsx` exists). The admin pill's original metrics are kept
+ * (rounded-md, uppercase tracking-wide, text-[10px]); colors come from the
+ * admin semantic map below.
+ */
+const badgeBase =
+  "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide w-fit whitespace-nowrap shrink-0 [&>svg]:size-3";
+
 const SEMANTIC_PILL: Record<string, string> = {
   blue: "text-semantic-blue bg-semantic-blue/10 border-semantic-blue/20",
   violet: "text-semantic-violet bg-semantic-violet/10 border-semantic-violet/20",
@@ -44,13 +54,7 @@ export function StatusBadge({ status, variant = "pill", className }: StatusBadge
   }
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide border whitespace-nowrap",
-        SEMANTIC_PILL[config.semantic],
-        className,
-      )}
-    >
+    <span className={cn(badgeBase, SEMANTIC_PILL[config.semantic], className)}>
       {t(`status.${config.labelKey}`)}
     </span>
   );

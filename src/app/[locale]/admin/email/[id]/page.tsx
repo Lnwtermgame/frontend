@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   AdminLayout,
@@ -625,22 +627,27 @@ export default function EmailTemplateEditorPage() {
       </div>
 
       {/* Preview Modal */}
-      {showPreview && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-site-surface border border-white/5 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <DialogPrimitive.Root
+        open={showPreview}
+        onOpenChange={(open) => setShowPreview(open)}
+      >
+        <DialogPortal>
+          <DialogOverlay className="bg-black/50 z-[80]" />
+          <DialogPrimitive.Content
+            className="fixed left-1/2 top-1/2 z-[90] flex w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col bg-site-surface border border-white/5 rounded-2xl max-w-4xl max-h-[90vh] overflow-hidden focus:outline-none"
+            aria-describedby={undefined}
+          >
             <div className="p-3 border-b-[2px] border-white/10 bg-site-surface flex items-center justify-between">
-              <h2 className="font-bold flex items-center gap-2 text-base">
+              <DialogPrimitive.Title className="font-bold flex items-center gap-2 text-base">
                 <Eye className="h-4 w-4" />
                 ตัวอย่างอีเมล
-              </h2>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="px-3 py-1.5 border border-white/5 rounded-xl hover:bg-site-raised/5 text-sm">
-                ปิด
-              </button>
+              </DialogPrimitive.Title>
+              <DialogPrimitive.Close asChild>
+                <button
+                  className="px-3 py-1.5 border border-white/5 rounded-xl hover:bg-site-raised/5 text-sm">
+                  ปิด
+                </button>
+              </DialogPrimitive.Close>
             </div>
             <div className="p-3 overflow-auto max-h-[calc(90vh-60px)]">
               <iframe
@@ -650,9 +657,9 @@ export default function EmailTemplateEditorPage() {
                 srcDoc={previewHtml}
               />
             </div>
-          </motion.div>
-        </div>
-      )}
+          </DialogPrimitive.Content>
+        </DialogPortal>
+      </DialogPrimitive.Root>
     </PageContainer>
     </AdminLayout>
   );

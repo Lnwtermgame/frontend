@@ -16,6 +16,7 @@ import {
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { lockBodyScroll } from "@/lib/scroll-lock";
 import { useMemo, memo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
@@ -194,14 +195,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   useEffect(() => {
-    if (isSidebarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (!isSidebarOpen) return;
+    return lockBodyScroll();
   }, [isSidebarOpen]);
 
   useEffect(() => {

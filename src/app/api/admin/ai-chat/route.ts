@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../../../auth";
+import { litellmBaseUrl, litellmApiKey } from "@/lib/litellm";
 
-const LITELLM_API_BASE_URL =
-  process.env.LITELLM_API_URL || "https://litellm.ddns.net";
-const LITELLM_API_KEY = process.env.LITELLM_API_KEY || "";
 const DEFAULT_ADMIN_AI_MODEL =
   process.env.ADMIN_AI_MODEL || process.env.DEFAULT_ADMIN_AI_MODEL || "gpt-4o-mini";
 const GATEWAY_URL = (
@@ -67,10 +65,10 @@ async function getAvailableModels(): Promise<string[]> {
     return modelsCache.models;
   }
 
-  const response = await fetch(`${LITELLM_API_BASE_URL}/v1/models`, {
+  const response = await fetch(`${litellmBaseUrl()}/v1/models`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${LITELLM_API_KEY}`,
+      Authorization: `Bearer ${litellmApiKey()}`,
     },
     cache: "no-store",
   });
@@ -282,7 +280,7 @@ async function fetchAdminProductContext(
 }
 
 export async function POST(request: NextRequest) {
-  if (!LITELLM_API_KEY) {
+  if (!litellmApiKey()) {
     return NextResponse.json(
       { error: "AI provider is not configured" },
       { status: 500 },
@@ -429,12 +427,12 @@ ${productContext}`;
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     const llmResponse = await fetch(
-      `${LITELLM_API_BASE_URL}/v1/chat/completions`,
+      `${litellmBaseUrl()}/v1/chat/completions`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${LITELLM_API_KEY}`,
+          Authorization: `Bearer ${litellmApiKey()}`,
         },
         body: JSON.stringify(payload),
         signal: controller.signal,

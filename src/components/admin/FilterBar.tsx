@@ -3,6 +3,14 @@
 import { Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/Input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export interface FilterOption {
   key: string;
@@ -43,29 +51,38 @@ export function FilterBar({
       <div className="flex flex-col sm:flex-row gap-3 flex-1 min-w-0">
         {search && (
           <div className="relative flex-1 min-w-0 sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-site-dim pointer-events-none" />
-            <input
+            <Input
+              size="sm"
               type="text"
+              icon={<Search className="h-4 w-4" />}
               value={search.value}
               onChange={(e) => search.onChange(e.target.value)}
               placeholder={search.placeholder ?? t("actions.search")}
-              className="w-full h-9 pl-9 pr-3 bg-site-raised border border-site-border rounded-lg text-sm text-site-text placeholder:text-site-dim focus:outline-none focus:border-site-accent/60 transition-colors"
+              className="h-9 bg-site-raised border-site-border text-site-text placeholder:text-site-dim focus-visible:outline-none focus-visible:ring-0 focus-visible:border-site-accent/60"
             />
           </div>
         )}
         {filters.map((f) => (
-          <select
+          <Select
             key={f.key}
             value={f.value}
-            onChange={(e) => f.onChange(e.target.value)}
-            className="h-9 px-3 bg-site-raised border border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:border-site-accent/60 transition-colors cursor-pointer"
+            onValueChange={(value) => f.onChange(value)}
           >
-            {f.options.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-9 w-full sm:w-auto sm:min-w-[9rem] bg-site-raised border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:ring-0 focus-visible:border-site-accent/60 cursor-pointer">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-site-surface border-site-border">
+              {f.options.map((o) => (
+                <SelectItem
+                  key={o.value}
+                  value={o.value}
+                  className="text-sm text-site-text focus:bg-site-raised focus:text-site-text"
+                >
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         ))}
         {hasActiveReset && (
           <button

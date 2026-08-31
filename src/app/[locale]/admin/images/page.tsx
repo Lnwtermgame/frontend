@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
+import { motion } from "@/lib/framer-exports";
 import {
   AdminLayout,
   AdminPageHeader,
@@ -632,32 +633,30 @@ export default function AdminImagesPage() {
                 )}
 
                 {/* Preview Modal - Rendered via Portal to escape stacking contexts */}
-                {typeof document !== "undefined" && createPortal(
-                    <AnimatePresence>
-                        {previewFile && (
-                            <div
-                                className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
-                                onClick={() => setPreviewFile(null)}
-                            >
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="bg-site-surface border border-white/5 rounded-2xl w-full max-w-3xl overflow-hidden"
-
-                                    onClick={(e) => e.stopPropagation()}
-                                >
+                <DialogPrimitive.Root
+                    open={!!previewFile}
+                    onOpenChange={(open) => { if (!open) setPreviewFile(null); }}
+                >
+                    <DialogPortal>
+                        <DialogOverlay className="bg-black/60 z-[9999]" />
+                        <DialogPrimitive.Content
+                            className="fixed left-1/2 top-1/2 z-[9999] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 bg-site-surface border border-white/5 rounded-2xl max-w-3xl overflow-hidden focus:outline-none"
+                            aria-describedby={undefined}
+                        >
+                            {previewFile && (
+                                <>
                                     {/* Modal Header */}
                                     <div className="p-4 border-b-[3px] border-white/10 bg-site-accent flex items-center justify-between">
-                                        <h3 className="text-lg font-bold text-white flex items-center gap-2 truncate">
+                                        <DialogPrimitive.Title className="text-lg font-bold text-white flex items-center gap-2 truncate">
                                             <Eye className="w-5 h-5 flex-shrink-0" />
                                             <span className="truncate">{previewFile.name}</span>
-                                        </h3>
-                                        <button
-                                            onClick={() => setPreviewFile(null)}
-                                            className="p-2 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors flex-shrink-0">
-                                            <X className="h-4 w-4" />
-                                        </button>
+                                        </DialogPrimitive.Title>
+                                        <DialogPrimitive.Close asChild>
+                                            <button
+                                                className="p-2 bg-site-surface border border-white/5 rounded-2xl hover:bg-site-raised/5 transition-colors flex-shrink-0">
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        </DialogPrimitive.Close>
                                     </div>
 
                                     {/* Modal Content */}
@@ -732,18 +731,18 @@ export default function AdminImagesPage() {
                                             className="px-4 py-2 bg-red-500/50 text-white border border-white/5 rounded-xl text-sm font-medium hover:bg-red-600 transition-all flex items-center gap-1">
                                             <Trash2 className="w-4 h-4" /> ลบไฟล์
                                         </button>
-                                        <button
-                                            onClick={() => setPreviewFile(null)}
-                                            className="px-4 py-2 bg-site-raised text-white border border-white/5 rounded-xl text-sm font-medium hover:bg-site-raised/5 transition-all">
-                                            ปิด
-                                        </button>
+                                        <DialogPrimitive.Close asChild>
+                                            <button
+                                                className="px-4 py-2 bg-site-raised text-white border border-white/5 rounded-xl text-sm font-medium hover:bg-site-raised/5 transition-all">
+                                                ปิด
+                                            </button>
+                                        </DialogPrimitive.Close>
                                     </div>
-                                </motion.div>
-                            </div>
-                        )}
-                    </AnimatePresence>,
-                    document.body
-                )}
+                                </>
+                            )}
+                        </DialogPrimitive.Content>
+                    </DialogPortal>
+                </DialogPrimitive.Root>
             </PageContainer>
         </AdminLayout>
     );

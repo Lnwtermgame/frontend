@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { motion } from "@/lib/framer-exports";
 import {
   AdminLayout,
@@ -34,10 +34,114 @@ import { GeneratedContent } from "@/lib/services/ai-api";
 import { processImageUrl } from "@/lib/services/storage-api";
 import DynamicProductFields from "@/components/products/DynamicProductFields";
 import AIGenerateButton from "@/components/admin/AIGenerateButton";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+
+/* Shared primitives for this form — label/control pairs and section cards */
+
+function FieldLabel({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <Label
+      className={cn(
+        "block text-xs font-medium text-site-dim mb-1.5",
+        className
+      )}
+    >
+      {children}
+    </Label>
+  );
+}
+
+function SectionCard({
+  icon: Icon,
+  title,
+  children,
+  className,
+}: {
+  icon: React.ElementType;
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "bg-site-surface border border-site-border-soft rounded-12 p-4 space-y-3",
+        className
+      )}
+    >
+      <h3 className="font-semibold text-site-text text-sm flex items-center gap-2">
+        <div className="p-1.5 bg-site-accent/10 rounded-lg text-site-accent">
+          <Icon className="w-4 h-4" />
+        </div>
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+}
+
+function ToggleRow({
+  checked,
+  onCheckedChange,
+  label,
+  description,
+  highlight,
+}: {
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+  label: string;
+  description?: string;
+  highlight?: boolean;
+}) {
+  return (
+    <label
+      className={cn(
+        "flex items-center justify-between gap-3 p-2.5 rounded-lg border border-site-border-soft transition-colors cursor-pointer",
+        highlight && checked
+          ? "bg-status-success/15"
+          : "bg-site-raised/50 hover:bg-site-border/30"
+      )}
+    >
+      <span className="min-w-0">
+        <span
+          className={cn(
+            "text-sm font-medium",
+            checked ? "text-site-text" : "text-site-muted"
+          )}
+        >
+          {label}
+        </span>
+        {description && (
+          <span className="block text-[10px] text-site-dim">
+            {description}
+          </span>
+        )}
+      </span>
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </label>
+  );
+}
 
 export default function EditProductPage() {
   const { id } = useParams();
-  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -135,27 +239,12 @@ export default function EditProductPage() {
     fetchData();
   }, [id]);
 
-  // Reset image error when imageUrl changes
-  useEffect(() => {
-    setImageError(false);
-  }, [formData.imageUrl]);
-
-  // Reset cover image error when coverImageUrl changes
-  useEffect(() => {
-    setCoverImageError(false);
-  }, [formData.coverImageUrl]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (typeof id !== "string") return;
 
     setSaving(true);
     try {
       console.log("[EditProduct] Submitting update for product:", id);
-      console.log("[EditProduct] Form data:", formData);
-      console.log("[EditProduct] gameDetails:", formData.gameDetails);
-      console.log("[EditProduct] imageUrl:", formData.imageUrl);
-      console.log("[EditProduct] coverImageUrl:", formData.coverImageUrl);
 
       const response = await productApi.updateProduct(id, formData);
       console.log("[EditProduct] Update response:", response);
@@ -175,7 +264,7 @@ export default function EditProductPage() {
       } else {
         toast.error(
           "ไม่สามารถบันทึกได้: " +
-          ((response as any).error?.message || "เกิดข้อผิดพลาด"),
+            ((response as any).error?.message || "เกิดข้อผิดพลาด"),
         );
       }
     } catch (error) {
@@ -364,7 +453,7 @@ export default function EditProductPage() {
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="flex flex-col items-center gap-4">
               <Loader2 className="w-10 h-10 text-site-accent animate-spin" />
-              <p className="text-gray-400 font-medium tracking-wide animate-pulse">
+              <p className="text-site-dim font-medium tracking-wide animate-pulse">
                 กำลังโหลดข้อมูลสินค้า...
               </p>
             </div>
@@ -380,13 +469,13 @@ export default function EditProductPage() {
         <PageContainer>
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center space-y-4">
-              <div className="bg-site-surface border border-white/5 rounded-2xl p-6 inline-block shadow-lg">
-                <Package className="w-12 h-12 text-gray-400" />
+              <div className="bg-site-surface border border-site-border-soft rounded-12 p-6 inline-block shadow-lg">
+                <Package className="w-12 h-12 text-site-dim" />
               </div>
-              <h2 className="text-xl font-semibold text-white">ไม่พบสินค้า</h2>
+              <h2 className="text-xl font-semibold text-site-text">ไม่พบสินค้า</h2>
               <Link
                 href="/admin/products"
-                className="inline-flex items-center text-site-accent hover:text-white transition-colors gap-2">
+                className="inline-flex items-center text-site-accent hover:text-site-accent-hover transition-colors gap-2">
                 <ArrowLeft className="w-4 h-4" />
                 กลับไปหน้ารายการสินค้า
               </Link>
@@ -399,6 +488,10 @@ export default function EditProductPage() {
 
   const isDirectTopUp = product.productType === "DIRECT_TOPUP";
 
+  const filteredCopyProducts = allProducts.filter((p) =>
+    imageSearch ? p.name.toLowerCase().includes(imageSearch.toLowerCase()) : true
+  );
+
   return (
     <AdminLayout>
       <PageContainer className="pb-8 max-w-7xl mx-auto">
@@ -408,8 +501,8 @@ export default function EditProductPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-green-500 border border-white/5 rounded-xl p-3 flex items-center gap-3 shadow-lg">
-            <div className="p-1.5 bg-site-raised border border-white/10">
+            className="bg-status-success border border-transparent rounded-lg p-3 flex items-center gap-3 shadow-lg mb-4">
+            <div className="p-1.5 bg-white/10 rounded-md">
               <CheckCircle2 className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1">
@@ -419,8 +512,9 @@ export default function EditProductPage() {
             </div>
             <button
               onClick={() => setShowSuccessBanner(false)}
-              className="p-1 hover:bg-black/10 transition-colors">
+              className="p-1 hover:bg-black/10 rounded-md transition-colors">
               <span className="sr-only">ปิด</span>
+              <CheckCircle2 className="hidden" />
               <svg
                 className="w-4 h-4 text-white"
                 fill="none"
@@ -439,32 +533,31 @@ export default function EditProductPage() {
         )}
 
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
           <div className="flex items-center gap-3">
-            <Link
-              href="/admin/products"
-              className="group p-2 bg-site-surface border border-white/5 rounded-2xl text-gray-400 hover:text-white hover:bg-site-raised/5 transition-all duration-300 shadow-lg hover:shadow-lg hover:translate-x-[1px] hover:translate-y-[1px]">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            </Link>
+            <Button asChild variant="secondary" size="icon" className="shrink-0">
+              <Link href="/admin/products" aria-label="กลับไปหน้ารายการสินค้า">
+                <ArrowLeft className="w-4 h-4" />
+              </Link>
+            </Button>
             <div className="flex items-center gap-2 flex-wrap">
               <AdminPageHeader
                 title="แก้ไขสินค้า"
                 description={`${product.name} • รหัส: ${product.id.slice(0, 8)}...`}
               />
               <span
-                className={`px-2 py-0.5 text-[10px] font-medium border-[1px] border-white/10 ${formData.isActive
-                    ? "bg-green-500 text-white"
-                    : "bg-site-border/30 text-gray-400"
-                  }`}>
+                className={cn(
+                  "px-2 py-0.5 text-[10px] font-medium rounded-full border",
+                  formData.isActive
+                    ? "bg-status-success/15 text-status-success border-status-success/30"
+                    : "bg-site-raised text-site-dim border-site-border"
+                )}>
                 {formData.isActive ? "เผยแพร่แล้ว" : "ฉบับร่าง"}
               </span>
             </div>
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={saving}
-            className="group relative inline-flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-white/5 rounded-xl font-medium shadow-lg hover:shadow-lg hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden text-sm">
+          <Button onClick={handleSubmit} disabled={saving} size="sm">
             {saving ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -476,7 +569,7 @@ export default function EditProductPage() {
                 <span>บันทึกการเปลี่ยนแปลง</span>
               </>
             )}
-          </button>
+          </Button>
         </div>
 
         {/* Bento Grid Layout */}
@@ -487,14 +580,10 @@ export default function EditProductPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-site-surface border border-white/5 rounded-2xl p-4 overflow-hidden relative group shadow-lg">
-              <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
-                <FileText className="w-20 h-20 text-site-accent transform rotate-12 translate-x-6 -translate-y-6" />
-              </div>
-
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-white flex items-center gap-2">
-                  <div className="p-1.5 bg-site-accent/10 border border-white/5 rounded-lg text-site-accent">
+              className="bg-site-surface border border-site-border-soft rounded-12 p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-semibold text-site-text flex items-center gap-2">
+                  <div className="p-1.5 bg-site-accent/10 rounded-lg text-site-accent">
                     <FileText className="w-4 h-4" />
                   </div>
                   ข้อมูลทั่วไป
@@ -514,28 +603,22 @@ export default function EditProductPage() {
                 />
               </div>
 
-              <div className="space-y-4 relative z-10">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                    ชื่อสินค้า
-                  </label>
-                  <input
-                    type="text"
+                  <FieldLabel>ชื่อสินค้า</FieldLabel>
+                  <Input
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all"
                     placeholder="เช่น Mobile Legends Diamonds"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                    URL สินค้า (Slug)
-                  </label>
-                  <div className="flex bg-site-surface border border-white/5 rounded-xl focus-within:ring-2 focus-within:ring-site-accent/50 focus-within:border-white/10 transition-all overflow-hidden">
-                    <span className="px-3 py-2 text-gray-400 bg-site-raised border-r-2 border-white/10 text-xs flex items-center">
+                  <FieldLabel>URL สินค้า (Slug)</FieldLabel>
+                  <div className="flex rounded-6 border border-input bg-background focus-within:ring-2 focus-within:ring-ring focus-within:border-ring transition-colors overflow-hidden">
+                    <span className="px-3 py-2 text-site-dim bg-site-raised border-r border-site-border text-xs flex items-center">
                       /products/
                     </span>
                     <input
@@ -544,57 +627,51 @@ export default function EditProductPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, slug: e.target.value })
                       }
-                      className="flex-1 bg-transparent px-3 py-2 text-sm text-white placeholder-gray-400 outline-none"
+                      className="flex-1 bg-transparent px-3 py-2 text-sm text-site-text placeholder:text-muted-foreground outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                      คำอธิบายสั้น
-                    </label>
-                    <textarea
-                      value={formData.shortDescription}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          shortDescription: e.target.value,
-                        }))
-                      }
-                      rows={2}
-                      maxLength={255}
-                      className="w-full bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 outline-none resize-none transition-all"
-                    />
-                    <div className="flex justify-end mt-1">
-                      <span className="text-[10px] text-gray-400">
-                        {formData.shortDescription.length}/255
-                      </span>
-                    </div>
+                <div>
+                  <FieldLabel>คำอธิบายสั้น</FieldLabel>
+                  <Textarea
+                    value={formData.shortDescription}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        shortDescription: e.target.value,
+                      }))
+                    }
+                    rows={2}
+                    maxLength={255}
+                    className="min-h-0 resize-none text-sm"
+                  />
+                  <div className="flex justify-end mt-1">
+                    <span className="text-[10px] text-site-dim">
+                      {formData.shortDescription.length}/255
+                    </span>
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                      คำอธิบายแบบเต็ม
-                    </label>
-                    <textarea
-                      key={`desc-${formData.description?.length || 0}`}
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      rows={6}
-                      className="w-full bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 outline-none transition-all"
-                    />
-                    {process.env.NODE_ENV === "development" && (
-                      <div className="text-[10px] text-gray-400 mt-1">
-                        Debug: length={formData.description?.length || 0}
-                      </div>
-                    )}
-                  </div>
+                <div>
+                  <FieldLabel>คำอธิบายแบบเต็ม</FieldLabel>
+                  <Textarea
+                    key={`desc-${formData.description?.length || 0}`}
+                    value={formData.description}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    rows={6}
+                    className="text-sm"
+                  />
+                  {process.env.NODE_ENV === "development" && (
+                    <div className="text-[10px] text-site-dim mt-1">
+                      Debug: length={formData.description?.length || 0}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -604,46 +681,38 @@ export default function EditProductPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-site-surface border border-white/5 rounded-2xl p-5 relative group overflow-hidden shadow-lg">
-              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <ImageIcon className="w-20 h-20 text-site-accent transform -rotate-12 translate-x-6 -translate-y-6" />
-              </div>
-
-              <h2 className="text-base font-semibold text-white flex items-center gap-2 mb-5">
-                <div className="p-1.5 bg-site-accent/10 border border-white/10 text-site-accent">
+              className="bg-site-surface border border-site-border-soft rounded-12 p-5 space-y-6">
+              <h2 className="text-base font-semibold text-site-text flex items-center gap-2">
+                <div className="p-1.5 bg-site-accent/10 rounded-lg text-site-accent">
                   <ImageIcon className="w-4 h-4" />
                 </div>
                 รูปภาพและสื่อ
               </h2>
 
-              <div className="space-y-6 relative z-10">
+              <div className="space-y-6">
                 {/* Logo Image */}
                 <div className="flex flex-col md:flex-row gap-5">
                   <div className="flex-1 space-y-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                        ลิงก์โลโก้สินค้า
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={formData.imageUrl}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              imageUrl: e.target.value,
-                            })
-                          }
-                          placeholder="https://..."
-                          className="w-full bg-site-surface border border-white/5 rounded-xl pl-9 pr-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 outline-none transition-all"
-                        />
-                        <Globe className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      </div>
-                      <p className="text-[10px] text-gray-400 mt-1">
+                      <FieldLabel>ลิงก์โลโก้สินค้า</FieldLabel>
+                      <Input
+                        value={formData.imageUrl}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            imageUrl: e.target.value,
+                          })
+                        }
+                        placeholder="https://..."
+                        icon={<Globe className="w-4 h-4" />}
+                      />
+                      <p className="text-[10px] text-site-dim mt-1">
                         ใส่ลิงก์ HTTPS สำหรับโลโก้สินค้า (แสดงในรายการสินค้า)
                       </p>
-                      <button
+                      <Button
                         type="button"
+                        variant="secondary"
+                        size="sm"
                         onClick={handleUploadLogo}
                         disabled={
                           uploadingLogo ||
@@ -652,7 +721,7 @@ export default function EditProductPage() {
                             formData.imageUrl.trim()
                           )
                         }
-                        className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl font-medium shadow-lg hover:shadow-lg hover:translate-x-[1px] hover:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs">
+                        className="mt-2">
                         {uploadingLogo ? (
                           <>
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -664,26 +733,26 @@ export default function EditProductPage() {
                             <span>อัปโหลดไปยัง Storage</span>
                           </>
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
                   <div className="w-full md:w-36 shrink-0">
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5 text-center md:text-left">
+                    <FieldLabel className="text-center md:text-left">
                       ดูตัวอย่างโลโก้
-                    </label>
-                    <div className="aspect-square border border-white/5 rounded-xl border-dashed border-gray-400 bg-site-surface flex items-center justify-center overflow-hidden relative group/preview">
+                    </FieldLabel>
+                    <div className="aspect-square rounded-6 border border-dashed border-site-border bg-site-raised/40 flex items-center justify-center overflow-hidden">
                       {formData.imageUrl && !imageError ? (
                         <img
                           src={formData.imageUrl}
                           alt="Logo Preview"
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
+                          className="w-full h-full object-cover"
                           onError={() => setImageError(true)}
                         />
                       ) : (
                         <div className="text-center p-3">
-                          <ImageIcon className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                          <span className="text-[10px] text-gray-400 block">
+                          <ImageIcon className="w-6 h-6 text-site-dim mx-auto mb-1" />
+                          <span className="text-[10px] text-site-dim block">
                             {formData.imageUrl
                               ? "โหลดรูปภาพไม่สำเร็จ"
                               : "ยังไม่มีรูปภาพ"}
@@ -695,33 +764,29 @@ export default function EditProductPage() {
                 </div>
 
                 {/* Cover Image */}
-                <div className="flex flex-col md:flex-row gap-5 pt-5 border-t border-white/5">
+                <div className="flex flex-col md:flex-row gap-5 pt-5 border-t border-site-border-soft">
                   <div className="flex-1 space-y-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
-                        ลิงก์รูปภาพหน้าปก (Cover Image)
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={formData.coverImageUrl}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              coverImageUrl: e.target.value,
-                            })
-                          }
-                          placeholder="https://..."
-                          className="w-full bg-site-surface border border-white/5 rounded-xl pl-9 pr-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 outline-none transition-all"
-                        />
-                        <Globe className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      </div>
-                      <p className="text-[10px] text-gray-400 mt-1">
+                      <FieldLabel>ลิงก์รูปภาพหน้าปก (Cover Image)</FieldLabel>
+                      <Input
+                        value={formData.coverImageUrl}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            coverImageUrl: e.target.value,
+                          })
+                        }
+                        placeholder="https://..."
+                        icon={<Globe className="w-4 h-4" />}
+                      />
+                      <p className="text-[10px] text-site-dim mt-1">
                         ใส่ลิงก์ HTTPS สำหรับรูปภาพหน้าปก
                         (แสดงในหน้ารายละเอียดสินค้า)
                       </p>
-                      <button
+                      <Button
                         type="button"
+                        variant="secondary"
+                        size="sm"
                         onClick={handleUploadCover}
                         disabled={
                           uploadingCover ||
@@ -730,7 +795,7 @@ export default function EditProductPage() {
                             formData.coverImageUrl.trim()
                           )
                         }
-                        className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl font-medium shadow-lg hover:shadow-lg hover:translate-x-[1px] hover:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs">
+                        className="mt-2">
                         {uploadingCover ? (
                           <>
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -742,26 +807,26 @@ export default function EditProductPage() {
                             <span>อัปโหลดไปยัง Storage</span>
                           </>
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
                   <div className="w-full md:w-48 shrink-0">
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5 text-center md:text-left">
+                    <FieldLabel className="text-center md:text-left">
                       ดูตัวอย่างหน้าปก
-                    </label>
-                    <div className="aspect-video border border-white/5 rounded-xl border-dashed border-gray-400 bg-site-surface flex items-center justify-center overflow-hidden relative group/preview">
+                    </FieldLabel>
+                    <div className="aspect-video rounded-6 border border-dashed border-site-border bg-site-raised/40 flex items-center justify-center overflow-hidden">
                       {formData.coverImageUrl && !coverImageError ? (
                         <img
                           src={formData.coverImageUrl}
                           alt="Cover Preview"
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110"
+                          className="w-full h-full object-cover"
                           onError={() => setCoverImageError(true)}
                         />
                       ) : (
                         <div className="text-center p-3">
-                          <ImageIcon className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                          <span className="text-[10px] text-gray-400 block">
+                          <ImageIcon className="w-6 h-6 text-site-dim mx-auto mb-1" />
+                          <span className="text-[10px] text-site-dim block">
                             {formData.coverImageUrl
                               ? "โหลดรูปภาพไม่สำเร็จ"
                               : "ยังไม่มีรูปภาพ"}
@@ -773,57 +838,53 @@ export default function EditProductPage() {
                 </div>
 
                 {/* Copy Images from Other Products */}
-                <div className="pt-5 border-t border-white/5">
+                <div className="pt-5 border-t border-site-border-soft">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="p-1.5 bg-site-accent/10 border border-white/10 text-site-accent">
+                    <div className="p-1.5 bg-site-accent/10 rounded-lg text-site-accent">
                       <Copy className="w-3.5 h-3.5" />
                     </div>
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-semibold text-site-text">
                       คัดลอกรูปภาพจากสินค้าอื่น
                     </h3>
                   </div>
-                  <p className="text-xs text-gray-400 mb-3">
+                  <p className="text-xs text-site-dim mb-3">
                     เลือกสินค้าที่เป็นเกมเดียวกัน (คนละประเทศ)
                     เพื่อนำรูปภาพมาใช้
                   </p>
-                  <div className="flex gap-2">
-                    <div className="flex-1 relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                      <input
-                        type="text"
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex-1">
+                      <Input
+                        size="sm"
                         value={imageSearch}
                         onChange={(e) => setImageSearch(e.target.value)}
                         placeholder="ค้นหาชื่อสินค้า..."
-                        className="w-full bg-site-surface border border-white/5 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-gray-400 focus:ring-2 focus:ring-site-accent/50 outline-none transition-all"
+                        icon={<Search className="w-3.5 h-3.5" />}
                       />
                     </div>
-                    <select
-                      value={selectedProductId}
-                      onChange={(e) => setSelectedProductId(e.target.value)}
-                      className="flex-1 bg-site-surface border border-white/5 rounded-xl px-2 py-1.5 text-xs text-white appearance-none focus:ring-2 focus:ring-site-accent/50 outline-none cursor-pointer hover:bg-site-raised/5 transition-colors">
-                      <option value="">เลือกสินค้า...</option>
-                      {allProducts
-                        .filter((p) =>
-                          imageSearch
-                            ? p.name
-                              .toLowerCase()
-                              .includes(imageSearch.toLowerCase())
-                            : true,
-                        )
-                        .map((p) => (
-                          <option key={p.id} value={p.id} className="bg-site-raised">
-                            {p.name}
-                          </option>
-                        ))}
-                    </select>
-                    <button
+                    <div className="flex-1">
+                      <Select
+                        value={selectedProductId}
+                        onValueChange={setSelectedProductId}>
+                        <SelectTrigger className="h-9 text-xs">
+                          <SelectValue placeholder="เลือกสินค้า..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {filteredCopyProducts.map((p) => (
+                            <SelectItem key={p.id} value={p.id} className="text-xs">
+                              {p.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button
                       type="button"
+                      size="sm"
                       onClick={handleCopyImages}
-                      disabled={!selectedProductId}
-                      className="px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl font-medium shadow-lg hover:shadow-lg hover:translate-x-[1px] hover:translate-y-[1px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs">
+                      disabled={!selectedProductId}>
                       <Copy className="w-3 h-3" />
                       <span>คัดลอก</span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -835,26 +896,30 @@ export default function EditProductPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-site-surface border border-white/5 rounded-2xl p-5 relative shadow-lg">
+                className="bg-site-surface border border-site-border-soft rounded-12 p-5">
                 <div className="flex items-center justify-between mb-5">
-                  <h2 className="text-base font-semibold text-white flex items-center gap-2">
-                    <div className="p-1.5 bg-site-accent/10 border border-white/10 text-site-accent">
+                  <h2 className="text-base font-semibold text-site-text flex items-center gap-2">
+                    <div className="p-1.5 bg-site-accent/10 rounded-lg text-site-accent">
                       <Zap className="w-4 h-4" />
                     </div>
                     การตั้งค่า SEAGM
                   </h2>
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={handleRefreshFields}
-                    disabled={refreshingFields}
-                    className="text-xs font-medium text-site-accent hover:text-white bg-site-accent/10 hover:bg-site-accent/20 px-2.5 py-1 border-[1px] border-white/10 transition-all flex items-center gap-1.5 shadow-lg hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                    disabled={refreshingFields}>
                     <RefreshCw
-                      className={`w-3 h-3 ${refreshingFields ? "animate-spin" : ""}`}
+                      className={cn(
+                        "w-3 h-3",
+                        refreshingFields && "animate-spin"
+                      )}
                     />
                     ซิงค์ฟิลด์
-                  </button>
+                  </Button>
                 </div>
 
-                <div className="bg-site-surface p-4 border-[1px] border-white/10">
+                <div className="p-4 rounded-6 border border-site-border-soft">
                   <DynamicProductFields
                     productId={product.id}
                     onFieldsChange={(values, isValid) => {
@@ -865,9 +930,9 @@ export default function EditProductPage() {
                     }}
                     disabled={true}
                   />
-                  <div className="mt-3 flex items-start gap-2 p-2.5 bg-site-accent/10 border border-site-accent">
+                  <div className="mt-3 flex items-start gap-2 p-2.5 rounded-6 bg-site-accent/10 border border-site-accent/30">
                     <AlertCircle className="w-4 h-4 text-site-accent shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-300">
+                    <p className="text-xs text-site-muted">
                       ฟิลด์เหล่านี้ถูกกำหนดโดย API ของ Seagm
                       ค่าที่ผู้ใช้กรอกจะถูกตรวจสอบตามรูปแบบนี้เมื่อชำระเงิน
                     </p>
@@ -882,125 +947,80 @@ export default function EditProductPage() {
             {/* Status Card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-site-surface border border-white/5 rounded-2xl p-4 space-y-3 shadow-lg">
-              <h3 className="font-semibold text-white text-sm flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-site-accent" />
-                การแสดงผล
-              </h3>
+              animate={{ opacity: 1, x: 0 }}>
+            <SectionCard icon={Globe} title="การแสดงผล">
+              <ToggleRow
+                checked={formData.isActive}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, isActive: checked })
+                }
+                label={formData.isActive ? "เผยแพร่แล้ว" : "ซ่อน"}
+                highlight
+              />
 
-              <div className="space-y-1">
-                <label
-                  className={`flex items-center gap-3 p-2.5 border border-white/5 rounded-xl transition-all cursor-pointer ${formData.isActive
-                      ? "bg-green-500/20"
-                      : "bg-site-raised hover:bg-site-border/30"
-                    }`}>
-                  <div
-                    className={`w-8 h-5 relative transition-colors ${formData.isActive ? "bg-green-500" : "bg-gray-400"
-                      }`}>
-                    <div
-                      className={`absolute top-0.5 left-0.5 w-4 h-4 bg-site-raised border border-white/10 transition-transform ${formData.isActive ? "translate-x-3" : "translate-x-0"
-                        }`}
-                    />
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.isActive}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isActive: e.target.checked })
-                    }
-                    className="hidden"
-                  />
-                  <span
-                    className={`font-medium text-sm ${formData.isActive ? "text-white" : "text-gray-400"}`}>
-                    {formData.isActive ? "เผยแพร่แล้ว" : "ซ่อน"}
-                  </span>
-                </label>
+              <div className="pt-3 border-t border-site-border-soft space-y-1.5">
+                <ToggleRow
+                  checked={formData.isFeatured}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, isFeatured: checked })
+                  }
+                  label="สินค้าแนะนำ"
+                />
+                <ToggleRow
+                  checked={formData.isBestseller}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, isBestseller: checked })
+                  }
+                  label="สินค้าขายดี"
+                />
               </div>
-
-              <div className="pt-3 border-t border-white/5 space-y-1">
-                <label className="flex items-center justify-between group cursor-pointer p-1.5 hover:bg-site-raised/5 transition-colors">
-                  <span className="text-sm text-gray-400 group-hover:text-white transition-colors">
-                    สินค้าแนะนำ
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="w-3.5 h-3.5 border border-white/5 rounded-lg text-site-accent focus:ring-site-accent/50"
-                    checked={formData.isFeatured}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isFeatured: e.target.checked })
-                    }
-                  />
-                </label>
-                <label className="flex items-center justify-between group cursor-pointer p-1.5 hover:bg-site-raised/5 transition-colors">
-                  <span className="text-sm text-gray-400 group-hover:text-white transition-colors">
-                    สินค้าขายดี
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="w-3.5 h-3.5 border border-white/5 rounded-lg text-site-accent focus:ring-site-accent/50"
-                    checked={formData.isBestseller}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        isBestseller: e.target.checked,
-                      })
-                    }
-                  />
-                </label>
-              </div>
+            </SectionCard>
             </motion.div>
 
             {/* Organization Card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-site-surface border border-white/5 rounded-2xl p-4 space-y-3 shadow-lg">
-              <h3 className="font-semibold text-white text-sm flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-site-accent" />
-                การจัดหมวดหมู่
-              </h3>
-
+              transition={{ delay: 0.1 }}>
+            <SectionCard icon={Layers} title="การจัดหมวดหมู่">
               <div>
-                <label className="block text-[10px] font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+                <FieldLabel className="uppercase tracking-wider text-[10px]">
                   หมวดหมู่
-                </label>
-                <div className="relative">
-                  <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                  <select
-                    value={formData.categoryId}
-                    onChange={(e) =>
-                      setFormData({ ...formData, categoryId: e.target.value })
-                    }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl pl-8 pr-3 py-2 text-sm text-white appearance-none focus:ring-2 focus:ring-site-accent/50 outline-none cursor-pointer hover:bg-site-raised/5 transition-colors">
-                    <option value="" className="bg-site-raised">
-                      เลือกหมวดหมู่
-                    </option>
+                </FieldLabel>
+                <Select
+                  value={formData.categoryId}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, categoryId: value })
+                  }>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกหมวดหมู่" />
+                  </SelectTrigger>
+                  <SelectContent>
                     {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id} className="bg-site-raised">
+                      <SelectItem key={cat.id} value={cat.id}>
                         {cat.name}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <ArrowLeft className="w-3.5 h-3.5 text-gray-400 -rotate-90" />
-                  </div>
-                </div>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="pt-3 border-t border-white/5">
-                <label className="block text-[10px] font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+              <div className="pt-3 border-t border-site-border-soft">
+                <FieldLabel className="uppercase tracking-wider text-[10px]">
                   ประเภทสินค้า
-                </label>
+                </FieldLabel>
                 <div
-                  className={`p-2.5 border border-white/5 rounded-xl flex items-center gap-2.5 ${isDirectTopUp ? "bg-site-accent/10" : "bg-site-surface0/10"
-                    }`}>
+                  className={cn(
+                    "p-2.5 rounded-6 border border-site-border-soft flex items-center gap-2.5",
+                    isDirectTopUp ? "bg-site-accent/10" : "bg-site-raised/40"
+                  )}>
                   <div
-                    className={`p-1 border border-white/10 ${isDirectTopUp
-                        ? "bg-site-accent/10 text-site-accent"
-                        : "bg-blue-200 text-site-accent"
-                      }`}>
+                    className={cn(
+                      "p-1 rounded-md",
+                      isDirectTopUp
+                        ? "bg-site-accent/15 text-site-accent"
+                        : "bg-site-raised text-site-muted"
+                    )}>
                     {isDirectTopUp ? (
                       <Zap className="w-4 h-4" />
                     ) : (
@@ -1008,50 +1028,40 @@ export default function EditProductPage() {
                     )}
                   </div>
                   <div>
-                    <p
-                      className={`font-medium text-sm ${isDirectTopUp ? "text-site-accent" : "text-site-accent"}`}>
+                    <p className="font-medium text-sm text-site-accent">
                       {isDirectTopUp ? "เติมตรง" : "บัตรของขวัญ"}
                     </p>
-                    <p className="text-[10px] text-gray-400">
+                    <p className="text-[10px] text-site-dim">
                       {isDirectTopUp ? "ต้องใช้ User ID" : "ส่ง PIN ทันที"}
                     </p>
                   </div>
                 </div>
               </div>
+            </SectionCard>
             </motion.div>
 
             {/* SEO Card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-site-surface border border-white/5 rounded-2xl p-4 space-y-3 shadow-lg">
-              <h3 className="font-semibold text-white text-sm flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-site-accent" />
-                การตั้งค่า SEO
-              </h3>
-
+              transition={{ delay: 0.2 }}>
+            <SectionCard icon={Search} title="การตั้งค่า SEO">
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    ชื่อ Meta
-                  </label>
-                  <input
-                    type="text"
+                  <FieldLabel>ชื่อ Meta</FieldLabel>
+                  <Input
+                    size="sm"
                     value={formData.metaTitle}
                     onChange={(e) =>
                       setFormData({ ...formData, metaTitle: e.target.value })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-2.5 py-1.5 text-xs text-white focus:ring-1 focus:ring-site-accent/50 outline-none"
                     placeholder="เหมือนชื่อสินค้า"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    คำอธิบาย Meta
-                  </label>
-                  <textarea
+                  <FieldLabel>คำอธิบาย Meta</FieldLabel>
+                  <Textarea
                     value={formData.metaDescription}
                     onChange={(e) =>
                       setFormData({
@@ -1060,45 +1070,36 @@ export default function EditProductPage() {
                       })
                     }
                     rows={3}
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-2.5 py-1.5 text-xs text-white focus:ring-1 focus:ring-site-accent/50 outline-none resize-none"
+                    className="min-h-0 text-xs resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    คีย์เวิร์ด
-                  </label>
-                  <input
-                    type="text"
+                  <FieldLabel>คีย์เวิร์ด</FieldLabel>
+                  <Input
+                    size="sm"
                     value={formData.metaKeywords}
                     onChange={(e) =>
                       setFormData({ ...formData, metaKeywords: e.target.value })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-2.5 py-1.5 text-xs text-white focus:ring-1 focus:ring-site-accent/50 outline-none"
                     placeholder="เติมเกม, ราคาถูก, โปรโมชั่น"
                   />
                 </div>
               </div>
+            </SectionCard>
             </motion.div>
 
             {/* Game Details Card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.25 }}
-              className="bg-site-surface border border-white/5 rounded-2xl p-4 space-y-3 shadow-lg">
-              <h3 className="font-semibold text-white text-sm flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-site-accent" />
-                ข้อมูลเกม
-              </h3>
-
+              transition={{ delay: 0.25 }}>
+            <SectionCard icon={Package} title="ข้อมูลเกม">
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    ผู้พัฒนา (Developer)
-                  </label>
-                  <input
-                    type="text"
+                  <FieldLabel>ผู้พัฒนา (Developer)</FieldLabel>
+                  <Input
+                    size="sm"
                     value={formData.gameDetails.developer}
                     onChange={(e) =>
                       setFormData({
@@ -1109,17 +1110,14 @@ export default function EditProductPage() {
                         },
                       })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-2.5 py-1.5 text-xs text-white focus:ring-1 focus:ring-site-accent/50 outline-none"
                     placeholder="เช่น Riot Games, miHoYo"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    ผู้จัดจำหน่าย (Publisher)
-                  </label>
-                  <input
-                    type="text"
+                  <FieldLabel>ผู้จัดจำหน่าย (Publisher)</FieldLabel>
+                  <Input
+                    size="sm"
                     value={formData.gameDetails.publisher}
                     onChange={(e) =>
                       setFormData({
@@ -1130,176 +1128,171 @@ export default function EditProductPage() {
                         },
                       })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-2.5 py-1.5 text-xs text-white focus:ring-1 focus:ring-site-accent/50 outline-none"
                     placeholder="เช่น Tencent, Blizzard"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1.5">
-                    แพลตฟอร์ม (Platforms)
-                  </label>
+                  <FieldLabel>แพลตฟอร์ม (Platforms)</FieldLabel>
                   <div className="grid grid-cols-2 gap-2">
-                    {["iOS", "Android", "PC", "Console"].map((platform) => (
-                      <label
-                        key={platform}
-                        className={`flex items-center gap-2 p-2 border-[1px] border-white/10 cursor-pointer transition-all ${formData.gameDetails.platforms.includes(platform)
-                            ? "bg-site-accent/10 border-white/10"
-                            : "bg-site-surface hover:bg-site-raised/5"
-                          }`}>
-                        <input
-                          type="checkbox"
-                          checked={formData.gameDetails.platforms.includes(
-                            platform,
-                          )}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            setFormData({
-                              ...formData,
-                              gameDetails: {
-                                ...formData.gameDetails,
-                                platforms: isChecked
-                                  ? [
-                                    ...formData.gameDetails.platforms,
-                                    platform,
-                                  ]
-                                  : formData.gameDetails.platforms.filter(
-                                    (p) => p !== platform,
-                                  ),
-                              },
-                            });
-                          }}
-                          className="w-3.5 h-3.5 border border-white/10 text-site-accent focus:ring-site-accent/50"
-                        />
-                        <span className="text-xs text-white">
+                    {["iOS", "Android", "PC", "Console"].map((platform) => {
+                      const isChecked =
+                        formData.gameDetails.platforms.includes(platform);
+                      return (
+                        <label
+                          key={platform}
+                          className={cn(
+                            "flex items-center gap-2 p-2 rounded-6 border cursor-pointer transition-colors text-xs font-medium",
+                            isChecked
+                              ? "bg-site-accent/10 border-site-accent/40 text-site-text"
+                              : "bg-site-raised/40 border-site-border-soft text-site-muted hover:bg-site-border/30"
+                          )}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setFormData({
+                                ...formData,
+                                gameDetails: {
+                                  ...formData.gameDetails,
+                                  platforms: checked
+                                    ? [
+                                      ...formData.gameDetails.platforms,
+                                      platform,
+                                    ]
+                                    : formData.gameDetails.platforms.filter(
+                                      (p) => p !== platform,
+                                    ),
+                                },
+                              });
+                            }}
+                            className="sr-only"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              "w-3.5 h-3.5 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors",
+                              isChecked
+                                ? "bg-site-accent border-site-accent text-site-bg"
+                                : "border-site-border bg-transparent"
+                            )}>
+                            {isChecked && (
+                              <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="none">
+                                <path
+                                  d="M2.5 6l2.5 2.5L9.5 3.5"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
                           {platform}
-                        </span>
-                      </label>
-                    ))}
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Mode Selection */}
                 <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    โหมด (Mode)
-                  </label>
-                  <select
+                  <FieldLabel>โหมด (Mode)</FieldLabel>
+                  <Select
                     value={formData.gameDetails.mode}
+                    onValueChange={(value) =>
+                      setFormData({
+                        ...formData,
+                        gameDetails: {
+                          ...formData.gameDetails,
+                          mode: value as any,
+                        },
+                      })
+                    }>
+                    <SelectTrigger className="h-9 text-xs">
+                      <SelectValue placeholder="-- เลือกโหมด --" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="directtopup" className="text-xs">
+                        เติมตรง (Direct Top-up)
+                      </SelectItem>
+                      <SelectItem value="card" className="text-xs">
+                        บัตรของขวัญ (Gift Card)
+                      </SelectItem>
+                      <SelectItem value="mobile-recharge" className="text-xs">
+                        เติมเงินมือถือ (Mobile Recharge)
+                      </SelectItem>
+                      <SelectItem value="gift-card" className="text-xs">
+                        บัตรของขวัญทั่วไป (Generic Gift Card)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Region with Country Autocomplete */}
+                <div>
+                  <FieldLabel>ภูมิภาค/ประเทศ (Region)</FieldLabel>
+                  <Input
+                    size="sm"
+                    value={formData.gameDetails.region}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
                         gameDetails: {
                           ...formData.gameDetails,
-                          mode: e.target.value as any,
+                          region: e.target.value,
                         },
                       })
                     }
-                    className="w-full bg-site-surface border border-white/5 rounded-xl px-2.5 py-1.5 text-xs text-white appearance-none focus:ring-1 focus:ring-site-accent/50 outline-none cursor-pointer hover:bg-site-raised/5 transition-colors">
-                    <option value="">-- เลือกโหมด --</option>
-                    <option value="directtopup">เติมตรง (Direct Top-up)</option>
-                    <option value="card">บัตรของขวัญ (Gift Card)</option>
-                    <option value="mobile-recharge">
-                      เติมเงินมือถือ (Mobile Recharge)
-                    </option>
-                    <option value="gift-card">
-                      บัตรของขวัญทั่วไป (Generic Gift Card)
-                    </option>
-                  </select>
-                </div>
-
-                {/* Region with Country Autocomplete */}
-                <div>
-                  <label className="block text-[10px] font-medium text-gray-400 mb-1">
-                    ภูมิภาค/ประเทศ (Region)
-                  </label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                    <input
-                      type="text"
-                      value={formData.gameDetails.region}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          gameDetails: {
-                            ...formData.gameDetails,
-                            region: e.target.value,
-                          },
-                        })
-                      }
-                      list="country-list"
-                      className="w-full bg-site-surface border border-white/5 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white focus:ring-1 focus:ring-site-accent/50 outline-none"
-                      placeholder="เลือกหรือพิมพ์ชื่อประเทศ..."
-                    />
-                    <datalist id="country-list">
-                      <option value="th">ไทย (Thailand)</option>
-                      <option value="my">มาเลเซีย (Malaysia)</option>
-                      <option value="sg">สิงคโปร์ (Singapore)</option>
-                      <option value="id">อินโดนีเซีย (Indonesia)</option>
-                      <option value="ph">ฟิลิปปินส์ (Philippines)</option>
-                      <option value="vn">เวียดนาม (Vietnam)</option>
-                      <option value="cn">จีน (China)</option>
-                      <option value="us">สหรัฐอเมริกา (United States)</option>
-                      <option value="global">สากล (Global)</option>
-                    </datalist>
-                  </div>
-                  <p className="text-[10px] text-gray-400 mt-0.5">
+                    list="country-list"
+                    placeholder="เลือกหรือพิมพ์ชื่อประเทศ..."
+                  />
+                  <datalist id="country-list">
+                    <option value="th">ไทย (Thailand)</option>
+                    <option value="my">มาเลเซีย (Malaysia)</option>
+                    <option value="sg">สิงคโปร์ (Singapore)</option>
+                    <option value="id">อินโดนีเซีย (Indonesia)</option>
+                    <option value="ph">ฟิลิปปินส์ (Philippines)</option>
+                    <option value="vn">เวียดนาม (Vietnam)</option>
+                    <option value="cn">จีน (China)</option>
+                    <option value="us">สหรัฐอเมริกา (United States)</option>
+                    <option value="global">สากล (Global)</option>
+                  </datalist>
+                  <p className="text-[10px] text-site-dim mt-0.5">
                     ใช้รหัสประเทศ เช่น th, my, sg, id, ph, vn
                   </p>
                 </div>
 
                 {/* Auto Delivery Toggle */}
-                <div>
-                  <label className="flex items-center justify-between p-2.5 border border-white/5 rounded-xl cursor-pointer hover:bg-site-raised/5 transition-colors">
-                    <div>
-                      <span className="text-xs font-medium text-white">
-                        ส่งอัตโนมัติ (Auto Delivery)
-                      </span>
-                      <p className="text-[10px] text-gray-400">
-                        ระบบจะส่งสินค้าทันทีหลังชำระเงิน
-                      </p>
-                    </div>
-                    <div
-                      className={`w-8 h-5 relative transition-colors ${formData.gameDetails.autoDelivery
-                          ? "bg-green-500"
-                          : "bg-gray-400"
-                        }`}>
-                      <div
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-site-raised border border-white/10 transition-transform ${formData.gameDetails.autoDelivery
-                            ? "translate-x-3"
-                            : "translate-x-0"
-                          }`}
-                      />
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={formData.gameDetails.autoDelivery}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          gameDetails: {
-                            ...formData.gameDetails,
-                            autoDelivery: e.target.checked,
-                          },
-                        })
-                      }
-                      className="hidden"
-                    />
-                  </label>
-                </div>
+                <ToggleRow
+                  checked={formData.gameDetails.autoDelivery}
+                  onCheckedChange={(checked) =>
+                    setFormData({
+                      ...formData,
+                      gameDetails: {
+                        ...formData.gameDetails,
+                        autoDelivery: checked,
+                      },
+                    })
+                  }
+                  label="ส่งอัตโนมัติ (Auto Delivery)"
+                  description="ระบบจะส่งสินค้าทันทีหลังชำระเงิน"
+                />
               </div>
+            </SectionCard>
             </motion.div>
 
             {/* Metadata Info */}
-            <div className="px-1">
-              <div className="flex items-center gap-2 text-[10px] text-gray-400 mb-0.5">
+            <div className="px-1 space-y-0.5">
+              <div className="flex items-center gap-2 text-[10px] text-site-dim">
                 <Calendar className="w-3 h-3" />
                 สร้างเมื่อ:{" "}
                 {product.createdAt
                   ? new Date(product.createdAt).toLocaleDateString("th-TH")
                   : "-"}
               </div>
-              <div className="flex items-center gap-2 text-[10px] text-gray-400">
+              <div className="flex items-center gap-2 text-[10px] text-site-dim">
                 <RefreshCw className="w-3 h-3" />
                 แก้ไขล่าสุด:{" "}
                 {product.updatedAt

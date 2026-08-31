@@ -109,7 +109,7 @@ export function ImageEditModal({
     >
       <div className="space-y-6">
         {/* Target Selection */}
-        <div className="flex bg-site-raised p-1.5 rounded-xl border border-site-border">
+        <div className="flex gap-1.5 bg-site-raised p-1.5 rounded-xl border border-site-border">
           <button
             type="button"
             onClick={() => handleTargetClick("logo")}

@@ -1747,6 +1747,23 @@ You are an expert e-commerce copywriter for Lnwtermgame with access to web searc
             ? String(errorData.error)
             : "AI service error";
         return new Error(serverMsg + ". Please try again later.");
+      } else if (status === 400) {
+        // Gateway catalogs can advertise models their provider no longer
+        // serves (e.g. OmniRoute lists kc/free but kilocode has no model
+        // literally named "free") — translate the cryptic 400 into guidance.
+        const raw = typeof errorData === "string"
+          ? errorData
+          : JSON.stringify(errorData) || error.message;
+        if (/not available in the active live catalog/i.test(raw)) {
+          const modelId =
+            this.selectedModel ||
+            raw.match(/Model '([^']+)'/i)?.[1] ||
+            "this model";
+          return new Error(
+            `โมเดล "${modelId}" ถูกแสดงในแคตตาล็อกของเกตเวย์ แต่ผู้ให้บริการจริงไม่มีโมเดลนี้ — กรุณาเลือกโมเดลอื่น (เช่น ตัวที่ลงท้าย :free ของ provider เดียวกัน หรือกลุ่ม auto/*)`,
+          );
+        }
+        return new Error(`API Error (${status}): ${raw}`);
       } else {
         return new Error(
           `API Error (${status}): ${typeof errorData === "string" ? errorData : JSON.stringify(errorData) || error.message}`,

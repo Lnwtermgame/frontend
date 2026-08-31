@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const LITELLM_API_BASE_URL =
-  process.env.LITELLM_API_URL || "https://litellm.ddns.net";
-const LITELLM_API_KEY = process.env.LITELLM_API_KEY || "";
+import { litellmBaseUrl, litellmApiKey } from "@/lib/litellm";
 
 // Lightweight per-IP rate limit: this endpoint proxies a paid AI provider
 // without authentication, so it must not be freely drainable.
@@ -23,7 +20,7 @@ function checkRateLimit(key: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
-  if (!LITELLM_API_KEY) {
+  if (!litellmApiKey()) {
     return NextResponse.json(
       { error: "LiteLLM API key not configured on server" },
       { status: 500 },
@@ -43,11 +40,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${LITELLM_API_BASE_URL}/v1/chat/completions`, {
+    const response = await fetch(`${litellmBaseUrl()}/v1/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${LITELLM_API_KEY}`,
+        Authorization: `Bearer ${litellmApiKey()}`,
       },
       body: JSON.stringify(body),
     });

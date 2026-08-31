@@ -771,9 +771,10 @@
     "about_product": "商品説明",
     "account_info_title": "アカウント情報",
     "auto_delivery_hint": "自動即時配送",
+    "auto_delivery_short": "自動発送",
     "back": "戻る",
     "buy_now_button": "今すぐ購入",
-    "by_developer": "開発元：",
+    "by_developer": "開発元：{developer}",
     "cancel_button": "キャンセル",
     "change_button": "選択を変更",
     "close_window_button": "閉じる",
@@ -853,7 +854,14 @@
     "flat_fee_label": "固定手数料",
     "min_amount_badge": "最低 {amount}฿",
     "related_products_sublabel": "関連商品",
-    "similar_products_sublabel": "類似商品"
+    "similar_products_sublabel": "類似商品",
+    "quantity_label": "数量",
+    "sold_count": "販売数: {count}",
+    "out_of_stock": "売り切れ",
+    "add_favorite": "お気に入りに追加",
+    "remove_favorite": "お気に入りから削除",
+    "share_link": "リンクを共有",
+    "screenshots_hint": "スクリーンショット · スクロールして見る"
   },
   "News": {
     "all_news": "すべてのニュース",
@@ -1181,6 +1189,13 @@
   "logout": "ログアウト",
   "login_button": "ログイン / 新規登録",
   "Admin": {
+    "ai": {
+      "loading_models": "モデルを読み込み中...",
+      "select_model": "モデルを選択",
+      "search_models": "モデルを検索...",
+      "model_count": "{total} 件中 {visible} 件を表示",
+      "no_models": "モデルが見つかりません"
+    },
     "nav": {
       "main": "ダッシュボード",
       "products_sales": "商品＆販売",
@@ -2101,5 +2116,20 @@
   "search_view_all": "すべての結果を見る",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

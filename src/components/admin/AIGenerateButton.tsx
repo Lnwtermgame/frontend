@@ -26,6 +26,7 @@ import {
   AvailableCategory,
   AIModel,
 } from "@/lib/services/ai-api";
+import { AdminHeaderButton, ModelSelect } from "@/components/admin";
 
 interface AIGenerateButtonProps {
   productName: string;
@@ -280,11 +281,10 @@ export default function AIGenerateButton({
   return (
     <>
       {/* Main Generate Button */}
-      <button
+      <AdminHeaderButton
+        variant="primary"
         onClick={handleOpenModal}
         disabled={disabled || progress.isGenerating}
-        className="group relative inline-flex items-center gap-2 px-4 py-2 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden hover:-translate-y-0.5"
-        style={{ boxShadow: "4px 4px 0 0 #000000" }}
       >
         {progress.isGenerating ? (
           <>
@@ -298,7 +298,7 @@ export default function AIGenerateButton({
             <Sparkles className="w-3.5 h-3.5 opacity-70" />
           </>
         )}
-      </button>
+      </AdminHeaderButton>
 
       {/* Debug Panel Modal */}
       <AnimatePresence>
@@ -517,27 +517,16 @@ export default function AIGenerateButton({
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   เลือก AI Model
                 </label>
-                <select
+                <ModelSelect
+                  models={availableModels}
                   value={selectedModel}
-                  onChange={(e) => {
-                    setSelectedModel(e.target.value);
-                    aiService.setModel(e.target.value);
+                  onValueChange={(v) => {
+                    setSelectedModel(v);
+                    aiService.setModel(v);
                   }}
                   disabled={isLoadingModels || availableModels.length === 0}
-                  className="w-full py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
-                >
-                  {isLoadingModels ? (
-                    <option value="">กำลังโหลด models...</option>
-                  ) : availableModels.length === 0 ? (
-                    <option value="">ไม่พบ model ที่ใช้ได้</option>
-                  ) : (
-                    availableModels.map((model) => (
-                      <option key={model.id} value={model.id}>
-                        {model.name || model.id}
-                      </option>
-                    ))
-                  )}
-                </select>
+                  loading={isLoadingModels}
+                />
               </div>
 
               {/* Footer / Actions */}

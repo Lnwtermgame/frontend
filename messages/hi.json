@@ -771,9 +771,10 @@
     "about_product": "उत्पाद विवरण",
     "account_info_title": "खाता जानकारी",
     "auto_delivery_hint": "तत्काल स्वचालित डिलीवरी",
+    "auto_delivery_short": "ऑटो डिलीवरी",
     "back": "वापस",
     "buy_now_button": "अभी खरीदें",
-    "by_developer": "डेवलपर: ",
+    "by_developer": "डेवलपर: {developer}",
     "cancel_button": "रद्द करें",
     "change_button": "चयन बदलें",
     "close_window_button": "विंडो बंद करें",
@@ -853,7 +854,14 @@
     "flat_fee_label": "निश्चित शुल्क",
     "min_amount_badge": "न्यूनतम {amount}฿",
     "related_products_sublabel": "संबंधित उत्पाद",
-    "similar_products_sublabel": "समान उत्पाद"
+    "similar_products_sublabel": "समान उत्पाद",
+    "quantity_label": "मात्रा",
+    "sold_count": "बिक गए: {count}",
+    "out_of_stock": "बिक चुका",
+    "add_favorite": "पसंदीदा में जोड़ें",
+    "remove_favorite": "पसंदीदा से हटाएँ",
+    "share_link": "लिंक साझा करें",
+    "screenshots_hint": "स्क्रीनशॉट · देखने के लिए स्क्रॉल करें"
   },
   "News": {
     "all_news": "सभी समाचार",
@@ -1181,6 +1189,13 @@
   "logout": "लॉगआउट",
   "login_button": "लॉगिन / रजिस्टर",
   "Admin": {
+    "ai": {
+      "loading_models": "मॉडल लोड हो रहे हैं...",
+      "select_model": "मॉडल चुनें",
+      "search_models": "मॉडल खोजें...",
+      "model_count": "{total} में से {visible} मॉडल दिखा रहे हैं",
+      "no_models": "कोई मॉडल नहीं मिला"
+    },
     "nav": {
       "main": "डैशबोर्ड",
       "products_sales": "उत्पाद और बिक्री",
@@ -2101,5 +2116,20 @@
   "search_view_all": "सभी परिणाम देखें",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

@@ -771,9 +771,10 @@
     "about_product": "商品介绍",
     "account_info_title": "账号信息",
     "auto_delivery_hint": "自动即时发货",
+    "auto_delivery_short": "自动发货",
     "back": "返回",
     "buy_now_button": "立即购买",
-    "by_developer": "开发商：",
+    "by_developer": "开发商：{developer}",
     "cancel_button": "取消",
     "change_button": "更换选择",
     "close_window_button": "关闭窗口",
@@ -853,7 +854,14 @@
     "flat_fee_label": "固定费用",
     "min_amount_badge": "最低 {amount}฿",
     "related_products_sublabel": "相关商品",
-    "similar_products_sublabel": "相似商品"
+    "similar_products_sublabel": "相似商品",
+    "quantity_label": "数量",
+    "sold_count": "已售 {count}",
+    "out_of_stock": "售罄",
+    "add_favorite": "加入收藏",
+    "remove_favorite": "取消收藏",
+    "share_link": "分享链接",
+    "screenshots_hint": "游戏截图 · 左右滑动查看"
   },
   "News": {
     "all_news": "全部新闻",
@@ -1181,6 +1189,13 @@
   "logout": "退出登录",
   "login_button": "登录 / 注册",
   "Admin": {
+    "ai": {
+      "loading_models": "正在加载模型...",
+      "select_model": "选择模型",
+      "search_models": "搜索模型...",
+      "model_count": "显示 {visible} / {total} 个模型",
+      "no_models": "未找到模型"
+    },
     "nav": {
       "main": "仪表盘",
       "products_sales": "商品与销售",
@@ -2101,5 +2116,20 @@
   "search_view_all": "查看全部结果",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

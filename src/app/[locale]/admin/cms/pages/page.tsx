@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "@/lib/framer-exports";
 import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
   AdminHeaderButton,
+  ModelSelect,
 } from "@/components/admin";
 import {
   FileText,
@@ -619,40 +621,39 @@ export default function AdminCmsPagesPage() {
       </div>
 
       {/* Modal */}
-      {mounted && typeof document !== "undefined" && createPortal(
-        <AnimatePresence>
-          {showModal && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-              style={{ zIndex: 9999 }}
+      {mounted && (
+        <DialogPrimitive.Root
+          open={showModal}
+          onOpenChange={(open) => {
+            if (!open && !isSubmitting) {
+              setShowModal(false);
+              setEditingPage(null);
+              resetForm();
+            }
+          }}
+        >
+          <DialogPortal>
+            <DialogOverlay className="bg-black/60 backdrop-blur-sm z-[9999]" />
+            <DialogPrimitive.Content
+              className="fixed left-1/2 top-1/2 z-[9999] flex w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col bg-site-raised border border-white/10 rounded-2xl shadow-2xl max-w-4xl max-h-[90vh] overflow-hidden focus:outline-none"
+              onEscapeKeyDown={(e) => isSubmitting && e.preventDefault()}
+              onPointerDownOutside={(e) => isSubmitting && e.preventDefault()}
+              onInteractOutside={(e) => isSubmitting && e.preventDefault()}
+              aria-describedby={undefined}
             >
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                className="bg-site-raised border border-white/10 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
-              >
                 {/* Header */}
                 <div className="p-5 border-b border-white/5 bg-site-surface flex items-center justify-between shrink-0">
-                  <h3 className="text-[15px] font-bold text-white tracking-wide flex items-center gap-2.5">
+                  <DialogPrimitive.Title className="text-[15px] font-bold text-white tracking-wide flex items-center gap-2.5">
                     <div className="p-1.5 bg-site-accent/10 rounded-lg">
                       <FileText className="h-4 w-4 text-site-accent" />
                     </div>
                     {editingPage ? "แก้ไขหน้าเว็บไซต์" : "เพิ่มหน้าเว็บไซต์ใหม่"}
-                  </h3>
-                  <button
-                    onClick={() => {
-                      setShowModal(false);
-                      setEditingPage(null);
-                      resetForm();
-                    }}
+                  </DialogPrimitive.Title>
+                  <DialogPrimitive.Close
                     className="p-2 bg-site-raised border border-white/5 rounded-xl hover:bg-[#2a2d35] hover:border-white/10 transition-all text-gray-400"
                   >
                     <X className="h-4 w-4" />
-                  </button>
+                  </DialogPrimitive.Close>
                 </div>
 
                 <div className="overflow-y-auto flex-1 custom-scrollbar">
@@ -758,27 +759,16 @@ export default function AdminCmsPagesPage() {
                                 <label className="block text-gray-400 font-bold text-[12px]">
                                   เลือก AI Model
                                 </label>
-                                <select
+                                <ModelSelect
+                                  models={availableModels}
                                   value={selectedModel}
-                                  onChange={(e) => {
-                                    setSelectedModel(e.target.value);
-                                    aiService.setModel(e.target.value);
+                                  onValueChange={(v) => {
+                                    setSelectedModel(v);
+                                    aiService.setModel(v);
                                   }}
                                   disabled={isLoadingModels || availableModels.length === 0}
-                                  className="w-full py-2.5 px-3 bg-site-surface border border-white/10 rounded-xl text-[13px] text-white focus:outline-none focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 disabled:opacity-50 appearance-none cursor-pointer"
-                                >
-                                  {isLoadingModels ? (
-                                    <option value="">กำลังโหลด models...</option>
-                                  ) : availableModels.length === 0 ? (
-                                    <option value="">ไม่พบ model ที่ใช้ได้</option>
-                                  ) : (
-                                    availableModels.map((model) => (
-                                      <option key={model.id} value={model.id}>
-                                        {model.name || model.id} {model.owned_by ? `(${model.owned_by})` : ""}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
+                                  loading={isLoadingModels}
+                                />
                               </div>
                             </div>
 
@@ -937,11 +927,9 @@ export default function AdminCmsPagesPage() {
                     </div>
                   </form>
                 </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
+            </DialogPrimitive.Content>
+          </DialogPortal>
+        </DialogPrimitive.Root>
       )}
     </PageContainer>
     </AdminLayout>

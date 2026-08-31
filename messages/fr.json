@@ -771,9 +771,10 @@
     "about_product": "Description du produit",
     "account_info_title": "Informations du compte",
     "auto_delivery_hint": "Livraison automatique instantanée",
+    "auto_delivery_short": "Livraison automatique",
     "back": "Retour",
     "buy_now_button": "Acheter maintenant",
-    "by_developer": "Développeur : ",
+    "by_developer": "Développeur : {developer}",
     "cancel_button": "Annuler",
     "change_button": "Modifier la sélection",
     "close_window_button": "Fermer la fenêtre",
@@ -853,7 +854,14 @@
     "flat_fee_label": "Frais fixes",
     "min_amount_badge": "Min {amount}฿",
     "related_products_sublabel": "Produits associés",
-    "similar_products_sublabel": "Produits similaires"
+    "similar_products_sublabel": "Produits similaires",
+    "quantity_label": "Quantité",
+    "sold_count": "Vendus : {count}",
+    "out_of_stock": "Épuisé",
+    "add_favorite": "Ajouter aux favoris",
+    "remove_favorite": "Retirer des favoris",
+    "share_link": "Partager le lien",
+    "screenshots_hint": "Captures d’écran · faites défiler"
   },
   "News": {
     "all_news": "Toutes les actualités",
@@ -1181,6 +1189,13 @@
   "logout": "Déconnexion",
   "login_button": "Connexion / Inscription",
   "Admin": {
+    "ai": {
+      "loading_models": "Chargement des modèles...",
+      "select_model": "Sélectionner un modèle",
+      "search_models": "Rechercher des modèles...",
+      "model_count": "Affichage de {visible} sur {total} modèles",
+      "no_models": "Aucun modèle trouvé"
+    },
     "nav": {
       "main": "Tableau de bord",
       "products_sales": "Produits et ventes",
@@ -2101,5 +2116,20 @@
   "search_view_all": "Voir tous les résultats",
   "card_sublabel": "[MISSING: card_sublabel]",
   "mobile_sublabel": "[MISSING: mobile_sublabel]",
-  "games_sublabel": "[MISSING: games_sublabel]"
+  "games_sublabel": "[MISSING: games_sublabel]",
+  "sold_count": "[MISSING: sold_count]",
+  "remove_favorite": "[MISSING: remove_favorite]",
+  "add_favorite": "[MISSING: add_favorite]",
+  "share_link": "[MISSING: share_link]",
+  "quantity_label": "[MISSING: quantity_label]",
+  "out_of_stock": "[MISSING: out_of_stock]",
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

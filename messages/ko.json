@@ -860,7 +860,8 @@
     "out_of_stock": "품절",
     "add_favorite": "즐겨찾기 추가",
     "remove_favorite": "즐겨찾기 제거",
-    "share_link": "링크 공유"
+    "share_link": "링크 공유",
+    "screenshots_hint": "스크린샷 · 스크롤하여 보기"
   },
   "News": {
     "all_news": "전체 뉴스",
@@ -2129,5 +2130,6 @@
     "search_models": "[MISSING: ai.search_models]",
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
-  }
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

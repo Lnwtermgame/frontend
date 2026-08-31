@@ -860,7 +860,8 @@
     "out_of_stock": "बिक चुका",
     "add_favorite": "पसंदीदा में जोड़ें",
     "remove_favorite": "पसंदीदा से हटाएँ",
-    "share_link": "लिंक साझा करें"
+    "share_link": "लिंक साझा करें",
+    "screenshots_hint": "स्क्रीनशॉट · देखने के लिए स्क्रॉल करें"
   },
   "News": {
     "all_news": "सभी समाचार",
@@ -2129,5 +2130,6 @@
     "search_models": "[MISSING: ai.search_models]",
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
-  }
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

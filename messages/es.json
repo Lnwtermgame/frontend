@@ -860,7 +860,8 @@
     "out_of_stock": "Agotado",
     "add_favorite": "Añadir a favoritos",
     "remove_favorite": "Quitar de favoritos",
-    "share_link": "Compartir enlace"
+    "share_link": "Compartir enlace",
+    "screenshots_hint": "Capturas · desliza para ver"
   },
   "News": {
     "all_news": "Todas las noticias",
@@ -2129,5 +2130,6 @@
     "search_models": "[MISSING: ai.search_models]",
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
-  }
+  },
+  "screenshots_hint": "[MISSING: screenshots_hint]"
 }

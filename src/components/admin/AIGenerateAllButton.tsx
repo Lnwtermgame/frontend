@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Sparkles,
   Wand2,
@@ -22,14 +21,29 @@ import {
   Layers,
 } from "lucide-react";
 import {
+  DialogOverlay,
+  DialogPortal,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/Button";
+import { Badge, type BadgeVariant } from "@/components/ui/Badge";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { AdminHeaderButton, ModelSelect } from "@/components/admin";
+import { cn } from "@/lib/utils";
+import {
   aiService,
   GeneratedContent,
   GenerationProgress,
   AvailableCategory,
   AIModel,
 } from "@/lib/services/ai-api";
-import { AdminHeaderButton, ModelSelect } from "@/components/admin";
-import { lockBodyScroll } from "@/lib/scroll-lock";
 import { productApi, Product, Category } from "@/lib/services/product-api";
 import toast from "react-hot-toast";
 
@@ -124,6 +138,7 @@ export default function AIGenerateAllButton({
   categories,
 }: AIGenerateAllButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
   const [productStates, setProductStates] = useState<ProductGenerationState[]>(
     [],
   );
@@ -181,7 +196,10 @@ export default function AIGenerateAllButton({
         setAvailableModels(models);
       }
 
-      const modelReady = Boolean((selectedModel && models.some((m) => m.id === selectedModel)) || models.length > 0);
+      const modelReady = Boolean(
+        (selectedModel && models.some((m) => m.id === selectedModel)) ||
+        models.length > 0
+      );
       if (!selectedModel && models.length > 0) {
         const defaultModel = aiService.getSelectedModel() || models[0].id;
         setSelectedModel(defaultModel);
@@ -245,12 +263,6 @@ export default function AIGenerateAllButton({
     };
   }, []);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (!isOpen) return;
-    return lockBodyScroll();
-  }, [isOpen]);
-
   // Open modal
   const handleOpen = () => {
     initializeStates();
@@ -258,17 +270,20 @@ export default function AIGenerateAllButton({
     void runPreflight();
   };
 
-  // Close modal
-  const handleClose = () => {
+  // Close modal request
+  const requestClose = () => {
     if (isRunning) {
-      if (
-        !confirm(
-          "กำลัง Generate อยู่ คุณแน่ใจหรือไม่ที่จะปิด? การ Generate จะหยุดทันที",
-        )
-      )
-        return;
-      abortRef.current = true;
+      setShowCloseConfirm(true);
+    } else {
+      setIsOpen(false);
+      setIsRunning(false);
+      if (totalTimerRef.current) clearInterval(totalTimerRef.current);
     }
+  };
+
+  const handleConfirmClose = () => {
+    abortRef.current = true;
+    setShowCloseConfirm(false);
     setIsOpen(false);
     setIsRunning(false);
     if (totalTimerRef.current) clearInterval(totalTimerRef.current);
@@ -287,6 +302,61 @@ export default function AIGenerateAllButton({
     [],
   );
 
+  // Save single product to database
+  const saveProduct = async (index: number, silent = false) => {
+    const state = productStates[index];
+    if (!state || !state.results) return;
+
+    try {
+      let categoryId = state.product.categoryId;
+      if (state.results.categorySlug) {
+        const matchedCategory = categories.find(
+          (c) => c.slug === state.results!.categorySlug,
+        );
+        if (matchedCategory) {
+          categoryId = matchedCategory.id;
+        }
+      }
+
+      const updateData: Record<string, unknown> = {
+        description: state.results.description,
+        shortDescription: state.results.shortDescription,
+        metaTitle: state.results.metaTitle,
+        metaDescription: state.results.metaDescription,
+        metaKeywords: state.results.metaKeywords,
+        gameDetails: {
+          developer: state.results.gameDetails?.developer || "",
+          publisher: state.results.gameDetails?.publisher || "",
+          platforms: state.results.gameDetails?.platforms || [],
+        },
+        categoryId,
+      };
+
+      if (state.results.isFeatured !== undefined) {
+        updateData.isFeatured = state.results.isFeatured;
+      }
+      if (state.results.isBestseller !== undefined) {
+        updateData.isBestseller = state.results.isBestseller;
+      }
+
+      const response = await productApi.updateProduct(
+        state.product.id,
+        updateData,
+      );
+      if (response.success) {
+        updateProductState(index, (prev) => ({
+          ...prev,
+          status: "saved",
+        }));
+        if (!silent) toast.success(`บันทึก ${state.product.name} สำเร็จ!`);
+      } else {
+        if (!silent) toast.error(`ไม่สามารถบันทึก ${state.product.name} ได้`);
+      }
+    } catch {
+      if (!silent) toast.error(`เกิดข้อผิดพลาดในการบันทึก ${state.product.name}`);
+    }
+  };
+
   // Start batch generation
   const startGeneration = useCallback(async () => {
     const status = await runPreflight();
@@ -295,7 +365,6 @@ export default function AIGenerateAllButton({
       return;
     }
 
-    // Set the selected model before generating
     if (selectedModel) {
       aiService.setModel(selectedModel);
     }
@@ -306,26 +375,19 @@ export default function AIGenerateAllButton({
     pauseRef.current = false;
     startTimeRef.current = Date.now();
 
-    // Start total timer
     totalTimerRef.current = setInterval(() => {
       setTotalElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
     }, 1000);
 
-    // We need to get the latest states and iterate
-    // Use a ref-based approach to avoid stale closure issues
     for (let i = 0; i < products.length; i++) {
       if (abortRef.current) break;
 
-      // Wait while paused
       while (pauseRef.current && !abortRef.current) {
         await new Promise((r) => setTimeout(r, 500));
       }
 
       if (abortRef.current) break;
 
-      // Check if this product already has results (skip if saved/completed and user hasn't reset)
-
-      // Check the current state of this product
       const currentState = await new Promise<ProductGenerationState>(
         (resolve) => {
           setProductStates((prev) => {
@@ -342,7 +404,6 @@ export default function AIGenerateAllButton({
         continue;
       }
 
-      // Skip products that already have complete data (if checkbox enabled)
       if (skipComplete && currentState.isComplete) {
         setProductStates((prev) =>
           prev.map((s, idx) =>
@@ -384,7 +445,6 @@ export default function AIGenerateAllButton({
           (c) => c.id === product.categoryId,
         )?.name;
 
-        // Build available categories list for AI classification
         const availableCategories: AvailableCategory[] = categories.map(
           (c) => ({
             name: c.name,
@@ -431,7 +491,6 @@ export default function AIGenerateAllButton({
 
       if (productTimer) clearInterval(productTimer);
 
-      // Small delay between products to avoid rate limiting
       if (i < products.length - 1 && !abortRef.current) {
         await new Promise((r) => setTimeout(r, 2000));
       }
@@ -453,63 +512,6 @@ export default function AIGenerateAllButton({
     setIsRunning(false);
     setIsPaused(false);
     if (totalTimerRef.current) clearInterval(totalTimerRef.current);
-  };
-
-  // Save single product to database
-  const saveProduct = async (index: number, silent = false) => {
-    const state = productStates[index];
-    if (!state || !state.results) return;
-
-    try {
-      // Resolve categoryId from AI-selected categorySlug
-      let categoryId = state.product.categoryId; // default to existing
-      if (state.results.categorySlug) {
-        const matchedCategory = categories.find(
-          (c) => c.slug === state.results!.categorySlug,
-        );
-        if (matchedCategory) {
-          categoryId = matchedCategory.id;
-        }
-      }
-
-      const updateData: Record<string, unknown> = {
-        description: state.results.description,
-        shortDescription: state.results.shortDescription,
-        metaTitle: state.results.metaTitle,
-        metaDescription: state.results.metaDescription,
-        metaKeywords: state.results.metaKeywords,
-        gameDetails: {
-          developer: state.results.gameDetails?.developer || "",
-          publisher: state.results.gameDetails?.publisher || "",
-          platforms: state.results.gameDetails?.platforms || [],
-        },
-        categoryId,
-      };
-
-      // Include isFeatured/isBestseller if AI provided them
-      if (state.results.isFeatured !== undefined) {
-        updateData.isFeatured = state.results.isFeatured;
-      }
-      if (state.results.isBestseller !== undefined) {
-        updateData.isBestseller = state.results.isBestseller;
-      }
-
-      const response = await productApi.updateProduct(
-        state.product.id,
-        updateData,
-      );
-      if (response.success) {
-        updateProductState(index, (prev) => ({
-          ...prev,
-          status: "saved",
-        }));
-        if (!silent) toast.success(`บันทึก ${state.product.name} สำเร็จ!`);
-      } else {
-        if (!silent) toast.error(`ไม่สามารถบันทึก ${state.product.name} ได้`);
-      }
-    } catch {
-      if (!silent) toast.error(`เกิดข้อผิดพลาดในการบันทึก ${state.product.name}`);
-    }
   };
 
   // Save all completed products
@@ -539,7 +541,6 @@ export default function AIGenerateAllButton({
       return;
     }
 
-    // Set the selected model before generating
     if (selectedModel) {
       aiService.setModel(selectedModel);
     }
@@ -586,7 +587,6 @@ export default function AIGenerateAllButton({
         );
       };
 
-      // Build available categories list for AI classification
       const availableCategories: AvailableCategory[] = categories.map((c) => ({
         name: c.name,
         slug: c.slug,
@@ -714,53 +714,30 @@ export default function AIGenerateAllButton({
   ) => {
     switch (status) {
       case "pending":
-        return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-site-raised text-gray-600 border border-gray-300">
-            รอดำเนินการ
-          </span>
-        );
+        return <Badge variant="neutral">รอดำเนินการ</Badge>;
       case "generating":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 border border-blue-300 animate-pulse">
+          <Badge variant="info" className="animate-pulse">
             กำลัง Generate...
-          </span>
+          </Badge>
         );
       case "completed":
-        return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-300">
-            รอยืนยัน
-          </span>
-        );
+        return <Badge variant="warning">รอยืนยัน</Badge>;
       case "saved":
-        return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-green-500/10 text-green-400 border border-green-300">
-            บันทึกแล้ว
-          </span>
-        );
+        return <Badge variant="success">บันทึกแล้ว</Badge>;
       case "error":
-        return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-red-500/10 text-red-400 border border-red-300">
-            ผิดพลาด
-          </span>
-        );
+        return <Badge variant="danger">ผิดพลาด</Badge>;
       case "skipped":
-        return (
-          <span
-            className={`px-2 py-0.5 text-xs font-medium border flex items-center gap-1 ${isComplete
-                ? "bg-green-50 text-green-600 border-green-300"
-                : "bg-site-raised text-gray-500 border-gray-300"
-              }`}
-          >
-            {isComplete && <CheckCircle2 className="w-3 h-3" />}
-            {isComplete ? "ข้อมูลครบ - ข้าม" : "ข้าม"}
-          </span>
+        return isComplete ? (
+          <Badge variant="success">
+            <CheckCircle2 className="w-3 h-3" />
+            ข้อมูลครบ - ข้าม
+          </Badge>
+        ) : (
+          <Badge variant="neutral">ข้าม</Badge>
         );
       case "cancelled":
-        return (
-          <span className="px-2 py-0.5 text-xs font-medium bg-site-accent/10 text-site-accent border border-site-accent/30">
-            ยกเลิก
-          </span>
-        );
+        return <Badge variant="neutral">ยกเลิก</Badge>;
     }
   };
 
@@ -796,8 +773,6 @@ export default function AIGenerateAllButton({
     return stagePercents[stage || "idle"] || 0;
   };
 
-  if (typeof window === "undefined") return null;
-
   return (
     <>
       {/* Trigger Button */}
@@ -812,822 +787,799 @@ export default function AIGenerateAllButton({
       </AdminHeaderButton>
 
       {/* Modal */}
-      {isOpen &&
-        createPortal(
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
-            onClick={() => !isRunning && handleClose()}
+      <DialogPrimitive.Root
+        open={isOpen}
+        onOpenChange={(next) => {
+          if (!next) requestClose();
+        }}
+      >
+        <DialogPortal>
+          <DialogOverlay className="bg-black/60 backdrop-blur-sm z-[80]" />
+          <DialogPrimitive.Content
+            className={cn(
+              "fixed left-1/2 top-1/2 z-[90] flex w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 -translate-y-1/2 flex-col max-h-[90vh] bg-site-surface border border-site-border rounded-12 shadow-2xl focus:outline-none overflow-hidden",
+            )}
+            onEscapeKeyDown={(e) => {
+              e.preventDefault();
+              requestClose();
+            }}
+            onPointerDownOutside={(e) => {
+              if (isRunning) e.preventDefault();
+            }}
+            aria-describedby={undefined}
           >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              className="bg-site-raised border border-site-border/30 rounded-[16px] w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
-              style={{ boxShadow: "8px 8px 0 0 #000000" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b-[3px] border-black bg-site-accent shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-site-raised border-[2px] border-black">
-                    <Sparkles className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-white text-lg">
-                      AI Generate ทุกเกม
-                    </h3>
-                    <p className="text-sm text-white/70">
-                      สร้างเนื้อหาอัตโนมัติสำหรับ{" "}
-                      {skipComplete
-                        ? `${stats.incompleteProducts} จาก ${stats.total}`
-                        : stats.total}{" "}
-                      สินค้า
-                    </p>
-                  </div>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-site-border-soft bg-site-surface shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-8 bg-site-accent/10 border border-site-accent/20 text-site-accent">
+                  <Sparkles className="w-5 h-5" />
                 </div>
-                <div className="flex items-center gap-2">
-                  {isRunning && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-site-raised border-[2px] border-black text-white text-sm font-bold">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{formatTime(totalElapsed)}</span>
-                    </div>
-                  )}
-                  {!isRunning && (
-                    <button
-                      onClick={handleClose}
-                      className="p-2 hover:bg-black/10 transition-colors border-[2px] border-transparent hover:border-black"
-                    >
-                      <X className="w-5 h-5 text-white" />
-                    </button>
-                  )}
+                <div>
+                  <DialogPrimitive.Title className="text-base font-bold text-site-text">
+                    AI Generate ทุกเกม
+                  </DialogPrimitive.Title>
+                  <p className="text-xs text-site-muted">
+                    สร้างเนื้อหาอัตโนมัติสำหรับ{" "}
+                    {skipComplete
+                      ? `${stats.incompleteProducts} จาก ${stats.total}`
+                      : stats.total}{" "}
+                    สินค้า
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {isRunning && (
+                  <Badge variant="info" className="gap-1.5 px-3 py-1 text-xs">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>{formatTime(totalElapsed)}</span>
+                  </Badge>
+                )}
+                <button
+                  onClick={requestClose}
+                  className="p-1.5 rounded-lg text-site-dim hover:bg-site-raised hover:text-site-text transition-colors focus:outline-none"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="px-6 py-4 border-b border-site-border-soft bg-site-raised/30 shrink-0 space-y-4">
+              {/* Model Selector + Auto Save */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-site-muted uppercase tracking-wider">
+                    เลือก AI Model
+                  </label>
+                  <ModelSelect
+                    models={availableModels}
+                    value={selectedModel}
+                    onValueChange={(v) => {
+                      setSelectedModel(v);
+                      aiService.setModel(v);
+                    }}
+                    disabled={isLoadingModels || availableModels.length === 0 || isRunning}
+                    loading={isLoadingModels}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-site-muted uppercase tracking-wider">
+                    Auto-save policy
+                  </label>
+                  <Select
+                    value={autoSavePolicy}
+                    onValueChange={(v) => setAutoSavePolicy(v as AutoSavePolicy)}
+                    disabled={isRunning}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="manual">รอยืนยันทีละรายการ</SelectItem>
+                      <SelectItem value="auto">บันทึกทันทีเมื่อเสร็จ</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              {/* Stats Bar */}
-              <div className="px-5 py-3 border-b-[2px] border-gray-200 bg-site-surface shrink-0">
-                {/* Model Selector + Auto Save */}
-                <div className="mb-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      เลือก AI Model
-                    </label>
-                    <ModelSelect
-                      models={availableModels}
-                      value={selectedModel}
-                      onValueChange={(v) => {
-                        setSelectedModel(v);
-                        aiService.setModel(v);
-                      }}
-                      disabled={isLoadingModels || availableModels.length === 0 || isRunning}
-                      loading={isLoadingModels}
-                    />
+              {/* Preflight */}
+              <div className="p-3.5 rounded-8 border border-site-border-soft bg-site-surface/80 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-xs font-semibold text-site-text uppercase tracking-wider">
+                    Preflight Check
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Auto-save policy
-                    </label>
-                    <select
-                      value={autoSavePolicy}
-                      onChange={(e) =>
-                        setAutoSavePolicy(e.target.value as AutoSavePolicy)
-                      }
-                      disabled={isRunning}
-                      className="w-full min-h-[44px] py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
-                    >
-                      <option value="manual">รอยืนยันทีละรายการ</option>
-                      <option value="auto">บันทึกทันทีเมื่อเสร็จ</option>
-                    </select>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => void runPreflight()}
+                    disabled={isCheckingPreflight || isRunning}
+                    className="h-7 text-xs"
+                  >
+                    {isCheckingPreflight ? "กำลังตรวจสอบ..." : "ตรวจสอบอีกครั้ง"}
+                  </Button>
                 </div>
-
-                {/* Preflight */}
-                <div className="mb-3 p-3 border-[2px] border-gray-300 bg-site-raised/40">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="text-sm font-semibold text-white">Preflight Check</div>
-                    <button
-                      onClick={() => void runPreflight()}
-                      disabled={isCheckingPreflight || isRunning}
-                      className="min-h-[44px] px-3 py-2 text-sm border border-site-border/30 rounded-[10px] bg-site-raised text-white disabled:opacity-50"
-                    >
-                      {isCheckingPreflight ? "กำลังตรวจสอบ..." : "ตรวจสอบอีกครั้ง"}
-                    </button>
-                  </div>
-                  <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                    <span className={`px-2 py-1 border ${preflight.configured ? "bg-green-500/10 text-green-400 border-green-300" : "bg-red-500/10 text-red-400 border-red-300"}`}>
-                      Config: {preflight.configured ? "พร้อม" : "ไม่พร้อม"}
-                    </span>
-                    <span className={`px-2 py-1 border ${preflight.modelReady ? "bg-green-500/10 text-green-400 border-green-300" : "bg-yellow-500/10 text-yellow-400 border-yellow-300"}`}>
-                      Model: {preflight.modelReady ? "พร้อม" : "ยังไม่พร้อม"}
-                    </span>
-                    <span className={`px-2 py-1 border ${preflight.networkOk ? "bg-green-500/10 text-green-400 border-green-300" : "bg-red-500/10 text-red-400 border-red-300"}`}>
-                      Network: {preflight.networkOk ? "เชื่อมต่อได้" : "เชื่อมต่อไม่ได้"}
-                    </span>
-                  </div>
-                  <p className={`mt-2 text-xs font-medium ${preflight.ready ? "text-green-400" : "text-yellow-300"}`}>
-                    สถานะ: {preflight.message}
-                  </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <Badge
+                    variant={preflight.configured ? "success" : "danger"}
+                    className="justify-center py-1 w-full text-xs"
+                  >
+                    Config: {preflight.configured ? "พร้อม" : "ไม่พร้อม"}
+                  </Badge>
+                  <Badge
+                    variant={preflight.modelReady ? "success" : "warning"}
+                    className="justify-center py-1 w-full text-xs"
+                  >
+                    Model: {preflight.modelReady ? "พร้อม" : "ยังไม่พร้อม"}
+                  </Badge>
+                  <Badge
+                    variant={preflight.networkOk ? "success" : "danger"}
+                    className="justify-center py-1 w-full text-xs"
+                  >
+                    Network: {preflight.networkOk ? "เชื่อมต่อได้" : "เชื่อมต่อไม่ได้"}
+                  </Badge>
                 </div>
+                <p
+                  className={cn(
+                    "text-xs font-medium",
+                    preflight.ready ? "text-status-success" : "text-status-warning"
+                  )}
+                >
+                  สถานะ: {preflight.message}
+                </p>
+              </div>
 
-                {/* Skip complete checkbox + completeness summary */}
-                <div className="flex items-center justify-between mb-3">
-                  <label className="flex items-center gap-2 cursor-pointer select-none group">
-                    <input
-                      type="checkbox"
-                      checked={skipComplete}
-                      onChange={(e) => setSkipComplete(e.target.checked)}
-                      disabled={isRunning}
-                      className="w-4 h-4 border-2 border-black text-site-accent focus:ring-site-accent/50 cursor-pointer disabled:opacity-50"
-                    />
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-white transition-colors">
-                      ข้ามสินค้าที่มีข้อมูลครบแล้ว
-                    </span>
-                  </label>
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 text-green-400 border border-green-300">
-                      <CheckCircle2 className="w-3 h-3" />
-                      ข้อมูลครบ: {stats.completeProducts}
-                    </span>
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-site-accent/10 text-site-accent border border-site-accent/30">
-                      <AlertCircle className="w-3 h-3" />
-                      ข้อมูลไม่ครบ: {stats.incompleteProducts}
-                    </span>
-                  </div>
+              {/* Skip complete checkbox + completeness summary */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                  <Checkbox
+                    checked={skipComplete}
+                    onCheckedChange={(checked) => setSkipComplete(!!checked)}
+                    disabled={isRunning}
+                  />
+                  <span className="text-xs font-medium text-site-text">
+                    ข้ามสินค้าที่มีข้อมูลครบแล้ว
+                  </span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <Badge variant="success" className="text-xs">
+                    <CheckCircle2 className="w-3 h-3" />
+                    ข้อมูลครบ: {stats.completeProducts}
+                  </Badge>
+                  <Badge variant="neutral" className="text-xs">
+                    <AlertCircle className="w-3 h-3" />
+                    ข้อมูลไม่ครบ: {stats.incompleteProducts}
+                  </Badge>
                 </div>
+              </div>
 
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-4 text-sm">
-                    <span className="text-gray-600">
-                      ทั้งหมด:{" "}
-                      <strong className="text-white">{stats.total}</strong>
+              {/* Progress Summary & Overall Bar */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between text-xs text-site-muted">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span>
+                      ทั้งหมด: <strong className="text-site-text">{stats.total}</strong>
                     </span>
                     {stats.completed > 0 && (
-                      <span className="text-yellow-600">
+                      <span className="text-status-warning">
                         รอยืนยัน: <strong>{stats.completed}</strong>
                       </span>
                     )}
                     {stats.saved > 0 && (
-                      <span className="text-green-600">
+                      <span className="text-status-success">
                         บันทึกแล้ว: <strong>{stats.saved}</strong>
                       </span>
                     )}
                     {stats.error > 0 && (
-                      <span className="text-red-600">
+                      <span className="text-status-danger">
                         ผิดพลาด: <strong>{stats.error}</strong>
                       </span>
                     )}
                     {stats.generating > 0 && (
-                      <span className="text-blue-600">
+                      <span className="text-status-info">
                         กำลังทำ: <strong>{stats.generating}</strong>
                       </span>
                     )}
                   </div>
-                  <span className="text-sm font-bold text-gray-700">
-                    {progressPercent}%
-                  </span>
+                  <span className="font-bold text-site-text">{progressPercent}%</span>
                 </div>
-                {/* Overall Progress Bar */}
-                <div className="h-2.5 bg-site-border/30 border-[2px] border-black overflow-hidden">
-                  <motion.div
-                    className="h-full bg-site-accent"
-                    initial={{ width: "0%" }}
-                    animate={{ width: `${progressPercent}%` }}
-                    transition={{ duration: 0.5 }}
+                <div className="h-2 w-full bg-site-raised rounded-full overflow-hidden border border-site-border-soft">
+                  <div
+                    className="h-full bg-site-accent transition-all duration-300"
+                    style={{ width: `${progressPercent}%` }}
                   />
                 </div>
               </div>
+            </div>
 
-              {/* Product List */}
-              <div className="flex-1 overflow-y-auto">
-                <div className="divide-y divide-gray-200">
-                  {productStates.map((state, index) => (
-                    <div
-                      key={state.product.id}
-                      className={`transition-colors ${state.status === "generating"
-                          ? "bg-blue-50"
-                          : state.status === "saved"
-                            ? "bg-green-50/50"
-                            : state.status === "skipped" && state.isComplete
-                              ? "bg-site-surface/50"
-                              : ""
-                        }`}
-                    >
-                      {/* Product Row */}
-                      <div className="px-5 py-3 flex items-center gap-4">
-                        {/* Index */}
-                        <span className="text-xs text-gray-400 font-mono w-6 text-right shrink-0">
-                          {index + 1}
+            {/* Product List */}
+            <div className="flex-1 overflow-y-auto divide-y divide-site-border-soft">
+              {productStates.map((state, index) => (
+                <div
+                  key={state.product.id}
+                  className={cn(
+                    "transition-colors",
+                    state.status === "generating"
+                      ? "bg-status-info/5"
+                      : state.status === "saved"
+                      ? "bg-status-success/5"
+                      : state.status === "skipped" && state.isComplete
+                      ? "bg-site-surface opacity-75"
+                      : "hover:bg-site-raised/30"
+                  )}
+                >
+                  {/* Product Row */}
+                  <div className="px-6 py-3.5 flex items-center gap-4">
+                    {/* Index */}
+                    <span className="text-xs text-site-dim font-mono w-6 text-right shrink-0">
+                      {index + 1}
+                    </span>
+
+                    {/* Product Image */}
+                    {state.product.imageUrl ? (
+                      <img
+                        src={state.product.imageUrl}
+                        alt={state.product.name}
+                        className="w-9 h-9 object-cover rounded-6 border border-site-border-soft shrink-0"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 bg-site-raised rounded-6 border border-site-border-soft shrink-0" />
+                    )}
+
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-site-text text-sm truncate">
+                          {state.product.name}
                         </span>
-
-                        {/* Product Image */}
-                        {state.product.imageUrl ? (
-                          <img
-                            src={state.product.imageUrl}
-                            alt={state.product.name}
-                            className="w-8 h-8 object-cover border-[2px] border-black shrink-0"
-                          />
-                        ) : (
-                          <div className="w-8 h-8 bg-site-border/30 border-[2px] border-gray-300 shrink-0" />
+                        {getStatusBadge(state.status, state.isComplete)}
+                        {/* Completeness badge */}
+                        {state.status === "pending" && state.isComplete && (
+                          <Badge variant="success" className="text-xs">
+                            <CheckCircle2 className="w-3 h-3" />
+                            ข้อมูลครบ
+                          </Badge>
                         )}
-
-                        {/* Product Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium text-white text-sm truncate">
-                              {state.product.name}
-                            </span>
-                            {getStatusBadge(state.status, state.isComplete)}
-                            {/* Completeness badge */}
-                            {state.status === "pending" && state.isComplete && (
-                              <span className="px-2 py-0.5 text-xs font-medium bg-green-500/10 text-green-400 border border-green-300 flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3" />
-                                ข้อมูลครบ
-                              </span>
-                            )}
-                            {state.status === "pending" &&
-                              !state.isComplete && (
-                                <span className="px-2 py-0.5 text-xs font-medium bg-site-accent/10 text-site-accent border border-site-accent/30 flex items-center gap-1">
-                                  <AlertCircle className="w-3 h-3" />
-                                  ขาด {state.missingFields.length} ฟิลด์
-                                </span>
-                              )}
-                          </div>
-
-                          {/* Missing fields detail (show when pending and incomplete) */}
-                          {state.status === "pending" &&
-                            !state.isComplete &&
-                            state.missingFields.length > 0 && (
-                              <div className="mt-1 flex flex-wrap gap-1">
-                                {state.missingFields.map((field) => (
-                                  <span
-                                    key={field}
-                                    className="px-1.5 py-0.5 text-[10px] bg-site-accent/5 text-site-accent border border-site-accent/20"
-                                  >
-                                    {field}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-
-                          {/* Mini Progress for generating state */}
-                          {state.status === "generating" && state.progress && (
-                            <div className="mt-1 flex items-center gap-2">
-                              <div className="flex-1 h-1.5 bg-site-border/30 overflow-hidden">
-                                <motion.div
-                                  className="h-full bg-site-accent"
-                                  animate={{
-                                    width: `${getStageProgress(state.progress.stage)}%`,
-                                  }}
-                                  transition={{ duration: 0.3 }}
-                                />
-                              </div>
-                              <span className="text-xs text-blue-600 shrink-0">
-                                {getStageName(state.progress.stage)}
-                              </span>
-                              <span className="text-xs text-gray-400 shrink-0">
-                                {state.elapsedTime}s
-                              </span>
-                            </div>
+                        {state.status === "pending" &&
+                          !state.isComplete && (
+                            <Badge variant="neutral" className="text-xs">
+                              <AlertCircle className="w-3 h-3" />
+                              ขาด {state.missingFields.length} ฟิลด์
+                            </Badge>
                           )}
-
-                          {/* Error message with action guidance */}
-                          {state.status === "error" && state.error && (
-                            <div className="mt-1 p-2 border border-red-300 bg-red-500/10 text-xs text-red-300">
-                              <p><strong>เกิดอะไรขึ้น:</strong> {state.error}</p>
-                              <p><strong>กระทบอะไร:</strong> รายการนี้ยังไม่ถูก Generate/บันทึก</p>
-                              <p><strong>ต้องทำอะไรต่อ:</strong> กด Retry หรือคัดลอก debug info ส่งทีม dev</p>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {/* View Details button - show for any product with data (AI results OR existing DB data) */}
-                          {(state.results || hasAnyData(state.product)) &&
-                            state.status !== "generating" && (
-                              <button
-                                onClick={() => toggleExpand(index)}
-                                className={`p-1.5 border transition-all ${state.expanded
-                                    ? "text-white bg-site-border/30 border-gray-400"
-                                    : "text-gray-500 hover:text-white hover:bg-site-raised border-transparent hover:border-gray-300"
-                                  }`}
-                                title="ดูรายละเอียด"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                            )}
-
-                          {/* Save button */}
-                          {state.status === "completed" && state.results && (
-                            <button
-                              onClick={() => saveProduct(index)}
-                              className="p-1.5 text-green-600 hover:text-white hover:bg-green-600 border border-green-300 hover:border-green-600 transition-all"
-                              title="ยืนยัน - บันทึกลง Database"
-                            >
-                              <CheckCircle2 className="w-4 h-4" />
-                            </button>
-                          )}
-
-                          {/* Regenerate button - available for all non-generating statuses */}
-                          {state.status !== "generating" && (
-                            <button
-                              onClick={() => regenerateProduct(index)}
-                              className="p-1.5 min-h-[44px] min-w-[44px] text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-300 hover:border-blue-600 transition-all"
-                              title="Regenerate"
-                            >
-                              <RefreshCw className="w-4 h-4" />
-                            </button>
-                          )}
-
-                          {/* Copy debug info for failed */}
-                          {state.status === "error" && (
-                            <button
-                              onClick={() => copyDebugInfo(index)}
-                              className="p-1.5 min-h-[44px] min-w-[44px] text-site-accent hover:text-white hover:bg-site-accent border border-site-accent/40 transition-all"
-                              title="คัดลอก debug info"
-                            >
-                              <AlertCircle className="w-4 h-4" />
-                            </button>
-                          )}
-
-                          {/* Cancel/Discard button */}
-                          {state.status === "completed" && (
-                            <button
-                              onClick={() => cancelProduct(index)}
-                              className="p-1.5 text-red-500 hover:text-white hover:bg-red-500 border border-red-300 hover:border-red-500/20 transition-all"
-                              title="ยกเลิก - ไม่ใช้ผลลัพธ์"
-                            >
-                              <XCircle className="w-4 h-4" />
-                            </button>
-                          )}
-
-                          {/* Skip button (only when pending and batch running) */}
-                          {state.status === "pending" && isRunning && (
-                            <button
-                              onClick={() => skipProduct(index)}
-                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-site-raised border border-transparent hover:border-gray-300 transition-all"
-                              title="ข้ามสินค้านี้"
-                            >
-                              <SkipForward className="w-4 h-4" />
-                            </button>
-                          )}
-                        </div>
                       </div>
 
-                      {/* Expanded Details */}
-                      <AnimatePresence>
-                        {state.expanded &&
-                          (state.results || hasAnyData(state.product)) &&
-                          (() => {
-                            const isShowingDbData = !state.results;
-                            const displayData =
-                              state.results ||
-                              productToDisplayData(state.product);
-                            const headerLabel = isShowingDbData
-                              ? "ข้อมูลปัจจุบัน (DB)"
-                              : "ข้อมูลที่ AI สร้าง";
-                            const headerColor = isShowingDbData
-                              ? "bg-site-accent/10 text-site-accent border-site-accent/30"
-                              : "bg-site-accent/10 text-site-accent border-site-accent/30";
-
-                            return (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="overflow-hidden"
+                      {/* Missing fields detail */}
+                      {state.status === "pending" &&
+                        !state.isComplete &&
+                        state.missingFields.length > 0 && (
+                          <div className="mt-1.5 flex flex-wrap gap-1">
+                            {state.missingFields.map((field) => (
+                              <Badge
+                                key={field}
+                                variant="neutral"
+                                className="text-[10px] py-0 px-1.5"
                               >
-                                <div className="px-5 pb-4 ml-14 space-y-3">
-                                  {/* Source label */}
-                                  <div
-                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold border ${headerColor}`}
-                                  >
-                                    {isShowingDbData ? (
-                                      <Eye className="w-3 h-3" />
-                                    ) : (
-                                      <Sparkles className="w-3 h-3" />
-                                    )}
-                                    {headerLabel}
-                                  </div>
+                                {field}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
 
-                                  {/* Diff view: DB vs AI */}
-                                  {!isShowingDbData && hasAnyData(state.product) && (
-                                    <div className="border-[2px] p-3 bg-site-surface border-gray-200">
-                                      <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                                        เปรียบเทียบก่อนบันทึก (เดิม vs AI ใหม่)
-                                      </h5>
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                                        <div className="p-2 border border-site-accent/30 bg-site-accent/5">
-                                          <p className="text-xs font-bold text-site-accent mb-1">ของเดิม (DB)</p>
-                                          <p className="text-gray-700 line-clamp-3">{state.product.description || "-"}</p>
-                                        </div>
-                                        <div className="p-2 border border-green-300 bg-green-500/10">
-                                          <p className="text-xs font-bold text-green-400 mb-1">AI ใหม่</p>
-                                          <p className="text-gray-700 line-clamp-3">{displayData.description || "-"}</p>
-                                        </div>
-                                      </div>
-                                    </div>
+                      {/* Mini Progress for generating state */}
+                      {state.status === "generating" && state.progress && (
+                        <div className="mt-1.5 flex items-center gap-2">
+                          <div className="flex-1 h-1.5 bg-site-raised rounded-full overflow-hidden border border-site-border-soft">
+                            <div
+                              className="h-full bg-site-accent transition-all duration-300"
+                              style={{
+                                width: `${getStageProgress(state.progress.stage)}%`,
+                              }}
+                            />
+                          </div>
+                          <span className="text-xs text-status-info font-medium shrink-0">
+                            {getStageName(state.progress.stage)}
+                          </span>
+                          <span className="text-xs text-site-dim shrink-0">
+                            {state.elapsedTime}s
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Error message */}
+                      {state.status === "error" && state.error && (
+                        <div className="mt-2 p-2.5 rounded-6 border border-status-danger/30 bg-status-danger/10 text-xs text-status-danger space-y-0.5">
+                          <p><strong>เกิดอะไรขึ้น:</strong> {state.error}</p>
+                          <p><strong>กระทบอะไร:</strong> รายการนี้ยังไม่ถูก Generate/บันทึก</p>
+                          <p><strong>ต้องทำอะไรต่อ:</strong> กด Retry หรือคัดลอก debug info ส่งทีม dev</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {/* View Details button */}
+                      {(state.results || hasAnyData(state.product)) &&
+                        state.status !== "generating" && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleExpand(index)}
+                            className={cn(
+                              "h-8 w-8 p-0 rounded-6",
+                              state.expanded && "bg-site-raised text-site-text"
+                            )}
+                            title="ดูรายละเอียด"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        )}
+
+                      {/* Save button */}
+                      {state.status === "completed" && state.results && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => saveProduct(index)}
+                          className="h-8 w-8 p-0 rounded-6 bg-status-success text-site-bg hover:bg-status-success/90"
+                          title="ยืนยัน - บันทึกลง Database"
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                        </Button>
+                      )}
+
+                      {/* Regenerate button */}
+                      {state.status !== "generating" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => regenerateProduct(index)}
+                          className="h-8 w-8 p-0 rounded-6"
+                          title="Regenerate"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                        </Button>
+                      )}
+
+                      {/* Copy debug info for failed */}
+                      {state.status === "error" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyDebugInfo(index)}
+                          className="h-8 w-8 p-0 rounded-6 text-status-danger hover:text-status-danger"
+                          title="คัดลอก debug info"
+                        >
+                          <AlertCircle className="w-4 h-4" />
+                        </Button>
+                      )}
+
+                      {/* Cancel/Discard button */}
+                      {state.status === "completed" && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => cancelProduct(index)}
+                          className="h-8 w-8 p-0 rounded-6 text-status-danger hover:text-status-danger"
+                          title="ยกเลิก - ไม่ใช้ผลลัพธ์"
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </Button>
+                      )}
+
+                      {/* Skip button (only when pending and batch running) */}
+                      {state.status === "pending" && isRunning && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => skipProduct(index)}
+                          className="h-8 w-8 p-0 rounded-6"
+                          title="ข้ามสินค้านี้"
+                        >
+                          <SkipForward className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Expanded Details */}
+                  {state.expanded &&
+                    (state.results || hasAnyData(state.product)) &&
+                    (() => {
+                      const isShowingDbData = !state.results;
+                      const displayData =
+                        state.results ||
+                        productToDisplayData(state.product);
+                      const headerLabel = isShowingDbData
+                        ? "ข้อมูลปัจจุบัน (DB)"
+                        : "ข้อมูลที่ AI สร้าง";
+                      const headerVariant: BadgeVariant = isShowingDbData
+                        ? "neutral"
+                        : "info";
+
+                      return (
+                        <div className="px-6 pb-4 pt-1 ml-14 space-y-3 bg-site-surface/50 border-t border-site-border-soft">
+                          {/* Source label */}
+                          <div className="flex items-center gap-2">
+                            <Badge variant={headerVariant} className="text-xs">
+                              {isShowingDbData ? (
+                                <Eye className="w-3 h-3" />
+                              ) : (
+                                <Sparkles className="w-3 h-3" />
+                              )}
+                              {headerLabel}
+                            </Badge>
+                          </div>
+
+                          {/* Diff view: DB vs AI */}
+                          {!isShowingDbData && hasAnyData(state.product) && (
+                            <div className="p-3 rounded-8 border border-site-border bg-site-raised/40">
+                              <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-2">
+                                เปรียบเทียบก่อนบันทึก (เดิม vs AI ใหม่)
+                              </h5>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                <div className="p-2.5 rounded-6 border border-site-border bg-site-surface">
+                                  <p className="text-xs font-semibold text-site-muted mb-1">
+                                    ของเดิม (DB)
+                                  </p>
+                                  <p className="text-site-text line-clamp-3 leading-relaxed">
+                                    {state.product.description || "-"}
+                                  </p>
+                                </div>
+                                <div className="p-2.5 rounded-6 border border-status-success/40 bg-status-success/10">
+                                  <p className="text-xs font-semibold text-status-success mb-1">
+                                    AI ใหม่
+                                  </p>
+                                  <p className="text-site-text line-clamp-3 leading-relaxed">
+                                    {displayData.description || "-"}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Description */}
+                          <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                            <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1.5">
+                              คำอธิบาย
+                            </h5>
+                            <p className="text-xs text-site-text whitespace-pre-wrap max-h-32 overflow-y-auto leading-relaxed">
+                              {displayData.description || (
+                                <span className="text-site-dim italic">
+                                  ไม่มีข้อมูล
+                                </span>
+                              )}
+                            </p>
+                          </div>
+
+                          {/* Short Description */}
+                          <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                            <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1.5">
+                              คำอธิบายสั้น
+                            </h5>
+                            <p className="text-xs text-site-text leading-relaxed">
+                              {displayData.shortDescription || (
+                                <span className="text-site-dim italic">
+                                  ไม่มีข้อมูล
+                                </span>
+                              )}
+                            </p>
+                          </div>
+
+                          {/* SEO Meta */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                              <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1">
+                                Meta Title
+                              </h5>
+                              <p className="text-xs text-site-text">
+                                {displayData.metaTitle || (
+                                  <span className="text-site-dim italic">
+                                    ไม่มีข้อมูล
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                            <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                              <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1">
+                                Meta Description
+                              </h5>
+                              <p className="text-xs text-site-text">
+                                {displayData.metaDescription || (
+                                  <span className="text-site-dim italic">
+                                    ไม่มีข้อมูล
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                            <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                              <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1">
+                                Meta Keywords
+                              </h5>
+                              <p className="text-xs text-site-text">
+                                {displayData.metaKeywords || (
+                                  <span className="text-site-dim italic">
+                                    ไม่มีข้อมูล
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Game Details */}
+                          {displayData.gameDetails && (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                                <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1">
+                                  Developer
+                                </h5>
+                                <p className="text-xs text-site-text">
+                                  {displayData.gameDetails.developer || (
+                                    <span className="text-site-dim italic">
+                                      ไม่มีข้อมูล
+                                    </span>
                                   )}
+                                </p>
+                              </div>
+                              <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                                <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1">
+                                  Publisher
+                                </h5>
+                                <p className="text-xs text-site-text">
+                                  {displayData.gameDetails.publisher || (
+                                    <span className="text-site-dim italic">
+                                      ไม่มีข้อมูล
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                                <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1">
+                                  Platforms
+                                </h5>
+                                {displayData.gameDetails.platforms.length > 0 ? (
+                                  <div className="flex flex-wrap gap-1">
+                                    {displayData.gameDetails.platforms.map((p) => (
+                                      <Badge
+                                        key={p}
+                                        variant="neutral"
+                                        className="text-[10px]"
+                                      >
+                                        {p}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span className="text-xs text-site-dim italic">
+                                    ไม่มีข้อมูล
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
 
-                                  {/* Description */}
-                                  <div
-                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-surface border-gray-200"}`}
-                                  >
-                                    <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                                      คำอธิบาย
-                                    </h5>
-                                    <p className="text-sm text-gray-800 whitespace-pre-wrap max-h-32 overflow-y-auto">
-                                      {displayData.description || (
-                                        <span className="text-gray-400 italic">
+                          {/* AI Classification */}
+                          {!isShowingDbData &&
+                            (displayData.categorySlug ||
+                              displayData.isFeatured !== undefined ||
+                              displayData.isBestseller !== undefined) && (
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                                  <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <Layers className="w-3 h-3" />
+                                    AI หมวดหมู่
+                                  </h5>
+                                  <p className="text-xs text-site-text font-medium">
+                                    {displayData.categoryName ||
+                                      displayData.categorySlug || (
+                                        <span className="text-site-dim italic">
                                           ไม่มีข้อมูล
                                         </span>
                                       )}
+                                  </p>
+                                  {displayData.categorySlug && (
+                                    <p className="text-[10px] text-site-dim mt-0.5">
+                                      {displayData.categorySlug}
                                     </p>
-                                  </div>
-
-                                  {/* Short Description */}
-                                  <div
-                                    className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-surface border-gray-200"}`}
-                                  >
-                                    <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                                      คำอธิบายสั้น
-                                    </h5>
-                                    <p className="text-sm text-gray-800">
-                                      {displayData.shortDescription || (
-                                        <span className="text-gray-400 italic">
-                                          ไม่มีข้อมูล
-                                        </span>
-                                      )}
-                                    </p>
-                                  </div>
-
-                                  {/* SEO Meta */}
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    <div
-                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-blue-50 border-blue-200"}`}
-                                    >
-                                      <h5
-                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
-                                      >
-                                        Meta Title
-                                      </h5>
-                                      <p className="text-sm text-gray-800">
-                                        {displayData.metaTitle || (
-                                          <span className="text-gray-400 italic">
-                                            ไม่มีข้อมูล
-                                          </span>
-                                        )}
-                                      </p>
-                                    </div>
-                                    <div
-                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-blue-50 border-blue-200"}`}
-                                    >
-                                      <h5
-                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
-                                      >
-                                        Meta Description
-                                      </h5>
-                                      <p className="text-sm text-gray-800">
-                                        {displayData.metaDescription || (
-                                          <span className="text-gray-400 italic">
-                                            ไม่มีข้อมูล
-                                          </span>
-                                        )}
-                                      </p>
-                                    </div>
-                                    <div
-                                      className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-blue-50 border-blue-200"}`}
-                                    >
-                                      <h5
-                                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
-                                      >
-                                        Meta Keywords
-                                      </h5>
-                                      <p className="text-sm text-gray-800">
-                                        {displayData.metaKeywords || (
-                                          <span className="text-gray-400 italic">
-                                            ไม่มีข้อมูล
-                                          </span>
-                                        )}
-                                      </p>
-                                    </div>
-                                  </div>
-
-                                  {/* Game Details */}
-                                  {displayData.gameDetails && (
-                                    <div className="grid grid-cols-3 gap-3">
-                                      <div
-                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-accent/5 border-site-accent/20"}`}
-                                      >
-                                        <h5
-                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
-                                        >
-                                          Developer
-                                        </h5>
-                                        <p className="text-sm text-gray-800">
-                                          {displayData.gameDetails
-                                            .developer || (
-                                              <span className="text-gray-400 italic">
-                                                ไม่มีข้อมูล
-                                              </span>
-                                            )}
-                                        </p>
-                                      </div>
-                                      <div
-                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-accent/5 border-site-accent/20"}`}
-                                      >
-                                        <h5
-                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
-                                        >
-                                          Publisher
-                                        </h5>
-                                        <p className="text-sm text-gray-800">
-                                          {displayData.gameDetails
-                                            .publisher || (
-                                              <span className="text-gray-400 italic">
-                                                ไม่มีข้อมูล
-                                              </span>
-                                            )}
-                                        </p>
-                                      </div>
-                                      <div
-                                        className={`border-[2px] p-3 ${isShowingDbData ? "bg-site-accent/5 border-site-accent/20" : "bg-site-accent/5 border-site-accent/20"}`}
-                                      >
-                                        <h5
-                                          className={`text-xs font-bold uppercase tracking-wider mb-1 ${isShowingDbData ? "text-site-accent" : "text-site-accent"}`}
-                                        >
-                                          Platforms
-                                        </h5>
-                                        {displayData.gameDetails.platforms
-                                          .length > 0 ? (
-                                          <div className="flex flex-wrap gap-1">
-                                            {displayData.gameDetails.platforms.map(
-                                              (p) => (
-                                                <span
-                                                  key={p}
-                                                  className={`px-1.5 py-0.5 text-xs border ${isShowingDbData ? "bg-site-accent/10 text-site-accent border-site-accent/30" : "bg-site-accent/10 text-site-accent border-site-accent/30"}`}
-                                                >
-                                                  {p}
-                                                </span>
-                                              ),
-                                            )}
-                                          </div>
-                                        ) : (
-                                          <span className="text-sm text-gray-400 italic">
-                                            ไม่มีข้อมูล
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {/* AI Classification: Category + Featured/Bestseller */}
-                                  {!isShowingDbData &&
-                                    (displayData.categorySlug ||
-                                      displayData.isFeatured !== undefined ||
-                                      displayData.isBestseller !==
-                                      undefined) && (
-                                      <div className="grid grid-cols-3 gap-3">
-                                        <div className="border-[2px] p-3 bg-site-accent/5 border-site-accent/20">
-                                          <h5 className="text-xs font-bold text-site-accent uppercase tracking-wider mb-1 flex items-center gap-1">
-                                            <Layers className="w-3 h-3" />
-                                            AI หมวดหมู่
-                                          </h5>
-                                          <p className="text-sm text-gray-800 font-medium">
-                                            {displayData.categoryName ||
-                                              displayData.categorySlug || (
-                                                <span className="text-gray-400 italic">
-                                                  ไม่มีข้อมูล
-                                                </span>
-                                              )}
-                                          </p>
-                                          {displayData.categorySlug && (
-                                            <p className="text-xs text-site-accent mt-0.5">
-                                              {displayData.categorySlug}
-                                            </p>
-                                          )}
-                                        </div>
-                                        <div className="border-[2px] p-3 bg-site-accent/5 border-site-accent/20">
-                                          <h5 className="text-xs font-bold text-site-accent uppercase tracking-wider mb-1 flex items-center gap-1">
-                                            <Star className="w-3 h-3" />
-                                            สินค้าแนะนำ
-                                          </h5>
-                                          <span
-                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isFeatured
-                                                ? "bg-yellow-200 text-yellow-800 border-yellow-400"
-                                                : "bg-site-raised text-gray-500 border-gray-300"
-                                              }`}
-                                          >
-                                            {displayData.isFeatured
-                                              ? "Featured"
-                                              : "ไม่ใช่"}
-                                          </span>
-                                        </div>
-                                        <div className="border-[2px] p-3 bg-site-accent/5 border-site-accent/20">
-                                          <h5 className="text-xs font-bold text-site-accent uppercase tracking-wider mb-1 flex items-center gap-1">
-                                            <TrendingUp className="w-3 h-3" />
-                                            สินค้าขายดี
-                                          </h5>
-                                          <span
-                                            className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold border ${displayData.isBestseller
-                                                ? "bg-green-200 text-green-800 border-green-400"
-                                                : "bg-site-raised text-gray-500 border-gray-300"
-                                              }`}
-                                          >
-                                            {displayData.isBestseller
-                                              ? "Bestseller"
-                                              : "ไม่ใช่"}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )}
-
-                                  {/* Per-item action buttons: AI results -> Save/Regenerate/Cancel */}
-                                  {!isShowingDbData &&
-                                    state.status === "completed" && (
-                                      <div className="flex gap-2 pt-1">
-                                        <button
-                                          onClick={() => saveProduct(index)}
-                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white border-[2px] border-black text-sm font-medium hover:bg-green-700 transition-colors"
-                                          style={{
-                                            boxShadow:
-                                              "2px 2px 0 0 rgba(0,0,0,1)",
-                                          }}
-                                        >
-                                          <Save className="w-3.5 h-3.5" />
-                                          ยืนยัน - บันทึก
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            regenerateProduct(index)
-                                          }
-                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white border-[2px] border-black text-sm font-medium hover:bg-blue-700 transition-colors"
-                                          style={{
-                                            boxShadow:
-                                              "2px 2px 0 0 rgba(0,0,0,1)",
-                                          }}
-                                        >
-                                          <RefreshCw className="w-3.5 h-3.5" />
-                                          Regenerate
-                                        </button>
-                                        <button
-                                          onClick={() => cancelProduct(index)}
-                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white border-[2px] border-black text-sm font-medium hover:bg-red-600 transition-colors"
-                                          style={{
-                                            boxShadow:
-                                              "2px 2px 0 0 rgba(0,0,0,1)",
-                                          }}
-                                        >
-                                          <XCircle className="w-3.5 h-3.5" />
-                                          ยกเลิก
-                                        </button>
-                                      </div>
-                                    )}
-
-                                  {/* DB data view -> only Regenerate button */}
-                                  {isShowingDbData &&
-                                    state.status !== "generating" && (
-                                      <div className="flex gap-2 pt-1">
-                                        <button
-                                          onClick={() =>
-                                            regenerateProduct(index)
-                                          }
-                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white border-[2px] border-black text-sm font-medium hover:bg-blue-700 transition-colors"
-                                          style={{
-                                            boxShadow:
-                                              "2px 2px 0 0 rgba(0,0,0,1)",
-                                          }}
-                                        >
-                                          <RefreshCw className="w-3.5 h-3.5" />
-                                          Generate ใหม่ด้วย AI
-                                        </button>
-                                      </div>
-                                    )}
-
-                                  {state.status === "saved" && (
-                                    <div className="p-2 bg-green-500/10 border-[2px] border-green-400 flex items-center gap-2">
-                                      <CheckCircle2 className="w-4 h-4 text-green-600" />
-                                      <span className="text-sm text-green-400 font-medium">
-                                        บันทึกลง Database เรียบร้อยแล้ว
-                                      </span>
-                                    </div>
                                   )}
                                 </div>
-                              </motion.div>
-                            );
-                          })()}
-                      </AnimatePresence>
-                    </div>
-                  ))}
+                                <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                                  <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <Star className="w-3 h-3" />
+                                    สินค้าแนะนำ
+                                  </h5>
+                                  <Badge
+                                    variant={displayData.isFeatured ? "warning" : "neutral"}
+                                    className="text-xs"
+                                  >
+                                    {displayData.isFeatured ? "Featured" : "ไม่ใช่"}
+                                  </Badge>
+                                </div>
+                                <div className="p-3 rounded-8 border border-site-border bg-site-surface">
+                                  <h5 className="text-[11px] font-bold text-site-dim uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <TrendingUp className="w-3 h-3" />
+                                    สินค้าขายดี
+                                  </h5>
+                                  <Badge
+                                    variant={displayData.isBestseller ? "success" : "neutral"}
+                                    className="text-xs"
+                                  >
+                                    {displayData.isBestseller ? "Bestseller" : "ไม่ใช่"}
+                                  </Badge>
+                                </div>
+                              </div>
+                            )}
+
+                          {/* Per-item actions */}
+                          {!isShowingDbData && state.status === "completed" && (
+                            <div className="flex gap-2 pt-1">
+                              <Button
+                                size="sm"
+                                onClick={() => saveProduct(index)}
+                                className="gap-1.5 bg-status-success text-site-bg hover:bg-status-success/90"
+                              >
+                                <Save className="w-3.5 h-3.5" />
+                                ยืนยัน - บันทึก
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => regenerateProduct(index)}
+                                className="gap-1.5"
+                              >
+                                <RefreshCw className="w-3.5 h-3.5" />
+                                Regenerate
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => cancelProduct(index)}
+                                className="gap-1.5 text-status-danger hover:text-status-danger"
+                              >
+                                <XCircle className="w-3.5 h-3.5" />
+                                ยกเลิก
+                              </Button>
+                            </div>
+                          )}
+
+                          {isShowingDbData && state.status !== "generating" && (
+                            <div className="flex gap-2 pt-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => regenerateProduct(index)}
+                                className="gap-1.5"
+                              >
+                                <RefreshCw className="w-3.5 h-3.5" />
+                                Generate ใหม่ด้วย AI
+                              </Button>
+                            </div>
+                          )}
+
+                          {state.status === "saved" && (
+                            <div className="p-2.5 rounded-6 bg-status-success/10 border border-status-success/20 flex items-center gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-status-success" />
+                              <span className="text-xs text-status-success font-medium">
+                                บันทึกลง Database เรียบร้อยแล้ว
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                 </div>
-              </div>
+              ))}
+            </div>
 
-              {/* Footer Actions */}
-              <div className="p-4 border-t-[3px] border-black bg-site-surface shrink-0 sticky bottom-0">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  {/* Left side */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {!isRunning &&
-                      stats.pending > 0 &&
-                      stats.completed === 0 &&
-                      stats.saved === 0 && (
-                        <button
-                          onClick={startGeneration}
-                          className="flex items-center gap-2 px-5 py-2.5 bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-accent"
-                          style={{ boxShadow: "4px 4px 0 0 #000000" }}
-                        >
-                          <Play className="w-4 h-4" />
-                          <span>เริ่ม Generate ทั้งหมด</span>
-                        </button>
-                      )}
+            {/* Footer Actions */}
+            <div className="px-6 py-4 border-t border-site-border-soft bg-site-surface shrink-0 flex flex-wrap items-center justify-between gap-3">
+              {/* Left side */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {!isRunning &&
+                  stats.pending > 0 &&
+                  stats.completed === 0 &&
+                  stats.saved === 0 && (
+                    <Button
+                      onClick={startGeneration}
+                      className="gap-2"
+                    >
+                      <Play className="w-4 h-4" />
+                      <span>เริ่ม Generate ทั้งหมด</span>
+                    </Button>
+                  )}
 
-                    {!isRunning &&
-                      (stats.completed > 0 || stats.error > 0) &&
-                      stats.pending > 0 && (
-                        <button
-                          onClick={startGeneration}
-                          className="flex items-center gap-2 px-4 py-2 min-h-[44px] bg-site-accent text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-accent"
-                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
+                {!isRunning &&
+                  (stats.completed > 0 || stats.error > 0) &&
+                  stats.pending > 0 && (
+                    <Button
+                      onClick={startGeneration}
+                      className="gap-2"
+                    >
+                      <Play className="w-4 h-4" />
+                      <span>ดำเนินการต่อ</span>
+                    </Button>
+                  )}
+
+                {!isRunning && stats.error > 0 && (
+                  <Button
+                    variant="outline"
+                    onClick={retryFailedOnly}
+                    className="gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    <span>ลองใหม่เฉพาะที่ล้มเหลว ({stats.error})</span>
+                  </Button>
+                )}
+
+                {isRunning && (
+                  <>
+                    <Button
+                      variant={isPaused ? "default" : "secondary"}
+                      onClick={togglePause}
+                      className="gap-2"
+                    >
+                      {isPaused ? (
+                        <>
                           <Play className="w-4 h-4" />
                           <span>ดำเนินการต่อ</span>
-                        </button>
+                        </>
+                      ) : (
+                        <>
+                          <Pause className="w-4 h-4" />
+                          <span>หยุดชั่วคราว</span>
+                        </>
                       )}
-
-                    {!isRunning && stats.error > 0 && (
-                      <button
-                        onClick={retryFailedOnly}
-                        className="flex items-center gap-2 px-4 py-2 min-h-[44px] bg-blue-600 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-blue-700"
-                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                        <span>ลองใหม่เฉพาะที่ล้มเหลว ({stats.error})</span>
-                      </button>
-                    )}
-
-                    {isRunning && (
-                      <>
-                        <button
-                          onClick={togglePause}
-                          className={`flex items-center gap-2 px-4 py-2 border border-site-border/30 rounded-[12px] font-bold transition-all ${isPaused
-                              ? "bg-green-500 text-white hover:bg-green-600"
-                              : "bg-yellow-400 text-white hover:bg-yellow-500"
-                            }`}
-                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
-                          {isPaused ? (
-                            <>
-                              <Play className="w-4 h-4" />
-                              <span>ดำเนินการต่อ</span>
-                            </>
-                          ) : (
-                            <>
-                              <Pause className="w-4 h-4" />
-                              <span>หยุดชั่วคราว</span>
-                            </>
-                          )}
-                        </button>
-                        <button
-                          onClick={cancelGeneration}
-                          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-red-600"
-                          style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                        >
-                          <X className="w-4 h-4" />
-                          <span>หยุดทั้งหมด</span>
-                        </button>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Right side */}
-                  <div className="flex items-center gap-2">
-                    {stats.completed > 0 && !isRunning && (
-                      <button
-                        onClick={saveAllCompleted}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-green-700"
-                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                      >
-                        <Save className="w-4 h-4" />
-                        <span>บันทึกทั้งหมด ({stats.completed})</span>
-                      </button>
-                    )}
-
-                    {!isRunning && (
-                      <button
-                        onClick={handleClose}
-                        className="flex items-center gap-2 px-4 py-2 bg-site-raised text-white border border-site-border/30 rounded-[12px] font-bold transition-all hover:bg-site-raised"
-                        style={{ boxShadow: "3px 3px 0 0 #000000" }}
-                      >
-                        ปิด
-                      </button>
-                    )}
-                  </div>
-                </div>
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={cancelGeneration}
+                      className="gap-2"
+                    >
+                      <X className="w-4 h-4" />
+                      <span>หยุดทั้งหมด</span>
+                    </Button>
+                  </>
+                )}
               </div>
-            </motion.div>
-          </div>,
-          document.body,
-        )}
+
+              {/* Right side */}
+              <div className="flex items-center gap-2">
+                {stats.completed > 0 && !isRunning && (
+                  <Button
+                    onClick={saveAllCompleted}
+                    className="gap-2 bg-status-success text-site-bg hover:bg-status-success/90"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>บันทึกทั้งหมด ({stats.completed})</span>
+                  </Button>
+                )}
+
+                {!isRunning && (
+                  <Button
+                    variant="outline"
+                    onClick={requestClose}
+                  >
+                    ปิด
+                  </Button>
+                )}
+              </div>
+            </div>
+          </DialogPrimitive.Content>
+        </DialogPortal>
+      </DialogPrimitive.Root>
+
+      {/* Confirm Close while running */}
+      <ConfirmDialog
+        open={showCloseConfirm}
+        onClose={() => setShowCloseConfirm(false)}
+        onConfirm={handleConfirmClose}
+        title="หยุดการ Generate ทั้งหมด?"
+        description="กำลัง Generate อยู่ หากปิดหน้าต่างนี้ การ Generate ทั้งหมดจะหยุดทันที"
+        confirmLabel="หยุดและปิด"
+        cancelLabel="ทำรายการต่อ"
+        destructive
+      />
     </>
   );
 }

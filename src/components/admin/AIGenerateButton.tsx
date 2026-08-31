@@ -26,7 +26,7 @@ import {
   AvailableCategory,
   AIModel,
 } from "@/lib/services/ai-api";
-import { AdminHeaderButton } from "@/components/admin";
+import { AdminHeaderButton, ModelSelect } from "@/components/admin";
 
 interface AIGenerateButtonProps {
   productName: string;
@@ -517,27 +517,16 @@ export default function AIGenerateButton({
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   เลือก AI Model
                 </label>
-                <select
+                <ModelSelect
+                  models={availableModels}
                   value={selectedModel}
-                  onChange={(e) => {
-                    setSelectedModel(e.target.value);
-                    aiService.setModel(e.target.value);
+                  onValueChange={(v) => {
+                    setSelectedModel(v);
+                    aiService.setModel(v);
                   }}
                   disabled={isLoadingModels || availableModels.length === 0}
-                  className="w-full py-2 px-3 bg-site-raised border-[2px] border-gray-300 text-white text-sm focus:outline-none focus:border-black disabled:opacity-50"
-                >
-                  {isLoadingModels ? (
-                    <option value="">กำลังโหลด models...</option>
-                  ) : availableModels.length === 0 ? (
-                    <option value="">ไม่พบ model ที่ใช้ได้</option>
-                  ) : (
-                    availableModels.map((model) => (
-                      <option key={model.id} value={model.id}>
-                        {model.name || model.id}
-                      </option>
-                    ))
-                  )}
-                </select>
+                  loading={isLoadingModels}
+                />
               </div>
 
               {/* Footer / Actions */}

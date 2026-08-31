@@ -4,6 +4,7 @@ export { StatusBadge } from "./StatusBadge";
 export { Pagination } from "./Pagination";
 export { FormModal } from "./FormModal";
 export { ConfirmDialog } from "./ConfirmDialog";
+export { ModelSelect } from "./ModelSelect";
 export { AdminPageHeader } from "./AdminPageHeader";
 export { AdminHeaderButton } from "./AdminHeaderButton";
 export { PageContainer } from "./PageContainer";

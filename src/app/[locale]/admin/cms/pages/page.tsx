@@ -9,6 +9,7 @@ import {
   AdminPageHeader,
   PageContainer,
   AdminHeaderButton,
+  ModelSelect,
 } from "@/components/admin";
 import {
   FileText,
@@ -758,27 +759,16 @@ export default function AdminCmsPagesPage() {
                                 <label className="block text-gray-400 font-bold text-[12px]">
                                   เลือก AI Model
                                 </label>
-                                <select
+                                <ModelSelect
+                                  models={availableModels}
                                   value={selectedModel}
-                                  onChange={(e) => {
-                                    setSelectedModel(e.target.value);
-                                    aiService.setModel(e.target.value);
+                                  onValueChange={(v) => {
+                                    setSelectedModel(v);
+                                    aiService.setModel(v);
                                   }}
                                   disabled={isLoadingModels || availableModels.length === 0}
-                                  className="w-full py-2.5 px-3 bg-site-surface border border-white/10 rounded-xl text-[13px] text-white focus:outline-none focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 disabled:opacity-50 appearance-none cursor-pointer"
-                                >
-                                  {isLoadingModels ? (
-                                    <option value="">กำลังโหลด models...</option>
-                                  ) : availableModels.length === 0 ? (
-                                    <option value="">ไม่พบ model ที่ใช้ได้</option>
-                                  ) : (
-                                    availableModels.map((model) => (
-                                      <option key={model.id} value={model.id}>
-                                        {model.name || model.id} {model.owned_by ? `(${model.owned_by})` : ""}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
+                                  loading={isLoadingModels}
+                                />
                               </div>
                             </div>
 

@@ -6,6 +6,7 @@ import {
   AdminPageHeader,
   ConfirmDialog,
   FormModal,
+  ModelSelect,
   PageContainer,
   StatCard,
 } from "@/components/admin";
@@ -636,25 +637,16 @@ export default function AdminFaqPage() {
                     <Label className="text-xs font-medium text-site-muted mb-1.5 block">
                       Model
                     </Label>
-                    <Select
+                    <ModelSelect
+                      models={availableModels}
                       value={selectedModel}
                       onValueChange={(v) => {
                         setSelectedModel(v);
                         aiService.setModel(v);
                       }}
                       disabled={isLoadingModels}
-                    >
-                      <SelectTrigger className="w-full" aria-label="AI Model">
-                        <SelectValue placeholder="กำลังโหลด..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableModels.map((m) => (
-                          <SelectItem key={m.id} value={m.id}>
-                            {m.id}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      loading={isLoadingModels}
+                    />
                   </div>
                 </div>
 
@@ -1381,35 +1373,16 @@ export default function AdminFaqPage() {
                     <Label className="text-xs font-medium text-site-muted mb-1 block">
                       เลือก AI Model
                     </Label>
-                    <Select
+                    <ModelSelect
+                      models={availableModels}
                       value={selectedModel}
                       onValueChange={(v) => {
                         setSelectedModel(v);
                         aiService.setModel(v);
                       }}
                       disabled={isLoadingModels || availableModels.length === 0}
-                    >
-                      <SelectTrigger
-                        className="w-full"
-                       
-                        aria-label="AI Model"
-                      >
-                        <SelectValue
-                          placeholder={
-                            isLoadingModels
-                              ? "กำลังโหลด models..."
-                              : "ไม่พบ model ที่ใช้ได้"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableModels.map((model) => (
-                          <SelectItem key={model.id} value={model.id}>
-                            {model.name || model.id}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      loading={isLoadingModels}
+                    />
                   </div>
 
                   <div className="flex gap-2">

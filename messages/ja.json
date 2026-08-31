@@ -1188,6 +1188,13 @@
   "logout": "ログアウト",
   "login_button": "ログイン / 新規登録",
   "Admin": {
+    "ai": {
+      "loading_models": "モデルを読み込み中...",
+      "select_model": "モデルを選択",
+      "search_models": "モデルを検索...",
+      "model_count": "{total} 件中 {visible} 件を表示",
+      "no_models": "モデルが見つかりません"
+    },
     "nav": {
       "main": "ダッシュボード",
       "products_sales": "商品＆販売",
@@ -2115,5 +2122,12 @@
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
   "out_of_stock": "[MISSING: out_of_stock]",
-  "auto_delivery_short": "[MISSING: auto_delivery_short]"
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  }
 }

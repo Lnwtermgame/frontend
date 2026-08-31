@@ -1188,6 +1188,13 @@
   "logout": "Logout",
   "login_button": "Login / Register",
   "Admin": {
+    "ai": {
+      "loading_models": "Loading models...",
+      "select_model": "Select a model",
+      "search_models": "Search models...",
+      "model_count": "Showing {visible} of {total} models",
+      "no_models": "No models found"
+    },
     "nav": {
       "main": "Dashboard",
       "products_sales": "Products & Sales",
@@ -2115,5 +2122,12 @@
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
   "out_of_stock": "[MISSING: out_of_stock]",
-  "auto_delivery_short": "[MISSING: auto_delivery_short]"
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  }
 }

@@ -8,6 +8,7 @@ import {
   AdminLayout,
   AdminPageHeader,
   PageContainer,
+  ModelSelect,
 } from "@/components/admin";
 import {
   Newspaper,
@@ -1127,26 +1128,16 @@ export default function AdminCmsNewsPage() {
                                 <label className="block text-gray-300 mb-1 text-xs">
                                   🤖 AI Model
                                 </label>
-                                <select
+                                <ModelSelect
+                                  models={availableModels}
                                   value={selectedModel}
-                                  onChange={(e) => {
-                                    setSelectedModel(e.target.value);
-                                    aiService.setModel(e.target.value);
+                                  onValueChange={(v) => {
+                                    setSelectedModel(v);
+                                    aiService.setModel(v);
                                   }}
                                   disabled={isLoadingModels || availableModels.length === 0}
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60 disabled:opacity-50">
-                                  {isLoadingModels ? (
-                                    <option value="">กำลังโหลด model...</option>
-                                  ) : availableModels.length === 0 ? (
-                                    <option value="">ไม่พบ model</option>
-                                  ) : (
-                                    availableModels.map((model) => (
-                                      <option key={model.id} value={model.id}>
-                                        {model.name || model.id} {model.owned_by ? `(${model.owned_by})` : ""}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
+                                  loading={isLoadingModels}
+                                />
                                 <p className="text-[10px] text-gray-400 mt-1">
                                   เลือก model ที่ใช้สำหรับเขียนบทความข่าว
                                 </p>

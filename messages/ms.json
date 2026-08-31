@@ -1188,6 +1188,13 @@
   "logout": "Log Keluar",
   "login_button": "Log Masuk / Daftar",
   "Admin": {
+    "ai": {
+      "loading_models": "Memuatkan model...",
+      "select_model": "Pilih model",
+      "search_models": "Cari model...",
+      "model_count": "Menunjukkan {visible} daripada {total} model",
+      "no_models": "Tiada model dijumpai"
+    },
     "nav": {
       "main": "Papan Pemuka",
       "products_sales": "Produk & Jualan",
@@ -2115,5 +2122,12 @@
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
   "out_of_stock": "[MISSING: out_of_stock]",
-  "auto_delivery_short": "[MISSING: auto_delivery_short]"
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  }
 }

@@ -1188,6 +1188,13 @@
   "logout": "로그아웃",
   "login_button": "로그인 / 회원가입",
   "Admin": {
+    "ai": {
+      "loading_models": "모델 로딩 중...",
+      "select_model": "모델 선택",
+      "search_models": "모델 검색...",
+      "model_count": "전체 {total}개 중 {visible}개 표시",
+      "no_models": "모델 없음"
+    },
     "nav": {
       "main": "대시보드",
       "products_sales": "상품 및 판매",
@@ -2115,5 +2122,12 @@
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
   "out_of_stock": "[MISSING: out_of_stock]",
-  "auto_delivery_short": "[MISSING: auto_delivery_short]"
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  }
 }

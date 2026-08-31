@@ -1188,6 +1188,13 @@
   "logout": "退出登录",
   "login_button": "登录 / 注册",
   "Admin": {
+    "ai": {
+      "loading_models": "正在加载模型...",
+      "select_model": "选择模型",
+      "search_models": "搜索模型...",
+      "model_count": "显示 {visible} / {total} 个模型",
+      "no_models": "未找到模型"
+    },
     "nav": {
       "main": "仪表盘",
       "products_sales": "商品与销售",
@@ -2115,5 +2122,12 @@
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
   "out_of_stock": "[MISSING: out_of_stock]",
-  "auto_delivery_short": "[MISSING: auto_delivery_short]"
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  }
 }

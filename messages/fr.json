@@ -1188,6 +1188,13 @@
   "logout": "Déconnexion",
   "login_button": "Connexion / Inscription",
   "Admin": {
+    "ai": {
+      "loading_models": "Chargement des modèles...",
+      "select_model": "Sélectionner un modèle",
+      "search_models": "Rechercher des modèles...",
+      "model_count": "Affichage de {visible} sur {total} modèles",
+      "no_models": "Aucun modèle trouvé"
+    },
     "nav": {
       "main": "Tableau de bord",
       "products_sales": "Produits et ventes",
@@ -2115,5 +2122,12 @@
   "share_link": "[MISSING: share_link]",
   "quantity_label": "[MISSING: quantity_label]",
   "out_of_stock": "[MISSING: out_of_stock]",
-  "auto_delivery_short": "[MISSING: auto_delivery_short]"
+  "auto_delivery_short": "[MISSING: auto_delivery_short]",
+  "ai": {
+    "loading_models": "[MISSING: ai.loading_models]",
+    "select_model": "[MISSING: ai.select_model]",
+    "search_models": "[MISSING: ai.search_models]",
+    "model_count": "[MISSING: ai.model_count]",
+    "no_models": "[MISSING: ai.no_models]"
+  }
 }

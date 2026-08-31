@@ -1,19 +1,31 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { DialogOverlay, DialogPortal } from "@/components/ui/dialog";
-import { motion, AnimatePresence } from "@/lib/framer-exports";
 import {
   AdminLayout,
   AdminPageHeader,
+  ConfirmDialog,
+  FormModal,
   PageContainer,
+  StatCard,
 } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/Badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   HelpCircle,
   Plus,
   Search,
-  Filter,
   Edit2,
   Trash2,
   X,
@@ -23,12 +35,10 @@ import {
   Eye,
   ThumbsUp,
   Pin,
-  CheckCircle,
   AlertCircle,
   ChevronDown,
   ChevronUp,
   Save,
-  ArrowLeft,
   Sparkles,
   Wand2,
   Settings2,
@@ -39,7 +49,6 @@ import toast from "react-hot-toast";
 import {
   supportApi,
   FaqCategory,
-  FaqArticle,
   FaqArticleListItem,
 } from "@/lib/services";
 import { aiService, AIModel } from "@/lib/services/ai-api";
@@ -118,13 +127,25 @@ interface CreateArticleData {
   isPinned?: boolean;
 }
 
+const EMPTY_CATEGORY_FORM: CreateCategoryData = {
+  name: "",
+  slug: "",
+  description: "",
+  icon: "",
+  sortOrder: 0,
+};
+
+const EMPTY_ARTICLE_FORM: CreateArticleData = {
+  categoryId: "",
+  title: "",
+  slug: "",
+  content: "",
+  excerpt: "",
+  isActive: true,
+  isPinned: false,
+};
+
 export default function AdminFaqPage() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Data states
   const [categories, setCategories] = useState<FaqCategory[]>([]);
   const [articles, setArticles] = useState<FaqArticleWithCategory[]>([]);
@@ -147,30 +168,23 @@ export default function AdminFaqPage() {
     useState<FaqArticleWithCategory | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Destructive confirm (replaces window.confirm)
+  const [pendingDelete, setPendingDelete] = useState<
+    { type: "category" | "article"; id: string } | null
+  >(null);
+
   // Expanded article for preview
   const [expandedArticle, setExpandedArticle] = useState<string | null>(null);
 
   // Form data
-  const [categoryForm, setCategoryForm] = useState<CreateCategoryData>({
-    name: "",
-    slug: "",
-    description: "",
-    icon: "",
-    sortOrder: 0,
-  });
+  const [categoryForm, setCategoryForm] =
+    useState<CreateCategoryData>(EMPTY_CATEGORY_FORM);
 
   const [categorySlugEditedManually, setCategorySlugEditedManually] =
     useState(false);
 
-  const [articleForm, setArticleForm] = useState<CreateArticleData>({
-    categoryId: "",
-    title: "",
-    slug: "",
-    content: "",
-    excerpt: "",
-    isActive: true,
-    isPinned: false,
-  });
+  const [articleForm, setArticleForm] =
+    useState<CreateArticleData>(EMPTY_ARTICLE_FORM);
 
   const [slugEditedManually, setSlugEditedManually] = useState(false);
 
@@ -232,18 +246,6 @@ export default function AdminFaqPage() {
   useEffect(() => {
     loadData();
   }, []);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (showCategoryModal || showArticleModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [showCategoryModal, showArticleModal]);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -316,9 +318,9 @@ export default function AdminFaqPage() {
   });
 
   // Category CRUD
-  const handleCreateCategory = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveCategory = async () => {
     if (!categoryForm.name.trim()) return;
+    const editing = !!editingCategory;
 
     setIsSubmitting(true);
     try {
@@ -327,50 +329,13 @@ export default function AdminFaqPage() {
         slug: categoryForm.slug?.trim() || slugify(categoryForm.name),
         locale: "th" as const,
       };
-      const response = await supportApi.createFaqCategory(payload);
-      if (response.success) {
-        setShowCategoryModal(false);
-        setCategoryForm({
-          name: "",
-          slug: "",
-          description: "",
-          icon: "",
-          sortOrder: 0,
-        });
-        setCategorySlugEditedManually(false);
-        loadData();
-      }
-    } catch (err) {
-      setError(supportApi.getErrorMessage(err));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleUpdateCategory = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingCategory || !categoryForm.name.trim()) return;
-
-    setIsSubmitting(true);
-    try {
-      const payload = {
-        ...categoryForm,
-        slug: categoryForm.slug?.trim() || slugify(categoryForm.name),
-      };
-      const response = await supportApi.updateFaqCategory(
-        editingCategory.id,
-        payload,
-      );
+      const response = editing
+        ? await supportApi.updateFaqCategory(editingCategory!.id, payload)
+        : await supportApi.createFaqCategory(payload);
       if (response.success) {
         setShowCategoryModal(false);
         setEditingCategory(null);
-        setCategoryForm({
-          name: "",
-          slug: "",
-          description: "",
-          icon: "",
-          sortOrder: 0,
-        });
+        setCategoryForm(EMPTY_CATEGORY_FORM);
         setCategorySlugEditedManually(false);
         loadData();
       }
@@ -381,16 +346,16 @@ export default function AdminFaqPage() {
     }
   };
 
-  const handleDeleteCategory = async (categoryId: string) => {
-    if (
-      !confirm(
-        "คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่นี้? บทความทั้งหมดในหมวดหมู่นี้จะถูกลบด้วย",
-      )
-    )
-      return;
-
+  const handleDeleteConfirmed = async () => {
+    if (!pendingDelete) return;
+    const { type, id } = pendingDelete;
+    setPendingDelete(null);
     try {
-      await supportApi.deleteFaqCategory(categoryId);
+      if (type === "category") {
+        await supportApi.deleteFaqCategory(id);
+      } else {
+        await supportApi.deleteFaqArticle(id);
+      }
       loadData();
     } catch (err) {
       setError(supportApi.getErrorMessage(err));
@@ -398,66 +363,24 @@ export default function AdminFaqPage() {
   };
 
   // Article CRUD
-  const handleCreateArticle = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveArticle = async () => {
     if (
       !articleForm.title.trim() ||
       !articleForm.content.trim() ||
       !articleForm.categoryId
     )
       return;
+    const editing = !!editingArticle;
 
     setIsSubmitting(true);
     try {
-      const response = await supportApi.createFaqArticle(articleForm);
-      if (response.success) {
-        setShowArticleModal(false);
-        setArticleForm({
-          categoryId: "",
-          title: "",
-          slug: "",
-          content: "",
-          excerpt: "",
-          isActive: true,
-          isPinned: false,
-        });
-        setSlugEditedManually(false);
-        loadData();
-      }
-    } catch (err) {
-      setError(supportApi.getErrorMessage(err));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleUpdateArticle = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (
-      !editingArticle ||
-      !articleForm.title.trim() ||
-      !articleForm.content.trim()
-    )
-      return;
-
-    setIsSubmitting(true);
-    try {
-      const response = await supportApi.updateFaqArticle(
-        editingArticle.id,
-        articleForm,
-      );
+      const response = editing
+        ? await supportApi.updateFaqArticle(editingArticle!.id, articleForm)
+        : await supportApi.createFaqArticle(articleForm);
       if (response.success) {
         setShowArticleModal(false);
         setEditingArticle(null);
-        setArticleForm({
-          categoryId: "",
-          title: "",
-          slug: "",
-          content: "",
-          excerpt: "",
-          isActive: true,
-          isPinned: false,
-        });
+        setArticleForm(EMPTY_ARTICLE_FORM);
         setSlugEditedManually(false);
         loadData();
       }
@@ -468,18 +391,14 @@ export default function AdminFaqPage() {
     }
   };
 
-  const handleDeleteArticle = async (articleId: string) => {
-    if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบทความนี้?")) return;
-
-    try {
-      await supportApi.deleteFaqArticle(articleId);
-      loadData();
-    } catch (err) {
-      setError(supportApi.getErrorMessage(err));
-    }
+  // Open create/edit modals
+  const openCreateCategory = () => {
+    setEditingCategory(null);
+    setCategoryForm(EMPTY_CATEGORY_FORM);
+    setCategorySlugEditedManually(false);
+    setShowCategoryModal(true);
   };
 
-  // Open edit modals
   const openEditCategory = (category: FaqCategory) => {
     setEditingCategory(category);
     setCategoryForm({
@@ -491,6 +410,16 @@ export default function AdminFaqPage() {
     });
     setCategorySlugEditedManually(true);
     setShowCategoryModal(true);
+  };
+
+  const openCreateArticle = () => {
+    setEditingArticle(null);
+    setArticleForm({
+      ...EMPTY_ARTICLE_FORM,
+      categoryId: categories[0]?.id || "",
+    });
+    setSlugEditedManually(false);
+    setShowArticleModal(true);
   };
 
   const openEditArticle = (article: FaqArticleWithCategory) => {
@@ -548,7 +477,7 @@ export default function AdminFaqPage() {
       toast.success(`สร้าง FAQ สำเร็จ ${allFaqs.length} ข้อ (${aiLocales.length} ภาษา)`);
     } catch (err) {
       console.error("[AI FAQ] Generation failed:", err);
-      toast.error(`สร้าง FAQ ล้มเหลว: ${err instanceof Error ? err.message : "Unknown error"}`);
+      toast.error(`ส้าง FAQ ล้มเหลว: ${err instanceof Error ? err.message : "Unknown error"}`);
       setAiProgress("");
     } finally {
       setIsGeneratingAI(false);
@@ -593,191 +522,187 @@ export default function AdminFaqPage() {
     );
   };
 
+  const toggleAiLocale = (code: string, checked: boolean) => {
+    setAiLocales((prev) =>
+      checked ? [...prev, code] : prev.filter((l) => l !== code),
+    );
+  };
+
   return (
     <AdminLayout>
       <PageContainer>
-          <AdminPageHeader title="จัดการคำถามที่พบบ่อย (FAQ)" />
+        <AdminPageHeader title="จัดการคำถามที่พบบ่อย (FAQ)" />
 
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="w-1.5 h-5 bg-site-accent/10 mr-2"></span>
-            <h1 className="text-xl font-bold text-white">จัดการ FAQ</h1>
+        <div className="space-y-4">
+          {/* Header actions */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-xl font-bold text-site-text">จัดการ FAQ</h1>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={showAIGenerate ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowAIGenerate(!showAIGenerate)}
+              >
+                <Sparkles className="h-4 w-4" />
+                AI สร้าง FAQ
+              </Button>
+              <Button variant="outline" size="sm" onClick={openCreateCategory}>
+                <Tag className="h-4 w-4" />
+                เพิ่มหมวดหมู่
+              </Button>
+              <Button
+                size="sm"
+                onClick={openCreateArticle}
+                disabled={categories.length === 0}
+              >
+                <Plus className="h-4 w-4" />
+                เพิ่มบทความ
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowAIGenerate(!showAIGenerate)}
-              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 font-bold text-[13px] transition-all ${showAIGenerate
-                ? "bg-site-accent text-site-bg"
-                : "bg-site-accent/10 border border-site-accent/20 text-site-accent hover:bg-site-accent/20"
-                }`}>
-              <Sparkles className="h-4 w-4" />
-              AI สร้าง FAQ
-            </button>
-            <button
-              onClick={() => {
-                setEditingCategory(null);
-                setCategoryForm({
-                  name: "",
-                  slug: "",
-                  description: "",
-                  icon: "",
-                  sortOrder: 0,
-                });
-                setShowCategoryModal(true);
-              }}
-              className="inline-flex items-center gap-2 bg-site-raised border border-site-border rounded-lg px-4 py-2 font-bold text-[13px] text-site-muted hover:bg-site-surface hover:text-site-text transition-all">
-              <Tag className="h-4 w-4" />
-              เพิ่มหมวดหมู่
-            </button>
-            <button
-              onClick={() => {
-                setEditingArticle(null);
-                setArticleForm({
-                  categoryId: categories[0]?.id || "",
-                  title: "",
-                  slug: "",
-                  content: "",
-                  excerpt: "",
-                  isActive: true,
-                  isPinned: false,
-                });
-                setSlugEditedManually(false);
-                setShowArticleModal(true);
-              }}
-              disabled={categories.length === 0}
-              className="inline-flex items-center gap-2 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg px-4 py-2 font-bold text-[13px] hover:bg-site-accent-hover transition-all disabled:opacity-50">
-              <Plus className="h-4 w-4" />
-              เพิ่มบทความ
-            </button>
-          </div>
-        </div>
 
-        {/* Error Message */}
-        <AnimatePresence>
+          {/* Error Message */}
           {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="bg-red-500/10 border border-white/5 rounded-xl border-red-500/30/30 p-3 flex items-center">
-              <AlertCircle className="text-red-600 mr-3" size={18} />
-              <span className="text-red-400 text-sm">{error}</span>
+            <div className="bg-status-danger/10 border border-status-danger/30 rounded-10 p-3 flex items-center">
+              <AlertCircle className="text-status-danger mr-3" size={18} />
+              <span className="text-site-text text-sm">{error}</span>
               <button
                 onClick={() => setError(null)}
-                className="ml-auto text-red-600 hover:text-red-400">
+                className="ml-auto text-site-muted hover:text-site-text"
+              >
                 <X size={16} />
               </button>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
 
-        {/* AI Generate Panel */}
-        <AnimatePresence>
+          {/* AI Generate Panel */}
           {showAIGenerate && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-gradient-to-br from-site-accent/10 to-site-accent/5 border border-white/5 rounded-xl overflow-hidden">
-              <div className="p-3 border-b-[2px] border-white/10 bg-gradient-to-r from-site-accent/10 to-site-accent/5">
-                <h2 className="text-base font-bold text-white flex items-center">
-                  <Bot size={18} className="mr-2 text-site-accent" />
-                  AI สร้าง FAQ อัตโนมัติ
-                </h2>
+            <div className="site-card overflow-hidden">
+              <div className="py-3.5 px-5 border-b-2 border-site-accent flex items-center text-sm font-bold text-site-text uppercase tracking-wide">
+                <Bot size={18} className="mr-2 text-site-accent" aria-hidden="true" />
+                AI สร้าง FAQ อัตโนมัติ
               </div>
-              <div className="p-4 space-y-4">
-                {/* Row 1: Topic + Category + Count */}
+
+              <div className="p-5 space-y-4">
+                {/* Row 1: Topic + Category + Count + Model */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                   <div className="md:col-span-5">
-                    <label className="block text-xs font-bold text-white mb-1">หัวข้อ / คีย์เวิร์ด</label>
-                    <input
+                    <Input
+                      label="หัวข้อ / คีย์เวิร์ด"
                       type="text"
                       value={aiTopic}
                       onChange={(e) => setAiTopic(e.target.value)}
                       placeholder="เช่น: การเติมเกม, วิธีชำระเงิน, การสั่งซื้อ"
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60"
                     />
                   </div>
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-bold text-white mb-1">หมวดหมู่เป้าหมาย</label>
-                    <select
-                      value={aiCategoryId}
-                      onChange={(e) => setAiCategoryId(e.target.value)}
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60 cursor-pointer">
-                      <option value="">เลือกหมวดหมู่...</option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                      ))}
-                    </select>
+                    <Label className="text-xs font-medium text-site-muted mb-1.5 block">
+                      หมวดหมู่เป้าหมาย
+                    </Label>
+                    <Select value={aiCategoryId} onValueChange={setAiCategoryId}>
+                      <SelectTrigger className="w-full" aria-label="หมวดหมู่เป้าหมาย">
+                        <SelectValue placeholder="เลือกหมวดหมู่..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-white mb-1">จำนวน</label>
-                    <select
-                      value={aiCount}
-                      onChange={(e) => setAiCount(Number(e.target.value))}
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60 cursor-pointer">
-                      {[3, 5, 10, 15, 20].map((n) => (
-                        <option key={n} value={n}>{n} ข้อ</option>
-                      ))}
-                    </select>
+                    <Label className="text-xs font-medium text-site-muted mb-1.5 block">
+                      จำนวน
+                    </Label>
+                    <Select
+                      value={String(aiCount)}
+                      onValueChange={(v) => setAiCount(Number(v))}
+                    >
+                      <SelectTrigger className="w-full" aria-label="จำนวน">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[3, 5, 10, 15, 20].map((n) => (
+                          <SelectItem key={n} value={String(n)}>
+                            {n} ข้อ
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-white mb-1">Model</label>
-                    <select
+                    <Label className="text-xs font-medium text-site-muted mb-1.5 block">
+                      Model
+                    </Label>
+                    <Select
                       value={selectedModel}
-                      onChange={(e) => {
-                        setSelectedModel(e.target.value);
-                        aiService.setModel(e.target.value);
+                      onValueChange={(v) => {
+                        setSelectedModel(v);
+                        aiService.setModel(v);
                       }}
                       disabled={isLoadingModels}
-                      className="w-full py-2 px-3 bg-site-surface border border-white/5 rounded-2xl text-sm focus:outline-none focus:border-site-accent/60 cursor-pointer disabled:opacity-50">
-                      {availableModels.map((m) => (
-                        <option key={m.id} value={m.id}>{m.id}</option>
-                      ))}
-                    </select>
+                    >
+                      <SelectTrigger className="w-full" aria-label="AI Model">
+                        <SelectValue placeholder="กำลังโหลด..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableModels.map((m) => (
+                          <SelectItem key={m.id} value={m.id}>
+                            {m.id}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
                 {/* Row 2: Locale Selection */}
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-bold text-white">ภาษาที่ต้องการสร้าง ({aiLocales.length} เลือก)</label>
-                    <div className="flex gap-1">
-                      <button
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs font-medium text-site-muted">
+                      ภาษาที่ต้องการสร้าง ({aiLocales.length} เลือก)
+                    </Label>
+                    <div className="flex gap-2">
+                      <Button
                         type="button"
-                        onClick={() => setAiLocales(SUPPORTED_LOCALES.map(l => l.code))}
-                        className="text-[10px] px-1.5 py-0.5 bg-site-accent/10 text-site-accent border border-site-accent/30 hover:bg-site-accent/20 transition-colors">
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-site-accent"
+                        onClick={() =>
+                          setAiLocales(SUPPORTED_LOCALES.map((l) => l.code))
+                        }
+                      >
                         เลือกทั้งหมด
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-site-muted"
                         onClick={() => setAiLocales(["th"])}
-                        className="text-[10px] px-1.5 py-0.5 bg-site-raised text-gray-300 border border-gray-300 hover:bg-site-border/30 transition-colors">
+                      >
                         รีเซ็ต
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {SUPPORTED_LOCALES.map((locale) => (
                       <label
                         key={locale.code}
-                        className={`flex items-center gap-1.5 px-2.5 py-1.5 border border-white/5 rounded-xl text-xs font-medium cursor-pointer transition-colors ${aiLocales.includes(locale.code)
-                          ? "bg-site-accent text-white"
-                          : "bg-site-raised text-white hover:bg-site-raised/5"
-                          }`}>
-                        <input
-                          type="checkbox"
+                        className={`flex items-center gap-1.5 px-2.5 py-1.5 border rounded-10 text-xs font-medium cursor-pointer transition-colors ${
+                          aiLocales.includes(locale.code)
+                            ? "bg-site-accent/15 border-site-accent/40 text-site-accent"
+                            : "bg-site-raised/60 border-site-border-soft text-site-muted hover:text-site-text"
+                        }`}
+                      >
+                        <Checkbox
                           checked={aiLocales.includes(locale.code)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setAiLocales([...aiLocales, locale.code]);
-                            } else {
-                              setAiLocales(aiLocales.filter(l => l !== locale.code));
-                            }
-                          }}
-                          className="sr-only"
+                          onCheckedChange={(v) =>
+                            toggleAiLocale(locale.code, v === true)
+                          }
+                          className="h-3.5 w-3.5"
                         />
                         {locale.label}
                       </label>
@@ -786,54 +711,61 @@ export default function AdminFaqPage() {
                 </div>
 
                 {/* System Prompt (collapsible) */}
-                <div className="border border-white/5 rounded-xl bg-site-raised">
+                <div className="border border-site-border-soft rounded-10 bg-site-raised/50">
                   <button
+                    type="button"
                     onClick={() => setShowSystemPrompt(!showSystemPrompt)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-white hover:bg-site-raised/5 transition-colors">
+                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-site-text hover:bg-site-raised/60 transition-colors rounded-10"
+                  >
                     <span className="flex items-center">
-                      <Settings2 size={14} className="mr-1.5 text-gray-400" />
+                      <Settings2 size={14} className="mr-1.5 text-site-muted" />
                       AI System Prompt (แก้ไขได้)
                     </span>
-                    {showSystemPrompt ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  </button>
-                  <AnimatePresence>
-                    {showSystemPrompt && (
-                      <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: "auto" }}
-                        exit={{ height: 0 }}
-                        className="overflow-hidden">
-                        <div className="px-3 pb-3">
-                          <textarea
-                            value={aiSystemPrompt}
-                            onChange={(e) => setAiSystemPrompt(e.target.value)}
-                            rows={6}
-                            className="w-full bg-site-surface border border-white/5 rounded-xl border-gray-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-site-accent/60 resize-y"
-                            placeholder="กำหนด system prompt สำหรับ AI..."
-                          />
-                          <p className="text-[10px] text-gray-400 mt-1">
-                            กำหนดบทบาทและกฎของ AI เช่น โทนเสียง, ความยาวคำตอบ, รูปแบบเฉพาะของเว็บ
-                          </p>
-                        </div>
-                      </motion.div>
+                    {showSystemPrompt ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
                     )}
-                  </AnimatePresence>
+                  </button>
+                  {showSystemPrompt && (
+                    <div className="px-3 pb-3">
+                      <Textarea
+                        value={aiSystemPrompt}
+                        onChange={(e) => setAiSystemPrompt(e.target.value)}
+                        rows={6}
+                        className="font-mono text-xs resize-y"
+                        placeholder="กำหนด system prompt สำหรับ AI..."
+                      />
+                      <p className="text-[10px] text-site-dim mt-1">
+                        กำหนดบทบาทและกฎของ AI เช่น โทนเสียง, ความยาวคำตอบ,
+                        รูปแบบเฉพาะของเว็บ
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Generate Button */}
                 <div className="flex items-center gap-3">
-                  <button
+                  <Button
                     onClick={handleAIGenerate}
                     disabled={isGeneratingAI || !aiTopic.trim() || !aiCategoryId}
-                    className="px-4 py-2 bg-gradient-to-r from-site-accent to-site-accent/80 text-white border border-white/5 rounded-xl font-medium text-sm hover:from-site-accent hover:to-site-accent/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                  >
                     {isGeneratingAI ? (
-                      <><Loader2 size={16} className="animate-spin" /> กำลังสร้าง...</>
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        กำลังสร้าง...
+                      </>
                     ) : (
-                      <><Sparkles size={16} /> สร้าง FAQ</>
+                      <>
+                        <Sparkles size={16} />
+                        สร้าง FAQ
+                      </>
                     )}
-                  </button>
+                  </Button>
                   {aiProgress && (
-                    <span className="text-xs text-site-accent font-medium animate-pulse">{aiProgress}</span>
+                    <span className="text-xs text-site-accent font-medium animate-pulse">
+                      {aiProgress}
+                    </span>
                   )}
                 </div>
 
@@ -841,929 +773,817 @@ export default function AdminFaqPage() {
                 {aiGeneratedFAQs.length > 0 && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-bold text-white flex items-center">
-                        <CheckCircle size={16} className="mr-1.5 text-green-600" />
-                        ผลลัพธ์ ({aiGeneratedFAQs.filter((f) => f.selected).length}/{aiGeneratedFAQs.length} ข้อ)
+                      <h3 className="text-sm font-bold text-site-text">
+                        ผลลัพธ์ ({aiGeneratedFAQs.filter((f) => f.selected).length}/
+                        {aiGeneratedFAQs.length} ข้อ)
                       </h3>
                       <div className="flex gap-2">
-                        <button
-                          onClick={() => setAiGeneratedFAQs((prev) => prev.map((f) => ({ ...f, selected: true })))}
-                          className="text-xs text-site-accent hover:underline">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-xs text-site-accent"
+                          onClick={() =>
+                            setAiGeneratedFAQs((prev) =>
+                              prev.map((f) => ({ ...f, selected: true })),
+                            )
+                          }
+                        >
                           เลือกทั้งหมด
-                        </button>
-                        <button
-                          onClick={() => setAiGeneratedFAQs((prev) => prev.map((f) => ({ ...f, selected: false })))}
-                          className="text-xs text-gray-400 hover:underline">
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-xs text-site-muted"
+                          onClick={() =>
+                            setAiGeneratedFAQs((prev) =>
+                              prev.map((f) => ({ ...f, selected: false })),
+                            )
+                          }
+                        >
                           ยกเลิกทั้งหมด
-                        </button>
+                        </Button>
                       </div>
                     </div>
 
                     {aiGeneratedFAQs.map((faq, index) => (
                       <div
                         key={index}
-                        className={`border border-white/5 rounded-xl bg-site-raised p-3 transition-all ${faq.selected
-                          ? "border-green-500/30/30"
-                          : "border-gray-300 opacity-60"
-                          }`}
-                        style={{ boxShadow: faq.selected ? "2px 2px 0 0 #22c55e" : "none" }}
+                        className={`border rounded-10 bg-site-raised/50 p-3 transition-colors ${
+                          faq.selected
+                            ? "border-status-success/40"
+                            : "border-site-border-soft opacity-60"
+                        }`}
                       >
                         <div className="flex items-start gap-2">
-                          <button
-                            onClick={() => toggleFaqSelection(index)}
-                            className={`mt-0.5 w-5 h-5 border border-white/5 rounded-xl flex items-center justify-center flex-shrink-0 ${faq.selected ? "bg-green-500 text-white" : "bg-site-raised"
-                              }`}>
-                            {faq.selected && <Check size={12} />}
-                          </button>
+                          <Checkbox
+                            checked={faq.selected}
+                            onCheckedChange={() => toggleFaqSelection(index)}
+                            className="mt-0.5"
+                            aria-label={`เลือก ${faq.title}`}
+                          />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <h4 className="text-sm font-bold text-white">{faq.title}</h4>
-                              <span className="text-[10px] px-1.5 py-0.5 bg-site-accent/10 text-site-accent border border-site-accent/30 font-bold shrink-0">
-                                {SUPPORTED_LOCALES.find(l => l.code === faq.locale)?.label || faq.locale}
-                              </span>
+                              <h4 className="text-sm font-bold text-site-text">
+                                {faq.title}
+                              </h4>
+                              <Badge variant="neutral" className="shrink-0">
+                                {SUPPORTED_LOCALES.find((l) => l.code === faq.locale)
+                                  ?.label || faq.locale}
+                              </Badge>
                             </div>
-                            <p className="text-xs text-gray-400 mt-0.5 italic">{faq.excerpt}</p>
-                            <p className="text-xs text-gray-300 mt-1 line-clamp-3">{faq.content}</p>
+                            <p className="text-xs text-site-muted mt-0.5 italic">
+                              {faq.excerpt}
+                            </p>
+                            <p className="text-xs text-site-muted mt-1 line-clamp-3">
+                              {faq.content}
+                            </p>
                           </div>
                         </div>
                       </div>
                     ))}
 
-                    <button
+                    <Button
+                      fullWidth
+                      className="bg-status-success text-white hover:bg-status-success/90"
                       onClick={handleSaveGeneratedFAQs}
-                      disabled={isSavingFAQs || aiGeneratedFAQs.filter((f) => f.selected).length === 0}
-                      className="w-full py-2.5 bg-green-500 text-white border border-white/5 rounded-xl font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      disabled={
+                        isSavingFAQs ||
+                        aiGeneratedFAQs.filter((f) => f.selected).length === 0
+                      }
+                    >
                       {isSavingFAQs ? (
-                        <><Loader2 size={16} className="animate-spin" /> กำลังบันทึก...</>
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          กำลังบันทึก...
+                        </>
                       ) : (
-                        <><Save size={16} /> บันทึกที่เลือก ({aiGeneratedFAQs.filter((f) => f.selected).length} ข้อ)</>
+                        <>
+                          <Save size={16} />
+                          บันทึกที่เลือก (
+                          {aiGeneratedFAQs.filter((f) => f.selected).length} ข้อ)
+                        </>
                       )}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            {
-              label: "หมวดหมู่",
-              value: categories.length,
-              color: "bg-site-surface0/10 text-site-accent border-blue-500/30",
-            },
-            {
-              label: "บทความทั้งหมด",
-              value: articles.length,
-              color: "bg-green-500/10 text-green-400 border-green-500/30/30",
-            },
-            {
-              label: "บทความที่ปักหมุด",
-              value: articles.filter((a) => a.isPinned).length,
-              color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30/30",
-            },
-            {
-              label: "ไม่แสดง",
-              value: articles.filter((a) => !a.isActive).length,
-              color: "bg-site-raised text-gray-300 border-gray-500",
-            },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className={`p-3 text-center border border-white/5 rounded-xl ${stat.color}`}>
-              <div className="text-xl font-bold">{stat.value}</div>
-              <div className="text-[10px] mt-1 font-medium">{stat.label}</div>
             </div>
-          ))}
-        </motion.div>
+          )}
 
-        {/* Categories Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
-          <div className="p-3 border-b-[2px] border-white/10 bg-site-surface">
-            <h2 className="text-base font-bold text-white flex items-center">
-              <Tag size={18} className="mr-2" />
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <StatCard title="หมวดหมู่" value={categories.length} semantic="blue" icon={Tag} />
+            <StatCard
+              title="บทความทั้งหมด"
+              value={articles.length}
+              semantic="green"
+              icon={HelpCircle}
+            />
+            <StatCard
+              title="บทความที่ปักหมุด"
+              value={articles.filter((a) => a.isPinned).length}
+              semantic="amber"
+              icon={Pin}
+            />
+            <StatCard
+              title="ไม่แสดง"
+              value={articles.filter((a) => !a.isActive).length}
+              semantic="dim"
+              icon={AlertCircle}
+            />
+          </div>
+
+          {/* Categories Section */}
+          <div className="site-card overflow-hidden">
+            <div className="py-3.5 px-5 border-b border-site-border-soft flex items-center text-sm font-bold text-site-text">
+              <Tag size={18} className="mr-2 text-site-accent" aria-hidden="true" />
               หมวดหมู่ ({categories.length})
-            </h2>
-          </div>
-          <div className="p-3">
-            {categories.length === 0 ? (
-              <div className="text-center py-6 text-gray-400">
-                <Tag size={36} className="mx-auto mb-3 opacity-30" />
-                <p className="text-sm">ยังไม่มีหมวดหมู่</p>
-                <button
-                  onClick={() => {
-                    setEditingCategory(null);
-                    setCategoryForm({
-                      name: "",
-                      slug: "",
-                      description: "",
-                      icon: "",
-                      sortOrder: 0,
-                    });
-                    setShowCategoryModal(true);
-                  }}
-                  className="text-site-accent hover:underline mt-1 text-sm">
-                  สร้างหมวดหมู่แรก
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {categories.map((category) => (
-                  <div
-                    key={category.id}
-                    className="border border-white/5 rounded-xl p-3 hover:bg-site-raised/5 transition-colors">
-                    <div className="flex items-start justify-between mb-1.5">
-                      <div className="flex items-center">
-                        {category.icon && (
-                          <span className="text-xl mr-2">{category.icon}</span>
-                        )}
-                        <h3 className="font-bold text-white text-sm">
-                          {category.name}
-                        </h3>
+            </div>
+            <div className="p-4">
+              {categories.length === 0 ? (
+                <div className="text-center py-6 text-site-muted">
+                  <Tag size={36} className="mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">ยังไม่มีหมวดหมู่</p>
+                  <button
+                    onClick={openCreateCategory}
+                    className="text-site-accent hover:text-site-accent-hover mt-1 text-sm font-medium"
+                  >
+                    สร้างหมวดหมู่แรก
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {categories.map((category) => (
+                    <div
+                      key={category.id}
+                      className="border border-site-border-soft rounded-10 bg-site-raised/40 p-3 hover:bg-site-raised/70 transition-colors"
+                    >
+                      <div className="flex items-start justify-between mb-1.5">
+                        <div className="flex items-center min-w-0">
+                          {category.icon && (
+                            <span className="text-xl mr-2">{category.icon}</span>
+                          )}
+                          <h3 className="font-bold text-site-text text-sm truncate">
+                            {category.name}
+                          </h3>
+                        </div>
+                        <div className="flex gap-1 flex-shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-site-muted"
+                            onClick={() => openEditCategory(category)}
+                            aria-label={`แก้ไข ${category.name}`}
+                          >
+                            <Edit2 size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-status-danger"
+                            onClick={() =>
+                              setPendingDelete({
+                                type: "category",
+                                id: category.id,
+                              })
+                            }
+                            aria-label={`ลบ ${category.name}`}
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => openEditCategory(category)}
-                          className="p-1 text-gray-400 hover:text-white hover:bg-site-border/30 transition-colors">
-                          <Edit2 size={14} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteCategory(category.id)}
-                          className="p-1 text-red-600 hover:text-red-400 hover:bg-red-500/10 transition-colors">
-                          <Trash2 size={14} />
-                        </button>
+                      <p className="text-xs text-site-muted mb-1.5 line-clamp-1">
+                        {category.description || "ไม่มีคำอธิบาย"}
+                      </p>
+                      <div className="flex items-center justify-between text-[10px] text-site-dim">
+                        <span>Slug: {category.slug}</span>
+                        <span>
+                          {
+                            articles.filter((a) => a.categoryId === category.id)
+                              .length
+                          }{" "}
+                          บทความ
+                        </span>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-400 mb-1.5 line-clamp-1">
-                      {category.description || "ไม่มีคำอธิบาย"}
-                    </p>
-                    <div className="flex items-center justify-between text-[10px] text-gray-400">
-                      <span>Slug: {category.slug}</span>
-                      <span>
-                        {
-                          articles.filter((a) => a.categoryId === category.id)
-                            .length
-                        }{" "}
-                        บทความ
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </motion.div>
 
-        {/* Articles Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden">
-          <div className="p-3 border-b-[2px] border-white/10 bg-site-surface">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-              <h2 className="text-base font-bold text-white flex items-center">
-                <HelpCircle size={18} className="mr-2" />
-                บทความ ({filteredArticles.length})
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {/* Search */}
-                <div className="relative">
-                  <Search
-                    className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={14}
-                  />
-                  <input
+          {/* Articles Section */}
+          <div className="site-card overflow-hidden">
+            <div className="py-3.5 px-5 border-b border-site-border-soft">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <h2 className="text-sm font-bold text-site-text flex items-center">
+                  <HelpCircle size={18} className="mr-2 text-site-accent" aria-hidden="true" />
+                  บทความ ({filteredArticles.length})
+                </h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Search */}
+                  <Input
                     type="text"
                     placeholder="ค้นหาบทความ..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="py-1.5 pl-8 pr-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-site-accent/60"
+                    icon={<Search size={14} />}
+                    className="w-48"
+                    size="sm"
                   />
+                  {/* Category Filter */}
+                  <Select
+                    value={categoryFilter}
+                    onValueChange={setCategoryFilter}
+                  >
+                    <SelectTrigger className="w-40 h-9" aria-label="กรองหมวดหมู่">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">ทุกหมวดหมู่</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {/* Status Filter */}
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-32 h-9" aria-label="กรองสถานะ">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">ทุกสถานะ</SelectItem>
+                      <SelectItem value="ACTIVE">แสดง</SelectItem>
+                      <SelectItem value="INACTIVE">ไม่แสดง</SelectItem>
+                      <SelectItem value="PINNED">ปักหมุด</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {/* Locale Filter */}
+                  <Select value={localeFilter} onValueChange={setLocaleFilter}>
+                    <SelectTrigger className="w-36 h-9" aria-label="กรองภาษา">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">ทุกภาษา</SelectItem>
+                      {SUPPORTED_LOCALES.map((loc) => (
+                        <SelectItem key={loc.code} value={loc.code}>
+                          {loc.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {/* Refresh */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={loadData}
+                    disabled={isLoading}
+                  >
+                    <RefreshCw
+                      size={12}
+                      className={isLoading ? "animate-spin" : ""}
+                    />
+                    รีเฟรช
+                  </Button>
                 </div>
-                {/* Category Filter */}
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent/60">
-                  <option value="ALL">ทุกหมวดหมู่</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-                {/* Status Filter */}
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent/60">
-                  <option value="ALL">ทุกสถานะ</option>
-                  <option value="ACTIVE">แสดง</option>
-                  <option value="INACTIVE">ไม่แสดง</option>
-                  <option value="PINNED">ปักหมุด</option>
-                </select>
-                {/* Locale Filter */}
-                <select
-                  value={localeFilter}
-                  onChange={(e) => setLocaleFilter(e.target.value)}
-                  className="py-1.5 px-2 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-xs focus:outline-none focus:border-site-accent/60">
-                  <option value="ALL">ทุกภาษา</option>
-                  {SUPPORTED_LOCALES.map((loc) => (
-                    <option key={loc.code} value={loc.code}>
-                      {loc.label}
-                    </option>
-                  ))}
-                </select>
-                {/* Refresh */}
-                <button
-                  onClick={loadData}
-                  disabled={isLoading}
-                  className="py-1.5 px-2 bg-site-raised hover:bg-site-border/30 border border-white/5 rounded-xl border-gray-300 text-white text-xs flex items-center transition-colors disabled:opacity-50">
-                  <RefreshCw
-                    size={12}
-                    className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`}
-                  />
-                  รีเฟรช
-                </button>
               </div>
             </div>
-          </div>
 
-          <div className="divide-y-[2px] divide-site-border/30">
-            {isLoading ? (
-              <div className="p-8 text-center">
-                <Loader2
-                  className="animate-spin mx-auto text-white mb-3"
-                  size={36}
-                />
-                <p className="text-gray-400 text-sm">กำลังโหลด...</p>
-              </div>
-            ) : filteredArticles.length === 0 ? (
-              <div className="p-8 text-center">
-                <HelpCircle size={36} className="mx-auto text-gray-300 mb-3" />
-                <p className="text-gray-400 text-sm">ไม่พบบทความ</p>
-                {searchQuery && (
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setCategoryFilter("ALL");
-                      setStatusFilter("ALL");
-                      setLocaleFilter("ALL");
-                    }}
-                    className="text-site-accent hover:underline mt-1 text-sm">
-                    ล้างตัวกรอง
-                  </button>
-                )}
-              </div>
-            ) : (
-              filteredArticles.map((article) => (
-                <div
-                  key={article.id}
-                  className="p-3 hover:bg-site-raised/5 transition-colors">
-                  <div className="flex items-start justify-between mb-1.5">
-                    <div className="flex items-center gap-2">
-                      {article.isPinned && (
-                        <Pin size={14} className="text-site-accent" />
-                      )}
-                      {!article.isActive && (
-                        <AlertCircle size={14} className="text-gray-400" />
-                      )}
-                      <h3
-                        className={`font-bold text-sm ${!article.isActive ? "text-gray-400" : "text-white"}`}>
-                        {article.title}
-                      </h3>
+            <div className="divide-y divide-site-border-soft">
+              {isLoading ? (
+                <div className="p-8 text-center">
+                  <Loader2
+                    className="animate-spin mx-auto text-site-accent mb-3"
+                    size={28}
+                  />
+                  <p className="text-site-muted text-sm">กำลังโหลด...</p>
+                </div>
+              ) : filteredArticles.length === 0 ? (
+                <div className="p-8 text-center">
+                  <HelpCircle size={36} className="mx-auto text-site-dim mb-3" />
+                  <p className="text-site-muted text-sm">ไม่พบบทความ</p>
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery("");
+                        setCategoryFilter("ALL");
+                        setStatusFilter("ALL");
+                        setLocaleFilter("ALL");
+                      }}
+                      className="text-site-accent hover:text-site-accent-hover mt-1 text-sm font-medium"
+                    >
+                      ล้างตัวกรอง
+                    </button>
+                  )}
+                </div>
+              ) : (
+                filteredArticles.map((article) => (
+                  <div
+                    key={article.id}
+                    className="p-4 hover:bg-site-raised/40 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-1.5 gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {article.isPinned && (
+                          <Pin size={14} className="text-site-accent flex-shrink-0" />
+                        )}
+                        {!article.isActive && (
+                          <AlertCircle
+                            size={14}
+                            className="text-site-dim flex-shrink-0"
+                          />
+                        )}
+                        <h3
+                          className={`font-bold text-sm truncate ${
+                            !article.isActive ? "text-site-dim" : "text-site-text"
+                          }`}
+                        >
+                          {article.title}
+                        </h3>
+                      </div>
+                      <div className="flex gap-1 flex-shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-site-muted"
+                          onClick={() => openEditArticle(article)}
+                          aria-label={`แก้ไข ${article.title}`}
+                        >
+                          <Edit2 size={14} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-status-danger"
+                          onClick={() =>
+                            setPendingDelete({ type: "article", id: article.id })
+                          }
+                          aria-label={`ลบ ${article.title}`}
+                        >
+                          <Trash2 size={14} />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => openEditArticle(article)}
-                        className="p-1.5 text-gray-400 hover:text-white hover:bg-site-border/30 transition-colors">
-                        <Edit2 size={14} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteArticle(article.id)}
-                        className="p-1.5 text-red-600 hover:text-red-400 hover:bg-red-500/10 transition-colors">
-                        <Trash2 size={14} />
-                      </button>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-site-muted mb-1.5">
+                      <Badge variant="neutral">{article.categoryName}</Badge>
+                      <Badge variant="accent">
+                        {SUPPORTED_LOCALES.find((l) => l.code === article.locale)
+                          ?.label || article.locale}
+                      </Badge>
+                      <span className="flex items-center">
+                        <Eye size={12} className="mr-1" />
+                        {article.viewCount}
+                      </span>
+                      <span className="flex items-center">
+                        <ThumbsUp size={12} className="mr-1" />
+                        {article.helpfulCount}
+                      </span>
+                      <span className="tabular-nums">
+                        {new Date(article.createdAt).toLocaleDateString("th-TH")}
+                      </span>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400 mb-1.5">
-                    <span className="bg-site-accent/10 px-1.5 py-0.5 border-[1px] border-site-accent/30">
-                      {article.categoryName}
-                    </span>
-                    <span className="bg-site-accent/5 px-1.5 py-0.5 border-[1px] border-site-accent/30 text-site-accent text-[10px] font-bold">
-                      {SUPPORTED_LOCALES.find(l => l.code === article.locale)?.label || article.locale}
-                    </span>
-                    <span className="flex items-center">
-                      <Eye size={12} className="mr-1" />
-                      {article.viewCount}
-                    </span>
-                    <span className="flex items-center">
-                      <ThumbsUp size={12} className="mr-1" />
-                      {article.helpfulCount}
-                    </span>
-                    <span>•</span>
-                    <span>
-                      {new Date(article.createdAt).toLocaleDateString("th-TH")}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400 line-clamp-2">
-                    {article.excerpt || article.content}
-                  </p>
+                    <p className="text-xs text-site-muted line-clamp-2">
+                      {article.excerpt || article.content}
+                    </p>
 
-                  {/* Preview */}
-                  <button
-                    onClick={() =>
-                      setExpandedArticle(
-                        expandedArticle === article.id ? null : article.id,
-                      )
-                    }
-                    className="mt-1.5 text-xs text-site-accent hover:underline flex items-center">
-                    {expandedArticle === article.id ? (
-                      <>
-                        <ChevronUp size={14} className="mr-1" />
-                        ซ่อนเนื้อหา
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown size={14} className="mr-1" />
-                        แสดงเนื้อหา
-                      </>
-                    )}
-                  </button>
-                  <AnimatePresence>
+                    {/* Preview */}
+                    <button
+                      onClick={() =>
+                        setExpandedArticle(
+                          expandedArticle === article.id ? null : article.id,
+                        )
+                      }
+                      className="mt-1.5 text-xs text-site-accent hover:text-site-accent-hover font-medium flex items-center"
+                    >
+                      {expandedArticle === article.id ? (
+                        <>
+                          <ChevronUp size={14} className="mr-1" />
+                          ซ่อนเนื้อหา
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown size={14} className="mr-1" />
+                          แสดงเนื้อหา
+                        </>
+                      )}
+                    </button>
                     {expandedArticle === article.id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-2 p-2 bg-site-raised border border-white/5 rounded-xl border-gray-300 overflow-hidden">
-                        <p className="text-xs text-gray-300 whitespace-pre-line">
+                      <div className="mt-2 p-3 bg-site-raised/60 border border-site-border-soft rounded-10">
+                        <p className="text-xs text-site-muted whitespace-pre-line">
                           {article.content}
                         </p>
                         <Link
                           href={`/support/faq/${article.slug}`}
                           target="_blank"
-                          className="mt-1.5 inline-flex items-center text-xs text-site-accent hover:underline">
+                          className="mt-1.5 inline-flex items-center text-xs text-site-accent hover:text-site-accent-hover font-medium"
+                        >
                           <Eye size={12} className="mr-1" />
                           ดูหน้าเว็บ
                         </Link>
-                      </motion.div>
+                      </div>
                     )}
-                  </AnimatePresence>
-                </div>
-              ))
-            )}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-        </motion.div>
-      </div>
+        </div>
 
-      {/* Category Modal */}
-      {mounted && (
-        <DialogPrimitive.Root
+        {/* Category Modal */}
+        <FormModal
           open={showCategoryModal}
-          onOpenChange={(open) => {
-            if (!open && !isSubmitting) setShowCategoryModal(false);
-          }}
+          onClose={() => setShowCategoryModal(false)}
+          onSubmit={handleSaveCategory}
+          title={editingCategory ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}
+          loading={isSubmitting}
+          size="sm"
         >
-          <DialogPortal>
-            <DialogOverlay className="bg-black/70 z-[80]" />
-            <DialogPrimitive.Content
-              className="fixed left-1/2 top-1/2 z-[90] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 bg-site-surface border border-white/5 rounded-2xl max-w-lg max-h-[90vh] overflow-y-auto focus:outline-none"
-              onEscapeKeyDown={(e) => isSubmitting && e.preventDefault()}
-              onPointerDownOutside={(e) => isSubmitting && e.preventDefault()}
-              onInteractOutside={(e) => isSubmitting && e.preventDefault()}
-              aria-describedby={undefined}
-            >
-                  <div className="p-4 border-b-[2px] border-white/10">
-                    <div className="flex items-center justify-between">
-                      <DialogPrimitive.Title className="text-lg font-bold text-white">
-                        {editingCategory ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}
-                      </DialogPrimitive.Title>
-                      <DialogPrimitive.Close
-                        className="text-gray-400 hover:text-white">
-                        <X size={20} />
-                      </DialogPrimitive.Close>
-                    </div>
-                  </div>
-                  <form
-                    onSubmit={
-                      editingCategory
-                        ? handleUpdateCategory
-                        : handleCreateCategory
-                    }
-                    className="p-4 space-y-3">
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        ชื่อหมวดหมู่ *
-                      </label>
-                      <input
-                        type="text"
-                        value={categoryForm.name}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setCategoryForm((prev) => ({
-                            ...prev,
-                            name: value,
-                            slug: categorySlugEditedManually
-                              ? prev.slug
-                              : slugify(value),
-                          }));
-                        }}
-                        placeholder="เช่น การสั่งซื้อ, การชำระเงิน"
-                        required
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        Slug (ไม่บังคับ)
-                      </label>
-                      <input
-                        type="text"
-                        value={categoryForm.slug}
-                        onChange={(e) => {
-                          setCategorySlugEditedManually(true);
-                          setCategoryForm({
-                            ...categoryForm,
-                            slug: e.target.value,
-                          });
-                        }}
-                        placeholder="จะสร้างอัตโนมัติจากชื่อหมวดหมู่"
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        คำอธิบาย
-                      </label>
-                      <textarea
-                        value={categoryForm.description}
-                        onChange={(e) =>
-                          setCategoryForm({
-                            ...categoryForm,
-                            description: e.target.value,
-                          })
-                        }
-                        placeholder="คำอธิบายสั้น ๆ เกี่ยวกับหมวดหมู่นี้"
-                        rows={3}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors resize-none text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        ไอคอน (emoji)
-                      </label>
-                      <input
-                        type="text"
-                        value={categoryForm.icon}
-                        onChange={(e) =>
-                          setCategoryForm({
-                            ...categoryForm,
-                            icon: e.target.value,
-                          })
-                        }
-                        placeholder="เช่️ 🛒 💳 🎮"
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        ลำดับการแสดง
-                      </label>
-                      <input
-                        type="number"
-                        value={categoryForm.sortOrder}
-                        onChange={(e) =>
-                          setCategoryForm({
-                            ...categoryForm,
-                            sortOrder: parseInt(e.target.value) || 0,
-                          })
-                        }
-                        min={0}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
-                      />
-                    </div>
-                    <div className="flex gap-2 pt-3">
-                      <button
-                        type="button"
-                        onClick={() => setShowCategoryModal(false)}
-                        className="flex-1 py-2 px-3 border border-white/5 rounded-xl text-white hover:bg-site-raised/5 transition-colors font-medium text-sm">
-                        ยกเลิก
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={isSubmitting || !categoryForm.name.trim()}
-                        className="flex-1 py-2 px-3 bg-black text-white border border-white/5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-sm">
-                        {isSubmitting ? (
-                          <span className="flex items-center justify-center">
-                            <Loader2 size={16} className="animate-spin mr-2" />
-                            กำลังบันทึก...
-                          </span>
-                        ) : (
-                          <span className="flex items-center justify-center">
-                            <Save size={16} className="mr-2" />
-                            บันทึก
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  </form>
-            </DialogPrimitive.Content>
-          </DialogPortal>
-        </DialogPrimitive.Root>
-      )}
+          <div className="space-y-3">
+            <Input
+              label="ชื่อหมวดหมู่ *"
+              type="text"
+              value={categoryForm.name}
+              onChange={(e) => {
+                const value = e.target.value;
+                setCategoryForm((prev) => ({
+                  ...prev,
+                  name: value,
+                  slug: categorySlugEditedManually ? prev.slug : slugify(value),
+                }));
+              }}
+              placeholder="เช่น การสั่งซื้อ, การชำระเงิน"
+            />
+            <Input
+              label="Slug (ไม่บังคับ)"
+              type="text"
+              value={categoryForm.slug}
+              onChange={(e) => {
+                setCategorySlugEditedManually(true);
+                setCategoryForm({
+                  ...categoryForm,
+                  slug: e.target.value,
+                });
+              }}
+              placeholder="จะสร้างอัตโนมัติจากชื่อหมวดหมู่"
+            />
+            <div>
+              <Label className="text-sm font-medium text-site-text mb-1.5 block">
+                คำอธิบาย
+              </Label>
+              <Textarea
+                value={categoryForm.description}
+                onChange={(e) =>
+                  setCategoryForm({
+                    ...categoryForm,
+                    description: e.target.value,
+                  })
+                }
+                placeholder="คำอธิบายสั้น ๆ เกี่ยวกับหมวดหมู่นี้"
+                rows={3}
+              />
+            </div>
+            <Input
+              label="ไอคอน (emoji)"
+              type="text"
+              value={categoryForm.icon}
+              onChange={(e) =>
+                setCategoryForm({
+                  ...categoryForm,
+                  icon: e.target.value,
+                })
+              }
+              placeholder="เช่️ 🛒 💳 🎮"
+            />
+            <Input
+              label="ลำดับการแสดง"
+              type="number"
+              value={categoryForm.sortOrder}
+              onChange={(e) =>
+                setCategoryForm({
+                  ...categoryForm,
+                  sortOrder: parseInt(e.target.value) || 0,
+                })
+              }
+              min={0}
+            />
+          </div>
+        </FormModal>
 
-      {/* Article Modal */}
-      {mounted && (
-        <DialogPrimitive.Root
+        {/* Article Modal */}
+        <FormModal
           open={showArticleModal}
-          onOpenChange={(open) => {
-            if (!open && !isSubmitting) setShowArticleModal(false);
-          }}
+          onClose={() => setShowArticleModal(false)}
+          onSubmit={handleSaveArticle}
+          title={editingArticle ? "แก้ไขบทความ" : "เพิ่มบทความ"}
+          loading={isSubmitting}
+          size="lg"
         >
-          <DialogPortal>
-            <DialogOverlay className="bg-black/70 z-[80]" />
-            <DialogPrimitive.Content
-              className="fixed left-1/2 top-1/2 z-[90] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 bg-site-surface border border-white/5 rounded-2xl max-w-2xl max-h-[90vh] overflow-y-auto focus:outline-none"
-              onEscapeKeyDown={(e) => isSubmitting && e.preventDefault()}
-              onPointerDownOutside={(e) => isSubmitting && e.preventDefault()}
-              onInteractOutside={(e) => isSubmitting && e.preventDefault()}
-              aria-describedby={undefined}
-            >
-                  <div className="p-4 border-b-[2px] border-white/10">
-                    <div className="flex items-center justify-between">
-                      <DialogPrimitive.Title className="text-lg font-bold text-white">
-                        {editingArticle ? "แก้ไขบทความ" : "เพิ่มบทความ"}
-                      </DialogPrimitive.Title>
-                      <DialogPrimitive.Close
-                        className="text-gray-400 hover:text-white">
-                        <X size={20} />
-                      </DialogPrimitive.Close>
-                    </div>
-                  </div>
-                  <form
-                    onSubmit={
-                      editingArticle ? handleUpdateArticle : handleCreateArticle
-                    }
-                    className="p-4 space-y-3">
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        หมวดหมู่ *
-                      </label>
-                      <select
-                        value={articleForm.categoryId}
-                        onChange={(e) =>
-                          setArticleForm({
-                            ...articleForm,
-                            categoryId: e.target.value,
-                          })
-                        }
-                        required
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white focus:outline-none focus:border-site-accent/60 transition-colors text-sm">
-                        <option value="">เลือกหมวดหมู่</option>
-                        {categories.map((cat) => (
-                          <option key={cat.id} value={cat.id}>
-                            {cat.name}
-                          </option>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-sm font-medium text-site-text mb-1.5 block">
+                หมวดหมู่ *
+              </Label>
+              <Select
+                value={articleForm.categoryId}
+                onValueChange={(v) =>
+                  setArticleForm({ ...articleForm, categoryId: v })
+                }
+              >
+                <SelectTrigger className="w-full" aria-label="หมวดหมู่">
+                  <SelectValue placeholder="เลือกหมวดหมู่" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Input
+              label="หัวข้อ *"
+              type="text"
+              value={articleForm.title}
+              onChange={(e) => {
+                const value = e.target.value;
+                setArticleForm((prev) => ({
+                  ...prev,
+                  title: value,
+                  slug: slugEditedManually ? prev.slug : slugify(value),
+                }));
+              }}
+              placeholder="หัวข้อคำถาม"
+            />
+            <Input
+              label="Slug (ไม่บังคับ)"
+              type="text"
+              value={articleForm.slug}
+              onChange={(e) => {
+                setSlugEditedManually(true);
+                setArticleForm({
+                  ...articleForm,
+                  slug: e.target.value,
+                });
+              }}
+              onFocus={() => {
+                // If slug is empty when focusing, auto-fill from title
+                setArticleForm((prev) => {
+                  if ((prev.slug || "").trim()) return prev;
+                  return {
+                    ...prev,
+                    slug: slugify(prev.title || ""),
+                  };
+                });
+              }}
+              placeholder="จะสร้างอัตโนมัติจากหัวข้อ"
+            />
+
+            {/* AI Generate Section */}
+            <div className="bg-site-accent/5 border border-site-accent/20 rounded-10 p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <Sparkles className="w-4 h-4 text-site-accent mr-2" />
+                  <span className="font-semibold text-site-text text-sm">
+                    สร้างด้วย AI
+                  </span>
+                </div>
+                {!showAIGenerate && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs"
+                    onClick={() => setShowAIGenerate(true)}
+                    disabled={!articleForm.categoryId}
+                  >
+                    <Wand2 className="w-3 h-3" />
+                    เปิดใช้งาน
+                  </Button>
+                )}
+              </div>
+
+              {showAIGenerate && (
+                <div className="space-y-2">
+                  <Input
+                    label="หัวข้อที่ต้องการให้ AI เขียน"
+                    type="text"
+                    size="sm"
+                    value={aiTopic}
+                    onChange={(e) => setAiTopic(e.target.value)}
+                    placeholder="เช่น วิธีเติมเพชร Free Fire, ขั้นตอนสั่งซื้อสินค้า"
+                  />
+
+                  <div>
+                    <Label className="text-xs font-medium text-site-muted mb-1 block">
+                      เลือก AI Model
+                    </Label>
+                    <Select
+                      value={selectedModel}
+                      onValueChange={(v) => {
+                        setSelectedModel(v);
+                        aiService.setModel(v);
+                      }}
+                      disabled={isLoadingModels || availableModels.length === 0}
+                    >
+                      <SelectTrigger
+                        className="w-full"
+                       
+                        aria-label="AI Model"
+                      >
+                        <SelectValue
+                          placeholder={
+                            isLoadingModels
+                              ? "กำลังโหลด models..."
+                              : "ไม่พบ model ที่ใช้ได้"
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableModels.map((model) => (
+                          <SelectItem key={model.id} value={model.id}>
+                            {model.name || model.id}
+                          </SelectItem>
                         ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        หัวข้อ *
-                      </label>
-                      <input
-                        type="text"
-                        value={articleForm.title}
-                        onChange={(e) => {
-                          const value = e.target.value;
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      className="flex-1"
+                      onClick={async () => {
+                        if (!aiTopic.trim() || !articleForm.categoryId) return;
+
+                        // Set the selected model before generating
+                        if (selectedModel) {
+                          aiService.setModel(selectedModel);
+                        }
+
+                        setIsGeneratingAI(true);
+                        try {
+                          const categoryName =
+                            categories.find(
+                              (c) => c.id === articleForm.categoryId,
+                            )?.name || "ทั่วไป";
+                          const result = await aiService.generateFaqContent(
+                            aiTopic,
+                            categoryName,
+                            (progress) => {
+                              // Optional: show progress in console or UI
+                              console.log(
+                                `[AI] ${progress.stage}: ${progress.message}`,
+                              );
+                            },
+                          );
+                          const aiSlug = result.slug || slugify(result.title);
+                          // Apply AI output; keep manual flag false so auto slug sticks unless user edits
+                          setSlugEditedManually(false);
                           setArticleForm((prev) => ({
                             ...prev,
-                            title: value,
-                            slug: slugEditedManually
-                              ? prev.slug
-                              : slugify(value),
+                            title: result.title,
+                            content: result.content,
+                            excerpt: result.excerpt,
+                            slug: slugEditedManually ? prev.slug : aiSlug,
                           }));
-                        }}
-                        placeholder="หัวข้อคำถาม"
-                        required
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        Slug (ไม่บังคับ)
-                      </label>
-                      <input
-                        type="text"
-                        value={articleForm.slug}
-                        onChange={(e) => {
-                          setSlugEditedManually(true);
-                          setArticleForm({
-                            ...articleForm,
-                            slug: e.target.value,
-                          });
-                        }}
-                        onFocus={() => {
-                          // If slug is empty when focusing, auto-fill from title
-                          setArticleForm((prev) => {
-                            if ((prev.slug || "").trim()) return prev;
-                            return {
-                              ...prev,
-                              slug: slugify(prev.title || ""),
-                            };
-                          });
-                        }}
-                        placeholder="จะสร้างอัตโนมัติจากหัวข้อ"
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors text-sm"
-                      />
-                    </div>
-
-                    {/* AI Generate Section */}
-                    <div className="bg-site-accent/10 border border-white/5 rounded-xl border-site-accent p-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center">
-                          <Sparkles className="w-4 h-4 text-site-accent mr-2" />
-                          <span className="font-medium text-white text-sm">
-                            สร้างด้วย AI
-                          </span>
-                        </div>
-                        {!showAIGenerate && (
-                          <button
-                            type="button"
-                            onClick={() => setShowAIGenerate(true)}
-                            disabled={!articleForm.categoryId}
-                            className="text-xs bg-site-accent text-white px-2 py-1 border border-white/5 rounded-xl hover:bg-site-accent/80 transition-colors disabled:opacity-50">
-                            <Wand2 className="w-3 h-3 inline mr-1" />
-                            เปิดใช้งาน
-                          </button>
-                        )}
-                      </div>
-
-                      <AnimatePresence>
-                        {showAIGenerate && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="space-y-2">
-                            <div>
-                              <label className="block text-gray-300 mb-1 text-xs">
-                                หัวข้อที่ต้องการให้ AI เขียน
-                              </label>
-                              <input
-                                type="text"
-                                value={aiTopic}
-                                onChange={(e) => setAiTopic(e.target.value)}
-                                placeholder="เช่น วิธีเติมเพชร Free Fire, ขั้นตอนสั่งซื้อสินค้า"
-                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent/60"
-                              />
-                            </div>
-
-                            {/* Model Selector */}
-                            <div>
-                              <label className="block text-gray-300 mb-1 text-xs">
-                                เลือก AI Model
-                              </label>
-                              <select
-                                value={selectedModel}
-                                onChange={(e) => {
-                                  setSelectedModel(e.target.value);
-                                  aiService.setModel(e.target.value);
-                                }}
-                                disabled={
-                                  isLoadingModels ||
-                                  availableModels.length === 0
-                                }
-                                className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60 disabled:opacity-50">
-                                {isLoadingModels ? (
-                                  <option value="">กำลังโหลด models...</option>
-                                ) : availableModels.length === 0 ? (
-                                  <option value="">
-                                    ไม่พบ model ที่ใช้ได้
-                                  </option>
-                                ) : (
-                                  availableModels.map((model) => (
-                                    <option key={model.id} value={model.id}>
-                                      {model.name || model.id}
-                                    </option>
-                                  ))
-                                )}
-                              </select>
-                            </div>
-
-                            <div className="flex gap-2">
-                              <button
-                                type="button"
-                                onClick={async () => {
-                                  if (
-                                    !aiTopic.trim() ||
-                                    !articleForm.categoryId
-                                  )
-                                    return;
-
-                                  // Set the selected model before generating
-                                  if (selectedModel) {
-                                    aiService.setModel(selectedModel);
-                                  }
-
-                                  setIsGeneratingAI(true);
-                                  try {
-                                    const categoryName =
-                                      categories.find(
-                                        (c) => c.id === articleForm.categoryId,
-                                      )?.name || "ทั่วไป";
-                                    const result =
-                                      await aiService.generateFaqContent(
-                                        aiTopic,
-                                        categoryName,
-                                        (progress) => {
-                                          // Optional: show progress in console or UI
-                                          console.log(
-                                            `[AI] ${progress.stage}: ${progress.message}`,
-                                          );
-                                        },
-                                      );
-                                    const aiSlug =
-                                      result.slug || slugify(result.title);
-                                    // Apply AI output; keep manual flag false so auto slug sticks unless user edits
-                                    setSlugEditedManually(false);
-                                    setArticleForm((prev) => ({
-                                      ...prev,
-                                      title: result.title,
-                                      content: result.content,
-                                      excerpt: result.excerpt,
-                                      slug: slugEditedManually
-                                        ? prev.slug
-                                        : aiSlug,
-                                    }));
-                                    setError(null);
-                                  } catch (err: any) {
-                                    setError(
-                                      err.message ||
-                                      "ไม่สามารถสร้างเนื้อหาด้วย AI ได้",
-                                    );
-                                  } finally {
-                                    setIsGeneratingAI(false);
-                                  }
-                                }}
-                                disabled={
-                                  isGeneratingAI ||
-                                  !aiTopic.trim() ||
-                                  !articleForm.categoryId
-                                }
-                                className="flex-1 bg-site-accent text-white border border-white/5 rounded-xl py-1.5 text-sm font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
-                                {isGeneratingAI ? (
-                                  <>
-                                    <Loader2 className="w-3 h-3 animate-spin mr-2" />
-                                    กำลังสร้าง...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Wand2 className="w-3 h-3 mr-2" />
-                                    สร้างบทความ
-                                  </>
-                                )}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setShowAIGenerate(false);
-                                  setAiTopic("");
-                                }}
-                                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-gray-400 hover:bg-site-raised/5 transition-colors">
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                            {isGeneratingAI && (
-                              <p className="text-[10px] text-gray-400">
-                                AI กำลังสร้างเนื้อหา กรุณารอสักครู่...
-                              </p>
-                            )}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
-                      {!aiService.isConfigured() && showAIGenerate && (
-                        <div className="mt-2 p-2 bg-red-500/5 border-[1px] border-red-300 text-red-400 text-[10px]">
-                          กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ server
-                          ก่อนใช้งาน AI
-                        </div>
+                          setError(null);
+                        } catch (err: any) {
+                          setError(
+                            err.message || "ไม่สามารถสร้างเนื้อหาด้วย AI ได้",
+                          );
+                        } finally {
+                          setIsGeneratingAI(false);
+                        }
+                      }}
+                      disabled={
+                        isGeneratingAI ||
+                        !aiTopic.trim() ||
+                        !articleForm.categoryId
+                      }
+                    >
+                      {isGeneratingAI ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          กำลังสร้าง...
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="w-3 h-3" />
+                          สร้างบทความ
+                        </>
                       )}
-                    </div>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        setShowAIGenerate(false);
+                        setAiTopic("");
+                      }}
+                      aria-label="ปิดส่วนสร้างด้วย AI"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {isGeneratingAI && (
+                    <p className="text-[10px] text-site-muted">
+                      AI กำลังสร้างเนื้อหา กรุณารอสักครู่...
+                    </p>
+                  )}
+                </div>
+              )}
 
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        เนื้อหา *
-                      </label>
-                      <textarea
-                        value={articleForm.content}
-                        onChange={(e) =>
-                          setArticleForm({
-                            ...articleForm,
-                            content: e.target.value,
-                          })
-                        }
-                        placeholder="คำตอบโดยละเอียด"
-                        required
-                        rows={6}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors resize-none text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-1.5 font-medium text-sm">
-                        บทสรุป (excerpt)
-                      </label>
-                      <textarea
-                        value={articleForm.excerpt}
-                        onChange={(e) =>
-                          setArticleForm({
-                            ...articleForm,
-                            excerpt: e.target.value,
-                          })
-                        }
-                        placeholder="สรุปสั้น ๆ สำหรับแสดงในรายการ (ไม่บังคับ)"
-                        rows={2}
-                        className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white placeholder-gray-500 focus:outline-none focus:border-site-accent/60 transition-colors resize-none text-sm"
-                      />
-                    </div>
-                    <div className="flex gap-4">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={articleForm.isActive}
-                          onChange={(e) =>
-                            setArticleForm({
-                              ...articleForm,
-                              isActive: e.target.checked,
-                            })
-                          }
-                          className="mr-2 w-3.5 h-3.5"
-                        />
-                        <span className="text-gray-300 text-sm">
-                          แสดงบทความ
-                        </span>
-                      </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={articleForm.isPinned}
-                          onChange={(e) =>
-                            setArticleForm({
-                              ...articleForm,
-                              isPinned: e.target.checked,
-                            })
-                          }
-                          className="mr-2 w-3.5 h-3.5"
-                        />
-                        <span className="text-gray-300 text-sm">ปักหมุด</span>
-                      </label>
-                    </div>
-                    <div className="flex gap-2 pt-3">
-                      <button
-                        type="button"
-                        onClick={() => setShowArticleModal(false)}
-                        className="flex-1 py-2 px-3 border border-white/5 rounded-xl text-white hover:bg-site-raised/5 transition-colors font-medium text-sm">
-                        ยกเลิก
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={
-                          isSubmitting ||
-                          !articleForm.title.trim() ||
-                          !articleForm.content.trim() ||
-                          !articleForm.categoryId
-                        }
-                        className="flex-1 py-2 px-3 bg-black text-white border border-white/5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors text-sm">
-                        {isSubmitting ? (
-                          <span className="flex items-center justify-center">
-                            <Loader2 size={16} className="animate-spin mr-2" />
-                            กำลังบันทึก...
-                          </span>
-                        ) : (
-                          <span className="flex items-center justify-center">
-                            <Save size={16} className="mr-2" />
-                            บันทึก
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  </form>
-            </DialogPrimitive.Content>
-          </DialogPortal>
-        </DialogPrimitive.Root>
-      )}
-    </PageContainer>
+              {!aiService.isConfigured() && showAIGenerate && (
+                <div className="mt-2 p-2 bg-status-danger/10 border border-status-danger/30 rounded-6 text-status-danger text-[10px]">
+                  กรุณาตั้งค่า LITELLM_API_KEY ในไฟล์ .env ของ server ก่อนใช้งาน AI
+                </div>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium text-site-text mb-1.5 block">
+                เนื้อหา *
+              </Label>
+              <Textarea
+                value={articleForm.content}
+                onChange={(e) =>
+                  setArticleForm({
+                    ...articleForm,
+                    content: e.target.value,
+                  })
+                }
+                placeholder="คำตอบโดยละเอียด"
+                rows={6}
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-site-text mb-1.5 block">
+                บทสรุป (excerpt)
+              </Label>
+              <Textarea
+                value={articleForm.excerpt}
+                onChange={(e) =>
+                  setArticleForm({
+                    ...articleForm,
+                    excerpt: e.target.value,
+                  })
+                }
+                placeholder="สรุปสั้น ๆ สำหรับแสดงในรายการ (ไม่บังคับ)"
+                rows={2}
+              />
+            </div>
+            <div className="flex gap-5">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={articleForm.isActive}
+                  onCheckedChange={(v) =>
+                    setArticleForm({
+                      ...articleForm,
+                      isActive: v === true,
+                    })
+                  }
+                />
+                <span className="text-sm text-site-text">แสดงบทความ</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={articleForm.isPinned}
+                  onCheckedChange={(v) =>
+                    setArticleForm({
+                      ...articleForm,
+                      isPinned: v === true,
+                    })
+                  }
+                />
+                <span className="text-sm text-site-text">ปักหมุด</span>
+              </label>
+            </div>
+          </div>
+        </FormModal>
+
+        {/* Delete confirmations (replace window.confirm) */}
+        <ConfirmDialog
+          open={!!pendingDelete}
+          onClose={() => setPendingDelete(null)}
+          onConfirm={handleDeleteConfirmed}
+          title={
+            pendingDelete?.type === "category"
+              ? "ลบหมวดหมู่นี้?"
+              : "ลบบทความนี้?"
+          }
+          description={
+            pendingDelete?.type === "category"
+              ? "บทความทั้งหมดในหมวดหมู่นี้จะถูกลบด้วย การกระทำนี้ไม่สามารถย้อนกลับได้"
+              : "การกระทำนี้ไม่สามารถย้อนกลับได้"
+          }
+          destructive
+        />
+      </PageContainer>
     </AdminLayout>
   );
 }

@@ -18,6 +18,10 @@ export function Skeleton({
   );
 }
 
+export function SkeletonHero() {
+  return <Skeleton className="w-full h-[280px] md:h-[360px] rounded-8" />;
+}
+
 export function SkeletonOfferCard() {
   return (
     <div className="site-card p-3">

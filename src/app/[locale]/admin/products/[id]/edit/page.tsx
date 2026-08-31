@@ -34,7 +34,7 @@ import { GeneratedContent } from "@/lib/services/ai-api";
 import { processImageUrl } from "@/lib/services/storage-api";
 import DynamicProductFields from "@/components/products/DynamicProductFields";
 import AIGenerateButton from "@/components/admin/AIGenerateButton";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -535,11 +535,15 @@ export default function EditProductPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
           <div className="flex items-center gap-3">
-            <Button asChild variant="secondary" size="icon" className="shrink-0">
-              <Link href="/admin/products" aria-label="กลับไปหน้ารายการสินค้า">
-                <ArrowLeft className="w-4 h-4" />
-              </Link>
-            </Button>
+            <Link
+              href="/admin/products"
+              aria-label="กลับไปหน้ารายการสินค้า"
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "icon" }),
+                "shrink-0"
+              )}>
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
             <div className="flex items-center gap-2 flex-wrap">
               <AdminPageHeader
                 title="แก้ไขสินค้า"

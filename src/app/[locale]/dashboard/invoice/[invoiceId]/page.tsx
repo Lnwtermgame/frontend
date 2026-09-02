@@ -96,7 +96,7 @@ export default function InvoiceDetailPage() {
           body { font-family:'Inter', sans-serif; padding:40px; color:#111; font-size:14px; }
           .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px; border-bottom:1px solid #e5e7eb; padding-bottom:20px; }
           .logo { font-size:24px; font-weight:700; color: #111; }
-          .logo span { color:#67B0BA; }
+          .logo span { color:#E6404A; }
           .invoice-title { text-align:right; }
           .invoice-title h1 { font-size:24px; margin-bottom:4px; font-weight: 600; }
           .invoice-title .inv-number { font-size:14px; color:#6b7280; }

@@ -6,18 +6,17 @@ export const metadata: Metadata = {
   ),
 };
 
+/**
+ * Pass-through root layout.
+ *
+ * The real <html>/<body> shell is rendered by `src/app/[locale]/layout.tsx`
+ * (it owns the per-locale `lang` attribute). Rendering the shell here too
+ * produced nested <html> trees and hydration errors on locale switch.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html
-      lang="en"
-      style={{ colorScheme: "dark" }}
-      suppressHydrationWarning
-    >
-      <body suppressHydrationWarning>{children}</body>
-    </html>
-  );
+  return children;
 }

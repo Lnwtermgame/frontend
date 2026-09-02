@@ -223,7 +223,11 @@
     },
     "games_sublabel": "게임 충전",
     "card_sublabel": "기프트카드",
-    "mobile_sublabel": "모바일 충전"
+    "mobile_sublabel": "모바일 충전",
+    "status_instant": "즉시 충전",
+    "starting_from": "최저가",
+    "see_more": "자세히 보기",
+    "filter_platform": "플랫폼"
   },
   "Checkout": {
     "browse_products": "상품 둘러보기",
@@ -2131,5 +2135,12 @@
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
   },
-  "screenshots_hint": "[MISSING: screenshots_hint]"
+  "screenshots_hint": "[MISSING: screenshots_hint]",
+  "hero_kicker": "[MISSING: hero_kicker]",
+  "hero_browse_games": "[MISSING: hero_browse_games]",
+  "ticker_promo": "[MISSING: ticker_promo]",
+  "ticker_news": "[MISSING: ticker_news]",
+  "starting_from": "[MISSING: starting_from]",
+  "see_more": "[MISSING: see_more]",
+  "filter_platform": "[MISSING: filter_platform]"
 }

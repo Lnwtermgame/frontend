@@ -431,13 +431,49 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
 
   return (
     <div>
+      {/* Full-width top zone: breadcrumb + floating title band */}
+      <div className="flex items-center text-[12px] text-site-dim mb-4 sm:mb-6 pl-1 font-medium">
+        <Link href="/" className="hover:text-site-text transition-colors cursor-pointer">Lnwtermgame</Link>
+        <span className="mx-2">/</span>
+        <span className="text-site-text truncate">{copy.title}</span>
+      </div>
+
+      {/* Page header — Soft Shadow floating band: title left, search right */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-site-raised rounded-14 border border-transparent p-6 mb-6 shadow-[0_16px_44px_-26px_rgba(0,0,0,0.85)]">
+        <div>
+          <SectionHeader level={1} title={copy.title} sublabel={mode === "card" ? t("card_sublabel") : mode === "mobile-recharge" || mode === "mobile" ? t("mobile_sublabel") : t("games_sublabel")} />
+          <p className="text-site-muted text-[13px] md:text-[14px] leading-relaxed max-w-lg">{copy.subtitle}</p>
+        </div>
+
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-80">
+            <input
+              type="text"
+              placeholder={copy.searchPlaceholder}
+              aria-label={copy.searchPlaceholder}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="site-input !h-9 w-full pl-11 pr-4 text-[13px]"
+            />
+            <Search className="absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-site-dim" />
+          </div>
+
+          <button
+            onClick={() => setIsFilterOpen(true)}
+            className="lg:hidden shrink-0 bg-site-surface text-site-muted hover:text-site-text rounded-10 text-sm px-4 py-2 flex items-center gap-2 transition-colors font-semibold border border-transparent shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)]"
+          >
+            <Filter size={18} />
+          </button>
+        </div>
+      </div>
+
       <div className="flex flex-col lg:flex-row gap-6 min-w-0">
-        {/* Desktop sidebar */}
+        {/* Desktop sidebar — Soft Shadow: borderless floating panel */}
         <div className="hidden lg:block w-64 lg:min-w-[256px] shrink-0">
-          <div className="bg-site-raised rounded-8 overflow-hidden mb-5 border border-site-border-soft pb-2">
+          <div className="bg-site-raised rounded-14 overflow-hidden mb-5 border border-transparent pb-2 shadow-[0_16px_44px_-26px_rgba(0,0,0,0.85)]">
             <div className="p-4 border-b border-site-border-soft">
               <h3 className="text-site-muted font-medium text-[13px] tracking-wide">
-                {t("filter_category")}
+                {t("filter_platform")}
               </h3>
             </div>
 
@@ -514,42 +550,6 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
         </div>
 
         <div className="flex-1 min-w-0">
-          {/* Breadcrumb */}
-          <div className="flex items-center text-[12px] text-site-dim mb-4 sm:mb-6 pl-1 font-medium">
-            <Link href="/" className="hover:text-site-text transition-colors cursor-pointer">Lnwtermgame</Link>
-            <span className="mx-2">/</span>
-            <span className="text-site-text truncate">{copy.title}</span>
-          </div>
-
-          {/* Page header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-site-raised border border-site-border-soft rounded-8 p-6 mb-6">
-            <div>
-              <SectionHeader level={1} title={copy.title} sublabel={mode === "card" ? t("card_sublabel") : mode === "mobile-recharge" || mode === "mobile" ? t("mobile_sublabel") : t("games_sublabel")} />
-              <p className="text-site-muted text-[13px] md:text-[14px] leading-relaxed max-w-lg">{copy.subtitle}</p>
-            </div>
-
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              <div className="relative w-full md:w-80">
-                <input
-                  type="text"
-                  placeholder={copy.searchPlaceholder}
-                  aria-label={copy.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="site-input !h-9 w-full pl-11 pr-4 text-[13px]"
-                />
-                <Search className="absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-site-dim" />
-              </div>
-
-              <button
-                onClick={() => setIsFilterOpen(true)}
-                className="lg:hidden shrink-0 bg-site-surface text-site-muted hover:text-site-text rounded-6 text-sm px-4 py-2 flex items-center gap-2 transition-colors font-semibold border border-site-border-soft"
-              >
-                <Filter size={18} />
-              </button>
-            </div>
-          </div>
-
           {/* Mobile filter chips */}
           <div className="lg:hidden mt-2 -mx-5 px-5 space-y-2 mb-4">
             <div className="overflow-x-auto scrollbar-hide flex gap-2 pb-1">
@@ -558,9 +558,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
                   aria-pressed={selectedPrimary === option.id}
-                  className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-6 border ${selectedPrimary === option.id
-                    ? "bg-site-accent text-site-bg border-transparent"
-                    : "bg-site-surface text-site-muted border-site-border-soft hover:text-site-text"
+                  className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-full border border-transparent shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)] ${selectedPrimary === option.id
+                    ? "bg-site-accent text-site-bg"
+                    : "bg-site-surface text-site-muted hover:text-site-text"
                     }`}
                 >
                   {renderOptionIcon(
@@ -580,9 +580,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     key={option.id}
                     onClick={() => setSelectedSecondary(option.id)}
                     aria-pressed={selectedSecondary === option.id}
-                    className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-6 border ${selectedSecondary === option.id
-                      ? "bg-site-accent text-site-bg border-transparent"
-                      : "bg-site-surface text-site-muted border-site-border-soft hover:text-site-text"
+                    className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-full border border-transparent shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)] ${selectedSecondary === option.id
+                      ? "bg-site-accent text-site-bg"
+                      : "bg-site-surface text-site-muted hover:text-site-text"
                       }`}
                   >
                     {(mode === "mobile-recharge" || mode === "mobile") &&
@@ -628,33 +628,82 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             )}
 
             {!loading && filteredItems.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
                 {filteredItems.map((item) => (
-                  <div key={item.id} className="min-w-0">
-                    <Link href={getItemLink(mode as any, item.slug)} className="group block">
-                      <div className="flex flex-col items-center">
-                        <div className="relative w-full aspect-square rounded-8 overflow-hidden bg-site-raised border border-site-border-soft">
-                          {item.discountPercent ? (
-                            <div className="absolute top-2 left-2 z-10">
+                  <div key={item.id} className="min-w-0 flex">
+                    <Link
+                      href={getItemLink(mode as any, item.slug)}
+                      aria-label={mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
+                      className="group flex w-full min-w-0 flex-col rounded-12 overflow-hidden bg-site-surface border border-transparent shadow-[0_10px_26px_-18px_rgba(0,0,0,0.9)] group-hover:shadow-[0_0_24px_-6px_rgba(230,64,74,0.28)] transition-shadow duration-200"
+                    >
+                      {/* ── Artwork 1:1 ──
+                          Overlays sit on a padded gradient shelf so tags never
+                          collide with the art subject. */}
+                      <div className="relative w-full aspect-square overflow-hidden bg-site-raised">
+                        <img
+                          src={item.image}
+                          alt={mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        {/* top overlay row: instant bolt + discount / region tag */}
+                        <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-1 p-2">
+                          <span className="flex items-center gap-1">
+                            {item.autoDelivery && (
+                              <span
+                                className="grid h-5 w-5 place-items-center rounded-6 bg-site-deep/85 text-status-success backdrop-blur-sm"
+                                title={t("status_instant")}
+                              >
+                                <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="currentColor"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>
+                              </span>
+                            )}
+                            {item.discountPercent ? (
                               <Badge variant="success">-{item.discountPercent}%</Badge>
-                            </div>
-                          ) : null}
-
-                          <img
-                            src={item.image}
-                            alt={mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
+                            ) : null}
+                          </span>
+                          {/* Region flag badge (falls back to globe icon for Global) */}
+                          {(() => {
+                            const flagCode = getCountryFlagCode(item.country);
+                            return flagCode ? (
+                              <span className="grid place-items-center rounded-6 bg-site-deep/85 px-1 py-1 backdrop-blur-sm">
+                                <CountryFlag code={flagCode} size="S" />
+                              </span>
+                            ) : null;
+                          })()}
                         </div>
+                      </div>
 
-                        <h3 className="mt-2 text-[13px] text-center text-site-text font-bold line-clamp-2 group-hover:text-site-accent transition-colors">
+                      {/* ── Info block ──
+                          Fixed rhythm: name (2 lines max) → spacer → price row
+                          pinned to the bottom so every card ends evenly. */}
+                      <div className="flex min-w-0 flex-1 flex-col gap-1.5 p-3">
+                        <h3 className="line-clamp-2 min-h-[2.6em] text-left text-[12.5px] font-bold leading-[1.3] text-site-text transition-colors group-hover:text-site-accent">
                           {mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
                         </h3>
 
-                        <div className="flex items-center gap-1 text-[11px] text-site-dim text-center mt-0.5">
-                          <CountryFlag code={getCountryFlagCode(item.country)} size="S" />
-                          <span className="truncate">{mode === "games" ? item.publisher : mode === "card" ? item.category : item.country}</span>
+                        <div className="mt-auto flex items-end justify-between gap-2 pt-1">
+                          <div className="min-w-0">
+                            {item.price > 0 ? (
+                              <>
+                                <p className="text-[10px] uppercase tracking-wide leading-none text-site-dim">
+                                  {t("starting_from")}
+                                </p>
+                                <p className="mt-1 font-mono text-[15px] font-bold leading-none text-site-text">
+                                  {item.price.toLocaleString()}<span className="text-site-muted">฿</span>
+                                </p>
+                              </>
+                            ) : (
+                              <p className="text-[12px] font-semibold leading-none text-site-accent">
+                                {t("see_more")}
+                              </p>
+                            )}
+                          </div>
+                          <span
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-8 bg-site-raised text-site-muted transition-colors group-hover:bg-site-accent group-hover:text-white"
+                            aria-hidden="true"
+                          >
+                            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+                          </span>
                         </div>
                       </div>
                     </Link>

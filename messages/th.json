@@ -223,7 +223,11 @@
     },
     "games_sublabel": "เติมเกมออนไลน์",
     "card_sublabel": "บัตรเติมเงิน",
-    "mobile_sublabel": "เติมเงินมือถือ"
+    "mobile_sublabel": "เติมเงินมือถือ",
+    "status_instant": "เติมทันที",
+    "starting_from": "เริ่มต้น",
+    "see_more": "ดูรายละเอียด",
+    "filter_platform": "แพลตฟอร์ม"
   },
   "Checkout": {
     "browse_products": "เลือกดูสินค้าต่อ",
@@ -1264,6 +1268,10 @@
   "hero_genshin_subtitle": "เติมเงิน Genshin Impact",
   "hero_genshin_highlight_text": "ส่วนลดสูงสุด",
   "hero_btn_text": "เติมเงินเลย",
+  "hero_kicker": "Lnwtermgame · เติมเกมครบจบในเว็บเดียว",
+  "hero_browse_games": "ดูเกมทั้งหมด",
+  "ticker_promo": "โปรใหม่",
+  "ticker_news": "ข่าว:",
   "category_popular_games": "เกมยอดนิยม",
   "category_all_games": "เกมทั้งหมด",
   "category_check_skin": "สุ่มสกิน",
@@ -2131,5 +2139,8 @@
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
   },
-  "screenshots_hint": "[MISSING: screenshots_hint]"
+  "screenshots_hint": "[MISSING: screenshots_hint]",
+  "starting_from": "[MISSING: starting_from]",
+  "see_more": "[MISSING: see_more]",
+  "filter_platform": "[MISSING: filter_platform]"
 }

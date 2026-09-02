@@ -86,6 +86,7 @@ module.exports = {
         8: "8px",
         10: "10px",
         12: "12px",
+        14: "14px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",

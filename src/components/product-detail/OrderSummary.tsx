@@ -260,7 +260,7 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
             disabled={isBuying}
             isLoading={isBuying}
             fullWidth
-            className="font-bold h-[46px] rounded-12 shadow-[0_10px_26px_-10px_rgba(99,199,194,0.55)]"
+            className="font-bold h-[46px] rounded-12 shadow-[0_10px_26px_-10px_rgba(230,64,74,0.5)]"
           >
             {!isBuying && (
               <>

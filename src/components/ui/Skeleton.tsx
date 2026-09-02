@@ -43,10 +43,19 @@ export function SkeletonCouponCard() {
 }
 
 export function SkeletonGameTile() {
+  // Mirrors the catalog card layout: square art + 2-line name + price row,
+  // inside a card surface with the same Soft Shadow footprint.
   return (
-    <div className="flex flex-col items-center">
-      <Skeleton className="w-full aspect-square rounded-8" />
-      <Skeleton className="h-3.5 w-3/4 mt-2" />
+    <div className="flex flex-col overflow-hidden rounded-12 bg-site-surface border border-transparent shadow-[0_10px_26px_-18px_rgba(0,0,0,0.9)]">
+      <Skeleton className="w-full aspect-square rounded-none" />
+      <div className="flex flex-col gap-1.5 p-3">
+        <Skeleton className="h-3.5 w-4/5" />
+        <Skeleton className="h-3 w-3/5" />
+        <div className="flex items-end justify-between pt-1">
+          <Skeleton className="h-4 w-12" />
+          <Skeleton className="h-7 w-7 rounded-8" />
+        </div>
+      </div>
     </div>
   );
 }

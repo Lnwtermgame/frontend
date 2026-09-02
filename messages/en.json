@@ -223,7 +223,11 @@
     },
     "games_sublabel": "Games Catalog",
     "card_sublabel": "Gift Cards",
-    "mobile_sublabel": "Mobile Recharge"
+    "mobile_sublabel": "Mobile Recharge",
+    "status_instant": "Instant",
+    "starting_from": "From",
+    "see_more": "View details",
+    "filter_platform": "Platform"
   },
   "Checkout": {
     "browse_products": "Browse products",
@@ -1264,6 +1268,10 @@
   "hero_genshin_subtitle": "Top Up Genshin Impact",
   "hero_genshin_highlight_text": "Up to",
   "hero_btn_text": "Top Up Now",
+  "hero_kicker": "Lnwtermgame · All your game top-ups in one place",
+  "hero_browse_games": "Browse all games",
+  "ticker_promo": "New deal",
+  "ticker_news": "News:",
   "category_popular_games": "Popular Games",
   "category_all_games": "All Games",
   "category_check_skin": "Lucky Skins",
@@ -2131,5 +2139,8 @@
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
   },
-  "screenshots_hint": "[MISSING: screenshots_hint]"
+  "screenshots_hint": "[MISSING: screenshots_hint]",
+  "starting_from": "[MISSING: starting_from]",
+  "see_more": "[MISSING: see_more]",
+  "filter_platform": "[MISSING: filter_platform]"
 }

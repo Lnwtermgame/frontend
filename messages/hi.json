@@ -223,7 +223,11 @@
     },
     "games_sublabel": "गेम टॉप-अप",
     "card_sublabel": "गिफ्ट कार्ड",
-    "mobile_sublabel": "मोबाइल रिचार्ज"
+    "mobile_sublabel": "मोबाइल रिचार्ज",
+    "status_instant": "तुरंत टॉप-अप",
+    "starting_from": "से शुरू",
+    "see_more": "विवरण देखें",
+    "filter_platform": "प्लेटफ़ॉर्म"
   },
   "Checkout": {
     "browse_products": "उत्पाद देखें",
@@ -2131,5 +2135,12 @@
     "model_count": "[MISSING: ai.model_count]",
     "no_models": "[MISSING: ai.no_models]"
   },
-  "screenshots_hint": "[MISSING: screenshots_hint]"
+  "screenshots_hint": "[MISSING: screenshots_hint]",
+  "hero_kicker": "[MISSING: hero_kicker]",
+  "hero_browse_games": "[MISSING: hero_browse_games]",
+  "ticker_promo": "[MISSING: ticker_promo]",
+  "ticker_news": "[MISSING: ticker_news]",
+  "starting_from": "[MISSING: starting_from]",
+  "see_more": "[MISSING: see_more]",
+  "filter_platform": "[MISSING: filter_platform]"
 }

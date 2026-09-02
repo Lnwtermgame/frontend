@@ -18,6 +18,14 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { orderApi, Order } from "@/lib/services/order-api";
+import { Button } from "@/components/ui/Button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useTranslations } from "next-intl";
 import {
   AdminLayout,
@@ -196,12 +204,14 @@ export default function OrderViewPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <Button
+            variant="secondary"
             onClick={fetchOrder}
-            className="flex items-center gap-2 px-3 py-1.5 bg-site-accent/10 border border-site-border rounded-xl font-bold hover:bg-site-accent/10/90 transition-all hover:-translate-y-0.5 text-sm">
+            className="gap-2 rounded-xl text-sm"
+          >
             <RefreshCw className="h-3 w-3" />
             {t("common.refresh")}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -428,31 +438,27 @@ export default function OrderViewPage() {
             <div className="p-3 space-y-3">
               {/* Status Update */}
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                <label className="block text-xs font-medium text-site-muted mb-1.5">
                   อัปเดตสถานะ
                 </label>
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-site-surface border border-site-border rounded-2xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-site-accent text-sm">
-                  <option value="PENDING">รอดำเนินการ</option>
-                  <option value="PROCESSING">กำลังดำเนินการ</option>
-                  <option value="COMPLETED">สำเร็จ</option>
-                  <option value="CANCELLED">ยกเลิก</option>
-                  <option value="REFUNDED">คืนเงิน</option>
-                </select>
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="h-9 w-full rounded-xl border-site-border bg-site-surface px-3 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PENDING">รอดำเนินการ</SelectItem>
+                    <SelectItem value="PROCESSING">กำลังดำเนินการ</SelectItem>
+                    <SelectItem value="COMPLETED">สำเร็จ</SelectItem>
+                    <SelectItem value="CANCELLED">ยกเลิก</SelectItem>
+                    <SelectItem value="REFUNDED">คืนเงิน</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <button
+              <Button
                 onClick={handleUpdateStatus}
                 disabled={updating || selectedStatus === order.status}
-                className="w-full py-1.5 bg-site-accent hover:bg-site-accent/90 text-white font-bold border border-site-border rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                style={{
-                  boxShadow:
-                    updating || selectedStatus === order.status
-                      ? "none"
-                      : "2px 2px 0 0 #000000",
-                }}
+                className="w-full rounded-xl text-sm"
               >
                 {updating ? (
                   <span className="flex items-center justify-center gap-2">
@@ -462,17 +468,14 @@ export default function OrderViewPage() {
                 ) : (
                   "อัปเดตสถานะ"
                 )}
-              </button>
+              </Button>
 
               {/* Fulfill Button */}
               {order.status === "PENDING" && (
-                <button
+                <Button
                   onClick={handleFulfill}
                   disabled={updating}
-                  className="w-full py-1.5 bg-green-500 hover:bg-green-500/90 text-white font-bold border border-site-border rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 text-sm"
-                  style={{
-                    boxShadow: updating ? "none" : "2px 2px 0 0 #000000",
-                  }}
+                  className="w-full rounded-xl bg-status-success text-white hover:bg-status-success/90 text-sm"
                 >
                   {updating ? (
                     <span className="flex items-center justify-center gap-2">
@@ -482,17 +485,19 @@ export default function OrderViewPage() {
                   ) : (
                     "Fulfill Order"
                   )}
-                </button>
+                </Button>
               )}
 
               {/* Cancel Button */}
               {(order.status === "PENDING" ||
                 order.status === "PROCESSING") && (
-                  <button
+                  <Button
+                    variant="danger"
                     onClick={() => setSelectedStatus("CANCELLED")}
-                    className="w-full py-1.5 bg-red-500/10 hover:bg-red-200 text-red-400 font-bold border border-site-border rounded-xl border-red-500/30/30 transition-all hover:-translate-y-0.5 text-sm">
+                    className="w-full rounded-xl text-sm"
+                  >
                     ยกเลิกคำสั่งซื้อ
-                  </button>
+                  </Button>
                 )}
             </div>
           </motion.div>

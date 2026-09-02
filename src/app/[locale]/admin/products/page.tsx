@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "@/lib/framer-exports";
 import {
@@ -32,7 +32,7 @@ import AIGenerateAllButton from "@/components/admin/AIGenerateAllButton";
 import ExportProductsModal from "@/components/admin/ExportProductsModal";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { ProductsFilterBar } from "./_components/ProductsFilterBar";
-import { ProductsTable } from "./_components/ProductsTable";
+import { CommandDeckTable } from "./_components/CommandDeckTable";
 import { PriceEditModal } from "./_components/PriceEditModal";
 import { BulkPriceModal } from "./_components/BulkPriceModal";
 import { ImageEditModal } from "./_components/ImageEditModal";
@@ -91,6 +91,32 @@ export default function AdminProducts() {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [isBulkToggling, setIsBulkToggling] = useState(false);
 
+  // --- Lazy-loaded sub-type pricing for expanded rows (Command Deck) ---
+  const [typesById, setTypesById] = useState<
+    Record<string, AdminProductType[]>
+  >({});
+
+  const handleExpandProduct = useCallback(
+    (product: AdminProduct) => {
+      if (typesById[product.id]) return;
+      if (!product.seagmProductId) return;
+      productApi
+        .getGameTypesById(product.seagmProductId)
+        .then((res) => {
+          if (res.success) {
+            setTypesById((prev) => ({
+              ...prev,
+              [product.id]: res.data as unknown as AdminProductType[],
+            }));
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch product types:", err);
+        });
+    },
+    [typesById],
+  );
+
   // Client-side type/status filtering (search + category are server-side).
   const filteredProducts = useMemo<AdminProduct[]>(() => {
     return products.filter((product) => {
@@ -103,6 +129,26 @@ export default function AdminProducts() {
       return matchesType && matchesStatus;
     });
   }, [products, productTypeFilter, statusFilter]);
+
+  // --- Command Deck stats (header chips) ---
+  const deckStats = useMemo(() => {
+    const active = products.filter((p) => p.isActive).length;
+    const lowMargin = products.filter((p) => {
+      const prices = (p.seagmTypes ?? [])
+        .map((t) => Number(t.unitPrice) || 0)
+        .filter((n) => n > 0);
+      if (prices.length === 0) return false;
+      const cost = Math.min(...prices);
+      const sellPrices = (p.seagmTypes ?? [])
+        .map((t) => Number(t.displayPrice) || Number(t.sellingPrice) || 0)
+        .filter((n) => n > 0);
+      if (sellPrices.length === 0) return false;
+      const price = Math.min(...sellPrices);
+      return cost > 0 && ((price - cost) / cost) * 100 < 5;
+    }).length;
+    const missingImage = products.filter((p) => !p.imageUrl).length;
+    return { total: products.length, active, lowMargin, missingImage };
+  }, [products]);
 
   // Sample products for the bulk pricing live preview (up to 5 with seagmTypes).
   const sampleProducts = useMemo(() => {
@@ -491,6 +537,59 @@ export default function AdminProducts() {
           </div>
         )}
 
+        {/* Command Deck stat chips */}
+        <div className="flex flex-wrap gap-2">
+          <div className="bg-site-surface border border-site-border-soft rounded-xl px-3.5 py-2 min-w-[96px]">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-site-dim">
+              ทั้งหมด
+            </p>
+            <p className="text-base font-bold text-site-text leading-tight">
+              {deckStats.total}
+            </p>
+          </div>
+          <div className="bg-site-surface border border-site-border-soft rounded-xl px-3.5 py-2 min-w-[96px]">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-site-dim">
+              เปิดขาย
+            </p>
+            <p className="text-base font-bold text-semantic-green leading-tight">
+              {deckStats.active}
+            </p>
+          </div>
+          <button
+            onClick={() =>
+              setStatusFilter(statusFilter === "active" ? "all" : "active")
+            }
+            className="bg-site-surface border border-site-border-soft rounded-xl px-3.5 py-2 min-w-[96px] text-left hover:border-site-border transition-colors"
+          >
+            <p className="text-[10px] font-bold uppercase tracking-wider text-site-dim">
+              ปิดขาย
+            </p>
+            <p className="text-base font-bold text-site-muted leading-tight">
+              {deckStats.total - deckStats.active}
+            </p>
+          </button>
+          {deckStats.lowMargin > 0 && (
+            <div className="bg-semantic-amber/8 border border-semantic-amber/25 rounded-xl px-3.5 py-2 min-w-[96px]">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-semantic-amber/80">
+                กำไรต่ำ
+              </p>
+              <p className="text-base font-bold text-semantic-amber leading-tight">
+                {deckStats.lowMargin}
+              </p>
+            </div>
+          )}
+          {deckStats.missingImage > 0 && (
+            <div className="bg-semantic-rose/8 border border-semantic-rose/25 rounded-xl px-3.5 py-2 min-w-[96px]">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-semantic-rose/80">
+                ไม่มีรูป
+              </p>
+              <p className="text-base font-bold text-semantic-rose leading-tight">
+                {deckStats.missingImage}
+              </p>
+            </div>
+          )}
+        </div>
+
         <ProductsFilterBar
           search={searchTerm}
           setSearch={setSearchTerm}
@@ -506,7 +605,7 @@ export default function AdminProducts() {
           setStatus={setStatusFilter}
         />
 
-        <ProductsTable
+        <CommandDeckTable
           products={filteredProducts}
           loading={loading}
           pagination={{
@@ -521,6 +620,8 @@ export default function AdminProducts() {
           onDelete={handleDeleteProduct}
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
+          onExpandProduct={handleExpandProduct}
+          typesById={typesById}
         />
 
         {/* Price Edit Modal */}
@@ -607,6 +708,12 @@ export default function AdminProducts() {
                   className="px-4 py-2 bg-site-raised hover:bg-site-surface text-site-muted hover:text-site-text border border-site-border rounded-lg transition-all font-bold text-[13px] flex items-center gap-2 disabled:opacity-50"
                 >
                   <EyeOff className="w-4 h-4" /> ปิดขาย
+                </button>
+                <button
+                  onClick={() => setIsBulkPriceModalOpen(true)}
+                  className="px-4 py-2 bg-site-raised hover:bg-site-surface text-site-muted hover:text-site-accent border border-site-border rounded-lg transition-all font-bold text-[13px] flex items-center gap-2"
+                >
+                  <Settings className="w-4 h-4" /> ตั้งราคา
                 </button>
                 <div className="w-px h-6 bg-site-border mx-1" />
                 <button

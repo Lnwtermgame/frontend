@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Copy, ImageIcon, Loader2, Upload, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { FormModal } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import type { AdminProduct } from "@/lib/services/product-api";
 
 interface ImageEditModalProps {
@@ -140,7 +142,7 @@ export function ImageEditModal({
             {target === "logo" ? "URL โลโก้สินค้า" : "URL รูปภาพหน้าปก"}
           </label>
           <div className="relative">
-            <input
+            <Input
               type="text"
               value={imageUrlInput}
               onChange={(e) => {
@@ -148,7 +150,7 @@ export function ImageEditModal({
                 setImageError(false);
               }}
               placeholder="https://example.com/image.jpg"
-              className="w-full bg-site-raised border border-site-border rounded-lg pl-4 pr-10 py-3 text-[13px] text-site-text focus:ring-2 focus:ring-site-accent/50 outline-none transition-all"
+              className="h-12 rounded-lg bg-site-raised border-site-border pl-4 pr-10 text-[13px]"
             />
             {imageUrlInput && (
               <button
@@ -168,14 +170,14 @@ export function ImageEditModal({
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              className="flex-1 h-11 gap-2 rounded-lg border-site-accent/20 bg-site-accent/10 text-site-accent hover:bg-site-accent/20 hover:text-site-accent text-[13px]"
               onClick={handleUploadClick}
               disabled={
                 isUploadingImage ||
                 !(typeof imageUrlInput === "string" && imageUrlInput.trim())
               }
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-site-accent/10 border border-site-accent/20 text-site-accent rounded-lg font-bold text-[13px] hover:bg-site-accent/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUploadingImage ? (
                 <>
@@ -188,15 +190,15 @@ export function ImageEditModal({
                   <span>บันทึกลง Storage</span>
                 </>
               )}
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="secondary"
+              className="flex-1 h-11 gap-2 rounded-lg text-[13px]"
               onClick={onOpenCopyPicker}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-site-raised border border-site-border rounded-lg text-site-muted text-[13px] font-bold hover:bg-site-surface hover:text-site-text transition-all"
             >
               <Copy className="w-4 h-4" />
               <span>คัดลอกจากสินค้าอื่น</span>
-            </button>
+            </Button>
           </div>
         </div>
 

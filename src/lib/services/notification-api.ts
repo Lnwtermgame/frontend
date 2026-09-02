@@ -197,6 +197,7 @@ export class NotificationWebSocket {
   private reconnectDelay = 1000;
   private token: string | null = null;
   private pingInterval: NodeJS.Timeout | null = null;
+  private reconnectTimeout: NodeJS.Timeout | null = null;
 
   onNotification?: (notification: Notification, unreadCount: number) => void;
   onNotificationRead?: (notificationId: string) => void;
@@ -295,6 +296,11 @@ export class NotificationWebSocket {
   }
 
   private attemptReconnect(): void {
+    // Don't schedule reconnect if explicitly disconnected
+    if (!this.token) {
+      return;
+    }
+
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.log("[WebSocket] Max reconnection attempts reached");
       return;
@@ -307,8 +313,12 @@ export class NotificationWebSocket {
       `[WebSocket] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`,
     );
 
-    setTimeout(() => {
-      this.connectInternal();
+    // Track the timeout so disconnect() can cancel a pending reconnect
+    this.reconnectTimeout = setTimeout(() => {
+      this.reconnectTimeout = null;
+      if (this.token) {
+        this.connectInternal();
+      }
     }, delay);
   }
 
@@ -376,6 +386,11 @@ export class NotificationWebSocket {
   disconnect(): void {
     this.token = null;
     this.stopPingInterval();
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+    this.reconnectAttempts = 0;
     if (this.ws) {
       this.ws.close();
       this.ws = null;

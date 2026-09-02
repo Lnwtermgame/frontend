@@ -9,6 +9,16 @@ import {
   X,
 } from "lucide-react";
 import { FormModal } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export interface BulkPricingPreset {
   name: string;
@@ -304,12 +314,13 @@ export function BulkPriceModal({
               เปอร์เซ็นต์กำไรจากต้นทุนหลัก
             </h4>
             <div className="flex items-center gap-2 bg-site-raised p-1.5 rounded-xl border border-site-border">
-              <input
+              <Input
                 type="number"
                 step="0.5"
                 value={customPercent}
                 onChange={(e) => handlePercentInputChange(e.target.value)}
-                className="w-16 text-center bg-transparent px-1 py-1 text-[14px] text-site-accent font-bold focus:outline-none"
+                className="h-8 w-16 rounded-none border-0 bg-transparent px-1 text-center text-[14px] font-bold text-site-accent focus-visible:ring-0 focus-visible:ring-offset-0"
+                aria-label="เปอร์เซ็นต์กำไรจากต้นทุน"
               />
               <span className="text-site-dim text-[13px] font-bold pr-2">%</span>
             </div>
@@ -362,42 +373,46 @@ export function BulkPriceModal({
             {/* Save Preset */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               {showSavePreset ? (
-                <div className="flex items-center gap-2 flex-1 relative">
-                  <input
+                <div className="flex items-center gap-2 flex-1 relative [&>div]:space-y-0 [&>div]:w-full">
+                  <Input
                     type="text"
                     value={newPresetName}
                     onChange={(e) => setNewPresetName(e.target.value)}
                     placeholder="เช่น โปรซัมเมอร์"
-                    className="flex-1 bg-site-raised border border-site-accent/30 rounded-lg pl-3 pr-10 py-2 text-[12px] text-site-text focus:ring-2 focus:ring-site-accent/50 outline-none w-full sm:w-48"
+                    className="h-10 rounded-lg border-site-accent/30 bg-site-raised pl-3 pr-10 text-[12px] w-full sm:w-48"
                     onKeyDown={(e) => e.key === "Enter" && savePreset()}
                     autoFocus
                   />
-                  <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center">
-                    <button
-                      type="button"
+                  <div className="absolute right-1 top-1/2 -translate-y-1/2 z-10 flex items-center">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-md text-site-accent"
                       onClick={savePreset}
-                      className="p-1.5 text-site-accent hover:text-site-accent transition-colors"
+                      aria-label="บันทึก preset"
                     >
                       <Save className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-md text-site-dim hover:text-semantic-rose"
                       onClick={() => setShowSavePreset(false)}
-                      className="p-1.5 text-site-dim hover:text-semantic-rose transition-colors"
+                      aria-label="ยกเลิกการบันทึก preset"
                     >
                       <X className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
-                <button
-                  type="button"
+                <Button
+                  variant="outline"
+                  className="h-10 gap-1.5 rounded-lg border-site-accent/20 bg-site-accent/10 text-[12px] text-site-accent hover:bg-site-accent/20 hover:text-site-accent w-full sm:w-auto"
                   onClick={() => setShowSavePreset(true)}
-                  className="flex items-center justify-center gap-1.5 text-[12px] px-3 py-2 rounded-lg bg-site-accent/10 border border-site-accent/20 text-site-accent hover:bg-site-accent/20 transition-all font-bold w-full sm:w-auto"
                 >
                   <Bookmark className="w-3.5 h-3.5" />
                   บันทึกเป็นค่าเริ่มต้นใหม่
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -412,76 +427,74 @@ export function BulkPriceModal({
                 Live Preview (ตัวอย่างราคา)
               </h4>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-[12px]">
-                <thead>
-                  <tr className="text-site-dim text-left uppercase tracking-wider">
-                    <th className="px-5 py-3 font-bold border-b border-site-border-soft">
-                      สินค้าอ้างอิง
-                    </th>
-                    <th className="px-5 py-3 font-bold border-b border-site-border-soft text-right w-24">
-                      ต้นทุน
-                    </th>
-                    <th className="px-5 py-3 font-bold border-b border-site-border-soft text-right w-24">
-                      SEAGM
-                    </th>
-                    <th className="px-5 py-3 font-bold border-b border-site-border-soft text-right w-28 text-site-accent">
-                      ราคาขายใหม่
-                    </th>
-                    <th className="px-5 py-3 font-bold border-b border-site-border-soft text-right w-20">
-                      กำไร
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-site-border-soft">
-                  {sampleProducts.map((sp, i) => {
-                    const newPrice = calcBulkPreviewPrice(
-                      sp.cost,
-                      sp.seagm,
-                      effectiveStrategy,
-                      effectivePercent,
-                    );
-                    const profit =
-                      sp.cost > 0
-                        ? ((newPrice - sp.cost) / sp.cost) * 100
-                        : 0;
-                    return (
-                      <tr key={i} className="hover:bg-site-raised/50 group">
-                        <td className="px-5 py-2.5">
-                          <div className="text-site-text font-bold truncate max-w-[180px] text-[13px]">
-                            {sp.name}
-                          </div>
-                          <div className="text-site-dim text-[10px] truncate max-w-[180px] font-mono mt-0.5">
-                            {sp.typeName}
-                          </div>
-                        </td>
-                        <td className="px-5 py-2.5 text-right text-site-dim font-mono">
-                          ฿{sp.cost.toFixed(2)}
-                        </td>
-                        <td className="px-5 py-2.5 text-right text-site-dim font-mono">
-                          ฿{sp.seagm.toFixed(2)}
-                        </td>
-                        <td className="px-5 py-2.5 text-right text-site-accent font-bold font-mono tracking-wide">
-                          ฿{newPrice.toFixed(2)}
-                        </td>
-                        <td
-                          className={`px-5 py-2.5 text-right font-bold tracking-wide ${
-                            profit > 0
-                              ? "text-site-accent"
-                              : profit < 0
-                                ? "text-semantic-rose"
-                                : "text-site-dim"
-                          }`}
-                        >
-                          {profit > 0 ? "+" : ""}
-                          {profit.toFixed(1)}%
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <Table className="text-[12px]">
+              <TableHeader>
+                <TableRow className="border-site-border-soft hover:bg-transparent">
+                  <TableHead className="h-auto px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-site-dim">
+                    สินค้าอ้างอิง
+                  </TableHead>
+                  <TableHead className="h-auto px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-site-dim text-right w-24">
+                    ต้นทุน
+                  </TableHead>
+                  <TableHead className="h-auto px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-site-dim text-right w-24">
+                    SEAGM
+                  </TableHead>
+                  <TableHead className="h-auto px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-site-accent text-right w-28">
+                    ราคาขายใหม่
+                  </TableHead>
+                  <TableHead className="h-auto px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-site-dim text-right w-20">
+                    กำไร
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sampleProducts.map((sp, i) => {
+                  const newPrice = calcBulkPreviewPrice(
+                    sp.cost,
+                    sp.seagm,
+                    effectiveStrategy,
+                    effectivePercent,
+                  );
+                  const profit =
+                    sp.cost > 0
+                      ? ((newPrice - sp.cost) / sp.cost) * 100
+                      : 0;
+                  return (
+                    <TableRow key={i} className="border-site-border-soft hover:bg-site-raised/50 group">
+                      <TableCell className="px-5 py-2.5">
+                        <div className="text-site-text font-bold truncate max-w-[180px] text-[13px]">
+                          {sp.name}
+                        </div>
+                        <div className="text-site-dim text-[10px] truncate max-w-[180px] font-mono mt-0.5">
+                          {sp.typeName}
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-5 py-2.5 text-right text-site-dim font-mono">
+                        ฿{sp.cost.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="px-5 py-2.5 text-right text-site-dim font-mono">
+                        ฿{sp.seagm.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="px-5 py-2.5 text-right text-site-accent font-bold font-mono tracking-wide">
+                        ฿{newPrice.toFixed(2)}
+                      </TableCell>
+                      <TableCell
+                        className={`px-5 py-2.5 text-right font-bold tracking-wide ${
+                          profit > 0
+                            ? "text-site-accent"
+                            : profit < 0
+                              ? "text-semantic-rose"
+                              : "text-site-dim"
+                        }`}
+                      >
+                        {profit > 0 ? "+" : ""}
+                        {profit.toFixed(1)}%
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           </div>
         )}
 

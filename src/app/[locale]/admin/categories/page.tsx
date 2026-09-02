@@ -23,6 +23,9 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { productApi, Category } from "@/lib/services/product-api";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 
@@ -284,29 +287,33 @@ export default function AdminCategories() {
         const index = categories.findIndex((x) => x.id === c.id);
         return (
           <div className="flex items-center justify-center gap-1 bg-site-raised rounded-xl border border-site-border-soft p-1">
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => moveCategory(index, "up")}
               disabled={index === 0}
-              className="p-1 rounded-lg text-site-dim hover:text-site-text hover:bg-site-surface disabled:opacity-30 disabled:hover:bg-transparent transition-all"
-              title="เลื่อนขึ้น"
+              className="h-7 w-7 rounded-lg text-site-dim hover:text-site-text hover:bg-site-surface"
+              aria-label="เลื่อนขึ้น"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
               </svg>
-            </button>
+            </Button>
             <span className="text-[12px] font-bold text-site-text w-5 text-center">
               {index + 1}
             </span>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => moveCategory(index, "down")}
               disabled={index === categories.length - 1}
-              className="p-1 rounded-lg text-site-dim hover:text-site-text hover:bg-site-surface disabled:opacity-30 disabled:hover:bg-transparent transition-all"
-              title="เลื่อนลง"
+              className="h-7 w-7 rounded-lg text-site-dim hover:text-site-text hover:bg-site-surface"
+              aria-label="เลื่อนลง"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
-            </button>
+            </Button>
           </div>
         );
       },
@@ -317,20 +324,24 @@ export default function AdminCategories() {
       align: "right",
       render: (c) => (
         <div className="flex items-center justify-end gap-2">
-          <button
+          <Button
+            variant="secondary"
+            size="icon"
             onClick={() => openEditModal(c)}
-            className="p-2 bg-site-raised border border-site-border-soft rounded-xl text-site-dim hover:text-site-text hover:bg-site-accent/20 hover:border-site-accent/30 transition-all"
-            title="แก้ไขหมวดหมู่"
+            className="h-9 w-9 rounded-xl text-site-dim hover:text-site-text hover:bg-site-accent/20 hover:border-site-accent/30"
+            aria-label="แก้ไขหมวดหมู่"
           >
             <Edit className="h-4 w-4" />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="secondary"
+            size="icon"
             onClick={() => handleDelete(c)}
-            className="p-2 bg-site-raised border border-site-border-soft rounded-xl text-site-dim hover:text-semantic-rose hover:bg-semantic-rose/20 hover:border-semantic-rose/30 transition-all"
-            title="ลบหมวดหมู่"
+            className="h-9 w-9 rounded-xl text-site-dim hover:text-semantic-rose hover:bg-semantic-rose/20 hover:border-semantic-rose/30"
+            aria-label="ลบหมวดหมู่"
           >
             <Trash2 className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
       ),
     },
@@ -344,13 +355,10 @@ export default function AdminCategories() {
         description="จัดการและจัดกลุ่มแพลตฟอร์มเกม"
         icon={Layers}
         actions={
-          <button
-            onClick={openCreateModal}
-            className="inline-flex items-center gap-2 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg px-4 py-2 hover:bg-site-accent-hover transition-all font-bold text-[13px]"
-          >
+          <Button onClick={openCreateModal} className="gap-2 rounded-lg px-4 text-[13px]">
             <Plus className="h-4 w-4" />
             <span>เพิ่มหมวดหมู่ใหม่</span>
-          </button>
+          </Button>
         }
       />
 
@@ -468,15 +476,17 @@ export default function AdminCategories() {
                 <label className="block text-[13px] font-bold text-site-text">
                   ชื่อแพลตฟอร์ม/หมวดหมู่ <span className="text-semantic-rose">*</span>
                 </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full bg-site-raised border border-site-border rounded-lg px-4 py-3 text-sm text-site-text focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all placeholder:text-site-dim"
-                  placeholder="เช่น Steam, PlayStation, Mobile Games"
-                  disabled={isSaving}
-                  autoFocus
-                />
+                <div className="space-y-1.5">
+                  <Input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    className="h-12 rounded-lg border-site-border bg-site-raised px-4 text-sm"
+                    placeholder="เช่น Steam, PlayStation, Mobile Games"
+                    disabled={isSaving}
+                    autoFocus
+                  />
+                </div>
               </div>
 
               {/* Slug */}
@@ -484,15 +494,15 @@ export default function AdminCategories() {
                 <label className="block text-[13px] font-bold text-site-text">
                   Slug (URL Path) <span className="text-semantic-rose">*</span>
                 </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-4 text-site-dim font-mono text-[13px]">/category/</span>
-                  <input
+                <div className="relative flex items-center [&>div]:space-y-0 [&>div]:w-full">
+                  <span className="absolute left-4 z-10 text-site-dim font-mono text-[13px]">/category/</span>
+                  <Input
                     type="text"
                     value={formData.slug}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") }))
                     }
-                    className="w-full bg-site-raised border border-site-border rounded-lg pl-[85px] pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all placeholder:text-site-dim"
+                    className="h-12 rounded-lg border-site-border bg-site-raised pl-[85px] pr-4 text-[13px] font-mono text-site-accent"
                     placeholder="steam"
                     disabled={isSaving}
                   />
@@ -507,7 +517,7 @@ export default function AdminCategories() {
                 <label className="block text-[13px] font-bold text-site-text">
                   คำอธิบาย (สำหรับ AI Context)
                 </label>
-                <textarea
+                <Textarea
                   value={formData.description}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -516,7 +526,7 @@ export default function AdminCategories() {
                     }))
                   }
                   rows={4}
-                  className="w-full bg-site-raised border border-site-border rounded-lg px-4 py-3 text-[13px] text-site-text focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/60 outline-none transition-all resize-none placeholder:text-site-dim leading-relaxed"
+                  className="rounded-lg border-site-border bg-site-raised px-4 py-3 text-[13px] leading-relaxed resize-none placeholder:text-site-dim"
                   placeholder="อธิบายลักษณะของสินค้านี้ เพื่อให้ AI ทำความเข้าใจหมวดหมู่นี้ได้ดียิ่งขึ้นเวลาเขียนคำอธิบายสินค้า..."
                   disabled={isSaving}
                 />
@@ -531,17 +541,18 @@ export default function AdminCategories() {
 
             {/* Modal Footer */}
             <div className="p-4 border-t border-site-border-soft flex justify-end gap-3 shrink-0">
-              <button
+              <Button
+                variant="secondary"
                 onClick={closeModal}
                 disabled={isSaving}
-                className="px-5 py-2.5 bg-site-raised border border-site-border rounded-lg text-site-muted hover:text-site-text hover:bg-site-raised transition-all font-bold text-[13px] disabled:opacity-50"
+                className="px-5 py-2.5 rounded-lg text-[13px] font-bold text-site-muted"
               >
                 ยกเลิก
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleSave}
                 disabled={isSaving || !formData.name || !formData.slug}
-                className="px-6 py-2.5 bg-site-accent text-site-bg border border-site-accent/50 rounded-lg hover:bg-site-accent-hover transition-all font-bold text-[13px] flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="gap-2 px-6 py-2.5 rounded-lg text-[13px]"
               >
                 {isSaving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -553,7 +564,7 @@ export default function AdminCategories() {
                   : editingCategory
                     ? "บันทึกการแก้ไข"
                     : "สร้างหมวดหมู่ใหม่"}
-              </button>
+              </Button>
             </div>
         </DialogPrimitive.Content>
       </DialogPortal>

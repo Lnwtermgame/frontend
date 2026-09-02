@@ -28,6 +28,18 @@ import {
 import toast from "react-hot-toast";
 import { notificationClient } from "@/lib/client/gateway";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EmailTemplate {
   id: string;
@@ -306,11 +318,15 @@ export default function EmailTemplateEditorPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 rounded-xl"
               onClick={() => router.push("/admin/email")}
-              className="p-1.5 border border-white/5 rounded-xl hover:bg-site-raised/5">
+              aria-label="กลับ"
+            >
               <ArrowLeft className="h-4 w-4" />
-            </button>
+            </Button>
             <div>
               <h1 className="text-xl font-bold text-white flex items-center gap-2">
                 <Mail className="h-5 w-5 text-site-accent" />
@@ -322,23 +338,18 @@ export default function EmailTemplateEditorPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={handlePreview}
-              className="flex items-center gap-2 px-3 py-1.5 border border-white/5 rounded-xl bg-site-raised hover:bg-white/5 font-bold text-sm">
+            <Button variant="secondary" size="sm" onClick={handlePreview}>
               <Eye className="h-3.5 w-3.5" />
               ดูตัวอย่าง
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="flex items-center gap-2 px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl font-bold text-sm">
+            </Button>
+            <Button size="sm" onClick={handleSave} disabled={isSaving}>
               {isSaving ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <Save className="h-3.5 w-3.5" />
               )}
               {isNew ? "สร้าง" : "บันทึก"}
-            </button>
+            </Button>
           </div>
         </motion.div>
 
@@ -359,11 +370,12 @@ export default function EmailTemplateEditorPage() {
               <div className="p-4 space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold mb-1">
+                    <Label className="block text-xs font-bold mb-1">
                       รหัสเทมเพลต *
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
+                      size="sm"
                       value={formData.code}
                       onChange={(e) =>
                         setFormData({
@@ -373,58 +385,68 @@ export default function EmailTemplateEditorPage() {
                       }
                       disabled={!isNew}
                       placeholder="เช่น order_confirmation"
-                      className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent disabled:bg-site-raised text-sm"
+                      className="border-site-border bg-site-raised disabled:bg-site-raised"
                     />
                     <p className="text-[10px] text-gray-400 mt-0.5">
                       ตัวพิมพ์เล็ก ตัวเลข และ _ เท่านั้น แก้ไขไม่ได้หลังสร้าง
                     </p>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1">
+                    <Label className="block text-xs font-bold mb-1">
                       หมวดหมู่
-                    </label>
-                    <select
+                    </Label>
+                    <Select
                       value={formData.category}
-                      onChange={(e) =>
-                        setFormData({ ...formData, category: e.target.value })
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, category: value })
                       }
-                      className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none bg-site-raised text-sm">
-                      {CATEGORY_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
+                    >
+                      <SelectTrigger
+                        className="h-9 rounded-6 border-site-border bg-site-raised text-sm"
+                        aria-label="หมวดหมู่"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CATEGORY_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold mb-1">
+                  <Label className="block text-xs font-bold mb-1">
                     ชื่อเทมเพลต *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
+                    size="sm"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
                     placeholder="เช่น อีเมลยืนยันคำสั่งซื้อ"
-                    className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-sm"
+                    className="border-site-border bg-site-raised"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold mb-1">
+                  <Label className="block text-xs font-bold mb-1">
                     หัวข้ออีเมล *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
+                    size="sm"
                     value={formData.subject}
                     onChange={(e) =>
                       setFormData({ ...formData, subject: e.target.value })
                     }
                     placeholder="เช่น ยืนยันคำสั่งซื้อ #{{orderNumber}}"
-                    className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-sm"
+                    className="border-site-border bg-site-raised"
                   />
                   <p className="text-[10px] text-gray-400 mt-0.5">
                     รองรับ placeholder เช่น {`{{orderNumber}}`}
@@ -432,29 +454,27 @@ export default function EmailTemplateEditorPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold mb-1">
+                  <Label className="block text-xs font-bold mb-1">
                     คำอธิบาย
-                  </label>
-                  <textarea
+                  </Label>
+                  <Textarea
                     value={formData.description}
                     onChange={(e) =>
                       setFormData({ ...formData, description: e.target.value })
                     }
                     placeholder="อธิบายว่าเทมเพลตนี้ใช้เมื่อไหร่..."
                     rows={2}
-                    className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent resize-none text-sm"
+                    className="min-h-[60px] resize-none border-site-border bg-site-raised text-sm"
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
+                    <Switch
                       checked={formData.isActive}
-                      onChange={(e) =>
-                        setFormData({ ...formData, isActive: e.target.checked })
+                      onCheckedChange={(checked) =>
+                        setFormData({ ...formData, isActive: checked })
                       }
-                      className="w-4 h-4"
                     />
                     <span className="font-bold text-xs">เปิดใช้งาน</span>
                   </label>
@@ -473,15 +493,15 @@ export default function EmailTemplateEditorPage() {
                   <Code className="h-4 w-4" />
                   เนื้อหา HTML
                 </h2>
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className={`gap-1 px-2 py-0.5 text-xs ${showVariableHelper ? "bg-site-accent/10" : ""}`}
                   onClick={() => setShowVariableHelper(!showVariableHelper)}
-                  className={`flex items-center gap-1 px-2 py-0.5 text-xs border border-white/5 rounded-xl ${showVariableHelper
-                      ? "bg-site-accent/10"
-                      : "bg-site-raised hover:bg-white/5"
-                    }`}>
+                >
                   <Sparkles className="h-3 w-3" />
                   ตัวแปร
-                </button>
+                </Button>
               </div>
 
               {showVariableHelper && (
@@ -492,21 +512,23 @@ export default function EmailTemplateEditorPage() {
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {COMMON_PLACEHOLDERS.map((p) => (
-                      <button
+                      <Button
                         key={p.name}
+                        variant="secondary"
+                        size="sm"
+                        className="h-6 gap-0 px-1.5 py-0 text-[10px] border-white/10 hover:bg-site-accent/10"
                         onClick={() => insertPlaceholder(p.name)}
-                        className="px-1.5 py-0.5 text-[10px] bg-site-raised border-[1px] border-white/10 hover:bg-site-accent/10 transition-colors"
                         title={p.description}
                       >
                         {`{{${p.name}}}`}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
               )}
 
               <div className="p-4">
-                <textarea
+                <Textarea
                   id="htmlContent"
                   value={formData.htmlContent}
                   onChange={(e) =>
@@ -514,7 +536,7 @@ export default function EmailTemplateEditorPage() {
                   }
                   placeholder="เขียน HTML สำหรับอีเมล..."
                   rows={20}
-                  className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent font-mono text-xs resize-none"
+                  className="font-mono text-xs resize-none border-site-border bg-site-raised"
                 />
               </div>
             </motion.div>
@@ -536,28 +558,31 @@ export default function EmailTemplateEditorPage() {
               </div>
               <div className="p-4 space-y-3">
                 <div>
-                  <label className="block text-xs font-bold mb-1">
+                  <Label className="block text-xs font-bold mb-1">
                     อีเมลที่จะส่ง
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="email"
+                    size="sm"
                     value={testEmail}
                     onChange={(e) => setTestEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="w-full px-3 py-1.5 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-sm"
+                    className="border-site-border bg-site-raised"
                   />
                 </div>
-                <button
+                <Button
+                  size="sm"
+                  fullWidth
                   onClick={handleSendTest}
                   disabled={isSendingTest || !testEmail}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl font-bold disabled:opacity-50 text-sm">
+                >
                   {isSendingTest ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   ) : (
                     <Send className="h-3.5 w-3.5" />
                   )}
                   ส่งอีเมลทดสอบ
-                </button>
+                </Button>
               </div>
             </motion.div>
 
@@ -576,11 +601,12 @@ export default function EmailTemplateEditorPage() {
               <div className="p-3 space-y-2 max-h-80 overflow-y-auto">
                 {Object.entries(previewVars).map(([key, value]) => (
                   <div key={key}>
-                    <label className="block text-[10px] font-bold text-gray-400 mb-0.5">
+                    <Label className="block text-[10px] font-bold text-gray-400 mb-0.5">
                       {`{{${key}}}`}
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
+                      size="sm"
                       value={value}
                       onChange={(e) =>
                         setPreviewVars({
@@ -588,7 +614,7 @@ export default function EmailTemplateEditorPage() {
                           [key]: e.target.value,
                         })
                       }
-                      className="w-full px-2 py-1.5 border-[1px] border-gray-300 focus:outline-none focus:border-site-accent/60 text-xs"
+                      className="border-site-border bg-site-raised text-xs"
                     />
                   </div>
                 ))}
@@ -643,10 +669,9 @@ export default function EmailTemplateEditorPage() {
                 ตัวอย่างอีเมล
               </DialogPrimitive.Title>
               <DialogPrimitive.Close asChild>
-                <button
-                  className="px-3 py-1.5 border border-white/5 rounded-xl hover:bg-site-raised/5 text-sm">
+                <Button variant="outline" size="sm">
                   ปิด
-                </button>
+                </Button>
               </DialogPrimitive.Close>
             </div>
             <div className="p-3 overflow-auto max-h-[calc(90vh-60px)]">

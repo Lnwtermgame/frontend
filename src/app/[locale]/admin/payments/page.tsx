@@ -3,17 +3,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "@/lib/framer-exports";
 import {
+    Activity,
     CheckCircle2,
+    CreditCard,
+    FileCode2,
     Loader2,
     Plus,
     RefreshCw,
     Save,
-    XCircle,
-    CreditCard,
     Settings,
     ShieldCheck,
-    Activity,
-    FileCode2,
+    XCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -31,6 +31,26 @@ import {
     WebhookNonceItem,
     paymentApi,
 } from "@/lib/services/payment-api";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/Badge";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 
 type GatewayFormState = {
     name: string;
@@ -78,6 +98,46 @@ const defaultOptionForm: OptionFormState = {
     maxAmount: "",
     isActive: true,
 };
+
+/** Card chrome shared by every section on this page. */
+function SectionCard({
+    icon: Icon,
+    title,
+    iconClassName,
+    children,
+    description,
+}: {
+    icon: typeof CreditCard;
+    title: string;
+    iconClassName?: string;
+    description?: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-site-surface border border-site-border-soft rounded-12 overflow-hidden"
+        >
+            <div className="px-4 py-3 border-b border-site-border-soft flex items-center gap-3">
+                <div className="p-2 bg-site-raised rounded-lg border border-site-border">
+                    <Icon className={`h-4 w-4 ${iconClassName ?? "text-site-accent"}`} />
+                </div>
+                <div>
+                    <h3 className="text-sm font-bold text-site-text thai-font">
+                        {title}
+                    </h3>
+                    {description && (
+                        <p className="text-xs text-site-muted thai-font">
+                            {description}
+                        </p>
+                    )}
+                </div>
+            </div>
+            {children}
+        </motion.div>
+    );
+}
 
 export default function AdminPaymentsPage() {
     const { isAdmin, isInitialized, isSessionChecked } = useAuth();
@@ -312,17 +372,19 @@ export default function AdminPaymentsPage() {
                     title="จัดการช่องทางชำระเงิน"
                     description="จัดการผู้ให้บริการชำระเงินและช่องทางรับเงินทั้งหมด"
                     actions={
-                        <button
+                        <Button
+                            variant="secondary"
+                            size="sm"
                             onClick={() => fetchAll(false)}
                             disabled={refreshing}
-                            className="inline-flex items-center gap-2 border border-site-border rounded-xl bg-site-raised px-3 py-1.5 text-xs font-semibold hover:bg-site-raised/5 disabled:opacity-60">
+                        >
                             {refreshing ? (
                                 <Loader2 className="h-3 w-3 animate-spin" />
                             ) : (
                                 <RefreshCw className="h-3 w-3" />
                             )}
                             รีเฟรช
-                        </button>
+                        </Button>
                     }
                 />
 
@@ -331,22 +393,12 @@ export default function AdminPaymentsPage() {
                         <Loader2 className="h-6 w-6 animate-spin text-site-accent" />
                     </div>
                 ) : (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="rounded-none border border-white/5 rounded-xl bg-site-raised overflow-hidden">
-                            <div className="p-3 border-b-[2px] border-white/10 flex justify-between items-center bg-site-surface">
-                                <h3 className="text-sm font-semibold text-white flex items-center thai-font">
-                                    <span className="w-1.5 h-4 bg-site-accent mr-2"></span>
-                                    <CreditCard className="mr-2 h-4 w-4 text-site-accent" />
-                                    Payment Gateways
-                                </h3>
-                            </div>
+                    <div className="space-y-5">
+                        <SectionCard icon={CreditCard} title="Payment Gateways">
                             <div className="p-3 space-y-3">
-                                <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
-                                    <input
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
+                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-5">
+                                    <Input
+                                        size="sm"
                                         placeholder="ชื่อ Gateway"
                                         value={gatewayForm.name}
                                         onChange={(e) =>
@@ -356,8 +408,8 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <input
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
+                                    <Input
+                                        size="sm"
                                         placeholder="Provider (e.g. feelfreepay)"
                                         value={gatewayForm.provider}
                                         onChange={(e) =>
@@ -367,10 +419,10 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <input
+                                    <Input
+                                        size="sm"
                                         type="number"
                                         step="0.01"
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
                                         placeholder="Gateway Fee %"
                                         value={gatewayForm.feePercent}
                                         onChange={(e) =>
@@ -380,10 +432,10 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <input
+                                    <Input
+                                        size="sm"
                                         type="number"
                                         step="0.01"
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
                                         placeholder="Flat Fee"
                                         value={gatewayForm.flatFee}
                                         onChange={(e) =>
@@ -393,138 +445,147 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <label className="flex items-center gap-2 border border-white/5 rounded-lg px-2 py-1.5 font-medium text-sm">
-                                        <input
-                                            type="checkbox"
+                                    <label className="flex items-center justify-between gap-2 rounded-6 border border-site-border bg-site-raised px-3 py-1.5 text-sm font-medium text-site-text">
+                                        Active
+                                        <Switch
                                             checked={gatewayForm.isActive}
-                                            onChange={(e) =>
+                                            onCheckedChange={(checked) =>
                                                 setGatewayForm((prev) => ({
                                                     ...prev,
-                                                    isActive: e.target.checked,
+                                                    isActive: checked,
                                                 }))
                                             }
                                         />
-                                        Active
                                     </label>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
-                                    <button
+                                    <Button
+                                        size="sm"
                                         onClick={handleSaveGateway}
                                         disabled={savingGateway}
-                                        className="inline-flex items-center gap-2 border border-white/5 rounded-xl bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60">
+                                    >
                                         {savingGateway ? (
                                             <Loader2 className="h-3 w-3 animate-spin" />
                                         ) : (
                                             <Save className="h-3 w-3" />
                                         )}
                                         {editingGatewayId ? "บันทึกการแก้ไข" : "สร้าง Gateway"}
-                                    </button>
+                                    </Button>
                                     {editingGatewayId && (
-                                        <button
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
                                             onClick={resetGatewayForm}
-                                            className="inline-flex items-center gap-2 border border-white/5 rounded-xl bg-site-raised px-3 py-1.5 text-xs font-semibold hover:bg-site-raised/5">
+                                        >
                                             <XCircle className="h-3 w-3" />
                                             ยกเลิก
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
 
-                                <div className="overflow-x-auto border border-white/5 rounded-lg">
-                                    <table className="w-full min-w-[720px] text-xs">
-                                        <thead className="bg-site-surface text-left border-b-2 border-white/10">
-                                            <tr>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Gateway</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Provider</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Fee %</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Flat Fee</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Options</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Status</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-site-border/30">
+                                <div className="border border-site-border-soft rounded-lg overflow-hidden">
+                                    <Table className="min-w-[720px] text-xs">
+                                        <TableHeader>
+                                            <TableRow className="border-site-border-soft hover:bg-transparent">
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Gateway</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Provider</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Fee %</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Flat Fee</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Options</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Status</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
                                             {gateways.map((gateway) => (
-                                                <tr key={gateway.id} className="hover:bg-site-raised/5 transition-colors">
-                                                    <td className="px-3 py-2 font-bold text-white text-xs">
+                                                <TableRow key={gateway.id} className="border-site-border-soft hover:bg-site-raised/50">
+                                                    <TableCell className="px-3 py-2 font-bold text-white text-xs">
                                                         {gateway.name}
-                                                    </td>
-                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-400">{gateway.provider}</td>
-                                                    <td className="px-3 py-2 font-medium">{gateway.feePercent}%</td>
-                                                    <td className="px-3 py-2 font-medium">฿{gateway.flatFee}</td>
-                                                    <td className="px-3 py-2 font-medium">{gateway.optionCount}</td>
-                                                    <td className="px-3 py-2">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-mono text-[11px] font-medium text-site-muted">
+                                                        {gateway.provider}
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
+                                                        {gateway.feePercent}%
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
+                                                        ฿{gateway.flatFee}
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
+                                                        {gateway.optionCount}
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2">
                                                         {gateway.isActive ? (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-400 bg-green-500/10 border-green-300 flex items-center gap-1 w-fit">
-                                                                <CheckCircle2 className="h-3 w-3" /> Active
-                                                            </span>
+                                                            <Badge variant="success">
+                                                                <CheckCircle2 /> Active
+                                                            </Badge>
                                                         ) : (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-400 bg-site-raised border-gray-300 flex items-center gap-1 w-fit">
-                                                                <XCircle className="h-3 w-3" /> Inactive
-                                                            </span>
+                                                            <Badge variant="neutral">
+                                                                <XCircle /> Inactive
+                                                            </Badge>
                                                         )}
-                                                    </td>
-                                                    <td className="px-3 py-2">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2">
                                                         <div className="flex gap-2">
-                                                            <button
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="h-7 px-2.5 text-xs"
                                                                 onClick={() => handleEditGateway(gateway)}
-                                                                className="rounded-none border border-white/10 px-2 py-0.5 font-medium hover:bg-site-raised/5">
+                                                            >
                                                                 แก้ไข
-                                                            </button>
-                                                            <button
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="h-7 px-2.5 text-xs"
                                                                 onClick={() => toggleGateway(gateway)}
-                                                                className="rounded-none border border-white/10 px-2 py-0.5 font-medium hover:bg-site-raised/5">
+                                                            >
                                                                 {gateway.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
-                                                            </button>
+                                                            </Button>
                                                         </div>
-                                                    </td>
-                                                </tr>
+                                                    </TableCell>
+                                                </TableRow>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </div>
-                        </motion.div>
+                        </SectionCard>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="rounded-none border border-white/5 rounded-xl bg-site-raised overflow-hidden">
-                            <div className="p-3 border-b-[2px] border-white/10 flex justify-between items-center bg-site-surface">
-                                <h3 className="text-sm font-semibold text-white flex items-center thai-font">
-                                    <span className="w-1.5 h-4 bg-site-accent mr-2"></span>
-                                    <Settings className="mr-2 h-4 w-4 text-site-accent" />
-                                    Payment Options
-                                </h3>
-                            </div>
+                        <SectionCard icon={Settings} title="Payment Options">
                             <div className="p-3 space-y-3">
                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-                                    <select
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
+                                    <Select
                                         value={optionForm.gatewayId}
-                                        onChange={(e) =>
+                                        onValueChange={(value) =>
                                             setOptionForm((prev) => ({
                                                 ...prev,
-                                                gatewayId: e.target.value,
+                                                gatewayId: value,
                                             }))
                                         }
                                     >
-                                        <option value="">เลือก Gateway</option>
-                                        {gateways.map((gateway) => (
-                                            <option key={gateway.id} value={gateway.id}>
-                                                {gateway.name} ({gateway.provider})
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <input
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
+                                        <SelectTrigger className="h-9 rounded-6 border-site-border bg-site-raised text-sm">
+                                            <SelectValue placeholder="เลือก Gateway" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {gateways.map((gateway) => (
+                                                <SelectItem key={gateway.id} value={gateway.id}>
+                                                    {gateway.name} ({gateway.provider})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <Input
+                                        size="sm"
                                         placeholder="Option Code (e.g. PROMPTPAY_DEFAULT)"
                                         value={optionForm.code}
                                         onChange={(e) =>
                                             setOptionForm((prev) => ({ ...prev, code: e.target.value }))
                                         }
                                     />
-                                    <input
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
+                                    <Input
+                                        size="sm"
                                         placeholder="Label"
                                         value={optionForm.label}
                                         onChange={(e) =>
@@ -534,26 +595,30 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <select
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
+                                    <Select
                                         value={optionForm.method}
-                                        onChange={(e) =>
+                                        onValueChange={(value) =>
                                             setOptionForm((prev) => ({
                                                 ...prev,
-                                                method: e.target.value as PaymentMethodCode,
+                                                method: value as PaymentMethodCode,
                                             }))
                                         }
                                     >
-                                        {PAYMENT_METHODS.map((method) => (
-                                            <option key={method} value={method}>
-                                                {method}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <input
+                                        <SelectTrigger className="h-9 rounded-6 border-site-border bg-site-raised text-sm">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {PAYMENT_METHODS.map((method) => (
+                                                <SelectItem key={method} value={method}>
+                                                    {method}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <Input
+                                        size="sm"
                                         type="number"
                                         step="0.01"
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
                                         placeholder="Surcharge %"
                                         value={optionForm.surchargePercent}
                                         onChange={(e) =>
@@ -563,10 +628,10 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <input
+                                    <Input
+                                        size="sm"
                                         type="number"
                                         step="0.01"
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
                                         placeholder="Flat Fee"
                                         value={optionForm.flatFee}
                                         onChange={(e) =>
@@ -576,10 +641,10 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <input
+                                    <Input
+                                        size="sm"
                                         type="number"
                                         step="0.01"
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
                                         placeholder="Min Amount (optional)"
                                         value={optionForm.minAmount}
                                         onChange={(e) =>
@@ -589,10 +654,10 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <input
+                                    <Input
+                                        size="sm"
                                         type="number"
                                         step="0.01"
-                                        className="border border-white/5 rounded-lg px-2 py-1.5 text-sm"
                                         placeholder="Max Amount (optional)"
                                         value={optionForm.maxAmount}
                                         onChange={(e) =>
@@ -602,26 +667,26 @@ export default function AdminPaymentsPage() {
                                             }))
                                         }
                                     />
-                                    <label className="flex items-center gap-2 border border-white/5 rounded-lg px-2 py-1.5 font-medium text-sm">
-                                        <input
-                                            type="checkbox"
+                                    <label className="flex items-center justify-between gap-2 rounded-6 border border-site-border bg-site-raised px-3 py-1.5 text-sm font-medium text-site-text">
+                                        Active
+                                        <Switch
                                             checked={optionForm.isActive}
-                                            onChange={(e) =>
+                                            onCheckedChange={(checked) =>
                                                 setOptionForm((prev) => ({
                                                     ...prev,
-                                                    isActive: e.target.checked,
+                                                    isActive: checked,
                                                 }))
                                             }
                                         />
-                                        Active
                                     </label>
                                 </div>
 
                                 <div className="flex flex-wrap gap-2">
-                                    <button
+                                    <Button
+                                        size="sm"
                                         onClick={handleSaveOption}
                                         disabled={savingOption}
-                                        className="inline-flex items-center gap-2 border border-white/5 rounded-xl bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-60">
+                                    >
                                         {savingOption ? (
                                             <Loader2 className="h-3 w-3 animate-spin" />
                                         ) : editingOptionId ? (
@@ -630,204 +695,206 @@ export default function AdminPaymentsPage() {
                                             <Plus className="h-3 w-3" />
                                         )}
                                         {editingOptionId ? "บันทึกการแก้ไข" : "สร้าง Option"}
-                                    </button>
+                                    </Button>
                                     {editingOptionId && (
-                                        <button
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
                                             onClick={resetOptionForm}
-                                            className="inline-flex items-center gap-2 border border-white/5 rounded-xl bg-site-raised px-3 py-1.5 text-xs font-semibold hover:bg-site-raised/5">
+                                        >
                                             <XCircle className="h-3 w-3" />
                                             ยกเลิก
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
 
-                                <div className="overflow-x-auto border border-white/5 rounded-lg">
-                                    <table className="w-full min-w-[900px] text-xs">
-                                        <thead className="bg-site-surface text-left border-b-2 border-white/10">
-                                            <tr>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Code</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Label</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Gateway</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Method</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Surcharge %</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Flat Fee</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Range</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Status</th>
-                                                <th className="px-3 py-2 thai-font text-gray-400 font-semibold">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-site-border/30">
+                                <div className="border border-site-border-soft rounded-lg overflow-hidden">
+                                    <Table className="min-w-[900px] text-xs">
+                                        <TableHeader>
+                                            <TableRow className="border-site-border-soft hover:bg-transparent">
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Code</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Label</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Gateway</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Method</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Surcharge %</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Flat Fee</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Range</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Status</TableHead>
+                                                <TableHead className="h-auto px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-site-dim">Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
                                             {options.map((option) => (
-                                                <tr key={option.id} className="hover:bg-site-raised/5 transition-colors">
-                                                    <td className="px-3 py-2 font-mono text-[11px] font-bold text-white">
+                                                <TableRow key={option.id} className="border-site-border-soft hover:bg-site-raised/50">
+                                                    <TableCell className="px-3 py-2 font-mono text-[11px] font-bold text-white">
                                                         {option.code}
-                                                    </td>
-                                                    <td className="px-3 py-2 font-medium">{option.label}</td>
-                                                    <td className="px-3 py-2 font-medium">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
+                                                        {option.label}
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
                                                         {gatewayNameMap[option.gatewayId] ||
                                                             option.gateway.name}
-                                                    </td>
-                                                    <td className="px-3 py-2 font-mono text-[11px] font-medium text-gray-400">{option.method}</td>
-                                                    <td className="px-3 py-2 font-medium">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-mono text-[11px] font-medium text-site-muted">
+                                                        {option.method}
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
                                                         {option.surchargePercent}%
-                                                    </td>
-                                                    <td className="px-3 py-2 font-medium">฿{option.flatFee}</td>
-                                                    <td className="px-3 py-2 font-medium text-gray-400 text-[11px]">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium">
+                                                        ฿{option.flatFee}
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2 font-medium text-site-muted text-[11px]">
                                                         {option.minAmount ?? "-"} - {option.maxAmount ?? "-"}
-                                                    </td>
-                                                    <td className="px-3 py-2">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2">
                                                         {option.isActive ? (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-green-400 bg-green-500/10 border-green-300 flex items-center gap-1 w-fit">
-                                                                <CheckCircle2 className="h-3 w-3" /> Active
-                                                            </span>
+                                                            <Badge variant="success">
+                                                                <CheckCircle2 /> Active
+                                                            </Badge>
                                                         ) : (
-                                                            <span className="px-2 py-1 rounded-sm text-[10px] sm:text-xs border-[1px] font-medium whitespace-nowrap text-gray-400 bg-site-raised border-gray-300 flex items-center gap-1 w-fit">
-                                                                <XCircle className="h-3 w-3" /> Inactive
-                                                            </span>
+                                                            <Badge variant="neutral">
+                                                                <XCircle /> Inactive
+                                                            </Badge>
                                                         )}
-                                                    </td>
-                                                    <td className="px-3 py-2">
+                                                    </TableCell>
+                                                    <TableCell className="px-3 py-2">
                                                         <div className="flex gap-2">
-                                                            <button
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="h-7 px-2.5 text-xs"
                                                                 onClick={() => handleEditOption(option)}
-                                                                className="rounded-none border border-white/10 px-2 py-0.5 font-medium hover:bg-site-raised/5">
+                                                            >
                                                                 แก้ไข
-                                                            </button>
-                                                            <button
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="h-7 px-2.5 text-xs"
                                                                 onClick={() => toggleOption(option)}
-                                                                className="rounded-none border border-white/10 px-2 py-0.5 font-medium hover:bg-site-raised/5">
+                                                            >
                                                                 {option.isActive ? "ปิดใช้งาน" : "เปิดใช้งาน"}
-                                                            </button>
+                                                            </Button>
                                                         </div>
-                                                    </td>
-                                                </tr>
+                                                    </TableCell>
+                                                </TableRow>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </div>
-                        </motion.div>
+                        </SectionCard>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="rounded-none border border-white/5 rounded-xl bg-site-raised overflow-hidden">
-                            <div className="p-3 border-b-[2px] border-white/10 flex justify-between items-center bg-site-surface">
-                                <div>
-                                    <h3 className="text-sm font-semibold text-white flex items-center thai-font">
-                                        <span className="w-1.5 h-4 bg-green-500 mr-2"></span>
-                                        <ShieldCheck className="mr-2 h-4 w-4 text-green-400" />
-                                        Security Monitoring
-                                    </h3>
-                                    <p className="text-[10px] text-gray-400 mt-1 thai-font ml-3">
-                                        ติดตามสถานะและตรวจสอบเหตุการณ์ต้องสงสัยในระบบชำระเงิน
-                                    </p>
-                                </div>
-                            </div>
+                        <SectionCard
+                            icon={ShieldCheck}
+                            title="Security Monitoring"
+                            iconClassName="text-semantic-green"
+                            description="ติดตามสถานะและตรวจสอบเหตุการณ์ต้องสงสัยในระบบชำระเงิน"
+                        >
                             <div className="p-3">
                                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                                     <div className="space-y-2">
                                         <h4 className="font-semibold text-white text-xs flex items-center thai-font">
-                                            <Activity className="mr-1.5 h-3.5 w-3.5 text-gray-400" />
+                                            <Activity className="mr-1.5 h-3.5 w-3.5 text-site-muted" />
                                             Payment Audit Logs
                                         </h4>
-                                        <div className="max-h-[300px] overflow-auto border border-white/5 rounded-lg">
-                                            <table className="w-full min-w-[760px] text-[10px]">
-                                                <thead className="bg-site-surface text-left border-b-2 border-white/10">
-                                                    <tr>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Time</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Severity</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Event</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Order</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Status</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Message</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-site-border/30">
+                                        <div className="max-h-[300px] overflow-auto border border-site-border-soft rounded-lg">
+                                            <Table className="min-w-[760px] text-[10px]">
+                                                <TableHeader>
+                                                    <TableRow className="border-site-border-soft hover:bg-transparent">
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Time</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Severity</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Event</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Order</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Status</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Message</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
                                                     {auditLogs.map((log) => (
-                                                        <tr
-                                                            key={log.id}
-                                                            className="hover:bg-site-raised/5 transition-colors align-top">
-                                                            <td className="px-2 py-1.5 whitespace-nowrap">
+                                                        <TableRow key={log.id} className="border-site-border-soft hover:bg-site-raised/50 align-top">
+                                                            <TableCell className="px-2 py-1.5 whitespace-nowrap">
                                                                 {new Date(log.createdAt).toLocaleString()}
-                                                            </td>
-                                                            <td className="px-2 py-1.5 font-semibold">
+                                                            </TableCell>
+                                                            <TableCell className="px-2 py-1.5 font-semibold">
                                                                 {log.severity}
-                                                            </td>
-                                                            <td className="px-2 py-1.5">{log.eventType}</td>
-                                                            <td className="px-2 py-1.5">
+                                                            </TableCell>
+                                                            <TableCell className="px-2 py-1.5">{log.eventType}</TableCell>
+                                                            <TableCell className="px-2 py-1.5">
                                                                 {log.order?.orderNumber || log.orderId || "-"}
-                                                            </td>
-                                                            <td className="px-2 py-1.5">
+                                                            </TableCell>
+                                                            <TableCell className="px-2 py-1.5">
                                                                 {log.previousStatus || "-"} {"->"}{" "}
                                                                 {log.newStatus || "-"}
-                                                            </td>
-                                                            <td className="px-2 py-1.5">{log.message}</td>
-                                                        </tr>
+                                                            </TableCell>
+                                                            <TableCell className="px-2 py-1.5">{log.message}</TableCell>
+                                                        </TableRow>
                                                     ))}
                                                     {auditLogs.length === 0 && (
-                                                        <tr>
-                                                            <td
+                                                        <TableRow className="hover:bg-transparent">
+                                                            <TableCell
                                                                 colSpan={6}
-                                                                className="px-2 py-4 text-center text-gray-400">
+                                                                className="px-2 py-4 text-center text-site-muted"
+                                                            >
                                                                 No audit logs
-                                                            </td>
-                                                        </tr>
+                                                            </TableCell>
+                                                        </TableRow>
                                                     )}
-                                                </tbody>
-                                            </table>
+                                                </TableBody>
+                                            </Table>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
                                         <h4 className="font-semibold text-white text-xs flex items-center thai-font">
-                                            <FileCode2 className="mr-1.5 h-3.5 w-3.5 text-gray-400" />
+                                            <FileCode2 className="mr-1.5 h-3.5 w-3.5 text-site-muted" />
                                             Webhook Nonce Store
                                         </h4>
-                                        <div className="max-h-[300px] overflow-auto border border-white/5 rounded-lg">
-                                            <table className="w-full min-w-[680px] text-[10px]">
-                                                <thead className="bg-site-surface text-left border-b-2 border-white/10">
-                                                    <tr>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Created</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Provider</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Nonce Hash</th>
-                                                        <th className="px-2 py-1.5 thai-font text-gray-400 font-semibold">Expires</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-site-border/30">
+                                        <div className="max-h-[300px] overflow-auto border border-site-border-soft rounded-lg">
+                                            <Table className="min-w-[680px] text-[10px]">
+                                                <TableHeader>
+                                                    <TableRow className="border-site-border-soft hover:bg-transparent">
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Created</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Provider</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Nonce Hash</TableHead>
+                                                        <TableHead className="h-auto px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">Expires</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
                                                     {webhookNonces.map((item) => (
-                                                        <tr
-                                                            key={item.id}
-                                                            className="hover:bg-site-raised/5 transition-colors align-top">
-                                                            <td className="px-2 py-1.5 whitespace-nowrap">
+                                                        <TableRow key={item.id} className="border-site-border-soft hover:bg-site-raised/50 align-top">
+                                                            <TableCell className="px-2 py-1.5 whitespace-nowrap">
                                                                 {new Date(item.createdAt).toLocaleString()}
-                                                            </td>
-                                                            <td className="px-2 py-1.5">{item.provider}</td>
-                                                            <td className="px-2 py-1.5 font-mono text-[9px]">
+                                                            </TableCell>
+                                                            <TableCell className="px-2 py-1.5">{item.provider}</TableCell>
+                                                            <TableCell className="px-2 py-1.5 font-mono text-[9px]">
                                                                 {item.nonceHash.slice(0, 18)}...
-                                                            </td>
-                                                            <td className="px-2 py-1.5 whitespace-nowrap">
+                                                            </TableCell>
+                                                            <TableCell className="px-2 py-1.5 whitespace-nowrap">
                                                                 {new Date(item.expiresAt).toLocaleString()}
-                                                            </td>
-                                                        </tr>
+                                                            </TableCell>
+                                                        </TableRow>
                                                     ))}
                                                     {webhookNonces.length === 0 && (
-                                                        <tr>
-                                                            <td
+                                                        <TableRow className="hover:bg-transparent">
+                                                            <TableCell
                                                                 colSpan={4}
-                                                                className="px-2 py-4 text-center text-gray-400">
+                                                                className="px-2 py-4 text-center text-site-muted"
+                                                            >
                                                                 No nonce records
-                                                            </td>
-                                                        </tr>
+                                                            </TableCell>
+                                                        </TableRow>
                                                     )}
-                                                </tbody>
-                                            </table>
+                                                </TableBody>
+                                            </Table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </motion.div>
-                    </>
+                        </SectionCard>
+                    </div>
                 )}
             </PageContainer>
         </AdminLayout>

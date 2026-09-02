@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { DollarSign, TrendingUp, Zap } from "lucide-react";
 import { FormModal } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import type { AdminProduct, AdminProductType } from "@/lib/services/product-api";
 
 interface PriceEditModalProps {
@@ -138,29 +140,29 @@ export function PriceEditModal({
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {PRICING_OPTIONS.map((option) => (
-                <button
+                <Button
                   key={option.key}
-                  type="button"
-                  onClick={() => applyPricingOption(option.key)}
-                  className={`p-3.5 border rounded-xl text-left transition-all ${
+                  variant="outline"
+                  className={`h-auto flex-col items-start gap-1 rounded-xl p-3.5 text-left ${
                     selectedPricingOption === option.key
-                      ? "bg-site-accent/10 text-site-accent border-site-accent/30"
-                      : "bg-site-raised text-site-muted border-site-border hover:border-site-border hover:bg-site-raised"
+                      ? "bg-site-accent/10 text-site-accent border-site-accent/30 hover:bg-site-accent/10 hover:text-site-accent"
+                      : "bg-site-raised text-site-muted border-site-border hover:bg-site-raised hover:text-site-text"
                   }`}
+                  onClick={() => applyPricingOption(option.key)}
                 >
-                  <div className="font-bold text-[13px] tracking-wide">
+                  <span className="font-bold text-[13px] tracking-wide">
                     {option.label}
-                  </div>
-                  <div
-                    className={`text-[11px] mt-1 line-clamp-1 ${
+                  </span>
+                  <span
+                    className={`text-[11px] mt-0.5 line-clamp-1 font-normal ${
                       selectedPricingOption === option.key
                         ? "text-site-accent/70"
                         : "text-site-dim"
                     }`}
                   >
                     {option.description}
-                  </div>
-                </button>
+                  </span>
+                </Button>
               ))}
             </div>
             {selectedPricingOption && (
@@ -175,15 +177,14 @@ export function PriceEditModal({
           </div>
 
           {/* Header Row */}
-          <div className="grid grid-cols-12 gap-4 text-[11px] font-bold text-site-dim uppercase tracking-wider border-b border-site-border-soft pb-3 px-2">
-            <div className="col-span-3">ประเภทบริการ</div>
+          <div className="grid grid-cols-12 gap-3 text-[11px] font-bold text-site-dim uppercase tracking-wider border-b border-site-border-soft pb-3 px-2">
+            <div className="col-span-4">ประเภทบริการ</div>
             <div className="col-span-2 text-right">ต้นทุนจริง</div>
             <div className="col-span-2 text-right">ราคาหน้าร้านต้นทาง</div>
-            <div className="col-span-2 text-right text-site-accent">
+            <div className="col-span-3 text-right text-site-accent">
               กำหนดราคาขาย
             </div>
-            <div className="col-span-2 text-right">เปอร์เซ็นต์กำไร</div>
-            <div className="col-span-1"></div>
+            <div className="col-span-1 text-right">กำไร</div>
           </div>
 
           {/* Type Rows */}
@@ -207,9 +208,9 @@ export function PriceEditModal({
               return (
                 <div
                   key={type.id}
-                  className="grid grid-cols-12 gap-4 items-center py-3 px-2 border-b border-site-border-soft hover:bg-site-raised/50 transition-colors rounded-lg group"
+                  className="grid grid-cols-12 gap-3 items-center py-3 px-2 border-b border-site-border-soft hover:bg-site-raised/50 transition-colors rounded-lg group"
                 >
-                  <div className="col-span-3">
+                  <div className="col-span-4">
                     <div className="font-bold text-[13px] text-site-text truncate pr-2">
                       {type.name}
                     </div>
@@ -227,24 +228,31 @@ export function PriceEditModal({
                       ฿ {seagmPrice.toFixed(2)}
                     </span>
                   </div>
-                  <div className="col-span-2 relative">
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-site-accent/50 text-[13px] font-mono font-bold">
-                        ฿
-                      </span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={sellingPrices[type.id] || ""}
-                        onChange={(e) =>
-                          handlePriceChange(type.id, e.target.value)
-                        }
-                        className="w-full text-right bg-site-raised border border-site-border rounded-lg pl-8 pr-3 py-2 text-[13px] font-bold text-site-text focus:border-site-accent/60 focus:ring-1 focus:ring-site-accent/50 outline-none transition-all placeholder:text-site-dim"
-                        placeholder={seagmPrice.toString()}
-                      />
-                    </div>
+                  <div className="col-span-3 relative">
+                    <span className="absolute left-3 top-1/2 z-10 -translate-y-1/2 text-site-accent/50 text-[13px] font-mono font-bold">
+                      ฿
+                    </span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={sellingPrices[type.id] || ""}
+                      onChange={(e) =>
+                        handlePriceChange(type.id, e.target.value)
+                      }
+                      className="h-10 rounded-lg bg-site-raised border-site-border pl-8 pr-3 text-right text-[13px] font-bold text-site-text"
+                      placeholder={seagmPrice.toString()}
+                    />
                   </div>
-                  <div className="col-span-2 text-right">
+                  <div className="col-span-1 flex items-center justify-end gap-1.5">
+                    <TrendingUp
+                      className={`h-3.5 w-3.5 shrink-0 ${
+                        profitPercent > 0
+                          ? "text-site-accent"
+                          : profitPercent < 0
+                            ? "text-semantic-rose"
+                            : "text-site-dim"
+                      }`}
+                    />
                     <span
                       className={`text-[13px] font-bold tracking-wide ${
                         profitPercent > 0
@@ -255,19 +263,8 @@ export function PriceEditModal({
                       }`}
                     >
                       {profitPercent > 0 ? "+" : ""}
-                      {profitPercent.toFixed(1)}%
+                      {profitPercent.toFixed(0)}%
                     </span>
-                  </div>
-                  <div className="col-span-1 flex justify-center">
-                    <TrendingUp
-                      className={`h-4 w-4 ${
-                        profitPercent > 0
-                          ? "text-site-accent"
-                          : profitPercent < 0
-                            ? "text-semantic-rose"
-                            : "text-site-dim"
-                      }`}
-                    />
                   </div>
                 </div>
               );

@@ -40,6 +40,26 @@ import {
   adminSettingsApi,
 } from "@/lib/services/admin-settings-api";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type LandingBlockKey = "promoCards" | "newsItems" | "seasonalEvents";
 
@@ -215,10 +235,11 @@ const ToggleField = ({ label, description, checked, onChange }: { label: string;
       <span className="text-sm font-semibold text-white">{label}</span>
       {description && <p className="text-xs text-gray-400 mt-0.5">{description}</p>}
     </div>
-    <div className={`relative w-11 h-6 rounded-full border border-white/5 transition-colors shrink-0 ml-4 ${checked ? 'bg-green-500' : 'bg-gray-300'}`}>
-      <div className={`absolute top-[2px] w-4 h-4 bg-site-raised border-[1px] border-white/10 rounded-full transition-transform ${checked ? 'left-[22px]' : 'left-[2px]'}`} />
-      <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-    </div>
+    <Switch
+      className="ml-4"
+      checked={checked}
+      onCheckedChange={(checked) => onChange(checked)}
+    />
   </label>
 );
 
@@ -237,18 +258,25 @@ const ItemCard = ({ index, label, onRemove, draggable: isDraggable, onDragStart,
         {isDraggable && <GripVertical size={14} className="text-gray-400" />}
         {label} #{index + 1}
       </span>
-      <button onClick={onRemove} className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-1 transition-colors" title="ลบ">
+      <Button
+        onClick={onRemove}
+        variant="ghost"
+        size="icon"
+        className="h-7 w-7 p-0 text-red-500 hover:text-red-400 hover:bg-red-500/10"
+        title="ลบ"
+        aria-label="ลบ"
+      >
         <X size={16} />
-      </button>
+      </Button>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{children}</div>
   </div>
 );
 
 const AddButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
-  <button onClick={onClick} className="inline-flex items-center gap-2 border border-white/5 bg-site-raised px-4 py-2 rounded-xl text-sm font-medium text-white hover:bg-white/5 transition-all">
+  <Button onClick={onClick} variant="secondary" size="sm" className="rounded-xl">
     <Plus size={14} /> {label}
-  </button>
+  </Button>
 );
 
 function parseCsv(value: string): string[] {
@@ -681,21 +709,21 @@ export default function AdminSettingsPage() {
               icon={Settings2}
             />
             <div className="flex flex-wrap items-center gap-2">
-              <button onClick={loadSettings} disabled={loading || saving || publishing} className="flex items-center gap-2 bg-site-raised border border-white/5 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/5 transition-all disabled:opacity-50">
+              <Button variant="secondary" size="sm" className="rounded-xl" onClick={loadSettings} disabled={loading || saving || publishing}>
                 <RefreshCcw size={14} /> โหลดใหม่
-              </button>
-              <button onClick={resetDraft} disabled={resetting || saving || publishing} className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-2 rounded-xl text-sm font-medium hover:bg-red-500/20 transition-all disabled:opacity-50">
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-xl border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-500" onClick={resetDraft} disabled={resetting || saving || publishing}>
                 {resetting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCcw size={14} />}
                 {resetting ? "กำลังรีเซ็ต..." : "รีเซ็ต Draft"}
-              </button>
-              <button onClick={saveSettings} disabled={!hasChanges || saving || loading || publishing} className="flex items-center gap-2 bg-site-raised border border-white/5 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/5 transition-all disabled:opacity-50">
+              </Button>
+              <Button variant="secondary" size="sm" className="rounded-xl" onClick={saveSettings} disabled={!hasChanges || saving || loading || publishing}>
                 {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save size={14} />}
                 Save Draft
-              </button>
-              <button onClick={publishSettings} disabled={publishing || saving || !isDraftDirty} className="flex items-center gap-2 bg-gradient-to-r from-site-accent to-site-accent/80 text-white px-4 py-2 rounded-xl text-sm font-medium hover:from-site-accent hover:to-site-accent/60 transition-all disabled:opacity-50">
+              </Button>
+              <Button size="sm" className="rounded-xl bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60" onClick={publishSettings} disabled={publishing || saving || !isDraftDirty}>
                 {publishing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload size={14} />}
                 Publish Live
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -758,18 +786,18 @@ export default function AdminSettingsPage() {
                   <SectionCard title="General Settings" description="Basic site information and support contacts" icon={<Globe />}>
                     <FormRow>
                       <FormField label="Site Name">
-                        <input className={inputCls} placeholder="Site name" value={settings.general.siteName} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, siteName: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Site name" value={settings.general.siteName} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, siteName: e.target.value } }))} />
                       </FormField>
                       <FormField label="Tagline">
-                        <input className={inputCls} placeholder="Tagline" value={settings.general.siteTagline || ""} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, siteTagline: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Tagline" value={settings.general.siteTagline || ""} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, siteTagline: e.target.value } }))} />
                       </FormField>
                     </FormRow>
                     <FormRow>
                       <FormField label="Support Email">
-                        <input className={inputCls} placeholder="Support email" value={settings.general.supportEmail} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, supportEmail: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Support email" value={settings.general.supportEmail} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, supportEmail: e.target.value } }))} />
                       </FormField>
                       <FormField label="Support Phone">
-                        <input className={inputCls} placeholder="Support phone" value={settings.general.supportPhone || ""} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, supportPhone: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Support phone" value={settings.general.supportPhone || ""} onChange={(e) => setSettings((s) => ({ ...s, general: { ...s.general, supportPhone: e.target.value } }))} />
                       </FormField>
                     </FormRow>
                   </SectionCard>
@@ -777,23 +805,23 @@ export default function AdminSettingsPage() {
                   <SectionCard title="Branding & Colors" description="Site appearance, logos and colors" icon={<Palette />} accent="bg-site-accent/10">
                     <FormRow>
                       <FormField label="Logo URL">
-                        <input className={inputCls} placeholder="Logo URL" value={settings.branding.logoUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, logoUrl: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Logo URL" value={settings.branding.logoUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, logoUrl: e.target.value } }))} />
                       </FormField>
                       <FormField label="Favicon URL">
-                        <input className={inputCls} placeholder="Favicon URL" value={settings.branding.faviconUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, faviconUrl: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Favicon URL" value={settings.branding.faviconUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, faviconUrl: e.target.value } }))} />
                       </FormField>
                     </FormRow>
                     <FormRow>
                       <FormField label="Primary Color">
                         <div className="flex gap-2">
                           <input type="color" className="h-10 w-12 border border-white/5 rounded-xl bg-site-raised p-1 cursor-pointer" value={settings.branding.primaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
-                          <input className={inputCls} placeholder="#FF6B9D" value={settings.branding.primaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
+                          <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="#FF6B9D" value={settings.branding.primaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, primaryColor: e.target.value } }))} />
                         </div>
                       </FormField>
                       <FormField label="Secondary Color">
                         <div className="flex gap-2">
                           <input type="color" className="h-10 w-12 border border-white/5 rounded-xl bg-site-raised p-1 cursor-pointer" value={settings.branding.secondaryColor || "#000000"} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
-                          <input className={inputCls} placeholder="#95E1D3" value={settings.branding.secondaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
+                          <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="#95E1D3" value={settings.branding.secondaryColor} onChange={(e) => setSettings((s) => ({ ...s, branding: { ...s.branding, secondaryColor: e.target.value } }))} />
                         </div>
                       </FormField>
                     </FormRow>
@@ -801,13 +829,13 @@ export default function AdminSettingsPage() {
 
                   <SectionCard title="SEO Settings" description="Search engine optimization metadata" icon={<Megaphone />} accent="bg-green-500">
                     <FormField label="Meta Title">
-                      <input className={inputCls} placeholder="Meta title" value={settings.seo.metaTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaTitle: e.target.value } }))} />
+                      <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Meta title" value={settings.seo.metaTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaTitle: e.target.value } }))} />
                     </FormField>
                     <FormField label="Meta Description">
-                      <textarea className={inputCls} rows={2} placeholder="Meta description" value={settings.seo.metaDescription || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaDescription: e.target.value } }))} />
+                      <Textarea rows={2} className="rounded-xl border-site-border bg-site-raised px-4 py-2 text-sm text-white" placeholder="Meta description" value={settings.seo.metaDescription || ""} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaDescription: e.target.value } }))} />
                     </FormField>
                     <FormField label="Meta Keywords">
-                      <input className={inputCls} placeholder="Keyword1, Keyword2, Keyword3" value={toCsv(settings.seo.metaKeywords)} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaKeywords: parseCsv(e.target.value) } }))} />
+                      <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Keyword1, Keyword2, Keyword3" value={toCsv(settings.seo.metaKeywords)} onChange={(e) => setSettings((s) => ({ ...s, seo: { ...s.seo, metaKeywords: parseCsv(e.target.value) } }))} />
                     </FormField>
                   </SectionCard>
                 </div>
@@ -817,31 +845,31 @@ export default function AdminSettingsPage() {
                 <div className="grid grid-cols-1 gap-6">
                   <SectionCard title="Landing Header" description="Top section of the homepage" icon={<LayoutGrid />} accent="bg-site-accent">
                     <FormField label="Hero Title">
-                      <input className={inputCls} placeholder="Hero title" value={settings.homepage.heroTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroTitle: e.target.value } }))} />
+                      <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Hero title" value={settings.homepage.heroTitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroTitle: e.target.value } }))} />
                     </FormField>
                     <FormField label="Hero Subtitle">
-                      <textarea className={inputCls} rows={2} placeholder="Hero subtitle" value={settings.homepage.heroSubtitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroSubtitle: e.target.value } }))} />
+                      <Textarea rows={2} className="rounded-xl border-site-border bg-site-raised px-4 py-2 text-sm text-white" placeholder="Hero subtitle" value={settings.homepage.heroSubtitle || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, heroSubtitle: e.target.value } }))} />
                     </FormField>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                       <ToggleField label="Enable Announcement" checked={settings.homepage.announcementEnabled} onChange={(v) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, announcementEnabled: v } }))} />
                       <FormField label="Announcement Text">
-                        <input className={inputCls} placeholder="Announcement text" value={settings.homepage.announcementText || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, announcementText: e.target.value } }))} />
+                        <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="Announcement text" value={settings.homepage.announcementText || ""} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, announcementText: e.target.value } }))} />
                       </FormField>
                     </div>
                     <div className="h-[1px] w-full bg-site-border/30 my-2"></div>
                     <FormField label="Featured Category Slugs" hint="Comma-separated list of category slugs to feature.">
-                      <input className={inputCls} placeholder="hot, popular, new" value={toCsv(settings.homepage.featuredCategorySlugs)} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, featuredCategorySlugs: parseCsv(e.target.value) } }))} />
+                      <Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="hot, popular, new" value={toCsv(settings.homepage.featuredCategorySlugs)} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, featuredCategorySlugs: parseCsv(e.target.value) } }))} />
                     </FormField>
                     <h3 className="font-bold text-sm text-gray-300 pt-2 border-t-[1px] border-white/5 mt-2">Section Labels</h3>
                     <FormRow>
-                      <FormField label="Featured Products Title"><input className={inputCls} value={settings.homepage.sectionLabels.featuredProductsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, featuredProductsTitle: e.target.value } } }))} /></FormField>
-                      <FormField label="Specials Title"><input className={inputCls} value={settings.homepage.sectionLabels.specialsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, specialsTitle: e.target.value } } }))} /></FormField>
+                      <FormField label="Featured Products Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.homepage.sectionLabels.featuredProductsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, featuredProductsTitle: e.target.value } } }))} /></FormField>
+                      <FormField label="Specials Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.homepage.sectionLabels.specialsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, specialsTitle: e.target.value } } }))} /></FormField>
                     </FormRow>
                     <FormRow>
-                      <FormField label="News Title"><input className={inputCls} value={settings.homepage.sectionLabels.newsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, newsTitle: e.target.value } } }))} /></FormField>
-                      <FormField label="View All Text"><input className={inputCls} value={settings.homepage.sectionLabels.viewAllText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, viewAllText: e.target.value } } }))} /></FormField>
+                      <FormField label="News Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.homepage.sectionLabels.newsTitle} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, newsTitle: e.target.value } } }))} /></FormField>
+                      <FormField label="View All Text"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.homepage.sectionLabels.viewAllText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, viewAllText: e.target.value } } }))} /></FormField>
                     </FormRow>
-                    <FormField label="Hero Button Text"><input className={inputCls} value={settings.homepage.sectionLabels.heroButtonText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, heroButtonText: e.target.value } } }))} /></FormField>
+                    <FormField label="Hero Button Text"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.homepage.sectionLabels.heroButtonText} onChange={(e) => setSettings((s) => ({ ...s, homepage: { ...s.homepage, sectionLabels: { ...s.homepage.sectionLabels, heroButtonText: e.target.value } } }))} /></FormField>
                   </SectionCard>
 
                   <SectionCard title="Category Tabs" description="Navigation tabs on homepage" icon={<Tag />} accent="bg-site-accent/10">
@@ -851,10 +879,32 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {settings.homepage.categoryTabs.map((item, index) => (
                         <ItemCard key={`${item.id}-${index}`} index={index} label="Tab" onRemove={() => removeCategoryTab(index)}>
-                          <FormField label="ID"><select className={selectCls} value={item.id} onChange={(e) => updateCategoryTab(index, "id", e.target.value)}><option value="all">all</option><option value="hot">hot</option><option value="cards">cards</option></select></FormField>
-                          <FormField label="Label"><input className={inputCls} value={item.label} onChange={(e) => updateCategoryTab(index, "label", e.target.value)} /></FormField>
+                          <FormField label="ID">
+                            <Select value={item.id} onValueChange={(value) => updateCategoryTab(index, "id", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">all</SelectItem>
+                                <SelectItem value="hot">hot</SelectItem>
+                                <SelectItem value="cards">cards</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
+                          <FormField label="Label"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.label} onChange={(e) => updateCategoryTab(index, "label", e.target.value)} /></FormField>
                           <div className="md:col-span-2">
-                            <FormField label="Icon"><select className={selectCls} value={item.icon} onChange={(e) => updateCategoryTab(index, "icon", e.target.value)}><option value="gamepad">gamepad</option><option value="flame">flame</option><option value="card">card</option></select></FormField>
+                            <FormField label="Icon">
+                              <Select value={item.icon} onValueChange={(value) => updateCategoryTab(index, "icon", value)}>
+                                <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="gamepad">gamepad</SelectItem>
+                                  <SelectItem value="flame">flame</SelectItem>
+                                  <SelectItem value="card">card</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormField>
                           </div>
                         </ItemCard>
                       ))}
@@ -868,10 +918,34 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {settings.homepage.quickActions.map((item, index) => (
                         <ItemCard key={item.id} index={index} label="Action" onRemove={() => removeQuickAction(index)}>
-                          <FormField label="Label"><input className={inputCls} value={item.label} onChange={(e) => updateQuickAction(index, "label", e.target.value)} /></FormField>
-                          <FormField label="URL"><input className={inputCls} value={item.href} onChange={(e) => updateQuickAction(index, "href", e.target.value)} /></FormField>
-                          <FormField label="Icon"><select className={selectCls} value={item.icon} onChange={(e) => updateQuickAction(index, "icon", e.target.value)}><option value="credit-card">credit-card</option><option value="gift">gift</option><option value="star">star</option><option value="headphones">headphones</option></select></FormField>
-                          <FormField label="Color"><select className={selectCls} value={item.color} onChange={(e) => updateQuickAction(index, "color", e.target.value)}><option value="yellow">yellow</option><option value="pink">pink</option><option value="green">green</option><option value="blue">blue</option></select></FormField>
+                          <FormField label="Label"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.label} onChange={(e) => updateQuickAction(index, "label", e.target.value)} /></FormField>
+                          <FormField label="URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.href} onChange={(e) => updateQuickAction(index, "href", e.target.value)} /></FormField>
+                          <FormField label="Icon">
+                            <Select value={item.icon} onValueChange={(value) => updateQuickAction(index, "icon", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="credit-card">credit-card</SelectItem>
+                                <SelectItem value="gift">gift</SelectItem>
+                                <SelectItem value="star">star</SelectItem>
+                                <SelectItem value="headphones">headphones</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
+                          <FormField label="Color">
+                            <Select value={item.color} onValueChange={(value) => updateQuickAction(index, "color", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="yellow">yellow</SelectItem>
+                                <SelectItem value="pink">pink</SelectItem>
+                                <SelectItem value="green">green</SelectItem>
+                                <SelectItem value="blue">blue</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
                         </ItemCard>
                       ))}
                     </div>
@@ -884,10 +958,21 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {settings.homepage.trustBadges.map((item, index) => (
                         <ItemCard key={item.id} index={index} label="Badge" onRemove={() => removeTrustBadge(index)}>
-                          <FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateTrustBadge(index, "title", e.target.value)} /></FormField>
-                          <FormField label="Icon"><select className={selectCls} value={item.icon} onChange={(e) => updateTrustBadge(index, "icon", e.target.value)}><option value="shield">shield</option><option value="headphones">headphones</option><option value="zap">zap</option></select></FormField>
+                          <FormField label="Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.title} onChange={(e) => updateTrustBadge(index, "title", e.target.value)} /></FormField>
+                          <FormField label="Icon">
+                            <Select value={item.icon} onValueChange={(value) => updateTrustBadge(index, "icon", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="shield">shield</SelectItem>
+                                <SelectItem value="headphones">headphones</SelectItem>
+                                <SelectItem value="zap">zap</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
                           <div className="md:col-span-2">
-                            <FormField label="Description"><input className={inputCls} value={item.description || ""} onChange={(e) => updateTrustBadge(index, "description", e.target.value)} /></FormField>
+                            <FormField label="Description"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.description || ""} onChange={(e) => updateTrustBadge(index, "description", e.target.value)} /></FormField>
                           </div>
                         </ItemCard>
                       ))}
@@ -901,15 +986,27 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 gap-4">
                       {settings.homepage.promoCards.map((item, index) => (
                         <ItemCard key={item.id} index={index} label="Promo Card" draggable onDragStart={() => handleDragStart("promoCards", index)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop("promoCards", index)} onRemove={() => removeBlockItem("promoCards", index)}>
-                          <FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updatePromo(index, "title", e.target.value)} /></FormField>
-                          <FormField label="Badge"><input className={inputCls} value={item.badge || ""} onChange={(e) => updatePromo(index, "badge", e.target.value)} /></FormField>
+                          <FormField label="Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.title} onChange={(e) => updatePromo(index, "title", e.target.value)} /></FormField>
+                          <FormField label="Badge"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.badge || ""} onChange={(e) => updatePromo(index, "badge", e.target.value)} /></FormField>
                           <div className="md:col-span-2">
-                            <FormField label="Description"><input className={inputCls} value={item.description || ""} onChange={(e) => updatePromo(index, "description", e.target.value)} /></FormField>
+                            <FormField label="Description"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.description || ""} onChange={(e) => updatePromo(index, "description", e.target.value)} /></FormField>
                           </div>
-                          <FormField label="CTA Text"><input className={inputCls} value={item.ctaText || ""} onChange={(e) => updatePromo(index, "ctaText", e.target.value)} /></FormField>
+                          <FormField label="CTA Text"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.ctaText || ""} onChange={(e) => updatePromo(index, "ctaText", e.target.value)} /></FormField>
                           <FormRow>
-                            <FormField label="URL"><input className={inputCls} value={item.href || ""} onChange={(e) => updatePromo(index, "href", e.target.value)} /></FormField>
-                            <FormField label="Theme"><select className={selectCls} value={item.theme} onChange={(e) => updatePromo(index, "theme", e.target.value)}><option value="blue">blue</option><option value="pink">pink</option><option value="yellow">yellow</option><option value="green">green</option></select></FormField>
+                            <FormField label="URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.href || ""} onChange={(e) => updatePromo(index, "href", e.target.value)} /></FormField>
+                            <FormField label="Theme">
+                              <Select value={item.theme} onValueChange={(value) => updatePromo(index, "theme", value)}>
+                                <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="blue">blue</SelectItem>
+                                  <SelectItem value="pink">pink</SelectItem>
+                                  <SelectItem value="yellow">yellow</SelectItem>
+                                  <SelectItem value="green">green</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormField>
                           </FormRow>
                         </ItemCard>
                       ))}
@@ -927,12 +1024,24 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 gap-4">
                       {settings.homepage.heroSlides.map((item, index) => (
                         <ItemCard key={item.id} index={index} label="Slide" onRemove={() => removeHeroSlide(index)}>
-                          <FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateHeroSlide(index, "title", e.target.value)} /></FormField>
-                          <FormField label="Badge Text"><input className={inputCls} value={item.badgeText || ""} onChange={(e) => updateHeroSlide(index, "badgeText", e.target.value)} /></FormField>
-                          <div className="md:col-span-2"><FormField label="Subtitle"><input className={inputCls} value={item.subtitle || ""} onChange={(e) => updateHeroSlide(index, "subtitle", e.target.value)} /></FormField></div>
-                          <div className="md:col-span-2"><FormField label="Image URL"><input className={inputCls} value={item.image} onChange={(e) => updateHeroSlide(index, "image", e.target.value)} /></FormField></div>
-                          <FormField label="Link URL"><input className={inputCls} value={item.link || ""} onChange={(e) => updateHeroSlide(index, "link", e.target.value)} /></FormField>
-                          <FormField label="Color"><select className={selectCls} value={item.color} onChange={(e) => updateHeroSlide(index, "color", e.target.value)}><option value="yellow">yellow</option><option value="pink">pink</option><option value="blue">blue</option><option value="green">green</option></select></FormField>
+                          <FormField label="Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.title} onChange={(e) => updateHeroSlide(index, "title", e.target.value)} /></FormField>
+                          <FormField label="Badge Text"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.badgeText || ""} onChange={(e) => updateHeroSlide(index, "badgeText", e.target.value)} /></FormField>
+                          <div className="md:col-span-2"><FormField label="Subtitle"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.subtitle || ""} onChange={(e) => updateHeroSlide(index, "subtitle", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Image URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.image} onChange={(e) => updateHeroSlide(index, "image", e.target.value)} /></FormField></div>
+                          <FormField label="Link URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.link || ""} onChange={(e) => updateHeroSlide(index, "link", e.target.value)} /></FormField>
+                          <FormField label="Color">
+                            <Select value={item.color} onValueChange={(value) => updateHeroSlide(index, "color", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="yellow">yellow</SelectItem>
+                                <SelectItem value="pink">pink</SelectItem>
+                                <SelectItem value="blue">blue</SelectItem>
+                                <SelectItem value="green">green</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
                         </ItemCard>
                       ))}
                     </div>
@@ -945,11 +1054,11 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {settings.homepage.newsItems.map((item, index) => (
                         <ItemCard key={item.id} index={index} label="News" draggable onDragStart={() => handleDragStart("newsItems", index)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop("newsItems", index)} onRemove={() => removeBlockItem("newsItems", index)}>
-                          <div className="md:col-span-2"><FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateNews(index, "title", e.target.value)} /></FormField></div>
-                          <FormField label="Category"><input className={inputCls} value={item.category} onChange={(e) => updateNews(index, "category", e.target.value)} /></FormField>
-                          <FormField label="Date"><input className={inputCls} value={item.date} onChange={(e) => updateNews(index, "date", e.target.value)} /></FormField>
-                          <div className="md:col-span-2"><FormField label="Image URL"><input className={inputCls} value={item.image} onChange={(e) => updateNews(index, "image", e.target.value)} /></FormField></div>
-                          <div className="md:col-span-2"><FormField label="Link URL"><input className={inputCls} value={item.href || ""} onChange={(e) => updateNews(index, "href", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.title} onChange={(e) => updateNews(index, "title", e.target.value)} /></FormField></div>
+                          <FormField label="Category"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.category} onChange={(e) => updateNews(index, "category", e.target.value)} /></FormField>
+                          <FormField label="Date"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.date} onChange={(e) => updateNews(index, "date", e.target.value)} /></FormField>
+                          <div className="md:col-span-2"><FormField label="Image URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.image} onChange={(e) => updateNews(index, "image", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Link URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.href || ""} onChange={(e) => updateNews(index, "href", e.target.value)} /></FormField></div>
                         </ItemCard>
                       ))}
                     </div>
@@ -962,16 +1071,40 @@ export default function AdminSettingsPage() {
                     <div className="grid grid-cols-1 gap-4">
                       {settings.homepage.seasonalEvents.map((item, index) => (
                         <ItemCard key={item.id} index={index} label="Event" draggable onDragStart={() => handleDragStart("seasonalEvents", index)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop("seasonalEvents", index)} onRemove={() => removeBlockItem("seasonalEvents", index)}>
-                          <div className="md:col-span-2"><FormField label="Title"><input className={inputCls} value={item.title} onChange={(e) => updateEvent(index, "title", e.target.value)} /></FormField></div>
-                          <div className="md:col-span-2"><FormField label="Description"><input className={inputCls} value={item.description} onChange={(e) => updateEvent(index, "description", e.target.value)} /></FormField></div>
-                          <FormField label="Start Date"><input className={inputCls} placeholder="YYYY-MM-DD" value={item.startDate} onChange={(e) => updateEvent(index, "startDate", e.target.value)} /></FormField>
-                          <FormField label="End Date"><input className={inputCls} placeholder="YYYY-MM-DD" value={item.endDate} onChange={(e) => updateEvent(index, "endDate", e.target.value)} /></FormField>
-                          <div className="md:col-span-2"><FormField label="Image URL"><input className={inputCls} value={item.image} onChange={(e) => updateEvent(index, "image", e.target.value)} /></FormField></div>
-                          <FormField label="Discount"><input className={inputCls} value={item.discount || ""} onChange={(e) => updateEvent(index, "discount", e.target.value)} /></FormField>
-                          <FormField label="Games (Comma-separated)"><input className={inputCls} value={toCsv(item.games || [])} onChange={(e) => updateEvent(index, "games", e.target.value)} /></FormField>
-                          <FormField label="Type"><select className={selectCls} value={item.type} onChange={(e) => updateEvent(index, "type", e.target.value)}><option value="cashback">cashback</option><option value="discount">discount</option><option value="bonus">bonus</option><option value="special">special</option></select></FormField>
-                          <FormField label="Discount Color"><select className={selectCls} value={item.discountColor || "blue"} onChange={(e) => updateEvent(index, "discountColor", e.target.value)}><option value="blue">blue</option><option value="purple">purple</option><option value="green">green</option><option value="pink">pink</option></select></FormField>
-                          <div className="md:col-span-2"><FormField label="Link URL"><input className={inputCls} value={item.href || ""} onChange={(e) => updateEvent(index, "href", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Title"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.title} onChange={(e) => updateEvent(index, "title", e.target.value)} /></FormField></div>
+                          <div className="md:col-span-2"><FormField label="Description"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.description} onChange={(e) => updateEvent(index, "description", e.target.value)} /></FormField></div>
+                          <FormField label="Start Date"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="YYYY-MM-DD" value={item.startDate} onChange={(e) => updateEvent(index, "startDate", e.target.value)} /></FormField>
+                          <FormField label="End Date"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" placeholder="YYYY-MM-DD" value={item.endDate} onChange={(e) => updateEvent(index, "endDate", e.target.value)} /></FormField>
+                          <div className="md:col-span-2"><FormField label="Image URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.image} onChange={(e) => updateEvent(index, "image", e.target.value)} /></FormField></div>
+                          <FormField label="Discount"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.discount || ""} onChange={(e) => updateEvent(index, "discount", e.target.value)} /></FormField>
+                          <FormField label="Games (Comma-separated)"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={toCsv(item.games || [])} onChange={(e) => updateEvent(index, "games", e.target.value)} /></FormField>
+                          <FormField label="Type">
+                            <Select value={item.type} onValueChange={(value) => updateEvent(index, "type", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="cashback">cashback</SelectItem>
+                                <SelectItem value="discount">discount</SelectItem>
+                                <SelectItem value="bonus">bonus</SelectItem>
+                                <SelectItem value="special">special</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
+                          <FormField label="Discount Color">
+                            <Select value={item.discountColor || "blue"} onValueChange={(value) => updateEvent(index, "discountColor", value)}>
+                              <SelectTrigger className="h-9 rounded-xl border-site-border bg-site-raised text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="blue">blue</SelectItem>
+                                <SelectItem value="purple">purple</SelectItem>
+                                <SelectItem value="green">green</SelectItem>
+                                <SelectItem value="pink">pink</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormField>
+                          <div className="md:col-span-2"><FormField label="Link URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={item.href || ""} onChange={(e) => updateEvent(index, "href", e.target.value)} /></FormField></div>
                         </ItemCard>
                       ))}
                     </div>
@@ -991,7 +1124,7 @@ export default function AdminSettingsPage() {
                     {settings.features.enableMaintenanceMode && (
                       <div className="mt-4">
                         <FormField label="Maintenance Message">
-                          <textarea className={inputCls} rows={2} placeholder="Maintenance message" value={settings.features.maintenanceMessage || ""} onChange={(e) => setSettings((s) => ({ ...s, features: { ...s.features, maintenanceMessage: e.target.value } }))} />
+                          <Textarea rows={2} className="rounded-xl border-site-border bg-site-raised px-4 py-2 text-sm text-white" placeholder="Maintenance message" value={settings.features.maintenanceMessage || ""} onChange={(e) => setSettings((s) => ({ ...s, features: { ...s.features, maintenanceMessage: e.target.value } }))} />
                         </FormField>
                       </div>
                     )}
@@ -1001,22 +1134,22 @@ export default function AdminSettingsPage() {
                     <ToggleField label="Allow Guest Checkout" description="Users can buy without logging in" checked={settings.commerce.allowGuestCheckout} onChange={(v) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, allowGuestCheckout: v } }))} />
                     <div className="mt-4">
                       <FormRow>
-                        <FormField label="Tax %"><input type="number" className={inputCls} value={settings.commerce.taxPercent} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, taxPercent: Number(e.target.value) || 0 } }))} /></FormField>
-                        <FormField label="Order Auto Cancel (Minutes)"><input type="number" className={inputCls} value={settings.commerce.orderAutoCancelMinutes} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, orderAutoCancelMinutes: Number(e.target.value) || 1 } }))} /></FormField>
+                        <FormField label="Tax %"><Input size="sm" type="number" className="rounded-xl border-site-border bg-site-raised" value={settings.commerce.taxPercent} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, taxPercent: Number(e.target.value) || 0 } }))} /></FormField>
+                        <FormField label="Order Auto Cancel (Minutes)"><Input size="sm" type="number" className="rounded-xl border-site-border bg-site-raised" value={settings.commerce.orderAutoCancelMinutes} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, orderAutoCancelMinutes: Number(e.target.value) || 1 } }))} /></FormField>
                       </FormRow>
                       <FormRow>
-                        <FormField label="Min Topup Amount"><input type="number" className={inputCls} value={settings.commerce.minTopupAmount} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, minTopupAmount: Number(e.target.value) || 0 } }))} /></FormField>
-                        <FormField label="Max Topup Amount"><input type="number" className={inputCls} value={settings.commerce.maxTopupAmount} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, maxTopupAmount: Number(e.target.value) || 0 } }))} /></FormField>
+                        <FormField label="Min Topup Amount"><Input size="sm" type="number" className="rounded-xl border-site-border bg-site-raised" value={settings.commerce.minTopupAmount} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, minTopupAmount: Number(e.target.value) || 0 } }))} /></FormField>
+                        <FormField label="Max Topup Amount"><Input size="sm" type="number" className="rounded-xl border-site-border bg-site-raised" value={settings.commerce.maxTopupAmount} onChange={(e) => setSettings((s) => ({ ...s, commerce: { ...s.commerce, maxTopupAmount: Number(e.target.value) || 0 } }))} /></FormField>
                       </FormRow>
                     </div>
                   </SectionCard>
 
                   <SectionCard title="Social Media Links" description="External community links" icon={<Globe />} accent="bg-green-500">
                     <FormRow>
-                      <FormField label="Facebook URL"><input className={inputCls} value={settings.social.facebookUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, facebookUrl: e.target.value } }))} /></FormField>
-                      <FormField label="LINE URL"><input className={inputCls} value={settings.social.lineUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, lineUrl: e.target.value } }))} /></FormField>
+                      <FormField label="Facebook URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.social.facebookUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, facebookUrl: e.target.value } }))} /></FormField>
+                      <FormField label="LINE URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.social.lineUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, lineUrl: e.target.value } }))} /></FormField>
                     </FormRow>
-                    <FormField label="Discord URL"><input className={inputCls} value={settings.social.discordUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, discordUrl: e.target.value } }))} /></FormField>
+                    <FormField label="Discord URL"><Input size="sm" className="rounded-xl border-site-border bg-site-raised" value={settings.social.discordUrl || ""} onChange={(e) => setSettings((s) => ({ ...s, social: { ...s.social, discordUrl: e.target.value } }))} /></FormField>
                   </SectionCard>
                 </div>
               )}
@@ -1025,30 +1158,30 @@ export default function AdminSettingsPage() {
                 <div className="grid grid-cols-1 gap-6">
                   <SectionCard title="Permissions" description="Admin user roles" icon={<Users />} accent="bg-site-accent">
                     <div className="overflow-x-auto border border-white/5 rounded-2xl bg-site-surface">
-                      <table className="min-w-full border-collapse text-sm">
-                        <thead className="bg-site-raised">
-                          <tr className="border-b border-white/5 text-left">
-                            <th className="px-3 py-3 border-r border-white/5">Admin</th>
-                            <th className="px-3 py-3 border-r border-white/5">Email</th>
-                            <th className="px-3 py-3 border-r border-white/5 text-center">Read</th>
-                            <th className="px-3 py-3 text-center">Write</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {permissions.map((item, i) => (
-                            <tr key={item.adminId} className={`${i !== permissions.length - 1 ? "border-b border-white/5" : ""}`}>
-                              <td className="px-3 py-3 border-r border-white/5 font-semibold">{item.username}</td>
-                              <td className="px-3 py-3 border-r border-white/5 text-gray-400">{item.email}</td>
-                              <td className="px-3 py-3 border-r border-white/5 text-center">
-                                <input type="checkbox" className="w-5 h-5 accent-[#67B0BA] cursor-pointer border border-white/5 rounded-xl" checked={item.read} onChange={(e) => updatePermission(item.adminId, "read", e.target.checked)} />
-                              </td>
-                              <td className="px-3 py-3 text-center">
-                                <input type="checkbox" className="w-5 h-5 accent-[#67B0BA] cursor-pointer border border-white/5 rounded-xl" checked={item.write} onChange={(e) => updatePermission(item.adminId, "write", e.target.checked)} />
-                              </td>
-                            </tr>
+                      <Table className="min-w-full text-sm">
+                        <TableHeader className="bg-site-raised">
+                          <TableRow className="border-site-border-soft hover:bg-transparent text-left">
+                            <TableHead className="h-auto px-3 py-3 text-[10px] font-bold uppercase tracking-wider text-site-dim border-r border-white/5">Admin</TableHead>
+                            <TableHead className="h-auto px-3 py-3 text-[10px] font-bold uppercase tracking-wider text-site-dim border-r border-white/5">Email</TableHead>
+                            <TableHead className="h-auto px-3 py-3 text-[10px] font-bold uppercase tracking-wider text-site-dim border-r border-white/5 text-center">Read</TableHead>
+                            <TableHead className="h-auto px-3 py-3 text-[10px] font-bold uppercase tracking-wider text-site-dim text-center">Write</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {permissions.map((item) => (
+                            <TableRow key={item.adminId} className="border-site-border-soft hover:bg-site-raised/50">
+                              <TableCell className="px-3 py-3 border-r border-white/5 font-semibold">{item.username}</TableCell>
+                              <TableCell className="px-3 py-3 border-r border-white/5 text-gray-400">{item.email}</TableCell>
+                              <TableCell className="px-3 py-3 border-r border-white/5 text-center">
+                                <Checkbox className="h-5 w-5 cursor-pointer" checked={item.read} onCheckedChange={(checked) => updatePermission(item.adminId, "read", checked === true)} />
+                              </TableCell>
+                              <TableCell className="px-3 py-3 text-center">
+                                <Checkbox className="h-5 w-5 cursor-pointer" checked={item.write} onCheckedChange={(checked) => updatePermission(item.adminId, "write", checked === true)} />
+                              </TableCell>
+                            </TableRow>
                           ))}
-                        </tbody>
-                      </table>
+                        </TableBody>
+                      </Table>
                     </div>
                   </SectionCard>
 
@@ -1119,13 +1252,13 @@ export default function AdminSettingsPage() {
 
                     {auditTotalPages > 1 && (
                       <div className="flex items-center justify-between text-sm mt-4 font-bold">
-                        <button className="bg-site-raised border border-white/5 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/5 transition-all disabled:opacity-50 disabled:hover:bg-site-raised" disabled={auditPage <= 1} onClick={() => loadAuditLogs(Math.max(1, auditPage - 1))}>
+                        <Button variant="secondary" size="sm" className="rounded-xl" disabled={auditPage <= 1} onClick={() => loadAuditLogs(Math.max(1, auditPage - 1))}>
                           Prev
-                        </button>
+                        </Button>
                         <span>Page {auditPage} of {auditTotalPages}</span>
-                        <button className="bg-site-raised border border-white/5 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/5 transition-all disabled:opacity-50 disabled:hover:bg-site-raised" disabled={auditPage >= auditTotalPages} onClick={() => loadAuditLogs(auditPage + 1)}>
+                        <Button variant="secondary" size="sm" className="rounded-xl" disabled={auditPage >= auditTotalPages} onClick={() => loadAuditLogs(auditPage + 1)}>
                           Next
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </SectionCard>

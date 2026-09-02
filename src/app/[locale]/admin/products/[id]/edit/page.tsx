@@ -39,6 +39,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -617,17 +618,17 @@ export default function EditProductPage() {
 
                 <div>
                   <FieldLabel>URL สินค้า (Slug)</FieldLabel>
-                  <div className="flex rounded-6 border border-input bg-background focus-within:ring-2 focus-within:ring-ring focus-within:border-ring transition-colors overflow-hidden">
-                    <span className="px-3 py-2 text-site-dim bg-site-raised border-r border-site-border text-xs flex items-center">
+                  <div className="relative flex items-center [&>div]:space-y-0 [&>div]:w-full">
+                    <span className="absolute left-3 z-10 text-site-dim text-xs">
                       /products/
                     </span>
-                    <input
+                    <Input
                       type="text"
                       value={formData.slug}
                       onChange={(e) =>
                         setFormData({ ...formData, slug: e.target.value })
                       }
-                      className="flex-1 bg-transparent px-3 py-2 text-sm text-site-text placeholder:text-muted-foreground outline-none"
+                      className="pl-20 text-sm font-mono text-site-accent"
                     />
                   </div>
                 </div>
@@ -1147,16 +1148,15 @@ export default function EditProductPage() {
                               ? "bg-site-accent/10 border-site-accent/40 text-site-text"
                               : "bg-site-raised/40 border-site-border-soft text-site-muted hover:bg-site-border/30"
                           )}>
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             checked={isChecked}
-                            onChange={(e) => {
-                              const checked = e.target.checked;
+                            onCheckedChange={(checked) => {
+                              const isNowChecked = checked === true;
                               setFormData({
                                 ...formData,
                                 gameDetails: {
                                   ...formData.gameDetails,
-                                  platforms: checked
+                                  platforms: isNowChecked
                                     ? [
                                       ...formData.gameDetails.platforms,
                                       platform,
@@ -1167,28 +1167,7 @@ export default function EditProductPage() {
                                 },
                               });
                             }}
-                            className="sr-only"
                           />
-                          <span
-                            aria-hidden="true"
-                            className={cn(
-                              "w-3.5 h-3.5 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors",
-                              isChecked
-                                ? "bg-site-accent border-site-accent text-site-bg"
-                                : "border-site-border bg-transparent"
-                            )}>
-                            {isChecked && (
-                              <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="none">
-                                <path
-                                  d="M2.5 6l2.5 2.5L9.5 3.5"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            )}
-                          </span>
                           {platform}
                         </label>
                       );

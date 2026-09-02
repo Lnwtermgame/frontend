@@ -17,6 +17,30 @@ const Slot = React.forwardRef<HTMLElement, AsChildProps>(
   },
 );
 
+const LoadingSpinner = (
+  <svg
+    aria-hidden="true"
+    className="animate-spin h-4 w-4 text-current"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    />
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    />
+  </svg>
+);
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-site-bg disabled:pointer-events-none disabled:opacity-50",
   {
@@ -90,38 +114,30 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const content = (
       <>
-        {isLoading && (
-          <svg
-            aria-hidden="true"
-            className="animate-spin h-4 w-4 text-current"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-        )}
+        {isLoading && LoadingSpinner}
         {children}
       </>
     );
 
     if (asChild) {
+      const childProps = React.isValidElement(children)
+        ? ((children.props ?? {}) as { children?: React.ReactNode })
+        : {};
+      // Inject only the child's original children (plus spinner), never the
+      // child element itself — cloning the element into its own children
+      // previously rendered <a><a>…</a></a> for <Button asChild><Link>.
+      const childContent = (
+        <>
+          {isLoading && LoadingSpinner}
+          {childProps.children}
+        </>
+      );
       return (
         <Slot ref={ref as React.Ref<HTMLElement>} className={classes} {...props}>
           {React.isValidElement(children)
-            ? React.cloneElement(children, { children: content } as Record<string, unknown>)
+            ? React.cloneElement(children, {
+                children: childContent,
+              } as Record<string, unknown>)
             : children}
         </Slot>
       );

@@ -37,6 +37,18 @@ import {
   UpdateNewsArticleData,
   NewsCategory,
 } from "@/lib/services";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/Badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { aiService } from "@/lib/services/ai-api";
 import type { DDGImageResult } from "@/lib/services/ai-api";
 import type { AIModel } from "@/lib/services/ai-api";
@@ -625,12 +637,13 @@ export default function AdminCmsNewsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
+            <Button
               onClick={openCreateModal}
-              className="bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg flex items-center gap-2 px-5 py-2.5 transition-all font-bold text-sm">
+              className="gap-2 rounded-xl px-5 py-2.5 text-sm"
+            >
               <Plus className="h-4 w-4" />
               <span>เพิ่มข่าวใหม่</span>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -645,12 +658,15 @@ export default function AdminCmsNewsPage() {
             >
               <AlertCircle className="w-5 h-5 shrink-0" />
               <span className="font-medium flex-1">{error}</span>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setError(null)}
-                className="p-1 hover:bg-rose-500/20 rounded-lg transition-colors text-rose-400/70 hover:text-rose-400"
+                className="h-7 w-7 rounded-lg text-rose-400/70 hover:text-rose-400 hover:bg-rose-500/20"
+                aria-label="ปิดข้อความ error"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -722,47 +738,51 @@ export default function AdminCmsNewsPage() {
           transition={{ delay: 0.1 }}
           className="bg-site-raised border border-white/5 rounded-2xl p-2 gap-2 flex flex-col md:flex-row md:items-center justify-between"
         >
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
+          <div className="flex-1 min-w-[200px]">
+            <Input
               type="text"
               placeholder="ค้นหาชื่อข่าว..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-site-surface border-none rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:ring-2 focus:ring-site-accent/50 outline-none transition-all placeholder-gray-600"
+              icon={<Search className="h-4 w-4" />}
+              className="h-11 rounded-xl border-none bg-site-surface pl-10 text-sm text-white"
             />
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-site-surface border border-white/5 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-site-accent/50 outline-none hover:border-white/10 transition-colors cursor-pointer appearance-none min-w-[140px]"
-            >
-              <option value="ALL">ทุกหมวดหมู่</option>
-              {categories.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-site-surface border border-white/5 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-site-accent/50 outline-none hover:border-white/10 transition-colors cursor-pointer appearance-none min-w-[140px]"
-            >
-              <option value="ALL">ทุกสถานะ</option>
-              <option value="PUBLISHED">เผยแพร่แล้ว</option>
-              <option value="DRAFT">ฉบับร่าง</option>
-            </select>
-            <button
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="h-11 rounded-xl border-white/5 bg-site-surface text-sm text-site-muted min-w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">ทุกหมวดหมู่</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-11 rounded-xl border-white/5 bg-site-surface text-sm text-site-muted min-w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">ทุกสถานะ</SelectItem>
+                <SelectItem value="PUBLISHED">เผยแพร่แล้ว</SelectItem>
+                <SelectItem value="DRAFT">ฉบับร่าง</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button
+              variant="secondary"
+              size="icon"
               onClick={loadArticles}
               disabled={isLoading}
-              className="p-2.5 bg-site-raised border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-[#2a2d35] transition-all flex items-center gap-2 group shrink-0"
-              title="รีเฟรชข้อมูล"
+              className="h-11 w-11 rounded-xl text-site-muted hover:text-white shrink-0"
+              aria-label="รีเฟรชข้อมูล"
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
-            </button>
+              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+            </Button>
           </div>
         </motion.div>
 
@@ -805,17 +825,18 @@ export default function AdminCmsNewsPage() {
                   คุณสามารถเพิ่มข่าวใหม่ได้เลย หรือลองเปลี่ยนเงื่อนไขการค้นหา
                 </p>
                 {searchQuery && (
-                  <button
+                  <Button
+                    variant="link"
                     onClick={() => {
                       setSearchQuery("");
                       setCategoryFilter("ALL");
                       setStatusFilter("ALL");
                     }}
-                    className="text-site-accent hover:text-blue-300 transition-colors font-medium text-sm flex items-center gap-2"
+                    className="gap-2 text-sm"
                   >
                     <RefreshCw className="w-4 h-4" />
                     ล้างตัวกรอง
-                  </button>
+                  </Button>
                 )}
               </div>
             ) : (
@@ -847,20 +868,18 @@ export default function AdminCmsNewsPage() {
                       <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[6rem]">
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {article.isPublished ? (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-bold border border-site-accent/20 rounded-md">
-                              <CheckCircle size={10} className="mr-1" />
+                            <Badge variant="success">
+                              <CheckCircle size={10} />
                               เผยแพร่
-                            </span>
+                            </Badge>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-site-raised text-gray-400 text-[11px] font-bold border border-white/10 rounded-md">
-                              ฉบับร่าง
-                            </span>
+                            <Badge variant="neutral">ฉบับร่าง</Badge>
                           )}
                           {article.isFeatured && (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-site-accent/10 text-site-accent text-[11px] font-bold border border-site-accent/20 rounded-md">
-                              <Pin size={10} className="mr-1" />
+                            <Badge variant="info">
+                              <Pin size={10} />
                               เด่น
-                            </span>
+                            </Badge>
                           )}
                           <span
                             className={`inline-flex items-center px-2 py-0.5 text-[11px] font-bold border border-white/5 rounded-md ${category.color}`}>
@@ -902,29 +921,39 @@ export default function AdminCmsNewsPage() {
                       {/* Actions */}
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         {article.isPublished && (
-                          <Link
-                            href={`/news/${article.slug}`}
-                            target="_blank"
-                            className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-site-accent/30 transition-all"
-                            title="ดูหน้าเว็บ"
+                          <Button
+                            asChild
+                            variant="secondary"
+                            size="icon"
+                            className="h-10 w-10 rounded-xl text-site-muted hover:text-white hover:bg-site-accent/20 hover:border-site-accent/30"
                           >
-                            <Eye size={16} />
-                          </Link>
+                            <Link
+                              href={`/news/${article.slug}`}
+                              target="_blank"
+                              aria-label="ดูหน้าเว็บ"
+                            >
+                              <Eye size={16} />
+                            </Link>
+                          </Button>
                         )}
-                        <button
+                        <Button
+                          variant="secondary"
+                          size="icon"
                           onClick={() => openEditModal(article)}
-                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-blue-500/30 transition-all"
-                          title="แก้ไข"
+                          className="h-10 w-10 rounded-xl text-site-muted hover:text-white hover:bg-site-accent/20"
+                          aria-label="แก้ไข"
                         >
                           <Edit2 size={16} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
                           onClick={() => setDeleteConfirm(article.id)}
-                          className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/30 transition-all"
-                          title="ลบ"
+                          className="h-10 w-10 rounded-xl text-site-muted hover:text-semantic-rose hover:bg-semantic-rose/20 hover:border-semantic-rose/30"
+                          aria-label="ลบ"
                         >
                           <Trash2 size={16} />
-                        </button>
+                        </Button>
                       </div>
                     </div>
 
@@ -946,18 +975,20 @@ export default function AdminCmsNewsPage() {
                             </p>
                           </div>
                           <div className="flex gap-2">
-                            <button
+                            <Button
+                              variant="secondary"
                               onClick={() => setDeleteConfirm(null)}
-                              className="px-4 py-2 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all text-sm font-bold"
+                              className="rounded-xl text-sm"
                             >
                               ยกเลิก
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                              variant="danger"
                               onClick={() => handleDelete(article.id)}
-                              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-bold border border-rose-400/50 flex items-center gap-2"
+                              className="gap-2 rounded-xl text-sm"
                             >
                               <Trash2 className="w-4 h-4" /> ยืนยันการลบ
-                            </button>
+                            </Button>
                           </div>
                         </motion.div>
                       )}
@@ -1018,7 +1049,7 @@ export default function AdminCmsNewsPage() {
                           <label className="block text-[13px] font-bold text-gray-300">
                             หัวข้อข่าว <span className="text-rose-500">*</span>
                           </label>
-                          <input
+                          <Input
                             type="text"
                             value={formData.title}
                             onChange={(e) =>
@@ -1026,7 +1057,7 @@ export default function AdminCmsNewsPage() {
                             }
                             placeholder="พิมพ์หัวข้อข่าวที่น่าสนใจ..."
                             required
-                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                            className="h-12 rounded-xl border-white/10 bg-site-surface px-4 text-[14px]"
                           />
                         </div>
 
@@ -1041,16 +1072,16 @@ export default function AdminCmsNewsPage() {
                               </span>
                             )}
                           </label>
-                          <div className="relative flex items-center">
-                            <span className="absolute left-4 text-gray-400 font-mono text-[13px]">/news/</span>
-                            <input
+                          <div className="relative flex items-center [&>div]:space-y-0 [&>div]:w-full">
+                            <span className="absolute left-4 z-10 text-site-dim font-mono text-[13px]">/news/</span>
+                            <Input
                               type="text"
                               value={formData.slug}
                               onChange={(e) =>
                                 setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })
                               }
                               placeholder="article-slug"
-                              className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner pl-[70px] pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-700"
+                              className="h-12 rounded-xl border-white/10 bg-site-surface pl-[70px] pr-4 text-[13px] font-mono text-site-accent"
                             />
                           </div>
                           <p className="text-[11px] text-gray-400 font-medium mt-1">
@@ -1069,13 +1100,15 @@ export default function AdminCmsNewsPage() {
                             </span>
                           </div>
                           {!showAIGenerate && (
-                            <button
-                              type="button"
+                            <Button
+                              variant="secondary"
+                              size="sm"
                               onClick={() => setShowAIGenerate(true)}
-                              className="text-xs bg-site-accent text-white px-2 py-1 border border-white/5 rounded-xl hover:bg-site-accent/80 transition-colors">
-                              <Wand2 className="w-3 h-3 inline mr-1" />
+                              className="rounded-xl px-2 py-1 text-xs"
+                            >
+                              <Wand2 className="w-3 h-3" />
                               เปิดใช้งาน
-                            </button>
+                            </Button>
                           )}
                         </div>
 
@@ -1090,12 +1123,12 @@ export default function AdminCmsNewsPage() {
                                 <label className="block text-gray-300 mb-1 text-xs">
                                   หัวข้อที่ต้องการให้ AI เขียน
                                 </label>
-                                <input
+                                <Input
                                   type="text"
                                   value={aiTopic}
                                   onChange={(e) => setAiTopic(e.target.value)}
                                   placeholder="เช่น อัปเดตระบบใหม่, โปรโมชันประจำเดือน"
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-site-accent/60"
+                                  className="h-9 rounded-lg border-white/5 bg-site-surface text-sm"
                                 />
                                 <p className="text-[10px] text-gray-400 mt-1">
                                   AI จะค้นหาข้อมูลจาก TheNewsAPI
@@ -1108,19 +1141,21 @@ export default function AdminCmsNewsPage() {
                                 <label className="block text-gray-300 mb-1 text-xs">
                                   มุมมองข่าว (เลือกแนวข่าวที่ต้องการ)
                                 </label>
-                                <select
-                                  value={aiVariation}
-                                  onChange={(e) => setAiVariation(e.target.value)}
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60">
-                                  {aiVariations.map((variation) => (
-                                    <option
-                                      key={variation.value}
-                                      value={variation.value}
-                                    >
-                                      {variation.label} - {variation.description}
-                                    </option>
-                                  ))}
-                                </select>
+                                <Select value={aiVariation} onValueChange={setAiVariation}>
+                                  <SelectTrigger className="h-9 rounded-lg border-white/5 bg-site-surface text-sm">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {aiVariations.map((variation) => (
+                                      <SelectItem
+                                        key={variation.value}
+                                        value={variation.value}
+                                      >
+                                        {variation.label} - {variation.description}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               </div>
 
                               {/* LiteLLM Model Selector */}
@@ -1148,46 +1183,54 @@ export default function AdminCmsNewsPage() {
                                 <label className="block text-gray-300 mb-1 text-xs">
                                   📡 แหล่งข่าว
                                 </label>
-                                <select
+                                <Select
                                   value={newsProvider}
-                                  onChange={(e) => setNewsProvider(e.target.value as "thenewsapi" | "newsapi")}
-                                  className="w-full py-1.5 px-3 bg-site-surface border border-white/5 rounded-2xl border-gray-300 text-white text-sm focus:outline-none focus:border-site-accent/60">
-                                  <option value="thenewsapi">TheNewsAPI (ค่าเริ่มต้น)</option>
-                                  <option value="newsapi">NewsAPI.org (สำรอง)</option>
-                                </select>
+                                  onValueChange={(v) => setNewsProvider(v as "thenewsapi" | "newsapi")}
+                                >
+                                  <SelectTrigger className="h-9 rounded-lg border-white/5 bg-site-surface text-sm">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="thenewsapi">TheNewsAPI (ค่าเริ่มต้น)</SelectItem>
+                                    <SelectItem value="newsapi">NewsAPI.org (สำรอง)</SelectItem>
+                                  </SelectContent>
+                                </Select>
                                 <p className="text-[10px] text-gray-400 mt-1">
                                   เลือกแหล่งข่าวสำรองหากโควตาเต็ม
                                 </p>
                               </div>
 
                               <div className="flex gap-2">
-                                <button
-                                  type="button"
+                                <Button
                                   onClick={handleGenerateAIContent}
                                   disabled={isGeneratingAI || !aiTopic.trim()}
-                                  className="flex-1 bg-site-accent text-white border border-white/5 rounded-xl py-1.5 text-sm font-medium flex items-center justify-center disabled:opacity-50 transition-colors">
+                                  className="flex-1 rounded-xl py-1.5 text-sm font-medium"
+                                >
                                   {isGeneratingAI ? (
                                     <>
-                                      <Loader2 className="w-3 h-3 animate-spin mr-2" />
+                                      <Loader2 className="w-3 h-3 animate-spin" />
                                       กำลังสร้าง...
                                     </>
                                   ) : (
                                     <>
-                                      <Wand2 className="w-3 h-3 mr-2" />
+                                      <Wand2 className="w-3 h-3" />
                                       สร้างเนื้อหา
                                     </>
                                   )}
-                                </button>
-                                <button
-                                  type="button"
+                                </Button>
+                                <Button
+                                  variant="secondary"
+                                  size="icon"
                                   onClick={() => {
                                     setShowAIGenerate(false);
                                     setAiTopic("");
                                     setAiProgress(null);
                                   }}
-                                  className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-gray-400 hover:bg-site-raised/5 transition-colors">
+                                  className="h-9 w-9 rounded-xl"
+                                  aria-label="ปิดส่วนสร้างด้วย AI"
+                                >
                                   <X className="w-4 h-4" />
-                                </button>
+                                </Button>
                               </div>
                               {aiProgress && (
                                 <div className="mt-3">
@@ -1221,21 +1264,26 @@ export default function AdminCmsNewsPage() {
                           <label className="block text-[13px] font-bold text-gray-300">
                             หมวดหมู่ <span className="text-rose-500">*</span>
                           </label>
-                          <select
+                          <Select
                             value={formData.category}
-                            onChange={(e) =>
+                            onValueChange={(value) =>
                               setFormData({
                                 ...formData,
-                                category: e.target.value as NewsCategory,
+                                category: value as NewsCategory,
                               })
                             }
-                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all cursor-pointer appearance-none">
-                            {categories.map((cat) => (
-                              <option key={cat.value} value={cat.value}>
-                                {cat.label}
-                              </option>
-                            ))}
-                          </select>
+                          >
+                            <SelectTrigger className="h-12 rounded-xl border-white/10 bg-site-surface px-4 text-[14px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.map((cat) => (
+                                <SelectItem key={cat.value} value={cat.value}>
+                                  {cat.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2">
                           <label className="block text-[13px] font-bold text-gray-300">
@@ -1247,7 +1295,7 @@ export default function AdminCmsNewsPage() {
                             )}
                           </label>
                           <div className="flex gap-2">
-                            <input
+                            <Input
                               type="url"
                               value={formData.coverImage}
                               onChange={(e) =>
@@ -1257,7 +1305,7 @@ export default function AdminCmsNewsPage() {
                                 })
                               }
                               placeholder="https://example.com/image.jpg"
-                              className="flex-1 bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600 truncate"
+                              className="h-12 flex-1 rounded-xl border-white/10 bg-site-surface px-4 text-[13px] truncate"
                             />
                             {formData.coverImage && (
                               <div className="w-12 h-[46px] rounded-xl border border-white/10 shrink-0 overflow-hidden bg-[#1D1E20]">
@@ -1281,7 +1329,7 @@ export default function AdminCmsNewsPage() {
                         <label className="block text-[13px] font-bold text-gray-300">
                           บทสรุป (Excerpt) <span className="text-rose-500">*</span>
                         </label>
-                        <textarea
+                        <Textarea
                           value={formData.excerpt}
                           onChange={(e) =>
                             setFormData({ ...formData, excerpt: e.target.value })
@@ -1289,7 +1337,7 @@ export default function AdminCmsNewsPage() {
                           placeholder="สรุปเนื้อหาสั้นๆ (แสดงในรายการ)..."
                           required
                           rows={2}
-                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600 resize-none leading-relaxed"
+                          className="rounded-xl border-white/10 bg-site-surface px-4 py-3 text-[13px] resize-none leading-relaxed"
                         />
                       </div>
 
@@ -1299,7 +1347,7 @@ export default function AdminCmsNewsPage() {
                           เนื้อหา <span className="text-rose-500">*</span>
                         </label>
                         <div className="relative">
-                          <textarea
+                          <Textarea
                             ref={contentTextareaRef}
                             value={formData.content}
                             onChange={(e) => {
@@ -1311,7 +1359,7 @@ export default function AdminCmsNewsPage() {
                             placeholder="พิมพ์เนื้อหาข่าว (รองรับ Markdown/HTML)... คลิกตรงที่ต้องการแทรกรูป/คลิป"
                             required
                             rows={12}
-                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-gray-300 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all resize-none font-mono leading-relaxed"
+                            className="rounded-xl border-white/10 bg-site-surface px-4 py-3 text-[13px] resize-none font-mono leading-relaxed"
                           />
                           {cursorPosition !== null && formData.content && (
                             <div className="absolute -bottom-6 right-0 text-[10px] text-site-accent/80 font-medium">
@@ -1341,14 +1389,14 @@ export default function AdminCmsNewsPage() {
 
                       {/* Manual media search button when AI panel is open but no media yet */}
                       {showAIGenerate && mediaImages.length === 0 && mediaVideos.length === 0 && !isSearchingMedia && formData.content && (
-                        <button
-                          type="button"
+                        <Button
+                          variant="outline"
                           onClick={() => handleSearchMedia(aiTopic || formData.title)}
-                          className="w-full py-3 bg-site-accent/5 border border-dashed border-blue-500/30 rounded-xl text-site-accent font-bold text-[13px] hover:bg-site-accent/10 transition-colors flex items-center justify-center gap-2"
+                          className="w-full rounded-xl border-dashed border-blue-500/30 bg-site-accent/5 py-3 text-[13px] font-bold text-site-accent hover:bg-site-accent/10"
                         >
                           <ImagePlus className="w-4 h-4" />
                           ค้นหารูปภาพและวิดีโอ YouTube ประกอบบทความ
-                        </button>
+                        </Button>
                       )}
 
                       {/* AI Generated Sources Preview */}
@@ -1387,7 +1435,7 @@ export default function AdminCmsNewsPage() {
                             )}
                           </label>
                           <div className="flex gap-2">
-                            <input
+                            <Input
                               type="text"
                               value={tagInput}
                               onChange={(e) => setTagInput(e.target.value)}
@@ -1398,14 +1446,15 @@ export default function AdminCmsNewsPage() {
                                 }
                               }}
                               placeholder="เพิ่มแท็กแล้วกด Enter..."
-                              className="flex-1 bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-2.5 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                              className="h-11 rounded-xl border-white/10 bg-site-surface px-4 text-[13px]"
                             />
-                            <button
-                              type="button"
+                            <Button
+                              variant="secondary"
                               onClick={addTag}
-                              className="px-4 py-2.5 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] transition-all text-[13px] font-bold">
+                              className="rounded-xl text-[13px]"
+                            >
                               เพิ่ม
-                            </button>
+                            </Button>
                           </div>
                           <div className="flex flex-wrap gap-2 pt-2">
                             {formData.tags?.map((tag) => (
@@ -1413,12 +1462,15 @@ export default function AdminCmsNewsPage() {
                                 key={tag}
                                 className="inline-flex items-center px-2.5 py-1 bg-site-accent/10 text-site-accent text-[12px] font-medium border border-site-accent/20 rounded-lg group">
                                 {tag}
-                                <button
-                                  type="button"
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
                                   onClick={() => removeTag(tag)}
-                                  className="ml-1.5 text-site-accent/50 group-hover:text-rose-400 transition-colors">
+                                  className="ml-1 h-6 w-6 rounded-md text-site-accent/50 group-hover:text-semantic-rose"
+                                  aria-label={`ลบแท็ก ${tag}`}
+                                >
                                   <X className="w-3.5 h-3.5" />
-                                </button>
+                                </Button>
                               </span>
                             ))}
                           </div>
@@ -1436,8 +1488,8 @@ export default function AdminCmsNewsPage() {
                           </label>
                           <div className="space-y-2">
                             {formData.sources?.map((source, index) => (
-                              <div key={index} className="flex gap-2 relative group">
-                                <input
+                              <div key={index} className="flex gap-2 relative group [&>div]:flex-1">
+                                <Input
                                   type="url"
                                   value={source}
                                   onChange={(e) => {
@@ -1446,26 +1498,29 @@ export default function AdminCmsNewsPage() {
                                     setFormData({ ...formData, sources: newSources });
                                   }}
                                   placeholder="https://example.com/source"
-                                  className="flex-1 bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-2.5 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600 pr-10"
+                                  className="h-11 rounded-xl border-white/10 bg-site-surface px-4 pr-10 text-[13px]"
                                 />
-                                <button
-                                  type="button"
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
                                   onClick={() => {
                                     const newSources = formData.sources?.filter((_, i) => i !== index) || [];
                                     setFormData({ ...formData, sources: newSources });
                                   }}
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-lg text-site-muted hover:text-semantic-rose hover:bg-semantic-rose/10 opacity-0 group-hover:opacity-100"
+                                  aria-label={`ลบแหล่งอ้างอิงที่ ${index + 1}`}
+                                >
                                   <X className="w-3.5 h-3.5" />
-                                </button>
+                                </Button>
                               </div>
                             ))}
-                            <button
-                              type="button"
+                            <Button
+                              variant="outline"
                               onClick={() => setFormData({ ...formData, sources: [...(formData.sources || []), ""] })}
-                              className="w-full py-2.5 border border-dashed border-white/10 rounded-xl text-gray-400 font-bold text-[13px] hover:bg-white/5 hover:border-white/20 hover:text-white transition-colors"
+                              className="w-full rounded-xl border-dashed border-white/10 text-site-muted text-[13px] hover:bg-white/5 hover:text-white"
                             >
                               + เพิ่มแหล่งอ้างอิง
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       </div>
@@ -1473,37 +1528,27 @@ export default function AdminCmsNewsPage() {
                       {/* Options */}
                       <div className="flex flex-wrap gap-8 py-2">
                         <label className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative">
-                            <input
-                              type="checkbox"
-                              checked={formData.isPublished}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  isPublished: e.target.checked,
-                                })
-                              }
-                              className="sr-only peer"
-                            />
-                            <div className="w-10 h-6 bg-site-surface border border-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent/20 peer-checked:border-site-accent/50"></div>
-                          </div>
+                          <Switch
+                            checked={formData.isPublished}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                isPublished: checked,
+                              })
+                            }
+                          />
                           <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">เผยแพร่</span>
                         </label>
                         <label className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative">
-                            <input
-                              type="checkbox"
-                              checked={formData.isFeatured}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  isFeatured: e.target.checked,
-                                })
-                              }
-                              className="sr-only peer"
-                            />
-                            <div className="w-10 h-6 bg-site-surface border border-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent/20 peer-checked:border-site-accent/50"></div>
-                          </div>
+                          <Switch
+                            checked={formData.isFeatured}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                isFeatured: checked,
+                              })
+                            }
+                          />
                           <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">
                             รายการแนะนำ (Featured)
                           </span>
@@ -1512,17 +1557,18 @@ export default function AdminCmsNewsPage() {
 
                       {/* Actions */}
                       <div className="flex gap-3 pt-6 border-t border-white/5">
-                        <button
-                          type="button"
+                        <Button
+                          variant="secondary"
                           onClick={() => {
                             setShowModal(false);
                             setEditingArticle(null);
                             resetForm();
                           }}
-                          className="flex-1 py-3 px-4 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all font-bold text-[14px]">
+                          className="flex-1 rounded-xl py-3 text-[14px]"
+                        >
                           ยกเลิก
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           type="submit"
                           disabled={
                             isSubmitting ||
@@ -1530,19 +1576,20 @@ export default function AdminCmsNewsPage() {
                             !formData.content?.trim() ||
                             !formData.excerpt?.trim()
                           }
-                          className="flex-1 py-2.5 px-4 bg-black text-white border border-white/5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:bg-gray-800 transition-colors">
+                          className="flex-1 gap-2 rounded-xl py-3 text-[14px] font-medium"
+                        >
                           {isSubmitting ? (
-                            <span className="flex items-center justify-center">
-                              <Loader2 size={18} className="animate-spin mr-2" />
+                            <>
+                              <Loader2 size={18} className="animate-spin" />
                               กำลังบันทึก...
-                            </span>
+                            </>
                           ) : (
-                            <span className="flex items-center justify-center">
-                              <Save size={18} className="mr-2" />
+                            <>
+                              <Save size={18} />
                               บันทึก
-                            </span>
+                            </>
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </form>
                   </div>

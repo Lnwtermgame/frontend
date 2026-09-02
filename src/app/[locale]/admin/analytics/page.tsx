@@ -4,18 +4,29 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import Link from "next/link";
 import {
+  ArrowDownRight,
+  ArrowUpRight,
   BarChart3,
   Calendar,
+  Clock,
   DollarSign,
   Download,
+  Flame,
+  Inbox,
+  Layers,
   Loader2,
   Package,
+  Percent,
+  Receipt,
   RefreshCw,
   ShoppingCart,
+  TrendingUp,
+  Trophy,
   Users,
 } from "lucide-react";
 import {
@@ -25,6 +36,31 @@ import {
   StatCard as StatCardPrimitive,
   StatusBadge,
 } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   analyticsApi,
   DashboardStats,
@@ -36,6 +72,7 @@ import {
 } from "@/lib/services/analytics-api";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 interface AnalyticsPageData {
   dashboardStats: DashboardStats | null;
@@ -55,12 +92,12 @@ interface SalesChartPoint {
 
 const DATE_RANGE_CONFIG: Record<
   string,
-  { days: number; period: "7d" | "30d" | "90d" }
+  { days: number; period: "7d" | "30d" | "90d"; label: string }
 > = {
-  "24h": { days: 1, period: "7d" },
-  "7d": { days: 7, period: "7d" },
-  "30d": { days: 30, period: "30d" },
-  "90d": { days: 90, period: "90d" },
+  "24h": { days: 1, period: "7d", label: "24 ชั่วโมง" },
+  "7d": { days: 7, period: "7d", label: "7 วัน" },
+  "30d": { days: 30, period: "30d", label: "30 วัน" },
+  "90d": { days: 90, period: "90d", label: "90 วัน" },
 };
 
 const formatCurrency = (amount: number) =>
@@ -70,7 +107,11 @@ const formatCurrency = (amount: number) =>
     minimumFractionDigits: 0,
   }).format(amount);
 
-const formatPercent = (value: number) => Number(Math.abs(value).toFixed(2));
+const formatCompact = (amount: number) =>
+  new Intl.NumberFormat("th-TH", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(amount);
 
 const formatShortDate = (date: Date) =>
   date.toLocaleDateString("th-TH", {
@@ -110,7 +151,7 @@ const buildSalesChartPoints = (
     const label =
       formatShortDate(start) === formatShortDate(end)
         ? formatShortDate(start)
-        : `${formatShortDate(start)}-${formatShortDate(end)}`;
+        : `${formatShortDate(start)}`;
 
     points.push({
       key: `${chunk[0].date}-${chunk[chunk.length - 1].date}`,
@@ -123,38 +164,204 @@ const buildSalesChartPoints = (
   return points;
 };
 
-const getOrderStatusKey = (status: string): string => {
-  switch (status) {
-    case "COMPLETED":
-      return "completed";
-    case "PENDING":
-      return "pending";
-    case "PROCESSING":
-      return "processing";
-    case "CANCELLED":
-      return "cancelled";
-    case "FAILED":
-      return "failed";
-    default:
-      return status.toLowerCase();
-  }
-};
+/* ------------------------------------------------------------------ */
+/* Revenue area chart — dependency-free SVG chart in shadcn style      */
+/* ------------------------------------------------------------------ */
 
-const getOrderStatusClassName = (status: string) => {
-  switch (status) {
-    case "COMPLETED":
-      return "bg-green-500/10 text-green-400 border-green-500/30/30";
-    case "PENDING":
-      return "bg-yellow-500/10 text-yellow-400 border-yellow-500/30/30";
-    case "PROCESSING":
-      return "bg-site-surface0/10 text-site-accent border-blue-500/30";
-    case "CANCELLED":
-    case "FAILED":
-      return "bg-red-500/10 text-red-400 border-red-500/30/30";
-    default:
-      return "bg-site-raised text-gray-300 border-gray-500";
+const CHART_W = 720;
+const CHART_H = 260;
+const CHART_PAD = { top: 16, right: 12, bottom: 26, left: 46 };
+
+function RevenueAreaChart({
+  points,
+}: {
+  points: SalesChartPoint[];
+}) {
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const innerW = CHART_W - CHART_PAD.left - CHART_PAD.right;
+  const innerH = CHART_H - CHART_PAD.top - CHART_PAD.bottom;
+
+  const maxRevenue = Math.max(...points.map((p) => p.revenue), 0);
+  const niceMax = niceCeil(maxRevenue);
+
+  const x = (i: number) =>
+    CHART_PAD.left +
+    (points.length <= 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
+  const y = (v: number) =>
+    CHART_PAD.top + innerH - (Math.min(v, niceMax) / niceMax) * innerH;
+
+  const linePath = points
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${x(i).toFixed(1)} ${y(p.revenue).toFixed(1)}`)
+    .join(" ");
+  const areaPath =
+    points.length > 0
+      ? `${linePath} L ${x(points.length - 1).toFixed(1)} ${(
+          CHART_PAD.top + innerH
+        ).toFixed(1)} L ${x(0).toFixed(1)} ${(
+          CHART_PAD.top + innerH
+        ).toFixed(1)} Z`
+      : "";
+
+  const gridLines = [0, 0.25, 0.5, 0.75, 1];
+
+  const handleMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!svgRef.current || points.length === 0) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const relX = ((e.clientX - rect.left) / rect.width) * CHART_W;
+    const idx = Math.round(
+      ((relX - CHART_PAD.left) / innerW) * (points.length - 1),
+    );
+    setHoverIdx(Math.max(0, Math.min(points.length - 1, idx)));
+  };
+
+  const hovered = hoverIdx !== null ? points[hoverIdx] : null;
+
+  if (points.length === 0 || maxRevenue === 0) {
+    return (
+      <div className="h-[260px] flex flex-col items-center justify-center gap-2 text-site-dim">
+        <BarChart3 className="w-8 h-8 opacity-40" />
+        <p className="text-sm">ยังไม่มีข้อมูลยอดขายในช่วงเวลานี้</p>
+      </div>
+    );
   }
-};
+
+  return (
+    <div className="relative">
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${CHART_W} ${CHART_H}`}
+        className="w-full h-[260px] select-none"
+        onMouseMove={handleMove}
+        onMouseLeave={() => setHoverIdx(null)}
+        role="img"
+        aria-label="กราฟรายได้"
+      >
+        <defs>
+          <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--site-accent)" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="var(--site-accent)" stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
+
+        {/* horizontal grid + y labels */}
+        {gridLines.map((g) => {
+          const gy = CHART_PAD.top + innerH - g * innerH;
+          return (
+            <g key={g}>
+              <line
+                x1={CHART_PAD.left}
+                x2={CHART_W - CHART_PAD.right}
+                y1={gy}
+                y2={gy}
+                className="stroke-site-border-soft"
+                strokeWidth={1}
+                strokeDasharray={g === 0 ? undefined : "4 4"}
+              />
+              <text
+                x={CHART_PAD.left - 8}
+                y={gy + 3}
+                textAnchor="end"
+                className="fill-site-dim text-[9px]"
+              >
+                {formatCompact(niceMax * g)}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* area + line */}
+        <path d={areaPath} fill="url(#revFill)" />
+        <path
+          d={linePath}
+          fill="none"
+          stroke="var(--site-accent)"
+          strokeWidth={2}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+
+        {/* points + x labels */}
+        {points.map((p, i) => {
+          const labelStep = points.length > 10 ? 2 : 1;
+          return (
+            <g key={p.key}>
+              <circle
+                cx={x(i)}
+                cy={y(p.revenue)}
+                r={hoverIdx === i ? 4 : 2.5}
+                className="fill-site-accent transition-all"
+              />
+              {i % labelStep === 0 || i === points.length - 1 ? (
+                <text
+                  x={x(i)}
+                  y={CHART_H - 8}
+                  textAnchor="middle"
+                  className={cn(
+                    "text-[9px]",
+                    hoverIdx === i ? "fill-site-text" : "fill-site-dim",
+                  )}
+                >
+                  {p.label}
+                </text>
+              ) : null}
+            </g>
+          );
+        })}
+
+        {/* hover guide */}
+        {hoverIdx !== null && (
+          <line
+            x1={x(hoverIdx)}
+            x2={x(hoverIdx)}
+            y1={CHART_PAD.top}
+            y2={CHART_PAD.top + innerH}
+            className="stroke-site-border"
+            strokeWidth={1}
+            strokeDasharray="3 3"
+          />
+        )}
+      </svg>
+
+      {/* tooltip */}
+      {hovered && (
+        <div
+          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full bg-site-raised border border-site-border rounded-lg px-3 py-2 shadow-lg min-w-[140px]"
+          style={{
+            left: `${(x(hoverIdx!) / CHART_W) * 100}%`,
+            top: `${(y(hovered.revenue) / CHART_H) * 100}%`,
+            marginTop: -8,
+          }}
+        >
+          <p className="text-[10px] font-semibold text-site-dim uppercase tracking-wider mb-1">
+            {hovered.label}
+          </p>
+          <p className="text-sm font-bold text-site-text leading-tight">
+            {formatCurrency(hovered.revenue)}
+          </p>
+          <p className="text-[10px] text-site-muted mt-0.5">
+            {hovered.orders.toLocaleString()} คำสั่งซื้อ
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Round up to a human-friendly axis maximum (1/2/5 × 10^n). */
+function niceCeil(value: number): number {
+  if (value <= 0) return 100;
+  const exp = Math.floor(Math.log10(value));
+  const base = Math.pow(10, exp);
+  const unit = value / base;
+  const niceUnit = unit <= 1 ? 1 : unit <= 2 ? 2 : unit <= 5 ? 5 : 10;
+  return niceUnit * base;
+}
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
 export default function AdminAnalyticsPage() {
   const t = useTranslations("AdminPage");
@@ -254,15 +461,40 @@ export default function AdminAnalyticsPage() {
     [data.productAnalytics],
   );
 
+  const categoryPerformance = useMemo(
+    () => (data.productAnalytics?.categoryPerformance || []).slice(0, 5),
+    [data.productAnalytics],
+  );
+
+  const topUsers = useMemo(
+    () => (data.userAnalytics?.topUsers || []).slice(0, 5),
+    [data.userAnalytics],
+  );
+
   const salesChartData = useMemo(
     () => buildSalesChartPoints(data.revenueDaily, dateRange),
     [data.revenueDaily, dateRange],
   );
 
-  const maxRevenue = useMemo(
-    () => Math.max(...salesChartData.map((d) => d.revenue), 0),
-    [salesChartData],
-  );
+  const rangeLabel = DATE_RANGE_CONFIG[dateRange]?.label ?? "7 วัน";
+
+  const summary = useMemo(() => {
+    const sales = data.salesAnalytics;
+    const revenueTotal = salesChartData.reduce((s, p) => s + p.revenue, 0);
+    const ordersTotal = salesChartData.reduce((s, p) => s + p.orders, 0);
+    const bestDay =
+      salesChartData.length > 0
+        ? salesChartData.reduce((best, p) => (p.revenue > best.revenue ? p : best))
+        : null;
+
+    return {
+      avgOrderValue: sales?.averageOrderValue ?? 0,
+      conversionRate: sales?.conversionRate ?? 0,
+      chartRevenue: revenueTotal,
+      chartOrders: ordersTotal,
+      bestDay,
+    };
+  }, [data.salesAnalytics, salesChartData]);
 
   const handleExport = async () => {
     if (!data.salesAnalytics || !data.userAnalytics || !data.dashboardStats) {
@@ -276,6 +508,8 @@ export default function AdminAnalyticsPage() {
         ["Date Range", dateRange],
         ["Revenue", data.salesAnalytics.totalRevenue.toString()],
         ["Orders", data.salesAnalytics.totalOrders.toString()],
+        ["Average Order Value", data.salesAnalytics.averageOrderValue.toString()],
+        ["Conversion Rate", data.salesAnalytics.conversionRate.toString()],
         [
           "New Users",
           (dateRange === "24h"
@@ -298,7 +532,8 @@ export default function AdminAnalyticsPage() {
         ]),
       ];
 
-      const csv = rows.map((row) => row.join(",")).join("\n");
+      // Prefix with BOM so Thai text opens correctly in Excel.
+      const csv = "\uFEFF" + rows.map((row) => row.join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -313,12 +548,21 @@ export default function AdminAnalyticsPage() {
     }
   };
 
-  if (loading) {
+  if (loading && !data.dashboardStats) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-site-accent animate-spin" />
-        </div>
+        <PageContainer>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-[120px] rounded-12" />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <Skeleton className="lg:col-span-2 h-[360px] rounded-12" />
+            <Skeleton className="h-[360px] rounded-12" />
+          </div>
+          <Skeleton className="h-[300px] rounded-12" />
+        </PageContainer>
       </AdminLayout>
     );
   }
@@ -330,31 +574,36 @@ export default function AdminAnalyticsPage() {
           title="วิเคราะห์"
           actions={
             <div className="flex items-center gap-2">
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="h-9 px-3 bg-site-raised border border-site-border rounded-lg text-sm font-medium text-site-text focus:outline-none focus:border-site-accent/60 transition-colors cursor-pointer"
-              >
-                <option value="24h">24 ชั่วโมง</option>
-                <option value="7d">7 วัน</option>
-                <option value="30d">30 วัน</option>
-                <option value="90d">90 วัน</option>
-              </select>
-              <button
+              <Select value={dateRange} onValueChange={setDateRange}>
+                <SelectTrigger className="h-9 px-3 bg-site-raised border-site-border text-sm font-medium text-site-text w-[130px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="24h">24 ชั่วโมง</SelectItem>
+                  <SelectItem value="7d">7 วัน</SelectItem>
+                  <SelectItem value="30d">30 วัน</SelectItem>
+                  <SelectItem value="90d">90 วัน</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={fetchAnalyticsData}
-                className="inline-flex items-center gap-2 h-9 px-3 rounded-lg border border-site-border bg-site-raised text-sm font-medium text-site-muted hover:bg-site-surface hover:text-site-text transition-colors"
+                className="gap-2 text-sm font-medium"
               >
-                <RefreshCw className="h-4 w-4" />
+                <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
                 รีเฟรช
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={handleExport}
                 disabled={isExporting}
-                className="inline-flex items-center gap-2 h-9 px-3 rounded-lg border border-site-border bg-site-raised text-sm font-medium text-site-muted hover:bg-site-surface hover:text-site-text transition-colors disabled:opacity-50"
+                className="gap-2 text-sm font-medium"
               >
                 <Download className="h-4 w-4" />
                 {isExporting ? "กำลังส่งออก..." : "ส่งออก"}
-              </button>
+              </Button>
             </div>
           }
         />
@@ -403,120 +652,314 @@ export default function AdminAnalyticsPage() {
 
         {/* Sales chart + top products */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 bg-site-surface border border-site-border-soft rounded-12 p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-site-text flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-site-accent" />
-                ยอดขาย
-              </h3>
-            </div>
-            <div className="h-48 flex items-end justify-between gap-2">
-              {salesChartData.map((item, index) => {
-                const rawHeight =
-                  maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
-                const height = item.revenue > 0 ? Math.max(rawHeight, 8) : 0;
-                const labelStep = salesChartData.length > 10 ? 2 : 1;
-                const shouldShowLabel =
-                  index % labelStep === 0 ||
-                  index === salesChartData.length - 1;
-                return (
-                  <div
-                    key={item.key}
-                    className="flex-1 h-full flex flex-col items-center justify-end"
-                  >
+          <Card className="lg:col-span-2 bg-site-surface border-site-border-soft rounded-12 shadow-none">
+            <CardHeader className="p-4 pb-2">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="text-sm font-bold text-site-text flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-site-accent" />
+                    ยอดขาย · {rangeLabel}
+                  </CardTitle>
+                  <CardDescription className="text-[11px] text-site-dim mt-1">
+                    รายได้รวมในกราฟ{" "}
+                    <span className="font-semibold text-site-text">
+                      {formatCurrency(summary.chartRevenue)}
+                    </span>{" "}
+                    · {summary.chartOrders.toLocaleString()} คำสั่งซื้อ
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="info">
+                    <Receipt />
+                    เฉลี่ย {formatCurrency(summary.avgOrderValue)}/ออเดอร์
+                  </Badge>
+                  {summary.bestDay && summary.bestDay.revenue > 0 && (
+                    <Badge variant="warning">
+                      <Flame />
+                      สูงสุด {summary.bestDay.label}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 pt-2">
+              <RevenueAreaChart points={salesChartData} />
+            </CardContent>
+          </Card>
+
+          <Card className="bg-site-surface border-site-border-soft rounded-12 shadow-none">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-bold text-site-text flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-site-accent" />
+                สินค้าขายดี
+              </CardTitle>
+              <CardDescription className="text-[11px] text-site-dim mt-1">
+                5 อันดับสินค้ายอดขายสูงสุด
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <div className="space-y-2">
+                {topProducts.map((product, index) => {
+                  const maxSales =
+                    topProducts[0]?.salesCount > 0
+                      ? topProducts[0].salesCount
+                      : 1;
+                  return (
                     <div
-                      className="w-full bg-site-accent rounded-t-md transition-all duration-500 min-h-[2px]"
-                      style={{ height: `${height}%` }}
-                      title={`${item.label}: ${formatCurrency(item.revenue)} (${item.orders.toLocaleString()} ออเดอร์)`}
-                    />
-                    <span className="text-[10px] text-site-dim mt-2 text-center leading-tight min-h-5">
-                      {shouldShowLabel ? item.label : ""}
+                      key={product.id}
+                      className="p-2 rounded-lg bg-site-raised border border-site-border-soft"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span
+                            className={cn(
+                              "w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-bold shrink-0",
+                              index === 0
+                                ? "bg-semantic-amber/15 text-semantic-amber border border-semantic-amber/20"
+                                : index === 1
+                                  ? "bg-site-raised text-site-muted border border-site-border"
+                                  : index === 2
+                                    ? "bg-site-accent/12 text-site-accent border border-site-accent/20"
+                                    : "bg-site-raised text-site-dim border border-site-border",
+                            )}
+                          >
+                            {index + 1}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-site-text truncate">
+                              {product.name}
+                            </p>
+                            <p className="text-[10px] text-site-dim">
+                              {product.salesCount.toLocaleString()} ขาย
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-xs font-semibold text-site-text shrink-0">
+                          {formatCurrency(product.revenue)}
+                        </span>
+                      </div>
+                      {/* relative volume bar */}
+                      <div className="mt-1.5 h-1 w-full rounded-full bg-site-border-soft overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-site-accent/70"
+                          style={{
+                            width: `${Math.max(
+                              (product.salesCount / maxSales) * 100,
+                              4,
+                            )}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+                {topProducts.length === 0 && (
+                  <div className="flex flex-col items-center py-8 gap-2 text-site-dim">
+                    <Package className="w-6 h-6 opacity-40" />
+                    <span className="text-xs">
+                      ยังไม่มีข้อมูลสินค้าขายดี
                     </span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Secondary metrics: conversion + categories + top customers */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="bg-site-surface border-site-border-soft rounded-12 shadow-none">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-bold text-site-text flex items-center gap-2">
+                <Percent className="w-4 h-4 text-site-accent" />
+                ภาพรวมเชิงลึก
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-3">
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-site-raised border border-site-border-soft">
+                <span className="text-xs text-site-muted">มูลค่าเฉลี่ย/ออเดอร์</span>
+                <span className="text-sm font-bold text-site-text">
+                  {formatCurrency(summary.avgOrderValue)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-site-raised border border-site-border-soft">
+                <span className="text-xs text-site-muted">อัตราการซื้อสำเร็จ</span>
+                <span className="text-sm font-bold text-site-text">
+                  {summary.conversionRate.toFixed(2)}%
+                </span>
+              </div>
+              {data.dashboardStats && (
+                <>
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-site-raised border border-site-border-soft">
+                    <span className="text-xs text-site-muted">สต็อกใกล้หมด</span>
+                    <Badge variant={data.dashboardStats.products.lowStock > 0 ? "warning" : "neutral"}>
+                      {data.dashboardStats.products.lowStock.toLocaleString()} รายการ
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-site-raised border border-site-border-soft">
+                    <span className="text-xs text-site-muted">สต็อกหมด</span>
+                    <Badge variant={data.dashboardStats.products.outOfStock > 0 ? "danger" : "neutral"}>
+                      {data.dashboardStats.products.outOfStock.toLocaleString()} รายการ
+                    </Badge>
+                  </div>
+                </>
+              )}
+              {data.userAnalytics && (
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-site-raised border border-site-border-soft">
+                  <span className="text-xs text-site-muted">ผู้ใช้ทั้งหมด</span>
+                  <span className="text-sm font-bold text-site-text">
+                    {data.userAnalytics.totalUsers.toLocaleString()}
+                  </span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="bg-site-surface border-site-border-soft rounded-12 shadow-none">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-bold text-site-text flex items-center gap-2">
+                <Layers className="w-4 h-4 text-site-accent" />
+                หมวดหมู่ยอดนิยม
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-2">
+              {categoryPerformance.map((cat, index) => {
+                const maxRevenue =
+                  categoryPerformance[0]?.revenue > 0
+                    ? categoryPerformance[0].revenue
+                    : 1;
+                return (
+                  <div key={cat.categoryId}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-site-text truncate">
+                        {index + 1}. {cat.categoryName}
+                      </span>
+                      <span className="text-[11px] text-site-muted shrink-0">
+                        {formatCurrency(cat.revenue)}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-site-border-soft overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-semantic-violet/70"
+                        style={{
+                          width: `${Math.max(
+                            (cat.revenue / maxRevenue) * 100,
+                            4,
+                          )}%`,
+                        }}
+                      />
+                    </div>
                   </div>
                 );
               })}
-              {salesChartData.length === 0 && (
-                <div className="w-full h-full flex items-center justify-center text-sm text-site-dim">
-                  ยังไม่มีข้อมูลยอดขาย
+              {categoryPerformance.length === 0 && (
+                <div className="flex flex-col items-center py-8 gap-2 text-site-dim">
+                  <Layers className="w-6 h-6 opacity-40" />
+                  <span className="text-xs">ยังไม่มีข้อมูลหมวดหมู่</span>
                 </div>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-site-surface border border-site-border-soft rounded-12 p-4">
-            <h3 className="text-sm font-bold text-site-text flex items-center gap-2 mb-3">
-              <Package className="w-4 h-4 text-site-accent" />
-              สินค้าขายดี
-            </h3>
-            <div className="space-y-2">
-              {topProducts.map((product, index) => (
+          <Card className="bg-site-surface border-site-border-soft rounded-12 shadow-none">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-bold text-site-text flex items-center gap-2">
+                <Users className="w-4 h-4 text-site-accent" />
+                ลูกค้ายอดซื้อสูงสุด
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-2">
+              {topUsers.map((user, index) => (
                 <div
-                  key={product.id}
+                  key={user.id}
                   className="flex items-center justify-between p-2 rounded-lg bg-site-raised border border-site-border-soft"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      className={`w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-bold ${
-                        index === 0
-                          ? "bg-semantic-amber/15 text-semantic-amber border border-semantic-amber/20"
-                          : index === 1
-                            ? "bg-site-raised text-site-muted border border-site-border"
-                            : index === 2
-                              ? "bg-site-accent/12 text-site-accent border border-site-accent/20"
-                              : "bg-site-raised text-site-dim border border-site-border"
-                      }`}
-                    >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-bold bg-site-accent/12 text-site-accent border border-site-accent/20 shrink-0">
                       {index + 1}
                     </span>
                     <div className="min-w-0">
                       <p className="text-xs font-medium text-site-text truncate">
-                        {product.name}
+                        {user.username}
                       </p>
                       <p className="text-[10px] text-site-dim">
-                        {product.salesCount} ขาย
+                        {user.totalOrders.toLocaleString()} ออเดอร์
                       </p>
                     </div>
                   </div>
                   <span className="text-xs font-semibold text-site-text shrink-0">
-                    {formatCurrency(product.revenue)}
+                    {formatCurrency(user.totalSpent)}
                   </span>
                 </div>
               ))}
-              {topProducts.length === 0 && (
-                <div className="text-xs text-site-dim text-center py-6">
-                  ยังไม่มีข้อมูลสินค้าขายดี
+              {topUsers.length === 0 && (
+                <div className="flex flex-col items-center py-8 gap-2 text-site-dim">
+                  <Users className="w-6 h-6 opacity-40" />
+                  <span className="text-xs">ยังไม่มีข้อมูลลูกค้า</span>
                 </div>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Recent activity table */}
-        <div className="bg-site-surface border border-site-border-soft rounded-12 overflow-hidden">
-          <div className="px-4 py-3 border-b border-site-border-soft">
-            <h3 className="text-sm font-bold text-site-text flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-site-accent" />
-              กิจกรรมล่าสุด
-            </h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-site-raised">
-                <tr className="border-b border-site-border-soft">
-                  <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">วันที่</th>
-                  <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">รายการ</th>
-                  <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">ลูกค้า</th>
-                  <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">สถานะ</th>
-                  <th className="text-right px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">จำนวน</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-site-border-soft">
+        <Card className="bg-site-surface border-site-border-soft rounded-12 shadow-none overflow-hidden py-0 gap-0">
+          <CardHeader className="px-4 py-3 border-b border-site-border-soft">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-bold text-site-text flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-site-accent" />
+                กิจกรรมล่าสุด
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-[11px] text-site-muted"
+                asChild
+              >
+                <Link href="/admin/orders">
+                  ดูทั้งหมด
+                  <ArrowUpRight className="w-3 h-3" />
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table className="text-xs">
+              <TableHeader>
+                <TableRow className="border-site-border-soft bg-site-raised hover:bg-transparent">
+                  <TableHead className="h-auto px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    <span className="inline-flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> วันที่
+                    </span>
+                  </TableHead>
+                  <TableHead className="h-auto px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    รายการ
+                  </TableHead>
+                  <TableHead className="h-auto px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    ลูกค้า
+                  </TableHead>
+                  <TableHead className="h-auto px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    สถานะ
+                  </TableHead>
+                  <TableHead className="h-auto px-4 py-2.5 text-right text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    จำนวนเงิน
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {data.recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-site-raised/50 transition-colors">
-                    <td className="px-4 py-2.5 text-xs text-site-dim">
-                      {new Date(order.createdAt).toLocaleDateString("th-TH")}
-                    </td>
-                    <td className="px-4 py-2.5 text-xs font-medium">
+                  <TableRow
+                    key={order.id}
+                    className="border-site-border-soft hover:bg-site-raised/50"
+                  >
+                    <TableCell className="px-4 py-2.5 text-xs text-site-dim whitespace-nowrap">
+                      {new Date(order.createdAt).toLocaleDateString("th-TH", {
+                        day: "numeric",
+                        month: "short",
+                        year: "2-digit",
+                      })}
+                    </TableCell>
+                    <TableCell className="px-4 py-2.5 text-xs font-medium">
                       <Link
                         href={`/admin/orders/${order.id}`}
                         className="text-site-accent hover:underline"
@@ -524,29 +967,69 @@ export default function AdminAnalyticsPage() {
                       >
                         คำสั่งซื้อ #{order.orderNumber}
                       </Link>
-                    </td>
-                    <td className="px-4 py-2.5 text-xs text-site-muted">
+                    </TableCell>
+                    <TableCell className="px-4 py-2.5 text-xs text-site-muted">
                       {order.user.username}
-                    </td>
-                    <td className="px-4 py-2.5">
+                    </TableCell>
+                    <TableCell className="px-4 py-2.5">
                       <StatusBadge status={order.status} />
-                    </td>
-                    <td className="px-4 py-2.5 text-xs font-semibold text-site-text text-right">
+                    </TableCell>
+                    <TableCell className="px-4 py-2.5 text-xs font-semibold text-site-text text-right whitespace-nowrap">
                       {formatCurrency(order.finalAmount)}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
                 {data.recentOrders.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="py-8 text-center text-sm text-site-dim">
-                      {t("dashboard.no_data")}
-                    </td>
-                  </tr>
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell colSpan={5} className="py-10">
+                      <div className="flex flex-col items-center gap-2 text-site-dim">
+                        <Inbox className="w-7 h-7 opacity-40" />
+                        <span className="text-sm">
+                          {t("dashboard.no_data")}
+                        </span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* subtle trend footnote */}
+        {data.salesAnalytics && (
+          <p className="flex items-center gap-1.5 text-[11px] text-site-dim">
+            <TrendingUp className="w-3 h-3" />
+            แนวโน้มรายได้
+            <span
+              className={cn(
+                "inline-flex items-center font-semibold",
+                data.salesAnalytics.revenueGrowth >= 0
+                  ? "text-semantic-green"
+                  : "text-semantic-rose",
+              )}
+            >
+              {data.salesAnalytics.revenueGrowth >= 0 ? (
+                <ArrowUpRight className="w-3 h-3" />
+              ) : (
+                <ArrowDownRight className="w-3 h-3" />
+              )}
+              {Math.abs(data.salesAnalytics.revenueGrowth).toFixed(2)}%
+            </span>
+            เทียบช่วงก่อนหน้า · อัปเดตล่าสุด{" "}
+            {new Date().toLocaleTimeString("th-TH", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        )}
+
+        {loading && (
+          <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-site-raised border border-site-border rounded-full px-3 py-1.5 shadow-lg">
+            <Loader2 className="w-3.5 h-3.5 text-site-accent animate-spin" />
+            <span className="text-[11px] text-site-muted">กำลังรีเฟรช…</span>
           </div>
-        </div>
+        )}
       </PageContainer>
     </AdminLayout>
   );

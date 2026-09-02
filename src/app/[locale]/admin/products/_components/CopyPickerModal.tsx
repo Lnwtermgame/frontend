@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 import { Copy, ImageIcon, Search, X } from "lucide-react";
 import { motion } from "@/lib/framer-exports";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import type { AdminProduct } from "@/lib/services/product-api";
 
 interface CopyPickerModalProps {
@@ -86,27 +88,28 @@ export function CopyPickerModal({
                 {target === "logo" ? "โลโก้สินค้า" : "หน้าปก"}
               </span>
             </h3>
-            <button
+            <Button
               onClick={onClose}
-              className="p-2 bg-site-raised border border-site-border rounded-lg hover:bg-site-surface hover:text-site-text transition-all text-site-dim"
+              variant="secondary"
+              size="icon"
+              className="h-9 w-9 rounded-lg text-site-dim hover:text-site-text"
+              aria-label="ปิดหน้าต่างคัดลอกรูปภาพ"
             >
               <X className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
 
           {/* Search */}
           <div className="p-4 border-b border-site-border-soft bg-site-raised shrink-0">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-site-dim" />
-              <input
-                type="text"
-                value={copyPickerSearch}
-                onChange={(e) => setCopyPickerSearch(e.target.value)}
-                placeholder="ค้นหาชื่อเกม หรือ คีย์เวิร์ด เพื่อคัดลอกรูป..."
-                className="w-full bg-site-surface border border-site-border rounded-lg pl-11 pr-4 py-3 text-site-text text-[13px] font-medium focus:ring-1 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all"
-                autoFocus
-              />
-            </div>
+            <Input
+              type="text"
+              value={copyPickerSearch}
+              onChange={(e) => setCopyPickerSearch(e.target.value)}
+              placeholder="ค้นหาชื่อเกม หรือ คีย์เวิร์ด เพื่อคัดลอกรูป..."
+              icon={<Search className="h-4 w-4" />}
+              className="h-12 rounded-lg bg-site-surface border-site-border pl-11 text-[13px] font-medium"
+              autoFocus
+            />
           </div>
 
           {/* Product Grid */}

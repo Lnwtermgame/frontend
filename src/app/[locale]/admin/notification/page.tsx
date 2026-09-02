@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "@/lib/framer-exports";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
@@ -8,6 +8,10 @@ import {
   AdminPageHeader,
   PageContainer,
 } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Bell,
   Send,
@@ -21,7 +25,11 @@ import {
   TrendingUp,
   Loader2,
   ChevronDown,
-  ChevronUp,
+  Link2,
+  Eye,
+  Radio,
+  Target,
+  Sparkles,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { notificationClient } from "@/lib/client/gateway";
@@ -34,6 +42,51 @@ interface NotificationStats {
   byType: Record<string, number>;
 }
 
+type NotifType = "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM";
+
+const TYPE_OPTIONS: {
+  key: NotifType;
+  label: string;
+  icon: typeof Bell;
+  accentClass: string;
+  activeClass: string;
+}[] = [
+  {
+    key: "SYSTEM",
+    label: "ระบบ",
+    icon: Info,
+    accentClass: "text-[rgb(var(--status-info-rgb))]",
+    activeClass:
+      "border-[rgb(var(--status-info-rgb)/0.4)] bg-[rgb(var(--status-info-rgb)/0.1)] text-[rgb(var(--status-info-rgb))]",
+  },
+  {
+    key: "ORDER",
+    label: "คำสั่งซื้อ",
+    icon: CheckCircle,
+    accentClass: "text-[rgb(var(--status-success-rgb))]",
+    activeClass:
+      "border-[rgb(var(--status-success-rgb)/0.4)] bg-[rgb(var(--status-success-rgb)/0.1)] text-[rgb(var(--status-success-rgb))]",
+  },
+  {
+    key: "PAYMENT",
+    label: "การชำระเงิน",
+    icon: TrendingUp,
+    accentClass: "text-[rgb(var(--status-warning-rgb))]",
+    activeClass:
+      "border-[rgb(var(--status-warning-rgb)/0.4)] bg-[rgb(var(--status-warning-rgb)/0.1)] text-[rgb(var(--status-warning-rgb))]",
+  },
+  {
+    key: "PROMOTION",
+    label: "โปรโมชั่น",
+    icon: Megaphone,
+    accentClass: "text-site-accent",
+    activeClass: "border-site-accent/40 bg-site-accent/10 text-site-accent",
+  },
+];
+
+const typeMeta = (t: string) =>
+  TYPE_OPTIONS.find((option) => option.key === t) ?? TYPE_OPTIONS[3];
+
 export default function AdminNotificationPage() {
   const { isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -43,9 +96,7 @@ export default function AdminNotificationPage() {
   // Form states
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [type, setType] = useState<
-    "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM"
-  >("SYSTEM");
+  const [type, setType] = useState<NotifType>("SYSTEM");
   const [targetMode, setTargetMode] = useState<"all" | "specific">("all");
   const [userIds, setUserIds] = useState("");
   const [sendPush, setSendPush] = useState(true);
@@ -76,9 +127,26 @@ export default function AdminNotificationPage() {
     }
   };
 
+  const parsedUserIds = useMemo(
+    () =>
+      userIds
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean),
+    [userIds],
+  );
+
+  const charLimit = 120;
+  const messageChars = message.length;
+
   const handleSendNotification = async () => {
     if (!title.trim() || !message.trim()) {
       toast.error("กรุณากรอกหัวข้อและข้อความ");
+      return;
+    }
+
+    if (targetMode === "specific" && parsedUserIds.length === 0) {
+      toast.error("กรุณาระบุ User ID อย่างน้อย 1 รายการ");
       return;
     }
 
@@ -132,328 +200,508 @@ export default function AdminNotificationPage() {
     }
   };
 
-  const getTypeIcon = (t: string) => {
-    switch (t) {
-      case "ORDER":
-        return <CheckCircle className="h-4 w-4" />;
-      case "PAYMENT":
-        return <TrendingUp className="h-4 w-4" />;
-      case "PROMOTION":
-        return <Megaphone className="h-4 w-4" />;
-      default:
-        return <Info className="h-4 w-4" />;
-    }
-  };
-
-  const getTypeColor = (t: string) => {
-    switch (t) {
-      case "ORDER":
-        return "bg-site-surface0/10 text-site-accent border-blue-300";
-      case "PAYMENT":
-        return "bg-green-500/10 text-green-400 border-green-300";
-      case "PROMOTION":
-        return "bg-site-accent/10 text-site-accent border-site-accent/30";
-      default:
-        return "bg-site-raised text-gray-300 border-gray-300";
-    }
-  };
+  const canSend =
+    !isSending && title.trim() && message.trim() &&
+    !(targetMode === "specific" && parsedUserIds.length === 0);
 
   return (
     <AdminLayout>
       <PageContainer>
         <AdminPageHeader
-          title="จัดการการแจ้งเตือน"
-          description="ส่งการแจ้งเตือนไปยังผู้ใช้ทั้งหมดหรือเฉพาะราย"
-          icon={Bell}
+          title="ศูนย์การแจ้งเตือน"
+          description="แต่งข้อความ กลั่นกรองกลุ่มเป้าหมาย แล้วยิง push ในหน้าเดียว"
+          icon={Radio}
         />
 
-        {/* Stats Cards */}
-        {stats && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <StatCard
-              title="การแจ้งเตือนทั้งหมด"
-              value={stats.total.toLocaleString()}
-              icon={<Bell className="h-4 w-4" />}
-              color="blue"
-            />
-            <StatCard
-              title="ยังไม่อ่าน"
-              value={stats.unread.toLocaleString()}
-              icon={<AlertTriangle className="h-4 w-4" />}
-              color="yellow"
-            />
-            <StatCard
-              title="Push Subscriptions"
-              value={stats.pushSubscriptions.toLocaleString()}
-              icon={<Smartphone className="h-4 w-4" />}
-              color="pink"
-            />
-            <StatCard
-              title="Online Now"
-              value={stats.connectedUsers.toLocaleString()}
-              icon={<Users className="h-4 w-4" />}
-              color="green"
-            />
-          </motion.div>
-        )}
-
-        {/* Main Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-site-surface border border-white/5 rounded-2xl">
-          <div className="p-4 border-b-[3px] border-white/10 bg-site-surface">
-            <h2 className="text-base font-bold flex items-center gap-2">
-              <Send className="h-4 w-4 text-site-accent" />
-              เขียนการแจ้งเตือน
-            </h2>
-          </div>
-
-          <div className="p-4 space-y-4">
-            {/* Type Selection */}
-            <div>
-              <label className="block text-xs font-bold mb-2">
-                ประเภทการแจ้งเตือน
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {["SYSTEM", "ORDER", "PAYMENT", "PROMOTION"].map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setType(t as any)}
-                    className={`flex items-center gap-2 px-3 py-1.5 border border-white/5 rounded-xl text-xs font-medium transition-all ${
-                      type === t
-                        ? `${getTypeColor(t)} border-white/10`
-                        : "bg-site-raised border-gray-300 hover:border-gray-400"
-                    }`}
-                  >
-                    {getTypeIcon(t)}
-                    {t === "SYSTEM" && "ระบบ"}
-                    {t === "ORDER" && "คำสั่งซื้อ"}
-                    {t === "PAYMENT" && "การชำระเงิน"}
-                    {t === "PROMOTION" && "โปรโมชั่น"}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Title */}
-            <div>
-              <label className="block text-xs font-bold mb-2">หัวข้อ *</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="เช่น โปรโมชั่นพิเศษ!"
-                className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-sm"
+        {/* ===== Stats strip ===== */}
+        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+          {isLoading && !stats ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-[74px] animate-pulse rounded-xl border border-site-border-soft bg-site-surface"
               />
-            </div>
-
-            {/* Message */}
-            <div>
-              <label className="block text-xs font-bold mb-2">ข้อความ *</label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="เขียนข้อความที่ต้องการส่ง..."
-                rows={3}
-                className="w-full px-3 py-2 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent resize-none text-sm"
-              />
-            </div>
-
-            {/* Target Selection */}
-            <div className="border border-white/5 rounded-xl border-white/5 p-3">
-              <label className="block text-xs font-bold mb-2">ผู้รับ</label>
-              <div className="flex gap-4 mb-3">
-                <label className="flex items-center gap-2 cursor-pointer text-xs">
-                  <input
-                    type="radio"
-                    checked={targetMode === "all"}
-                    onChange={() => setTargetMode("all")}
-                    className="w-3 h-3"
-                  />
-                  <span>ผู้ใช้ทั้งหมด</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer text-xs">
-                  <input
-                    type="radio"
-                    checked={targetMode === "specific"}
-                    onChange={() => setTargetMode("specific")}
-                    className="w-3 h-3"
-                  />
-                  <span>เฉพาะราย</span>
-                </label>
-              </div>
-
-              {targetMode === "specific" && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  className="mt-2">
-                  <label className="block text-xs mb-1">
-                    User IDs (คั่นด้วยลูกน้ำ)
-                  </label>
-                  <textarea
-                    value={userIds}
-                    onChange={(e) => setUserIds(e.target.value)}
-                    placeholder="user-id-1, user-id-2, user-id-3"
-                    rows={2}
-                    className="w-full px-2 py-1.5 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent resize-none text-xs font-mono"
-                  />
-                </motion.div>
-              )}
-            </div>
-
-            {/* Advanced Options */}
-            <div>
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white">
-                {showAdvanced ? (
-                  <ChevronUp className="h-3 w-3" />
-                ) : (
-                  <ChevronDown className="h-3 w-3" />
-                )}
-                ตัวเลือกเพิ่มเติม
-              </button>
-
-              {showAdvanced && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  className="mt-3 space-y-3 border border-white/5 rounded-xl border-white/5 p-3">
-                  {/* Delivery Options */}
-                  <div>
-                    <label className="block text-xs font-bold mb-1">
-                      ช่องทางการส่ง
-                    </label>
-                    <div className="flex gap-3">
-                      <label className="flex items-center gap-1.5 cursor-pointer text-xs">
-                        <input
-                          type="checkbox"
-                          checked={sendPush}
-                          onChange={(e) => setSendPush(e.target.checked)}
-                          className="w-3 h-3"
-                        />
-                        <Smartphone className="h-3 w-3" />
-                        <span>Push Notification</span>
-                      </label>
-                      <label className="flex items-center gap-1.5 cursor-pointer opacity-50 text-xs">
-                        <input type="checkbox" disabled className="w-3 h-3" />
-                        <Mail className="h-3 w-3" />
-                        <span>Email (เร็วๆ นี้)</span>
-                      </label>
-                    </div>
+            ))
+          ) : stats ? (
+            [
+              {
+                label: "แจ้งเตือนสะสม",
+                value: stats.total,
+                icon: Bell,
+                valueClass: "text-site-text",
+                chipClass: "border-site-border bg-site-raised text-site-muted",
+              },
+              {
+                label: "ยังไม่อ่าน",
+                value: stats.unread,
+                icon: AlertTriangle,
+                valueClass: "text-[rgb(var(--status-warning-rgb))]",
+                chipClass:
+                  "border-[rgb(var(--status-warning-rgb)/0.3)] bg-[rgb(var(--status-warning-rgb)/0.1)] text-[rgb(var(--status-warning-rgb))]",
+              },
+              {
+                label: "อุปกรณ์ติดตาม push",
+                value: stats.pushSubscriptions,
+                icon: Smartphone,
+                valueClass: "text-site-accent",
+                chipClass: "border-site-accent/30 bg-site-accent/10 text-site-accent",
+              },
+              {
+                label: "ออนไลน์ตอนนี้",
+                value: stats.connectedUsers,
+                icon: Users,
+                valueClass: "text-[rgb(var(--status-success-rgb))]",
+                chipClass:
+                  "border-[rgb(var(--status-success-rgb)/0.3)] bg-[rgb(var(--status-success-rgb)/0.1)] text-[rgb(var(--status-success-rgb))]",
+              },
+            ].map((card) => (
+              <div
+                key={card.label}
+                className="flex items-center gap-3 rounded-xl border border-site-border-soft bg-site-surface px-3.5 py-3">
+                <span
+                  className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border ${card.chipClass}`}>
+                  <card.icon size={16} />
+                </span>
+                <div className="min-w-0">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    {card.label}
                   </div>
-
-                  {/* Link */}
-                  <div>
-                    <label className="block text-xs font-bold mb-1">
-                      ลิงก์ (ไม่บังคับ)
-                    </label>
-                    <input
-                      type="text"
-                      value={link}
-                      onChange={(e) => setLink(e.target.value)}
-                      placeholder="/dashboard/promotions"
-                      className="w-full px-2 py-1.5 border border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-site-accent text-xs"
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            {/* Send Button */}
-            <div className="pt-3 border-t-[2px] border-white/5">
-              <motion.button
-                onClick={handleSendNotification}
-                disabled={isSending || !title.trim() || !message.trim()}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white px-6 py-2.5 border border-white/5 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">
-                {isSending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    กำลังส่ง...
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-4 w-4" />
-                    ส่งการแจ้งเตือน
-                  </>
-                )}
-              </motion.button>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Type Distribution */}
-        {stats?.byType && Object.keys(stats.byType).length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-site-surface border border-white/5 rounded-2xl">
-            <div className="p-4 border-b-[3px] border-white/10 bg-site-surface">
-              <h2 className="text-base font-bold">สถิติตามประเภท</h2>
-            </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {Object.entries(stats.byType).map(([type, count]) => (
                   <div
-                    key={type}
-                    className={`p-3 border border-white/5 rounded-xl ${getTypeColor(type)}`}>
-                    <div className="flex items-center gap-2 mb-1.5">
-                      {getTypeIcon(type)}
-                      <span className="font-bold text-xs">
-                        {type === "SYSTEM" && "ระบบ"}
-                        {type === "ORDER" && "คำสั่งซื้อ"}
-                        {type === "PAYMENT" && "ชำระเงิน"}
-                        {type === "PROMOTION" && "โปรโมชั่น"}
-                      </span>
-                    </div>
-                    <div className="text-xl font-bold">
-                      {count.toLocaleString()}
-                    </div>
+                    className={`font-mono text-lg font-bold leading-tight ${card.valueClass}`}>
+                    {card.value.toLocaleString()}
                   </div>
-                ))}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full rounded-xl border border-site-border-soft bg-site-surface p-3 text-center text-xs text-site-dim">
+              โหลดสถิติไม่สำเร็จ — ลองรีเฟรชหน้าใหม่
+            </div>
+          )}
+        </div>
+
+        {/* ===== Main split: composer + live preview ===== */}
+        <div className="grid grid-cols-1 items-start gap-3.5 xl:grid-cols-[1fr_380px]">
+          {/* Composer panel */}
+          <div className="overflow-hidden rounded-2xl border border-site-border-soft bg-site-surface">
+            <div className="flex items-center gap-2 border-b border-site-border-soft bg-site-raised px-4 py-3">
+              <Send size={14} className="text-site-accent" />
+              <h2 className="text-sm font-bold text-site-text">เขียนการแจ้งเตือน</h2>
+              <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                ขั้นที่ 1–3
+              </span>
+            </div>
+
+            <div className="space-y-5 p-4">
+              {/* Step 1: type */}
+              <section className="space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-site-accent/15 font-mono text-[10px] font-bold text-site-accent">
+                    1
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-site-muted">
+                    ประเภทการแจ้งเตือน
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {TYPE_OPTIONS.map((option) => {
+                    const Icon = option.icon;
+                    const isActive = type === option.key;
+                    return (
+                      <button
+                        key={option.key}
+                        onClick={() => setType(option.key)}
+                        className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-xs font-bold transition-all ${
+                          isActive
+                            ? `${option.activeClass} shadow-[inset_0_0_0_1px_rgb(var(--site-accent-rgb)/0.2)]`
+                            : "border-site-border bg-site-raised text-site-muted hover:border-site-dim hover:text-site-text"
+                        }`}>
+                        <Icon size={14} className={isActive ? "" : "text-site-dim"} />
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+
+              {/* Step 2: content */}
+              <section className="space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-site-accent/15 font-mono text-[10px] font-bold text-site-accent">
+                    2
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-site-muted">
+                    เนื้อหาข้อความ
+                  </h3>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-site-muted">
+                      หัวข้อ <span className="text-[rgb(var(--status-danger-rgb))]">*</span>
+                    </label>
+                    <span
+                      className={`font-mono text-[10px] ${title.length > 60 ? "text-[rgb(var(--status-warning-rgb))]" : "text-site-dim"}`}>
+                      {title.length}/60 แนะนำ
+                    </span>
+                  </div>
+                  <Input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="เช่น โปรโมชั่นพิเศษวันนี้! รับโบนัส 20%"
+                    className="h-10 rounded-xl border-site-border bg-site-raised text-sm"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-site-muted">
+                      ข้อความ <span className="text-[rgb(var(--status-danger-rgb))]">*</span>
+                    </label>
+                    <span
+                      className={`font-mono text-[10px] ${messageChars > charLimit ? "text-[rgb(var(--status-danger-rgb))]" : messageChars > charLimit * 0.8 ? "text-[rgb(var(--status-warning-rgb))]" : "text-site-dim"}`}>
+                      {messageChars}/{charLimit} ตัวอักษร
+                    </span>
+                  </div>
+                  <Textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="เขียนข้อความที่ต้องการส่ง... กระชับ ชัดเจน และบอกสิ่งที่ผู้ใช้ต้องทำ"
+                    rows={4}
+                    className="rounded-xl border-site-border bg-site-raised text-sm resize-none"
+                  />
+                  {messageChars > charLimit && (
+                    <p className="flex items-center gap-1.5 text-[11px] text-[rgb(var(--status-warning-rgb))]">
+                      <AlertTriangle size={12} />
+                      ข้อความยาวเกินความแนะนำสำหรับ push notification — อาจถูกตัดในบางอุปกรณ์
+                    </p>
+                  )}
+                </div>
+              </section>
+
+              {/* Step 3: audience */}
+              <section className="space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-site-accent/15 font-mono text-[10px] font-bold text-site-accent">
+                    3
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-site-muted">
+                    ผู้รับ
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <button
+                    onClick={() => setTargetMode("all")}
+                    className={`flex items-start gap-2.5 rounded-xl border p-3 text-left transition-all ${
+                      targetMode === "all"
+                        ? "border-site-accent/50 bg-site-accent/10"
+                        : "border-site-border bg-site-raised hover:border-site-dim"
+                    }`}>
+                    <Users
+                      size={16}
+                      className={targetMode === "all" ? "mt-0.5 text-site-accent" : "mt-0.5 text-site-dim"}
+                    />
+                    <span>
+                      <span className={`block text-xs font-bold ${targetMode === "all" ? "text-site-accent" : "text-site-text"}`}>
+                        ผู้ใช้ทั้งหมด
+                      </span>
+                      <span className="mt-0.5 block text-[11px] leading-snug text-site-dim">
+                        ส่งถึงทุกคนที่มีบัญชีในระบบ
+                      </span>
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setTargetMode("specific")}
+                    className={`flex items-start gap-2.5 rounded-xl border p-3 text-left transition-all ${
+                      targetMode === "specific"
+                        ? "border-site-accent/50 bg-site-accent/10"
+                        : "border-site-border bg-site-raised hover:border-site-dim"
+                    }`}>
+                    <Target
+                      size={16}
+                      className={targetMode === "specific" ? "mt-0.5 text-site-accent" : "mt-0.5 text-site-dim"}
+                    />
+                    <span>
+                      <span className={`block text-xs font-bold ${targetMode === "specific" ? "text-site-accent" : "text-site-text"}`}>
+                        เฉพาะราย
+                      </span>
+                      <span className="mt-0.5 block text-[11px] leading-snug text-site-dim">
+                        ระบุ User ID ที่ต้องการ
+                      </span>
+                    </span>
+                  </button>
+                </div>
+
+                {targetMode === "specific" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="overflow-hidden">
+                    <div className="space-y-2 rounded-xl border border-site-border-soft bg-site-raised/50 p-3">
+                      <label className="block text-xs font-bold text-site-muted">
+                        User IDs (คั่นด้วยลูกน้ำ)
+                      </label>
+                      <Textarea
+                        value={userIds}
+                        onChange={(e) => setUserIds(e.target.value)}
+                        placeholder="user-id-1, user-id-2, user-id-3"
+                        rows={2}
+                        className="rounded-xl border-site-border bg-site-surface font-mono text-xs resize-none"
+                      />
+                      <div className="flex items-center gap-1.5 text-[11px] text-site-dim">
+                        <Target size={11} />
+                        ตรวจพบ{" "}
+                        <b className="font-mono text-site-accent">
+                          {parsedUserIds.length}
+                        </b>{" "}
+                        รายการที่จะส่ง
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </section>
+
+              {/* Advanced options */}
+              <div className="rounded-xl border border-site-border-soft bg-site-raised/50">
+                <button
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="flex w-full items-center gap-2 px-3 py-2.5 text-xs font-bold text-site-muted transition-colors hover:text-site-text">
+                  <Sparkles size={13} className="text-site-dim" />
+                  ตัวเลือกเพิ่มเติม
+                  <ChevronDown
+                    size={13}
+                    className={`ml-auto text-site-dim transition-transform ${showAdvanced ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {showAdvanced && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="overflow-hidden">
+                    <div className="space-y-3 border-t border-site-border-soft px-3 py-3">
+                      {/* Delivery options */}
+                      <div className="flex flex-wrap gap-3">
+                        <label className="flex cursor-pointer items-center gap-1.5 text-xs text-site-text">
+                          <Checkbox
+                            checked={sendPush}
+                            onCheckedChange={(c) => setSendPush(c === true)}
+                          />
+                          <Smartphone size={13} className="text-site-dim" />
+                          <span className="font-bold">Push Notification</span>
+                        </label>
+                        <label className="flex items-center gap-1.5 text-xs text-site-dim opacity-60">
+                          <Checkbox disabled />
+                          <Mail size={13} />
+                          <span>Email (เร็วๆ นี้)</span>
+                        </label>
+                      </div>
+
+                      {/* Link */}
+                      <div className="space-y-1.5">
+                        <label className="flex items-center gap-1.5 text-xs font-bold text-site-muted">
+                          <Link2 size={12} />
+                          ลิงก์เมื่อกดที่การแจ้งเตือน (ไม่บังคับ)
+                        </label>
+                        <Input
+                          type="text"
+                          value={link}
+                          onChange={(e) => setLink(e.target.value)}
+                          placeholder="/dashboard/promotions"
+                          className="h-8 rounded-lg border-site-border bg-site-surface font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Send */}
+              <div className="flex flex-wrap items-center gap-3 border-t border-site-border-soft pt-4">
+                <Button
+                  onClick={handleSendNotification}
+                  disabled={!canSend}
+                  className="gap-2 rounded-xl px-6">
+                  {isSending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      กำลังส่ง...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      ส่งการแจ้งเตือน
+                    </>
+                  )}
+                </Button>
+                <span className="text-[11px] leading-snug text-site-dim">
+                  {targetMode === "all"
+                    ? "กำลังจะส่งถึงผู้ใช้ทั้งหมด"
+                    : parsedUserIds.length > 0
+                      ? `กำลังจะส่งถึง ${parsedUserIds.length} รายการ`
+                      : "ยังไม่ได้ระบุผู้รับ"}{" "}
+                  · ส่งแล้วไม่สามารถเรียกคืนได้
+                </span>
               </div>
             </div>
-          </motion.div>
-        )}
+          </div>
+
+          {/* Live preview panel */}
+          <div className="sticky top-4 space-y-3.5">
+            <div className="overflow-hidden rounded-2xl border border-site-border-soft bg-site-surface">
+              <div className="flex items-center gap-2 border-b border-site-border-soft bg-site-raised px-4 py-3">
+                <Eye size={14} className="text-site-accent" />
+                <h2 className="text-sm font-bold text-site-text">พรีวิวบนอุปกรณ์</h2>
+              </div>
+
+              <div className="space-y-4 p-4">
+                {/* Phone-style push preview */}
+                <div className="rounded-2xl border border-site-border-soft bg-site-bg p-3.5">
+                  <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    <Smartphone size={11} />
+                    Push Notification
+                  </div>
+                  <div className="rounded-xl border border-site-border bg-site-raised p-3 shadow-lg">
+                    <div className="flex items-start gap-2.5">
+                      <span
+                        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border ${typeMeta(type).activeClass}`}>
+                        {(() => {
+                          const Icon = typeMeta(type).icon;
+                          return <Icon size={15} />;
+                        })()}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate text-[11px] font-bold text-site-muted">
+                            GameTopup
+                          </span>
+                          <span className="font-mono text-[9px] text-site-dim">ตอนนี้</span>
+                        </div>
+                        <div
+                          className={`mt-0.5 truncate text-[12.5px] font-bold text-site-text ${title ? "" : "opacity-40"}`}>
+                          {title || "หัวข้อการแจ้งเตือน"}
+                        </div>
+                        <div
+                          className={`mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-site-muted ${message ? "" : "opacity-40"}`}>
+                          {message || "เนื้อหาข้อความจะแสดงที่นี่ — สองบรรทัดแรกของ push"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* In-app bell preview */}
+                <div className="rounded-2xl border border-site-border-soft bg-site-bg p-3.5">
+                  <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-site-dim">
+                    <Bell size={11} />
+                    ในหน้าเว็บ (รถไถลการแจ้งเตือน)
+                  </div>
+                  <div
+                    className={`flex items-start gap-2.5 rounded-xl border p-3 ${typeMeta(type).activeClass}`}>
+                    {(() => {
+                      const Icon = typeMeta(type).icon;
+                      return <Icon size={15} className="mt-0.5 flex-shrink-0" />;
+                    })()}
+                    <div className="min-w-0">
+                      <div className={`truncate text-xs font-bold ${title ? "" : "opacity-50"}`}>
+                        {title || "หัวข้อการแจ้งเตือน"}
+                      </div>
+                      <div className={`mt-0.5 line-clamp-2 text-[11.5px] leading-snug opacity-80 ${message ? "" : "opacity-50"}`}>
+                        {message || "เนื้อหาข้อความ"}
+                      </div>
+                      {link && (
+                        <div className="mt-1.5 flex items-center gap-1 font-mono text-[10px] opacity-70">
+                          <Link2 size={10} />
+                          {link}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Meta summary */}
+                <div className="space-y-1.5 rounded-xl border border-site-border-soft bg-site-raised/50 p-3 text-[11px]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-site-dim">ประเภท</span>
+                    <span className="flex items-center gap-1.5 font-bold text-site-text">
+                      {(() => {
+                        const Icon = typeMeta(type).icon;
+                        return <Icon size={12} className={typeMeta(type).accentClass} />;
+                      })()}
+                      {typeMeta(type).label}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-site-dim">ผู้รับ</span>
+                    <span className="font-bold text-site-text">
+                      {targetMode === "all"
+                        ? "ผู้ใช้ทั้งหมด"
+                        : parsedUserIds.length > 0
+                          ? `${parsedUserIds.length} รายการ`
+                          : "—"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-site-dim">ช่องทาง</span>
+                    <span className="font-bold text-site-text">
+                      {sendPush ? "Push" : "In-app เท่านั้น"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-site-dim">ลิงก์</span>
+                    <span className="max-w-[150px] truncate font-mono text-[10px] text-site-text">
+                      {link || "—"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Type distribution */}
+            {stats?.byType && Object.keys(stats.byType).length > 0 && (
+              <div className="overflow-hidden rounded-2xl border border-site-border-soft bg-site-surface">
+                <div className="flex items-center gap-2 border-b border-site-border-soft bg-site-raised px-4 py-3">
+                  <TrendingUp size={14} className="text-site-accent" />
+                  <h2 className="text-sm font-bold text-site-text">สถิติตามประเภท</h2>
+                </div>
+                <div className="space-y-2.5 p-4">
+                  {Object.entries(stats.byType)
+                    .sort(([, a], [, b]) => b - a)
+                    .map(([typeKey, count]) => {
+                      const meta = typeMeta(typeKey);
+                      const Icon = meta.icon;
+                      const total = Object.values(stats.byType).reduce((sum, value) => sum + value, 0);
+                      const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+                      return (
+                        <div key={typeKey} className="space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="flex items-center gap-1.5 font-bold text-site-muted">
+                              <Icon size={12} className={meta.accentClass} />
+                              {meta.label}
+                            </span>
+                            <span className="font-mono text-site-dim">
+                              {count.toLocaleString()} · {percent}%
+                            </span>
+                          </div>
+                          <div className="h-1.5 overflow-hidden rounded-full bg-site-raised">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${percent}%` }}
+                              transition={{ duration: 0.5, ease: "easeOut" }}
+                              className="h-full rounded-full bg-site-accent/70"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </PageContainer>
     </AdminLayout>
-  );
-}
-
-// Stat Card Component
-interface StatCardProps {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-  color: "blue" | "yellow" | "pink" | "green";
-}
-
-const colorClasses = {
-  blue: "bg-site-surface0/10 text-site-accent border-blue-300",
-  yellow: "bg-yellow-500/10 text-yellow-400 border-yellow-300",
-  pink: "bg-site-accent/10 text-site-accent border-site-accent/30",
-  green: "bg-green-500/10 text-green-400 border-green-300",
-};
-
-function StatCard({ title, value, icon, color }: StatCardProps) {
-  return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      className={`p-3 border border-white/5 rounded-xl ${colorClasses[color]}`}>
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium">{title}</span>
-        <span className="p-1.5 bg-site-surface border border-white/5 rounded-2xl">{icon}</span>
-      </div>
-      <div className="text-xl font-bold mt-1.5">{value}</div>
-    </motion.div>
   );
 }

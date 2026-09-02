@@ -9,6 +9,24 @@ import {
   AdminPageHeader,
   PageContainer,
 } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useAuth } from "@/lib/hooks/use-auth";
 import {
   adminUserApi,
@@ -383,24 +401,28 @@ export default function AdminUserManagerPage() {
             </button>
 
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-gray-400" />
-              <select
+              <Shield className="h-4 w-4 text-site-muted" />
+              <Select
                 value={roleDraft}
-                onChange={(e) =>
-                  setRoleDraft(e.target.value as "USER" | "ADMIN")
-                }
-                className="px-3 py-2 border border-white/5 rounded-xl border-gray-300 bg-site-raised focus:border-site-accent/60 focus:outline-none"
+                onValueChange={(v) => setRoleDraft(v as "USER" | "ADMIN")}
                 disabled={mutating}
               >
-                <option value="USER">USER</option>
-                <option value="ADMIN">ADMIN</option>
-              </select>
-              <button
+                <SelectTrigger className="h-9 w-28 rounded-xl border-site-border bg-site-raised">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USER">USER</SelectItem>
+                  <SelectItem value="ADMIN">ADMIN</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
                 onClick={handleSaveRole}
                 disabled={mutating || roleDraft === userDetail.role}
-                className="px-4 py-2 bg-black text-white border border-white/5 rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50">
+                size="sm"
+                className="rounded-xl"
+              >
                 บันทึก role
-              </button>
+              </Button>
             </div>
           </div>
         </motion.div>
@@ -733,70 +755,83 @@ export default function AdminUserManagerPage() {
             <div className="p-3 border-b-[2px] border-white/5 bg-site-surface">
               <label
                 htmlFor="adminReason"
-                className="text-xs font-medium text-gray-300">
+                className="text-xs font-medium text-site-muted">
                 เหตุผลการจัดการบัญชี
               </label>
-              <textarea
+              <Textarea
                 id="adminReason"
                 value={adminReason}
                 onChange={(e) => setAdminReason(e.target.value)}
                 rows={2}
                 placeholder="เช่น พบพฤติกรรมผิดปกติ / ตามคำขอผู้ใช้ / ความปลอดภัย"
-                className="mt-1 w-full border border-white/5 rounded-xl border-gray-300 focus:border-site-accent/60 focus:outline-none px-3 py-2 text-sm bg-site-raised"
+                className="mt-1 rounded-xl border-site-border bg-site-raised text-sm resize-none"
               />
               <div className="mt-2 flex flex-wrap gap-2">
-                <button
+                <Button
+                  variant="danger"
+                  size="sm"
                   onClick={handleSuspendWithReason}
                   disabled={mutating}
-                  className="px-3 py-1.5 text-xs bg-red-500/50 text-white border border-white/5 rounded-xl hover:bg-red-600 disabled:opacity-50">
+                  className="rounded-xl text-xs"
+                >
                   ระงับพร้อมเหตุผล
-                </button>
+                </Button>
               </div>
             </div>
             <div className="p-3 border-b-[2px] border-white/5 bg-site-raised grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
-              <select
+              <Select
                 value={auditTypeFilter}
-                onChange={(e) => {
+                onValueChange={(v) => {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
-                  setAuditTypeFilter(e.target.value);
+                  setAuditTypeFilter(v);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none">
-                <option value="all">ทุกประเภท</option>
-                <option value="admin-suspend">admin-suspend</option>
-                <option value="admin-status-update">admin-status-update</option>
-                <option value="admin-role-update">admin-role-update</option>
-                <option value="admin-audit-resolve">admin-audit-resolve</option>
-                <option value="login">login</option>
-                <option value="payment">payment</option>
-              </select>
-              <select
+              >
+                <SelectTrigger className="h-8 rounded-xl border-site-border bg-site-raised text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">ทุกประเภท</SelectItem>
+                  <SelectItem value="admin-suspend">admin-suspend</SelectItem>
+                  <SelectItem value="admin-status-update">admin-status-update</SelectItem>
+                  <SelectItem value="admin-role-update">admin-role-update</SelectItem>
+                  <SelectItem value="admin-audit-resolve">admin-audit-resolve</SelectItem>
+                  <SelectItem value="login">login</SelectItem>
+                  <SelectItem value="payment">payment</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
                 value={auditResolvedFilter}
-                onChange={(e) => {
+                onValueChange={(v) => {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
-                  setAuditResolvedFilter(e.target.value);
+                  setAuditResolvedFilter(v);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none">
-                <option value="all">ทุกสถานะ</option>
-                <option value="resolved">Resolved</option>
-                <option value="unresolved">Unresolved</option>
-              </select>
-              <input
+              >
+                <SelectTrigger className="h-8 rounded-xl border-site-border bg-site-raised text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">ทุกสถานะ</SelectItem>
+                  <SelectItem value="resolved">Resolved</SelectItem>
+                  <SelectItem value="unresolved">Unresolved</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
                 type="date"
                 value={auditFromDate}
                 onChange={(e) => {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
                   setAuditFromDate(e.target.value);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none"
+                className="h-8 rounded-xl border-site-border bg-site-raised text-xs"
               />
-              <input
+              <Input
                 type="date"
                 value={auditToDate}
                 onChange={(e) => {
                   setAuditMeta((prev) => ({ ...prev, page: 1 }));
                   setAuditToDate(e.target.value);
                 }}
-                className="px-2 py-1.5 border border-white/5 rounded-xl border-gray-300 text-xs bg-site-raised focus:border-site-accent/60 focus:outline-none"
+                className="h-8 rounded-xl border-site-border bg-site-raised text-xs"
               />
             </div>
             <div className="overflow-x-auto">

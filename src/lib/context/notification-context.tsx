@@ -7,7 +7,6 @@ import {
   useState,
   useCallback,
   useMemo,
-  useRef,
   ReactNode,
 } from "react";
 import {
@@ -70,7 +69,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const [isPushSupported, setIsPushSupported] = useState(false);
   const [isPushSubscribed, setIsPushSubscribed] = useState(false);
   const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
-  const wsSetupRef = useRef(false);
 
   // Check push notification support - only once on mount
   useEffect(() => {
@@ -150,24 +148,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   // WebSocket connection - with cleanup
   useEffect(() => {
     if (!isAuthenticated || !token || typeof window === "undefined") {
-      console.log(
-        "[NotificationContext] WebSocket not connecting - auth:",
-        isAuthenticated,
-        "token:",
-        !!token,
-      );
+      // Explicitly tear down any connection when auth is lost, and reset the
+      // setup flag so a later login can connect again
+      notificationWebSocket.disconnect();
+      setIsWebSocketConnected(false);
       return;
     }
 
     // Prevent duplicate connection attempts from StrictMode
-    if (wsSetupRef.current) {
-      console.log(
-        "[NotificationContext] WebSocket setup already in progress, skipping",
-      );
-      return;
-    }
+    // (NotificationWebSocket.connect() has its own guards for in-progress or
+    // already-open connections, so no extra ref is needed here)
 
-    wsSetupRef.current = true;
     console.log("[NotificationContext] Setting up WebSocket connection...");
 
     // Set up event handlers BEFORE connecting
@@ -257,7 +248,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     return () => {
       console.log("[NotificationContext] Cleaning up WebSocket connection");
-      wsSetupRef.current = false;
       notificationWebSocket.disconnect();
     };
   }, [isAuthenticated, token]);

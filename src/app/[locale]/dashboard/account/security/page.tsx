@@ -86,6 +86,18 @@ export default function SecurityPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpCooldown, setOtpCooldown] = useState(0);
 
+  // OTP cooldown countdown (cleaned up on unmount)
+  const isOtpCooldownActive = otpCooldown > 0;
+  useEffect(() => {
+    if (!isOtpCooldownActive) return;
+
+    const timer = setInterval(() => {
+      setOtpCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isOtpCooldownActive]);
+
   // Handle requesting OTP for password setup
   const handleRequestOTP = async () => {
     if (!user?.email) {
@@ -99,18 +111,7 @@ export default function SecurityPage() {
       if (response.success) {
         toast.success(t("change_password.otp_sent_success"));
         setOtpSent(true);
-        setOtpCooldown(60); // 60 seconds cooldown
-
-        // Start cooldown timer
-        const timer = setInterval(() => {
-          setOtpCooldown((prev) => {
-            if (prev <= 1) {
-              clearInterval(timer);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+        setOtpCooldown(60); // 60 seconds cooldown (interval runs in useEffect below)
       }
     } catch (error: any) {
       toast.error(

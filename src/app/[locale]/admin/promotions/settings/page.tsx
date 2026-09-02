@@ -8,8 +8,11 @@ import {
   PageContainer,
 } from "@/components/admin";
 import { Settings, Save, ChevronLeft, Tag, CheckCircle } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 export default function AdminPromotionSettings() {
   const router = useRouter();
@@ -102,23 +105,16 @@ export default function AdminPromotionSettings() {
   }) => (
     <div className="flex items-start space-x-2">
       <div className="mt-0.5">
-        <label
-          htmlFor={name}
-          className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            id={name}
-            name={name}
-            className="sr-only"
-            checked={checked}
-            onChange={onChange}
-          />
-          <div
-            className={`w-9 h-5 rounded-full transition-colors ${checked ? "bg-site-accent" : "bg-site-border/30"}`}>
-            <div
-              className={`h-4 w-4 rounded-full bg-site-raised absolute left-0.5 top-0.5 transition-transform ${checked ? "translate-x-4" : ""}`}></div>
-          </div>
-        </label>
+        <Switch
+          id={name}
+          name={name}
+          checked={checked}
+          onCheckedChange={(value) =>
+            onChange({
+              target: { name, checked: value, type: "checkbox" },
+            } as unknown as React.ChangeEvent<HTMLInputElement>)
+          }
+        />
       </div>
       <div>
         <label
@@ -137,11 +133,14 @@ export default function AdminPromotionSettings() {
     <AdminLayout>
       <PageContainer className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3">
-          <button
+          <Button
             onClick={() => router.push("/admin/promotions")}
-            className="p-1.5 rounded-lg bg-site-raised border border-white/10 text-white hover:bg-site-border/30 transition-colors">
+            variant="secondary"
+            size="icon"
+            aria-label="ย้อนกลับ"
+          >
             <ChevronLeft className="h-4 w-4" />
-          </button>
+          </Button>
           <AdminPageHeader title="ตั้งค่าโปรโมชั่น" icon={Settings} />
         </div>
 
@@ -158,7 +157,7 @@ export default function AdminPromotionSettings() {
         {/* Settings Container */}
         <motion.div
           className="bg-site-surface border border-white/5 rounded-2xl rounded-xl overflow-hidden"
-          
+
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -195,21 +194,23 @@ export default function AdminPromotionSettings() {
                     onChange={handleChange}
                   />
 
-                  <div>
-                    <label
+                  <div className="space-y-1">
+                    <Label
                       htmlFor="expiringSoonDays"
-                      className="block text-white text-xs font-medium mb-1">
+                      className="text-white text-xs font-medium"
+                    >
                       เกณฑ์ "ใกล้หมดอายุ" (วัน)
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       id="expiringSoonDays"
                       name="expiringSoonDays"
-                      min="1"
-                      max="30"
+                      min={1}
+                      max={30}
+                      size="sm"
+                      className="border-site-border bg-site-raised text-white"
                       value={settings.expiringSoonDays}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       คูปองที่เหลือวันน้อยกว่านี้จะถูกทำเครื่องหมายว่า
@@ -234,21 +235,23 @@ export default function AdminPromotionSettings() {
                   />
 
                   {settings.allowMultipleCoupons && (
-                    <div>
-                      <label
+                    <div className="space-y-1">
+                      <Label
                         htmlFor="maxCouponsPerOrder"
-                        className="block text-white text-xs font-medium mb-1">
+                        className="text-white text-xs font-medium"
+                      >
                         คูปองสูงสุดต่อรายการ
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         type="number"
                         id="maxCouponsPerOrder"
                         name="maxCouponsPerOrder"
-                        min="1"
-                        max="10"
+                        min={1}
+                        max={10}
+                        size="sm"
+                        className="border-site-border bg-site-raised text-white"
                         value={settings.maxCouponsPerOrder}
                         onChange={handleChange}
-                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       />
                     </div>
                   )}
@@ -261,20 +264,22 @@ export default function AdminPromotionSettings() {
                     onChange={handleChange}
                   />
 
-                  <div>
-                    <label
+                  <div className="space-y-1">
+                    <Label
                       htmlFor="minOrderValueForCoupons"
-                      className="block text-white text-xs font-medium mb-1">
+                      className="text-white text-xs font-medium"
+                    >
                       ยอดสั่งซื้อขั้นต่ำ (฿)
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       id="minOrderValueForCoupons"
                       name="minOrderValueForCoupons"
-                      min="0"
+                      min={0}
+                      size="sm"
+                      className="border-site-border bg-site-raised text-white"
                       value={settings.minOrderValueForCoupons}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       ยอดสั่งซื้อขั้นต่ำเริ่มต้นที่ต้องการเพื่อใช้คูปอง
@@ -297,42 +302,46 @@ export default function AdminPromotionSettings() {
                     onChange={handleChange}
                   />
 
-                  <div>
-                    <label
+                  <div className="space-y-1">
+                    <Label
                       htmlFor="maxFailedAttempts"
-                      className="block text-white text-xs font-medium mb-1">
+                      className="text-white text-xs font-medium"
+                    >
                       ความพยายามผิดพลาดสูงสุด
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       id="maxFailedAttempts"
                       name="maxFailedAttempts"
-                      min="1"
-                      max="20"
+                      min={1}
+                      max={20}
+                      size="sm"
+                      className="border-site-border bg-site-raised text-white"
                       value={settings.maxFailedAttempts}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       จำนวนครั้งที่ใช้คูปองผิดพลาดก่อนถูกบล็อกชั่วคราว
                     </p>
                   </div>
 
-                  <div>
-                    <label
+                  <div className="space-y-1">
+                    <Label
                       htmlFor="blockDurationMinutes"
-                      className="block text-white text-xs font-medium mb-1">
+                      className="text-white text-xs font-medium"
+                    >
                       ระยะเวลาบล็อก (นาที)
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       id="blockDurationMinutes"
                       name="blockDurationMinutes"
-                      min="5"
-                      max="1440"
+                      min={5}
+                      max={1440}
+                      size="sm"
+                      className="border-site-border bg-site-raised text-white"
                       value={settings.blockDurationMinutes}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                     <p className="text-gray-400 text-[10px] mt-1">
                       ระยะเวลาบล็อกการใช้คูปองหลังจากความพยายามผิดพลาดมากเกินไป
@@ -347,21 +356,23 @@ export default function AdminPromotionSettings() {
                   การตั้งค่าการสร้างคูปอง
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-site-surface p-3 rounded-lg border-2 border-white/5">
-                  <div>
-                    <label
+                  <div className="space-y-1">
+                    <Label
                       htmlFor="defaultCouponLength"
-                      className="block text-white text-xs font-medium mb-1">
+                      className="text-white text-xs font-medium"
+                    >
                       ความยาวรหัสคูปองเริ่มต้น
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="number"
                       id="defaultCouponLength"
                       name="defaultCouponLength"
-                      min="4"
-                      max="16"
+                      min={4}
+                      max={16}
+                      size="sm"
+                      className="border-site-border bg-site-raised text-white"
                       value={settings.defaultCouponLength}
                       onChange={handleChange}
-                      className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                     />
                   </div>
 
@@ -398,21 +409,23 @@ export default function AdminPromotionSettings() {
                   />
 
                   {settings.notifyBeforeCouponExpiry && (
-                    <div>
-                      <label
+                    <div className="space-y-1">
+                      <Label
                         htmlFor="expiryNotificationDays"
-                        className="block text-white text-xs font-medium mb-1">
+                        className="text-white text-xs font-medium"
+                      >
                         วันแจ้งเตือนก่อนหมดอายุ
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         type="number"
                         id="expiryNotificationDays"
                         name="expiryNotificationDays"
-                        min="1"
-                        max="30"
+                        min={1}
+                        max={30}
+                        size="sm"
+                        className="border-site-border bg-site-raised text-white"
                         value={settings.expiryNotificationDays}
                         onChange={handleChange}
-                        className="bg-site-raised border-2 border-gray-300 text-white rounded-lg px-3 py-1.5 w-full text-sm focus:border-site-accent/60 focus:outline-none"
                       />
                       <p className="text-gray-400 text-[10px] mt-1">
                         จำนวนวันก่อนหมดอายุที่จะส่งการแจ้งเตือน
@@ -425,19 +438,22 @@ export default function AdminPromotionSettings() {
 
             {/* Form Actions */}
             <div className="mt-6 flex justify-end space-x-3">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={() => router.push("/admin/promotions")}
-                className="px-4 py-2 bg-site-surface border border-white/5 rounded-2xl text-white rounded-lg hover:bg-site-raised/5 transition-colors font-medium text-sm">
+              >
                 ยกเลิก
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-black text-white border border-white/5 rounded-lg rounded-lg hover:bg-gray-800 transition-colors font-medium flex items-center text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
+                isLoading={isSubmitting}
+                className="bg-black text-white border border-white/5 hover:bg-gray-800"
+              >
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังบันทึก..." : "บันทึกการตั้งค่า"}
-              </button>
+              </Button>
             </div>
           </form>
         </motion.div>

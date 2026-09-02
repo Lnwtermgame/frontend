@@ -20,6 +20,18 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AdminPromotionCreate() {
   const router = useRouter();
@@ -80,9 +92,9 @@ export default function AdminPromotionCreate() {
       <PageContainer className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3">
           <Link href="/admin/promotions">
-            <button className="p-1.5 bg-site-raised border border-white/10 text-white hover:bg-site-border/30 transition-colors rounded-lg">
+            <Button variant="secondary" size="icon" aria-label="ย้อนกลับ">
               <ChevronLeft className="h-4 w-4" />
-            </button>
+            </Button>
           </Link>
           <AdminPageHeader title="สร้างโปรโมชั่น" icon={Tag} />
         </div>
@@ -90,7 +102,7 @@ export default function AdminPromotionCreate() {
         {/* Form Container */}
         <motion.div
           className="bg-site-surface border border-white/5 rounded-2xl overflow-hidden"
-          
+
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -107,18 +119,17 @@ export default function AdminPromotionCreate() {
               {/* Left Column */}
               <div className="space-y-4">
                 {/* Promotion Title */}
-                <div>
-                  <label
-                    htmlFor="title"
-                    className="block text-xs font-medium text-white mb-1.5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="title" className="text-xs font-medium text-white">
                     ชื่อโปรโมชั่น <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     id="title"
                     name="title"
                     required
-                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
+                    size="sm"
+                    className="border-site-border bg-site-raised text-white"
                     placeholder="เช่น ลด 30% ฤดูร้อน"
                     value={formData.title}
                     onChange={handleChange}
@@ -126,114 +137,102 @@ export default function AdminPromotionCreate() {
                 </div>
 
                 {/* Promotion Type */}
-                <div>
-                  <label
-                    htmlFor="type"
-                    className="block text-xs font-medium text-white mb-1.5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="type" className="text-xs font-medium text-white">
                     ประเภทโปรโมชั่น <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Sparkles className="h-4 w-4 text-gray-400" />
-                    </div>
-                    <select
+                  </Label>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, type: value })
+                    }
+                  >
+                    <SelectTrigger
                       id="type"
-                      name="type"
-                      required
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full appearance-none text-sm focus:border-site-accent/60 focus:outline-none"
-                      value={formData.type}
-                      onChange={handleChange}
+                      className="h-9 rounded-6 border-site-border bg-site-raised text-sm [&>span]:flex [&>span]:items-center [&>span]:gap-2"
                     >
-                      <option value="discount">ส่วนลดปกติ</option>
-                      <option value="flash">แฟลชเซล</option>
-                      <option value="cashback">คืนเงิน</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-gray-400">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </div>
-                  </div>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="discount">
+                        <Sparkles className="h-4 w-4 text-site-dim" />
+                        ส่วนลดปกติ
+                      </SelectItem>
+                      <SelectItem value="flash">
+                        <Sparkles className="h-4 w-4 text-site-dim" />
+                        แฟลชเซล
+                      </SelectItem>
+                      <SelectItem value="cashback">
+                        <Sparkles className="h-4 w-4 text-site-dim" />
+                        คืนเงิน
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Promotion Code */}
-                <div>
-                  <label
-                    htmlFor="code"
-                    className="block text-xs font-medium text-white mb-1.5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="code" className="text-xs font-medium text-white">
                     รหัสโปรโมชั่น <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     id="code"
                     name="code"
                     required
-                    className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none font-mono"
+                    size="sm"
+                    className="border-site-border bg-site-raised text-white font-mono"
                     placeholder="เช่น SUMMER30"
                     value={formData.code}
                     onChange={handleChange}
                   />
-                  <p className="mt-1 text-[10px] text-gray-400">
+                  <p className="text-[10px] text-gray-400">
                     รหัสตัวพิมพ์ใหญ่-เล็กมีผลและควรไม่ซ้ำกัน
                   </p>
                 </div>
 
                 {/* Discount Amount */}
-                <div>
-                  <label
+                <div className="space-y-1.5">
+                  <Label
                     htmlFor="discount"
-                    className="block text-xs font-medium text-white mb-1.5">
+                    className="text-xs font-medium text-white"
+                  >
                     จำนวนส่วนลด <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Percent className="h-4 w-4 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      id="discount"
-                      name="discount"
-                      required
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
-                      placeholder="เช่น 30"
-                      value={formData.discount}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  </Label>
+                  <Input
+                    type="text"
+                    id="discount"
+                    name="discount"
+                    required
+                    size="sm"
+                    icon={<Percent className="h-4 w-4 text-gray-400" />}
+                    className="border-site-border bg-site-raised text-white"
+                    placeholder="เช่น 30"
+                    value={formData.discount}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 {/* Min Purchase */}
-                <div>
-                  <label
+                <div className="space-y-1.5">
+                  <Label
                     htmlFor="minPurchase"
-                    className="block text-xs font-medium text-white mb-1.5">
+                    className="text-xs font-medium text-white"
+                  >
                     ยอดซื้อขั้นต่ำ (ไม่บังคับ)
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CreditCard className="h-4 w-4 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      id="minPurchase"
-                      name="minPurchase"
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
-                      placeholder="เช่น 20"
-                      value={formData.minPurchase}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <p className="mt-1 text-[10px] text-gray-400">
+                  </Label>
+                  <Input
+                    type="text"
+                    id="minPurchase"
+                    name="minPurchase"
+                    size="sm"
+                    icon={<CreditCard className="h-4 w-4 text-gray-400" />}
+                    className="border-site-border bg-site-raised text-white"
+                    placeholder="เช่น 20"
+                    value={formData.minPurchase}
+                    onChange={handleChange}
+                  />
+                  <p className="text-[10px] text-gray-400">
                     ยอดซื้อขั้นต่ำที่ต้องการเพื่อใช้โปรโมชั่นนี้
                   </p>
                 </div>
@@ -243,173 +242,172 @@ export default function AdminPromotionCreate() {
               <div className="space-y-4">
                 {/* Date Range */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label
+                  <div className="space-y-1.5">
+                    <Label
                       htmlFor="startDate"
-                      className="block text-xs font-medium text-white mb-1.5">
+                      className="text-xs font-medium text-white"
+                    >
                       วันที่เริ่ม <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        required
-                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
-                        value={formData.startDate}
-                        onChange={handleChange}
-                      />
-                    </div>
+                    </Label>
+                    <Input
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      required
+                      size="sm"
+                      icon={<Calendar className="h-4 w-4 text-gray-400" />}
+                      className="border-site-border bg-site-raised text-white"
+                      value={formData.startDate}
+                      onChange={handleChange}
+                    />
                   </div>
-                  <div>
-                    <label
+                  <div className="space-y-1.5">
+                    <Label
                       htmlFor="endDate"
-                      className="block text-xs font-medium text-white mb-1.5">
+                      className="text-xs font-medium text-white"
+                    >
                       วันที่สิ้นสุด <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        required
-                        className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
-                        value={formData.endDate}
-                        onChange={handleChange}
-                      />
-                    </div>
+                    </Label>
+                    <Input
+                      type="date"
+                      id="endDate"
+                      name="endDate"
+                      required
+                      size="sm"
+                      icon={<Calendar className="h-4 w-4 text-gray-400" />}
+                      className="border-site-border bg-site-raised text-white"
+                      value={formData.endDate}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
 
                 {/* Usage Limit */}
-                <div>
-                  <label
+                <div className="space-y-1.5">
+                  <Label
                     htmlFor="usageLimit"
-                    className="block text-xs font-medium text-white mb-1.5">
+                    className="text-xs font-medium text-white"
+                  >
                     จำกัดการใช้ (ไม่บังคับ)
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Clock className="h-4 w-4 text-gray-400" />
-                    </div>
-                    <input
-                      type="number"
-                      id="usageLimit"
-                      name="usageLimit"
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
-                      placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
-                      value={formData.usageLimit}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <p className="mt-1 text-[10px] text-gray-400">
+                  </Label>
+                  <Input
+                    type="number"
+                    id="usageLimit"
+                    name="usageLimit"
+                    size="sm"
+                    icon={<Clock className="h-4 w-4 text-gray-400" />}
+                    className="border-site-border bg-site-raised text-white"
+                    placeholder="เว้นว่างไว้สำหรับไม่จำกัด"
+                    value={formData.usageLimit}
+                    onChange={handleChange}
+                  />
+                  <p className="text-[10px] text-gray-400">
                     จำนวนครั้งสูงสุดที่สามารถใช้โปรโมชั่นนี้ได้
                   </p>
                 </div>
 
                 {/* Max Discount */}
-                <div>
-                  <label
+                <div className="space-y-1.5">
+                  <Label
                     htmlFor="maxDiscount"
-                    className="block text-xs font-medium text-white mb-1.5">
+                    className="text-xs font-medium text-white"
+                  >
                     ส่วนลดสูงสุด (ไม่บังคับ)
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CreditCard className="h-4 w-4 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      id="maxDiscount"
-                      name="maxDiscount"
-                      className="bg-site-raised border-2 border-gray-300 text-white pl-9 pr-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
-                      placeholder="เช่น 50"
-                      value={formData.maxDiscount}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <p className="mt-1 text-[10px] text-gray-400">
+                  </Label>
+                  <Input
+                    type="text"
+                    id="maxDiscount"
+                    name="maxDiscount"
+                    size="sm"
+                    icon={<CreditCard className="h-4 w-4 text-gray-400" />}
+                    className="border-site-border bg-site-raised text-white"
+                    placeholder="เช่น 50"
+                    value={formData.maxDiscount}
+                    onChange={handleChange}
+                  />
+                  <p className="text-[10px] text-gray-400">
                     จำนวนส่วนลดสูงสุดเป็นหน่วยเงิน
                   </p>
                 </div>
 
                 {/* Active Status */}
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     id="isActive"
                     name="isActive"
                     checked={formData.isActive}
-                    onChange={(e) => handleChange(e as any)}
-                    className="w-4 h-4 border border-white/5 rounded-lg rounded text-site-accent focus:ring-site-accent/50"
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, isActive: checked === true })
+                    }
+                    className="border-site-border"
                   />
-                  <label
-                    htmlFor="isActive"
-                    className="text-xs font-medium text-white">
+                  <Label htmlFor="isActive" className="text-xs font-medium text-white">
                     เปิดใช้งานโปรโมชั่นทันที
-                  </label>
+                  </Label>
                 </div>
 
                 {/* Apply to All */}
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     id="applyToAll"
                     name="applyToAll"
                     checked={formData.applyToAll}
-                    onChange={(e) => handleChange(e as any)}
-                    className="w-4 h-4 border border-white/5 rounded-lg rounded text-site-accent focus:ring-site-accent/50"
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, applyToAll: checked === true })
+                    }
+                    className="border-site-border"
                   />
-                  <label
+                  <Label
                     htmlFor="applyToAll"
-                    className="text-xs font-medium text-white">
+                    className="text-xs font-medium text-white"
+                  >
                     ใช้กับสินค้าและเกมทั้งหมด
-                  </label>
+                  </Label>
                 </div>
               </div>
             </div>
 
             {/* Description Textarea - Full Width */}
-            <div className="mt-4">
-              <label
+            <div className="mt-4 space-y-1.5">
+              <Label
                 htmlFor="description"
-                className="block text-xs font-medium text-white mb-1.5">
+                className="text-xs font-medium text-white"
+              >
                 รายละเอียด (ไม่บังคับ)
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
-                className="bg-site-raised border-2 border-gray-300 text-white px-3 py-2 w-full text-sm focus:border-site-accent/60 focus:outline-none"
+                className="bg-site-raised border-site-border text-white text-sm"
                 placeholder="อธิบายรายละเอียดโปรโมชั่น..."
                 value={formData.description}
                 onChange={handleChange}
-              ></textarea>
+              />
             </div>
 
             {/* Action Buttons */}
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
-              <Link href="/admin/promotions">
-                <button
-                  type="button"
-                  className="px-4 py-2 border border-white/5 rounded-lg bg-site-raised text-white hover:bg-site-raised/5 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm">
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full sm:w-auto"
+                asChild
+              >
+                <Link href="/admin/promotions">
                   <X className="h-4 w-4 mr-2" />
                   ยกเลิก
-                </button>
-              </Link>
-              <button
+                </Link>
+              </Button>
+              <Button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-black text-white border border-white/5 rounded-lg hover:bg-gray-800 transition-colors w-full sm:w-auto flex items-center justify-center font-medium text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}>
+                isLoading={isSubmitting}
+                className="w-full sm:w-auto bg-black text-white border border-white/5 hover:bg-gray-800"
+              >
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting ? "กำลังสร้าง..." : "สร้างโปรโมชั่น"}
-              </button>
+              </Button>
             </div>
           </form>
         </motion.div>

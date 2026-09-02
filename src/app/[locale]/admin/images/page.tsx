@@ -9,6 +9,15 @@ import {
   AdminPageHeader,
   PageContainer,
 } from "@/components/admin";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
     Upload,
     Trash2,
@@ -286,39 +295,42 @@ export default function AdminImagesPage() {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-bold text-white mb-1">โฟลเดอร์</label>
-                                <select
-                                    value={folderInput}
-                                    onChange={(e) => setFolderInput(e.target.value)}
-                                    className="w-full bg-site-surface border border-white/5 rounded-2xl px-3 py-2 text-sm cursor-pointer">
-                                    <option value="products">products</option>
-                                    <option value="covers">covers</option>
-                                    <option value="news">news</option>
-                                    <option value="cms">cms</option>
-                                    <option value="misc">misc</option>
-                                </select>
+                                <Select value={folderInput} onValueChange={setFolderInput}>
+                                    <SelectTrigger className="w-full bg-site-surface border-white/5 rounded-2xl h-10 px-3 text-sm">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="products">products</SelectItem>
+                                        <SelectItem value="covers">covers</SelectItem>
+                                        <SelectItem value="news">news</SelectItem>
+                                        <SelectItem value="cms">cms</SelectItem>
+                                        <SelectItem value="misc">misc</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-white mb-1">อัปโหลดจาก URL</label>
                                 <div className="flex gap-2">
-                                    <input
+                                    <Input
                                         type="text"
                                         value={urlInput}
                                         onChange={(e) => setUrlInput(e.target.value)}
                                         placeholder="https://example.com/image.png"
-                                        className="flex-1 bg-site-surface border border-white/5 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
+                                        className="h-10 rounded-xl border-white/5 bg-site-surface text-sm"
                                         onKeyDown={(e) => e.key === "Enter" && handleUrlUpload()}
                                     />
-                                    <button
+                                    <Button
                                         onClick={handleUrlUpload}
                                         disabled={!urlInput.trim() || isUploading}
-                                        className="px-4 py-2 bg-site-accent text-white border border-white/5 rounded-xl font-medium text-sm hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+                                        className="h-10 px-4 rounded-xl font-medium text-sm gap-1"
+                                    >
                                         {isUploading ? (
                                             <Loader2 className="w-4 h-4 animate-spin" />
                                         ) : (
                                             <Link2 className="w-4 h-4" />
                                         )}
                                         ดึงรูป
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -335,15 +347,15 @@ export default function AdminImagesPage() {
                 >
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                         {/* Search */}
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <input
+                        <div className="flex-1">
+                            <Input
                                 type="text"
                                 value={searchInput}
                                 onChange={(e) => setSearchInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="ค้นหาชื่อไฟล์..."
-                                className="w-full bg-site-surface border border-white/5 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-site-accent/50 outline-none"
+                                icon={<Search className="w-4 h-4" />}
+                                className="h-10 rounded-xl border-white/5 bg-site-surface text-sm"
                             />
                         </div>
                         <button
@@ -353,7 +365,7 @@ export default function AdminImagesPage() {
                         </button>
 
                         {/* View Toggle */}
-                        <div className="flex border border-white/5 rounded-xl">
+                        <div className="flex border border-white/5 rounded-xl overflow-hidden">
                             <button
                                 onClick={() => setViewMode("grid")}
                                 className={`p-2 transition-colors ${viewMode === "grid"
@@ -620,15 +632,20 @@ export default function AdminImagesPage() {
                             <ChevronRight className="w-4 h-4" />
                         </button>
 
-                        <span className="text-xs text-gray-400 ml-2">แสดง</span>
-                        <select
-                            value={pageSize}
-                            onChange={(e) => { setPageSize(Number(e.target.value)); setPage(0); }}
-                            className="text-xs bg-site-surface border border-white/5 rounded-2xl px-2 py-1 cursor-pointer">
-                            {PAGE_SIZES.map((s) => (
-                                <option key={s} value={s}>{s} ต่อหน้า</option>
-                            ))}
-                        </select>
+                        <span className="text-xs text-site-muted ml-2">แสดง</span>
+                        <Select
+                            value={String(pageSize)}
+                            onValueChange={(v) => { setPageSize(Number(v)); setPage(0); }}
+                        >
+                            <SelectTrigger className="h-8 w-28 text-xs bg-site-surface border-white/5 rounded-2xl">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {PAGE_SIZES.map((s) => (
+                                    <SelectItem key={s} value={String(s)}>{s} ต่อหน้า</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 )}
 
@@ -700,16 +717,18 @@ export default function AdminImagesPage() {
                                         <div className="mt-4 bg-site-surface border border-white/5 rounded-xl p-3">
                                             <p className="text-xs text-gray-400 font-bold mb-1">URL</p>
                                             <div className="flex items-center gap-2">
-                                                <input
+                                                <Input
                                                     type="text"
                                                     readOnly
                                                     value={previewFile.url}
-                                                    className="flex-1 text-xs bg-site-raised border border-gray-300 px-2 py-1.5 text-gray-300"
+                                                    className="h-8 flex-1 text-xs bg-site-raised border-site-border"
                                                     onClick={(e) => (e.target as HTMLInputElement).select()}
                                                 />
-                                                <button
+                                                <Button
+                                                    size="sm"
                                                     onClick={() => handleCopyUrl(previewFile)}
-                                                    className="px-3 py-1.5 bg-site-accent text-white border border-white/5 rounded-xl text-xs font-medium hover:bg-blue-600 transition-all flex items-center gap-1">
+                                                    className="h-8 px-3 rounded-xl text-xs font-medium gap-1"
+                                                >
                                                     {copiedId === previewFile.id ? (
                                                         <>
                                                             <Check className="w-3 h-3" /> คัดลอกแล้ว
@@ -719,7 +738,7 @@ export default function AdminImagesPage() {
                                                             <Copy className="w-3 h-3" /> คัดลอก
                                                         </>
                                                     )}
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>

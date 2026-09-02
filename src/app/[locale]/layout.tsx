@@ -4,7 +4,6 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Script from "next/script";
-import { ReactGrabInit } from "@/components/ReactGrabInit";
 import { ScrollLockManager } from "@/lib/scroll-lock";
 import { Toaster } from "react-hot-toast";
 import "../globals.css";
@@ -203,21 +202,12 @@ export default async function RootLayout(
       suppressHydrationWarning
     >
       <head>
-        {/* react-grab for development */}
-        {process.env.NODE_ENV === "development" && (
-          <Script
-            src="//unpkg.com/react-grab/dist/index.global.js"
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
         <HomeJsonLd />
       </head>
       <body
         suppressHydrationWarning
         className="min-h-screen bg-site-bg text-site-text font-sans antialiased"
       >
-        <ReactGrabInit />
         {/* Renders null — one policy for every body scroll lock (dropdowns
             keep the scrollbar; modals compensate it) */}
         <ScrollLockManager />

@@ -13,6 +13,14 @@ import {
   type Column,
 } from "@/components/admin";
 import { orderApi, Order } from "@/lib/services/order-api";
+import { Button } from "@/components/ui/Button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useTranslations } from "next-intl";
 
@@ -109,18 +117,22 @@ export default function AdminOrders() {
       render: (o) => (
         <div className="flex items-center gap-2">
           <StatusBadge status={o.status} />
-          <select
+          <Select
             value={o.status}
-            onChange={(e) => handleUpdateStatus(o.id, e.target.value)}
-            className="text-[10px] bg-transparent border border-site-border rounded px-1 py-0.5 text-site-dim cursor-pointer focus:outline-none focus:border-site-accent/60"
+            onValueChange={(value) => handleUpdateStatus(o.id, value)}
           >
-            <option value="PENDING">{t("orders.status.pending")}</option>
-            <option value="PROCESSING">{t("orders.status.processing")}</option>
-            <option value="COMPLETED">{t("orders.status.completed")}</option>
-            <option value="FAILED">{t("orders.status.failed")}</option>
-            <option value="CANCELLED">{t("orders.status.cancelled")}</option>
-            <option value="REFUNDED">{t("orders.status.refunded")}</option>
-          </select>
+            <SelectTrigger className="h-6 w-auto gap-1 border-site-border bg-transparent px-1.5 py-0 text-[10px] text-site-dim">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="PENDING">{t("orders.status.pending")}</SelectItem>
+              <SelectItem value="PROCESSING">{t("orders.status.processing")}</SelectItem>
+              <SelectItem value="COMPLETED">{t("orders.status.completed")}</SelectItem>
+              <SelectItem value="FAILED">{t("orders.status.failed")}</SelectItem>
+              <SelectItem value="CANCELLED">{t("orders.status.cancelled")}</SelectItem>
+              <SelectItem value="REFUNDED">{t("orders.status.refunded")}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       ),
     },
@@ -136,11 +148,11 @@ export default function AdminOrders() {
       header: "",
       align: "right",
       render: (o) => (
-        <Link href={`/admin/orders/${o.id}`}>
-          <button className="p-1.5 rounded-lg border border-site-border text-site-muted hover:text-site-accent hover:border-site-accent transition-colors">
+        <Button asChild variant="secondary" size="icon" className="h-7 w-7 rounded-lg">
+          <Link href={`/admin/orders/${o.id}`} aria-label="ดูรายละเอียดคำสั่งซื้อ">
             <Eye className="w-3.5 h-3.5" />
-          </button>
-        </Link>
+          </Link>
+        </Button>
       ),
     },
   ];

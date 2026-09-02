@@ -33,6 +33,17 @@ import {
   CreateCmsPageData,
   UpdateCmsPageData,
 } from "@/lib/services";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { aiService, AIModel } from "@/lib/services/ai-api";
 import { useAuth } from "@/lib/hooks/use-auth";
 import Link from "next/link";
@@ -330,11 +341,15 @@ export default function AdminCmsPagesPage() {
               className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex items-center overflow-hidden">
               <AlertCircle className="text-rose-400 mr-3 shrink-0" size={20} />
               <span className="text-rose-300 text-sm font-medium">{error}</span>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setError(null)}
-                className="ml-auto text-rose-400/50 hover:text-rose-400 hover:bg-rose-500/10 p-1.5 rounded-lg transition-colors">
+                className="ml-auto h-8 w-8 rounded-lg text-rose-400/50 hover:text-rose-400 hover:bg-rose-500/10"
+                aria-label="ปิดข้อความ error"
+              >
                 <X size={16} />
-              </button>
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -411,32 +426,36 @@ export default function AdminCmsPagesPage() {
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
-            <input
+            <Input
               type="text"
               placeholder="ค้นหาหน้าเว็บ (ชื่อ หรือ slug)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-site-surface border border-white/5 rounded-xl text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 outline-none transition-all placeholder-gray-600 shadow-inner"
+              icon={<Search className="h-4 w-4" />}
+              className="h-12 rounded-xl border-white/5 bg-site-surface pl-11 text-[14px]"
             />
           </div>
           <div className="flex items-center gap-3">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-site-surface border border-white/5 rounded-xl px-4 py-3 text-[14px] font-medium text-gray-300 focus:ring-2 focus:ring-site-accent/50 outline-none hover:border-white/10 transition-colors cursor-pointer appearance-none min-w-[140px]"
-            >
-              <option value="ALL">ทุกสถานะ</option>
-              <option value="PUBLISHED">เผยแพร่แล้ว</option>
-              <option value="DRAFT">ฉบับร่าง</option>
-            </select>
-            <button
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-12 rounded-xl border-white/5 bg-site-surface px-4 text-[14px] font-medium text-site-muted min-w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">ทุกสถานะ</SelectItem>
+                <SelectItem value="PUBLISHED">เผยแพร่แล้ว</SelectItem>
+                <SelectItem value="DRAFT">ฉบับร่าง</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button
+              variant="secondary"
+              size="icon"
               onClick={loadPages}
               disabled={isLoading}
-              className="p-3 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-raised transition-all flex items-center gap-2 group shrink-0"
-              title="รีเฟรชข้อมูล"
+              className="h-12 w-12 rounded-xl text-site-muted hover:text-white shrink-0"
+              aria-label="รีเฟรชข้อมูล"
             >
-              <RefreshCw className={`h-5 w-5 ${isLoading ? "animate-spin text-site-accent" : "group-hover:rotate-180 transition-transform duration-500"}`} />
-            </button>
+              <RefreshCw className={`h-5 w-5 ${isLoading ? "animate-spin text-site-accent" : ""}`} />
+            </Button>
           </div>
         </motion.div>
 
@@ -479,16 +498,17 @@ export default function AdminCmsPagesPage() {
                   ยังไม่มีหน้าเว็บที่ตรงกับเงื่อนไขการค้นหา
                 </p>
                 {searchQuery && (
-                  <button
+                  <Button
+                    variant="link"
                     onClick={() => {
                       setSearchQuery("");
                       setStatusFilter("ALL");
                     }}
-                    className="text-site-accent hover:text-blue-300 transition-colors font-medium text-sm flex items-center gap-2"
+                    className="gap-2 text-sm"
                   >
                     <RefreshCw className="w-4 h-4" />
                     ล้างตัวกรอง
-                  </button>
+                  </Button>
                 )}
               </div>
             ) : (
@@ -561,20 +581,24 @@ export default function AdminCmsPagesPage() {
                           <Eye size={16} />
                         </Link>
                       )}
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="icon"
                         onClick={() => openEditModal(page)}
-                        className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-site-accent/20 hover:border-blue-500/30 transition-all"
-                        title="แก้ไข"
+                        className="h-10 w-10 rounded-xl text-site-muted hover:text-white hover:bg-site-accent/20"
+                        aria-label="แก้ไข"
                       >
                         <Edit2 size={16} />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="icon"
                         onClick={() => setDeleteConfirm(page.id)}
-                        className="p-2 bg-site-surface border border-white/5 rounded-xl text-gray-400 hover:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/30 transition-all"
-                        title="ลบ"
+                        className="h-10 w-10 rounded-xl text-site-muted hover:text-semantic-rose hover:bg-semantic-rose/20 hover:border-semantic-rose/30"
+                        aria-label="ลบ"
                       >
                         <Trash2 size={16} />
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -597,18 +621,20 @@ export default function AdminCmsPagesPage() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <button
+                          <Button
+                            variant="secondary"
                             onClick={() => setDeleteConfirm(null)}
-                            className="px-4 py-2 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all text-sm font-bold"
+                            className="rounded-xl text-sm"
                           >
                             ยกเลิก
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            variant="danger"
                             onClick={() => handleDelete(page.id)}
-                            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-xl shadow-lg transition-all text-sm font-bold border border-rose-400/50 flex items-center gap-2"
+                            className="gap-2 rounded-xl text-sm"
                           >
                             <Trash2 className="w-4 h-4" /> ยืนยันการลบ
-                          </button>
+                          </Button>
                         </div>
                       </motion.div>
                     )}
@@ -667,7 +693,7 @@ export default function AdminCmsPagesPage() {
                         <label className="block text-[13px] font-bold text-gray-300">
                           ชื่อหน้า <span className="text-rose-500">*</span>
                         </label>
-                        <input
+                        <Input
                           type="text"
                           value={formData.title}
                           onChange={(e) =>
@@ -675,7 +701,7 @@ export default function AdminCmsPagesPage() {
                           }
                           placeholder="เช่น เงื่อนไขการใช้งาน, นโยบายความเป็นส่วนตัว..."
                           required
-                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[14px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                          className="h-12 rounded-xl border-white/10 bg-site-surface px-4 text-[14px]"
                         />
                       </div>
 
@@ -690,18 +716,18 @@ export default function AdminCmsPagesPage() {
                             </span>
                           )}
                         </label>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-4 text-gray-400 font-mono text-[13px] z-10 w-4 text-center">
+                        <div className="relative flex items-center [&>div]:space-y-0 [&>div]:w-full">
+                          <span className="absolute left-4 text-site-dim font-mono text-[13px] z-10 w-4 text-center">
                             /
                           </span>
-                          <input
+                          <Input
                             type="text"
                             value={formData.slug}
                             onChange={(e) =>
                               setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })
                             }
                             placeholder="about, terms, privacy..."
-                            className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner pl-9 pr-4 py-3 text-[13px] text-site-accent font-mono focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-700"
+                            className="h-12 rounded-xl border-white/10 bg-site-surface pl-9 pr-4 text-[13px] font-mono text-site-accent"
                           />
                         </div>
                         <p className="text-[11px] text-gray-400 font-medium mt-1">
@@ -722,13 +748,13 @@ export default function AdminCmsPagesPage() {
                           </span>
                         </div>
                         {!showAIGenerate && (
-                          <button
-                            type="button"
+                          <Button
+                            size="sm"
                             onClick={() => setShowAIGenerate(true)}
-                            className="text-[12px] font-bold bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white px-3 py-1.5 rounded-lg border border-site-accent/50 transition-colors flex items-center gap-1.5"
+                            className="rounded-lg px-3 py-1.5 text-[12px] font-bold"
                           >
                             <Wand2 className="w-3.5 h-3.5" /> เปิดใช้งาน
-                          </button>
+                          </Button>
                         )}
                       </div>
 
@@ -745,12 +771,12 @@ export default function AdminCmsPagesPage() {
                                 <label className="block text-gray-400 font-bold text-[12px]">
                                   หัวข้อที่ต้องการให้ AI ช่วยร่าง
                                 </label>
-                                <input
+                                <Input
                                   type="text"
                                   value={aiTopic}
                                   onChange={(e) => setAiTopic(e.target.value)}
                                   placeholder="เช่น นโยบายความเป็นส่วนตัว, เงื่อนไขการใช้งานระบบ..."
-                                  className="w-full py-2.5 px-3 bg-site-surface border border-white/10 rounded-xl text-[13px] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50"
+                                  className="h-10 rounded-xl border-white/10 bg-site-surface px-3 text-[13px]"
                                 />
                               </div>
 
@@ -773,11 +799,10 @@ export default function AdminCmsPagesPage() {
                             </div>
 
                             <div className="flex gap-2 pt-2">
-                              <button
-                                type="button"
+                              <Button
                                 onClick={handleGenerateAIContent}
                                 disabled={isGeneratingAI || !aiTopic.trim()}
-                                className="flex-1 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl py-2.5 text-[13px] font-bold shadow-md disabled:opacity-50 transition-all flex items-center justify-center gap-2 border border-site-accent/30"
+                                className="flex-1 gap-2 rounded-xl py-2.5 text-[13px] font-bold"
                               >
                                 {isGeneratingAI ? (
                                   <>
@@ -790,17 +815,19 @@ export default function AdminCmsPagesPage() {
                                     ร่างเนื้อหาด้วย AI
                                   </>
                                 )}
-                              </button>
-                              <button
-                                type="button"
+                              </Button>
+                              <Button
+                                variant="secondary"
+                                size="icon"
                                 onClick={() => {
                                   setShowAIGenerate(false);
                                   setAiTopic("");
                                 }}
-                                className="px-4 py-2.5 bg-site-raised border border-white/5 rounded-xl text-gray-400 hover:bg-[#2a2d35] hover:text-white transition-all flex items-center justify-center"
+                                className="h-11 w-11 rounded-xl text-site-muted hover:text-white"
+                                aria-label="ปิดส่วนร่างเนื้อหาด้วย AI"
                               >
                                 <X className="w-4 h-4" />
-                              </button>
+                              </Button>
                             </div>
                           </motion.div>
                         )}
@@ -819,7 +846,7 @@ export default function AdminCmsPagesPage() {
                       <label className="block text-[13px] font-bold text-gray-300">
                         เนื้อหา <span className="text-rose-500">*</span>
                       </label>
-                      <textarea
+                      <Textarea
                         value={formData.content}
                         onChange={(e) =>
                           setFormData({ ...formData, content: e.target.value })
@@ -827,7 +854,7 @@ export default function AdminCmsPagesPage() {
                         placeholder="พิมพ์เนื้อหาของหน้าเว็บ (รองรับ HTML/Markdown)..."
                         required
                         rows={12}
-                        className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-gray-300 focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all resize-none font-mono leading-relaxed"
+                        className="rounded-xl border-white/10 bg-site-surface px-4 py-3 text-[13px] resize-none font-mono leading-relaxed"
                       />
                       <p className="text-[11px] text-gray-400 font-medium">แนะนำให้ใช้ HTML หรือ Markdown พื้นฐานในการจัดรูปแบบ</p>
                     </div>
@@ -838,21 +865,21 @@ export default function AdminCmsPagesPage() {
                         <label className="block text-[13px] font-bold text-gray-300">
                           Meta Title
                         </label>
-                        <input
+                        <Input
                           type="text"
                           value={formData.metaTitle}
                           onChange={(e) =>
                             setFormData({ ...formData, metaTitle: e.target.value })
                           }
                           placeholder="Title สำหรับ SEO (Google Search)"
-                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                          className="h-12 rounded-xl border-white/10 bg-site-surface px-4 text-[13px]"
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="block text-[13px] font-bold text-gray-300">
                           Meta Description
                         </label>
-                        <input
+                        <Input
                           type="text"
                           value={formData.metaDescription}
                           onChange={(e) =>
@@ -862,7 +889,7 @@ export default function AdminCmsPagesPage() {
                             })
                           }
                           placeholder="คำอธิบายสั้นๆ สำหรับ SEO"
-                          className="w-full bg-site-surface border border-white/10 rounded-xl shadow-inner px-4 py-3 text-[13px] text-white focus:ring-2 focus:ring-site-accent/50 focus:border-site-accent/50 outline-none transition-all placeholder-gray-600"
+                          className="h-12 rounded-xl border-white/10 bg-site-surface px-4 text-[13px]"
                         />
                       </div>
                     </div>
@@ -870,20 +897,15 @@ export default function AdminCmsPagesPage() {
                     {/* Publish Status Options */}
                     <div className="pt-2">
                       <label className="inline-flex items-center gap-3 cursor-pointer group">
-                        <div className="relative">
-                          <input
-                            type="checkbox"
-                            checked={formData.isPublished}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                isPublished: e.target.checked,
-                              })
-                            }
-                            className="sr-only peer"
-                          />
-                          <div className="w-10 h-6 bg-site-surface border border-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-site-accent/20 peer-checked:border-site-accent/50"></div>
-                        </div>
+                        <Switch
+                          checked={formData.isPublished}
+                          onCheckedChange={(checked) =>
+                            setFormData({
+                              ...formData,
+                              isPublished: checked,
+                            })
+                          }
+                        />
                         <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">
                           เผยแพร่หน้าเว็บ (เปิดให้ใช้งานสาธารณะ)
                         </span>
@@ -892,25 +914,25 @@ export default function AdminCmsPagesPage() {
 
                     {/* Modal Actions */}
                     <div className="flex gap-3 pt-6 border-t border-white/5">
-                      <button
-                        type="button"
+                      <Button
+                        variant="secondary"
                         onClick={() => {
                           setShowModal(false);
                           setEditingPage(null);
                           resetForm();
                         }}
-                        className="flex-1 py-3 px-4 bg-site-raised border border-white/5 rounded-xl text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-all font-bold text-[14px]"
+                        className="flex-1 rounded-xl py-3 text-[14px]"
                       >
                         ยกเลิก
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="submit"
                         disabled={
                           isSubmitting ||
                           !formData.title?.trim() ||
                           !formData.content?.trim()
                         }
-                        className="flex-xl py-3 px-8 bg-gradient-to-r from-site-accent to-site-accent/80 hover:from-site-accent hover:to-site-accent/60 text-white rounded-xl shadow-lg transition-all text-[14px] font-bold border border-site-accent/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 gap-2 rounded-xl px-8 py-3 text-[14px]"
                       >
                         {isSubmitting ? (
                           <>
@@ -923,7 +945,7 @@ export default function AdminCmsPagesPage() {
                             บันทึกการเปลี่ยนแปลง
                           </>
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </form>
                 </div>

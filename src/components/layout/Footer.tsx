@@ -6,182 +6,235 @@ import { usePublicSettings } from "@/lib/context/public-settings-context";
 import { SocialIcon } from "react-social-icons";
 
 const localeConfig: Record<string, { flagCode: string; code: string; label: string }> = {
-    th: { flagCode: "th", code: "TH", label: "ภาษาไทย" },
-    en: { flagCode: "gb", code: "EN", label: "English" },
-    zh: { flagCode: "cn", code: "ZH", label: "中文" },
-    ja: { flagCode: "jp", code: "JA", label: "日本語" },
-    ko: { flagCode: "kr", code: "KO", label: "한국어" },
-    ms: { flagCode: "my", code: "MS", label: "Melayu" },
-    hi: { flagCode: "in", code: "HI", label: "हिन्दी" },
-    es: { flagCode: "es", code: "ES", label: "Español" },
-    fr: { flagCode: "fr", code: "FR", label: "Français" },
+  th: { flagCode: "th", code: "TH", label: "ภาษาไทย" },
+  en: { flagCode: "gb", code: "EN", label: "English" },
+  zh: { flagCode: "cn", code: "ZH", label: "中文" },
+  ja: { flagCode: "jp", code: "JA", label: "日本語" },
+  ko: { flagCode: "kr", code: "KO", label: "한국어" },
+  ms: { flagCode: "my", code: "MS", label: "Melayu" },
+  hi: { flagCode: "in", code: "HI", label: "हिन्दी" },
+  es: { flagCode: "es", code: "ES", label: "Español" },
+  fr: { flagCode: "fr", code: "FR", label: "Français" },
 };
 
 const paymentMethods = [
-    { key: "PromptPay", label: "PromptPay", icon: "/images/payments/promptpay.png" },
-    { key: "TrueMoney", label: "TrueMoney", icon: "/images/payments/truemoney.png" },
+  {
+    key: "PromptPay",
+    label: "PromptPay",
+    icon: "/payment-icons/promptpay.jpg",
+    className: "h-[18px] w-auto object-contain",
+    bg: "bg-white px-2.5",
+  },
+  {
+    key: "TrueMoney",
+    label: "TrueMoney",
+    icon: "/payment-icons/truemoney.webp",
+    className: "h-[14px] w-auto object-contain",
+    bg: "bg-white px-2.5",
+  },
 ];
 
 export default function Footer() {
-    const t = useTranslations();
-    const locale = useLocale();
-    const currentLang = localeConfig[locale] || localeConfig.th;
-    const { settings } = usePublicSettings();
-    const logoUrl = settings?.branding?.logoUrl;
+  const t = useTranslations();
+  const locale = useLocale();
+  const currentLang = localeConfig[locale] || localeConfig.th;
+  const { settings } = usePublicSettings();
+  const logoUrl = settings?.branding?.logoUrl;
+  const siteName = settings?.general?.siteName || "LNWTERMGAME";
 
-    // Brand colors for social platforms
-    const socialBrandColors: Record<string, string> = {
-        Facebook: "#1877F2",
-        LINE: "#06C755",
-        Discord: "#5865F2",
-    };
+  // Brand colors for social platforms
+  const socialBrandColors: Record<string, string> = {
+    Facebook: "#1877F2",
+    LINE: "#06C755",
+    Discord: "#5865F2",
+  };
 
-    // Social links from admin settings
-    const socialLinks = [
-        settings?.social?.facebookUrl && { url: settings.social.facebookUrl, label: "Facebook" },
-        settings?.social?.lineUrl && { url: settings.social.lineUrl, label: "LINE" },
-        settings?.social?.discordUrl && { url: settings.social.discordUrl, label: "Discord" },
-    ].filter(Boolean) as { url: string; label: string }[];
+  // Filter valid social links
+  const socialLinks = [
+    settings?.social?.facebookUrl && { url: settings.social.facebookUrl, label: "Facebook" },
+    settings?.social?.lineUrl && { url: settings.social.lineUrl, label: "LINE" },
+    settings?.social?.discordUrl && { url: settings.social.discordUrl, label: "Discord" },
+  ].filter(Boolean) as { url: string; label: string }[];
 
-    const facebookUrl = settings?.social?.facebookUrl || null;
+  return (
+    <footer className="w-full bg-site-deep border-t border-site-border-soft text-site-muted font-sans pt-12 pb-8 selection:bg-site-accent/20">
+      <div className="site-container">
+        {/* ══════════ ZONE 1: BRAND & SITEMAP GRID ══════════ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-10 border-b border-site-border-soft/80">
+          {/* Brand & Purpose (spans 2 columns on large screens) */}
+          <div className="lg:col-span-2 flex flex-col items-start gap-4">
+            <Link
+              href="/"
+              className="inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-site-accent/50 rounded-6"
+            >
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={siteName}
+                  className="h-10 w-auto object-contain max-w-[200px]"
+                />
+              ) : (
+                <span className="text-xl font-extrabold tracking-tight text-white">
+                  LNW<span className="text-site-accent">TERM</span>GAME
+                </span>
+              )}
+            </Link>
 
-    return (
-        <footer className="bg-site-deep border-t border-site-border-soft text-site-muted py-10 font-sans w-full">
-            <div className="site-container">
+            <p className="text-[13px] leading-relaxed text-site-muted max-w-[38ch]">
+              {t("Footer.tagline") || "บริการเติมเงินเกมและจำหน่ายบัตรเติมเงินที่รวดเร็วและปลอดภัยที่สุด ให้บริการตลอด 24 ชั่วโมง"}
+            </p>
 
-                {/* Top Section: Payment Logos & Language */}
-                <div className="flex flex-col md:flex-row justify-between items-center pb-8 border-b border-site-border-soft mb-8">
-                    <div className="flex flex-wrap gap-3 items-center">
-                        {paymentMethods.map(({ key, label, icon }) => (
-                            <div
-                                key={key}
-                                className="w-10 h-10 rounded-6 bg-white overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
-                                title={label}
-                            >
-                                <img
-                                    src={icon}
-                                    alt={label}
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-4 md:mt-0 flex items-center gap-2 text-site-text">
-                        <span
-                            className={`fi fi-${currentLang.flagCode} inline-block shrink-0 w-[18px] rounded-[2px]`}
-                            style={{ aspectRatio: "4/3" }}
-                            aria-label={currentLang.label}
-                        />
-                        <span className="text-[13px] font-bold">{currentLang.label}</span>
-                    </div>
-                </div>
+            {/* Social Icons Row */}
+            {socialLinks.length > 0 && (
+              <div className="flex items-center gap-2.5 pt-1">
+                {socialLinks.map(({ url, label }) => (
+                  <SocialIcon
+                    key={label}
+                    url={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={label}
+                    style={{ width: 32, height: 32 }}
+                    bgColor={socialBrandColors[label] || "#1f2430"}
+                    className="!transition-transform duration-150 hover:scale-105 active:scale-95 rounded-full"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
-                {/* Middle Section: Columns & Social */}
-                <div className="flex flex-col lg:flex-row justify-between gap-10">
-                    {/* Columns Wrapper */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:w-3/4">
-                        {/* Column 1 */}
-                        <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">LNWTERMGAME</h3>
-                            <Link href="/about" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.about_us")}</Link>
-                            <Link href="/contact" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.contact_us")}</Link>
-                        </div>
+          {/* Column 1: บริษัท (Company) */}
+          <div className="flex flex-col gap-2.5">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.08em] text-site-text mb-1">
+              {siteName || "LNWTERMGAME"}
+            </h3>
+            <Link
+              href="/about"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.about_us")}
+            </Link>
+            <Link
+              href="/contact"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.contact_us")}
+            </Link>
+            <Link
+              href="/faq"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.faq")}
+            </Link>
+          </div>
 
-                        {/* Column 2 */}
-                        <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">{t("Footer.customer")}</h3>
-                            <Link href="/refund" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.refund_policy")}</Link>
-                            <Link href="/privacy" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
-                            <Link href="/payment-issues" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.payment_issues")}</Link>
-                        </div>
+          {/* Column 2: บริการลูกค้า (Customer Service) */}
+          <div className="flex flex-col gap-2.5">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.08em] text-site-text mb-1">
+              {t("Footer.customer")}
+            </h3>
+            <Link
+              href="/support"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.support_center")}
+            </Link>
+            <Link
+              href="/payment-issues"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.payment_issues")}
+            </Link>
+            <Link
+              href="/refund"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.refund_policy")}
+            </Link>
+          </div>
 
-                        {/* Column 3 */}
-                        <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">{t("Footer.policies")}</h3>
-                            <Link href="/terms" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.terms_of_service")}</Link>
-                            <Link href="/privacy" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.privacy_policy")}</Link>
-                        </div>
+          {/* Column 3: นโยบาย (Policies) */}
+          <div className="flex flex-col gap-2.5">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.08em] text-site-text mb-1">
+              {t("Footer.policies")}
+            </h3>
+            <Link
+              href="/terms"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.terms_of_service")}
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-[13px] text-site-muted hover:text-white transition-colors duration-150 py-0.5 focus-visible:outline-none focus-visible:text-white focus-visible:underline underline-offset-4"
+            >
+              {t("Footer.privacy_policy")}
+            </Link>
+          </div>
+        </div>
 
-                        {/* Column 4 */}
-                        <div className="flex flex-col gap-3">
-                            <h3 className="text-site-text font-semibold text-[13px] uppercase tracking-wide mb-2">{t("Footer.services")}</h3>
-                            <Link href="/support" className="text-[13px] text-site-muted hover:text-site-accent transition-colors">{t("Footer.features.support")}</Link>
-                        </div>
-                    </div>
+        {/* ══════════ ZONE 2: PAYMENT & DIRECT CONTACTS ══════════ */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-5 border-b border-site-border-soft/80">
+          {/* Supported Payments Strip */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-[12px] font-medium text-site-dim mr-1">
+              {t("Footer.supported_payments")}
+            </span>
+            {paymentMethods.map(({ key, label, icon, className, bg }) => (
+              <div
+                key={key}
+                className={`h-[30px] rounded-6 overflow-hidden border border-white/15 hover:border-white/35 transition-all shadow-sm flex-shrink-0 flex items-center justify-center ${bg}`}
+                title={label}
+              >
+                <img
+                  src={icon}
+                  alt={label}
+                  className={className}
+                />
+              </div>
+            ))}
+          </div>
 
-                    {/* Right Side: Facebook Page Plugin + Social Icons */}
-                    <div className="lg:w-1/4 flex flex-col items-start lg:items-end">
-                        {/* Facebook Page Plugin */}
-                        {facebookUrl && (
-                            <div className="w-full max-w-[280px] flex flex-col items-start lg:items-end">
-                                <div className="bg-white rounded-6 border border-site-border-soft overflow-hidden w-full">
-                                    <iframe
-                                        src={`https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(facebookUrl)}&tabs=&width=280&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false`}
-                                        width="100%"
-                                        height="130"
-                                        style={{ border: "none", overflow: "hidden", display: "block", backgroundColor: "white" }}
-                                        scrolling="no"
-                                        frameBorder="0"
-                                        allowFullScreen={true}
-                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                        title="Facebook Page"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Social Links Row */}
-                        {socialLinks.length > 0 && (
-                            <div className="flex items-center gap-3 mt-6 justify-end">
-                                <span className="text-site-text text-[13px] font-bold mr-1">{t("Footer.contact_us")}</span>
-                                {socialLinks.map(({ url, label }) => (
-                                    <SocialIcon
-                                        key={label}
-                                        url={url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        title={label}
-                                        style={{ width: 36, height: 36 }}
-                                        bgColor={socialBrandColors[label] || "#212328"}
-                                        className="!transition-all !duration-200 hover:!opacity-80"
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Bottom Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center py-6 border-t border-site-border-soft mt-8 text-[11px] text-site-dim">
-                    <div className="flex flex-col gap-1 mb-4 md:mb-0">
-                        {logoUrl && (
-                            <img
-                                src={logoUrl}
-                                alt="Logo"
-                                className="h-14 w-auto object-contain"
-                            />
-                        )}
-                    </div>
-
-                    <div className="flex flex-col text-center md:text-left gap-1 mt-4 md:mt-0">
-                        <p>{t("Footer.payment_inquiry")}</p>
-                        <a href="mailto:contact@lnwtermgame.com" className="text-site-text hover:text-site-accent transition-colors">contact@lnwtermgame.com</a>
-                    </div>
-
-                    <div className="flex flex-col text-center md:text-left gap-1 mt-4 md:mt-0">
-                        <p>{t("Footer.sale_inquiry")}</p>
-                        <a href="mailto:sale@lnwtermgame.com" className="text-site-text hover:text-site-accent transition-colors">sale@lnwtermgame.com</a>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-site-dim mt-6 pb-4">
-                    <p>{t("Footer.copyright_notice")}</p>
-                    <p className="mt-2 md:mt-0 whitespace-nowrap text-site-accent font-bold">&copy;2026 Copyright LNWTERMGAME</p>
-                </div>
-
+          {/* Inquiries / Direct Contacts */}
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2 text-[12px]">
+            <div className="flex items-center gap-1.5">
+              <span className="text-site-dim">{t("Footer.payment_inquiry")}:</span>
+              <a
+                href="mailto:contact@lnwtermgame.com"
+                className="font-mono text-[12px] text-site-text hover:text-site-accent transition-colors duration-150 focus-visible:outline-none focus-visible:underline"
+              >
+                contact@lnwtermgame.com
+              </a>
             </div>
-        </footer>
-    );
+            <div className="flex items-center gap-1.5">
+              <span className="text-site-dim">{t("Footer.sale_inquiry")}:</span>
+              <a
+                href="mailto:sale@lnwtermgame.com"
+                className="font-mono text-[12px] text-site-text hover:text-site-accent transition-colors duration-150 focus-visible:outline-none focus-visible:underline"
+              >
+                sale@lnwtermgame.com
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════ ZONE 3: LEGAL COPYRIGHT & LANGUAGE ══════════ */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-5 text-[12px] text-site-dim">
+          <p className="tabular-nums font-mono text-[11.5px] text-site-dim">
+            &copy; {new Date().getFullYear()} {siteName}. {t("Footer.copyright_notice")}
+          </p>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-8 bg-white/[0.02] border border-site-border-soft text-[12px]">
+            <span
+              className={`fi fi-${currentLang.flagCode} inline-block shrink-0 w-[18px] rounded-[2px]`}
+              style={{ aspectRatio: "4/3" }}
+              aria-label={currentLang.label}
+            />
+            <span className="font-medium text-site-text">{currentLang.label}</span>
+            <span className="text-site-dim font-mono text-[11px]">({currentLang.code})</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }

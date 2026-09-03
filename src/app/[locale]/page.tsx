@@ -307,14 +307,14 @@ export default function HomePage() {
           opacity keyed on selectedScrollSnap. */}
       <section className="relative w-full isolate">
         {/* Soft Shadow skin: hero floats on a deep diffuse shadow */}
-        <div className="relative h-[440px] sm:h-[460px] md:h-[500px] overflow-hidden rounded-[20px] border border-transparent bg-[#121417] shadow-[0_24px_60px_-30px_rgba(0,0,0,0.8)]">
+        <div className="relative h-[440px] sm:h-[460px] md:h-[500px] rounded-[20px] overflow-hidden bg-[#0e1015] shadow-[0_24px_60px_-30px_rgba(0,0,0,0.8)]">
+          {/* Inner slide artwork — strictly terminates at bottom-[44px] so artwork NEVER reaches or bleeds into the bottom corners */}
           {heroSlides.map((slide, i) => (
             <div
               key={slide.id}
               aria-hidden={i !== currentSlide}
-              className={`absolute inset-0 transition-opacity duration-700 ease-out ${i === currentSlide ? "opacity-100 z-[1]" : "opacity-0 z-0 pointer-events-none"}`}
+              className={`absolute inset-x-0 top-0 bottom-[44px] overflow-hidden rounded-t-[20px] transition-opacity duration-700 ease-out ${i === currentSlide ? "opacity-100 z-[1]" : "opacity-0 z-0 pointer-events-none"}`}
             >
-              {/* Slide artwork — full bleed */}
               <img
                 src={slide.image}
                 alt={i === currentSlide ? slide.title : ""}
@@ -322,6 +322,7 @@ export default function HomePage() {
               />
             </div>
           ))}
+
           {/* Embla instance kept as the slide timer + dot driver; visually
               hidden because the spotlight paints the active slide itself. */}
           <div className="hidden" aria-hidden="true">
@@ -340,19 +341,19 @@ export default function HomePage() {
             </Carousel>
           </div>
 
-          {/* Spotlight dim — light at the top center, heavy at the bottom edge
-              so the copy and the ticker rail always read. */}
+          {/* Spotlight dim — light at the top center, heavy near the bottom edge
+              so copy always reads. */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 z-[2]"
+            className="absolute inset-x-0 top-0 bottom-[44px] z-[2] rounded-t-[20px]"
             style={{
               background:
                 "radial-gradient(90% 80% at 50% 0%, rgba(14,16,19,0.10) 0%, rgba(14,16,19,0.55) 55%, rgba(14,16,19,0.86) 85%, rgba(14,16,19,0.95) 100%)",
             }}
           />
 
-          {/* Centered copy — bound to the active slide */}
-          <div className="absolute inset-0 z-[4] flex flex-col items-center justify-center text-center px-5">
+          {/* Centered copy — bound to the active slide, vertically centered in the artwork viewport */}
+          <div className="absolute inset-x-0 top-0 bottom-[44px] z-[4] flex flex-col items-center justify-center text-center px-5">
             <span className="font-bold text-[11px] sm:text-xs tracking-[0.22em] uppercase text-site-accent mb-3 md:mb-4">
               {heroSlides[currentSlide]?.highlightText || t("hero_kicker")}
             </span>
@@ -365,14 +366,14 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href={heroSlides[currentSlide]?.href || "/games"}
-                className="inline-flex items-center gap-2.5 bg-site-accent hover:bg-site-accent-hover text-white font-bold text-sm md:text-[15px] px-7 md:px-8 py-3 rounded-[10px] transition-all duration-200 hover:-translate-y-px shadow-[0_10px_34px_-10px_rgba(230,64,74,0.6)]"
+                className="inline-flex items-center gap-2.5 bg-site-accent hover:bg-site-accent-hover text-white font-bold text-sm md:text-[15px] px-7 md:px-8 py-3 rounded-[10px] transition-all duration-200 hover:-translate-y-px shadow-[0_10px_30px_-10px_rgba(245,130,32,0.45)]"
               >
                 {heroSlides[currentSlide]?.btnText || t("hero_btn_text")}
                 <ChevronRight size={17} strokeWidth={2.6} />
               </Link>
               <Link
                 href="/games"
-                className="inline-flex items-center gap-2 text-sm md:text-[15px] font-semibold text-site-text border border-white/25 hover:border-site-accent hover:text-site-accent bg-site-bg/40 backdrop-blur-sm px-6 py-3 rounded-[10px] transition-all duration-200"
+                className="inline-flex items-center gap-2 text-sm md:text-[15px] font-semibold text-site-text border border-white/20 hover:border-white/50 hover:text-white bg-site-bg/40 backdrop-blur-sm px-6 py-3 rounded-[10px] transition-colors duration-200"
               >
                 {t("hero_browse_games")}
               </Link>
@@ -386,24 +387,23 @@ export default function HomePage() {
                 key={i}
                 onClick={() => carouselApi?.scrollTo(i)}
                 aria-label={t("hero_go_to_slide", { index: i + 1 })}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "bg-site-accent scale-110" : "bg-white/40 hover:bg-white/70"}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? "bg-white scale-110 shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "bg-white/30 hover:bg-white/60"}`}
               />
             ))}
           </div>
 
           {/* Ticker rail — real deals + news, marquee along the bottom edge.
-              Track is doubled for a seamless -50% loop; hover pauses it;
-              reduced-motion users get a static first row (no animation). */}
+              Solid background and rounded-b-[20px] ensures zero bleed or corner artifacts. */}
           {tickerItems.length > 0 && (
-            <div className="absolute left-0 right-0 bottom-0 z-[5] bg-site-deep/85 backdrop-blur-sm border-t border-site-border-soft overflow-hidden group">
-              <div className="flex w-max animate-[hero-ticker_36s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none motion-reduce:flex-wrap">
+            <div className="absolute inset-x-0 bottom-0 h-[44px] z-[5] bg-[#0e1015] border-t border-site-border-soft overflow-hidden rounded-b-[20px] group">
+              <div className="flex w-max h-full animate-[hero-ticker_36s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none motion-reduce:flex-wrap">
                 {tickerItems.concat(tickerItems).map((item, i) => (
                   <Link
                     key={`${item.href}-${i}`}
                     href={item.href}
-                    className="inline-flex items-center gap-2.5 px-6 py-3 text-[13px] text-site-muted whitespace-nowrap border-r border-site-border-soft hover:text-site-text transition-colors"
+                    className="inline-flex items-center gap-2.5 px-6 h-full text-[13px] text-site-muted whitespace-nowrap border-r border-site-border-soft hover:text-site-text transition-colors"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-site-accent shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                     <span>
                       {item.label} <b className="font-semibold text-site-text">{item.title}</b>
                       {item.meta && <span className="text-site-dim"> · {item.meta}</span>}
@@ -421,10 +421,8 @@ export default function HomePage() {
       <section className="bg-site-surface border border-transparent p-5 md:p-6 rounded-2xl shadow-[0_16px_44px_-26px_rgba(0,0,0,0.85)]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            {/* Accent bar instead of an icon — headers across the page now
-                alternate devices (bar / underline / count) so the rhythm
-                doesn't repeat like a template. */}
-            <span aria-hidden="true" className="w-1 self-stretch rounded-full bg-site-accent" />
+            {/* Green savings bar representing deals/discounts */}
+            <span aria-hidden="true" className="w-1 self-stretch rounded-full bg-emerald-500" />
             <div>
               <h2 className="text-[19px] md:text-[21px] font-extrabold text-white leading-tight">
                 {t("special_offers")}
@@ -434,7 +432,7 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <Link href="/games" className="shrink-0 text-[12.5px] font-semibold text-site-muted hover:text-site-accent transition-colors flex items-center gap-0.5">
+          <Link href="/games" className="shrink-0 text-[12.5px] font-semibold text-site-muted hover:text-white transition-colors flex items-center gap-0.5">
             {t("view_all")} <ChevronRight size={14} />
           </Link>
         </div>
@@ -447,29 +445,32 @@ export default function HomePage() {
             </div>
           ) : (
             discountedProducts.map((deal, idx) => (
-              <Link key={deal.id} href={`/games/${deal.slug}`} className="group relative pl-[30px]">
-                {/* Floating Game Icon — static tile; hover lifts the card, not
-                    the icon (one mover per component). */}
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-[60px] h-[60px] rounded-2xl overflow-hidden shadow-lg border-[3px] border-site-bg bg-[#2A2C30]">
+              <Link
+                key={deal.id}
+                href={`/games/${deal.slug}`}
+                className="group relative pl-[30px] block transition-transform duration-200 hover:-translate-y-1"
+              >
+                {/* Floating Game Icon — moves in sync with the card and features smooth zoom on hover */}
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-[60px] h-[60px] rounded-2xl overflow-hidden shadow-lg border-[3px] border-site-bg bg-[#2A2C30] transition-all duration-200 group-hover:border-white/30 group-hover:shadow-[0_12px_28px_-8px_rgba(0,0,0,0.85)]">
                   <img
                     src={(deal as any).imageUrl || gameImg(deal.name.substring(0, 6), "1A1C20", "555555")}
                     alt={deal.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
                   />
                 </div>
 
                 {/* Card Body */}
-                <div className={`h-full flex flex-col justify-between rounded-xl overflow-hidden bg-gradient-to-r ${dealColors[idx % dealColors.length]} ring-1 ring-transparent ring-inset shadow-[0_10px_26px_-18px_rgba(0,0,0,0.9)] group-hover:ring-site-accent/40 transition-colors duration-200 group-hover:-translate-y-1 transition-transform`}>
+                <div className={`h-full flex flex-col justify-between rounded-xl overflow-hidden bg-gradient-to-r ${dealColors[idx % dealColors.length]} ring-1 ring-transparent ring-inset shadow-[0_10px_26px_-18px_rgba(0,0,0,0.9)] group-hover:ring-white/20 group-hover:shadow-[0_16px_32px_-16px_rgba(0,0,0,0.95)] transition-all duration-200`}>
                   <div className="pl-[42px] pr-3 pt-3 pb-2 h-[52px]">
                     <p className="text-white text-[13px] font-bold line-clamp-1 leading-snug" title={deal.typeName}>{deal.typeName}</p>
                     <p className="text-[#9CA3AF] text-[11px] font-medium line-clamp-1 mt-0.5" title={deal.name}>{deal.name}</p>
                   </div>
                   <div className="pl-[42px] pr-3 pb-2.5 flex items-center gap-3">
-                    <span className="bg-site-accent text-white px-2 py-[2px] rounded-[5px] text-[10px] font-bold tracking-wide whitespace-nowrap shrink-0 shadow-sm">
+                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-[2px] rounded-[5px] text-[10px] font-bold tracking-wide whitespace-nowrap shrink-0 shadow-sm">
                       {t("promotion_badge")}
                     </span>
                     <span
-                      className={`text-[13px] font-black shrink-0 ${Number(deal.discount) < 0 ? "text-status-danger" : "text-status-success"}`}
+                      className={`text-[13px] font-black shrink-0 ${Number(deal.discount) < 0 ? "text-status-danger" : "text-emerald-400"}`}
                       title={Number(deal.discount) < 0 ? "ราคาเพิ่มขึ้นจากมาตรฐาน" : "ประหยัดกว่า"}
                     >
                       {Number(deal.discount) > 0 ? `-${deal.discount}%` : `${deal.discount}%`}
@@ -489,7 +490,7 @@ export default function HomePage() {
           <h2 className="text-[20px] md:text-[22px] font-bold text-white leading-none">
             {t("popular_games")}
           </h2>
-          <Link href="/games" className="text-[12.5px] text-site-muted hover:text-site-accent transition-colors tracking-wide flex items-center gap-0.5 font-semibold">
+          <Link href="/games" className="text-[12.5px] text-site-muted hover:text-white transition-colors tracking-wide flex items-center gap-0.5 font-semibold">
             {t("view_all")} <ChevronRight size={14} />
           </Link>
         </div>
@@ -512,9 +513,8 @@ export default function HomePage() {
                       className="absolute -top-3 -left-3 z-20 h-[44px] w-auto pointer-events-none"
                     />
                   )}
-                  {/* Ring brightens only — no lift; the page keeps motion for
-                      moments that earn it (hero, CTAs). */}
-                  <div className="relative w-full aspect-square mb-3 rounded-2xl overflow-hidden bg-[#2A2C30] shadow-[0_12px_30px_-20px_rgba(0,0,0,0.9)] ring-1 ring-transparent group-hover:ring-site-accent/40 transition-all duration-200">
+                  {/* Subtle neutral lift and border highlight on hover */}
+                  <div className="relative w-full aspect-square mb-3 rounded-2xl overflow-hidden bg-[#2A2C30] shadow-[0_12px_30px_-20px_rgba(0,0,0,0.9)] ring-1 ring-transparent group-hover:ring-white/25 transition-all duration-200">
                     <img
                       src={game.imageUrl || gameImg(game.name.substring(0, 6), "1A1C20", "555555")}
                       alt={game.name}
@@ -553,13 +553,13 @@ export default function HomePage() {
               {t("news_title")}
             </h2>
             {!newsLoading && newsItems.length > 0 && (
-              <span className="text-[11px] font-bold text-site-accent bg-site-accent/10 border border-site-accent/25 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold text-site-text bg-white/10 border border-white/15 px-2 py-0.5 rounded-full">
                 {newsItems.length}
               </span>
             )}
           </div>
 
-          <Link href="/news" className="text-[12.5px] text-site-muted hover:text-site-accent transition-colors tracking-wide flex items-center gap-0.5 font-semibold">
+          <Link href="/news" className="text-[12.5px] text-site-muted hover:text-white transition-colors tracking-wide flex items-center gap-0.5 font-semibold">
             {t("view_all")} <ChevronRight size={14} />
           </Link>
         </div>
@@ -617,7 +617,7 @@ export default function HomePage() {
             key={tItem.title}
             className="flex items-center gap-3 bg-site-surface border border-transparent rounded-[13px] px-4 py-2.5 shadow-[0_8px_20px_-14px_rgba(0,0,0,0.9)]"
           >
-            <tItem.icon size={19} strokeWidth={1.8} className="text-site-accent shrink-0" />
+            <tItem.icon size={19} strokeWidth={1.8} className="text-site-muted shrink-0" />
             <div className="leading-snug">
               <p className="text-[13px] font-semibold text-white">{tItem.title}</p>
               <p className="text-[11.5px] text-site-dim">{tItem.desc}</p>

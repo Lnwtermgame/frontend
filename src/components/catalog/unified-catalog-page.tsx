@@ -281,7 +281,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           count: items.filter((g) =>
             g.platforms.some((p) => ["Mobile", "Android", "iOS"].includes(p)),
           ).length,
-          icon: <Smartphone size={16} className="text-site-accent" />,
+          icon: <Smartphone size={16} />,
         },
         {
           id: "pc",
@@ -289,7 +289,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
           count: items.filter((g) =>
             g.platforms.some((p) => ["PC", "Mac"].includes(p)),
           ).length,
-          icon: <Monitor size={16} className="text-site-text" />,
+          icon: <Monitor size={16} />,
         },
         {
           id: "console",
@@ -299,7 +299,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
               ["Console", "PS4", "PS5", "Xbox"].includes(p),
             ),
           ).length,
-          icon: <Gamepad2 size={16} className="text-site-muted" />,
+          icon: <Gamepad2 size={16} />,
         },
       ];
     }
@@ -477,15 +477,15 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
               </h3>
             </div>
 
-            <div className="py-2 flex flex-col gap-0.5">
+            <div className="py-2 px-2 flex flex-col gap-1">
               {primaryOptions.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
                   aria-pressed={selectedPrimary === option.id}
-                  className={`w-full flex justify-between items-center text-left px-5 py-2.5 transition-colors group ${selectedPrimary === option.id
-                    ? "bg-site-surface border-l-[3px] border-site-accent text-site-text"
-                    : "bg-transparent border-l-[3px] border-transparent text-site-muted hover:bg-site-surface hover:text-site-text"
+                  className={`w-full flex justify-between items-center text-left px-4 py-2.5 rounded-xl transition-colors group ${selectedPrimary === option.id
+                    ? "bg-white/10 text-white font-semibold shadow-sm"
+                    : "bg-transparent text-site-muted hover:bg-white/5 hover:text-site-text"
                     }`}
                 >
                   <span className="flex items-center gap-3 text-[13px] font-medium">
@@ -513,15 +513,15 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   </h3>
                 </div>
 
-                <div className="py-1 flex flex-col gap-0.5">
+                <div className="py-1 px-2 flex flex-col gap-1">
                   {secondaryOptions.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => setSelectedSecondary(option.id)}
                       aria-pressed={selectedSecondary === option.id}
-                      className={`w-full flex justify-between items-center text-left px-5 py-2.5 transition-colors group ${selectedSecondary === option.id
-                        ? "bg-site-surface border-l-[3px] border-site-accent text-site-text"
-                        : "bg-transparent border-l-[3px] border-transparent text-site-muted hover:bg-site-surface hover:text-site-text"
+                      className={`w-full flex justify-between items-center text-left px-4 py-2.5 rounded-xl transition-colors group ${selectedSecondary === option.id
+                        ? "bg-white/10 text-white font-semibold shadow-sm"
+                        : "bg-transparent text-site-muted hover:bg-white/5 hover:text-site-text"
                         }`}
                     >
                       <span className="flex items-center gap-3 text-[13px] font-medium">
@@ -558,9 +558,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   key={option.id}
                   onClick={() => setSelectedPrimary(option.id)}
                   aria-pressed={selectedPrimary === option.id}
-                  className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-full border border-transparent shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)] ${selectedPrimary === option.id
-                    ? "bg-site-accent text-site-bg"
-                    : "bg-site-surface text-site-muted hover:text-site-text"
+                  className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-full border shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)] ${selectedPrimary === option.id
+                    ? "bg-white/15 text-white border-white/25 shadow-sm font-bold"
+                    : "bg-site-surface text-site-muted border-transparent hover:text-site-text hover:bg-site-raised"
                     }`}
                 >
                   {renderOptionIcon(
@@ -580,9 +580,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     key={option.id}
                     onClick={() => setSelectedSecondary(option.id)}
                     aria-pressed={selectedSecondary === option.id}
-                    className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-full border border-transparent shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)] ${selectedSecondary === option.id
-                      ? "bg-site-accent text-site-bg"
-                      : "bg-site-surface text-site-muted hover:text-site-text"
+                    className={`whitespace-nowrap px-3 py-1.5 text-[12px] font-semibold transition-colors flex items-center gap-2 rounded-full border shadow-[0_6px_16px_-12px_rgba(0,0,0,0.9)] ${selectedSecondary === option.id
+                      ? "bg-white/15 text-white border-white/25 shadow-sm font-bold"
+                      : "bg-site-surface text-site-muted border-transparent hover:text-site-text hover:bg-site-raised"
                       }`}
                   >
                     {(mode === "mobile-recharge" || mode === "mobile") &&
@@ -699,7 +699,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                             )}
                           </div>
                           <span
-                            className="grid h-7 w-7 shrink-0 place-items-center rounded-8 bg-site-raised text-site-muted transition-colors group-hover:bg-site-accent group-hover:text-white"
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-8 bg-site-raised text-site-muted transition-colors group-hover:bg-site-accent group-hover:text-site-bg"
                             aria-hidden="true"
                           >
                             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
@@ -733,7 +733,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                   }}
                   aria-pressed={selectedPrimary === option.id}
                   className={`w-full flex items-center justify-between p-3.5 rounded-6 border font-bold transition-colors ${selectedPrimary === option.id
-                    ? "bg-site-surface border-site-accent text-site-accent"
+                    ? "bg-white/10 border-white/30 text-white"
                     : "bg-site-raised border-site-border-soft text-site-muted hover:text-site-text"
                     }`}
                 >
@@ -766,7 +766,7 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     }}
                     aria-pressed={selectedSecondary === option.id}
                     className={`w-full flex items-center justify-between p-3.5 rounded-6 border font-bold transition-colors ${selectedSecondary === option.id
-                      ? "bg-site-surface border-site-accent text-site-accent"
+                      ? "bg-white/10 border-white/30 text-white"
                       : "bg-site-raised border-site-border-soft text-site-muted hover:text-site-text"
                       }`}
                   >
@@ -859,7 +859,7 @@ function renderOptionIcon(
 
   if (!option.icon) return null;
   return (
-    <span className={isActive ? "text-site-accent" : "text-site-muted group-hover:text-site-text"}>
+    <span className={isActive ? "text-white" : "text-site-muted group-hover:text-site-text"}>
       {option.icon}
     </span>
   );

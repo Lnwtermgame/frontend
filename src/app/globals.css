@@ -1,3 +1,5 @@
+/* Hallmark · macrostructure: Catalogue / Marketplace Directory · tone: utilitarian · anchor hue: warm solar amber (SEAGM contextual) */
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 */
 /* Self-hosted fonts (Noto Sans Thai + JetBrains Mono via @fontsource) */
 @import '@fontsource/noto-sans-thai/400.css';
 @import '@fontsource/noto-sans-thai/500.css';
@@ -14,69 +16,66 @@
 @tailwind utilities;
 
 /* Dark-only marketplace contract. Surfaces stay neutral; color communicates state.
-   Softness rules (SEAGM-style): surfaces separate from the background by tone,
-   hairlines stay faint, cards carry a large radius + soft elevation. */
+   SEAGM-inspired Contextual Palette: neutral charcoal/slate stage, warm solar amber CTA,
+   emerald savings, cyan auto-delivery, coral hot urgency. */
 :root {
   color-scheme: dark;
-  /* Steel + Red Signal — steel-grey base, red reserved for actions only.
-     Soft Shadow skin: base warmed one step (#101216) so floating cards and
-     their soft shadows read against the page. */
-  --site-bg: #101216;
-  --site-deep: #0a0c0e;
-  --site-surface: #171a1e;
-  --site-raised: #1f2328;
-  --site-border: #2b3036;
-  --site-border-soft: #20242a;
-  --site-accent: #e6404a;
-  --site-accent-hover: #ff5a63;
-  --site-selection-bg: rgba(230, 64, 74, 0.26);
-  --site-text: #f0f2f4;
-  --site-muted: #99a1ab;
-  --site-dim: #666e78;
-  --status-info: #6198d8;
-  --status-success: #54bd7d;
-  --status-warning: #dfa850;
-  --status-danger: #e0525c;
+  --site-bg: #0e1015;
+  --site-deep: #090a0d;
+  --site-surface: #161922;
+  --site-raised: #1f2430;
+  --site-border: #2b3242;
+  --site-border-soft: #212633;
+  --site-accent: #f58220;
+  --site-accent-hover: #ff9436;
+  --site-selection-bg: rgba(245, 130, 32, 0.25);
+  --site-text: #f3f5f8;
+  --site-muted: #9ba3b0;
+  --site-dim: #646d7d;
+  --status-info: #06b6d4;
+  --status-success: #10b981;
+  --status-warning: #f59e0b;
+  --status-danger: #ef4444;
 
   /* RGB channel mirrors for Tailwind alpha modifiers (bg-site-accent/10 etc.).
      Keep in sync with the hex values above. */
-  --site-bg-rgb: 16 18 22;
-  --site-deep-rgb: 10 12 14;
-  --site-surface-rgb: 23 26 30;
-  --site-raised-rgb: 31 35 40;
-  --site-border-rgb: 43 48 54;
-  --site-border-soft-rgb: 32 36 42;
-  --site-accent-rgb: 230 64 74;
-  --site-accent-hover-rgb: 255 90 99;
-  --site-text-rgb: 240 242 244;
-  --site-muted-rgb: 153 161 171;
-  --site-dim-rgb: 102 110 120;
-  --status-info-rgb: 97 152 216;
-  --status-success-rgb: 84 189 125;
-  --status-warning-rgb: 223 168 80;
-  --status-danger-rgb: 224 82 92;
+  --site-bg-rgb: 14 16 21;
+  --site-deep-rgb: 9 10 13;
+  --site-surface-rgb: 22 25 34;
+  --site-raised-rgb: 31 36 48;
+  --site-border-rgb: 43 50 66;
+  --site-border-soft-rgb: 33 38 51;
+  --site-accent-rgb: 245 130 32;
+  --site-accent-hover-rgb: 255 148 54;
+  --site-text-rgb: 243 245 248;
+  --site-muted-rgb: 155 163 176;
+  --site-dim-rgb: 100 109 125;
+  --status-info-rgb: 6 182 212;
+  --status-success-rgb: 16 185 129;
+  --status-warning-rgb: 245 158 11;
+  --status-danger-rgb: 239 68 68;
 
   /* shadcn/ui variables — mapped onto the site palette (dark-only).
      HSL triplets computed from the hex tokens above. */
-  --background: 222 13% 7%;        /* #101216 site-bg  */
-  --foreground: 210 15% 95%;       /* #f0f2f4 site-text */
-  --primary: 356 77% 58%;          /* #e6404a site-accent */
-  --primary-foreground: 210 15% 7%;
-  --secondary: 213 13% 14%;        /* #1f2328 site-raised */
-  --secondary-foreground: 210 15% 95%;
-  --muted: 213 13% 14%;
-  --muted-foreground: 213 10% 64%; /* #99a1ab site-muted */
-  --accent: 213 13% 14%;
-  --accent-foreground: 210 15% 95%;
-  --destructive: 356 70% 60%;      /* #e0525c status-danger */
-  --destructive-foreground: 210 15% 7%;
-  --border: 216 14% 15%;           /* #20242a site-border-soft */
-  --input: 216 14% 15%;
-  --ring: 356 77% 58%;
-  --card: 214 13% 10%;             /* #171a1e site-surface */
-  --card-foreground: 210 15% 95%;
-  --popover: 214 13% 10%;
-  --popover-foreground: 210 15% 95%;
+  --background: 222 20% 7%;        /* #0e1015 site-bg  */
+  --foreground: 218 20% 97%;       /* #f3f5f8 site-text */
+  --primary: 28 92% 54%;           /* #f58220 site-accent (SEAGM solar amber) */
+  --primary-foreground: 222 20% 7%;
+  --secondary: 223 21% 15%;        /* #1f2430 site-raised */
+  --secondary-foreground: 218 20% 97%;
+  --muted: 223 21% 15%;
+  --muted-foreground: 218 10% 65%; /* #9ba3b0 site-muted */
+  --accent: 223 21% 15%;
+  --accent-foreground: 218 20% 97%;
+  --destructive: 0 84% 60%;        /* #ef4444 status-danger */
+  --destructive-foreground: 222 20% 7%;
+  --border: 222 21% 16%;           /* #212633 site-border-soft */
+  --input: 222 21% 16%;
+  --ring: 28 92% 54%;
+  --card: 225 21% 11%;             /* #161922 site-surface */
+  --card-foreground: 218 20% 97%;
+  --popover: 225 21% 11%;
+  --popover-foreground: 218 20% 97%;
   --radius: 0.5rem;
 }
 
@@ -229,39 +228,33 @@
 }
 
 /* ─── Era context for the restored legacy landing page ───
-   Same Steel + Red Signal base as the site contract (surfaces sit a hair
-   warmer here so the era content still feels layered), scoped to
-   .legacy-home. Typography stays on the site-wide Noto Sans Thai stack. */
+   Follows the SEAGM-inspired contextual palette, scoped to .legacy-home. */
 .legacy-home {
-  --site-bg: #101215;
-  --site-surface: #191c20;
-  --site-raised: #21262b;
-  --site-border: #2d3339;
-  --site-border-soft: #22272d;
-  --site-accent: #e6404a;
-  --site-accent-hover: #ff5a63;
-  --site-selection-bg: rgba(230, 64, 74, 0.28);
-  --site-text: #f1f3f5;
-  --site-muted: #9ba3ad;
-  --site-dim: #6a727b;
-  --site-bg-rgb: 16 18 21;
-  --site-surface-rgb: 25 28 32;
-  --site-raised-rgb: 33 38 43;
-  --site-border-rgb: 45 51 57;
-  --site-border-soft-rgb: 34 39 45;
-  --site-accent-rgb: 230 64 74;
-  --site-accent-hover-rgb: 255 90 99;
-  --site-text-rgb: 241 243 245;
-  --site-muted-rgb: 155 163 173;
-  --site-dim-rgb: 106 114 123;
-  /* Era semantic colors surface through the status mirrors. */
-  --status-info-rgb: 91 141 239;
-  --status-success-rgb: 62 207 142;
-  --status-warning-rgb: 241 162 60;
-  --status-danger-rgb: 240 106 138;
-  /* No page background here: the body's bg flows through so the era content
-     never forms a darker patch against the surrounding shell. Font follows
-     the site-wide Noto Sans Thai stack. */
+  --site-bg: #0e1015;
+  --site-surface: #161922;
+  --site-raised: #1f2430;
+  --site-border: #2b3242;
+  --site-border-soft: #212633;
+  --site-accent: #f58220;
+  --site-accent-hover: #ff9436;
+  --site-selection-bg: rgba(245, 130, 32, 0.25);
+  --site-text: #f3f5f8;
+  --site-muted: #9ba3b0;
+  --site-dim: #646d7d;
+  --site-bg-rgb: 14 16 21;
+  --site-surface-rgb: 22 25 34;
+  --site-raised-rgb: 31 36 48;
+  --site-border-rgb: 43 50 66;
+  --site-border-soft-rgb: 33 38 51;
+  --site-accent-rgb: 245 130 32;
+  --site-accent-hover-rgb: 255 148 54;
+  --site-text-rgb: 243 245 248;
+  --site-muted-rgb: 155 163 176;
+  --site-dim-rgb: 100 109 125;
+  --status-info-rgb: 6 182 212;
+  --status-success-rgb: 16 185 129;
+  --status-warning-rgb: 245 158 11;
+  --status-danger-rgb: 239 68 68;
 }
 
 @keyframes fadeIn {

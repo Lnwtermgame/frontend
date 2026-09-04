@@ -366,14 +366,14 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href={heroSlides[currentSlide]?.href || "/games"}
-                className="inline-flex items-center gap-2.5 bg-site-accent hover:bg-site-accent-hover text-white font-bold text-sm md:text-[15px] px-7 md:px-8 py-3 rounded-[10px] transition-all duration-200 hover:-translate-y-px shadow-[0_10px_30px_-10px_rgba(245,130,32,0.45)]"
+                className="inline-flex items-center gap-2.5 bg-site-accent hover:brightness-105 text-site-bg font-extrabold text-sm md:text-[15px] px-7 md:px-8 py-3 rounded-10 border-t border-t-white/35 border-l border-l-white/15 border-r border-r-black/20 border-b-[3px] border-b-[#b85708] active:border-b active:translate-y-[2px] shadow-[0_3px_8px_rgba(0,0,0,0.35)] transition-all duration-100"
               >
                 {heroSlides[currentSlide]?.btnText || t("hero_btn_text")}
                 <ChevronRight size={17} strokeWidth={2.6} />
               </Link>
               <Link
                 href="/games"
-                className="inline-flex items-center gap-2 text-sm md:text-[15px] font-semibold text-site-text border border-white/20 hover:border-white/50 hover:text-white bg-site-bg/40 backdrop-blur-sm px-6 py-3 rounded-[10px] transition-colors duration-200"
+                className="inline-flex items-center gap-2 text-sm md:text-[15px] font-bold text-site-text border-t border-t-white/20 border-l border-l-white/15 border-r border-r-black/30 border-b-[2.5px] border-b-black/40 hover:border-white/40 hover:text-white bg-site-surface/80 backdrop-blur-sm px-6 py-3 rounded-10 active:border-b active:translate-y-[1.5px] shadow-sm transition-all duration-100"
               >
                 {t("hero_browse_games")}
               </Link>

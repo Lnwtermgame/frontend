@@ -11,10 +11,9 @@ import { formatTHB } from "@/lib/format";
 import type { SeagmField } from "@/lib/services/product-api";
 import type { PriceSummary, TopUpOption } from "./types";
 
-// Filled-input treatment for this card only — the global Input/Select stay
-// as they are (see docs/superpowers/specs/2026-08-31-order-summary-soft-receipt-design.md).
+// Refined input treatment — tactile inner depth, crisp hairline border, and clear focus state.
 const filledInput =
-  "bg-site-raised border-transparent rounded-10 focus-visible:border-site-accent focus-visible:bg-site-deep";
+  "bg-[#11141a] border border-white/10 rounded-10 text-site-text placeholder:text-site-dim hover:border-white/20 focus-visible:border-site-accent focus-visible:ring-1 focus-visible:ring-site-accent/30 shadow-[inset_0_1px_2px_rgba(0,0,0,0.35)] transition-all";
 
 export interface OrderSummaryProps {
   option: TopUpOption | null;
@@ -254,13 +253,14 @@ export function OrderSummary({ option, isAuthenticated, fieldValues, onFieldChan
             </div>
           </div>
 
-          {/* CTA */}
+          {/* CTA — Beveled Hardware Key (Arcade Switch) */}
           <Button
             onClick={onBuy}
             disabled={isBuying}
             isLoading={isBuying}
             fullWidth
-            className="font-bold h-[46px] rounded-12 shadow-[0_10px_26px_-10px_rgba(230,64,74,0.5)]"
+            variant="arcade"
+            className="font-extrabold h-[46px] rounded-10 text-[14.5px] shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
           >
             {!isBuying && (
               <>

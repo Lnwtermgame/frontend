@@ -417,7 +417,7 @@ export default function InvoiceDetailPage() {
             </button>
 
             <button
-              className="px-4 py-2 rounded-6 bg-site-accent hover:bg-site-accent-hover text-site-bg font-semibold inline-flex items-center transition-colors text-sm"
+              className="px-4 py-2 site-btn text-sm"
               onClick={handleDownloadPdf}
             >
               {t("download_pdf")}

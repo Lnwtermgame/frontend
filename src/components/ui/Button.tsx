@@ -47,19 +47,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-site-accent text-site-bg hover:bg-site-accent-hover border border-transparent",
+          "bg-site-accent text-site-bg font-bold hover:brightness-105 border-t border-t-white/35 border-l border-l-white/15 border-r border-r-black/20 border-b-[3px] border-b-[#b85708] active:border-b active:translate-y-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-100",
         primary:
-          "bg-site-accent text-site-bg hover:bg-site-accent-hover border border-transparent",
+          "bg-site-accent text-site-bg font-bold hover:brightness-105 border-t border-t-white/35 border-l border-l-white/15 border-r border-r-black/20 border-b-[3px] border-b-[#b85708] active:border-b active:translate-y-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-100",
+        arcade:
+          "bg-site-accent text-site-bg font-bold hover:brightness-105 border-t border-t-white/35 border-l border-l-white/15 border-r border-r-black/20 border-b-[3px] border-b-[#b85708] active:border-b active:translate-y-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-100",
         secondary:
-          "bg-site-raised text-site-text border border-site-border hover:bg-site-surface",
+          "bg-site-raised text-site-text font-semibold border-t border-t-white/10 border-l border-l-white/5 border-r border-r-black/30 border-b-[3px] border-b-[#12151c] hover:bg-site-surface active:border-b active:translate-y-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-100",
         outline:
-          "border border-site-border bg-transparent text-site-text hover:bg-site-raised",
+          "border border-site-border bg-transparent text-site-text hover:bg-site-raised active:translate-y-px transition-colors duration-100",
         ghost:
-          "bg-transparent text-site-muted hover:bg-site-raised hover:text-site-text",
+          "bg-transparent text-site-muted hover:bg-site-raised hover:text-site-text transition-colors",
         link:
           "bg-transparent text-site-accent underline-offset-4 hover:underline px-0 py-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0",
         danger:
-          "bg-status-danger text-site-bg border border-transparent hover:bg-status-danger/90",
+          "bg-status-danger text-white font-bold hover:brightness-105 border-t border-t-white/30 border-l border-l-white/15 border-r border-r-black/20 border-b-[3px] border-b-[#a82530] active:border-b active:translate-y-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-100",
       },
       size: {
         default: "h-11 px-5 rounded-10",

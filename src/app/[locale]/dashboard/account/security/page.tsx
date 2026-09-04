@@ -291,7 +291,7 @@ export default function SecurityPage() {
                           type="button"
                           onClick={handleRequestOTP}
                           disabled={isRequestingOTP || otpCooldown > 0}
-                          className="w-full py-2.5 px-4 bg-site-accent text-site-bg rounded-6 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm transition-colors"
+                          className="w-full py-2.5 px-4 site-btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                         >
                           {isRequestingOTP ? (
                             <>
@@ -389,7 +389,7 @@ export default function SecurityPage() {
                               !setupPassword ||
                               !setupConfirmPassword
                             }
-                            className="flex-1 py-3 px-4 bg-site-accent text-site-bg rounded-6 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors order-1 md:order-2 text-sm"
+                            className="flex-1 py-3 px-4 site-btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-1 md:order-2 text-sm"
                           >
                             {isSettingPassword ? (
                               <>
@@ -434,7 +434,7 @@ export default function SecurityPage() {
                     </div>
                     <button
                       onClick={() => setShowPasswordSetup(true)}
-                      className="w-full py-3 px-4 bg-site-accent text-site-bg rounded-6 font-bold transition-colors text-sm"
+                      className="w-full py-3 px-4 site-btn text-sm"
                     >
                       {t("change_password.button_setup")}
                     </button>
@@ -509,7 +509,7 @@ export default function SecurityPage() {
                         !newPassword ||
                         !confirmPassword
                       }
-                      className="flex-1 py-3 px-4 bg-site-accent text-site-bg rounded-6 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors order-1 md:order-2 text-sm"
+                      className="flex-1 py-3 px-4 site-btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-1 md:order-2 text-sm"
                     >
                       {isChangingPassword ? (
                         <>

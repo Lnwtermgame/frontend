@@ -184,7 +184,7 @@
   }
 
   .site-btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-site-accent hover:bg-site-accent-hover text-site-bg text-sm font-semibold rounded-6 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-site-accent text-site-bg text-sm font-bold rounded-8 border-t border-t-white/35 border-l border-l-white/15 border-r border-r-black/20 border-b-[3px] border-b-[#b85708] hover:brightness-105 active:border-b active:translate-y-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-100;
   }
 
   .site-input {

@@ -608,13 +608,81 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
             )}
           </div>
 
-          {/* Grid section */}
-          <div className="mt-6 md:mt-8">
-            <div className="flex items-center gap-3 mb-4 md:mb-5">
-              <SectionHeader level={2} title={copy.gridTitle} />
-              <Badge variant="neutral">{filteredItems.length}</Badge>
+          {/* Catalog Toolbar — perfectly aligned with the desktop sidebar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 mb-5 border-b border-site-border-soft">
+            {/* Left: Section Title + Item Count + Active Filter Tags */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h2 className="text-[16px] md:text-[18px] font-bold text-site-text leading-none tracking-tight">
+                {copy.gridTitle}
+              </h2>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-white/5 border border-white/10 text-site-muted tabular-nums">
+                {filteredItems.length}
+              </span>
+
+              {/* Active filter badges & quick clear */}
+              {(selectedPrimary !== "all" || selectedSecondary !== "all" || searchQuery) && (
+                <div className="flex flex-wrap items-center gap-1.5 pl-2 border-l border-site-border-soft text-xs">
+                  {selectedPrimary !== "all" && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 text-white font-medium text-[11px]">
+                      {primaryOptions.find((o) => o.id === selectedPrimary)?.name}
+                      <button
+                        onClick={() => setSelectedPrimary("all")}
+                        className="hover:text-site-accent ml-0.5 cursor-pointer"
+                        aria-label="Remove platform filter"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {selectedSecondary !== "all" && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 text-white font-medium text-[11px]">
+                      {secondaryOptions.find((o) => o.id === selectedSecondary)?.name}
+                      <button
+                        onClick={() => setSelectedSecondary("all")}
+                        className="hover:text-site-accent ml-0.5 cursor-pointer"
+                        aria-label="Remove region filter"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {searchQuery && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 text-white font-medium text-[11px]">
+                      &ldquo;{searchQuery}&rdquo;
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="hover:text-site-accent ml-0.5 cursor-pointer"
+                        aria-label="Clear search"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  <button
+                    onClick={() => {
+                      setSelectedPrimary("all");
+                      setSelectedSecondary("all");
+                      setSearchQuery("");
+                    }}
+                    className="text-[11px] font-semibold text-site-accent hover:underline ml-1 cursor-pointer"
+                  >
+                    ล้างตัวกรอง
+                  </button>
+                </div>
+              )}
             </div>
 
+            {/* Right: Instant Delivery Badge & Status */}
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-site-muted font-medium text-[11.5px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                {t("status_instant")} 24 ชม.
+              </span>
+            </div>
+          </div>
+
+          {/* Grid section */}
+          <div>
             {loading && (
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
                 {Array.from({ length: 12 }).map((_, i) => (
@@ -634,29 +702,19 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                     <Link
                       href={getItemLink(mode as any, item.slug)}
                       aria-label={mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
-                      className="group flex w-full min-w-0 flex-col rounded-12 overflow-hidden bg-site-surface border border-transparent shadow-[0_10px_26px_-18px_rgba(0,0,0,0.9)] group-hover:shadow-[0_0_24px_-6px_rgba(230,64,74,0.28)] transition-shadow duration-200"
+                      className="group relative flex w-full min-w-0 flex-col rounded-12 overflow-hidden bg-site-surface border border-white/[0.04] shadow-[0_4px_16px_-8px_rgba(0,0,0,0.7)] hover:border-white/20 hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.95)] transition-all duration-300"
                     >
-                      {/* ── Artwork 1:1 ──
-                          Overlays sit on a padded gradient shelf so tags never
-                          collide with the art subject. */}
+                      {/* ── Artwork 1:1 with smooth internal zoom on hover ── */}
                       <div className="relative w-full aspect-square overflow-hidden bg-site-raised">
                         <img
                           src={item.image}
                           alt={mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                           loading="lazy"
                         />
-                        {/* top overlay row: instant bolt + discount / region tag */}
-                        <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-1 p-2">
+                        {/* top overlay row: discount / region tag */}
+                        <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-1 p-2 pointer-events-none">
                           <span className="flex items-center gap-1">
-                            {item.autoDelivery && (
-                              <span
-                                className="grid h-5 w-5 place-items-center rounded-6 bg-site-deep/85 text-status-success backdrop-blur-sm"
-                                title={t("status_instant")}
-                              >
-                                <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="currentColor"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>
-                              </span>
-                            )}
                             {item.discountPercent ? (
                               <Badge variant="success">-{item.discountPercent}%</Badge>
                             ) : null}
@@ -674,10 +732,9 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                       </div>
 
                       {/* ── Info block ──
-                          Fixed rhythm: name (2 lines max) → spacer → price row
-                          pinned to the bottom so every card ends evenly. */}
+                          Static text coordinates — never translated on hover to maintain 100% crisp subpixel font rendering ── */}
                       <div className="flex min-w-0 flex-1 flex-col gap-1.5 p-3">
-                        <h3 className="line-clamp-2 min-h-[2.6em] text-left text-[12.5px] font-bold leading-[1.3] text-site-text transition-colors group-hover:text-site-accent">
+                        <h3 className="line-clamp-2 min-h-[2.6em] text-left text-[12.5px] font-bold leading-[1.3] text-site-text transition-colors duration-200 group-hover:text-site-accent">
                           {mode === "mobile-recharge" || mode === "mobile" ? item.operator : item.title}
                         </h3>
 
@@ -699,10 +756,10 @@ export function UnifiedCatalogPage({ mode }: { mode: CatalogMode }) {
                             )}
                           </div>
                           <span
-                            className="grid h-7 w-7 shrink-0 place-items-center rounded-8 bg-site-raised text-site-muted transition-colors group-hover:bg-site-accent group-hover:text-site-bg"
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-8 bg-site-raised text-site-muted transition-colors duration-200 group-hover:bg-site-accent group-hover:text-site-bg"
                             aria-hidden="true"
                           >
-                            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+                            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
                           </span>
                         </div>
                       </div>

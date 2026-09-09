@@ -19,7 +19,6 @@ import { ProductShelf } from "@/components/home/product-shelf";
 export default function HomePage() {
   const t = useTranslations("home");
   const tn = useTranslations("nav");
-  const tf = useTranslations("footer");
   const featured = useFeatured(10);
   const bestsellers = useBestsellers(10);
 
@@ -75,9 +74,9 @@ export default function HomePage() {
         onRetry={() => bestsellers.refetch()}
       />
 
-      {/* trust + steps + ช่องทางชำระเงิน (แบบแถบเรียบ ไม่มีกล่อง) */}
-      <div className="mx-auto w-full max-w-6xl px-4 pt-8">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 py-3 text-[12.5px] font-semibold text-muted-foreground">
+      {/* trust + steps (แบบแถบเรียบ ไม่มีกล่อง — ช่องทางชำระเงินอยู่ใน footer แล้ว) */}
+      <div className="mx-auto w-full max-w-6xl px-4 pt-6">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 py-2.5 text-[12.5px] font-semibold text-muted-foreground">
           <span className="inline-flex items-center gap-2">
             <Zap className="size-3.5 text-primary" />
             {t("trustAuto")}
@@ -92,7 +91,7 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 py-3 text-[13px]">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 border-t border-border/40 py-3 text-[13px]">
           <span className="mr-1 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
             {t("howTitle")}
           </span>
@@ -107,21 +106,6 @@ export default function HomePage() {
               {i < steps.length - 1 && <ChevronRight className="size-3.5 text-muted-foreground/50" />}
             </span>
           ))}
-          <Link
-            href="/support"
-            className="ml-auto text-[12.5px] font-semibold text-muted-foreground transition-colors hover:text-primary"
-          >
-            {tf("faq")} →
-          </Link>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-border/50 py-4 text-xs text-muted-foreground">
-          <span className="font-bold text-muted-foreground">{t("payVia")}</span>
-          {tf("payPromptpay")}
-          <span className="size-[3px] rounded-full bg-border" />
-          {tf("payTruemoney")}
-          <span className="size-[3px] rounded-full bg-border" />
-          {tf("payCard")}
         </div>
       </div>
     </div>

@@ -229,3 +229,72 @@ export async function apiFetch<T>(path: string, opts: ApiOptions = {}): Promise<
 
   return attempt();
 }
+
+// ── Envelope-meta variant (dashboard lists need pagination meta) ──
+
+export interface PageMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export async function apiFetchWithMeta<T>(
+  path: string,
+  opts: ApiOptions = {},
+): Promise<{ data: T; meta?: PageMeta }> {
+  const method = opts.method ?? "GET";
+  const needsCsrf = method !== "GET";
+
+  if (!accessToken && !opts.skipAuth && !isAuthEndpoint(path) && authHooks?.hasStoredUser()) {
+    await refreshAccessToken();
+  }
+
+  let csrfRetries = 0;
+  let rateRetries = 0;
+  let authRetried = false;
+
+  const attempt = async (): Promise<{ data: T; meta?: PageMeta }> => {
+    const csrf = needsCsrf ? await ensureCsrfToken().catch(() => "") : null;
+    let res = await rawFetch(path, opts, accessToken, csrf);
+
+    if (res.status === 403 && csrfRetries < CSRF_RETRY_MAX) {
+      const env = await parseEnvelope(res);
+      if (env.error?.code === "CSRF_INVALID") {
+        csrfRetries++;
+        csrfToken = null;
+        const fresh = await ensureCsrfToken().catch(() => "");
+        res = await rawFetch(path, opts, accessToken, fresh);
+      } else {
+        throw toApiError(env, res.status);
+      }
+    }
+
+    while (res.status === 429 && rateRetries < RATE_LIMIT_MAX_RETRIES) {
+      await new Promise((r) => setTimeout(r, 2 ** rateRetries * 500));
+      rateRetries++;
+      const freshCsrf = needsCsrf ? await ensureCsrfToken().catch(() => "") : null;
+      res = await rawFetch(path, opts, accessToken, freshCsrf);
+    }
+
+    if (res.status === 401 && !authRetried && !opts.skipAuth && !isAuthEndpoint(path)) {
+      const hadAuth = Boolean(accessToken) || Boolean(authHooks?.hasStoredUser());
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        authRetried = true;
+        const freshCsrf = needsCsrf ? await ensureCsrfToken().catch(() => "") : null;
+        res = await rawFetch(path, opts, refreshed, freshCsrf);
+      } else {
+        if (hadAuth) authHooks?.onSessionExpired();
+        throw toApiError(await parseEnvelope(res), res.status);
+      }
+    }
+
+    const env = await parseEnvelope<T>(res);
+    if (!res.ok || !env.success) throw toApiError(env, res.status);
+    const meta = (env as { meta?: PageMeta }).meta;
+    return { data: env.data as T, meta };
+  };
+
+  return attempt();
+}

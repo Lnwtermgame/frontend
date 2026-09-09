@@ -84,7 +84,8 @@ export interface ListProductsParams {
   search?: string;
   isFeatured?: boolean;
   isBestseller?: boolean;
-  sortBy?: "price" | "name" | "createdAt" | "salesCount" | "viewCount";
+  // หมายเหตุ: API ไม่รองรับ sortBy=price — เรียงราคาทำฝั่ง client แทน
+  sortBy?: "name" | "createdAt" | "salesCount" | "viewCount";
   sortOrder?: "asc" | "desc";
   page?: number;
   limit?: number;

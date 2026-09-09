@@ -169,8 +169,16 @@ export async function apiFetch<T>(path: string, opts: ApiOptions = {}): Promise<
   const method = opts.method ?? "GET";
   const needsCsrf = method !== "GET";
 
+  // Token bootstrap (hard-load race fix, mirrors old gateway.tsx): stored user
+  // hydrated synchronously while the in-memory token is still empty — warm it
+  // via refresh BEFORE the first authed call so it never goes out headerless.
+  if (!accessToken && !opts.skipAuth && !isAuthEndpoint(path) && authHooks?.hasStoredUser()) {
+    await refreshAccessToken();
+  }
+
   let csrfRetries = 0;
   let rateRetries = 0;
+  let authRetried = false;
 
   const attempt = async (): Promise<T> => {
     const csrf = needsCsrf ? await ensureCsrfToken().catch(() => "") : null;
@@ -193,6 +201,25 @@ export async function apiFetch<T>(path: string, opts: ApiOptions = {}): Promise<
       rateRetries++;
       const freshCsrf = needsCsrf ? await ensureCsrfToken().catch(() => "") : null;
       res = await rawFetch(path, opts, accessToken, freshCsrf);
+    }
+
+    // 401 with auth context: single-flight refresh, retry the request once.
+    if (
+      res.status === 401 &&
+      !authRetried &&
+      !opts.skipAuth &&
+      !isAuthEndpoint(path)
+    ) {
+      const hadAuth = Boolean(accessToken) || Boolean(authHooks?.hasStoredUser());
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        authRetried = true;
+        const freshCsrf = needsCsrf ? await ensureCsrfToken().catch(() => "") : null;
+        res = await rawFetch(path, opts, refreshed, freshCsrf);
+      } else {
+        if (hadAuth) authHooks?.onSessionExpired();
+        throw toApiError(await parseEnvelope(res), res.status);
+      }
     }
 
     const env = await parseEnvelope<T>(res);

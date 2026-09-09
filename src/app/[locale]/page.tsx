@@ -1,16 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  ChevronRight,
-  Gamepad2,
-  LifeBuoy,
-  MessagesSquare,
-  ShieldCheck,
-  Smartphone,
-  Ticket,
-  Zap,
-} from "lucide-react";
+import { Gamepad2, LifeBuoy, Smartphone, Ticket } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { useFeatured, useBestsellers } from "@/lib/query/hooks";
 import { BannerCarousel } from "@/components/home/banner-carousel";
@@ -28,8 +19,6 @@ export default function HomePage() {
     { href: "/mobile-recharge", label: tn("mobile"), icon: Smartphone },
     { href: "/support", label: tn("support"), icon: LifeBuoy },
   ];
-
-  const steps = [t("stepsShort1"), t("stepsShort2"), t("stepsShort3")];
 
   return (
     <div className="pb-6">
@@ -73,41 +62,6 @@ export default function HomePage() {
         isError={bestsellers.isError}
         onRetry={() => bestsellers.refetch()}
       />
-
-      {/* trust + steps (แบบแถบเรียบ ไม่มีกล่อง — ช่องทางชำระเงินอยู่ใน footer แล้ว) */}
-      <div className="mx-auto w-full max-w-6xl px-4 pt-6">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 py-2.5 text-[12.5px] font-semibold text-muted-foreground">
-          <span className="inline-flex items-center gap-2">
-            <Zap className="size-3.5 text-primary" />
-            {t("trustAuto")}
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <ShieldCheck className="size-3.5 text-primary" />
-            {t("trustReal")}
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <MessagesSquare className="size-3.5 text-primary" />
-            {t("trustSupport")}
-          </span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 border-t border-border/40 py-3 text-[13px]">
-          <span className="mr-1 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
-            {t("howTitle")}
-          </span>
-          {steps.map((label, i) => (
-            <span key={label} className="flex items-center gap-2.5">
-              <span className="inline-flex items-center gap-2 font-semibold text-muted-foreground">
-                <span className="num grid size-[22px] place-items-center rounded-[7px] bg-primary/15 text-[11.5px] font-bold text-primary">
-                  {i + 1}
-                </span>
-                {label}
-              </span>
-              {i < steps.length - 1 && <ChevronRight className="size-3.5 text-muted-foreground/50" />}
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

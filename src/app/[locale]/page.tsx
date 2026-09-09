@@ -1,38 +1,52 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { signOut } from "next-auth/react";
-import { useRouter } from "@/i18n/routing";
-import { useAuthStore } from "@/stores/auth";
+import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
+import { useFeatured, useBestsellers } from "@/lib/query/hooks";
+import { ProductGrid, ProductGridSkeleton, GridEmptyState } from "@/components/product/product-grid";
+import { HowItWorks } from "@/components/home/how-it-works";
 
 export default function HomePage() {
   const t = useTranslations("home");
-  const ta = useTranslations("auth");
-  const router = useRouter();
-  const user = useAuthStore((s) => s.user);
-  const status = useAuthStore((s) => s.status);
-  const logout = useAuthStore((s) => s.logout);
-
-  const handleLogout = async () => {
-    await logout();
-    await signOut({ redirect: false }).catch(() => {});
-    router.replace("/");
-  };
+  const featured = useFeatured(10);
+  const bestsellers = useBestsellers(10);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-4">
-      <h1 className="text-2xl font-bold">{t("title")}</h1>
-      <p className="opacity-70">{t("placeholder")}</p>
-      {status === "authenticated" && user ? (
-        <div className="flex items-center gap-3">
-          <span>สวัสดี {user.username}</span>
-          <button type="button" onClick={handleLogout} className="rounded-md border px-3 py-1">
-            {ta("logout")}
-          </button>
-        </div>
-      ) : (
-        <a href="/th/login" className="rounded-md border px-3 py-1">{ta("login")}</a>
-      )}
-    </main>
+    <div className="pb-10">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-10 pt-14">
+        <h1 className="max-w-2xl text-3xl font-extrabold leading-snug sm:text-4xl">
+          {t("heroTitle1")} <span className="text-primary">{t("heroTitle2")}</span>
+        </h1>
+        <p className="mt-3 max-w-xl text-[15px] text-muted-foreground">{t("heroSubtitle")}</p>
+        <Button asChild size="lg" className="mt-6">
+          <Link href="/games">{t("heroCta")}</Link>
+        </Button>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-4 pb-10">
+        <h2 className="mb-4 text-xl font-bold">{t("popularTitle")}</h2>
+        {featured.isLoading ? (
+          <ProductGridSkeleton count={10} />
+        ) : featured.isError || !featured.data?.length ? (
+          <GridEmptyState title={t("popularTitle")} description="" />
+        ) : (
+          <ProductGrid products={featured.data} />
+        )}
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-4 pb-10">
+        <h2 className="mb-4 text-xl font-bold">{t("bestsellerTitle")}</h2>
+        {bestsellers.isLoading ? (
+          <ProductGridSkeleton count={10} />
+        ) : bestsellers.isError || !bestsellers.data?.length ? (
+          <GridEmptyState title={t("bestsellerTitle")} description="" />
+        ) : (
+          <ProductGrid products={bestsellers.data} />
+        )}
+      </section>
+
+      <HowItWorks />
+    </div>
   );
 }

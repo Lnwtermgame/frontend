@@ -1,22 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Heart, Share2, Check } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "@/i18n/routing";
 import { useProductBySlug, useFavorites, useFeatured } from "@/lib/query/hooks";
 import { addFavorite, removeFavorite } from "@/lib/api/dashboard";
 import { useAuthStore } from "@/stores/auth";
-import { productImage } from "@/lib/product-image";
 import { PackageGrid } from "./package-grid";
 import { OrderSummary, type BuyPayload } from "./order-summary";
 import { ConfirmOrderDialog } from "./confirm-order-dialog";
-import { ProductGrid } from "./product-grid";
+import { ProductBand } from "./product-band";
+import { ShelfTile } from "./shelf-tile";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
 import { lineTotal } from "@/lib/pricing";
@@ -157,95 +153,81 @@ export function ProductPage({ route }: { route: ProductRoute }) {
     .slice(0, 5);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 space-y-10">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[14px] border bg-card p-4 shadow-(--shadow-tile)">
-        <div className="flex items-center gap-4">
-          <div className="relative size-16 shrink-0 overflow-hidden rounded-[10px]">
-            <Image
-              src={productImage(product.name, product.imageUrl)}
-              alt={product.name}
-              fill
-              sizes="64px"
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold">{product.name}</h1>
-            <div className="mt-1.5 flex gap-1.5">
-              <Badge variant="secondary">{t("autoDelivery")}</Badge>
-              {product.isBestseller ? <Badge variant="secondary">ขายดี</Badge> : null}
+    <div className="pb-8">
+      {/* แถบสีประจำเกมเต็มความกว้าง (สีจากระบบปก — เปลี่ยนตามเกมอัตโนมัติ) */}
+      <ProductBand
+        product={product}
+        isFavorite={isFav}
+        favLoading={favLoading}
+        copied={copied}
+        onToggleFavorite={handleToggleFavorite}
+        onCopyLink={handleCopyLink}
+      />
+
+      <div className="mx-auto w-full max-w-6xl px-4 pt-6">
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <section className="rounded-[14px] border border-border/60 bg-card p-5">
+            <h2 className="mb-3.5 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              {t("selectPackage")}
+            </h2>
+            {types.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                {t("outOfStock")}
+              </p>
+            ) : (
+              <PackageGrid
+                types={types}
+                selectedId={selected?.id ?? null}
+                onSelect={(ty) => setSelected(ty)}
+              />
+            )}
+            {buyError ? (
+              <p
+                role="alert"
+                className="mt-4 rounded-[10px] border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
+              >
+                {buyError}
+              </p>
+            ) : null}
+
+            {product.description ? (
+              <>
+                <h2 className="mt-6 mb-3 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+                  {t("detailsTitle")}
+                </h2>
+                <p className="whitespace-pre-line text-[13.5px] leading-relaxed text-muted-foreground">
+                  {product.description.replace(/\*\*/g, "")}
+                </p>
+              </>
+            ) : null}
+          </section>
+
+          <OrderSummary
+            product={product}
+            selectedType={selected}
+            buying={buying}
+            onBuy={(payload) => {
+              setBuyError(null);
+              setPendingPayload(payload);
+              setConfirmOpen(true);
+            }}
+          />
+        </div>
+
+        {/* Related / Recommended Products */}
+        {relatedProducts.length > 0 ? (
+          <section className="pt-8">
+            <h2 className="mb-4 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              {t("relatedTitle")}
+            </h2>
+            <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
+              {relatedProducts.map((p) => (
+                <ShelfTile key={p.id} product={p} />
+              ))}
             </div>
-          </div>
-        </div>
-
-        {/* Action Buttons: Favorite & Share */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={favLoading}
-            onClick={handleToggleFavorite}
-            className={`gap-1.5 text-xs ${isFav ? "border-primary text-primary" : ""}`}
-          >
-            <Heart className={`size-4 ${isFav ? "fill-primary text-primary" : ""}`} />
-            <span>{isFav ? "ถูกใจแล้ว" : "ถูกใจ"}</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleCopyLink}
-            className="gap-1.5 text-xs"
-          >
-            {copied ? <Check className="size-4 text-status-success" /> : <Share2 className="size-4" />}
-            <span>{copied ? "คัดลอกแล้ว" : "แชร์"}</span>
-          </Button>
-        </div>
+          </section>
+        ) : null}
       </div>
-
-      <div className="grid items-start gap-6 lg:grid-cols-[1fr_360px]">
-        <section>
-          <h2 className="mb-3 text-lg font-bold">{t("selectPackage")}</h2>
-          {types.length === 0 ? (
-            <p className="rounded-[14px] border bg-card p-8 text-center text-sm text-muted-foreground">
-              {t("outOfStock")}
-            </p>
-          ) : (
-            <PackageGrid
-              types={types}
-              selectedId={selected?.id ?? null}
-              onSelect={(ty) => setSelected(ty)}
-            />
-          )}
-          {buyError ? (
-            <p
-              role="alert"
-              className="mt-4 rounded-[10px] border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
-            >
-              {buyError}
-            </p>
-          ) : null}
-        </section>
-
-        <OrderSummary
-          product={product}
-          selectedType={selected}
-          buying={buying}
-          onBuy={(payload) => {
-            setBuyError(null);
-            setPendingPayload(payload);
-            setConfirmOpen(true);
-          }}
-        />
-      </div>
-
-      {/* Related / Recommended Products */}
-      {relatedProducts.length > 0 ? (
-        <section className="border-t pt-8">
-          <h2 className="mb-4 text-lg font-bold">เกมและบริการแนะนำอื่นๆ</h2>
-          <ProductGrid products={relatedProducts} />
-        </section>
-      ) : null}
 
       <ConfirmOrderDialog
         open={confirmOpen}

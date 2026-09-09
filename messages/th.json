@@ -148,7 +148,12 @@
     "orderFailed": "สั่งซื้อไม่สำเร็จ",
     "description": "รายละเอียดสินค้า",
     "outOfStock": "สินค้าหมด",
-    "autoDelivery": "ส่งอัตโนมัติ"
+    "autoDelivery": "ส่งอัตโนมัติ",
+    "metaDeveloper": "ผู้พัฒนา",
+    "metaPlatforms": "แพลตฟอร์ม",
+    "metaPublisher": "ผู้จัดจำหน่าย",
+    "detailsTitle": "รายละเอียด",
+    "relatedTitle": "เกมอื่น ๆ ที่คุณอาจสนใจ"
   },
   "payments": {
     "pendingTitle": "รอการชำระเงิน",

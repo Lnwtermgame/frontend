@@ -57,6 +57,11 @@ export interface Product {
   isBestseller?: boolean;
   salesCount?: number;
   viewCount?: number;
+  gameDetails?: {
+    developer?: string;
+    publisher?: string;
+    platforms?: string[];
+  } | null;
   types?: ProductTypePublic[];
 }
 

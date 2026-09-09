@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.appwrite.io" },
       { protocol: "https", hostname: "**.seagm.com" },
     ],
+    dangerouslyAllowSVG: true,
   },
   async headers() {
     return [

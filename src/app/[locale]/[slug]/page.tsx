@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCmsPage } from "@/lib/api/support";
-import { formatDateTime } from "@/components/dashboard/shared";
+import { formatDateTime } from "@/lib/format";
 
 export async function generateMetadata({
   params,

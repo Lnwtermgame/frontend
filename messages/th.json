@@ -1,12 +1,105 @@
 {
   "home": {
     "title": "Lnwtermgame",
-    "placeholder": "หน้าหลัก — กำลังพัฒนา"
+    "heroTitle1": "เติมเกมได้ทุกที่",
+    "heroTitle2": "ส่งอัตโนมัติ 24 ชั่วโมง",
+    "heroSubtitle": "เลือกเกม เลือกแพ็กเกจ ชำระเงิน แล้วรับไอเทมอัตโนมัติ — รองรับ PromptPay, TrueMoney และบัตรเครดิต",
+    "heroCta": "เริ่มเติมเกม",
+    "popularTitle": "เกมยอดนิยม",
+    "bestsellerTitle": "ขายดี",
+    "howTitle": "วิธีเติม",
+    "how1Title": "เลือกเกมและแพ็กเกจ",
+    "how1Desc": "ค้นหาเกมที่ต้องการ แล้วเลือกแพ็กเกจที่ต้องการ",
+    "how2Title": "กรอกข้อมูลผู้เล่น",
+    "how2Desc": "กรอกไอดีเกม (และโซนถ้ามี) ระบบตรวจสอบให้ทันที",
+    "how3Title": "ชำระเงินและรับของ",
+    "how3Desc": "ชำระผ่าน PromptPay / TrueMoney / บัตรเครดิต — รับไอเทมอัตโนมัติ",
+    "fromPrice": "เริ่มต้น"
   },
   "auth": {
     "login": "เข้าสู่ระบบ",
     "logout": "ออกจากระบบ",
     "notLoggedIn": "คุณยังไม่ได้เข้าสู่ระบบ",
-    "loginFailed": "เข้าสู่ระบบไม่สำเร็จ"
+    "loginFailed": "เข้าสู่ระบบไม่สำเร็จ",
+    "loginRequired": "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ"
+  },
+  "nav": {
+    "games": "เติมเกม",
+    "card": "บัตร/การ์ด",
+    "mobile": "เติมมือถือ",
+    "searchPlaceholder": "ค้นหาเกม เช่น Free Fire, Roblox…",
+    "register": "สมัครสมาชิก"
+  },
+  "footer": {
+    "helpTitle": "ช่วยเหลือ",
+    "faq": "คำถามที่พบบ่อย",
+    "contact": "ติดต่อเรา",
+    "orderIssue": "แจ้งปัญหาการสั่งซื้อ",
+    "infoTitle": "ข้อมูล",
+    "terms": "ข้อกำหนดการใช้งาน",
+    "privacy": "นโยบายความเป็นส่วนตัว",
+    "refund": "นโยบายการคืนเงิน",
+    "payTitle": "ช่องทางชำระเงิน",
+    "payPromptpay": "PromptPay",
+    "payTruemoney": "TrueMoney Wallet",
+    "payCard": "บัตรเครดิต / เดบิต"
+  },
+  "catalog": {
+    "gamesTitle": "เติมเกม",
+    "gamesSubtitle": "เติมไอเทมเกมยอดนิยม ส่งอัตโนมัติ",
+    "cardTitle": "บัตร/การ์ด",
+    "cardSubtitle": "การ์ดเติมเงินและกิฟต์การ์ด",
+    "mobileTitle": "เติมมือถือ",
+    "mobileSubtitle": "เติมเงินโทรศัพท์ทุกค่าย",
+    "searchPlaceholder": "ค้นหา…",
+    "filterAll": "ทั้งหมด",
+    "emptyTitle": "ยังไม่มีสินค้า",
+    "emptyDesc": "ลองค้นหาด้วยคำอื่น หรือเลือกหมวดอื่น",
+    "loading": "กำลังโหลด…",
+    "error": "โหลดข้อมูลไม่สำเร็จ",
+    "retry": "ลองใหม่"
+  },
+  "product": {
+    "selectPackage": "เลือกแพ็กเกจ",
+    "accountInfo": "ข้อมูลบัญชี",
+    "quantity": "จำนวน",
+    "subtotal": "ยอดรวม",
+    "paymentMethod": "ช่องทางชำระเงิน",
+    "buy": "ซื้อเลย",
+    "verify": "ตรวจสอบ",
+    "verifying": "กำลังตรวจสอบ…",
+    "verified": "ยืนยันบัญชีถูกต้อง",
+    "verifyFailed": "ตรวจสอบไม่ผ่าน",
+    "playerInvalid": "ไอดีเกมไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง",
+    "phoneRegionMismatch": "เบอร์โทรไม่ตรงกับภูมิภาคที่เลือก",
+    "fieldRequired": "กรุณากรอก{field}",
+    "confirmTitle": "ยืนยันคำสั่งซื้อ",
+    "confirmBody": "ตรวจสอบรายการก่อนชำระเงิน",
+    "confirmBuy": "ดำเนินการชำระเงิน",
+    "cancel": "ยกเลิก",
+    "buying": "กำลังดำเนินการ…",
+    "orderFailed": "สั่งซื้อไม่สำเร็จ",
+    "description": "รายละเอียดสินค้า",
+    "outOfStock": "สินค้าหมด",
+    "autoDelivery": "ส่งอัตโนมัติ"
+  },
+  "payments": {
+    "pendingTitle": "รอการชำระเงิน",
+    "pendingDesc": "สแกน QR ด้วยแอปธนาคารหรือวอลเล็ตเพื่อชำระเงิน",
+    "copyRef": "คัดลอกหมายเลขอ้างอิง",
+    "copied": "คัดลอกแล้ว",
+    "checking": "กำลังตรวจสอบการชำระเงิน…",
+    "successTitle": "ชำระเงินสำเร็จ",
+    "successDesc": "รายการของคุณกำลังถูกส่ง เปิดดูได้ที่คำสั่งซื้อของฉัน",
+    "failedTitle": "ชำระเงินไม่สำเร็จ",
+    "failedDesc": "หากคุณชำระเงินแล้ว ระบบจะอัปเดตสถานะให้อัตโนมัติ",
+    "expiredTitle": "หมดเวลาชำระเงิน",
+    "expiredDesc": "คำสั่งซื้อถูกยกเลิกแล้ว กรุณาเริ่มทำรายการใหม่",
+    "myOrders": "คำสั่งซื้อของฉัน",
+    "backHome": "กลับหน้าแรก",
+    "saveQr": "บันทึก QR"
+  },
+  "common": {
+    "loading": "กำลังโหลด…"
   }
 }

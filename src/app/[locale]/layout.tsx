@@ -7,6 +7,8 @@ import { routing } from "@/i18n/routing";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { NextAuthSessionSync } from "@/components/providers/next-auth-session-sync";
 import { AuthBootstrap } from "@/components/providers/auth-bootstrap";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -41,7 +43,11 @@ export default async function LocaleLayout({
             <QueryProvider>
               <NextAuthSessionSync />
               <AuthBootstrap />
-              {children}
+              <div className="flex min-h-screen flex-col">
+                <SiteHeader />
+                <main className="flex-1">{children}</main>
+                <SiteFooter />
+              </div>
             </QueryProvider>
           </NextIntlClientProvider>
         </SessionProvider>

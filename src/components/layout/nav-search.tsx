@@ -5,11 +5,16 @@ import Image from "next/image";
 import { Search, X, Loader2, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, Link } from "@/i18n/routing";
-import { Input } from "@/components/ui/input";
 import { useFeatured, useProducts } from "@/lib/query/hooks";
 import { productImage } from "@/lib/product-image";
 
-export function NavSearch() {
+export function NavSearch({
+  className = "",
+  withButton = true,
+}: {
+  className?: string;
+  withButton?: boolean;
+}) {
   const t = useTranslations("nav");
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -51,10 +56,15 @@ export function NavSearch() {
   }, [query, searchResults.data, featured.data]);
 
   return (
-    <div ref={containerRef} className="relative hidden flex-1 max-w-md sm:block">
-      <form onSubmit={handleSubmit} className="relative">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
+    <div ref={containerRef} className={`relative ${className}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`flex h-10 items-center gap-1 rounded-[10px] border border-input bg-card pl-3 transition-colors focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/25 ${
+          withButton ? "pr-1" : "pr-3"
+        }`}
+      >
+        <Search className="size-4 shrink-0 text-muted-foreground/70" />
+        <input
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -62,15 +72,24 @@ export function NavSearch() {
           }}
           onFocus={() => setIsOpen(true)}
           placeholder={t("searchPlaceholder")}
-          className="pl-9 pr-8"
+          className="h-full min-w-0 flex-1 bg-transparent px-2.5 text-[13.5px] text-foreground outline-none placeholder:text-muted-foreground/70"
         />
         {query ? (
           <button
             type="button"
             onClick={() => setQuery("")}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="shrink-0 px-1 text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="clear"
           >
             <X className="size-3.5" />
+          </button>
+        ) : null}
+        {withButton ? (
+          <button
+            type="submit"
+            className="h-8 shrink-0 rounded-[8px] bg-primary px-4 text-[13px] font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            {t("searchButton")}
           </button>
         ) : null}
       </form>

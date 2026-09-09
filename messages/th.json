@@ -49,7 +49,14 @@
     "games": "เติมเกม",
     "card": "บัตร/การ์ด",
     "mobile": "เติมมือถือ",
+    "support": "ช่วยเหลือ",
+    "orders": "คำสั่งของฉัน",
+    "account": "บัญชีของฉัน",
+    "dashboard": "แดชบอร์ด",
+    "searchButton": "ค้นหา",
     "searchPlaceholder": "ค้นหาเกม เช่น Free Fire, Roblox…",
+    "autoBadge": "ส่งอัตโนมัติ 24 ชม.",
+    "menu": "เมนู",
     "register": "สมัครสมาชิก"
   },
   "footer": {

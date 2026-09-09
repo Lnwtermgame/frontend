@@ -6,10 +6,15 @@ import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "@/i18n/routing";
 import { useProductBySlug } from "@/lib/query/hooks";
 import { productImage } from "@/lib/product-image";
 import { PackageGrid } from "./package-grid";
 import { OrderSummary, type BuyPayload } from "./order-summary";
+import { ConfirmOrderDialog } from "./confirm-order-dialog";
+import { startBuyFlow } from "@/lib/buy-flow";
+import { ApiError } from "@/lib/api/client";
+import { lineTotal } from "@/lib/pricing";
 import type { ProductTypePublic } from "@/lib/api/products";
 
 export type ProductRoute = "games" | "card" | "mobile";
@@ -22,11 +27,45 @@ const FIELD_BY_ROUTE: Record<ProductRoute, string> = {
 
 export function ProductPage({ route }: { route: ProductRoute }) {
   const t = useTranslations("product");
+  const router = useRouter();
   const routeParams = useParams<Record<string, string>>();
   const slug = routeParams?.[FIELD_BY_ROUTE[route]] ?? "";
   const query = useProductBySlug(slug);
   const [selected, setSelected] = useState<ProductTypePublic | null>(null);
   const [buyError, setBuyError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [buying, setBuying] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState<BuyPayload | null>(null);
+
+  const handleBuy = async (payload: BuyPayload) => {
+    if (!selected || !query.data) return;
+    setBuying(true);
+    try {
+      const result = await startBuyFlow(payload, {
+        productId: query.data.id,
+        productTypeId: selected.id,
+      });
+      setConfirmOpen(false);
+      if (result.outcome === "qr") {
+        router.push(
+          `/payments/pending?orderId=${result.orderId}&referenceNo=${result.referenceNo}`,
+        );
+      }
+      // redirected: provider flow owns the tab; nothing to do
+    } catch (err) {
+      const info = err instanceof ApiError ? err.infoCode : undefined;
+      setBuyError(
+        info === "20133" || info === "20093"
+          ? t("playerInvalid")
+          : info === "20114"
+            ? t("phoneRegionMismatch")
+            : ((err as ApiError).message || t("orderFailed")),
+      );
+      setConfirmOpen(false);
+    } finally {
+      setBuying(false);
+    }
+  };
 
   if (query.isLoading) {
     return (
@@ -87,7 +126,10 @@ export function ProductPage({ route }: { route: ProductRoute }) {
             />
           )}
           {buyError ? (
-            <p role="alert" className="mt-4 rounded-[10px] border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+            <p
+              role="alert"
+              className="mt-4 rounded-[10px] border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
+            >
               {buyError}
             </p>
           ) : null}
@@ -95,13 +137,30 @@ export function ProductPage({ route }: { route: ProductRoute }) {
         <OrderSummary
           product={product}
           selectedType={selected}
-          onBuy={(payload: BuyPayload) => {
-            void payload;
+          buying={buying}
+          onBuy={(payload) => {
             setBuyError(null);
+            setPendingPayload(payload);
+            setConfirmOpen(true);
           }}
-          buying={false}
         />
       </div>
+
+      <ConfirmOrderDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        packageName={selected?.name ?? product.name}
+        quantity={pendingPayload?.quantity ?? 1}
+        total={
+          selected && pendingPayload
+            ? lineTotal(selected.displayPrice, pendingPayload.quantity)
+            : 0
+        }
+        buying={buying}
+        onConfirm={() => {
+          if (pendingPayload) void handleBuy(pendingPayload);
+        }}
+      />
     </div>
   );
 }

@@ -173,6 +173,13 @@ export function listFavorites(params: ListParams = {}) {
   return apiFetchWithMeta<FavoriteItem[]>(`/api/favorites${query(params)}`);
 }
 
+export function addFavorite(productId: string): Promise<FavoriteItem> {
+  return apiFetch("/api/favorites", {
+    method: "POST",
+    body: { productId },
+  });
+}
+
 export function removeFavorite(id: string): Promise<unknown> {
   return apiFetch(`/api/favorites/${id}`, { method: "DELETE" });
 }

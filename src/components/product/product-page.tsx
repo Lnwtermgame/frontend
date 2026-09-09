@@ -4,14 +4,19 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Heart, Share2, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "@/i18n/routing";
-import { useProductBySlug } from "@/lib/query/hooks";
+import { useProductBySlug, useFavorites, useFeatured } from "@/lib/query/hooks";
+import { addFavorite, removeFavorite } from "@/lib/api/dashboard";
+import { useAuthStore } from "@/stores/auth";
 import { productImage } from "@/lib/product-image";
 import { PackageGrid } from "./package-grid";
 import { OrderSummary, type BuyPayload } from "./order-summary";
 import { ConfirmOrderDialog } from "./confirm-order-dialog";
+import { ProductGrid } from "./product-grid";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
 import { lineTotal } from "@/lib/pricing";
@@ -31,11 +36,27 @@ export function ProductPage({ route }: { route: ProductRoute }) {
   const routeParams = useParams<Record<string, string>>();
   const slug = routeParams?.[FIELD_BY_ROUTE[route]] ?? "";
   const query = useProductBySlug(slug);
+  const user = useAuthStore((s) => s.user);
+
   const [selected, setSelected] = useState<ProductTypePublic | null>(null);
   const [buyError, setBuyError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [buying, setBuying] = useState(false);
   const [pendingPayload, setPendingPayload] = useState<BuyPayload | null>(null);
+
+  // Copy link state
+  const [copied, setCopied] = useState(false);
+
+  // Favorites state
+  const favorites = useFavorites({ limit: 50 });
+  const isFavoriteItem = (favorites.data?.data ?? []).find(
+    (f) => f.product.id === query.data?.id,
+  );
+  const isFav = Boolean(isFavoriteItem);
+  const [favLoading, setFavLoading] = useState(false);
+
+  // Featured/related products for recommendations
+  const featured = useFeatured(6);
 
   // reset local state when navigating between products
   useEffect(() => {
@@ -43,6 +64,38 @@ export function ProductPage({ route }: { route: ProductRoute }) {
     setPendingPayload(null);
     setBuyError(null);
   }, [slug]);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // noop
+    }
+  };
+
+  const handleToggleFavorite = async () => {
+    if (!query.data) return;
+    if (!user) {
+      const current = window.location.pathname;
+      router.push(`/login?redirect=${encodeURIComponent(current)}`);
+      return;
+    }
+    setFavLoading(true);
+    try {
+      if (isFav && isFavoriteItem) {
+        await removeFavorite(isFavoriteItem.id);
+      } else {
+        await addFavorite(query.data.id);
+      }
+      favorites.refetch();
+    } catch {
+      // noop
+    } finally {
+      setFavLoading(false);
+    }
+  };
 
   const handleBuy = async (payload: BuyPayload) => {
     if (!selected || !query.data) return;
@@ -58,7 +111,6 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           `/payments/pending?orderId=${result.orderId}&referenceNo=${result.referenceNo}`,
         );
       }
-      // redirected: provider flow owns the tab; nothing to do
     } catch (err) {
       const info = err instanceof ApiError ? err.infoCode : undefined;
       setBuyError(
@@ -67,8 +119,8 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           : info === "20114"
             ? t("phoneRegionMismatch")
             : err instanceof Error && err.message !== "NO_PAYMENT_LINK" && err.message
-            ? err.message
-            : t("orderFailed"),
+              ? err.message
+              : t("orderFailed"),
       );
       setConfirmOpen(false);
     } finally {
@@ -99,28 +151,59 @@ export function ProductPage({ route }: { route: ProductRoute }) {
   const product = query.data;
   const types = (product.types ?? []).filter((ty) => ty.isActive);
 
+  // Filter out current product from recommendations
+  const relatedProducts = (featured.data ?? [])
+    .filter((p) => p.id !== product.id)
+    .slice(0, 5);
+
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8">
-      <div className="flex items-center gap-4 rounded-[14px] border bg-card p-4">
-        <div className="relative size-16 shrink-0 overflow-hidden rounded-[10px]">
-          <Image
-            src={productImage(product.name, product.imageUrl)}
-            alt={product.name}
-            fill
-            sizes="64px"
-            className="object-cover"
-          />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold">{product.name}</h1>
-          <div className="mt-1.5 flex gap-1.5">
-            <Badge variant="secondary">{t("autoDelivery")}</Badge>
-            {product.isBestseller ? <Badge variant="secondary">ขายดี</Badge> : null}
+    <div className="mx-auto w-full max-w-6xl px-4 py-8 space-y-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[14px] border bg-card p-4 shadow-(--shadow-tile)">
+        <div className="flex items-center gap-4">
+          <div className="relative size-16 shrink-0 overflow-hidden rounded-[10px]">
+            <Image
+              src={productImage(product.name, product.imageUrl)}
+              alt={product.name}
+              fill
+              sizes="64px"
+              className="object-cover"
+            />
           </div>
+          <div>
+            <h1 className="text-xl font-bold">{product.name}</h1>
+            <div className="mt-1.5 flex gap-1.5">
+              <Badge variant="secondary">{t("autoDelivery")}</Badge>
+              {product.isBestseller ? <Badge variant="secondary">ขายดี</Badge> : null}
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons: Favorite & Share */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={favLoading}
+            onClick={handleToggleFavorite}
+            className={`gap-1.5 text-xs ${isFav ? "border-primary text-primary" : ""}`}
+          >
+            <Heart className={`size-4 ${isFav ? "fill-primary text-primary" : ""}`} />
+            <span>{isFav ? "ถูกใจแล้ว" : "ถูกใจ"}</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopyLink}
+            className="gap-1.5 text-xs"
+          >
+            {copied ? <Check className="size-4 text-status-success" /> : <Share2 className="size-4" />}
+            <span>{copied ? "คัดลอกแล้ว" : "แชร์"}</span>
+          </Button>
         </div>
       </div>
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="grid items-start gap-6 lg:grid-cols-[1fr_360px]">
         <section>
           <h2 className="mb-3 text-lg font-bold">{t("selectPackage")}</h2>
           {types.length === 0 ? (
@@ -143,6 +226,7 @@ export function ProductPage({ route }: { route: ProductRoute }) {
             </p>
           ) : null}
         </section>
+
         <OrderSummary
           product={product}
           selectedType={selected}
@@ -154,6 +238,14 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           }}
         />
       </div>
+
+      {/* Related / Recommended Products */}
+      {relatedProducts.length > 0 ? (
+        <section className="border-t pt-8">
+          <h2 className="mb-4 text-lg font-bold">เกมและบริการแนะนำอื่นๆ</h2>
+          <ProductGrid products={relatedProducts} />
+        </section>
+      ) : null}
 
       <ConfirmOrderDialog
         open={confirmOpen}

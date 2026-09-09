@@ -32,8 +32,8 @@ export default function DashboardLayout({
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
-      <div className="grid items-start gap-6 lg:grid-cols-[220px_1fr]">
-        <aside className="rounded-[14px] border bg-card p-3 lg:sticky lg:top-20">
+      <div className="grid min-w-0 max-w-full items-start gap-6 lg:grid-cols-[220px_1fr]">
+        <aside className="min-w-0 max-w-full rounded-[14px] border bg-card p-3 lg:sticky lg:top-20">
           <p className="mb-3 px-3 text-xs font-semibold text-muted-foreground">
             {user.username}
           </p>

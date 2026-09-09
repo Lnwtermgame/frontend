@@ -43,26 +43,26 @@ function HeaderInner() {
             className="pl-9"
           />
         </form>
-        <nav className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
+        <nav className="ml-auto flex items-center gap-1.5 sm:gap-2">
+          <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
             <Link href="/games">{t("games")}</Link>
           </Button>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
             <Link href="/card">{t("card")}</Link>
           </Button>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild className="hidden lg:inline-flex">
             <Link href="/mobile-recharge">{t("mobile")}</Link>
           </Button>
           {user ? (
-            <div className="flex items-center gap-2">
-              <span className="hidden text-sm font-semibold sm:inline">{user.username}</span>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="hidden text-xs font-semibold sm:inline max-w-[120px] truncate">{user.username}</span>
+              <Button variant="outline" size="sm" onClick={handleLogout} className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
                 {ta("logout")}
               </Button>
             </div>
           ) : (
             <>
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" asChild className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
                 <Link href="/login">{ta("login")}</Link>
               </Button>
               <Button size="sm" asChild className="hidden sm:inline-flex">

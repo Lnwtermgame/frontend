@@ -128,10 +128,12 @@
   }
   html {
     @apply font-sans;
+    overflow-x: clip;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+    overflow-x: clip;
   }
   /* ห้ามตั้งค่านี้เป็น default ทั้ง body — ใช้คลาส tabular-nums ที่จุดราคาเท่านั้น (spec §5) */
 }

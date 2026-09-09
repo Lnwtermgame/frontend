@@ -135,3 +135,8 @@
   }
   /* ห้ามตั้งค่านี้เป็น default ทั้ง body — ใช้คลาส tabular-nums ที่จุดราคาเท่านั้น (spec §5) */
 }
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+

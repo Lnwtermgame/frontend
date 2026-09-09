@@ -2,8 +2,11 @@ import "../globals.css";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SessionProvider } from "next-auth/react";
 import { routing } from "@/i18n/routing";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { NextAuthSessionSync } from "@/components/providers/next-auth-session-sync";
+import { AuthBootstrap } from "@/components/providers/auth-bootstrap";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -33,9 +36,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </NextIntlClientProvider>
+        <SessionProvider>
+          <NextIntlClientProvider>
+            <QueryProvider>
+              <NextAuthSessionSync />
+              <AuthBootstrap />
+              {children}
+            </QueryProvider>
+          </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );

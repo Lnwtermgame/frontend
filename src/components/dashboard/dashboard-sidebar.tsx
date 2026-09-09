@@ -1,11 +1,23 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Package, Receipt, Ticket, Heart, Coins } from "lucide-react";
+import {
+  Package,
+  Receipt,
+  Ticket,
+  Heart,
+  Coins,
+  User,
+  ShieldCheck,
+  Bell,
+} from "lucide-react";
 import { Link, usePathname } from "@/i18n/routing";
 
 const ITEMS = [
   { href: "/dashboard/orders", key: "orders", Icon: Package },
+  { href: "/dashboard/account", key: "account", Icon: User, exact: true },
+  { href: "/dashboard/account/security", key: "security", Icon: ShieldCheck },
+  { href: "/dashboard/notifications", key: "notifications", Icon: Bell },
   { href: "/dashboard/invoice", key: "invoices", Icon: Receipt },
   { href: "/dashboard/coupons", key: "coupons", Icon: Ticket },
   { href: "/dashboard/favorite", key: "favorites", Icon: Heart },
@@ -18,8 +30,9 @@ export function DashboardSidebar() {
 
   return (
     <nav className="flex gap-1 overflow-x-auto lg:flex-col" aria-label={t("title")}>
-      {ITEMS.map(({ href, key, Icon }) => {
-        const active = pathname.startsWith(href);
+      {ITEMS.map(({ href, key, Icon, ...rest }) => {
+        const isExact = "exact" in rest && rest.exact;
+        const active = isExact ? pathname === href : pathname.startsWith(href);
         return (
           <Link
             key={href}

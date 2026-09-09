@@ -102,6 +102,10 @@
   "dashboard": {
     "title": "บัญชีของฉัน",
     "all": "ทั้งหมด",
+    "account": "ข้อมูลบัญชี",
+    "security": "ความปลอดภัย",
+    "notifications": "การแจ้งเตือน",
+    "notificationPreferences": "ตั้งค่าการแจ้งเตือน",
     "orders": "คำสั่งซื้อ",
     "invoices": "ใบแจ้งหนี้",
     "coupons": "คูปอง",

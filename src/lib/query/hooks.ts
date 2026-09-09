@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import * as productsApi from "@/lib/api/products";
 import * as dashApi from "@/lib/api/dashboard";
 import * as supportApi from "@/lib/api/support";
+import * as accountApi from "@/lib/api/account";
 import { getPaymentMethods } from "@/lib/api/payments";
 import { qk } from "./keys";
 
@@ -215,5 +216,47 @@ export function useNewsArticle(slug: string) {
     queryFn: () => supportApi.getNewsBySlug(slug),
     enabled: Boolean(slug),
     staleTime: 5 * 60_000,
+  });
+}
+
+// ── Account, Security & Notifications ──
+
+export function useUserDevices() {
+  return useQuery({
+    queryKey: qk.devices(),
+    queryFn: accountApi.getUserDevices,
+    staleTime: 30_000,
+  });
+}
+
+export function useSecuritySettings() {
+  return useQuery({
+    queryKey: qk.securitySettings(),
+    queryFn: accountApi.getSecuritySettings,
+    staleTime: 30_000,
+  });
+}
+
+export function useSecurityActivities() {
+  return useQuery({
+    queryKey: qk.securityActivities(),
+    queryFn: accountApi.getSecurityActivities,
+    staleTime: 30_000,
+  });
+}
+
+export function useNotifications(params: { page?: number; limit?: number } = {}) {
+  return useQuery({
+    queryKey: qk.notifications(params),
+    queryFn: () => accountApi.listNotifications(params),
+    staleTime: 10_000,
+  });
+}
+
+export function useNotificationPreferences() {
+  return useQuery({
+    queryKey: qk.notificationPreferences(),
+    queryFn: accountApi.getNotificationPreferences,
+    staleTime: 60_000,
   });
 }

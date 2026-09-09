@@ -1,0 +1,157 @@
+import { apiFetch, apiFetchWithMeta } from "./client";
+import type { AuthUser } from "./auth";
+
+// ============ Account & Profile Types ============
+
+export interface UpdateProfileInput {
+  username?: string;
+  email?: string;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
+// ============ Security Types ============
+
+export interface UserDevice {
+  id: string;
+  name: string;
+  browser: string;
+  os: string;
+  ip: string;
+  location: string;
+  lastActive: string;
+  createdAt: string;
+}
+
+export interface SecuritySettings {
+  twoFactorEnabled: boolean;
+  twoFactorMethod?: string | null;
+  loginNotifications: boolean;
+  securityQuestions: boolean;
+}
+
+export interface SecurityActivity {
+  id: string;
+  type: string;
+  description: string;
+  ip: string;
+  location: string;
+  timestamp: string;
+  suspicious: boolean;
+  resolved: boolean;
+}
+
+// ============ Notification Types ============
+
+export type NotificationType = "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM";
+
+export interface NotificationItem {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  isRead: boolean;
+  data?: Record<string, unknown> | null;
+  createdAt: string;
+  readAt?: string | null;
+}
+
+export interface NotificationPreferences {
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  orderUpdates: boolean;
+  promotions: boolean;
+}
+
+// ============ API Functions ============
+
+// Profile & Account
+export function updateProfile(data: UpdateProfileInput): Promise<AuthUser> {
+  return apiFetch("/api/auth/profile", {
+    method: "PUT",
+    body: data,
+  });
+}
+
+export function changePassword(data: ChangePasswordInput): Promise<{ message: string }> {
+  return apiFetch("/api/auth/change-password", {
+    method: "PUT",
+    body: data,
+  });
+}
+
+// Security
+export function getUserDevices(): Promise<UserDevice[]> {
+  return apiFetch("/api/security/devices");
+}
+
+export function removeDevice(id: string): Promise<{ message: string }> {
+  return apiFetch(`/api/security/devices/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export function logoutAllDevices(): Promise<{ message: string }> {
+  return apiFetch("/api/security/logout-all", {
+    method: "POST",
+  });
+}
+
+export function getSecuritySettings(): Promise<SecuritySettings> {
+  return apiFetch("/api/security/settings");
+}
+
+export function updateSecuritySettings(data: Partial<SecuritySettings>): Promise<SecuritySettings> {
+  return apiFetch("/api/security/settings", {
+    method: "PUT",
+    body: data,
+  });
+}
+
+export function getSecurityActivities(): Promise<SecurityActivity[]> {
+  return apiFetch("/api/security/activities");
+}
+
+// Notifications
+export function listNotifications(params: { page?: number; limit?: number } = {}) {
+  const search = new URLSearchParams();
+  if (params.page) search.append("page", String(params.page));
+  if (params.limit) search.append("limit", String(params.limit));
+  const q = search.toString();
+  return apiFetchWithMeta<NotificationItem[]>(`/api/notifications${q ? `?${q}` : ""}`);
+}
+
+export function markNotificationRead(id: string): Promise<{ message: string }> {
+  return apiFetch(`/api/notifications/${id}/read`, {
+    method: "PUT",
+  });
+}
+
+export function markAllNotificationsRead(): Promise<{ message: string }> {
+  return apiFetch("/api/notifications/read-all", {
+    method: "PUT",
+  });
+}
+
+export function deleteNotification(id: string): Promise<{ message: string }> {
+  return apiFetch(`/api/notifications/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export function getNotificationPreferences(): Promise<NotificationPreferences> {
+  return apiFetch("/api/notifications/preferences");
+}
+
+export function updateNotificationPreferences(
+  data: Partial<NotificationPreferences>,
+): Promise<NotificationPreferences> {
+  return apiFetch("/api/notifications/preferences", {
+    method: "PUT",
+    body: data,
+  });
+}

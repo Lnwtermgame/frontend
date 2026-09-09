@@ -113,6 +113,41 @@ describe("useAuthStore", () => {
     expect(useAuthStore.getState().status).toBe("authenticated");
   });
 
+  it("applyOAuthSession: same user + existing client token → does not clobber newer client token", async () => {
+    localStorage.setItem(
+      "gtp-new-user",
+      JSON.stringify({ state: { user: testUser }, version: 0 }),
+    );
+    const { useAuthStore } = await import("./auth");
+    // simulate a cookie-refresh that rotated the in-memory token past the
+    // stale NextAuth JWT token written once at OAuth sign-in
+    clientTokenRef.current = "newer-token";
+    const applied = useAuthStore.getState().applyOAuthSession({
+      backendTokens: { accessToken: "stale-oauth-token", expiresIn: 900 },
+      backendUser: testUser,
+    });
+    expect(applied).toBe(true);
+    expect(clientTokenRef.current).toBe("newer-token");
+    expect(useAuthStore.getState().user?.id).toBe("u1");
+  });
+
+  it("applyOAuthSession: different user → still overwrites token + user", async () => {
+    localStorage.setItem(
+      "gtp-new-user",
+      JSON.stringify({ state: { user: testUser }, version: 0 }),
+    );
+    const { useAuthStore } = await import("./auth");
+    clientTokenRef.current = "token-a";
+    const otherUser = { ...testUser, id: "u2", email: "other@example.com" };
+    const applied = useAuthStore.getState().applyOAuthSession({
+      backendTokens: { accessToken: "token-b", expiresIn: 900 },
+      backendUser: otherUser,
+    });
+    expect(applied).toBe(true);
+    expect(clientTokenRef.current).toBe("token-b");
+    expect(useAuthStore.getState().user?.id).toBe("u2");
+  });
+
   it("logout clears store + token (api failure tolerated)", async () => {
     logoutMock.mockRejectedValue(new Error("network"));
     localStorage.setItem(

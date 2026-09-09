@@ -65,10 +65,10 @@ export const useAuthStore = create<AuthState>()(
 
       applyOAuthSession: ({ backendTokens, backendUser }) => {
         if (!backendTokens?.accessToken || !backendUser) return false;
-        if (
-          getAccessToken() === backendTokens.accessToken &&
-          get().user?.id === backendUser.id
-        ) {
+        // Same user already applied and the API client holds a token: the
+        // client token is by definition same-or-newer than the NextAuth JWT
+        // token (written once at OAuth sign-in), so never clobber it.
+        if (get().user?.id === backendUser.id && getAccessToken()) {
           return true;
         }
         setAccessToken(backendTokens.accessToken);

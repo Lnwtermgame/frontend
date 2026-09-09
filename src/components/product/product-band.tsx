@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Check, Heart, Share2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { GameCover, coverDnaFor } from "@/components/product/game-cover";
+import { extractDominantColor, shadeDarker } from "@/lib/color-extract";
 import type { Product } from "@/lib/api/products";
 
 const FALLBACK_SUB: Record<Product["productType"], string> = {
@@ -33,6 +35,26 @@ export function ProductBand({
   const dna = coverDnaFor(product.name, FALLBACK_SUB[product.productType]);
   const details = product.gameDetails;
 
+  // มีรูปจริง → ดึงสีเด่นจากรูปมาใช้แทนสี DNA (DNA คือค่าเริ่มต้น + fallback
+  // เมื่อรูปเป็นขาวดำหรืออ่านไม่ได้)
+  const [accent, setAccent] = useState<string | null>(null);
+  useEffect(() => {
+    setAccent(null);
+    if (!product.imageUrl) return;
+    let alive = true;
+    extractDominantColor(product.imageUrl)
+      .then((hex) => {
+        if (alive) setAccent(hex);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [product.imageUrl]);
+
+  const c1 = accent ?? dna.c1;
+  const c2 = accent ? shadeDarker(accent) : dna.c2;
+
   const metaItems = [
     details?.developer && { label: t("metaDeveloper"), value: details.developer },
     details?.platforms?.length && {
@@ -45,18 +67,18 @@ export function ProductBand({
   return (
     <div
       className="relative overflow-hidden border-b border-border/60"
-      style={{ background: `color-mix(in oklab, ${dna.c1} 16%, var(--background))` }}
+      style={{ background: `color-mix(in oklab, ${c1} 16%, var(--background))` }}
     >
       {/* รูปทรงเฉียงประดับ — สีรองของเกม */}
       <span
         aria-hidden
         className="absolute -top-[40%] -right-[6%] h-[190%] w-[38%] rotate-[16deg]"
-        style={{ background: `color-mix(in oklab, ${dna.c2} 20%, transparent)` }}
+        style={{ background: `color-mix(in oklab, ${c2} 20%, transparent)` }}
       />
       <span
         aria-hidden
         className="absolute -top-[40%] right-[16%] h-[190%] w-[10%] rotate-[16deg]"
-        style={{ background: `color-mix(in oklab, ${dna.c1} 32%, transparent)` }}
+        style={{ background: `color-mix(in oklab, ${c1} 32%, transparent)` }}
       />
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-wrap items-center gap-4 px-4 py-6 sm:gap-5">

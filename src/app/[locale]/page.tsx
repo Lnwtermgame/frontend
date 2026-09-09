@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useFeatured, useBestsellers } from "@/lib/query/hooks";
 import { ProductGrid, ProductGridSkeleton, GridEmptyState } from "@/components/product/product-grid";
 import { HowItWorks } from "@/components/home/how-it-works";
+import { TrustStrip } from "@/components/home/trust-strip";
 
 export default function HomePage() {
   const t = useTranslations("home");
@@ -62,6 +63,7 @@ export default function HomePage() {
       </section>
 
       <HowItWorks />
+      <TrustStrip />
     </div>
   );
 }

@@ -1,27 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { signOut } from "next-auth/react";
-import { Search } from "lucide-react";
-import { Link, useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { useAuthStore } from "@/stores/auth";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { NavSearch } from "./nav-search";
 
 function HeaderInner() {
   const t = useTranslations("nav");
   const ta = useTranslations("auth");
-  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const [query, setQuery] = useState("");
-
-  const submitSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push(query.trim() ? `/games?search=${encodeURIComponent(query.trim())}` : "/games");
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -34,15 +25,7 @@ function HeaderInner() {
         <Link href="/" className="text-sm font-extrabold tracking-wide">
           LNW<span className="text-primary">TERMGAME</span>
         </Link>
-        <form onSubmit={submitSearch} className="relative hidden flex-1 max-w-md sm:block">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("searchPlaceholder")}
-            className="pl-9"
-          />
-        </form>
+        <NavSearch />
         <nav className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
             <Link href="/games">{t("games")}</Link>

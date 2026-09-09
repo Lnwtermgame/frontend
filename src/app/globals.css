@@ -86,6 +86,12 @@
   --status-warning: oklch(0.8 0.14 85);
   --status-danger: oklch(0.63 0.19 25);
   --status-info: oklch(0.72 0.13 240);
+
+  /* scrollbar (Warm Slate — track โปร่งใส, thumb คล้าย border แต่สว่างกว่าเล็กน้อย) */
+  color-scheme: dark;
+  --scrollbar-thumb: oklch(0.38 0.016 310);
+  --scrollbar-thumb-hover: oklch(0.46 0.014 308);
+  --scrollbar-thumb-active: oklch(0.52 0.012 306);
 }
 
 .dark {
@@ -136,6 +142,37 @@
     overflow-x: clip;
   }
   /* ห้ามตั้งค่านี้เป็น default ทั้ง body — ใช้คลาส tabular-nums ที่จุดราคาเท่านั้น (spec §5) */
+
+  /* custom scrollbar ทั้งแอป — Chromium/Edge ใช้ webkit pseudo (คุมขนาด+มุมมนได้)
+     Firefox: standard properties ผ่าน @supports gate (Chromium ที่รองรับ selector
+     จะข้ามบล็อกนี้ เพราะ scrollbar-color จะเข้าแทน webkit pseudo) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  /* border โปร่งใส + background-clip: padding-box = ดัน thumb ให้เป็นแท่งมน 6px กลาง track */
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--scrollbar-thumb-active);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
+  }
 }
 
 @utility num {

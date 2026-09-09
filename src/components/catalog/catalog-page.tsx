@@ -229,7 +229,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
 
           <div className="mt-6">
             {products.isLoading ? (
-              <div className="grid grid-cols-2 gap-x-3.5 gap-y-5 sm:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className="flex flex-col gap-2">
                     <Skeleton className="aspect-square rounded-xl" />
@@ -248,7 +248,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
             ) : filtered.length === 0 ? (
               <p className="py-16 text-center text-sm text-muted-foreground">{t("emptyTitle")}</p>
             ) : (
-              <div className="grid grid-cols-2 gap-x-3.5 gap-y-5 sm:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
                 {filtered.map((p) => (
                   <ShelfTile key={p.id} product={p} />
                 ))}

@@ -9,6 +9,14 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   turbopack: { root: appDir },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "placehold.co" },
+      { protocol: "https", hostname: "assets.lnwtermgame.com" },
+      { protocol: "https", hostname: "**.appwrite.io" },
+      { protocol: "https", hostname: "**.seagm.com" },
+    ],
+  },
   async headers() {
     return [
       {

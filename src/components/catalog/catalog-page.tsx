@@ -248,7 +248,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
             ) : filtered.length === 0 ? (
               <p className="py-16 text-center text-sm text-muted-foreground">{t("emptyTitle")}</p>
             ) : (
-              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
+              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6">
                 {filtered.map((p) => (
                   <ShelfTile key={p.id} product={p} />
                 ))}

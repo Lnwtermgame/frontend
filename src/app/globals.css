@@ -53,32 +53,35 @@
 }
 
 /* SEAGM-clean dark + single orange accent (spec §5).
-   Base = "แบบ A · Canvas" — ค่าสุดท้ายปรับตามผล mockup gate ใน Task 9 */
+   Locked to "แบบ B · Warm Slate" — user pick at mockup gate 2026-09-09.
+   ค่า oklch แปลงจาก hex ของ mockup variant B ด้วยการคำนวณจริง (sRGB→OKLab→OKLCH):
+   bg #191618 · surface #211e22 · raised #282429 · border #35303a · text #eceae9 · muted #a8a2a4 */
 :root {
-  --background: oklch(0.17 0.01 260);
-  --foreground: oklch(0.93 0.005 260);
-  --card: oklch(0.21 0.012 260);
-  --card-foreground: oklch(0.93 0.005 260);
-  --popover: oklch(0.19 0.012 260);
-  --popover-foreground: oklch(0.93 0.005 260);
+  --background: oklch(0.205 0.006 338);
+  --foreground: oklch(0.938 0.003 49);
+  --card: oklch(0.24 0.009 318);
+  --card-foreground: oklch(0.938 0.003 49);
+  --popover: oklch(0.222 0.007 326);
+  --popover-foreground: oklch(0.938 0.003 49);
   --primary: oklch(0.7 0.17 45);
   --primary-foreground: oklch(0.15 0.02 45);
-  --secondary: oklch(0.25 0.014 260);
-  --secondary-foreground: oklch(0.93 0.005 260);
-  --muted: oklch(0.24 0.012 260);
-  --muted-foreground: oklch(0.68 0.01 260);
-  --accent: oklch(0.25 0.014 260);
-  --accent-foreground: oklch(0.93 0.005 260);
+  --secondary: oklch(0.267 0.011 320);
+  --secondary-foreground: oklch(0.938 0.003 49);
+  --muted: oklch(0.24 0.009 318);
+  --muted-foreground: oklch(0.718 0.008 355);
+  --accent: oklch(0.267 0.011 320);
+  --accent-foreground: oklch(0.938 0.003 49);
   --destructive: oklch(0.63 0.19 25);
-  --border: oklch(0.3 0.015 260);
-  --input: oklch(0.3 0.015 260);
+  --border: oklch(0.318 0.019 308);
+  --input: oklch(0.318 0.019 308);
   --ring: oklch(0.7 0.17 45);
-  --radius: 0.625rem;
+  --radius: 0.875rem;
 
   /* domain tokens (นอกเหนือ shadcn mapping) */
-  --site-raised: oklch(0.25 0.014 260);
+  --site-raised: oklch(0.267 0.011 320);
   --site-accent: oklch(0.7 0.17 45);
   --site-accent-hover: oklch(0.75 0.17 45);
+  --shadow-tile: 0 1px 3px rgb(0 0 0 / 0.4), 0 8px 24px -16px rgb(0 0 0 / 0.6);
   --status-success: oklch(0.72 0.15 150);
   --status-warning: oklch(0.8 0.14 85);
   --status-danger: oklch(0.63 0.19 25);
@@ -122,22 +125,12 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
+  }
   html {
     @apply font-sans;
-    }
-}
-
-@layer base {
-  * {
-    border-color: var(--color-border);
   }
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    @apply bg-background text-foreground;
     font-family: var(--font-sans);
   }
   /* ห้ามตั้งค่านี้เป็น default ทั้ง body — ใช้คลาส tabular-nums ที่จุดราคาเท่านั้น (spec §5) */

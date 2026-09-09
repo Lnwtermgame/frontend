@@ -1,13 +1,13 @@
+import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const appDir = path.dirname(fileURLToPath(import.meta.url));
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // มี lockfiles อื่นบน drive เดียวกัน (root npm/bun) — pin root ของตัวเองกัน
-  // Turbopack mis-detect (เหมือน comment ใน next.config.js ของแอปเก่า)
   turbopack: { root: appDir },
   async headers() {
     return [
@@ -24,4 +24,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

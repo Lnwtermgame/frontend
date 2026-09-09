@@ -47,3 +47,37 @@ export function getProfile() {
 export function getOAuthProviders() {
   return apiFetch<OAuthProviderInfo[]>("/api/auth/oauth-providers", { skipAuth: true });
 }
+
+// ============ Password Recovery & Email Verification ============
+
+export function requestPasswordReset(email: string): Promise<{ message: string }> {
+  return apiFetch("/api/auth/request-password-reset", {
+    method: "POST",
+    body: { email },
+    skipAuth: true,
+  });
+}
+
+export function resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+  return apiFetch("/api/auth/reset-password", {
+    method: "POST",
+    body: { token, newPassword },
+    skipAuth: true,
+  });
+}
+
+export function verifyEmail(email: string, token: string): Promise<{ message: string }> {
+  return apiFetch("/api/auth/verify-email", {
+    method: "POST",
+    body: { email, token },
+    skipAuth: true,
+  });
+}
+
+export function resendVerification(email: string): Promise<{ message: string }> {
+  return apiFetch("/api/auth/resend-verification", {
+    method: "POST",
+    body: { email },
+    skipAuth: true,
+  });
+}

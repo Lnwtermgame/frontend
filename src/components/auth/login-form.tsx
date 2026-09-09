@@ -7,7 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/stores/auth";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const loginSchema = z.object({
   email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง"),
@@ -52,36 +55,46 @@ export function LoginForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex w-full max-w-sm flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-semibold">อีเมล</label>
-        <input
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="email">{t("email")}</Label>
+        <Input
           id="email"
           type="email"
           autoComplete="email"
-          className="rounded-md border px-3 py-2"
           {...register("email")}
         />
         {errors.email && (
-          <p role="alert" className="text-sm text-red-500">{errors.email.message}</p>
+          <p role="alert" className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm font-semibold">รหัสผ่าน</label>
-        <input
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password">{t("password")}</Label>
+          <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-primary hover:underline">
+            {t("forgotPassword")}
+          </Link>
+        </div>
+        <Input
           id="password"
           type="password"
           autoComplete="current-password"
-          className="rounded-md border px-3 py-2"
           {...register("password")}
         />
         {errors.password && (
-          <p role="alert" className="text-sm text-red-500">{errors.password.message}</p>
+          <p role="alert" className="text-xs text-destructive">{errors.password.message}</p>
         )}
       </div>
-      {formError && <p role="alert" className="text-sm text-red-500">{formError}</p>}
-      <button type="submit" disabled={isSubmitting} className="rounded-md px-4 py-2 font-semibold">
+      {formError && <p role="alert" className="text-xs text-destructive">{formError}</p>}
+      <Button type="submit" disabled={isSubmitting} className="mt-2 w-full font-semibold">
         {isSubmitting ? "กำลังเข้าสู่ระบบ…" : t("login")}
-      </button>
+      </Button>
+
+      <p className="text-center text-xs text-muted-foreground">
+        {t("noAccount")}{" "}
+        <Link href="/register" className="font-semibold text-primary hover:underline">
+          {t("register")}
+        </Link>
+      </p>
     </form>
   );
 }

@@ -25,6 +25,11 @@ interface AuthState {
     email: string,
     password: string,
   ) => Promise<{ ok: boolean; message?: string }>;
+  registerWithPassword: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; message?: string }>;
   applyOAuthSession: (payload: OAuthSessionPayload) => boolean;
   logout: () => Promise<void>;
 }
@@ -59,6 +64,20 @@ export const useAuthStore = create<AuthState>()(
           set({ status: "guest" });
           const message =
             error instanceof Error ? error.message : "เข้าสู่ระบบไม่สำเร็จ";
+          return { ok: false, message };
+        }
+      },
+
+      registerWithPassword: async (username, email, password) => {
+        try {
+          const result = await authApi.register(username, email, password);
+          setAccessToken(result.tokens.accessToken);
+          set({ user: result.user, status: "authenticated" });
+          return { ok: true };
+        } catch (error) {
+          set({ status: "guest" });
+          const message =
+            error instanceof Error ? error.message : "สมัครสมาชิกไม่สำเร็จ";
           return { ok: false, message };
         }
       },

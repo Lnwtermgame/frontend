@@ -66,7 +66,7 @@ function HeaderInner() {
                 <Link href="/login">{ta("login")}</Link>
               </Button>
               <Button size="sm" asChild className="hidden sm:inline-flex">
-                <Link href="/login">{t("register")}</Link>
+                <Link href="/register">{t("register")}</Link>
               </Button>
             </>
           )}

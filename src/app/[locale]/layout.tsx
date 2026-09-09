@@ -9,6 +9,7 @@ import { NextAuthSessionSync } from "@/components/providers/next-auth-session-sy
 import { AuthBootstrap } from "@/components/providers/auth-bootstrap";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { CookieNotice } from "@/components/layout/cookie-notice";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
                 <main className="flex-1">{children}</main>
                 <SiteFooter />
               </div>
+              <CookieNotice />
             </QueryProvider>
           </NextIntlClientProvider>
         </SessionProvider>

@@ -17,7 +17,9 @@ export function useProducts(params: productsApi.ListProductsParams = {}) {
 export function useFeatured(limit = 8) {
   return useQuery({
     queryKey: qk.featured(limit),
-    queryFn: () => productsApi.getFeatured(limit),
+    // ใช้ list endpoint แทน /featured เพราะ serializer ของ /featured ไม่ใส่
+    // types (packages) กลับมา — หน้าแรกต้องใช้ราคาจริงจาก displayPrice
+    queryFn: () => productsApi.listProducts({ isFeatured: true, limit }),
     staleTime: 5 * 60_000,
   });
 }
@@ -25,7 +27,13 @@ export function useFeatured(limit = 8) {
 export function useBestsellers(limit = 8) {
   return useQuery({
     queryKey: qk.bestsellers(limit),
-    queryFn: () => productsApi.getBestsellers(limit),
+    queryFn: () =>
+      productsApi.listProducts({
+        isBestseller: true,
+        limit,
+        sortBy: "salesCount",
+        sortOrder: "desc",
+      }),
     staleTime: 5 * 60_000,
   });
 }

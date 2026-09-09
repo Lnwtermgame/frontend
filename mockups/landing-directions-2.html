@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing Directions v2 · LNWTERMGAME frontend-new</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · page: landing comparison round 2 (×3) · theme: Warm Slate (locked)
+ * brief axes จากผู้ใช้: โครงมินิมอล · สีสันจากปกเกม · พลังโปรแบบไทย
+ * honesty: ชื่อเกม/หมวด/ขั้นตอน = ข้อมูลจริง · ราคา + แบนเนอร์โปร = ตัวอย่างพื้นที่จริงที่รอแคมเปญ
+ */
+:root{
+  --bg:#191618; --bg-deep:#141114; --surface:#211e22; --raised:#282429; --raised-2:#2e2a30;
+  --border:#35303a; --border-faint:#2a262b;
+  --text:#eceae9; --muted:#a8a1a6; --muted-2:#7f787e;
+  --primary:oklch(0.7 0.17 45); --primary-hi:oklch(0.755 0.165 45); --primary-ink:#2a1206;
+  --r-lg:14px; --r-md:10px; --r-sm:8px;
+  --shadow-tile:0 1px 0 rgba(255,255,255,.035) inset, 0 10px 28px -14px rgba(0,0,0,.55);
+  --font:"Noto Sans Thai","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{flex:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border:2px solid transparent;border-radius:999px;background-clip:padding-box}
+
+/* doc chrome */
+.doc{max-width:1240px;margin:0 auto;padding:0 16px 96px}
+.doc-head{padding:44px 0 8px}
+.doc-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
+.doc-title{font-size:26px;font-weight:800;margin-top:6px}
+.doc-sub{color:var(--muted);margin-top:6px;max-width:80ch}
+.doc-nav{position:sticky;top:0;z-index:60;background:color-mix(in oklab,var(--bg-deep) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-faint);margin:26px -16px 0;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.doc-nav .lbl{font-size:12px;font-weight:600;color:var(--muted-2)}
+.jump{font-size:12.5px;font-weight:600;color:var(--muted);border:1px solid var(--border-faint);background:var(--surface);
+  border-radius:999px;padding:6px 14px;transition:color .15s,border-color .15s;white-space:nowrap}
+.jump:hover{color:var(--text);border-color:var(--border)}
+.dir{margin-top:60px;scroll-margin-top:64px}
+.dir-label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dir-letter{width:34px;height:34px;border-radius:10px;background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:16px;display:grid;place-items:center}
+.dir-name{font-size:19px;font-weight:700}
+.dir-tag{font-size:12px;font-weight:600;color:var(--muted-2);border:1px solid var(--border-faint);border-radius:999px;padding:3px 10px}
+.dir-desc{color:var(--muted);margin-top:8px;max-width:82ch}
+.frame{border:1px solid var(--border-faint);border-radius:var(--r-lg);overflow:hidden;margin-top:16px;box-shadow:var(--shadow-tile);background:var(--bg)}
+.frame-label{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--muted-2);
+  background:var(--surface);border-bottom:1px solid var(--border-faint)}
+.pros{list-style:none;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 20px}
+.pros li{font-size:13px;color:var(--muted);padding-left:20px;position:relative}
+.pros li::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:2px;background:var(--primary)}
+.pros li.warn::before{background:var(--muted-2)}
+.pros li b{color:var(--text);font-weight:600}
+
+/* header replica A */
+.hd{background:color-mix(in oklab,var(--bg) 96%,transparent)}
+.hd-top{border-bottom:1px solid var(--border-faint)}
+.hd-in{max-width:1152px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:14px;min-width:0}
+.hd-top .hd-in{height:64px}
+.logo{display:flex;align-items:center;gap:9px;flex:none}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:var(--raised-2);border:1px solid var(--border);display:grid;place-items:center;color:var(--primary)}
+.logo-word{font-size:14.5px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.logo-word span{color:var(--primary)}
+.hsearch{display:flex;align-items:center;min-width:0;flex:1;max-width:460px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md)}
+.hsearch input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--text);padding:0 10px;height:40px;font-size:13.5px}
+.hsearch input::placeholder{color:var(--muted-2)}
+.hsearch .sbtn{flex:none;height:32px;margin:4px;border-radius:var(--r-sm);padding:0 16px;background:var(--primary);color:var(--primary-ink);font-weight:700;font-size:13px}
+.hsearch .sico{margin-left:11px;color:var(--muted-2)}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.hd-link{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);padding:8px 11px;border-radius:var(--r-sm);white-space:nowrap}
+.hd-link:hover{color:var(--text);background:var(--surface)}
+.ava{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:999px;border:1px solid var(--border-faint)}
+.ava .dot{width:28px;height:28px;border-radius:999px;background:var(--raised-2);border:1px solid var(--border);display:grid;place-items:center;font-size:12.5px;font-weight:700}
+.ava .nm{font-size:13px;font-weight:600}
+.hd-deck{background:color-mix(in oklab,var(--surface) 55%,var(--bg));border-bottom:1px solid var(--border-faint)}
+.hd-deck .hd-in{height:44px;gap:2px}
+.cat{display:flex;align-items:center;font-size:13.5px;font-weight:600;color:var(--muted);height:100%;padding:0 13px;border-bottom:2px solid transparent;white-space:nowrap}
+.cat:hover{color:var(--text)}
+.cat.on{color:var(--text);border-bottom-color:var(--primary)}
+.badge24{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--border-faint);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.badge24::before{content:"";width:7px;height:7px;border-radius:999px;background:var(--primary)}
+
+/* ---------- designed game covers (สีสัน = จากสินค้า ไม่ใช่ chrome) ---------- */
+.covers{display:flex;gap:14px;flex-wrap:wrap}
+.cover{position:relative;width:132px;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--c1);color:var(--ink,#fff);
+  display:flex;flex-direction:column;justify-content:flex-end;flex:none;transition:transform .15s}
+.cover:hover{transform:translateY(-3px)}
+.cover .band{position:absolute;right:-28%;bottom:18%;width:78%;height:64%;background:var(--c2);transform:rotate(-14deg)}
+.cover .ring{position:absolute;border:3px solid var(--c3,transparent);border-radius:999px}
+.cover .mono{position:absolute;top:11px;left:12px;font-weight:800;font-size:17px;letter-spacing:.01em;line-height:1.05}
+.cover .mono small{display:block;font-size:8.5px;font-weight:700;letter-spacing:.14em;opacity:.72;margin-top:3px}
+.cover .nm{position:relative;font-size:11.5px;font-weight:700;padding:7px 10px;background:rgba(12,9,10,.66);color:#f3f1f0;backdrop-filter:blur(2px)}
+.cover .nm small{display:block;font-size:9.5px;font-weight:600;opacity:.66}
+
+/* minimal landing shared */
+.landing{background:var(--bg)}
+.wrap{max-width:1152px;margin:0 auto;padding:0 20px}
+.sec{padding:30px 0 6px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.shead h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.shead .more{margin-left:auto;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.shead .more:hover{color:var(--primary)}
+.shead .kicker{font-size:11.5px;font-weight:700;color:var(--primary);letter-spacing:.06em}
+.hairline{height:1px;background:var(--border-faint);margin:26px 0 0}
+/* borderless product tiles (มินิมอล: ไม่มีกรอบการ์ด) */
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px 14px}
+.tile{display:flex;flex-direction:column;gap:8px;min-width:0}
+.tile .cover{width:100%}
+.tile .tn{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .tp{font-size:12px;color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .pr{font-size:13.5px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums}
+.tile .pr small{font-size:10.5px;font-weight:600;color:var(--muted-2)}
+.tag{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.04em;border-radius:999px;padding:2px 8px;
+  background:color-mix(in oklab,var(--primary) 15%,transparent);color:var(--primary)}
+.tag.dim{background:var(--raised-2);color:var(--muted)}
+.tagrow{display:flex;gap:6px;margin-bottom:6px;height:18px}
+/* minimal steps (no boxes) */
+.msteps{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 0 2px;font-size:13px}
+.msteps .s{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600}
+.msteps .n{width:22px;height:22px;border-radius:7px;background:color-mix(in oklab,var(--primary) 13%,transparent);color:var(--primary);display:grid;place-items:center;font-size:11.5px;font-weight:700}
+.msteps .arr{color:var(--muted-2)}
+/* inline trust (มินิมอล: ไม่มีกล่อง) */
+.itrust{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:18px 0 6px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.itrust span{display:inline-flex;align-items:center;gap:8px}
+.itrust svg{color:var(--primary)}
+.payline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--border-faint);margin-top:22px;font-size:12px;color:var(--muted-2)}
+.payline b{font-weight:700;color:var(--muted)}
+.payline .dot{width:3px;height:3px;border-radius:999px;background:var(--border);display:inline-block}
+.ft{border-top:1px solid var(--border-faint);background:var(--bg-deep);margin-top:28px}
+.ft .wrap{display:flex;gap:28px;flex-wrap:wrap;padding:22px 20px;font-size:12.5px}
+.ft h5{font-size:12.5px;font-weight:700;margin-bottom:6px}
+.ft a{display:block;color:var(--muted);padding:2.5px 0}
+.ft a:hover{color:var(--text)}
+.ft .cr{margin-left:auto;align-self:flex-end;color:var(--muted-2);font-size:11.5px}
+
+/* ---------- E · banner stage ---------- */
+.banner{position:relative;height:230px;border-radius:var(--r-lg);overflow:hidden;display:flex;align-items:center;color:#fff}
+.banner .bg{position:absolute;inset:0;background:var(--b1)}
+.banner .shape{position:absolute;background:var(--b2)}
+.banner .s1{right:-6%;top:-30%;width:46%;height:170%;transform:rotate(16deg)}
+.banner .s2{right:22%;bottom:-64%;width:18%;height:120%;transform:rotate(16deg)}
+.banner .s3{left:-4%;bottom:-70%;width:30%;height:110%;transform:rotate(16deg);background:var(--b3,transparent)}
+.banner .in{position:relative;padding:0 40px;max-width:640px}
+.banner .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.05em;
+  background:rgba(12,9,10,.35);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:4px 12px;margin-bottom:12px}
+.banner h3{font-size:31px;line-height:1.16;font-weight:800;letter-spacing:-.01em}
+.banner h3 em{font-style:normal;color:#ffd9a3}
+.banner p{font-size:13.5px;opacity:.86;margin-top:8px}
+.banner .cta{display:inline-flex;align-items:center;gap:8px;margin-top:16px;height:40px;padding:0 22px;border-radius:var(--r-md);
+  background:var(--primary);color:var(--primary-ink);font-weight:700;font-size:14px}
+.banner .cta:hover{background:var(--primary-hi)}
+.banner .ghost{display:inline-flex;align-items:center;margin-top:16px;margin-left:10px;height:40px;padding:0 18px;border-radius:var(--r-md);
+  border:1px solid rgba(255,255,255,.28);font-weight:600;font-size:13.5px;color:#fff}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.dots i{width:7px;height:7px;border-radius:999px;background:var(--border)}
+.dots i.on{background:var(--primary);width:20px;border-radius:999px}
+.quickcats{display:flex;gap:26px;flex-wrap:wrap;padding:22px 0 2px}
+.qc{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:var(--muted);transition:color .15s}
+.qc:hover{color:var(--text)}
+.qc .ic{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--border-faint);display:grid;place-items:center;color:var(--primary)}
+
+/* ---------- F · shelf wall ---------- */
+.fhead{padding:26px 0 4px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.fhead h1{font-size:26px;font-weight:800;letter-spacing:-.01em}
+.fhead h1 em{font-style:normal;color:var(--primary)}
+.fhead p{color:var(--muted);font-size:13.5px;margin-left:auto}
+.dealshelf{position:relative}
+.dealshelf .shead h2 .tag{vertical-align:2px;margin-left:10px}
+.priceflash{font-size:13px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums}
+.strike{font-size:11px;color:var(--muted-2);text-decoration:line-through;font-weight:600;margin-left:6px;font-variant-numeric:tabular-nums}
+
+/* ---------- G · deal posters ---------- */
+.ghead{padding:34px 0 10px}
+.ghead h1{font-size:34px;font-weight:800;letter-spacing:-.015em;line-height:1.15}
+.ghead h1 em{font-style:normal;color:var(--primary)}
+.ghead p{color:var(--muted);margin-top:10px;font-size:14.5px;max-width:52ch}
+.posters{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.poster{position:relative;height:250px;border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;color:#fff}
+.poster .bg{position:absolute;inset:0;background:var(--b1)}
+.poster .shape{position:absolute;background:var(--b2)}
+.poster .in{position:relative}
+.poster h3{font-size:20px;font-weight:800}
+.poster p{font-size:12.5px;opacity:.85;margin-top:4px}
+.poster .go{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;font-weight:700}
+.poster .go svg{color:var(--primary)}
+.poplist{display:flex;flex-direction:column}
+.poprow{display:flex;align-items:center;gap:14px;padding:12px 2px;border-bottom:1px solid var(--border-faint)}
+.poprow:last-child{border-bottom:0}
+.poprow .cover{width:52px;border-radius:10px}
+.poprow .cover .mono{font-size:11px;top:6px;left:7px}
+.poprow .cover .mono small{display:none}
+.poprow .cover .nm{display:none}
+.poprow .info{flex:1;min-width:0}
+.poprow .info b{font-size:13.5px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.poprow .info span{font-size:12px;color:var(--muted-2)}
+.poprow .pr{font-size:14px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;white-space:nowrap}
+.poprow .pr small{font-size:10.5px;font-weight:600;color:var(--muted-2)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;transform:none!important}}
+@media (max-width:900px){
+  .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .posters{grid-template-columns:1fr}
+  .hd-deck,.hsearch,.hd-link{display:none}
+  .banner{height:280px}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc-head">
+    <div class="doc-kicker">frontend-new · UX/UI pass 2 — landing v2 (หลัง feedback)</div>
+    <div class="doc-title">Landing รอบ 2 — เรียบมินิมอล · สีสันจากปกเกม · จังหวะโปรแบบไทย</div>
+    <p class="doc-sub">แกนออกแบบตามที่คุณเลือก: <b>โครงหน้าลดกล่อง/กรอบลง</b> (ไม่มี card border รก ๆ อีก) ·
+      <b>สีสันทั้งหน้ามาจากปกเกม</b> — ผมดีไซน์ปกแบบโปสเตอร์สีพื้น (flat) ให้แต่ละเกมตามอัตลักษณ์ของเกมจริง
+      เป็นตัวแทนจนกว่าจะอัปโหลดภาพจริง (ระบบรองรับ imageUrl แล้ว สลับได้ทันที) ·
+      <b>พื้นที่โปรโมชั่นแบบร้านไทย</b> (แบนเนอร์/ราคาเด่น) โดยราคาและแบนเนอร์เป็น<b>ตัวอย่างพื้นที่จริง</b>ที่รอแคมเปญจริง</p>
+  </div>
+
+  <nav class="doc-nav">
+    <span class="lbl">กระโดดไป:</span>
+    <a class="jump" href="#covers">ชุดปกเกม (ใช้ร่วมทุกแบบ)</a>
+    <a class="jump" href="#e">E · โปรเปิดหน้า</a>
+    <a class="jump" href="#f">F · กำแพงชั้นวาง</a>
+    <a class="jump" href="#g">G · โปสเตอร์โปร 3 ใบ</a>
+  </nav>
+
+  <!-- ============ cover system ============ -->
+  <section class="dir" id="covers">
+    <div class="dir-label"><span class="dir-letter" style="background:var(--raised-2);color:var(--text)">ศ</span><span class="dir-name">ชุดปกเกมออกแบบ — แหล่งสีสันของทั้งหน้า</span><span class="dir-tag">แทนภาพจริงชั่วคราว</span></div>
+    <p class="dir-desc">UI คงเป็นเทาเข้ม + ส้มเหมือนเดิม แต่ปกเกมแต่ละใบมีสีประจำเกม (flat แบบโปสเตอร์ ไม่ใช่ gradient)
+      เมื่อมีภาพจริงจากทีมงาน ปกเหล่านี้ถูกแทนที่อัตโนมัติ — หน้าเว็บไม่ต้องรื้อ เพราะโครงไม่ผูกกับสีปก</p>
+    <div class="frame">
+      <div class="frame-label"><span>ตัวอย่างปก 10 ใบ — สีอิงอัตลักษณ์จริงของแต่ละเกม/ผู้ให้บริการ</span><span>hover ยกนิด ๆ</span></div>
+      <div style="padding:24px;background:var(--bg)">
+        <div class="covers">
+          <!-- Free Fire -->
+          <div class="cover" style="--c1:#d8401f;--c2:#8f1d0b"><span class="band"></span><span class="ring" style="width:46px;height:46px;top:14px;right:14px;--c3:#ffb08a"></span><span class="mono">FF<small>FREE FIRE</small></span><span class="nm">Free Fire Diamonds<small>เติมตรง · ไทย</small></span></div>
+          <!-- PUBG -->
+          <div class="cover" style="--c1:#26262b;--c2:#e0a10e"><span class="band"></span><span class="mono" style="color:#f0c14b">PUBG<small style="color:#f0c14b">MOBILE UC</small></span><span class="nm">PUBG Mobile UC<small>เติมตรง · สากล</small></span></div>
+          <!-- MLBB -->
+          <div class="cover" style="--c1:#16337e;--c2:#0d1f4d"><span class="band"></span><span class="ring" style="width:52px;height:52px;top:12px;right:12px;--c3:#d9a441"></span><span class="mono" style="color:#e9c987">MLBB<small style="color:#e9c987">DIAMONDS</small></span><span class="nm">Mobile Legends<small>เติมตรง · สากล</small></span></div>
+          <!-- Identity V -->
+          <div class="cover" style="--c1:#d8cfba;--c2:#41615a;--ink:#2d3a36"><span class="band"></span><span class="mono">IdV<small>IDENTITY V</small></span><span class="nm">Identity V Echoes<small>เติมตรง · สากล</small></span></div>
+          <!-- Razer -->
+          <div class="cover" style="--c1:#101210;--c2:#123312"><span class="band"></span><span class="ring" style="width:44px;height:44px;top:14px;right:14px;--c3:#44d62c"></span><span class="mono" style="color:#44d62c">RZ<small style="color:#44d62c">RAZER GOLD</small></span><span class="nm">Razer Gold USD<small>บัตรเติมเงิน</small></span></div>
+          <!-- Amazon -->
+          <div class="cover" style="--c1:#edc766;--c2:#d9a53e;--ink:#39290f"><span class="band"></span><span class="mono" style="font-size:22px">a<small>AMAZON GIFT</small></span><span class="nm">Amazon Gift Card<small>บัตรกำนัล · สหรัฐฯ</small></span></div>
+          <!-- Roblox -->
+          <div class="cover" style="--c1:#d92c20;--c2:#a31d13"><span class="band"></span><span class="ring" style="width:40px;height:40px;top:16px;right:16px;--c3:#ffffff55"></span><span class="mono">RBX<small>ROBLOX</small></span><span class="nm">Roblox Gift Card<small>บัตรกำนัล</small></span></div>
+          <!-- True -->
+          <div class="cover" style="--c1:#b91c2c;--c2:#7d1220"><span class="band"></span><span class="mono">T<small>TRUE MOVE</small></span><span class="nm">เติมเงิน True<small>เติมมือถือ</small></span></div>
+          <!-- AIS -->
+          <div class="cover" style="--c1:#8d1f74;--c2:#5c124c"><span class="band"></span><span class="mono">AIS<small>1-2-CALL</small></span><span class="nm">เติมเงิน AIS<small>เติมมือถือ</small></span></div>
+          <!-- DTAC -->
+          <div class="cover" style="--c1:#0057b8;--c2:#003f85"><span class="band"></span><span class="mono">dtac<small>GO INTER</small></span><span class="nm">เติมเงิน dtac<small>เติมมือถือ</small></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ E ============ -->
+  <section class="dir" id="e">
+    <div class="dir-label"><span class="dir-letter">E</span><span class="dir-name">โปรเปิดหน้า — Banner Stage</span><span class="dir-tag">จังหวะโปรแบบร้านไทย</span></div>
+    <p class="dir-desc">เปิดหน้ามาด้วย<b>แบนเนอร์โปรใหญ่</b> (carousel หมุนได้ ตอนนี้แสดงสไลด์แรก) สีจากแคมเปญ ไม่ใช่สี UI —
+      ใต้แบนเนอร์เป็นทางลัดหมวดแบบไร้กล่อง แล้วเข้าสู่ชั้นสินค้าที่เรียบ ๆ โดยแถวแรกใช้แท็ก "โปร" + ราคาเด่น
+      จุดโปรโมชั่นชัดที่สุดในสามแบบ แต่ผู้ใช้ต้องเลื่อนผ่านแบนเนอร์ก่อนถึงสินค้า</p>
+    <div class="frame">
+      <div class="frame-label"><span>Desktop · 1152px · เลื่อนดูได้ในกรอบ</span><span>แบนเนอร์/ราคา = ตัวอย่างพื้นที่รอแคมเปญจริง</span></div>
+      <div style="max-height:820px;overflow-y:auto">
+        <div class="landing">
+          <header class="hd">
+            <div class="hd-top"><div class="hd-in">
+              <a class="logo" href="#e"><span class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span><span class="logo-word">LNW<span>TERMGAME</span></span></a>
+              <div class="hsearch"><svg class="sico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="ค้นหาเกม เช่น Free Fire, Roblox…"><button class="sbtn">ค้นหา</button></div>
+              <div class="hd-right">
+                <span class="hd-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>คำสั่งของฉัน</span>
+                <span class="ava"><span class="dot">L</span><span class="nm">lnwtermgame</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+              </div>
+            </div></div>
+            <div class="hd-deck"><div class="hd-in">
+              <a class="cat on" href="#e">เติมเกม</a><a class="cat" href="#e">บัตร/การ์ด</a><a class="cat" href="#e">เติมมือถือ</a><a class="cat" href="#e">ช่วยเหลือ</a>
+              <span class="badge24">ส่งอัตโนมัติ 24 ชม.</span>
+            </div></div>
+          </header>
+
+          <div class="wrap" style="padding-top:24px">
+            <div class="banner" style="--b1:#c23a17;--b2:#96260c;--b3:#e0602c">
+              <span class="bg"></span><span class="shape s1"></span><span class="shape s2"></span><span class="shape s3"></span>
+              <div class="in">
+                <span class="eyebrow">จัดอยู่ถึง 30 ก.ย. นี้</span>
+                <h3>เติม Free Fire<br>รับไว <em>ใน 1 นาที</em></h3>
+                <p>ส่งอัตโนมัติ 24 ชั่วโมง · ชำระผ่าน PromptPay / TrueMoney / บัตรเครดิต</p>
+                <div><a class="cta" href="#e">เติมเลยตอนนี้<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a><a class="ghost" href="#e">ดูเกมทั้งหมด</a></div>
+              </div>
+            </div>
+            <div class="dots"><i class="on"></i><i></i><i></i></div>
+
+            <div class="quickcats">
+              <a class="qc" href="#e"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span>เติมเกม</a>
+              <a class="qc" href="#e"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>บัตร/การ์ด</a>
+              <a class="qc" href="#e"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></span>เติมมือถือ</a>
+              <a class="qc" href="#e"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>โปรโมชั่น</a>
+            </div>
+          </div>
+
+          <div class="sec"><div class="wrap">
+            <div class="shead"><span class="kicker">โปรตอนนี้</span><h2>เติมเกมยอดนิยม</h2><a class="more" href="#e">ดูทั้งหมด →</a></div>
+            <div class="tiles">
+              <a class="tile" href="#e"><div class="tagrow"><span class="tag">HOT</span></div><div class="cover" style="--c1:#d8401f;--c2:#8f1d0b"><span class="band"></span><span class="mono">FF<small>FREE FIRE</small></span><span class="nm">Free Fire Diamonds<small>เติมตรง · ไทย</small></span></div><span class="tn">Free Fire Diamonds (TH)</span><span class="tp">70 เพชร ขึ้นไป</span><span class="pr priceflash">฿35 <span class="strike">฿39</span></span></a>
+              <a class="tile" href="#e"><div class="tagrow"><span class="tag">HOT</span></div><div class="cover" style="--c1:#26262b;--c2:#e0a10e"><span class="band"></span><span class="mono" style="color:#f0c14b">PUBG<small style="color:#f0c14b">MOBILE UC</small></span><span class="nm">PUBG Mobile UC<small>เติมตรง · สากล</small></span></div><span class="tn">PUBG Mobile UC (Global)</span><span class="tp">60 UC ขึ้นไป</span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#e"><div class="tagrow"><span class="tag">โปร</span></div><div class="cover" style="--c1:#16337e;--c2:#0d1f4d"><span class="band"></span><span class="mono" style="color:#e9c987">MLBB<small style="color:#e9c987">DIAMONDS</small></span><span class="nm">Mobile Legends<small>เติมตรง · สากล</small></span></div><span class="tn">Mobile Legends Diamonds</span><span class="tp">86 เพชร ขึ้นไป</span><span class="pr priceflash">฿29 <span class="strike">฿35</span></span></a>
+              <a class="tile" href="#e"><div class="tagrow"></div><div class="cover" style="--c1:#d8cfba;--c2:#41615a;--ink:#2d3a36"><span class="band"></span><span class="mono">IdV<small>IDENTITY V</small></span><span class="nm">Identity V Echoes<small>เติมตรง · สากล</small></span></div><span class="tn">Identity V Echoes (Global)</span><span class="tp">เติมตรง</span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#e"><div class="tagrow"><span class="tag dim">ขายดี</span></div><div class="cover" style="--c1:#101210;--c2:#123312"><span class="band"></span><span class="mono" style="color:#44d62c">RZ<small style="color:#44d62c">RAZER GOLD</small></span><span class="nm">Razer Gold USD<small>บัตรเติมเงิน</small></span></div><span class="tn">Razer Gold USD (Global Pin)</span><span class="tp">บัตรเติมเงิน</span><span class="pr">฿65 <small>ขึ้นไป</small></span></a>
+            </div>
+          </div></div>
+
+          <div class="sec"><div class="wrap">
+            <div class="shead"><h2>บัตร/การ์ด</h2><a class="more" href="#e">ดูทั้งหมด →</a></div>
+            <div class="tiles" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+              <a class="tile" href="#e"><div class="tagrow"></div><div class="cover" style="--c1:#edc766;--c2:#d9a53e;--ink:#39290f"><span class="band"></span><span class="mono" style="font-size:22px">a<small>AMAZON GIFT</small></span><span class="nm">Amazon Gift Card<small>บัตรกำนัล · สหรัฐฯ</small></span></div><span class="tn">Amazon Gift Card (US)</span><span class="tp">บัตรกำนัล</span><span class="pr">฿110 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#e"><div class="tagrow"></div><div class="cover" style="--c1:#101210;--c2:#123312"><span class="band"></span><span class="mono" style="color:#44d62c">RZ<small style="color:#44d62c">RAZER GOLD</small></span><span class="nm">Razer Gold USD<small>บัตรเติมเงิน</small></span></div><span class="tn">Razer Gold USD</span><span class="tp">บัตรเติมเงิน</span><span class="pr">฿65 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#e"><div class="tagrow"><span class="tag dim">ใหม่</span></div><div class="cover" style="--c1:#d92c20;--c2:#a31d13"><span class="band"></span><span class="mono">RBX<small>ROBLOX</small></span><span class="nm">Roblox Gift Card<small>บัตรกำนัล</small></span></div><span class="tn">Roblox Gift Card</span><span class="tp">บัตรกำนัล</span><span class="pr">฿99 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#e"><div class="tagrow"></div><div class="cover" style="--c1:#b91c2c;--c2:#7d1220"><span class="band"></span><span class="mono">T<small>TRUE MOVE</small></span><span class="nm">เติมเงิน True<small>เติมมือถือ</small></span></div><span class="tn">เติมเงิน True</span><span class="tp">เติมมือถือ</span><span class="pr">฿50 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#e"><div class="tagrow"></div><div class="cover" style="--c1:#8d1f74;--c2:#5c124c"><span class="band"></span><span class="mono">AIS<small>1-2-CALL</small></span><span class="nm">เติมเงิน AIS<small>เติมมือถือ</small></span></div><span class="tn">เติมเงิน AIS</span><span class="tp">เติมมือถือ</span><span class="pr">฿50 <small>ขึ้นไป</small></span></a>
+            </div>
+          </div></div>
+
+          <div class="wrap">
+            <div class="itrust">
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>ส่งอัตโนมัติ 24 ชม.</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>การันตีได้รับสินค้าจริง</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>ทีมงานช่วยเหลือทุกวัน</span>
+            </div>
+            <div class="msteps">
+              <span class="kicker" style="font-size:11.5px;font-weight:700;color:var(--muted-2);letter-spacing:.06em;margin-right:6px">วิธีเติม</span>
+              <span class="s"><span class="n">1</span>เลือกเกม</span><span class="arr">→</span>
+              <span class="s"><span class="n">2</span>กรอกไอดี ตรวจทันที</span><span class="arr">→</span>
+              <span class="s"><span class="n">3</span>ชำระเงิน รับของอัตโนมัติ</span>
+              <a class="more" href="#e" style="margin-left:auto;font-size:12.5px">รายละเอียด →</a>
+            </div>
+            <div class="payline"><b>ชำระเงินได้ผ่าน</b> PromptPay <span class="dot"></span> TrueMoney Wallet <span class="dot"></span> บัตรเครดิต / เดบิต</div>
+          </div>
+
+          <footer class="ft"><div class="wrap">
+            <div><h5>ช่วยเหลือ</h5><a href="#e">คำถามที่พบบ่อย</a><a href="#e">ติดต่อเรา</a></div>
+            <div><h5>ข้อมูล</h5><a href="#e">ข้อกำหนดการใช้งาน</a><a href="#e">นโยบายความเป็นส่วนตัว</a></div>
+            <span class="cr">© 2026 LNWTERMGAME</span>
+          </div></footer>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>จุดโปรเด่นทันที</b> — แบนเนอร์ใหญ่เปลี่ยนตามแคมเปญได้ ไม่ต้องแตะโครงหน้า</li>
+      <li>สีสันมาจากแบนเนอร์+ปกเกม ส่วน <b>UI ยังเทา-ส้มเนียน ๆ</b> ตามลอว์ธีม</li>
+      <li>โปรตอนนี้ (ราคาเดิน+โปร) ให้จังหวะ "ร้านไทย" ที่คุ้นตา</li>
+      <li class="warn">แบนเนอร์กินพื้นที่ ~280px ก่อนถึงสินค้า</li>
+      <li class="warn">ถ้าไม่มีแคมเปญจริงตอนเปิดตัว แบนเนอร์ต้องใช้ข้อความร้านแทน (ทำได้ แต่เสียพลังโปร)</li>
+    </ul>
+  </section>
+
+  <!-- ============ F ============ -->
+  <section class="dir" id="f">
+    <div class="dir-label"><span class="dir-letter">F</span><span class="dir-name">กำแพงชั้นวาง — Shelf Wall</span><span class="dir-tag">มินิมอลที่สุด · สินค้าคือพระเอก</span></div>
+    <p class="dir-desc">ไม่มีแบนเนอร์ ไม่มี hero — ขึ้นชื่อเดียวบรรทัดเดียวแล้ว<b>ลงกำแพงปกเกมทันที</b>
+      สีทั้งหน้ามาจากปกล้วน ๆ จังหวะโปรเกิดจากแถว "โปรตอนนี้" (แท็กโปร + ราคาขีด) แทรกระหว่างชั้นปกติ
+      โครงหน้าเบาที่สุด สินค้าเยอะแค่ไหนก็จัดวางไหว</p>
+    <div class="frame">
+      <div class="frame-label"><span>Desktop · 1152px · เลื่อนดูได้ในกรอบ</span><span>ราคา/แท็กโปร = ตัวอย่างพื้นที่จริง</span></div>
+      <div style="max-height:820px;overflow-y:auto">
+        <div class="landing">
+          <header class="hd">
+            <div class="hd-top"><div class="hd-in">
+              <a class="logo" href="#f"><span class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span><span class="logo-word">LNW<span>TERMGAME</span></span></a>
+              <div class="hsearch"><svg class="sico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="ค้นหาเกม เช่น Free Fire, Roblox…"><button class="sbtn">ค้นหา</button></div>
+              <div class="hd-right">
+                <span class="hd-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>คำสั่งของฉัน</span>
+                <span class="ava"><span class="dot">L</span><span class="nm">lnwtermgame</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+              </div>
+            </div></div>
+            <div class="hd-deck"><div class="hd-in">
+              <a class="cat on" href="#f">เติมเกม</a><a class="cat" href="#f">บัตร/การ์ด</a><a class="cat" href="#f">เติมมือถือ</a><a class="cat" href="#f">ช่วยเหลือ</a>
+              <span class="badge24">ส่งอัตโนมัติ 24 ชม.</span>
+            </div></div>
+          </header>
+
+          <div class="wrap">
+            <div class="fhead">
+              <h1>เติมเกมออนไลน์ <em>ส่งอัตโนมัติ 24 ชม.</em></h1>
+              <p>เลือกเกม กรอกไอดี ชำระเงิน — รับไอเทมทันที ปลอดภัยทุกธุรกรรม</p>
+            </div>
+          </div>
+
+          <div class="sec dealshelf"><div class="wrap">
+            <div class="shead"><span class="kicker">โปรตอนนี้</span><h2>เกมยอดนิยม</h2><span class="tag">ราคาโปร</span><a class="more" href="#f">ดูทั้งหมด →</a></div>
+            <div class="tiles">
+              <a class="tile" href="#f"><div class="tagrow"><span class="tag">HOT</span></div><div class="cover" style="--c1:#d8401f;--c2:#8f1d0b"><span class="band"></span><span class="mono">FF<small>FREE FIRE</small></span><span class="nm">Free Fire Diamonds<small>เติมตรง · ไทย</small></span></div><span class="tn">Free Fire Diamonds (TH)</span><span class="pr priceflash">฿35 <span class="strike">฿39</span></span></a>
+              <a class="tile" href="#f"><div class="tagrow"><span class="tag">โปร</span></div><div class="cover" style="--c1:#16337e;--c2:#0d1f4d"><span class="band"></span><span class="mono" style="color:#e9c987">MLBB<small style="color:#e9c987">DIAMONDS</small></span><span class="nm">Mobile Legends<small>เติมตรง · สากล</small></span></div><span class="tn">Mobile Legends Diamonds</span><span class="pr priceflash">฿29 <span class="strike">฿35</span></span></a>
+              <a class="tile" href="#f"><div class="tagrow"><span class="tag">HOT</span></div><div class="cover" style="--c1:#26262b;--c2:#e0a10e"><span class="band"></span><span class="mono" style="color:#f0c14b">PUBG<small style="color:#f0c14b">MOBILE UC</small></span><span class="nm">PUBG Mobile UC<small>เติมตรง · สากล</small></span></div><span class="tn">PUBG Mobile UC (Global)</span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#f"><div class="tagrow"></div><div class="cover" style="--c1:#d8cfba;--c2:#41615a;--ink:#2d3a36"><span class="band"></span><span class="mono">IdV<small>IDENTITY V</small></span><span class="nm">Identity V Echoes<small>เติมตรง · สากล</small></span></div><span class="tn">Identity V Echoes</span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#f"><div class="tagrow"><span class="tag dim">ขายดี</span></div><div class="cover" style="--c1:#101210;--c2:#123312"><span class="band"></span><span class="mono" style="color:#44d62c">RZ<small style="color:#44d62c">RAZER GOLD</small></span><span class="nm">Razer Gold USD<small>บัตรเติมเงิน</small></span></div><span class="tn">Razer Gold USD</span><span class="pr">฿65 <small>ขึ้นไป</small></span></a>
+            </div>
+          </div></div>
+
+          <div class="sec"><div class="wrap">
+            <div class="shead"><h2>เติมมือถือ</h2><a class="more" href="#f">ดูทั้งหมด →</a></div>
+            <div class="tiles" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+              <a class="tile" href="#f"><div class="tagrow"></div><div class="cover" style="--c1:#b91c2c;--c2:#7d1220"><span class="band"></span><span class="mono">T<small>TRUE MOVE</small></span><span class="nm">เติมเงิน True<small>เติมมือถือ</small></span></div><span class="tn">เติมเงิน True</span><span class="pr">฿50 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#f"><div class="tagrow"></div><div class="cover" style="--c1:#8d1f74;--c2:#5c124c"><span class="band"></span><span class="mono">AIS<small>1-2-CALL</small></span><span class="nm">เติมเงิน AIS<small>เติมมือถือ</small></span></div><span class="tn">เติมเงิน AIS</span><span class="pr">฿50 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#f"><div class="tagrow"></div><div class="cover" style="--c1:#0057b8;--c2:#003f85"><span class="band"></span><span class="mono">dtac<small>GO INTER</small></span><span class="nm">เติมเงิน dtac<small>เติมมือถือ</small></span></div><span class="tn">เติมเงิน dtac</span><span class="pr">฿50 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#f"><div class="tagrow"></div><div class="cover" style="--c1:#edc766;--c2:#d9a53e;--ink:#39290f"><span class="band"></span><span class="mono" style="font-size:22px">a<small>AMAZON GIFT</small></span><span class="nm">Amazon Gift Card<small>บัตรกำนัล</small></span></div><span class="tn">Amazon Gift Card (US)</span><span class="pr">฿110 <small>ขึ้นไป</small></span></a>
+              <a class="tile" href="#f"><div class="tagrow"><span class="tag dim">ใหม่</span></div><div class="cover" style="--c1:#d92c20;--c2:#a31d13"><span class="band"></span><span class="mono">RBX<small>ROBLOX</small></span><span class="nm">Roblox Gift Card<small>บัตรกำนัล</small></span></div><span class="tn">Roblox Gift Card</span><span class="pr">฿99 <small>ขึ้นไป</small></span></a>
+            </div>
+          </div></div>
+
+          <div class="wrap">
+            <div class="itrust">
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>ส่งอัตโนมัติ 24 ชม.</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>การันตีได้รับสินค้าจริง</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>ทีมงานช่วยเหลือทุกวัน</span>
+            </div>
+            <div class="msteps">
+              <span class="kicker" style="font-size:11.5px;font-weight:700;color:var(--muted-2);letter-spacing:.06em;margin-right:6px">วิธีเติม</span>
+              <span class="s"><span class="n">1</span>เลือกเกม</span><span class="arr">→</span>
+              <span class="s"><span class="n">2</span>กรอกไอดี ตรวจทันที</span><span class="arr">→</span>
+              <span class="s"><span class="n">3</span>ชำระเงิน รับของอัตโนมัติ</span>
+              <a class="more" href="#f" style="margin-left:auto;font-size:12.5px">รายละเอียด →</a>
+            </div>
+            <div class="payline"><b>ชำระเงินได้ผ่าน</b> PromptPay <span class="dot"></span> TrueMoney Wallet <span class="dot"></span> บัตรเครดิต / เดบิต</div>
+          </div>
+
+          <footer class="ft"><div class="wrap">
+            <div><h5>ช่วยเหลือ</h5><a href="#f">คำถามที่พบบ่อย</a><a href="#f">ติดต่อเรา</a></div>
+            <div><h5>ข้อมูล</h5><a href="#f">ข้อกำหนดการใช้งาน</a><a href="#f">นโยบายความเป็นส่วนตัว</a></div>
+            <span class="cr">© 2026 LNWTERMGAME</span>
+          </div></footer>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>สินค้าขึ้นทันที</b>ในจอแรก — ปกสีเยอะแค่ไหนหน้าก็สด</li>
+      <li>โครงมินิมอลสุดในสามแบบ: <b>ไม่มีการ์ดกรอบ ไม่มี hero</b> ให้ปกพูดเอง</li>
+      <li>ปรับตัวได้ดีที่สุดเมื่อสินค้า/แคมเปญเพิ่ม — แค่เติมชั้น</li>
+      <li class="warn">พลังโปรเบากว่า E — ไม่มีเวทีแบนเนอร์ใหญ่</li>
+      <li class="warn">ความสวยผูกกับคุณภาพปก — ถ้าภาพจริงที่อัปโหลดมาสวยไม่พอ หน้าจะเฉียงตาม</li>
+    </ul>
+  </section>
+
+  <!-- ============ G ============ -->
+  <section class="dir" id="g">
+    <div class="dir-label"><span class="dir-letter">G</span><span class="dir-name">โปสเตอร์โปร 3 ใบ — Deal Posters + List</span><span class="dir-tag">โปรชัด · รายการเบาสบายตา</span></div>
+    <p class="dir-desc">เปิดด้วยพาดหัวใหญ่ 1 บรรทัด แล้ว<b>โปสเตอร์หมวดละ 1 ใบ</b> (เติมเกม / บัตร / มือถือ) แต่ละใบคือพื้นที่โปรประจำหมวด
+      สีสันกระจายทั้งสามใบ — ใต้โปสเตอร์เปลี่ยนเป็น<b>รายการแบบ list</b> (ปกเล็ก + ชื่อ + ราคา) อ่านเร็วสบายตา
+      จุดต่างจาก E/F: ไม่มีกริดปกใหญ่ ให้ความสำคัญกับ "เลือกเร็ว" มากกว่า "เลื่อนดูของสวย ๆ"</p>
+    <div class="frame">
+      <div class="frame-label"><span>Desktop · 1152px · เลื่อนดูได้ในกรอบ</span><span>โปสเตอร์/ราคา = ตัวอย่างพื้นที่รอแคมเปญจริง</span></div>
+      <div style="max-height:820px;overflow-y:auto">
+        <div class="landing">
+          <header class="hd">
+            <div class="hd-top"><div class="hd-in">
+              <a class="logo" href="#g"><span class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg></span><span class="logo-word">LNW<span>TERMGAME</span></span></a>
+              <div class="hsearch"><svg class="sico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="ค้นหาเกม เช่น Free Fire, Roblox…"><button class="sbtn">ค้นหา</button></div>
+              <div class="hd-right">
+                <span class="hd-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>คำสั่งของฉัน</span>
+                <span class="ava"><span class="dot">L</span><span class="nm">lnwtermgame</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+              </div>
+            </div></div>
+            <div class="hd-deck"><div class="hd-in">
+              <a class="cat on" href="#g">เติมเกม</a><a class="cat" href="#g">บัตร/การ์ด</a><a class="cat" href="#g">เติมมือถือ</a><a class="cat" href="#g">ช่วยเหลือ</a>
+              <span class="badge24">ส่งอัตโนมัติ 24 ชม.</span>
+            </div></div>
+          </header>
+
+          <div class="wrap">
+            <div class="ghead">
+              <h1>เติมเกมทุกเกม ส่งไว<em>ใน 1 นาที</em></h1>
+              <p>เลือกเกม กรอกไอดี ชำระเงิน — ระบบส่งของอัตโนมัติตลอด 24 ชั่วโมง ไม่ต้องรอแอดมิน</p>
+            </div>
+
+            <div class="posters">
+              <a class="poster" href="#g" style="--b1:#c23a17;--b2:#96260c">
+                <span class="bg"></span><span class="shape" style="right:-14%;top:-40%;width:52%;height:190%;transform:rotate(14deg)"></span><span class="shape" style="left:-10%;bottom:-78%;width:36%;height:120%;transform:rotate(14deg);background:#e0602c"></span>
+                <span class="in"><h3>เติมเกม</h3><p>Free Fire · PUBG · RoV · MLBB และอีก 100+ เกม</p><span class="go">ดูเกมทั้งหมด<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+              </a>
+              <a class="poster" href="#g" style="--b1:#0e3b1c;--b2:#0a2b15">
+                <span class="bg"></span><span class="shape" style="right:-14%;top:-40%;width:52%;height:190%;transform:rotate(14deg);background:#44d62c22"></span>
+                <span class="in"><h3>บัตร/การ์ด</h3><p>Razer Gold · Amazon · Roblox และบัตรชั้นนำอื่น ๆ</p><span class="go">ดูบัตรทั้งหมด<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+              </a>
+              <a class="poster" href="#g" style="--b1:#3a1770;--b2:#2a1154">
+                <span class="bg"></span><span class="shape" style="right:-14%;top:-40%;width:52%;height:190%;transform:rotate(14deg);background:#8d5bd433"></span>
+                <span class="in"><h3>เติมมือถือ</h3><p>ทรู · เอไอเอส · ดีแทค เติมได้ทุกเบอร์ทุกเวลา</p><span class="go">เติมเลย<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="sec"><div class="wrap">
+            <div class="shead"><h2>ยอดนิยม</h2><a class="more" href="#g">ดูทั้งหมด →</a></div>
+            <div class="poplist">
+              <a class="poprow" href="#g"><span class="cover" style="--c1:#d8401f;--c2:#8f1d0b"><span class="band"></span><span class="mono">FF</span></span><span class="info"><b>Free Fire Diamonds (TH)</b><span>เติมตรง · ไทย · ส่งอัตโนมัติ</span></span><span class="tag" style="align-self:center">HOT</span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="poprow" href="#g"><span class="cover" style="--c1:#26262b;--c2:#e0a10e"><span class="band"></span><span class="mono" style="color:#f0c14b">PUBG</span></span><span class="info"><b>PUBG Mobile UC (Global)</b><span>เติมตรง · สากล</span></span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="poprow" href="#g"><span class="cover" style="--c1:#16337e;--c2:#0d1f4d"><span class="band"></span><span class="mono" style="color:#e9c987">MLBB</span></span><span class="info"><b>Mobile Legends Diamonds</b><span>เติมตรง · สากล</span></span><span class="tag dim" style="align-self:center">ขายดี</span><span class="pr">฿29 <small>ขึ้นไป</small></span></a>
+              <a class="poprow" href="#g"><span class="cover" style="--c1:#d8cfba;--c2:#41615a;--ink:#2d3a36"><span class="band"></span><span class="mono">IdV</span></span><span class="info"><b>Identity V Echoes (Global)</b><span>เติมตรง · สากล</span></span><span class="pr">฿35 <small>ขึ้นไป</small></span></a>
+              <a class="poprow" href="#g"><span class="cover" style="--c1:#101210;--c2:#123312"><span class="band"></span><span class="mono" style="color:#44d62c">RZ</span></span><span class="info"><b>Razer Gold USD (Global Pin)</b><span>บัตรเติมเงิน</span></span><span class="pr">฿65 <small>ขึ้นไป</small></span></a>
+              <a class="poprow" href="#g"><span class="cover" style="--c1:#edc766;--c2:#d9a53e;--ink:#39290f"><span class="band"></span><span class="mono" style="font-size:16px">a</span></span><span class="info"><b>Amazon Gift Card (US)</b><span>บัตรกำนัล · สหรัฐฯ</span></span><span class="pr">฿110 <small>ขึ้นไป</small></span></a>
+            </div>
+          </div></div>
+
+          <div class="wrap">
+            <div class="itrust">
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>ส่งอัตโนมัติ 24 ชม.</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>การันตีได้รับสินค้าจริง</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>ทีมงานช่วยเหลือทุกวัน</span>
+            </div>
+            <div class="msteps">
+              <span class="kicker" style="font-size:11.5px;font-weight:700;color:var(--muted-2);letter-spacing:.06em;margin-right:6px">วิธีเติม</span>
+              <span class="s"><span class="n">1</span>เลือกเกม</span><span class="arr">→</span>
+              <span class="s"><span class="n">2</span>กรอกไอดี ตรวจทันที</span><span class="arr">→</span>
+              <span class="s"><span class="n">3</span>ชำระเงิน รับของอัตโนมัติ</span>
+              <a class="more" href="#g" style="margin-left:auto;font-size:12.5px">รายละเอียด →</a>
+            </div>
+            <div class="payline"><b>ชำระเงินได้ผ่าน</b> PromptPay <span class="dot"></span> TrueMoney Wallet <span class="dot"></span> บัตรเครดิต / เดบิต</div>
+          </div>
+
+          <footer class="ft"><div class="wrap">
+            <div><h5>ช่วยเหลือ</h5><a href="#g">คำถามที่พบบ่อย</a><a href="#g">ติดต่อเรา</a></div>
+            <div><h5>ข้อมูล</h5><a href="#g">ข้อกำหนดการใช้งาน</a><a href="#g">นโยบายความเป็นส่วนตัว</a></div>
+            <span class="cr">© 2026 LNWTERMGAME</span>
+          </div></footer>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>โปรแยกหมวดชัดเจน</b> — โปสเตอร์ใบเดียวต่อหมวด ผู้ใช้เลือกทางได้เร็ว</li>
+      <li>list ยอดนิยมอ่านเร็ว = <b>สั่งซื้อไว</b> เหมาะคนรู้แล้วว่าจะเติมอะไร</li>
+      <li>สามโปสเตอร์สีต่างกัน = สีสันกระจาย <b>ไม่ต้องรอภาพเกมจริง</b>ก็สดได้</li>
+      <li class="warn">ไม่มีเวทีให้ปกเกมใหญ่ ๆ — ความ "อยากเลื่อนดู" น้อยกว่า F</li>
+      <li class="warn">โปสเตอร์ 3 ใบคงที่ — เปลี่ยนแคมเปญต้องดีไซน์ใหม่ (ไม่ยืดหยุ่นเท่าแบนเนอร์ E)</li>
+    </ul>
+  </section>
+
+  <!-- ============ summary ============ -->
+  <section class="dir" id="summary">
+    <div class="dir-label"><span class="dir-letter" style="background:var(--raised-2);color:var(--text)">Σ</span><span class="dir-name">สรุปเปรียบเทียบรอบ 2</span></div>
+    <div class="frame" style="overflow-x:auto;background:var(--bg)">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr>
+          <th style="text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);color:var(--muted-2);font-size:12px">แบบ</th>
+          <th style="text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);color:var(--muted-2);font-size:12px">เปิดหน้ามาเจออะไร</th>
+          <th style="text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);color:var(--muted-2);font-size:12px">พลังโปร</th>
+          <th style="text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);color:var(--muted-2);font-size:12px">ความมินิมอล</th>
+          <th style="text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);color:var(--muted-2);font-size:12px">เสี่ยงเรื่อง</th>
+        </tr></thead>
+        <tbody style="color:var(--muted)">
+          <tr><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint);font-weight:700;color:var(--text)">E · โปรเปิดหน้า</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">แบนเนอร์โปรใหญ่ → ทางลัดหมวด → ชั้นสินค้า</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">แรงสุด (แบนเนอร์+ราคาโปร)</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">กลาง</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">ต้องมีคอนเทนต์แบนเนอร์</td></tr>
+          <tr><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint);font-weight:700;color:var(--text)">F · กำแพงชั้นวาง</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">พาดหัว 1 บรรทัด → กำแพงปกเกมทันที</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">กลาง (แท็กโปร+ราคาขีด)</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">สุด</td><td style="padding:11px 12px;border-bottom:1px solid var(--border-faint)">ผูกความสวยกับปกเกม</td></tr>
+          <tr><td style="padding:11px 12px;font-weight:700;color:var(--text)">G · โปสเตอร์โปร 3 ใบ</td><td style="padding:11px 12px">พาดหัวใหญ่ → โปสเตอร์หมวด 3 ใบ → list ยอดนิยม</td><td style="padding:11px 12px">ชัดระดับหมวด</td><td style="padding:11px 12px">สูง</td><td style="padding:11px 12px">โปสเตอร์คงที่ ยืดหยุ่นน้อย</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot-note" style="font-size:12.5px;color:var(--muted-2);margin-top:6px">ทุกแบบ: ปกเกมออกแบบสลับกับภาพจริงได้ทันทีผ่าน imageUrl · แบนเนอร์/ราคาโปร = พื้นที่จริงที่รอแคมเปญ · เลือกหรือผสม (เช่น "E แต่เอา list จาก G แทนกริด") ได้เลย</p>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import * as productsApi from "@/lib/api/products";
 import * as dashApi from "@/lib/api/dashboard";
+import * as supportApi from "@/lib/api/support";
 import { getPaymentMethods } from "@/lib/api/payments";
 import { qk } from "./keys";
 
@@ -135,5 +136,84 @@ export function useCreditTransactions(params: dashApi.ListParams = {}) {
     queryKey: qk.creditTransactions(params),
     queryFn: () => dashApi.listCreditTransactions(params),
     staleTime: 30_000,
+  });
+}
+
+// ── Support & CMS ──
+
+export function useFaqCategories() {
+  return useQuery({
+    queryKey: qk.faqCategories(),
+    queryFn: supportApi.getFaqCategories,
+    staleTime: 10 * 60_000,
+  });
+}
+
+export function useFaqCategoryBySlug(slug: string) {
+  return useQuery({
+    queryKey: qk.faqCategory(slug),
+    queryFn: () => supportApi.getFaqCategoryBySlug(slug),
+    enabled: Boolean(slug),
+    staleTime: 10 * 60_000,
+  });
+}
+
+export function useFaqArticles(params: { categoryId?: string; page?: number; limit?: number } = {}) {
+  return useQuery({
+    queryKey: qk.faqArticles(params),
+    queryFn: () => supportApi.getFaqArticles(params),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useFaqArticleBySlug(slug: string) {
+  return useQuery({
+    queryKey: qk.faqArticle(slug),
+    queryFn: () => supportApi.getFaqArticleBySlug(slug),
+    enabled: Boolean(slug),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useTickets(params: { status?: string; page?: number; limit?: number } = {}) {
+  return useQuery({
+    queryKey: qk.tickets(params),
+    queryFn: () => supportApi.listTickets(params),
+    staleTime: 30_000,
+  });
+}
+
+export function useTicketDetail(id: string) {
+  return useQuery({
+    queryKey: qk.ticket(id),
+    queryFn: () => supportApi.getTicketDetail(id),
+    enabled: Boolean(id),
+    staleTime: 30_000,
+  });
+}
+
+export function useCmsPage(slug: string) {
+  return useQuery({
+    queryKey: qk.cmsPage(slug),
+    queryFn: () => supportApi.getCmsPage(slug),
+    enabled: Boolean(slug),
+    staleTime: 10 * 60_000,
+  });
+}
+
+export function useNews(params: { page?: number; limit?: number } = {}) {
+  return useQuery({
+    queryKey: qk.news(params),
+    queryFn: () => supportApi.listNews(params),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useNewsArticle(slug: string) {
+  return useQuery({
+    queryKey: qk.newsArticle(slug),
+    queryFn: () => supportApi.getNewsBySlug(slug),
+    enabled: Boolean(slug),
+    staleTime: 5 * 60_000,
   });
 }

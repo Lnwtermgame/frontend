@@ -18,4 +18,13 @@ export const qk = {
   favorites: (params: ListParams) => ["favorites", params] as const,
   creditBalance: () => ["credit-balance"] as const,
   creditTransactions: (params: ListParams) => ["credit-transactions", params] as const,
+  faqCategories: () => ["faq", "categories"] as const,
+  faqCategory: (slug: string) => ["faq", "category", slug] as const,
+  faqArticles: (params: { categoryId?: string; page?: number; limit?: number }) => ["faq", "articles", params] as const,
+  faqArticle: (slug: string) => ["faq", "article", slug] as const,
+  tickets: (params: { status?: string; page?: number; limit?: number }) => ["tickets", params] as const,
+  ticket: (id: string) => ["ticket", id] as const,
+  cmsPage: (slug: string) => ["cms", slug] as const,
+  news: (params: { page?: number; limit?: number }) => ["news", params] as const,
+  newsArticle: (slug: string) => ["news", "article", slug] as const,
 };

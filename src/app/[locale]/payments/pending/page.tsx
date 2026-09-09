@@ -32,6 +32,9 @@ function PendingInner() {
       const left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
       setRemainSec(left);
       if (left <= 0) {
+        clearInterval(countdown);
+        clearInterval(poll);
+        if (timerRef.current) clearInterval(timerRef.current);
         setExpired(true);
         cancelOrder(orderId).catch(() => {});
       }

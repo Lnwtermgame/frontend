@@ -48,7 +48,6 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     window.history.replaceState(null, "", `?search=${encodeURIComponent(search)}`);
-    products.refetch();
   };
 
   return (
@@ -93,7 +92,12 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
         {products.isLoading ? (
           <ProductGridSkeleton count={10} />
         ) : products.isError ? (
-          <GridEmptyState title={t("error")} description="" />
+          <div className="rounded-[14px] border bg-card p-10 text-center">
+            <p className="font-semibold">{t("error")}</p>
+            <Button variant="outline" className="mt-3" onClick={() => products.refetch()}>
+              {t("retry")}
+            </Button>
+          </div>
         ) : filtered.length === 0 ? (
           <GridEmptyState title={t("emptyTitle")} description={t("emptyDesc")} />
         ) : (

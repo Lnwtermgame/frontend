@@ -140,6 +140,7 @@ export function OrderSummary({
             onChange={(name, value) => {
               setValues((prev) => ({ ...prev, [name]: value }));
               setVerifyState("idle");
+              setVerifyMessage(null);
             }}
           />
           <Button

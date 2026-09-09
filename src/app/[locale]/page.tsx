@@ -9,6 +9,7 @@ import { HowItWorks } from "@/components/home/how-it-works";
 
 export default function HomePage() {
   const t = useTranslations("home");
+  const tc = useTranslations("catalog");
   const featured = useFeatured(10);
   const bestsellers = useBestsellers(10);
 
@@ -28,7 +29,14 @@ export default function HomePage() {
         <h2 className="mb-4 text-xl font-bold">{t("popularTitle")}</h2>
         {featured.isLoading ? (
           <ProductGridSkeleton count={10} />
-        ) : featured.isError || !featured.data?.length ? (
+        ) : featured.isError ? (
+          <div className="rounded-[14px] border bg-card p-10 text-center">
+            <p className="font-semibold">{tc("error")}</p>
+            <Button variant="outline" className="mt-3" onClick={() => featured.refetch()}>
+              {tc("retry")}
+            </Button>
+          </div>
+        ) : !featured.data?.length ? (
           <GridEmptyState title={t("popularTitle")} description="" />
         ) : (
           <ProductGrid products={featured.data} />
@@ -39,7 +47,14 @@ export default function HomePage() {
         <h2 className="mb-4 text-xl font-bold">{t("bestsellerTitle")}</h2>
         {bestsellers.isLoading ? (
           <ProductGridSkeleton count={10} />
-        ) : bestsellers.isError || !bestsellers.data?.length ? (
+        ) : bestsellers.isError ? (
+          <div className="rounded-[14px] border bg-card p-10 text-center">
+            <p className="font-semibold">{tc("error")}</p>
+            <Button variant="outline" className="mt-3" onClick={() => bestsellers.refetch()}>
+              {tc("retry")}
+            </Button>
+          </div>
+        ) : !bestsellers.data?.length ? (
           <GridEmptyState title={t("bestsellerTitle")} description="" />
         ) : (
           <ProductGrid products={bestsellers.data} />

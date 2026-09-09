@@ -3,13 +3,19 @@ import { Link } from "@/i18n/routing";
 import type { Product } from "@/lib/api/products";
 import { productImage } from "@/lib/product-image";
 
+const BASE_BY_TYPE: Record<Product["productType"], string> = {
+  DIRECT_TOPUP: "/games",
+  CARD: "/card",
+  MOBILE_RECHARGE: "/mobile-recharge",
+};
+
 export function ProductTile({ product }: { product: Product }) {
   const types = product.types ?? [];
   const minPrice = types.length ? Math.min(...types.map((t) => t.displayPrice)) : null;
 
   return (
     <Link
-      href={`/games/${product.slug}`}
+      href={`${BASE_BY_TYPE[product.productType]}/${product.slug}`}
       className="group block overflow-hidden rounded-[14px] border bg-card shadow-(--shadow-tile) transition-[transform,border-color] duration-150 hover:-translate-y-0.5 hover:border-primary"
     >
       <div className="relative aspect-square">

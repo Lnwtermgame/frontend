@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -37,6 +37,13 @@ export function ProductPage({ route }: { route: ProductRoute }) {
   const [buying, setBuying] = useState(false);
   const [pendingPayload, setPendingPayload] = useState<BuyPayload | null>(null);
 
+  // reset local state when navigating between products
+  useEffect(() => {
+    setSelected(null);
+    setPendingPayload(null);
+    setBuyError(null);
+  }, [slug]);
+
   const handleBuy = async (payload: BuyPayload) => {
     if (!selected || !query.data) return;
     setBuying(true);
@@ -59,7 +66,9 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           ? t("playerInvalid")
           : info === "20114"
             ? t("phoneRegionMismatch")
-            : ((err as ApiError).message || t("orderFailed")),
+            : err instanceof Error && err.message !== "NO_PAYMENT_LINK" && err.message
+            ? err.message
+            : t("orderFailed"),
       );
       setConfirmOpen(false);
     } finally {

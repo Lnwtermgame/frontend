@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -9,7 +9,13 @@ function QrInner() {
   const t = useTranslations("payments");
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") ?? "";
-  const qr = typeof window !== "undefined" ? sessionStorage.getItem(`qr_${orderId}`) : null;
+  const [qr, setQr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (orderId && typeof window !== "undefined") {
+      setQr(sessionStorage.getItem(`qr_${orderId}`));
+    }
+  }, [orderId]);
 
   return (
     <div className="mx-auto w-full max-w-md px-4 py-12 text-center">

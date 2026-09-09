@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,6 +19,8 @@ type LoginValues = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const t = useTranslations("auth");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
   const loginWithPassword = useAuthStore((s) => s.loginWithPassword);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -34,7 +37,14 @@ export function LoginForm() {
     setFormError(null);
     const result = await loginWithPassword(values.email, values.password);
     if (result.ok) {
-      router.replace("/");
+      // Safe redirect: must start with / and not //
+      if (redirectPath && redirectPath.startsWith("/") && !redirectPath.startsWith("//")) {
+        // Strip locale prefix if present (/th/...) because i18n router handles it
+        const target = redirectPath.replace(/^\/th(\/|$)/, "$1") || "/";
+        router.replace(target as never);
+      } else {
+        router.replace("/");
+      }
     } else {
       setFormError(result.message ?? t("loginFailed"));
     }

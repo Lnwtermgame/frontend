@@ -21,9 +21,14 @@ function PendingInner() {
   const referenceNo = searchParams.get("referenceNo") ?? "";
   const [expired, setExpired] = useState(false);
   const [remainSec, setRemainSec] = useState(EXPIRY_MS / 1000);
+  const [qr, setQr] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const qr = typeof window !== "undefined" ? sessionStorage.getItem(`qr_${orderId}`) : null;
+  useEffect(() => {
+    if (orderId && typeof window !== "undefined") {
+      setQr(sessionStorage.getItem(`qr_${orderId}`));
+    }
+  }, [orderId]);
 
   useEffect(() => {
     if (!orderId) return;

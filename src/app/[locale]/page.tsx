@@ -29,7 +29,7 @@ export default function HomePage() {
 
       {/* ทางลัดหมวด */}
       <div className="mx-auto w-full max-w-6xl px-4">
-        <div className="flex flex-wrap items-center gap-x-7 gap-y-3 py-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 py-6">
           {quickCats.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}

@@ -7,6 +7,7 @@ import { changePassword } from "@/lib/api/account";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DashPageHead } from "@/components/dashboard/shared";
 
 export default function DashboardAccountPage() {
   const t = useTranslations("dashboard");
@@ -45,11 +46,8 @@ export default function DashboardAccountPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-xl font-bold">{t("account")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">จัดการข้อมูลบัญชีผู้ใช้และรหัสผ่านของคุณ</p>
-      </div>
+    <div className="space-y-6">
+      <DashPageHead title={t("account")} description={t("accountDesc")} />
 
       {/* Profile Card — ข้อมูล identity อ่านอย่างเดียว ไม่ให้แก้ไข */}
       <div className="rounded-[14px] border bg-card p-6 shadow-(--shadow-tile)">

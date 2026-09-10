@@ -6,9 +6,8 @@ import { Link } from "@/i18n/routing";
 import { useOrders } from "@/lib/query/hooks";
 import type { OrderStatus } from "@/lib/api/orders";
 import { formatTHB } from "@/lib/pricing";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { StatusBadge, Pager, DashErrorState, DashEmptyState, formatDateTime } from "@/components/dashboard/shared";
+import { StatusBadge, Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
 
 const FILTERS: Array<{ key: string; value: OrderStatus | undefined }> = [
   { key: "all", value: undefined },
@@ -27,28 +26,33 @@ export default function DashboardOrdersPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold">{t("orders")}</h1>
+      <DashPageHead title={t("orders")} description={t("ordersDesc")} />
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-x-1 gap-y-1">
         {FILTERS.map((f) => (
-          <Button
+          <button
             key={f.key}
-            size="sm"
-            variant={status === f.value ? "default" : "outline"}
+            type="button"
             onClick={() => {
               setStatus(f.value);
               setPage(1);
             }}
+            aria-pressed={status === f.value}
+            className={`rounded-[8px] px-2.5 py-1 text-[13px] font-semibold transition-colors ${
+              status === f.value
+                ? "bg-primary/12 text-primary"
+                : "text-muted-foreground hover:bg-card hover:text-foreground"
+            }`}
           >
             {t(f.key as never)}
-          </Button>
+          </button>
         ))}
       </div>
 
-      <div className="mt-5 space-y-3">
+      <div className="mt-3 space-y-2">
         {orders.isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-[14px]" />
+            <Skeleton key={i} className="h-[68px] rounded-[14px]" />
           ))
         ) : orders.isError ? (
           <DashErrorState onRetry={() => orders.refetch()} />
@@ -59,16 +63,16 @@ export default function DashboardOrdersPage() {
             <Link
               key={order.id}
               href={`/dashboard/orders/${order.id}`}
-              className="block rounded-[14px] border bg-card p-4 transition-colors hover:border-primary/50"
+              className="block rounded-[14px] border bg-card px-4 py-3 transition-colors hover:border-primary/50"
             >
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="num text-sm font-bold">{order.orderNumber}</span>
                 <StatusBadge status={order.status} />
-                <span className="num ml-auto text-base font-bold text-primary">
+                <span className="num ml-auto text-[15px] font-bold text-primary">
                   {formatTHB(order.finalAmount)}
                 </span>
               </div>
-              <p className="num mt-1 text-xs text-muted-foreground">
+              <p className="num mt-0.5 text-xs text-muted-foreground">
                 {formatDateTime(order.createdAt)} · {order.items.length} {t("items")}
               </p>
             </Link>

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { X } from "lucide-react";
 import { useFavorites } from "@/lib/query/hooks";
 import { removeFavorite } from "@/lib/api/dashboard";
 import { ProductTile } from "@/components/product/product-tile";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Pager, DashErrorState, DashEmptyState } from "@/components/dashboard/shared";
+import { Pager, DashErrorState, DashEmptyState, DashPageHead } from "@/components/dashboard/shared";
 
 export default function DashboardFavoritesPage() {
   const t = useTranslations("dashboard");
@@ -27,9 +27,9 @@ export default function DashboardFavoritesPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold">{t("favorites")}</h1>
+      <DashPageHead title={t("favorites")} description={t("favoritesDesc")} />
 
-      <div className="mt-5">
+      <div className="mt-3">
         {favorites.isLoading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -43,17 +43,17 @@ export default function DashboardFavoritesPage() {
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {favorites.data.data.map((fav) => (
-              <div key={fav.id} className="relative">
+              <div key={fav.id} className="group relative">
                 <ProductTile product={fav.product} />
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="mt-1 w-full"
+                <button
+                  type="button"
+                  aria-label={t("removeFavorite")}
                   disabled={removingId === fav.id}
                   onClick={() => handleRemove(fav.id)}
+                  className="absolute right-1.5 top-1.5 grid size-7 place-items-center rounded-full bg-black/60 text-white/90 opacity-0 backdrop-blur-sm transition-opacity hover:bg-black/80 hover:text-white focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-50"
                 >
-                  {t("removeFavorite")}
-                </Button>
+                  <X className="size-3.5" aria-hidden />
+                </button>
               </div>
             ))}
           </div>

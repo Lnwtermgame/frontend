@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { signOut } from "next-auth/react";
 import {
   Package,
   Receipt,
@@ -9,8 +10,12 @@ import {
   Coins,
   User,
   Bell,
+  LogOut,
 } from "lucide-react";
 import { Link, usePathname } from "@/i18n/routing";
+import { useAuthStore } from "@/stores/auth";
+import { useCreditBalance } from "@/lib/query/hooks";
+import { formatTHB } from "@/lib/pricing";
 
 const ITEMS = [
   { href: "/dashboard/orders", key: "orders", Icon: Package },
@@ -24,29 +29,73 @@ const ITEMS = [
 
 export function DashboardSidebar() {
   const t = useTranslations("dashboard");
+  const ta = useTranslations("auth");
   const pathname = usePathname();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const balance = useCreditBalance();
+
+  const handleLogout = async () => {
+    await logout();
+    await signOut({ redirect: false }).catch(() => {});
+  };
 
   return (
-    <nav className="flex gap-1 overflow-x-auto lg:flex-col" aria-label={t("title")}>
-      {ITEMS.map(({ href, key, Icon, ...rest }) => {
-        const isExact = "exact" in rest && rest.exact;
-        const active = isExact ? pathname === href : pathname.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            aria-current={active ? "page" : undefined}
-            className={`flex shrink-0 items-center gap-2 rounded-[10px] px-3 py-2 text-sm font-semibold transition-colors ${
-              active
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-card hover:text-foreground"
-            }`}
-          >
-            <Icon className="size-4" />
-            {t(key)}
-          </Link>
-        );
-      })}
-    </nav>
+    <div>
+      <div className="flex items-center gap-2.5 px-2 pt-1 pb-3">
+        <span
+          aria-hidden
+          className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/15 text-sm font-bold text-primary"
+        >
+          {(user?.username ?? "?").charAt(0).toUpperCase()}
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-bold">{user?.username}</span>
+          <span className="block truncate text-xs text-muted-foreground">{user?.email}</span>
+        </span>
+      </div>
+
+      <Link
+        href="/dashboard/credits"
+        className="flex items-center gap-2 rounded-[10px] border border-primary/25 bg-primary/[0.07] px-3 py-2"
+      >
+        <Coins className="size-4 text-primary" />
+        <span className="text-xs font-semibold text-muted-foreground">{t("creditBalance")}</span>
+        <span className="num ml-auto text-sm font-bold text-primary">
+          {balance.isLoading ? "…" : formatTHB(balance.data?.balance ?? 0)}
+        </span>
+      </Link>
+
+      <nav className="mt-2 flex gap-0.5 overflow-x-auto lg:flex-col" aria-label={t("title")}>
+        {ITEMS.map(({ href, key, Icon, ...rest }) => {
+          const isExact = "exact" in rest && rest.exact;
+          const active = isExact ? pathname === href : pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={`flex shrink-0 items-center gap-2 rounded-[10px] px-3 py-2 text-sm font-semibold transition-colors ${
+                active
+                  ? "bg-primary/12 text-primary"
+                  : "text-muted-foreground hover:bg-card hover:text-foreground"
+              }`}
+            >
+              <Icon className="size-4" />
+              {t(key)}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="mt-2 flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-card hover:text-destructive"
+      >
+        <LogOut className="size-4" />
+        {ta("logout")}
+      </button>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCreditBalance, useCreditTransactions } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Pager, DashErrorState, DashEmptyState, formatDateTime } from "@/components/dashboard/shared";
+import { Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
 
 export default function DashboardCreditsPage() {
   const t = useTranslations("dashboard");
@@ -14,26 +14,27 @@ export default function DashboardCreditsPage() {
   const tx = useCreditTransactions({ page, limit: 10 });
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-[14px] border bg-card p-6">
-        <p className="text-sm font-semibold text-muted-foreground">{t("creditBalance")}</p>
+    <div className="space-y-3">
+      <DashPageHead title={t("credits")} description={t("creditsDesc")} />
+
+      <div className="flex items-baseline gap-2 rounded-[14px] border bg-card px-4 py-3">
+        <span className="text-[13px] font-semibold text-muted-foreground">{t("creditBalance")}</span>
         {balance.isLoading ? (
-          <Skeleton className="mt-2 h-9 w-32" />
+          <Skeleton className="h-6 w-24" />
         ) : balance.isError ? (
-          <p className="mt-2 text-sm text-destructive">{t("error")}</p>
+          <span className="text-sm font-semibold text-destructive">{t("error")}</span>
         ) : (
-          <p className="num mt-2 text-3xl font-extrabold text-primary">
+          <span className="num ml-auto text-xl font-bold text-primary">
             {formatTHB(balance.data?.balance ?? 0)}
-          </p>
+          </span>
         )}
       </div>
 
       <section>
-        <h2 className="mb-3 text-base font-bold">{t("credits")}</h2>
         {tx.isLoading ? (
           <div className="space-y-2">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-14 rounded-[10px]" />
+              <Skeleton key={i} className="h-[58px] rounded-[14px]" />
             ))}
           </div>
         ) : tx.isError ? (
@@ -48,19 +49,17 @@ export default function DashboardCreditsPage() {
               return (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3 rounded-[10px] border bg-card p-3 text-sm"
+                  className="flex items-center gap-3 rounded-[14px] border bg-card px-4 py-3 text-sm"
                 >
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-semibold">{t(typeKey as never)}</p>
-                    {item.description ? (
-                      <p className="text-xs text-muted-foreground">{item.description}</p>
-                    ) : null}
                     <p className="num text-xs text-muted-foreground">
+                      {item.description ? `${item.description} · ` : ""}
                       {formatDateTime(item.createdAt)}
                     </p>
                   </div>
                   <span
-                    className={`num ml-auto font-bold ${
+                    className={`num ml-auto shrink-0 font-bold ${
                       positive ? "text-status-success" : "text-foreground"
                     }`}
                   >

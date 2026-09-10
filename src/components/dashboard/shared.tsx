@@ -1,7 +1,30 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+
+export function DashPageHead({
+  title,
+  description,
+  actions,
+}: {
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <h1 className="text-xl font-bold">{title}</h1>
+        {description ? (
+          <p className="mt-0.5 text-[13px] text-muted-foreground">{description}</p>
+        ) : null}
+      </div>
+      {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+    </div>
+  );
+}
 
 export function StatusBadge({ status }: { status: string }) {
   const t = useTranslations("dashboard");
@@ -14,14 +37,15 @@ export function StatusBadge({ status }: { status: string }) {
   }
   const tone =
     status === "COMPLETED"
-      ? "text-status-success border-status-success/40 bg-status-success/10"
+      ? "text-status-success"
       : status === "FAILED"
-        ? "text-destructive border-destructive/40 bg-destructive/10"
+        ? "text-destructive"
         : status === "CANCELLED" || status === "REFUNDED"
-          ? "text-muted-foreground border-border bg-secondary"
-          : "text-status-warning border-status-warning/40 bg-status-warning/10";
+          ? "text-muted-foreground"
+          : "text-status-warning";
   return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${tone}`}>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-semibold ${tone}`}>
+      <span aria-hidden className="size-1.5 rounded-full bg-current" />
       {label}
     </span>
   );
@@ -41,7 +65,7 @@ export function Pager({
   const t = useTranslations("dashboard");
   if (totalPages <= 1) return null;
   return (
-    <div className="mt-4 flex items-center justify-center gap-3">
+    <div className="mt-5 flex items-center justify-center gap-3">
       <Button variant="outline" size="sm" onClick={onPrev} disabled={page <= 1}>
         {t("prev")}
       </Button>
@@ -58,8 +82,8 @@ export function Pager({
 export function DashErrorState({ onRetry }: { onRetry: () => void }) {
   const t = useTranslations("dashboard");
   return (
-    <div className="rounded-[14px] border bg-card p-10 text-center">
-      <p className="font-semibold" role="alert">{t("error")}</p>
+    <div className="rounded-[14px] border bg-card p-8 text-center">
+      <p className="text-sm font-semibold" role="alert">{t("error")}</p>
       <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
         {t("retry")}
       </Button>
@@ -69,10 +93,10 @@ export function DashErrorState({ onRetry }: { onRetry: () => void }) {
 
 export function DashEmptyState({ title, description }: { title: string; description?: string }) {
   return (
-    <div className="rounded-[14px] border bg-card p-10 text-center">
-      <p className="font-semibold">{title}</p>
+    <div className="rounded-[14px] border bg-card p-8 text-center">
+      <p className="text-sm font-semibold">{title}</p>
       {description ? (
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        <p className="mt-1 text-[13px] text-muted-foreground">{description}</p>
       ) : null}
     </div>
   );

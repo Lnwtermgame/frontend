@@ -79,7 +79,7 @@ export default function NotificationPreferencesPage() {
           {t("notifications")}
         </Link>
         <h1 className="text-xl font-bold">{t("notificationPreferences")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">เลือกช่องทางและประเภทข้อความที่คุณต้องการรับ</p>
+        <p className="mt-0.5 text-[13px] text-muted-foreground">เลือกช่องทางและประเภทข้อความที่คุณต้องการรับ</p>
       </div>
 
       {savedMsg ? (

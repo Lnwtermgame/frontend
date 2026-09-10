@@ -2,13 +2,21 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { CheckCheck, Trash2, Bell, SlidersHorizontal } from "lucide-react";
+import { CheckCheck, Trash2, Bell, Package, Tag, Megaphone, SlidersHorizontal } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNotifications } from "@/lib/query/hooks";
 import { markNotificationRead, markAllNotificationsRead, deleteNotification } from "@/lib/api/account";
-import { Pager, DashErrorState, DashEmptyState, formatDateTime } from "@/components/dashboard/shared";
+import type { NotificationType } from "@/lib/api/account";
+import { Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
+
+const TYPE_ICON: Record<NotificationType, typeof Bell> = {
+  ORDER: Package,
+  PAYMENT: Tag,
+  PROMOTION: Megaphone,
+  SYSTEM: Bell,
+};
 
 export default function DashboardNotificationsPage() {
   const t = useTranslations("dashboard");
@@ -46,90 +54,94 @@ export default function DashboardNotificationsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold">{t("notifications")}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">รายการแจ้งเตือนการสั่งซื้อและข่าวสาร</p>
-        </div>
+    <div className="space-y-3">
+      <DashPageHead
+        title={t("notifications")}
+        description={t("notificationsDesc")}
+        actions={
+          <>
+            <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
+              <Link href="/dashboard/notifications/preferences">
+                <SlidersHorizontal className="size-3.5" />
+                {t("notificationPreferences")}
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={acting || !notifs.data?.data.length}
+              onClick={handleMarkAllRead}
+              className="gap-1.5 text-xs"
+            >
+              <CheckCheck className="size-3.5" />
+              {t("markAllRead")}
+            </Button>
+          </>
+        }
+      />
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
-            <Link href="/dashboard/notifications/preferences">
-              <SlidersHorizontal className="size-3.5" />
-              {t("notificationPreferences")}
-            </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled={acting || !notifs.data?.data.length}
-            onClick={handleMarkAllRead}
-            className="gap-1.5 text-xs"
-          >
-            <CheckCheck className="size-3.5" />
-            อ่านทั้งหมด
-          </Button>
-        </div>
-      </div>
-
-      <div className="space-y-3">
+      <div className="space-y-2">
         {notifs.isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-[14px]" />
+            <Skeleton key={i} className="h-[64px] rounded-[14px]" />
           ))
         ) : notifs.isError ? (
           <DashErrorState onRetry={() => notifs.refetch()} />
         ) : !notifs.data?.data.length ? (
-          <DashEmptyState title="ยังไม่มีการแจ้งเตือน" description="การอัปเดตคำสั่งซื้อจะปรากฏที่นี่" />
+          <DashEmptyState title={t("emptyNotifications")} description={t("emptyNotificationsDesc")} />
         ) : (
-          notifs.data.data.map((item) => (
-            <div
-              key={item.id}
-              className={`flex items-start gap-3 rounded-[14px] border p-4 transition-colors ${
-                item.isRead ? "bg-card/50 opacity-80" : "bg-card border-primary/40 shadow-(--shadow-tile)"
-              }`}
-            >
+          notifs.data.data.map((item) => {
+            const Icon = TYPE_ICON[item.type] ?? Bell;
+            return (
               <div
-                className={`mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full ${
-                  item.isRead ? "bg-secondary text-muted-foreground" : "bg-primary text-primary-foreground"
+                key={item.id}
+                className={`flex items-start gap-3 rounded-[14px] border bg-card px-4 py-3 ${
+                  item.isRead ? "opacity-70" : ""
                 }`}
               >
-                <Bell className="size-4" />
-              </div>
+                <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-[10px] bg-secondary text-muted-foreground">
+                  <Icon className="size-4" />
+                </span>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold truncate">{item.title}</p>
-                  <span className="num shrink-0 text-xs text-muted-foreground">
-                    {formatDateTime(item.createdAt)}
-                  </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    {!item.isRead ? (
+                      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-primary" />
+                    ) : null}
+                    <p className={`truncate text-sm ${item.isRead ? "font-semibold" : "font-bold"}`}>
+                      {item.title}
+                    </p>
+                    <span className="num ml-auto shrink-0 text-xs text-muted-foreground">
+                      {formatDateTime(item.createdAt)}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{item.message}</p>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.message}</p>
-              </div>
 
-              <div className="flex items-center gap-1 shrink-0">
-                {!item.isRead ? (
+                <div className="flex shrink-0 items-center gap-1">
+                  {!item.isRead ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => handleMarkRead(item.id)}
+                    >
+                      {t("markRead")}
+                    </Button>
+                  ) : null}
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 px-2 text-xs"
-                    onClick={() => handleMarkRead(item.id)}
+                    aria-label={t("deleteNotification")}
+                    className="h-7 w-7 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => handleDelete(item.id)}
                   >
-                    อ่านแล้ว
+                    <Trash2 className="size-3.5" />
                   </Button>
-                ) : null}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-2 text-destructive hover:bg-destructive/10"
-                  onClick={() => handleDelete(item.id)}
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

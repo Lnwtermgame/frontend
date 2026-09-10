@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import * as productsApi from "@/lib/api/products";
 import * as dashApi from "@/lib/api/dashboard";
 import * as supportApi from "@/lib/api/support";
@@ -72,6 +72,33 @@ export function useOrders(params: dashApi.ListParams = {}) {
     queryFn: () => dashApi.listOrders(params),
     staleTime: 30_000,
   });
+}
+
+/** นับออเดอร์แยกตามสถานะ (limit:1 อ่านแค่ meta.total) สำหรับ filter pills หน้าคำสั่งซื้อ */
+export function useOrderCounts() {
+  const statuses = ["PENDING", "PROCESSING", "COMPLETED", "CANCELLED"] as const;
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: qk.orders({ page: 1, limit: 1 }),
+        queryFn: () => dashApi.listOrders({ page: 1, limit: 1 }),
+        staleTime: 30_000,
+      },
+      ...statuses.map((status) => ({
+        queryKey: qk.orders({ page: 1, limit: 1, status }),
+        queryFn: () => dashApi.listOrders({ page: 1, limit: 1, status }),
+        staleTime: 30_000,
+      })),
+    ],
+  });
+  const total = (r: (typeof results)[number]) => r.data?.meta?.total;
+  return {
+    all: total(results[0]),
+    PENDING: total(results[1]),
+    PROCESSING: total(results[2]),
+    COMPLETED: total(results[3]),
+    CANCELLED: total(results[4]),
+  };
 }
 
 export function useOrderDetail(id: string) {

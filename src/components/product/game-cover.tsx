@@ -45,11 +45,14 @@ export function GameCover({
   imageUrl,
   fallbackSub,
   sizes,
+  compact = false,
 }: {
   name: string;
   imageUrl?: string | null;
   fallbackSub: string;
   sizes: string;
+  /** ขนาดเล็ก (แถวรายการ) — ซ่อนแถบชื่อล่างเมื่อชื่อแสดงอยู่ข้างปกแล้ว */
+  compact?: boolean;
 }) {
   if (imageUrl) {
     return (
@@ -74,9 +77,11 @@ export function GameCover({
         {dna.mono}
         <small className="mt-1.5 block text-[8.5px] font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
       </span>
-      <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-[11px] font-bold text-[#f3f1f0]">
-        {name}
-      </span>
+      {!compact && (
+        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-[11px] font-bold text-[#f3f1f0]">
+          {name}
+        </span>
+      )}
     </div>
   );
 }

@@ -52,28 +52,33 @@ export default function DashboardCouponsPage() {
           ) : !coupons.data?.data.length ? (
             <DashEmptyState title={t("emptyCoupons")} />
           ) : (
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2.5 sm:grid-cols-2">
               {coupons.data.data.map((c) => (
-                <div key={c.id} className="rounded-[14px] border bg-card px-4 py-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="num text-lg font-bold text-primary">{couponValue(c)}</span>
-                    <span className="num text-sm font-bold">{c.code}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="ml-auto h-7 px-2.5 text-xs"
-                      disabled={claimedIds.has(c.id) || claimingId === c.id}
-                      onClick={() => handleClaim(c.id)}
-                    >
-                      {claimedIds.has(c.id) ? t("claimed") : t("claim")}
-                    </Button>
+                <div
+                  key={c.id}
+                  className="flex flex-wrap items-center gap-3 rounded-[14px] border border-border border-l-4 border-l-primary bg-card py-3 pl-4 pr-3 shadow-(--shadow-tile)"
+                >
+                  <span className="num min-w-14 text-center text-lg font-bold text-primary">
+                    {couponValue(c)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="num text-sm font-bold">{c.code}</p>
+                    {c.description ? (
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">{c.description}</p>
+                    ) : null}
+                    <p className="num mt-0.5 text-xs text-muted-foreground">
+                      {formatDateTime(c.endDate)}
+                    </p>
                   </div>
-                  {c.description ? (
-                    <p className="mt-1 text-xs text-muted-foreground">{c.description}</p>
-                  ) : null}
-                  <p className="num mt-0.5 text-xs text-muted-foreground">
-                    {formatDateTime(c.endDate)}
-                  </p>
+                  <Button
+                    variant={claimedIds.has(c.id) ? "outline" : "default"}
+                    size="sm"
+                    className="h-8 px-3 text-xs"
+                    disabled={claimedIds.has(c.id) || claimingId === c.id}
+                    onClick={() => handleClaim(c.id)}
+                  >
+                    {claimedIds.has(c.id) ? t("claimed") : t("claim")}
+                  </Button>
                 </div>
               ))}
             </div>
@@ -84,20 +89,20 @@ export default function DashboardCouponsPage() {
       {myCoupons.data?.length ? (
         <section>
           <h2 className="text-sm font-bold text-muted-foreground">{t("claimed")}</h2>
-          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
             {myCoupons.data.map((c) => (
               <div
                 key={c.userCouponId ?? c.id}
-                className={`flex items-center gap-2.5 rounded-[14px] border bg-card px-4 py-3 ${c.isUsed ? "opacity-50" : ""}`}
+                className={`flex items-center gap-3 rounded-[14px] border border-border border-l-4 border-l-primary/60 bg-card py-3 pl-4 pr-3 ${c.isUsed ? "opacity-50" : ""}`}
               >
-                <span className="num text-lg font-bold text-primary">{couponValue(c)}</span>
-                <span className="num text-sm font-bold">{c.code}</span>
+                <span className="num min-w-14 text-center text-lg font-bold text-primary">
+                  {couponValue(c)}
+                </span>
+                <span className="num min-w-0 flex-1 truncate text-sm font-bold">{c.code}</span>
                 {c.isUsed ? (
-                  <span className="ml-auto text-xs font-semibold text-muted-foreground">
-                    {t("used")}
-                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">{t("used")}</span>
                 ) : (
-                  <span className="num ml-auto text-xs text-muted-foreground">
+                  <span className="num text-xs text-muted-foreground">
                     {formatDateTime(c.endDate)}
                   </span>
                 )}

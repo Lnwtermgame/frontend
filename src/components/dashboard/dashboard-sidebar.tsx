@@ -11,6 +11,7 @@ import {
   User,
   Bell,
   LogOut,
+  ChevronRight,
 } from "lucide-react";
 import { Link, usePathname } from "@/i18n/routing";
 import { useAuthStore } from "@/stores/auth";
@@ -42,10 +43,10 @@ export function DashboardSidebar() {
 
   return (
     <div>
-      <div className="flex items-center gap-2.5 px-2 pt-1 pb-3">
+      <div className="flex items-center gap-3 px-2 pt-1 pb-3 lg:border-b lg:border-border/60">
         <span
           aria-hidden
-          className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/15 text-sm font-bold text-primary"
+          className="grid size-11 shrink-0 place-items-center rounded-full bg-primary/15 text-base font-bold text-primary"
         >
           {(user?.username ?? "?").charAt(0).toUpperCase()}
         </span>
@@ -57,13 +58,13 @@ export function DashboardSidebar() {
 
       <Link
         href="/dashboard/credits"
-        className="flex items-center gap-2 rounded-[10px] border border-primary/25 bg-primary/[0.07] px-3 py-2"
+        className="mt-3 flex items-center gap-2 rounded-[10px] border border-primary/25 bg-primary/[0.07] px-3 py-2"
       >
-        <Coins className="size-4 text-primary" />
         <span className="text-xs font-semibold text-muted-foreground">{t("creditBalance")}</span>
         <span className="num ml-auto text-sm font-bold text-primary">
           {balance.isLoading ? "…" : formatTHB(balance.data?.balance ?? 0)}
         </span>
+        <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
       </Link>
 
       <nav className="mt-2 flex gap-0.5 overflow-x-auto lg:flex-col" aria-label={t("title")}>

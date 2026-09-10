@@ -37,14 +37,14 @@ export function StatusBadge({ status }: { status: string }) {
   }
   const tone =
     status === "COMPLETED"
-      ? "text-status-success"
+      ? "text-status-success border-status-success/40 bg-status-success/10"
       : status === "FAILED"
-        ? "text-destructive"
+        ? "text-destructive border-destructive/40 bg-destructive/10"
         : status === "CANCELLED" || status === "REFUNDED"
-          ? "text-muted-foreground"
-          : "text-status-warning";
+          ? "text-muted-foreground border-border bg-secondary"
+          : "text-status-warning border-status-warning/40 bg-status-warning/10";
   return (
-    <span className={`inline-flex items-center gap-1.5 text-xs font-semibold ${tone}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${tone}`}>
       <span aria-hidden className="size-1.5 rounded-full bg-current" />
       {label}
     </span>
@@ -67,13 +67,13 @@ export function Pager({
   return (
     <div className="mt-5 flex items-center justify-center gap-3">
       <Button variant="outline" size="sm" onClick={onPrev} disabled={page <= 1}>
-        {t("prev")}
+        ← {t("prev")}
       </Button>
       <span className="num text-sm text-muted-foreground">
         {t("page", { page, totalPages })}
       </span>
       <Button variant="outline" size="sm" onClick={onNext} disabled={page >= totalPages}>
-        {t("next")}
+        {t("next")} →
       </Button>
     </div>
   );

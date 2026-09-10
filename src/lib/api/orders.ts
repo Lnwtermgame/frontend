@@ -17,8 +17,21 @@ export interface Order {
   finalAmount: number;
   status: OrderStatus;
   items: {
+    id?: string;
     productId?: string;
     productTypeId?: string;
+    product?: {
+      id: string;
+      name: string;
+      slug: string;
+      imageUrl?: string | null;
+    } | null;
+    productType?: {
+      id: string;
+      name: string;
+      parValue: number;
+      currency: string;
+    } | null;
     quantity: number;
     priceAtPurchase?: number;
     playerInfo?: Record<string, unknown>;

@@ -13,6 +13,7 @@ import { OrderSummary, type BuyPayload } from "./order-summary";
 import { ConfirmOrderDialog } from "./confirm-order-dialog";
 import { ProductBand } from "./product-band";
 import { ShelfTile } from "./shelf-tile";
+import { Markdown } from "@/components/markdown";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
 import { lineTotal } from "@/lib/pricing";
@@ -195,9 +196,7 @@ export function ProductPage({ route }: { route: ProductRoute }) {
                 <h2 className="mt-6 mb-3 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
                   {t("detailsTitle")}
                 </h2>
-                <p className="whitespace-pre-line text-[13.5px] leading-relaxed text-muted-foreground">
-                  {product.description.replace(/\*\*/g, "")}
-                </p>
+                <Markdown>{product.description}</Markdown>
               </>
             ) : null}
           </section>

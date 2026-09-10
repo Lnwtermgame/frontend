@@ -19,7 +19,23 @@ export function useFeatured(limit = 8) {
     queryKey: qk.featured(limit),
     // ใช้ list endpoint แทน /featured เพราะ serializer ของ /featured ไม่ใส่
     // types (packages) กลับมา — หน้าแรกต้องใช้ราคาจริงจาก displayPrice
-    queryFn: () => productsApi.listProducts({ isFeatured: true, limit }),
+    queryFn: async () => {
+      const curated = await productsApi.listProducts({ isFeatured: true, limit });
+      // prod ยังไม่มีสินค้าที่ mark isFeatured (ไม่มีหลังบ้านไว้ติด flag)
+      // → fallback เป็น "เกม" ล่าสุด (ชั้นชื่อเกมยอดนิยม) — API ไม่รองรับ
+      //   กรอง productType จึงกรองฝั่ง client จาก pool ล่าสุด แทน
+      if (!curated.length) {
+        const pool = await productsApi.listProducts({
+          sortBy: "createdAt",
+          sortOrder: "desc",
+          limit: 100,
+        });
+        return pool
+          .filter((p) => p.productType === "DIRECT_TOPUP")
+          .slice(0, limit);
+      }
+      return curated;
+    },
     staleTime: 5 * 60_000,
   });
 }
@@ -27,13 +43,24 @@ export function useFeatured(limit = 8) {
 export function useBestsellers(limit = 8) {
   return useQuery({
     queryKey: qk.bestsellers(limit),
-    queryFn: () =>
-      productsApi.listProducts({
+    queryFn: async () => {
+      const curated = await productsApi.listProducts({
         isBestseller: true,
         limit,
         sortBy: "salesCount",
         sortOrder: "desc",
-      }),
+      });
+      // เช่นเดียวกับ featured — ยังไม่มี flag ในระบบที่ยังไม่มีข้อมูลขาย
+      // → fallback เรียงตาม salesCount จริง (ตอนนี้ 0 ทั้งหมด = ลำดับปกติของร้าน)
+      if (!curated.length) {
+        return productsApi.listProducts({
+          sortBy: "salesCount",
+          sortOrder: "desc",
+          limit,
+        });
+      }
+      return curated;
+    },
     staleTime: 5 * 60_000,
   });
 }

@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { NextAuthSessionSync } from "@/components/providers/next-auth-session-sync";
 import { AuthBootstrap } from "@/components/providers/auth-bootstrap";
+import { NotificationsRealtime } from "@/components/providers/notifications-realtime";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CookieNotice } from "@/components/layout/cookie-notice";
@@ -44,6 +45,7 @@ export default async function LocaleLayout({
             <QueryProvider>
               <NextAuthSessionSync />
               <AuthBootstrap />
+              <NotificationsRealtime />
               <div className="flex min-h-screen flex-col">
                 <SiteHeader />
                 <main className="flex-1">{children}</main>

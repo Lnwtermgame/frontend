@@ -13,37 +13,6 @@ export interface ChangePasswordInput {
   newPassword: string;
 }
 
-// ============ Security Types ============
-
-export interface UserDevice {
-  id: string;
-  name: string;
-  browser: string;
-  os: string;
-  ip: string;
-  location: string;
-  lastActive: string;
-  createdAt: string;
-}
-
-export interface SecuritySettings {
-  twoFactorEnabled: boolean;
-  twoFactorMethod?: string | null;
-  loginNotifications: boolean;
-  securityQuestions: boolean;
-}
-
-export interface SecurityActivity {
-  id: string;
-  type: string;
-  description: string;
-  ip: string;
-  location: string;
-  timestamp: string;
-  suspicious: boolean;
-  resolved: boolean;
-}
-
 // ============ Notification Types ============
 
 export type NotificationType = "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM";
@@ -82,38 +51,6 @@ export function changePassword(data: ChangePasswordInput): Promise<{ message: st
     method: "PUT",
     body: data,
   });
-}
-
-// Security
-export function getUserDevices(): Promise<UserDevice[]> {
-  return apiFetch("/api/security/devices");
-}
-
-export function removeDevice(id: string): Promise<{ message: string }> {
-  return apiFetch(`/api/security/devices/${id}`, {
-    method: "DELETE",
-  });
-}
-
-export function logoutAllDevices(): Promise<{ message: string }> {
-  return apiFetch("/api/security/logout-all", {
-    method: "POST",
-  });
-}
-
-export function getSecuritySettings(): Promise<SecuritySettings> {
-  return apiFetch("/api/security/settings");
-}
-
-export function updateSecuritySettings(data: Partial<SecuritySettings>): Promise<SecuritySettings> {
-  return apiFetch("/api/security/settings", {
-    method: "PUT",
-    body: data,
-  });
-}
-
-export function getSecurityActivities(): Promise<SecurityActivity[]> {
-  return apiFetch("/api/security/activities");
 }
 
 // Notifications

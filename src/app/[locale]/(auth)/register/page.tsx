@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { PasswordInput } from "@/components/auth/password-input";
+import { AuthDivider, AuthShell } from "@/components/auth/auth-shell";
 
 const registerSchema = z
   .object({
@@ -56,84 +58,80 @@ export default function RegisterPage() {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">{t("register")}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">สร้างบัญชีเพื่อเริ่มต้นสั่งซื้อ</p>
+    <AuthShell>
+      <h1 className="text-xl font-extrabold tracking-tight">{t("register")}</h1>
+      <p className="mt-1 mb-5 text-[13px] text-muted-foreground">{t("registerSub")}</p>
+
+      <OAuthButtons />
+      <AuthDivider label={t("orWithEmail")} />
+
+      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="username">{t("username")}</Label>
+          <Input id="username" type="text" autoComplete="username" {...register("username")} />
+          {errors.username && (
+            <p role="alert" className="text-xs text-destructive">
+              {errors.username.message}
+            </p>
+          )}
         </div>
 
-        <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="username">{t("username")}</Label>
-            <Input id="username" type="text" autoComplete="username" {...register("username")} />
-            {errors.username && (
-              <p role="alert" className="text-xs text-destructive">
-                {errors.username.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">{t("email")}</Label>
-            <Input id="email" type="email" autoComplete="email" {...register("email")} />
-            {errors.email && (
-              <p role="alert" className="text-xs text-destructive">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">{t("password")}</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p role="alert" className="text-xs text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              {...register("confirmPassword")}
-            />
-            {errors.confirmPassword && (
-              <p role="alert" className="text-xs text-destructive">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-
-          {formError ? (
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="email">{t("email")}</Label>
+          <Input id="email" type="email" autoComplete="email" {...register("email")} />
+          {errors.email && (
             <p role="alert" className="text-xs text-destructive">
-              {formError}
+              {errors.email.message}
             </p>
-          ) : null}
+          )}
+        </div>
 
-          <Button type="submit" disabled={isSubmitting} className="mt-2 w-full font-semibold">
-            {isSubmitting ? "กำลังสมัครสมาชิก…" : t("register")}
-          </Button>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password">{t("password")}</Label>
+          <PasswordInput
+            id="password"
+            autoComplete="new-password"
+            placeholder={t("passwordHint")}
+            {...register("password")}
+          />
+          {errors.password && (
+            <p role="alert" className="text-xs text-destructive">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
 
-          <p className="text-center text-xs text-muted-foreground">
-            {t("haveAccount")}{" "}
-            <Link href="/login" className="font-semibold text-primary hover:underline">
-              {t("login")}
-            </Link>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+          <PasswordInput
+            id="confirmPassword"
+            autoComplete="new-password"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p role="alert" className="text-xs text-destructive">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
+
+        {formError ? (
+          <p role="alert" className="text-xs text-destructive">
+            {formError}
           </p>
-        </form>
+        ) : null}
 
-        <OAuthButtons />
-      </div>
-    </main>
+        <Button type="submit" disabled={isSubmitting} className="mt-1 h-11 w-full font-semibold">
+          {isSubmitting ? t("registering") : t("register")}
+        </Button>
+
+        <p className="text-center text-xs text-muted-foreground">
+          {t("haveAccount")}{" "}
+          <Link href="/login" className="font-semibold text-primary hover:underline">
+            {t("login")}
+          </Link>
+        </p>
+      </form>
+    </AuthShell>
   );
 }

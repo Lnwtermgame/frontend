@@ -60,7 +60,19 @@
     "username": "ชื่อผู้ใช้",
     "email": "อีเมล",
     "password": "รหัสผ่าน",
-    "confirmPassword": "ยืนยันรหัสผ่าน"
+    "confirmPassword": "ยืนยันรหัสผ่าน",
+    "passwordHint": "อย่างน้อย 8 ตัว",
+    "registering": "กำลังสมัครสมาชิก…",
+    "registerSub": "สร้างบัญชีเพื่อเริ่มต้นสั่งซื้อ",
+    "welcomeBack": "ยินดีต้อนรับกลับมา",
+    "orWithEmail": "หรือด้วยอีเมล",
+    "shellTitle1": "เติมเกมโปรดของคุณ",
+    "shellTitle2": "รับไอเทมใน 1 นาที",
+    "shellTag": "บัญชีเดียว เติมได้ทุกเกม ทุกบัตร ทุกค่ายมือถือ — ไม่ต้องใช้รหัสผ่านเกม",
+    "trustSafe": "เติมตรงด้วย Player ID ปลอดภัย",
+    "trustSupport": "ทีมงานช่วยเหลือทุกวัน",
+    "showPassword": "แสดงรหัสผ่าน",
+    "hidePassword": "ซ่อนรหัสผ่าน"
   },
   "nav": {
     "games": "เติมเกม",

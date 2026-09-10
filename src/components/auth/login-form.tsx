@@ -11,6 +11,7 @@ import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/auth/password-input";
 
 const loginSchema = z.object({
   email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง"),
@@ -54,7 +55,7 @@ export function LoginForm() {
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex w-full max-w-sm flex-col gap-4">
+    <form onSubmit={onSubmit} noValidate className="flex w-full flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="email">{t("email")}</Label>
         <Input
@@ -74,16 +75,15 @@ export function LoginForm() {
             {t("forgotPassword")}
           </Link>
         </div>
-        <Input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          {...register("password")}
-        />
-        {errors.password && (
-          <p role="alert" className="text-xs text-destructive">{errors.password.message}</p>
-        )}
-      </div>
+            <PasswordInput
+              id="password"
+              autoComplete="current-password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p role="alert" className="text-xs text-destructive">{errors.password.message}</p>
+            )}
+          </div>
       {formError && <p role="alert" className="text-xs text-destructive">{formError}</p>}
       <Button type="submit" disabled={isSubmitting} className="mt-2 w-full font-semibold">
         {isSubmitting ? "กำลังเข้าสู่ระบบ…" : t("login")}

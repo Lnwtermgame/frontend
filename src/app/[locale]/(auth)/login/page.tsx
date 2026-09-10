@@ -1,10 +1,11 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { LoginForm } from "@/components/auth/login-form";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { AuthDivider, AuthShell } from "@/components/auth/auth-shell";
 
 function LoginContent() {
   const t = useTranslations("auth");
@@ -12,16 +13,23 @@ function LoginContent() {
   const sessionExpired = searchParams.get("session_expired") === "true";
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-      <h1 className="text-xl font-bold">{t("login")}</h1>
+    <AuthShell>
+      <h1 className="text-xl font-extrabold tracking-tight">{t("login")}</h1>
+      <p className="mt-1 mb-5 text-[13px] text-muted-foreground">{t("welcomeBack")}</p>
+
       {sessionExpired && (
-        <p role="alert" className="rounded-md border border-amber-500/50 bg-amber-500/10 px-3 py-2 text-sm">
+        <p
+          role="alert"
+          className="mb-4 rounded-[10px] border border-amber-500/50 bg-amber-500/10 px-3 py-2 text-sm text-amber-400"
+        >
           เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง
         </p>
       )}
-      <LoginForm />
+
       <OAuthButtons />
-    </main>
+      <AuthDivider label={t("orWithEmail")} />
+      <LoginForm />
+    </AuthShell>
   );
 }
 

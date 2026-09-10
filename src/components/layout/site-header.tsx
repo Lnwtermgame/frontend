@@ -162,8 +162,10 @@ function HeaderInner() {
 
           {logo}
 
-          {/* desktop search */}
-          <NavSearch withButton className="hidden max-w-[520px] flex-1 md:block" />
+          {/* desktop search — วางกึ่งกลางช่องว่างระหว่างโลโก้กับเมนูขวา ไม่หนีบซ้าย */}
+          <div className="hidden flex-1 justify-center md:flex">
+            <NavSearch withButton className="w-full max-w-[520px]" />
+          </div>
 
           <div className="ml-auto flex items-center gap-1.5">
             {user ? (

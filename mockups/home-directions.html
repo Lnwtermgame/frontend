@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>หน้าแรก — 4 ทิศทางให้เลือก</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · pre-emit critique: P5 H4 E5 S5 R5 V5
+   4 ทิศทางต่างกันเชิงโครงสร้าง (hero+rail marketplace / task doors / launcher stage / price board)
+   theme = Warm Slate ของเว็บ (locked — ห้ามแต่งสีใหม่) · ข้อมูลจริงทั้งหมด (ยอดขายรวม = 0 จริง → ไม่วาดตัวเลขขาย)
+   ไม่มี chrome ปลอม · ไม่มี metric แต่ง · ราคาทุกจุดอ่านจาก API 9 ก.ย. 2026 */
+:root{
+  --bg: oklch(0.205 0.006 338);
+  --fg: oklch(0.938 0.003 49);
+  --card: oklch(0.24 0.009 318);
+  --secondary: oklch(0.267 0.011 320);
+  --muted-fg: oklch(0.718 0.008 355);
+  --border: oklch(0.318 0.019 308);
+  --border-soft: oklch(0.27 0.012 318);
+  --primary: oklch(0.7 0.17 45);
+  --primary-fg: oklch(0.15 0.02 45);
+  --primary-soft: color-mix(in oklab, var(--primary) 13%, var(--card));
+  --ok: oklch(0.72 0.15 150);
+  --page: oklch(0.168 0.006 338);
+  --r-card: 14px;
+  --r-btn: 10px;
+  --shadow: 0 1px 3px oklch(0 0 0 / .35), 0 10px 28px -18px oklch(0 0 0 / .55);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{
+  background:var(--page);
+  color:var(--fg);
+  font-family:"Noto Sans Thai",ui-sans-serif,system-ui,sans-serif;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+svg{display:block}
+img{max-width:100%}
+.wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+
+/* ── ส่วนหัวของเอกสาร ─────────────────────────────── */
+.doc-head{padding:34px 0 6px}
+.doc-head h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.doc-head p{margin-top:6px;font-size:13px;color:var(--muted-fg);max-width:860px;line-height:1.65}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.legend a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--card);
+  border-radius:999px;padding:7px 14px 7px 8px;font-size:12.5px;font-weight:600;transition:border-color .15s}
+.legend a:hover{border-color:var(--primary)}
+.legend .lg{display:grid;place-items:center;width:24px;height:24px;border-radius:8px;background:var(--primary-soft);
+  color:var(--primary);font-weight:800;font-size:12.5px}
+.note{margin:18px 0 8px;border:1px solid var(--border-soft);background:var(--card);border-radius:var(--r-card);
+  padding:14px 18px;font-size:12.5px;line-height:1.8;color:var(--muted-fg)}
+.note b{color:var(--fg);font-weight:700}
+.note ul{margin:4px 0 0 18px}
+.note li+li{margin-top:2px}
+
+/* ── กรอบทิศทาง ──────────────────────────────────── */
+.dir{padding:34px 0 6px}
+.dir-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.dir-badge{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;
+  background:var(--primary);color:var(--primary-fg);font-weight:800;font-size:17px}
+.dir-head h2{font-size:16.5px;font-weight:800}
+.dir-head h2 small{margin-left:10px;font-weight:600;font-size:12px;color:var(--muted-fg)}
+.dir-head p{margin-top:3px;font-size:12.5px;color:var(--muted-fg);line-height:1.6;max-width:900px}
+.screen{background:var(--bg);border:1px solid var(--border-soft);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.pad{padding-left:22px;padding-right:22px}
+
+/* ── header / subnav / footer (แบบเดิมที่อนุมัติแล้ว — วาดย่อ) ── */
+.hd{display:flex;align-items:center;gap:16px;height:58px;padding:0 22px}
+.hd .logo{font-size:14.5px;font-weight:800;letter-spacing:.02em}
+.hd .logo em{font-style:normal;color:var(--primary)}
+.hd .hsearch{flex:1;max-width:330px;display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;
+  border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--muted-fg);font-size:12.5px}
+.hd .hsp{flex:1}
+.hd .hlink{font-size:13px;font-weight:600;color:var(--muted-fg)}
+.hd .hava{display:grid;place-items:center;width:30px;height:30px;border-radius:999px;border:1px solid var(--border);
+  background:var(--secondary);font-size:12px;font-weight:700}
+.subnav{display:flex;align-items:center;gap:2px;height:40px;padding:0 14px;border-block:1px solid var(--border-soft);background:color-mix(in oklab, var(--card) 50%, transparent)}
+.subnav a{padding:0 12px;font-size:13px;font-weight:600;color:var(--muted-fg)}
+.subnav .auto{margin-left:auto;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border-soft);
+  border-radius:999px;padding:4px 11px;font-size:11px;font-weight:600;color:var(--muted-fg)}
+.subnav .auto i{width:6px;height:6px;border-radius:999px;background:var(--primary)}
+.ft{border-top:1px solid var(--border-soft);padding:20px 22px 16px;margin-top:8px}
+.ft-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:18px}
+.ft .fbrand p{margin-top:8px;font-size:11.5px;line-height:1.7;color:var(--muted-fg);max-width:240px}
+.ft h4{font-size:12px;font-weight:700;margin-bottom:8px}
+.ft li{list-style:none;font-size:11.5px;color:var(--muted-fg);padding:2.5px 0}
+.ft-bottom{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--border-soft)}
+.pay-chip{border:1px solid var(--border-soft);border-radius:8px;padding:4px 10px;font-size:10.5px;font-weight:600;color:var(--muted-fg)}
+.ft-copy{margin-left:auto;font-size:11px;color:var(--muted-fg)}
+
+/* ── ชิ้นส่วนร่วม ─────────────────────────────────── */
+.shead{display:flex;align-items:baseline;gap:12px;margin:26px 0 14px}
+.shead h3{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.shead .more{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--muted-fg)}
+.shead .more:hover{color:var(--primary)}
+.cover{position:relative;display:grid;place-items:center;aspect-ratio:1/1;border-radius:12px;overflow:hidden;flex:none}
+.cover b{font-weight:800;letter-spacing:.02em}
+.cover i{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-style:normal;font-size:8.5px;
+  font-weight:700;letter-spacing:.14em;color:#fff;opacity:.75}
+/* ปกเล็ก (≤52px) ไม่ใส่ป้ายทับศัพท์ — กว้างไม่พอจะตัดกลางตัวอักษร */
+.rk .cover i,.prow .cover i,.mprow .cover i,.gchip .cover i{display:none}
+/* แถวเลื่อนแนวนอนที่ตั้งใจ — ซ่อน scrollbar คาด */
+.rankrow,.hrow,.chipstrip{scrollbar-width:none}
+.rankrow::-webkit-scrollbar,.hrow::-webkit-scrollbar,.chipstrip::-webkit-scrollbar{display:none}
+.c-ff{background:linear-gradient(145deg,#c23a17,#7a1e07);color:#ffe9dd}
+.c-pubg{background:linear-gradient(145deg,#6a5f26,#3c3512);color:#f4ecc8}
+.c-idv{background:linear-gradient(145deg,#4b2e83,#2c1a52);color:#e8ddff}
+.c-mlbb{background:linear-gradient(145deg,#1d3f8f,#122457);color:#dce6ff}
+.c-mlbbmy{background:linear-gradient(145deg,#2a56c9,#16295e);color:#dce6ff}
+.c-amz{background:linear-gradient(145deg,#262626,#0f0f0f);color:#f0f0f0}
+.c-amz b{color:#f90;font-size:1.3em}
+.c-rz{background:linear-gradient(145deg,#0d3320,#071a10);color:#44d62c}
+.tile{display:flex;flex-direction:column;gap:7px;min-width:0}
+.tile .tname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .treg{font-size:11px;color:var(--muted-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tprice{font-size:13.5px;font-weight:700;color:var(--primary)}
+.tprice s{margin-left:6px;font-size:11px;font-weight:600;color:var(--muted-fg);opacity:.75}
+.tprice .up{margin-left:4px;font-size:10.5px;font-weight:600;color:var(--muted-fg)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 20px;border-radius:var(--r-btn);
+  background:var(--primary);color:var(--primary-fg);font-size:13.5px;font-weight:700}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--fg)}
+.grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px 14px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 14px}
+
+/* ── A · หน้าร้าน (Storefront Rail) ───────────────── */
+.a-hero{display:grid;grid-template-columns:minmax(0,1fr) 316px;gap:14px;margin-top:22px}
+.a-slide{position:relative;overflow:hidden;border-radius:var(--r-card);padding:36px 38px;min-height:250px;
+  display:flex;flex-direction:column;justify-content:center;background:linear-gradient(118deg,#c23a17,#8a2508 58%,#5c1704)}
+.a-slide::before{content:"";position:absolute;top:-32%;right:-6%;height:170%;width:44%;transform:rotate(16deg);background:rgba(0,0,0,.16)}
+.a-slide::after{content:"";position:absolute;bottom:-66%;left:-4%;height:105%;width:26%;transform:rotate(16deg);background:rgba(255,255,255,.07)}
+.a-slide>*{position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.25);border-radius:999px;padding:5px 12px;font-size:11px;font-weight:700;color:#fff}
+.eyebrow i{width:6px;height:6px;border-radius:999px;background:#ffd9a3}
+.a-slide h3,.a-top h1{font-size:26px;font-weight:800;letter-spacing:-.01em;color:#fff;line-height:1.2}
+.a-slide h3 em,.a-railcard h4 em{font-style:normal;color:#ffd9a3}
+.a-slide p{margin-top:9px;font-size:13px;color:rgba(255,255,255,.85);max-width:430px;line-height:1.65}
+.a-slide .btn{margin-top:18px;align-self:flex-start}
+.a-dots{display:flex;gap:6px;margin-top:12px}
+.a-dots i{width:7px;height:7px;border-radius:999px;background:var(--border);transition:all .3s}
+.a-dots i.on{width:20px;background:var(--primary)}
+.a-rail{display:flex;flex-direction:column;gap:14px}
+.a-railcard{position:relative;overflow:hidden;flex:1;border-radius:var(--r-card);padding:20px;
+  display:flex;flex-direction:column;justify-content:center;min-height:118px}
+.a-railcard.rg{background:linear-gradient(118deg,#0e3b1c,#0a2b15 70%)}
+.a-railcard.pp{background:linear-gradient(118deg,#3a1770,#2a1154 70%)}
+.a-railcard::after{content:"";position:absolute;right:-18%;bottom:-58%;height:120%;width:42%;transform:rotate(16deg);background:rgba(255,255,255,.06)}
+.a-railcard>*{position:relative}
+.a-railcard h4{font-size:16.5px;font-weight:800;color:#fff;line-height:1.3}
+.a-railcard p{margin-top:6px;font-size:11.5px;color:rgba(255,255,255,.8);line-height:1.6}
+.a-railcard .go{margin-top:10px;font-size:12.5px;font-weight:700;color:#ffd9a3}
+.catbar{display:flex;align-items:center;gap:6px;margin-top:20px;border:1px solid var(--border-soft);
+  background:var(--card);border-radius:var(--r-card);padding:10px 16px}
+.catbar a{display:flex;align-items:center;gap:10px;padding:4px 12px 4px 4px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted-fg)}
+.catbar a:hover{color:var(--fg)}
+.catbar .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;border:1px solid var(--border-soft);color:var(--primary);background:var(--secondary)}
+.catbar .auto{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--muted-fg)}
+.catbar .auto i{width:6px;height:6px;border-radius:999px;background:var(--primary)}
+.rankrow{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 10px}
+.rk{flex:none;display:flex;align-items:center;gap:12px;width:238px;border:1px solid var(--border-soft);
+  background:var(--card);border-radius:var(--r-card);padding:10px 14px 10px 10px}
+.rk .n{font-size:24px;font-weight:800;color:var(--border);min-width:22px;text-align:center}
+.rk .cover{width:50px;border-radius:10px}
+.rk .t{min-width:0;display:flex;flex-direction:column;gap:2px}
+.rk .tname{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk .tprice{font-size:12.5px}
+
+/* ── B · ประตูบริการ (Service Doors) ─────────────── */
+.b-top{padding:42px 0 4px;text-align:center}
+.b-top .eyebrow2{display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:var(--primary-soft);
+  color:var(--primary);padding:5px 13px;font-size:11.5px;font-weight:700}
+.b-top h1{margin-top:14px;font-size:30px;font-weight:800;letter-spacing:-.015em;line-height:1.25}
+.b-top h1 em{font-style:normal;color:var(--primary)}
+.b-top .sub{margin-top:10px;font-size:13.5px;color:var(--muted-fg)}
+.b-search{display:flex;align-items:center;gap:10px;max-width:560px;margin:22px auto 0;height:52px;padding:0 6px 0 18px;
+  border:1px solid var(--border);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+.b-search svg{color:var(--muted-fg)}
+.b-search span{flex:1;text-align:left;font-size:13.5px;color:var(--muted-fg)}
+.b-search .btn{height:40px}
+.b-hint{margin-top:10px;font-size:12px;color:var(--muted-fg)}
+.b-hint b{color:var(--fg);font-weight:600}
+.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:26px}
+.door{display:flex;flex-direction:column;border:1px solid var(--border-soft);background:var(--card);
+  border-radius:var(--r-card);padding:18px;transition:transform .15s,border-color .15s}
+.door:hover{transform:translateY(-2px);border-color:var(--border)}
+.door .ic{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--primary-soft);color:var(--primary)}
+.door h3{margin-top:12px;font-size:16px;font-weight:800}
+.door .sub{margin-top:5px;font-size:12.5px;line-height:1.65;color:var(--muted-fg);min-height:41px}
+.door .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.door .chips span{border:1px solid var(--border-soft);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--muted-fg)}
+.door .go{margin-top:14px;font-size:12.5px;font-weight:700;color:var(--primary)}
+.trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;
+  border:1px solid var(--border-soft);background:var(--card);border-radius:var(--r-card);padding:16px 20px}
+.trust div{display:flex;align-items:center;gap:11px}
+.trust svg{color:var(--ok);flex:none}
+.trust b{display:block;font-size:12.5px;font-weight:700}
+.trust span{display:block;font-size:11px;color:var(--muted-fg);margin-top:1px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.step{border:1px solid var(--border-soft);background:var(--card);border-radius:var(--r-card);padding:16px}
+.step .n{display:grid;place-items:center;width:30px;height:30px;border-radius:999px;background:var(--primary-soft);
+  color:var(--primary);font-size:13px;font-weight:800}
+.step h4{margin-top:10px;font-size:14px;font-weight:700}
+.step p{margin-top:4px;font-size:12.5px;line-height:1.65;color:var(--muted-fg)}
+
+/* ── C · เวทีปกเกม (Cover Stage) ─────────────────── */
+.stage{position:relative;overflow:hidden;margin-top:22px;border-radius:18px;padding:32px 36px;
+  display:grid;grid-template-columns:190px minmax(0,1fr);gap:30px;align-items:center;
+  background:linear-gradient(115deg,#101f47,#1d3f8f 62%,#2a56c9)}
+.stage::after{content:"";position:absolute;top:-40%;right:-8%;height:180%;width:40%;transform:rotate(18deg);background:rgba(255,255,255,.05)}
+.stage>*{position:relative;z-index:1}
+.stage .cover{width:190px;border-radius:16px;box-shadow:0 18px 44px -14px rgba(0,0,0,.55)}
+.stage .rp{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);
+  border-radius:999px;padding:4px 11px;font-size:10.5px;font-weight:700;color:#fff}
+.stage h3{margin-top:10px;font-size:27px;font-weight:800;letter-spacing:-.01em;color:#fff;line-height:1.2}
+.stage .meta{margin-top:8px;font-size:13px;color:rgba(255,255,255,.85)}
+.stage .meta b{color:#ffd9a3;font-weight:700}
+.stage .desc{margin-top:8px;font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.78);max-width:430px}
+.stage .cta{display:flex;gap:10px;margin-top:18px}
+.stage .btn.ghost{border-color:rgba(255,255,255,.32);color:#fff}
+.stage .dots{display:flex;align-items:center;gap:6px;margin-top:16px}
+.stage .dots i{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.3)}
+.stage .dots i.on{width:18px;background:#ffd9a3}
+.stage .dots span{margin-left:8px;font-size:11px;color:rgba(255,255,255,.6)}
+.chipstrip{display:flex;gap:10px;overflow-x:auto;padding:14px 2px 4px}
+.gchip{flex:none;display:flex;align-items:center;gap:9px;border:1px solid var(--border-soft);background:var(--card);
+  border-radius:12px;padding:8px 12px 8px 8px;transition:border-color .15s}
+.gchip .cover{width:34px;border-radius:9px}
+.gchip span{font-size:11.5px;font-weight:600;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gchip.on{border-color:var(--primary);background:var(--primary-soft)}
+.hrow{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 10px}
+.hrow .tile{flex:none;width:150px}
+.hrow .tile .tname{font-size:12.5px}
+.mini-trust{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:22px;padding:14px;
+  border-block:1px solid var(--border-soft);font-size:12px;font-weight:600;color:var(--muted-fg)}
+.mini-trust span{display:inline-flex;align-items:center;gap:8px}
+.mini-trust svg{color:var(--ok)}
+
+/* ── D · กระดานราคา (Deal Board) ─────────────────── */
+.announce{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px;border:1px solid var(--border-soft);
+  background:var(--card);border-radius:12px;padding:10px 16px}
+.announce .l{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700}
+.announce .l svg{color:var(--primary)}
+.announce .pays{margin-left:auto;display:flex;gap:6px}
+.board{display:grid;grid-template-columns:216px minmax(0,1fr);gap:16px;align-items:start;margin-top:16px}
+.rail{border:1px solid var(--border-soft);background:var(--card);border-radius:var(--r-card);padding:10px}
+.rail h4{padding:8px 10px 6px;font-size:12px;font-weight:700;color:var(--muted-fg)}
+.rail a{display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:9px;padding:8px 10px;
+  font-size:12.5px;font-weight:600;color:var(--fg)}
+.rail a span{font-size:11px;font-weight:600;color:var(--muted-fg)}
+.rail a.on{background:var(--primary-soft);color:var(--primary)}
+.rail hr{border:none;border-top:1px solid var(--border-soft);margin:8px 4px}
+.board-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.board-head h3{font-size:17px;font-weight:800}
+.board-head .seg{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:3px}
+.board-head .seg button{border-radius:999px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--muted-fg)}
+.board-head .seg button.on{background:var(--primary);color:var(--primary-fg)}
+.board-head .nrt{margin-left:auto;font-size:11px;color:var(--muted-fg)}
+.rows{border:1px solid var(--border-soft);background:var(--card);border-radius:var(--r-card);overflow:hidden}
+.thead,.prow{display:grid;grid-template-columns:minmax(0,1fr) 92px 74px 158px;gap:12px;align-items:center;padding:11px 16px}
+.thead{border-bottom:1px solid var(--border-soft);font-size:10.5px;font-weight:700;color:var(--muted-fg)}
+.thead :nth-child(n+2),.prow :nth-child(n+2){text-align:left}
+.thead :last-child,.prow :last-child{text-align:right}
+.prow{border-top:1px solid var(--border-soft);transition:background .12s}
+.prow:first-child{border-top:none}
+.prow:hover{background:var(--secondary)}
+.prow .who{display:flex;align-items:center;gap:12px;min-width:0}
+.prow .who .cover{width:44px;border-radius:10px}
+.prow .who .t{display:flex;flex-direction:column;gap:1px;min-width:0}
+.prow .who .tname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .who .treg{font-size:11px;color:var(--muted-fg)}
+.prow .pk{font-size:12px;color:var(--muted-fg)}
+.prow .pk b{color:var(--fg);font-weight:700}
+.delta{justify-self:start;display:inline-block;border-radius:999px;padding:2px 9px;font-size:10.5px;font-weight:700;
+  color:var(--ok);background:color-mix(in oklab, var(--ok) 14%, var(--card))}
+.delta.none{visibility:hidden}
+.prow .pr{text-align:right;font-size:15px;font-weight:700;color:var(--primary)}
+.prow .pr s{margin-left:6px;font-size:11px;font-weight:600;color:var(--muted-fg);opacity:.75}
+.prow .pr .up{margin-left:4px;font-size:10.5px;font-weight:600;color:var(--muted-fg)}
+.subblock .shead{margin-top:22px}
+.subblock .thead,.subblock .prow{grid-template-columns:34px minmax(0,1fr) 92px 74px 150px}
+.rknum{font-size:14px;font-weight:800;color:var(--border);text-align:center}
+
+/* ── มือถือ 320px ────────────────────────────────── */
+.mobzone{margin-top:16px}
+.moblabel{font-size:11.5px;font-weight:700;color:var(--muted-fg);margin:0 0 8px 2px}
+.mob{width:320px;background:var(--bg);border:1px solid var(--border-soft);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.mob .mhd{display:flex;align-items:center;gap:10px;height:50px;padding:0 14px}
+.mob .mhd .logo{font-size:13px;font-weight:800}
+.mob .mhd .logo em{font-style:normal;color:var(--primary)}
+.mob .mhd .burger{margin-left:auto;display:grid;gap:4px}
+.mob .mhd .burger i{display:block;width:16px;height:2px;border-radius:2px;background:var(--muted-fg)}
+.mob .mbody{padding:14px}
+.mob .mft{border-top:1px solid var(--border-soft);padding:12px 14px;font-size:10.5px;color:var(--muted-fg);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.mgrid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
+.msec-h{display:flex;align-items:baseline;margin:18px 0 10px}
+.msec-h h4{font-size:14.5px;font-weight:800}
+.msec-h span{margin-left:auto;font-size:11px;font-weight:600;color:var(--muted-fg)}
+/* A mobile */
+.m .mslide{position:relative;overflow:hidden;border-radius:12px;padding:22px;background:linear-gradient(118deg,#c23a17,#8a2508 58%,#5c1704)}
+.m .mslide h4{font-size:18px;font-weight:800;color:#fff;line-height:1.3}
+.m .mslide h4 em{font-style:normal;color:#ffd9a3}
+.m .mslide p{margin-top:6px;font-size:11px;color:rgba(255,255,255,.82);line-height:1.6}
+.m .mslide .btn{height:34px;padding:0 14px;font-size:12px;margin-top:12px}
+.m .mrail{display:grid;gap:10px;margin-top:10px}
+.m .mrail .a-railcard{padding:14px;min-height:0}
+.m .mrail .a-railcard h5{font-size:13.5px;font-weight:800;color:#fff}
+.m .mrail .a-railcard p{font-size:10.5px;color:rgba(255,255,255,.78);margin-top:3px}
+.m .mcat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.m .mcat a{display:flex;align-items:center;gap:8px;border:1px solid var(--border-soft);background:var(--card);
+  border-radius:10px;padding:7px 9px;font-size:11.5px;font-weight:600;color:var(--muted-fg)}
+.m .mcat .ic{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--secondary);color:var(--primary);flex:none}
+/* B mobile */
+.m .mb-top{text-align:center;padding:8px 0 2px}
+.m .mb-top .eyebrow2{font-size:10px;padding:4px 10px}
+.m .mb-top h3{margin-top:9px;font-size:19px;font-weight:800;line-height:1.35}
+.m .mb-top h3 em{font-style:normal;color:var(--primary)}
+.m .msearch{display:flex;align-items:center;gap:8px;height:42px;margin-top:12px;padding:0 5px 0 13px;
+  border:1px solid var(--border);border-radius:11px;background:var(--card)}
+.m .msearch span{flex:1;text-align:left;font-size:11.5px;color:var(--muted-fg)}
+.m .msearch .btn{height:32px;padding:0 12px;font-size:11.5px}
+.m .mdoor{border:1px solid var(--border-soft);background:var(--card);border-radius:12px;padding:13px;margin-top:10px;display:flex;gap:12px;align-items:center}
+.m .mdoor .ic{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--primary-soft);color:var(--primary);flex:none}
+.m .mdoor h5{font-size:13px;font-weight:700}
+.m .mdoor p{font-size:10.5px;color:var(--muted-fg);margin-top:2px;line-height:1.55}
+.m .mdoor svg{margin-left:auto;color:var(--muted-fg);flex:none}
+/* C mobile */
+.m .mstage{border-radius:14px;padding:18px;background:linear-gradient(115deg,#101f47,#1d3f8f 62%,#2a56c9)}
+.m .mstage .cover{width:110px;border-radius:12px}
+.m .mstage h4{margin-top:12px;font-size:16.5px;font-weight:800;color:#fff;line-height:1.3}
+.m .mstage .meta{font-size:11.5px;color:rgba(255,255,255,.85);margin-top:4px}
+.m .mstage .meta b{color:#ffd9a3;font-weight:700}
+.m .mstage .btn{height:34px;padding:0 14px;font-size:12px;margin-top:12px}
+.m .mchips{display:flex;gap:8px;overflow:hidden;margin-top:12px}
+.m .mchips .gchip{padding:6px 9px 6px 6px}
+.m .mchips .gchip .cover{width:26px;border-radius:7px}
+.m .mchips .gchip span{font-size:10.5px;max-width:86px}
+/* D mobile */
+.m .mann{display:flex;align-items:center;gap:8px;border:1px solid var(--border-soft);background:var(--card);border-radius:10px;padding:8px 11px;font-size:11px;font-weight:700}
+.m .mann svg{color:var(--primary);flex:none}
+.m .mchips2{display:flex;gap:7px;overflow:hidden;margin-top:10px}
+.m .mchips2 span{flex:none;border:1px solid var(--border-soft);border-radius:999px;padding:4px 11px;font-size:10.5px;font-weight:600;color:var(--muted-fg)}
+.m .mchips2 span.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.m .mprow{display:flex;align-items:center;gap:10px;border:1px solid var(--border-soft);background:var(--card);border-radius:11px;padding:9px 11px}
+.m .mprow+.mprow{margin-top:8px}
+.m .mprow .cover{width:40px;border-radius:9px}
+.m .mprow .t{min-width:0;flex:1}
+.m .mprow .tname{font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m .mprow .treg{font-size:10px;color:var(--muted-fg)}
+.m .mprow .pr{font-size:13px;font-weight:700;color:var(--primary)}
+.m .mprow .pr s{margin-left:4px;font-size:9.5px;color:var(--muted-fg)}
+
+@media (max-width:980px){
+  .grid5{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .a-hero{grid-template-columns:minmax(0,1fr)}
+  .a-rail{flex-direction:row}
+  .a-railcard{min-height:0}
+  .catbar{flex-wrap:wrap}
+  .catbar .auto{display:none}
+  .doors,.steps,.trust{grid-template-columns:minmax(0,1fr)}
+  .trust div+.trust div{border-top:1px solid var(--border-soft);padding-top:12px;margin-top:4px}
+  .stage{grid-template-columns:120px minmax(0,1fr);padding:22px;gap:18px}
+  .stage .cover{width:120px}
+  .board{grid-template-columns:minmax(0,1fr)}
+  .rail{display:flex;flex-wrap:wrap;gap:2px}
+  .rail h4,.rail hr{display:none}
+  .thead,.prow{grid-template-columns:minmax(0,1fr) 150px}
+  .thead span:nth-child(2),.thead span:nth-child(3),
+  .prow .pk,.prow .delta{display:none}
+  .subblock .thead,.subblock .prow{grid-template-columns:34px minmax(0,1fr) 150px}
+  .subblock .thead span:nth-child(3),
+  .subblock .prow .pk,.subblock .prow .delta{display:none}
+  .ft-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .grid5{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .a-rail{flex-direction:column}
+  .hd .hsearch,.hd .hlink{display:none}
+  .ft-grid{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap doc-head">
+  <h1>หน้าแรก (landing) — 4 ทิศทางให้เลือก</h1>
+  <p>ทั้ง 4 แบบใช้ theme <b>Warm Slate เดิมของเว็บ</b> ฟอนต์ Noto Sans Thai และข้อมูลสินค้า/ราคาจริงจากระบบ — ต่างกันที่<b>โครงสร้างหน้า</b> ไม่ใช่สี
+     header / เมนูรอง / footer เป็นแบบที่อนุมัติแล้ว (วาดย่อให้เห็นบริบท) ตัวแปรคือเนื้อหน้าระหว่าง header กับ footer</p>
+  <nav class="legend">
+    <a href="#dir-a"><span class="lg">A</span>หน้าร้าน — Storefront Rail</a>
+    <a href="#dir-b"><span class="lg">B</span>ประตูบริการ — Service Doors</a>
+    <a href="#dir-c"><span class="lg">C</span>เวทีปกเกม — Cover Stage</a>
+    <a href="#dir-d"><span class="lg">D</span>กระดานราคา — Deal Board</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="note">
+    <b>หมายเหตุกลาง (อ่านก่อนเลือก)</b>
+    <ul>
+      <li>ข้อมูลสินค้า ราคาเริ่มต้น ราคาเต็ม ภูมิภาค และจำนวนแพ็กเกจ = <b>ของจริงจาก API</b> ณ วันที่ 9 ก.ย. 2026 (สินค้ายอดนิยม 8 รายการ) — ยอดขายทุกสินค้ายังเป็น 0 จริง จึงไม่มี mockup ใดวาดตัวเลขยอดขาย</li>
+      <li>ป้าย "−3%" ในแบบ D คำนวณจากราคาจริง (displayPrice เทียบ originPrice) — สินค้าที่ไม่มีราคาเต็มจะไม่มีป้าย</li>
+      <li>แบบ B นำ copy "วิธีเติม" 3 ขั้นที่มีอยู่แล้วในระบบกลับมาใช้ — ไม่มีการแต่งข้อความใหม่ที่อ้างสิทธิ์เกินจริง</li>
+      <li>สถานะ loading / error / หน้าเปล่าของชั้นสินค้า ใช้แพทเทิร์นเดิมที่มีอยู่ (skeleton + ลองใหม่) — ไม่ได้วาดในเฟรม</li>
+      <li>ทุกปุ่ม/ลิงก์ในเฟรมเป็นตัวอย่าง ไม่นำทางจริง</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════ A · หน้าร้าน — Storefront Rail ══════════ -->
+<section class="dir wrap" id="dir-a">
+  <div class="dir-head">
+    <span class="dir-badge">A</span>
+    <div>
+      <h2>หน้าร้าน — Storefront Rail <small>SEAGM-shaped</small></h2>
+      <p>แถบโปรใหญ่ด้านซ้าย + ราวโปร 2 ใบด้านขวา (โปรบัตร/โปรมือถือ) — องค์ประกอบคลาสสิกของหน้าร้านเติมเกมระดับสากล
+         ต่อด้วยแถบหมวด, กริดยอดนิยม 5 คอลัมน์ และอันดับขายดีแบบการ์ดเลื่อนแนวนอน ผู้ใช้ทั่วไปจะคุ้นตาที่สุด</p>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div data-clone="hd"></div>
+    <div data-clone="subnav"></div>
+    <div class="pad">
+      <div class="a-hero">
+        <div class="a-slide">
+          <span class="eyebrow"><i></i>ส่งอัตโนมัติ 24 ชั่วโมง</span>
+          <h3 style="margin-top:13px">เติมเกมโปรดของคุณ <em>รับไวใน 1 นาที</em></h3>
+          <p>เลือกเกม กรอกไอดี ชำระเงิน — ระบบส่งไอเทมอัตโนมัติทันที ตลอด 24 ชั่วโมง</p>
+          <a class="btn" href="#">เติมเกมเลย
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="a-rail">
+          <a class="a-railcard rg" href="#">
+            <h4>บัตรเติมเกมชั้นนำ <em>ส่งให้ทันที</em></h4>
+            <p>Razer Gold · Amazon Gift Card และบัตรยอดนิยมอื่น ๆ</p>
+            <span class="go">ดูบัตร/การ์ด →</span>
+          </a>
+          <a class="a-railcard pp" href="#">
+            <h4>เติมเงินมือถือ <em>ทุกเบอร์ ทุกเวลา</em></h4>
+            <p>ทรู · เอไอเอส · ดีแทค — เติมได้ตลอด 24 ชั่วโมง</p>
+            <span class="go">เติมเลย →</span>
+          </a>
+        </div>
+      </div>
+      <div class="a-dots"><i class="on"></i><i></i><i></i></div>
+
+      <div class="catbar">
+        <a href="#"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg></span>เติมเกม</a>
+        <a href="#"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>บัตร/การ์ด</a>
+        <a href="#"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>เติมมือถือ</a>
+        <a href="#"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>ช่วยเหลือ</a>
+        <span class="auto"><i></i>ส่งอัตโนมัติ 24 ชม.</span>
+      </div>
+
+      <div class="shead"><h3>เกมยอดนิยม</h3><a class="more" href="#">ดูทั้งหมด →</a></div>
+      <div class="grid5" data-render="a-grid"></div>
+
+      <div class="shead"><h3>ขายดี</h3><a class="more" href="#">ดูทั้งหมด →</a></div>
+      <div class="rankrow" data-render="a-rank"></div>
+    </div>
+    <div data-clone="ft"></div>
+  </div>
+
+  <div class="mobzone">
+    <div class="moblabel">มือถือ 320px — แบบ A</div>
+    <div class="mob">
+      <div data-clone="mhd"></div>
+      <div class="mbody">
+        <div class="mslide">
+          <span class="eyebrow" style="padding:4px 10px;font-size:10px"><i></i>ส่งอัตโนมัติ 24 ชั่วโมง</span>
+          <h4 style="margin-top:10px">เติมเกมโปรดของคุณ <em>รับไวใน 1 นาที</em></h4>
+          <p>เลือกเกม กรอกไอดี ชำระเงิน — ระบบส่งไอเทมอัตโนมัติทันที</p>
+          <a class="btn" href="#">เติมเกมเลย</a>
+        </div>
+        <div class="mrail">
+          <a class="a-railcard rg" href="#"><h5>บัตรเติมเกมชั้นนำ ส่งให้ทันที</h5><p>Razer Gold · Amazon Gift Card</p></a>
+          <a class="a-railcard pp" href="#"><h5>เติมเงินมือถือ ทุกเบอร์ ทุกเวลา</h5><p>ทรู · เอไอเอส · ดีแทค</p></a>
+        </div>
+        <div class="msec-h"><h4>เกมยอดนิยม</h4><span>ดูทั้งหมด →</span></div>
+        <div class="mgrid2" data-render="m-a-grid"></div>
+      </div>
+      <div class="mft"><span>© 2026 LNWTERMGAME</span><span class="pay-chip">PromptPay</span><span class="pay-chip">TrueMoney</span><span class="pay-chip">บัตรเครดิต</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ B · ประตูบริการ — Service Doors ══════════ -->
+<section class="dir wrap" id="dir-b">
+  <div class="dir-head">
+    <span class="dir-badge">B</span>
+    <div>
+      <h2>ประตูบริการ — Service Doors <small>task-first</small></h2>
+      <p>ไม่มีแบนเนอร์ใหญ่ — เปิดด้วยช่องค้นหา + 3 ประตูบริการ (เติมเกม / บัตร-การ์ด / เติมมือถือ) ให้ผู้ใช้เลือกทางเข้าทันที
+         ต่อด้วยแถบความเชื่อมั่น วิธีเติม 3 ขั้น (copy จริงที่มีในระบบ) แล้วค่อยเข้าชั้นสินค้า เหมาะกับผู้มาครั้งแรก</p>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div data-clone="hd"></div>
+    <div data-clone="subnav"></div>
+    <div class="pad">
+      <div class="b-top">
+        <span class="eyebrow2">ส่งอัตโนมัติ 24 ชั่วโมง</span>
+        <h1>เติมเกมโปรดของคุณ <em>รับไวใน 1 นาที</em></h1>
+        <p class="sub">เลือกเกม เลือกแพ็กเกจ ชำระเงิน แล้วรับไอเทมอัตโนมัติ</p>
+        <div class="b-search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>ค้นหาเกม เช่น Free Fire, Roblox…</span>
+          <a class="btn" href="#">ค้นหา</a>
+        </div>
+        <p class="b-hint">ค้นหาบ่อย: <b>Free Fire</b> · <b>PUBG Mobile</b> · <b>Mobile Legends</b> · <b>Razer Gold</b></p>
+      </div>
+
+      <div class="doors">
+        <a class="door" href="#">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg></span>
+          <h3>เติมเกม</h3>
+          <p class="sub">ไดเมนด์ / UC / ไอเทม เกมยอดนิยม 6 เกม กรอกไอดีแล้วรับของผ่านระบบส่งอัตโนมัติ</p>
+          <div class="chips"><span>Free Fire</span><span>PUBG Mobile</span><span>Mobile Legends</span></div>
+          <span class="go">เข้าหน้าเติมเกม →</span>
+        </a>
+        <a class="door" href="#">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>
+          <h3>บัตร/การ์ด</h3>
+          <p class="sub">บัตรเติมเกมชั้นนำ 2 รายการ รับโค้ดในหน้าคำสั่งซื้อทันทีหลังชำระเงิน</p>
+          <div class="chips"><span>Razer Gold</span><span>Amazon Gift Card</span></div>
+          <span class="go">ดูบัตรทั้งหมด →</span>
+        </a>
+        <a class="door" href="#">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>
+          <h3>เติมมือถือ</h3>
+          <p class="sub">ทรู · เอไอเอส · ดีแทค — เติมได้ตลอด 24 ชั่วโมง ทุกเบอร์ ทุกเวลา</p>
+          <div class="chips"><span>ทรู</span><span>เอไอเอส</span><span>ดีแทค</span></div>
+          <span class="go">เติมเลย →</span>
+        </a>
+      </div>
+
+      <div class="trust">
+        <div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          <div><b>ส่งอัตโนมัติ 24 ชั่วโมง</b><span>ระบบจัดส่งทำงานเองทั้งวัน</span></div>
+        </div>
+        <div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          <div><b>การันตีได้รับสินค้าจริง</b><span>ตรวจสอบสถานะได้ทุกคำสั่งซื้อ</span></div>
+        </div>
+        <div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+          <div><b>ชำระได้หลายช่องทาง</b><span>PromptPay · TrueMoney · บัตรเครดิต</span></div>
+        </div>
+      </div>
+
+      <div class="shead"><h3>วิธีเติม</h3></div>
+      <div class="steps">
+        <div class="step"><span class="n">1</span><h4>เลือกเกมและแพ็กเกจ</h4><p>ค้นหาเกมที่ต้องการ แล้วเลือกแพ็กเกจที่ต้องการ</p></div>
+        <div class="step"><span class="n">2</span><h4>กรอกข้อมูลผู้เล่น</h4><p>กรอกไอดีเกม (และโซนถ้ามี) ระบบตรวจสอบให้ทันที</p></div>
+        <div class="step"><span class="n">3</span><h4>ชำระเงินและรับของ</h4><p>ชำระผ่าน PromptPay / TrueMoney / บัตรเครดิต — รับไอเทมอัตโนมัติ</p></div>
+      </div>
+
+      <div class="shead"><h3>เกมยอดนิยม</h3><a class="more" href="#">ดูทั้งหมด →</a></div>
+      <div class="grid4" data-render="b-grid"></div>
+    </div>
+    <div data-clone="ft"></div>
+  </div>
+
+  <div class="mobzone">
+    <div class="moblabel">มือถือ 320px — แบบ B</div>
+    <div class="mob">
+      <div data-clone="mhd"></div>
+      <div class="mbody">
+        <div class="mb-top">
+          <span class="eyebrow2">ส่งอัตโนมัติ 24 ชั่วโมง</span>
+          <h3>เติมเกมโปรดของคุณ <em>รับไวใน 1 นาที</em></h3>
+        </div>
+        <div class="msearch">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>ค้นหาเกม เช่น Free Fire, Roblox…</span>
+          <a class="btn" href="#">ค้นหา</a>
+        </div>
+        <a class="mdoor" href="#">
+          <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg></span>
+          <div><h5>เติมเกม</h5><p>เกมยอดนิยม 6 เกม — กรอกไอดีรับของอัตโนมัติ</p></div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+        <a class="mdoor" href="#">
+          <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>
+          <div><h5>บัตร/การ์ด</h5><p>Razer Gold · Amazon Gift Card</p></div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+        <a class="mdoor" href="#">
+          <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>
+          <div><h5>เติมมือถือ</h5><p>ทรู · เอไอเอส · ดีแทค — ทุกเบอร์ ทุกเวลา</p></div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+        <div class="msec-h"><h4>เกมยอดนิยม</h4><span>ดูทั้งหมด →</span></div>
+        <div class="mgrid2" data-render="m-b-grid"></div>
+      </div>
+      <div class="mft"><span>© 2026 LNWTERMGAME</span><span class="pay-chip">PromptPay</span><span class="pay-chip">TrueMoney</span><span class="pay-chip">บัตรเครดิต</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ C · เวทีปกเกม — Cover Stage ══════════ -->
+<section class="dir wrap" id="dir-c">
+  <div class="dir-head">
+    <span class="dir-badge">C</span>
+    <div>
+      <h2>เวทีปกเกม — Cover Stage <small>game-led</small></h2>
+      <p>เวทีเกมเด่นใบใหญ่สไตล์เกมลันเชอร์ (ตัวอย่างโชว์ Mobile Legends — เกมที่มีแพ็กเกจมากที่สุดจริง 37 แพ็ก)
+         เลือกเกมจากแถบปกด้านล่าง แล้วไล่ชั้นสินค้าแบบเลื่อนแนวนอน เหมาะกับสายเกมที่ตัดสินใจจากปกและแพ็กเกจ</p>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div data-clone="hd"></div>
+    <div data-clone="subnav"></div>
+    <div class="pad">
+      <div class="stage">
+        <span class="cover c-mlbb"><b style="font-size:34px">MLBB</b><i>DIAMONDS</i></span>
+        <div>
+          <span class="rp">Global · เติมตรง</span>
+          <h3>Mobile Legends Diamonds</h3>
+          <p class="meta"><b>37 แพ็กเกจ</b> · เริ่มต้น <b class="num">฿9</b></p>
+          <p class="desc">เลือกแพ็กเกจได้ครบทุกราคา กรอกไอดีแล้วชำระเงิน — ระบบส่งไอเทมอัตโนมัติตลอด 24 ชั่วโมง</p>
+          <div class="cta">
+            <a class="btn" href="#">เติมเลย
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn ghost" href="#">ดูแพ็กเกจทั้งหมด</a>
+          </div>
+          <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span>สไลด์เกมเด่น · 8 รายการ</span></div>
+        </div>
+      </div>
+
+      <div class="chipstrip" data-render="c-chips"></div>
+
+      <div class="shead"><h3>เกมยอดนิยม</h3><a class="more" href="#">ดูทั้งหมด →</a></div>
+      <div class="hrow" data-render="c-shelf-pop"></div>
+
+      <div class="shead"><h3>ขายดี</h3><a class="more" href="#">ดูทั้งหมด →</a></div>
+      <div class="hrow" data-render="c-shelf-best"></div>
+
+      <div class="mini-trust">
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>ส่งอัตโนมัติ 24 ชั่วโมง</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>การันตีได้รับสินค้าจริง</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>ชำระผ่าน PromptPay · TrueMoney · บัตรเครดิต</span>
+      </div>
+    </div>
+    <div data-clone="ft"></div>
+  </div>
+
+  <div class="mobzone">
+    <div class="moblabel">มือถือ 320px — แบบ C</div>
+    <div class="mob">
+      <div data-clone="mhd"></div>
+      <div class="mbody">
+        <div class="mstage">
+          <span class="cover c-mlbb"><b style="font-size:20px">MLBB</b><i>DIAMONDS</i></span>
+          <h4>Mobile Legends Diamonds</h4>
+          <p class="meta"><b>37 แพ็กเกจ</b> · เริ่มต้น <b class="num">฿9</b></p>
+          <a class="btn" href="#">เติมเลย</a>
+        </div>
+        <div class="mchips" data-render="m-c-chips"></div>
+        <div class="msec-h"><h4>เกมยอดนิยม</h4><span>ดูทั้งหมด →</span></div>
+        <div class="mgrid2" data-render="m-c-grid"></div>
+      </div>
+      <div class="mft"><span>© 2026 LNWTERMGAME</span><span class="pay-chip">PromptPay</span><span class="pay-chip">TrueMoney</span><span class="pay-chip">บัตรเครดิต</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ D · กระดานราคา — Deal Board ══════════ -->
+<section class="dir wrap" id="dir-d">
+  <div class="dir-head">
+    <span class="dir-badge">D</span>
+    <div>
+      <h2>กระดานราคา — Deal Board <small>price-led</small></h2>
+      <p>แถบประกาศบาง ๆ + รางหมวด/ภูมิภาคด้านซ้าย + กระดานราคาแน่นหนา เห็นราคาเริ่มต้น จำนวนแพ็กเกจ และส่วนลด
+         พร้อมกันทั้งหน้าแบบตาราง เหมาะกับผู้ใช้ที่ตัดสินใจด้วยราคาและเปรียบเทียบข้ามภูมิภาค (ตัวเลขทั้งหมดเป็นราคาจริง)</p>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div data-clone="hd"></div>
+    <div data-clone="subnav"></div>
+    <div class="pad">
+      <div class="announce">
+        <span class="l">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          ส่งอัตโนมัติ 24 ชั่วโมง · การันตีได้รับสินค้าจริง
+        </span>
+        <span class="pays"><span class="pay-chip">PromptPay</span><span class="pay-chip">TrueMoney Wallet</span><span class="pay-chip">บัตรเครดิต / เดบิต</span></span>
+      </div>
+
+      <div class="board">
+        <aside class="rail">
+          <h4>หมวด</h4>
+          <a class="on" href="#">ทั้งหมด <span class="num">8</span></a>
+          <a href="#">เติมเกม <span class="num">6</span></a>
+          <a href="#">บัตร/การ์ด <span class="num">2</span></a>
+          <a href="#">เติมมือถือ <span class="num">0</span></a>
+          <hr>
+          <h4>ภูมิภาค</h4>
+          <a href="#">Global <span class="num">4</span></a>
+          <a href="#">ไทย <span class="num">1</span></a>
+          <a href="#">มาเลเซีย <span class="num">2</span></a>
+          <a href="#">สหรัฐฯ <span class="num">1</span></a>
+        </aside>
+        <div>
+          <div class="board-head">
+            <h3>ราคาเริ่มต้นวันนี้</h3>
+            <span class="seg"><button class="on" type="button">ยอดนิยม</button><button type="button">ขายดี</button></span>
+            <span class="nrt">ราคาเริ่มต้นของแพ็กเกจถูกสุด</span>
+          </div>
+          <div class="rows">
+            <div class="thead"><span>สินค้า</span><span>แพ็กเกจ</span><span>ส่วนลด</span><span>ราคาเริ่มต้น</span></div>
+            <div data-render="d-rows"></div>
+          </div>
+
+          <div class="subblock">
+            <div class="shead"><h3>ขายดี</h3><a class="more" href="#">ดูทั้งหมด →</a></div>
+            <div class="rows">
+              <div class="thead"><span></span><span>สินค้า</span><span>แพ็กเกจ</span><span style="text-align:right">ราคาเริ่มต้น</span></div>
+              <div data-render="d-best"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-clone="ft"></div>
+  </div>
+
+  <div class="mobzone">
+    <div class="moblabel">มือถือ 320px — แบบ D</div>
+    <div class="mob">
+      <div data-clone="mhd"></div>
+      <div class="mbody">
+        <div class="mann">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          ส่งอัตโนมัติ 24 ชั่วโมง
+        </div>
+        <div class="mchips2"><span class="on">ทั้งหมด 8</span><span>เติมเกม 6</span><span>บัตร 2</span><span>ไทย 1</span><span>มาเลเซีย 2</span></div>
+        <div class="msec-h"><h4>ราคาเริ่มต้นวันนี้</h4><span>ยอดนิยม</span></div>
+        <div data-render="m-d-rows"></div>
+      </div>
+      <div class="mft"><span>© 2026 LNWTERMGAME</span><span class="pay-chip">PromptPay</span><span class="pay-chip">TrueMoney</span><span class="pay-chip">บัตรเครดิต</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap" style="padding:30px 22px 44px;font-size:12px;color:var(--muted-fg)">
+  เลือกแบบ A / B / C / D ได้เลย — หลังเลือกจะนำโครงสร้างนั้นไป implement หน้าแรกจริงด้วยข้อมูลจาก API เดิมทั้งหมด
+</footer>
+
+<!-- ════ templates: header / subnav / footer / mobile header ════ -->
+<template id="tpl-hd">
+  <div class="hd">
+    <span class="logo">LNWTERM<em>GAME</em></span>
+    <span class="hsearch">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      ค้นหาเกม เช่น Free Fire, Roblox…
+    </span>
+    <span class="hsp"></span>
+    <span class="hlink">คำสั่งของฉัน</span>
+    <span class="hava">L</span>
+  </div>
+</template>
+<template id="tpl-subnav">
+  <div class="subnav">
+    <a href="#">เติมเกม</a><a href="#">บัตร/การ์ด</a><a href="#">เติมมือถือ</a><a href="#">ช่วยเหลือ</a>
+    <span class="auto"><i></i>ส่งอัตโนมัติ 24 ชม.</span>
+  </div>
+</template>
+<template id="tpl-ft">
+  <div class="ft">
+    <div class="ft-grid">
+      <div class="fbrand">
+        <span class="logo" style="font-size:13.5px;font-weight:800">LNWTERM<em style="font-style:normal;color:var(--primary)">GAME</em></span>
+        <p>เติมเกม บัตรเติมเงิน และเติมมือถือ — ระบบส่งอัตโนมัติตลอด 24 ชั่วโมง</p>
+      </div>
+      <div><h4>บริการ</h4><ul><li>เติมเกม</li><li>บัตร/การ์ด</li><li>เติมมือถือ</li></ul></div>
+      <div><h4>ช่วยเหลือ</h4><ul><li>คำถามที่พบบ่อย</li><li>ติดต่อเรา</li><li>แจ้งปัญหาการสั่งซื้อ</li></ul></div>
+      <div><h4>ข้อมูล</h4><ul><li>ข้อกำหนดการใช้งาน</li><li>นโยบายความเป็นส่วนตัว</li><li>นโยบายการคืนเงิน</li></ul></div>
+    </div>
+    <div class="ft-bottom">
+      <span class="pay-chip">PromptPay</span><span class="pay-chip">TrueMoney Wallet</span><span class="pay-chip">บัตรเครดิต / เดบิต</span>
+      <span class="ft-copy">© 2026 LNWTERMGAME — สงวนลิขสิทธิ์</span>
+    </div>
+  </div>
+</template>
+<template id="tpl-mhd">
+  <div class="mhd">
+    <span class="logo">LNWTERM<em>GAME</em></span>
+    <span class="burger"><i></i><i></i><i></i></span>
+  </div>
+</template>
+
+<script>
+/* ข้อมูลจริงจาก GET /api/products (list endpoint, isFeatured / isBestsellers) — 9 ก.ย. 2026
+   from = displayPrice ถูกสุด (ทศนิยมจริง — แสดงผลปัดเป็นบาทเหมือนหน้าเว็บ), was = originPrice, pk = จำนวนแพ็กเกจ */
+const P = [
+  { id:"ff",      mark:"FF",   sub:"FREE FIRE",   c:"c-ff",      name:"Free Fire Diamonds (TH)",       region:"THAILAND",     from:19.4,  was:20,     pk:11 },
+  { id:"pubg",    mark:"PUBG", sub:"MOBILE UC",   c:"c-pubg",    name:"PUBG Mobile UC (Global)",       region:"Global",       from:31.45, was:32.42,  pk:10 },
+  { id:"idv",     mark:"IdV",  sub:"ECHOES",      c:"c-idv",     name:"Identity V Echoes(Global)",     region:"Global",       from:29.1,  was:30,     pk:10 },
+  { id:"mlbb",    mark:"MLBB", sub:"DIAMONDS",    c:"c-mlbb",    name:"Mobile Legends Diamonds",       region:"Global",       from:8.81,  was:null,   pk:37 },
+  { id:"mlbbmy",  mark:"MLBB", sub:"DIAMONDS",    c:"c-mlbbmy",  name:"Mobile Legends Diamonds Malaysia", region:"MALAYSIA",  from:7.91,  was:null,   pk:13 },
+  { id:"pubgmy",  mark:"PUBG", sub:"MOBILE UC",   c:"c-pubg",    name:"PUBG Mobile UC (MY)",           region:"MALAYSIA",     from:31.14, was:32.1,   pk:16 },
+  { id:"amz",     mark:"a",    sub:"AMAZON GIFT", c:"c-amz",     name:"Amazon Gift Card (US)",         region:"UNITED STATES",from:166.83,was:171.99, pk:6  },
+  { id:"rz",      mark:"RZ",   sub:"RAZER GOLD",  c:"c-rz",      name:"Razer Gold USD (Global Pin)",   region:"Global",       from:64.8,  was:66.8,   pk:11 },
+];
+const BEST = ["rz","mlbb","ff","pubg","mlbbmy","pubgmy"].map(id => P.find(p => p.id === id));
+const THB = n => "฿" + Math.round(n).toLocaleString("th-TH");
+const pct = p => p.was ? "−" + Math.round((1 - (p.from / p.was)) * 100) + "%" : null;
+
+const cover = (p, style) => `<span class="cover ${p.c}"${style ? ` style="${style}"` : ""}><b>${p.mark}</b><i>${p.sub}</i></span>`;
+
+const tile = p => `<a class="tile" href="#">${cover(p)}`
+  + `<p class="tname">${p.name}</p><p class="treg">${p.region}</p>`
+  + `<p class="tprice num">${THB(p.from)}${p.was ? `<s class="num">${THB(p.was)}</s>` : ""}<span class="up">ขึ้นไป</span></p></a>`;
+
+const rank = (p, i) => `<a class="rk" href="#"><b class="n num">${i + 1}</b>${cover(p, "border-radius:10px")}`
+  + `<span class="t"><span class="tname">${p.name}</span><span class="tprice num">${THB(p.from)}<s class="num">${p.was ? THB(p.was) : ""}</s></span></span></a>`;
+
+const chip = (p, on) => `<a class="gchip${on ? " on" : ""}" href="#">${cover(p, "border-radius:9px")}<span>${p.name}</span></a>`;
+
+const prow = (p, rankNum) => `<a class="prow" href="#">`
+  + (rankNum ? `<span class="rknum num">${rankNum}</span>` : "")
+  + `<span class="who">${cover(p, "border-radius:10px")}<span class="t"><span class="tname">${p.name}</span><span class="treg">${p.region}</span></span></span>`
+  + `<span class="pk num"><b>${p.pk}</b> แพ็ก</span>`
+  + (p.was ? `<span class="delta">${pct(p)}</span>` : `<span class="delta none"></span>`)
+  + `<span class="pr num">${THB(p.from)}${p.was ? `<s class="num">${THB(p.was)}</s>` : ""}<span class="up">ขึ้นไป</span></span></a>`;
+
+const mTile = p => `<a class="tile" href="#">${cover(p)}`
+  + `<p class="tname" style="font-size:11.5px">${p.name}</p>`
+  + `<p class="tprice num" style="font-size:12px">${THB(p.from)}${p.was ? `<s class="num">${THB(p.was)}</s>` : ""}<span class="up">ขึ้นไป</span></p></a>`;
+
+const mProw = p => `<a class="mprow" href="#">${cover(p, "border-radius:9px")}`
+  + `<span class="t"><span class="tname">${p.name}</span><span class="treg">${p.region} · ${p.pk} แพ็ก</span></span>`
+  + `<span class="pr num">${THB(p.from)}${p.was ? `<s class="num">${THB(p.was)}</s>` : ""}</span></a>`;
+
+const RENDER = {
+  "a-grid":      () => P.map(tile).join(""),
+  "a-rank":      () => BEST.map(rank).join(""),
+  "b-grid":      () => P.map(tile).join(""),
+  "c-chips":     () => P.map((p, i) => chip(p, i === 3)).join(""),
+  "c-shelf-pop": () => P.map(tile).join(""),
+  "c-shelf-best":() => BEST.map(tile).join(""),
+  "d-rows":      () => P.map(p => prow(p)).join(""),
+  "d-best":      () => BEST.map((p, i) => prow(p, i + 1)).join(""),
+  "m-a-grid":    () => P.slice(0, 4).map(mTile).join(""),
+  "m-b-grid":    () => P.slice(0, 4).map(mTile).join(""),
+  "m-c-chips":   () => P.slice(0, 5).map((p, i) => chip(p, i === 3)).join(""),
+  "m-c-grid":    () => P.slice(0, 4).map(mTile).join(""),
+  "m-d-rows":    () => P.slice(0, 5).map(mProw).join(""),
+};
+for (const [sel, fn] of Object.entries(RENDER)) {
+  document.querySelectorAll(`[data-render="${sel}"]`).forEach(el => { el.innerHTML = fn(); });
+}
+/* เติม header/footer จาก template — header/footer เป็นแบบอนุมัติแล้ว ทั้ง 4 เฟรมชุดเดียวกัน */
+const CLONES = { hd:"tpl-hd", subnav:"tpl-subnav", ft:"tpl-ft", mhd:"tpl-mhd" };
+for (const [key, tplId] of Object.entries(CLONES)) {
+  const tpl = document.getElementById(tplId);
+  document.querySelectorAll(`[data-clone="${key}"]`).forEach(el => el.appendChild(tpl.content.cloneNode(true)));
+}
+</script>
+</body>
+</html>

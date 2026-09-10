@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product Details Directions · LNWTERMGAME frontend-new</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · component-group: product details (×4) · theme: Warm Slate (locked)
+ * content: markdown จริงของ MLBB MY (6 หัวข้อ + ขั้นตอน + บูลเล็ต) — ไม่ตัดทอน
+ */
+:root{
+  --bg:#191618; --bg-deep:#141114; --surface:#211e22; --raised:#282429; --raised-2:#2e2a30;
+  --border:#35303a; --border-faint:#2a262b;
+  --text:#eceae9; --muted:#a8a1a6; --muted-2:#7f787e;
+  --primary:oklch(0.7 0.17 45); --primary-hi:oklch(0.755 0.165 45); --primary-ink:#2a1206;
+  --r-lg:14px; --r-md:10px; --r-sm:8px;
+  --shadow-tile:0 1px 0 rgba(255,255,255,.035) inset, 0 10px 28px -14px rgba(0,0,0,.55);
+  --font:"Noto Sans Thai","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{flex:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+
+/* doc chrome */
+.doc{max-width:900px;margin:0 auto;padding:0 16px 96px}
+.doc-head{padding:44px 0 8px}
+.doc-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
+.doc-title{font-size:26px;font-weight:800;margin-top:6px}
+.doc-sub{color:var(--muted);margin-top:6px;max-width:78ch}
+.doc-nav{position:sticky;top:0;z-index:60;background:color-mix(in oklab,var(--bg-deep) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-faint);margin:26px -16px 0;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.doc-nav .lbl{font-size:12px;font-weight:600;color:var(--muted-2)}
+.jump{font-size:12.5px;font-weight:600;color:var(--muted);border:1px solid var(--border-faint);background:var(--surface);
+  border-radius:999px;padding:6px 14px;transition:color .15s,border-color .15s;white-space:nowrap}
+.jump:hover{color:var(--text);border-color:var(--border)}
+.dir{margin-top:60px;scroll-margin-top:64px}
+.dir-label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dir-letter{width:34px;height:34px;border-radius:10px;background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:16px;display:grid;place-items:center}
+.dir-name{font-size:19px;font-weight:700}
+.dir-tag{font-size:12px;font-weight:600;color:var(--muted-2);border:1px solid var(--border-faint);border-radius:999px;padding:3px 10px}
+.dir-desc{color:var(--muted);margin-top:8px;max-width:80ch}
+.frame{border:1px solid var(--border-faint);border-radius:var(--r-lg);overflow:hidden;margin-top:16px;box-shadow:var(--shadow-tile);background:var(--bg)}
+.frame-label{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--muted-2);
+  background:var(--surface);border-bottom:1px solid var(--border-faint)}
+.pros{list-style:none;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 20px}
+.pros li{font-size:13px;color:var(--muted);padding-left:20px;position:relative}
+.pros li::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:2px;background:var(--primary)}
+.pros li.warn::before{background:var(--muted-2)}
+.pros li b{color:var(--text);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--muted-2);font-weight:600;font-size:12px;text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);white-space:nowrap}
+td{color:var(--muted);padding:11px 12px;border-bottom:1px solid var(--border-faint);vertical-align:top}
+td:first-child{font-weight:700;color:var(--text)}
+
+/* context: package strip placeholder */
+.pkghint{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--border-faint);opacity:.45}
+.pkghint i{height:40px;flex:1;min-width:110px;background:var(--surface);border:1px solid var(--border-faint);border-radius:10px;font-style:normal}
+
+/* card + typography ของเนื้อหา */
+.dcard{border-top:0;padding:18px 16px}
+.seclabel{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--muted-2);text-transform:uppercase;margin-bottom:12px}
+.intro{font-size:13.5px;line-height:1.8;color:var(--muted)}
+.body{font-size:13px;line-height:1.8;color:var(--muted)}
+.body p+p{margin-top:10px}
+.body strong{color:var(--text);font-weight:700}
+.steps{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.steps li{display:flex;gap:10px;align-items:flex-start}
+.steps .n{width:20px;height:20px;border-radius:6px;background:color-mix(in oklab,var(--primary) 13%,transparent);
+  color:var(--primary);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none;margin-top:3px}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.bullets li{display:flex;gap:9px;align-items:flex-start}
+.bullets li::before{content:"";width:6px;height:6px;border-radius:999px;background:var(--primary);flex:none;margin-top:9px}
+.callout{margin-top:14px;border:1px solid color-mix(in oklab,#f59e0b 35%,transparent);
+  background:color-mix(in oklab,#f59e0b 7%,transparent);border-radius:var(--r-md);padding:12px 14px;font-size:12.5px;line-height:1.7;color:var(--muted)}
+.callout b{color:#fbbf24}
+
+/* A accordion */
+.acc{border:1px solid var(--border-faint);border-radius:var(--r-md);background:var(--bg);overflow:hidden}
+.acc+.acc{margin-top:9px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:12px 14px;text-align:left;
+  font-size:13px;font-weight:700;transition:background .15s}
+.acc-h:hover{background:var(--surface)}
+.acc-h .chev{color:var(--muted-2);transition:transform .2s}
+.acc.open .acc-h .chev{transform:rotate(180deg)}
+.acc-b{display:none;padding:2px 14px 14px}
+.acc.open .acc-b{display:block}
+
+/* B tabs */
+.tabstrip{display:flex;gap:2px;border-bottom:1px solid var(--border-faint);margin-bottom:16px}
+.tab{padding:9px 14px;font-size:13px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.on{color:var(--text);border-bottom-color:var(--primary)}
+.pane{display:none}
+.pane.on{display:block}
+
+/* D read more */
+.more-btn{margin-top:12px;width:100%;height:40px;border-radius:var(--r-md);border:1px solid var(--border);
+  font-size:13px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;transition:color .15s,border-color .15s}
+.more-btn:hover{color:var(--text);border-color:var(--primary)}
+.collapse{display:none}
+.collapse.open{display:block}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc-head">
+    <div class="doc-kicker">frontend-new · UX/UI pass 7 — รายละเอียดสินค้า (ส่วนเนื้อหายาว)</div>
+    <div class="doc-title">เลือกวิธีจัดการเนื้อหารายละเอียดในหน้าสินค้า</div>
+    <p class="doc-sub">ปัญหาตอนนี้: markdown ของสินค้า (เช่น MLBB มี 6 หัวข้อ + ขั้นตอน + บูลเล็ต) ถูกเรนเดอร์เป็นข้อความแบนก้อนเดียว
+      ยาว 1,700px+ ทั้งที่มีโครงอยู่ — ทั้ง 4 แบบนี้<b>แยกหัวข้อจริงตามโครง markdown</b> ด้วยเนื้อหา MLBB ไม่ตัดทอน
+      แถบเทา ๆ ด้านบนแต่ละกรอบคือแถวแพ็กเกจ (บริบทตำแหน่งจริงใต้แพ็กเกจ)</p>
+  </div>
+
+  <nav class="doc-nav">
+    <span class="lbl">กระโดดไป:</span>
+    <a class="jump" href="#a">A · หีบเพลงแยกหัวข้อ</a>
+    <a class="jump" href="#b">B · แท็บ 3 ใบ</a>
+    <a class="jump" href="#c">C · คู่มือเรียงหัวข้อเต็ม</a>
+    <a class="jump" href="#d">D · ย่อ + อ่านต่อ</a>
+  </nav>
+
+  <!-- ============ A ============ -->
+  <section class="dir" id="a">
+    <div class="dir-label"><span class="dir-letter">A</span><span class="dir-name">หีบเพลงแยกหัวข้อ — Accordion</span><span class="dir-tag">กระชับสุด · แนะนำ</span></div>
+    <p class="dir-desc">ย่อหน้าแรก (คำโปรย) เปิดค้างไว้เสมอ — หัวข้อยาวที่เหลือพับเก็บเป็นหีบเพลง 4 ใบ
+      กดเปิดได้ทีละใบตามที่สนใจ · หน้าเว็บสั้นลงจาก 1,700px เหลือ ~500px ข้อมูลไม่หายแม้บรรทัดเดียว</p>
+    <div class="frame">
+      <div class="frame-label"><span>กดหัวข้อเปิด/ปิดได้จริง</span><span>ย่อหน้าแรกเปิดค้าง</span></div>
+      <div class="pkghint"><i></i><i></i><i></i></div>
+      <div class="dcard">
+        <div class="seclabel">รายละเอียด</div>
+        <p class="intro">เติมเพชร Mobile Legends เซิร์ฟเวอร์ Malaysia ได้อย่างสะดวกรวดเร็วและคุ้มค่าที่สุดผ่านระบบเติมตรงอัตโนมัติของ Lnwtermgame เพียงกรอกหมายเลขบัญชีผู้ใช้ก็รับเพชรเข้าเกมได้ทันทีโดยไม่ต้องเปิดเผยรหัสผ่าน ปลอดภัย ไร้กังวล</p>
+
+        <div style="margin-top:16px">
+          <div class="acc" data-acc>
+            <button class="acc-h">เกี่ยวกับ Mobile Legends และ Diamonds<svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="acc-b"><div class="body">
+              <p>เกม <strong>Mobile Legends: Bang Bang</strong> เป็นเกมแนว MOBA บนมือถือยอดนิยมระดับโลกที่ผู้เล่นต้องร่วมมือกันเป็นทีมแบบ 5 ต่อ 5 เพื่อวางกลยุทธ์และเข้าทำลายป้อมปราการของฝ่ายตรงข้าม สกุลเงินหลักคือ <strong>Diamonds</strong> ใช้ซื้อสกินฮีโร่ ปลดล็อกตัวละครใหม่ ร่วมกิจกรรมจับฉลาก ซื้อบัตร Starlight Member หรือตกแต่งเอฟเฟกต์การต่อสู้</p>
+            </div></div>
+          </div>
+          <div class="acc" data-acc>
+            <button class="acc-h">ข้อมูลที่ต้องใช้ในการเติมเงิน<svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="acc-b"><div class="body">
+              <p>การเติมเพชร MLBB เซิร์ฟเวอร์ Malaysia เป็นการเติมตรงเข้าสู่ระบบของเกม กรอกข้อมูลบัญชีเกมให้ถูกต้อง:</p>
+              <ul class="bullets">
+                <li><span><strong>User ID</strong> — หมายเลขไอดีประจำตัวผู้เล่น (ตัวเลขหลักของบัญชีเกม)</span></li>
+                <li><span><strong>Zone ID</strong> — หมายเลขเซิร์ฟเวอร์ อยู่ในวงเล็บ เช่น 12345678 <strong>(1234)</strong></span></li>
+              </ul>
+              <p style="margin-top:10px">วิธีดูในเกม:</p>
+              <ol class="steps">
+                <li><span class="n">1</span><span>เปิดเกม Mobile Legends แล้วเข้าสู่ระบบบัญชีที่ต้องการเติม</span></li>
+                <li><span class="n">2</span><span>แตะรูปโปรไฟล์มุมซ้ายบนของหน้าจอหลัก</span></li>
+                <li><span class="n">3</span><span>เลือกแท็บหน้าแรกของโปรไฟล์ — เห็นไอดีใต้ชื่อตัวละคร</span></li>
+                <li><span class="n">4</span><span>คัดลอกตัวเลขทั้งสองส่วนมากรอกในระบบสั่งซื้อ</span></li>
+              </ol>
+            </div></div>
+          </div>
+          <div class="acc" data-acc>
+            <button class="acc-h">ขั้นตอนการสั่งซื้อ<svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="acc-b"><div class="body">
+              <ol class="steps">
+                <li><span class="n">1</span><span>เลือกแพ็กเกจ Diamonds ที่ต้องการ</span></li>
+                <li><span class="n">2</span><span>กรอก User ID และ Zone ID ให้ถูกต้องครบถ้วน</span></li>
+                <li><span class="n">3</span><span>เลือกช่องทางชำระเงิน — PromptPay / TrueMoney / บัตรเครดิต</span></li>
+                <li><span class="n">4</span><span>ตรวจสอบรายละเอียดและยอดชำระ แล้วยืนยัน</span></li>
+                <li><span class="n">5</span><span>ระบบส่งเพชรเข้าเกมอัตโนมัติทันทีเมื่อชำระสำเร็จ</span></li>
+              </ol>
+            </div></div>
+          </div>
+          <div class="acc" data-acc>
+            <button class="acc-h">ทำไมต้องเติมกับเรา + ข้อควรระวัง<svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="acc-b"><div class="body">
+              <ul class="bullets">
+                <li><span><strong>อัตโนมัติรวดเร็ว</strong> — เพชรเข้าเกมทันที ไม่ต้องรอคิว/ส่งสลิป</span></li>
+                <li><span><strong>ปลอดภัยสูงสุด</strong> — ใช้เพียงไอดีเกม ไม่ขอรหัสผ่าน</span></li>
+                <li><span><strong>ราคาคุ้มค่า</strong> — ส่วนลดพิเศษสม่ำเสมอ</span></li>
+                <li><span><strong>ทีมงาน 24 ชม.</strong> — ช่วยเหลือทุกวัน</span></li>
+              </ul>
+              <div class="callout"><b>ข้อควรระวัง:</b> ตรวจสอบ User ID / Zone ID และภูมิภาคบัญชีให้ถูกต้องก่อนชำระทุกครั้ง — ระบบส่งอัตโนมัติ หากกรอกผิดและส่งเข้าบัญชีอื่นแล้วจะไม่สามารถยกเลิกหรือขอคืนเงินได้</div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>สั้นลงเหลือ ~500px</b> — ปุ่มซื้อ/สรุปไม่ถูกเนื้อหาดันหนี</li>
+      <li>ข้อมูลครบทุกตัวอักษร แค่พับเก็บ — <b>SEO ยังอ่านได้</b></li>
+      <li>เหมาะมือถือ (กลุ่มหลัก) — ไม่ต้องเลื่อนเนื้อหายาว</li>
+      <li class="warn">ผู้ใช้ต้อง "กด" เพื่ออ่าน — บางคนไม่กดก็จะไม่รู้วิธีดู ID</li>
+    </ul>
+  </section>
+
+  <!-- ============ B ============ -->
+  <section class="dir" id="b">
+    <div class="dir-label"><span class="dir-letter">B</span><span class="dir-name">แท็บ 3 ใบ — Tabs</span><span class="dir-tag">จัดกลุ่มชัด · คุ้นเคยจากหน้าสินค้าทั่วไป</span></div>
+    <p class="dir-desc">จัด 6 หัวข้อเข้า 3 แท็บ: <b>ภาพรวม</b> (คำโปรย+เกี่ยวกับเกม) · <b>วิธีเติม</b> (ข้อมูลที่ต้องใช้+ขั้นตอนสั่งซื้อ) ·
+      <b>ข้อควรรู้</b> (จุดเด่น+ข้อควรระวัง) — สลับดูได้ทันที พื้นที่คงที่ไม่ขยายตามเนื้อหา</p>
+    <div class="frame">
+      <div class="frame-label"><span>กดแท็บสลับได้จริง</span><span></span></div>
+      <div class="pkghint"><i></i><i></i><i></i></div>
+      <div class="dcard" data-tabs>
+        <div class="tabstrip">
+          <button class="tab on" data-pane="t1">ภาพรวม</button>
+          <button class="tab" data-pane="t2">วิธีเติม</button>
+          <button class="tab" data-pane="t3">ข้อควรรู้</button>
+        </div>
+        <div class="pane on" id="t1">
+          <p class="intro">เติมเพชร Mobile Legends เซิร์ฟเวอร์ Malaysia ผ่านระบบเติมตรงอัตโนมัติของ Lnwtermgame — กรอกหมายเลขบัญชีผู้ใช้ รับเพชรทันที ไม่ต้องเปิดเผยรหัสผ่าน</p>
+          <div class="body" style="margin-top:12px">
+            <p>เกม <strong>Mobile Legends: Bang Bang</strong> เป็นเกมแนว MOBA บนมือถือยอดนิยมระดับโลก (5 ต่อ 5) สกุลเงินหลักคือ <strong>Diamonds</strong> ใช้ซื้อสกินฮีโร่ ปลดล็อกตัวละคร กิจกรรมจับฉลาก บัตร Starlight Member และเอฟเฟกต์การต่อสู้</p>
+          </div>
+        </div>
+        <div class="pane" id="t2">
+          <div class="body">
+            <p><strong>ข้อมูลที่ต้องใช้:</strong> User ID (ตัวเลขหลัก) และ Zone ID (อยู่ในวงเล็บ เช่น 12345678 <strong>(1234)</strong>)</p>
+            <ol class="steps">
+              <li><span class="n">1</span><span>เปิดเกม MLBB เข้าสู่ระบบบัญชีที่ต้องการเติม</span></li>
+              <li><span class="n">2</span><span>แตะโปรไฟล์มุมซ้ายบน → ไอดีอยู่ใต้ชื่อตัวละคร</span></li>
+              <li><span class="n">3</span><span>เลือกแพ็กเกจ → กรอก User ID + Zone ID</span></li>
+              <li><span class="n">4</span><span>เลือกช่องทางชำระ → ตรวจยอด → ยืนยัน</span></li>
+              <li><span class="n">5</span><span>เพชรเข้าเกมอัตโนมัติทันทีเมื่อชำระสำเร็จ</span></li>
+            </ol>
+          </div>
+        </div>
+        <div class="pane" id="t3">
+          <div class="body">
+            <ul class="bullets">
+              <li><span><strong>อัตโนมัติรวดเร็ว</strong> — เพชรเข้าเกมทันที ไม่ต้องรอคิว</span></li>
+              <li><span><strong>ปลอดภัยสูงสุด</strong> — ใช้เพียงไอดีเกม ไม่ขอรหัสผ่าน</span></li>
+              <li><span><strong>ราคาคุ้มค่า</strong> — ส่วนลดพิเศษสม่ำเสมอ · <strong>ทีมงาน 24 ชม.</strong></span></li>
+            </ul>
+            <div class="callout"><b>ข้อควรระวัง:</b> ตรวจสอบ User ID / Zone ID และภูมิภาคบัญชีก่อนชำระทุกครั้ง — ระบบส่งอัตโนมัติ หากกรอกผิดและส่งเข้าบัญชีอื่นแล้วจะยกเลิก/ขอคืนเงินไม่ได้</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>พื้นที่คงที่</b> — สลับแท็บไม่ขยายหน้า เลื่อนน้อย</li>
+      <li>รูปแบบคุ้นเคยจากหน้าสินค้าอีคอมเมิร์ซทั่วไป</li>
+      <li class="warn">เนื้อหาในแท็บที่ไม่ได้เปิด <b>SEO อ่านได้แต่ผู้ใช้ไม่เห็น</b>จนกด</li>
+      <li class="warn">ต้องจัดกลุ่มหัวข้อให้ถูก (ทำให้แล้วใน mockup — ตรรกะ parse ตามหัวข้อ)</li>
+    </ul>
+  </section>
+
+  <!-- ============ C ============ -->
+  <section class="dir" id="c">
+    <div class="dir-label"><span class="dir-letter">C</span><span class="dir-name">คู่มือเรียงหัวข้อเต็ม — Structured Guide</span><span class="dir-tag">ข้อมูลครบตาเห็นหมด · SEO ดีสุด</span></div>
+    <p class="dir-desc">ไม่ย่อ ไม่ซ่อน — เรนเดอร์เนื้อหาครบทุกหัวข้อแบบ<b>จัดโครงสวยงาม</b>: หัวข้อพร้อมไอคอน, ขั้นตอนเป็นเลขวงกลมส้ม,
+      บูลเล็ตเป็นจุดส้ม, ข้อควรระวังเป็น callout เหลือง — หน้ายาวเท่าเดิมแต่<b>อ่านง่ายขึ้นมาก</b>และเครื่องมือค้นหาอ่านครบ</p>
+    <div class="frame">
+      <div class="frame-label"><span>เนื้อหาครบ ไม่มีอะไรซ่อน</span><span>เลื่อนดูได้ในกรอบ</span></div>
+      <div style="max-height:820px;overflow-y:auto">
+        <div class="pkghint"><i></i><i></i><i></i></div>
+        <div class="dcard" style="max-width:100%">
+          <div class="seclabel">รายละเอียด</div>
+          <p class="intro">เติมเพชร Mobile Legends เซิร์ฟเวอร์ Malaysia ได้อย่างสะดวกรวดเร็วและคุ้มค่าที่สุดผ่านระบบเติมตรงอัตโนมัติของ Lnwtermgame เพียงกรอกหมายเลขบัญชีผู้ใช้ก็รับเพชรเข้าเกมได้ทันทีโดยไม่ต้องเปิดเผยรหัสผ่าน ปลอดภัย ไร้กังวล</p>
+
+          <div style="margin-top:22px;display:flex;flex-direction:column;gap:22px">
+            <div>
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <b style="font-size:13.5px">เกี่ยวกับ Mobile Legends และ Diamonds</b>
+              </div>
+              <div class="body">
+                <p>เกม <strong>Mobile Legends: Bang Bang</strong> เป็นเกมแนว MOBA บนมือถือยอดนิยมระดับโลก (5 ต่อ 5) สกุลเงินหลักคือ <strong>Diamonds</strong> ใช้ซื้อสกินฮีโร่สุดเท่ ปลดล็อกตัวละครใหม่ กิจกรรมจับฉลาก บัตร Starlight Member และเอฟเฟกต์การต่อสู้ — การมีเพชรสำรองช่วยให้ไม่พลาดกิจกรรมจำกัดเวลาและคอลเลกชันสกินระดับตำนาน</p>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+                <b style="font-size:13.5px">ข้อมูลที่ต้องใช้ในการเติมเงิน</b>
+              </div>
+              <div class="body">
+                <ul class="bullets">
+                  <li><span><strong>User ID</strong> — หมายเลขไอดีประจำตัวผู้เล่น (ตัวเลขหลักของบัญชีเกม)</span></li>
+                  <li><span><strong>Zone ID</strong> — หมายเลขเซิร์ฟเวอร์ อยู่ในวงเล็บ เช่น 12345678 <strong>(1234)</strong></span></li>
+                </ul>
+                <p style="margin-top:10px">วิธีดูในเกม:</p>
+                <ol class="steps">
+                  <li><span class="n">1</span><span>เปิดเกม Mobile Legends แล้วเข้าสู่ระบบบัญชีที่ต้องการเติม</span></li>
+                  <li><span class="n">2</span><span>แตะรูปโปรไฟล์มุมซ้ายบนของหน้าจอหลัก</span></li>
+                  <li><span class="n">3</span><span>เลือกแท็บหน้าแรกของโปรไฟล์ — เห็นไอดีใต้ชื่อตัวละคร</span></li>
+                  <li><span class="n">4</span><span>กดคัดลอกตัวเลขทั้งสองส่วนมากรอกในระบบสั่งซื้อ</span></li>
+                </ol>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <b style="font-size:13.5px">ขั้นตอนการสั่งซื้อกับ Lnwtermgame</b>
+              </div>
+              <div class="body">
+                <ol class="steps">
+                  <li><span class="n">1</span><span>เลือกแพ็กเกจ Diamonds สำหรับเซิร์ฟเวอร์ Malaysia ที่ต้องการ</span></li>
+                  <li><span class="n">2</span><span>กรอก User ID และ Zone ID ให้ถูกต้องครบถ้วน</span></li>
+                  <li><span class="n">3</span><span>เลือกช่องทางชำระเงิน — PromptPay / TrueMoney / โอนธนาคาร / บัตรเครดิต</span></li>
+                  <li><span class="n">4</span><span>ตรวจสอบรายละเอียดคำสั่งซื้อ ยอดเงิน และข้อมูลบัญชีเกม แล้วยืนยันชำระ</span></li>
+                  <li><span class="n">5</span><span>Diamonds ถูกส่งตรงเข้าบัญชีเกมอัตโนมัติทันทีเมื่อชำระสำเร็จ</span></li>
+                </ol>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+                <b style="font-size:13.5px">ทำไมต้องเติมกับ Lnwtermgame</b>
+              </div>
+              <div class="body">
+                <ul class="bullets">
+                  <li><span><strong>ระบบอัตโนมัติรวดเร็วทันใจ</strong> — เพชรเข้าเกมทันที ไม่ต้องรอคิว ไม่ต้องส่งสลิป</span></li>
+                  <li><span><strong>ความปลอดภัยระดับสูงสุด</strong> — เติมตรงผ่านไอดีเกม ไม่ขอรหัสผ่าน ปลอดภัยจากแฮก 100%</span></li>
+                  <li><span><strong>ราคาคุ้มค่าและเป็นธรรม</strong> — แพ็กเกจประหยัด + ส่วนลดพิเศษสม่ำเสมอ</span></li>
+                  <li><span><strong>ช่องทางชำระหลากหลาย</strong> — พร้อมเพย์ วอลเล็ต บัตรเดบิต/เครดิต</span></li>
+                  <li><span><strong>ทีมงานดูแล 24 ชั่วโมง</strong> — พร้อมช่วยเหลือทุกวันทุกเวลา</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout"><b>ข้อควรระวังในการทำรายการ:</b> ตรวจสอบ User ID / Zone ID และว่าบัญชีรองรับภูมิภาค Malaysia ให้ถูกต้องทุกครั้ง — ระบบส่งมอบอัตโนมัติ หากกรอกผิดและส่งเข้าบัญชีอื่นแล้ว จะไม่สามารถยกเลิก ดึงยอดคืน หรือขอเงินคืนได้ทุกกรณี รวมถึงควรตรวจอินเทอร์เน็ตระหว่างชำระเงินเพื่อป้องกันความล่าช้า</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>ข้อมูลครบตาเห็นหมด</b> — ไม่มีอะไรซ่อน เหมาะหน้าที่ต้องการความน่าเชื่อถือ</li>
+      <li><b>SEO ดีที่สุด</b> — เครื่องมือค้นหาอ่านโครงหัวข้อครบ</li>
+      <li>โครง markdown เดิมใช้ตรง ๆ (parse ## แล้วเรนเดอร์ตามสไตล์)</li>
+      <li class="warn">หน้ายาวเท่าเดิม (1,700px+) — แค่อ่านง่ายขึ้น ไม่ได้สั้นลง</li>
+    </ul>
+  </section>
+
+  <!-- ============ D ============ -->
+  <section class="dir" id="d">
+    <div class="dir-label"><span class="dir-letter">D</span><span class="dir-name">ย่อ + ปุ่มอ่านต่อ — Excerpt & Expand</span><span class="dir-tag">เริ่มสั้น · กดขยายได้</span></div>
+    <p class="dir-desc">ค่าเริ่มต้นแสดงแค่<b>ย่อหน้าแรก + ไฮไลต์ 3 ข้อ</b> — เหลือ ~260px แล้วมีปุ่ม
+      "อ่านรายละเอียดเพิ่มเติม" กดขยายเนื้อหาเต็ม (สไตล์เดียวกับแบบ C) กดซ่อนกลับได้ —
+      กระชับที่สุดตอนเปิดหน้า แต่ข้อมูลยังเข้าถึงได้ในคลิกเดียว</p>
+    <div class="frame">
+      <div class="frame-label"><span>กด "อ่านรายละเอียดเพิ่มเติม" เพื่อขยาย/ย่อ</span><span>ค่าเริ่มต้น ~260px</span></div>
+      <div class="pkghint"><i></i><i></i><i></i></div>
+      <div class="dcard">
+        <div class="seclabel">รายละเอียด</div>
+        <p class="intro">เติมเพชร Mobile Legends เซิร์ฟเวอร์ Malaysia ได้อย่างสะดวกรวดเร็วและคุ้มค่าที่สุดผ่านระบบเติมตรงอัตโนมัติของ Lnwtermgame เพียงกรอกหมายเลขบัญชีผู้ใช้ก็รับเพชรเข้าเกมได้ทันทีโดยไม่ต้องเปิดเผยรหัสผ่าน ปลอดภัย ไร้กังวล</p>
+        <ul class="bullets" style="margin-top:12px">
+          <li><span>เติมตรงด้วย <strong>User ID + Zone ID</strong> — ไม่ต้องใช้รหัสผ่าน</span></li>
+          <li><span>เพชรเข้าเกม<strong>อัตโนมัติทันที</strong>หลังชำระเงิน</span></li>
+          <li><span>รองรับ <strong>PromptPay / TrueMoney / บัตรเครดิต</strong></span></li>
+        </ul>
+
+        <button class="more-btn" data-more>
+          อ่านรายละเอียดเพิ่มเติม
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+
+        <div class="collapse" data-collapse style="margin-top:16px">
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div>
+              <b style="font-size:13.5px;display:block;margin-bottom:6px">เกี่ยวกับ Mobile Legends และ Diamonds</b>
+              <div class="body"><p>เกม <strong>Mobile Legends: Bang Bang</strong> เป็นเกม MOBA ยอดนิยมระดับโลก (5 ต่อ 5) สกุลเงินหลักคือ <strong>Diamonds</strong> ใช้ซื้อสกินฮีโร่ ปลดล็อกตัวละคร กิจกรรมจับฉลาก บัตร Starlight Member และเอฟเฟกต์การต่อสู้</p></div>
+            </div>
+            <div>
+              <b style="font-size:13.5px;display:block;margin-bottom:6px">ข้อมูลที่ต้องใช้ + วิธีดูไอดี</b>
+              <div class="body">
+                <ul class="bullets">
+                  <li><span><strong>User ID</strong> — ตัวเลขหลักของบัญชีเกม</span></li>
+                  <li><span><strong>Zone ID</strong> — อยู่ในวงเล็บ เช่น 12345678 <strong>(1234)</strong></span></li>
+                </ul>
+                <ol class="steps" style="margin-top:8px">
+                  <li><span class="n">1</span><span>เปิดเกม → เข้าสู่ระบบบัญชีที่ต้องการเติม</span></li>
+                  <li><span class="n">2</span><span>แตะโปรไฟล์มุมซ้ายบน</span></li>
+                  <li><span class="n">3</span><span>ไอดีอยู่ใต้ชื่อตัวละคร → คัดลอกมากรอก</span></li>
+                </ol>
+              </div>
+            </div>
+            <div>
+              <b style="font-size:13.5px;display:block;margin-bottom:6px">ขั้นตอนการสั่งซื้อ</b>
+              <div class="body">
+                <ol class="steps">
+                  <li><span class="n">1</span><span>เลือกแพ็กเกจ Diamonds</span></li>
+                  <li><span class="n">2</span><span>กรอก User ID + Zone ID</span></li>
+                  <li><span class="n">3</span><span>เลือกช่องทางชำระเงิน</span></li>
+                  <li><span class="n">4</span><span>ตรวจยอด → ยืนยัน</span></li>
+                  <li><span class="n">5</span><span>เพชรเข้าเกมอัตโนมัติทันที</span></li>
+                </ol>
+              </div>
+            </div>
+            <div>
+              <b style="font-size:13.5px;display:block;margin-bottom:6px">ทำไมต้องเติมกับ Lnwtermgame</b>
+              <div class="body">
+                <ul class="bullets">
+                  <li><span><strong>อัตโนมัติรวดเร็ว</strong> — ไม่ต้องรอคิว/ส่งสลิป</span></li>
+                  <li><span><strong>ปลอดภัยสูงสุด</strong> — ไม่ขอรหัสผ่าน</span></li>
+                  <li><span><strong>ราคาคุ้มค่า</strong> — ส่วนลดสม่ำเสมอ · <strong>ทีมงาน 24 ชม.</strong></span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="callout"><b>ข้อควรระวัง:</b> ตรวจสอบ User ID / Zone ID และภูมิภาคบัญชีก่อนชำระทุกครั้ง — ระบบส่งอัตโนมัติ หากกรอกผิดและส่งเข้าบัญชีอื่นแล้วจะยกเลิก/ขอคืนเงินไม่ได้ทุกกรณี</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>สั้นสุดตอนเปิดหน้า</b> (~260px) — ปุ่มซื้อเด่น ไม่มีผนังตัวหนังสือ</li>
+      <li>ไฮไลต์ 3 ข้อสื่อสารใจความหลักก่อนกดอ่าน</li>
+      <li>ขยายได้ในคลิกเดียว — ข้อมูลไม่หาย</li>
+      <li class="warn">ไฮไลต์ 3 ข้อต้อง derive จากเนื้อหา (ตรรกะ: ย่อหน้าแรก + จุดเด่นที่ parse ได้) — ถ้าสินค้าไหนเนื้อหาสั้นอยู่แล้วให้แสดงเต็มเลย</li>
+    </ul>
+  </section>
+
+  <!-- ============ summary ============ -->
+  <section class="dir" id="summary">
+    <div class="dir-label"><span class="dir-letter" style="background:var(--raised-2);color:var(--text)">Σ</span><span class="dir-name">สรุปเปรียบเทียบ</span></div>
+    <div class="frame" style="overflow-x:auto;background:var(--bg)">
+      <table>
+        <thead><tr>
+          <th>แบบ</th><th>ความสูงเริ่มต้น</th><th>จุดเด่น</th><th>SEO</th><th>งาน implement</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>A · หีบเพลง</td><td>~500px</td><td>ย่อหน้าแรกเปิด + หัวข้อพับเก็บ</td><td>ดี</td><td>ปานกลาง (parse ## + accordion)</td></tr>
+          <tr><td>B · แท็บ 3 ใบ</td><td>~340px</td><td>พื้นที่คงที่ จัดกลุ่ม 3 มุมมอง</td><td>กลาง</td><td>ปานกลาง+ (จัดกลุ่มหัวข้อ)</td></tr>
+          <tr><td>C · คู่มือเต็ม</td><td>~1,700px (เท่าเดิม)</td><td>ครบตาเห็นหมด โครงสวย</td><td>ดีสุด</td><td>น้อย (เรนเดอร์ markdown ตามสไตล์)</td></tr>
+          <tr><td>D · ย่อ+อ่านต่อ</td><td>~260px</td><td>สั้นสุด + ไฮไลต์ 3 ข้อ</td><td>ดี</td><td>มากสุด (derive ไฮไลต์)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot-note" style="font-size:12.5px;color:var(--muted-2);margin-top:6px">ทุกแบบ parse จาก markdown ของสินค้าโดยตรง (## หัวข้อ / รายการเลข / บูลเล็ต / **ตัวหนา**) — สินค้าทุกตัวได้โครงเดียวกันอัตโนมัติ ไม่ต้องแก้เนื้อหาเดิมในระบบ · ผสมได้ เช่น "A แต่ callout ข้อควรระวังเปิดค้างไว้เสมอ"</p>
+  </section>
+
+</div>
+<script>
+  // A: accordion
+  document.querySelectorAll("[data-acc] .acc-h").forEach((h) =>
+    h.addEventListener("click", () => h.closest(".acc").classList.toggle("open"))
+  );
+  // B: tabs
+  document.querySelectorAll("[data-tabs] .tab").forEach((t) =>
+    t.addEventListener("click", () => {
+      const box = t.closest("[data-tabs]");
+      box.querySelectorAll(".tab").forEach((x) => x.classList.remove("on"));
+      t.classList.add("on");
+      box.querySelectorAll(".pane").forEach((p) => p.classList.remove("on"));
+      box.querySelector("#" + t.dataset.pane).classList.add("on");
+    })
+  );
+  // D: read more toggle
+  const more = document.querySelector("[data-more]");
+  more?.addEventListener("click", () => {
+    const box = document.querySelector("[data-collapse]");
+    const open = box.classList.toggle("open");
+    more.firstChild.textContent = open ? "ย่อรายละเอียด " : "อ่านรายละเอียดเพิ่มเติม ";
+    more.querySelector("svg").style.transform = open ? "rotate(180deg)" : "";
+  });
+</script>
+</body>
+</html>

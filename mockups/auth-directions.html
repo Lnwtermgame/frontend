@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auth Directions · LNWTERMGAME frontend-new</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · page: auth comparison (login + register ×4) · theme: Warm Slate (locked)
+ * real: โลโก้ mark จริง · OAuth Google/Discord จริง · ฟิลด์/ข้อความจริงจาก th.json
+ */
+:root{
+  --bg:#191618; --bg-deep:#141114; --surface:#211e22; --raised:#282429; --raised-2:#2e2a30;
+  --border:#35303a; --border-faint:#2a262b;
+  --text:#eceae9; --muted:#a8a1a6; --muted-2:#7f787e;
+  --primary:oklch(0.7 0.17 45); --primary-hi:oklch(0.755 0.165 45); --primary-ink:#2a1206;
+  --r-lg:14px; --r-md:10px; --r-sm:8px;
+  --shadow-tile:0 1px 0 rgba(255,255,255,.035) inset, 0 10px 28px -14px rgba(0,0,0,.55);
+  --font:"Noto Sans Thai","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{flex:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+
+/* doc chrome */
+.doc{max-width:1240px;margin:0 auto;padding:0 16px 96px}
+.doc-head{padding:44px 0 8px}
+.doc-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
+.doc-title{font-size:26px;font-weight:800;margin-top:6px}
+.doc-sub{color:var(--muted);margin-top:6px;max-width:80ch}
+.doc-nav{position:sticky;top:0;z-index:60;background:color-mix(in oklab,var(--bg-deep) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-faint);margin:26px -16px 0;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.doc-nav .lbl{font-size:12px;font-weight:600;color:var(--muted-2)}
+.jump{font-size:12.5px;font-weight:600;color:var(--muted);border:1px solid var(--border-faint);background:var(--surface);
+  border-radius:999px;padding:6px 14px;transition:color .15s,border-color .15s;white-space:nowrap}
+.jump:hover{color:var(--text);border-color:var(--border)}
+.dir{margin-top:60px;scroll-margin-top:64px}
+.dir-label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dir-letter{width:34px;height:34px;border-radius:10px;background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:16px;display:grid;place-items:center}
+.dir-name{font-size:19px;font-weight:700}
+.dir-tag{font-size:12px;font-weight:600;color:var(--muted-2);border:1px solid var(--border-faint);border-radius:999px;padding:3px 10px}
+.dir-desc{color:var(--muted);margin-top:8px;max-width:82ch}
+.frame{border:1px solid var(--border-faint);border-radius:var(--r-lg);overflow:hidden;margin-top:16px;box-shadow:var(--shadow-tile);background:var(--bg)}
+.frame-label{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--muted-2);
+  background:var(--surface);border-bottom:1px solid var(--border-faint)}
+.pros{list-style:none;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 20px}
+.pros li{font-size:13px;color:var(--muted);padding-left:20px;position:relative}
+.pros li::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:2px;background:var(--primary)}
+.pros li.warn::before{background:var(--muted-2)}
+.pros li b{color:var(--text);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--muted-2);font-weight:600;font-size:12px;text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);white-space:nowrap}
+td{color:var(--muted);padding:11px 12px;border-bottom:1px solid var(--border-faint);vertical-align:top}
+td:first-child{font-weight:700;color:var(--text)}
+
+/* auth atoms */
+.authbg{background:var(--bg);position:relative;display:flex;align-items:center;justify-content:center;padding:44px 20px}
+.acard{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border-faint);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-tile);padding:28px}
+.alogo{display:block;width:44px;height:auto;margin:0 auto 14px}
+.atitle{text-align:center;font-size:19px;font-weight:800}
+.asub{text-align:center;font-size:12.5px;color:var(--muted);margin-top:4px;margin-bottom:18px}
+.alert{border:1px solid color-mix(in oklab,#f59e0b 50%,transparent);background:color-mix(in oklab,#f59e0b 10%,transparent);
+  color:#fbbf24;border-radius:var(--r-sm);padding:9px 12px;font-size:12.5px;margin-bottom:14px}
+.flabel{font-size:12.5px;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between}
+.flabel a{font-size:11.5px;color:var(--muted-2)}
+.flabel a:hover{color:var(--primary)}
+.finput{width:100%;height:42px;background:var(--raised);border:1px solid var(--border);border-radius:var(--r-md);
+  padding:0 13px;color:var(--text);font-size:13.5px;outline:none;transition:border-color .15s}
+.finput::placeholder{color:var(--muted-2)}
+.finput:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklab,var(--primary) 22%,transparent)}
+.fwrap{position:relative;margin-bottom:14px}
+.fwrap .finput{padding-right:42px}
+.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;color:var(--muted-2)}
+.eye:hover{color:var(--text)}
+.ferr{font-size:11.5px;color:#f87171;margin-top:5px}
+.btn-primary{width:100%;height:44px;border-radius:var(--r-md);background:var(--primary);color:var(--primary-ink);
+  font-weight:800;font-size:14.5px;transition:background .15s;margin-top:4px}
+.btn-primary:hover{background:var(--primary-hi)}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0 14px;color:var(--muted-2);font-size:12px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border-faint)}
+.oauth{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:44px;border-radius:var(--r-md);
+  border:1px solid var(--border);background:var(--raised);font-weight:600;font-size:13.5px;transition:border-color .15s,background .15s}
+.oauth:hover{border-color:var(--muted-2);background:var(--raised-2)}
+.oauth+.oauth{margin-top:9px}
+.switch{text-align:center;font-size:12.5px;color:var(--muted);margin-top:18px}
+.switch a,.switch button{font-weight:700;color:var(--primary)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--raised);border-radius:var(--r-md);padding:3px;margin-bottom:20px}
+.tab{height:36px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted)}
+.tab.on{background:var(--raised-2);color:var(--text)}
+/* B split */
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:560px}
+.bpanel{position:relative;background:linear-gradient(160deg,#3a1c0a,#1d1206 70%);display:flex;flex-direction:column;justify-content:center;padding:44px;overflow:hidden}
+.bpanel .glow{position:absolute;width:420px;height:420px;border-radius:999px;background:radial-gradient(circle,color-mix(in oklab,var(--primary) 22%,transparent),transparent 70%);top:-120px;left:-120px}
+.bpanel .alogo{margin:0 0 22px;width:56px}
+.bpanel h2{font-size:24px;font-weight:800;line-height:1.3}
+.bpanel h2 span{color:var(--primary)}
+.bpanel .tag{font-size:13px;color:var(--muted);margin-top:10px;max-width:34ch}
+.bpanel ul{list-style:none;margin-top:26px;display:flex;flex-direction:column;gap:13px}
+.bpanel li{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--muted)}
+.bpanel li svg{color:var(--primary)}
+.bform{display:flex;align-items:center;justify-content:center;padding:44px}
+.bform .acard{box-shadow:none;border:0;background:transparent;padding:0}
+/* C watermark */
+.wm{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:none}
+.wm img{width:560px;max-width:90%;opacity:.05;filter:saturate(.6)}
+/* footer hint */
+.foot-hint{margin-top:22px;font-size:12.5px;color:var(--muted-2)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:900px){
+  .split{grid-template-columns:1fr}
+  .bpanel{padding:28px;min-height:0}
+  .bpanel ul{display:none}
+  .bpanel h2{font-size:19px}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc-head">
+    <div class="doc-kicker">frontend-new · UX/UI pass 6 — auth (/login + /register)</div>
+    <div class="doc-title">เลือกทิศทางดีไซน์หน้าเข้าสู่ระบบ/สมัครสมาชิก</div>
+    <p class="doc-sub">ทุกแบบใช้ธีม Warm Slate · <b>โลโก้ mark จริง</b> · ปุ่ม OAuth จริง (Google / Discord — เรนเดอร์ตาม providers API) ·
+      ฟอร์ม/ข้อความจริงทั้งหมด (อีเมล+รหัสผ่าน, ลืมรหัสผ่าน, แจ้งเซสชันหมดอายุ, สมัคร = ชื่อผู้ใช้/อีเมล/รหัสผ่าน/ยืนยัน)
+      — ทุกแบบเพิ่มปุ่ม 👁 แสดง/ซ่อนรหัสผ่าน (กดได้ในหน้า)</p>
+  </div>
+
+  <nav class="doc-nav">
+    <span class="lbl">กระโดดไป:</span>
+    <a class="jump" href="#a">A · การ์ดกลางจอ</a>
+    <a class="jump" href="#b">B · แยกครึ่งจอแบรนด์</a>
+    <a class="jump" href="#c">C · ลายน้ำโลโก้</a>
+    <a class="jump" href="#d">D · การ์ดแท็บคู่ Login/Register</a>
+  </nav>
+
+  <!-- ============ A ============ -->
+  <section class="dir" id="a">
+    <div class="dir-label"><span class="dir-letter">A</span><span class="dir-name">การ์ดกลางจอ + แบรนด์บน — Centered Card</span><span class="dir-tag">ต่อเนื่องทั้งเว็บ · แนะนำ</span></div>
+    <p class="dir-desc">โลโก้จริงบนการ์ดกลางจอ — OAuth ปุ่มเต็มความกว้างก่อน แล้ว divider "หรือ" คั่นสู่ฟอร์มอีเมล
+      (ลำดับนี้ช่วยคนที่มี Google อยู่แล้วข้ามการพิมพ์ไปเลย) — เรียบ มืออาชีพ มือถือคือหน้าตาเดิม
+      แถบเตือนเซสชันหมดอายุแสดงในการ์ด (สถานการณ์จริงที่เกิดจาก interceptor)</p>
+    <div class="frame">
+      <div class="frame-label"><span>Login · 400px การ์ดกลางจอ</span><span>รหัสผ่านกด 👁 ได้</span></div>
+      <div style="max-height:760px;overflow-y:auto">
+        <div class="authbg" style="min-height:640px">
+          <div class="acard">
+            <img class="alogo" src="http://localhost:8100/brand/logo-mark.png" alt="Lnwtermgame">
+            <div class="atitle">เข้าสู่ระบบ</div>
+            <p class="asub">เติมเกม เติมมือถือ และบัตรเติมเงิน — ส่งอัตโนมัติ 24 ชม.</p>
+            <div class="alert">เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง</div>
+            <button class="oauth">
+              <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              ดำเนินการต่อด้วย Google
+            </button>
+            <button class="oauth">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 13 13 0 0 0-.64-1.28c-1.71.29-3.37.8-4.93 1.51A20.26 20.26 0 0 0 .1 18.06a19.9 19.9 0 0 0 6.07 3.03c.49-.66.93-1.37 1.3-2.1a12.9 12.9 0 0 1-2.06-.98c.17-.12.34-.25.5-.38a14.2 14.2 0 0 0 12.18 0c.17.13.33.26.5.38-.65.39-1.35.72-2.06.98.38.74.81 1.44 1.3 2.1a19.84 19.84 0 0 0 6.07-3.03 20.2 20.2 0 0 0-3.58-13.69ZM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Zm7.96 0c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Z"/></svg>
+              ดำเนินการต่อด้วย Discord
+            </button>
+            <div class="divider">หรือด้วยอีเมล</div>
+            <div class="flabel"><span>อีเมล</span></div>
+            <div class="fwrap" style="margin-bottom:14px"><input class="finput" type="email" placeholder="you@example.com"></div>
+            <div class="flabel"><span>รหัสผ่าน</span><a href="#a">ลืมรหัสผ่าน?</a></div>
+            <div class="fwrap">
+              <input class="finput" type="password" value="password123" data-eye>
+              <button class="eye" data-eye-btn aria-label="แสดงรหัสผ่าน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <button class="btn-primary">เข้าสู่ระบบ</button>
+            <p class="switch">ยังไม่มีบัญชี? <a href="#a">สมัครสมาชิก</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>ต่อเนื่องกับทั้งเว็บที่สุด</b> — การ์ด/เส้น/สี ภาษาเดียวกับทุกหน้า</li>
+      <li>OAuth มาก่อนฟอร์ม — <b>คนส่วนใหญ่กดปุ่มเดียวจบ</b> ไม่ต้องพิมพ์</li>
+      <li>มือถือคือหน้าตาเดิม (การ์ดเต็มความกว้าง) — ไม่ต้องดีไซน์ 2 ระบบ</li>
+      <li class="warn">ความ "ว้าว" น้อยสุด — เป็นหน้าทำธุรกรรมเรียบ ๆ</li>
+    </ul>
+  </section>
+
+  <!-- ============ B ============ -->
+  <section class="dir" id="b">
+    <div class="dir-label"><span class="dir-letter">B</span><span class="dir-name">แยกครึ่งจอแบรนด์ — Split Brand Panel</span><span class="dir-tag">ดูแพลตฟอร์มใหญ่</span></div>
+    <p class="dir-desc">เดสก์ท็อป: ซ้ายเป็นแผงสีแบรนด์ (โลโก้ใหญ่ + สโลแกน + จุดขาย 3 ข้อ) ขวาเป็นฟอร์ม —
+      สไตล์แพลตฟอร์มสากล บอกเล่าแบรนด์ได้มากกว่าใคร · มือถือแผงซ้ายยุบเป็นส่วนหัวบาง ๆ เหลือฟอร์มเต็มจอ</p>
+    <div class="frame">
+      <div class="frame-label"><span>Login · เดสก์ท็อป split / มือถือยุบแผงบน</span><span></span></div>
+      <div style="max-height:760px;overflow-y:auto">
+        <div class="authbg" style="padding:0;min-height:640px;align-items:stretch">
+          <div class="split" style="width:100%">
+            <div class="bpanel">
+              <span class="glow"></span>
+              <img class="alogo" src="http://localhost:8100/brand/logo-mark.png" alt="">
+              <h2>เติมเกมโปรดของคุณ<br>รับไอเทมใน <span>1 นาที</span></h2>
+              <p class="tag">บัญชีเดียว เติมได้ทุกเกม ทุกบัตร ทุกค่ายมือถือ — ไม่ต้องใช้รหัสผ่านเกม</p>
+              <ul>
+                <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>ส่งอัตโนมัติ 24 ชม.</li>
+                <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>เติมตรงด้วย Player ID ปลอดภัย</li>
+                <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>ทีมงานช่วยเหลือทุกวัน</li>
+              </ul>
+            </div>
+            <div class="bform">
+              <div class="acard">
+                <div class="atitle" style="text-align:left">เข้าสู่ระบบ</div>
+                <p class="asub" style="text-align:left;margin-bottom:16px">ยินดีต้อนรับกลับมา</p>
+                <button class="oauth">
+                  <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                  ดำเนินการต่อด้วย Google
+                </button>
+                <button class="oauth">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 13 13 0 0 0-.64-1.28c-1.71.29-3.37.8-4.93 1.51A20.26 20.26 0 0 0 .1 18.06a19.9 19.9 0 0 0 6.07 3.03c.49-.66.93-1.37 1.3-2.1a12.9 12.9 0 0 1-2.06-.98c.17-.12.34-.25.5-.38a14.2 14.2 0 0 0 12.18 0c.17.13.33.26.5.38-.65.39-1.35.72-2.06.98.38.74.81 1.44 1.3 2.1a19.84 19.84 0 0 0 6.07-3.03 20.2 20.2 0 0 0-3.58-13.69ZM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Zm7.96 0c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Z"/></svg>
+                  ดำเนินการต่อด้วย Discord
+                </button>
+                <div class="divider">หรือด้วยอีเมล</div>
+                <div class="flabel"><span>อีเมล</span></div>
+                <div class="fwrap"><input class="finput" type="email" placeholder="you@example.com"></div>
+                <div class="flabel"><span>รหัสผ่าน</span><a href="#b">ลืมรหัสผ่าน?</a></div>
+                <div class="fwrap"><input class="finput" type="password" value="password123" data-eye><button class="eye" aria-label="แสดงรหัสผ่าน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+                <button class="btn-primary">เข้าสู่ระบบ</button>
+                <p class="switch">ยังไม่มีบัญชี? <a href="#b">สมัครสมาชิก</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>เล่าแบรนด์ได้มากสุด</b> — โลโก้ใหญ่ + จุดขาย อยู่ตรงหน้าคนที่ยังไม่รู้จักร้าน</li>
+      <li>เดสก์ท็อปดูเป็น "แพลตฟอร์ม" มืออาชีพ</li>
+      <li class="warn">มือถือ (กลุ่มหลักของเรา) แผงซ้ายยุบ — จุดเด่นหายไปครึ่งหนึ่ง</li>
+      <li class="warn">ต้องออกแบบ 2 โหมด (split / stacked) — งานมากกว่า A</li>
+    </ul>
+  </section>
+
+  <!-- ============ C ============ -->
+  <section class="dir" id="c">
+    <div class="dir-label"><span class="dir-letter">C</span><span class="dir-name">ลายน้ำโลโก้ — Watermark Brand</span><span class="dir-tag">มีเอกลักษณ์ · อบอุ่น</span></div>
+    <p class="dir-desc">พื้นหลังทั้งหน้ามี<b>โลโก้ใหญ่จาง ๆ เป็นลายน้ำ</b>กลางหน้า + การ์ดฟอร์มเหมือนแบบ A วางทับ —
+      ได้บรรยากาศแบรนด์แบบแบน ๆ (ไม่ใช่ glassmorphism) โดยไม่เพิ่มสัญญาณรบกวนการอ่าน
+      ลายน้ำใช้รูป mark จริง opacity 5%</p>
+    <div class="frame">
+      <div class="frame-label"><span>Login · ลายน้ำโลโก้จริงกลางหน้า</span><span>โทนจาง ไม่รบกวนการอ่าน</span></div>
+      <div style="max-height:760px;overflow-y:auto">
+        <div class="authbg" style="min-height:640px">
+          <div class="wm"><img src="http://localhost:8100/brand/logo-mark.png" alt=""></div>
+          <div class="acard" style="position:relative">
+            <img class="alogo" src="http://localhost:8100/brand/logo-mark.png" alt="Lnwtermgame">
+            <div class="atitle">เข้าสู่ระบบ</div>
+            <p class="asub">เติมเกม เติมมือถือ และบัตรเติมเงิน — ส่งอัตโนมัติ 24 ชม.</p>
+            <button class="oauth">
+              <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              ดำเนินการต่อด้วย Google
+            </button>
+            <button class="oauth">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 13 13 0 0 0-.64-1.28c-1.71.29-3.37.8-4.93 1.51A20.26 20.26 0 0 0 .1 18.06a19.9 19.9 0 0 0 6.07 3.03c.49-.66.93-1.37 1.3-2.1a12.9 12.9 0 0 1-2.06-.98c.17-.12.34-.25.5-.38a14.2 14.2 0 0 0 12.18 0c.17.13.33.26.5.38-.65.39-1.35.72-2.06.98.38.74.81 1.44 1.3 2.1a19.84 19.84 0 0 0 6.07-3.03 20.2 20.2 0 0 0-3.58-13.69ZM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Zm7.96 0c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Z"/></svg>
+              ดำเนินการต่อด้วย Discord
+            </button>
+            <div class="divider">หรือด้วยอีเมล</div>
+            <div class="flabel"><span>อีเมล</span></div>
+            <div class="fwrap"><input class="finput" type="email" placeholder="you@example.com"></div>
+            <div class="flabel"><span>รหัสผ่าน</span><a href="#c">ลืมรหัสผ่าน?</a></div>
+            <div class="fwrap"><input class="finput" type="password" value="password123" data-eye><button class="eye" aria-label="แสดงรหัสผ่าน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <button class="btn-primary">เข้าสู่ระบบ</button>
+            <p class="switch">ยังไม่มีบัญชี? <a href="#c">สมัครสมาชิก</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>เอกลักษณ์แบบแบน ๆ</b> — แบรนด์ปรากฏทั้งหน้าโดยไม่มี gradient/แก้ว</li>
+      <li>งาน implement ใกล้ A มาก (เพิ่มลายน้ำอย่างเดียว)</li>
+      <li class="warn">บนจอเล็กลายน้ำถูกการ์ดบังเกือบหมด — เห็นเฉพาะเดสก์ท็อป</li>
+      <li class="warn">จุดตัดสินใจยังเหมือน A ทุกอย่าง — เลือกด้วย "อารมณ์" ล้วน ๆ</li>
+    </ul>
+  </section>
+
+  <!-- ============ D ============ -->
+  <section class="dir" id="d">
+    <div class="dir-label"><span class="dir-letter">D</span><span class="dir-name">การ์ดแท็บคู่ — Unified Auth Tabs</span><span class="dir-tag">สลับ Login/Register ทันที · กดแท็บ/👁 ได้</span></div>
+    <p class="dir-desc">การ์ดเดียวมี<b>สองแท็บ เข้าสู่ระบบ / สมัครสมาชิก</b> สลับกันได้ทันทีโดยไม่โหลดหน้าใหม่
+      (โครงข่าย /login /register ยังอยู่ครบ — แค่พาไปแท็บที่ถูก) — สะดวกสุดสำหรับคนใหม่ที่มาถึงหน้า login แล้วค่อยตัดสินใจสมัคร
+      OAuth แชร์บนสุดทั้งสองโหมด</p>
+    <div class="frame">
+      <div class="frame-label"><span>การ์ดเดียว 2 แท็บ · สลับได้จริง</span><span>ฟอร์มสมัคร = ชื่อผู้ใช้/อีเมล/รหัส/ยืนยัน (จริง)</span></div>
+      <div style="max-height:760px;overflow-y:auto">
+        <div class="authbg" style="min-height:640px">
+          <div class="acard">
+            <img class="alogo" src="http://localhost:8100/brand/logo-mark.png" alt="Lnwtermgame">
+            <div class="tabs" id="dtabs">
+              <button class="tab on" data-pane="login">เข้าสู่ระบบ</button>
+              <button class="tab" data-pane="register">สมัครสมาชิก</button>
+            </div>
+
+            <div id="d-login">
+              <button class="oauth">
+                <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                ดำเนินการต่อด้วย Google
+              </button>
+              <button class="oauth">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 13 13 0 0 0-.64-1.28c-1.71.29-3.37.8-4.93 1.51A20.26 20.26 0 0 0 .1 18.06a19.9 19.9 0 0 0 6.07 3.03c.49-.66.93-1.37 1.3-2.1a12.9 12.9 0 0 1-2.06-.98c.17-.12.34-.25.5-.38a14.2 14.2 0 0 0 12.18 0c.17.13.33.26.5.38-.65.39-1.35.72-2.06.98.38.74.81 1.44 1.3 2.1a19.84 19.84 0 0 0 6.07-3.03 20.2 20.2 0 0 0-3.58-13.69ZM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Zm7.96 0c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Z"/></svg>
+                ดำเนินการต่อด้วย Discord
+              </button>
+              <div class="divider">หรือด้วยอีเมล</div>
+              <div class="flabel"><span>อีเมล</span></div>
+              <div class="fwrap"><input class="finput" type="email" placeholder="you@example.com"></div>
+              <div class="flabel"><span>รหัสผ่าน</span><a href="#d">ลืมรหัสผ่าน?</a></div>
+              <div class="fwrap"><input class="finput" type="password" value="password123" data-eye><button class="eye" aria-label="แสดงรหัสผ่าน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+              <button class="btn-primary">เข้าสู่ระบบ</button>
+            </div>
+
+            <div id="d-register" style="display:none">
+              <button class="oauth">
+                <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                สมัครด้วย Google
+              </button>
+              <button class="oauth">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 13 13 0 0 0-.64-1.28c-1.71.29-3.37.8-4.93 1.51A20.26 20.26 0 0 0 .1 18.06a19.9 19.9 0 0 0 6.07 3.03c.49-.66.93-1.37 1.3-2.1a12.9 12.9 0 0 1-2.06-.98c.17-.12.34-.25.5-.38a14.2 14.2 0 0 0 12.18 0c.17.13.33.26.5.38-.65.39-1.35.72-2.06.98.38.74.81 1.44 1.3 2.1a19.84 19.84 0 0 0 6.07-3.03 20.2 20.2 0 0 0-3.58-13.69ZM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Zm7.96 0c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.95-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.95 2.42-2.16 2.42Z"/></svg>
+                สมัครด้วย Discord
+              </button>
+              <div class="divider">หรือด้วยอีเมล</div>
+              <div class="flabel"><span>ชื่อผู้ใช้</span></div>
+              <div class="fwrap"><input class="finput" type="text" placeholder="a-z, 0-9, _ - (3-30 ตัว)"></div>
+              <div class="flabel"><span>อีเมล</span></div>
+              <div class="fwrap"><input class="finput" type="email" placeholder="you@example.com"></div>
+              <div class="flabel"><span>รหัสผ่าน</span></div>
+              <div class="fwrap"><input class="finput" type="password" placeholder="อย่างน้อย 8 ตัว" data-eye><button class="eye" aria-label="แสดงรหัสผ่าน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+              <div class="flabel"><span>ยืนยันรหัสผ่าน</span></div>
+              <div class="fwrap"><input class="finput" type="password" placeholder="พิมพ์รหัสผ่านซ้ำ"></div>
+              <button class="btn-primary">สมัครสมาชิก</button>
+              <p class="ferr" style="display:none"></p>
+            </div>
+
+            <p class="switch" id="d-switchnote">มีบัญชีแล้ว? แท็บ "เข้าสู่ระบบ" ด้านบน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>สะดวกสุดสำหรับคนใหม่</b> — กดสมัครได้ทันทีไม่ต้องรอโหลดหน้า</li>
+      <li>OAuth ใช้ร่วมทั้งสองโหมด ไม่ต้องเรนเดอร์ซ้ำ</li>
+      <li>เส้นทาง /login /register ยังอยู่ครบ (SEO + ลิงก์เดิมไม่พัง)</li>
+      <li class="warn">รวมเป็น component เดียว — ต้องรื้อ 2 หน้าเดิมมาเป็นแท็บ</li>
+      <li class="warn">ฟอร์มสมัครยาว (4 ฟิลด์) ทำการ์ดสูงเวลาอยู่แท็บสมัคร</li>
+    </ul>
+  </section>
+
+  <!-- ============ summary ============ -->
+  <section class="dir" id="summary">
+    <div class="dir-label"><span class="dir-letter" style="background:var(--raised-2);color:var(--text)">Σ</span><span class="dir-name">สรุปเปรียบเทียบ</span></div>
+    <div class="frame" style="overflow-x:auto;background:var(--bg)">
+      <table>
+        <thead><tr>
+          <th>แบบ</th><th>จุดเด่น</th><th>งาน implement</th><th>ข้อควรระวัง</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>A · การ์ดกลางจอ</td><td>ต่อเนื่องทั้งเว็บ · OAuth ก่อนฟอร์ม · mobile-first</td><td>น้อย (จัดฟอร์มใหม่ + ปุ่ม 👁)</td><td>ไม่ "ว้าว"</td></tr>
+          <tr><td>B · Split Brand</td><td>เล่าแบรนด์ + จุดขาย บนเดสก์ท็อป</td><td>ปานกลาง (2 โหมด)</td><td>มือถือ (กลุ่มหลัก) เสียจุดเด่น</td></tr>
+          <tr><td>C · ลายน้ำโลโก้</td><td>เอกลักษณ์แบบแบน งานใกล้ A</td><td>น้อย+</td><td>จอเล็กลายน้ำถูกบัง</td></tr>
+          <tr><td>D · แท็บคู่</td><td>สลับ login/register ทันที สะดวกคนใหม่</td><td>มาก (รวม 2 หน้าเป็นแท็บ)</td><td>ฟอร์มสมัครทำการ์ดสูง</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot-hint">ผสมได้ เช่น "A + ลายน้ำจาก C" หรือ "B บนเดสก์ท็อป + A บนมือถือ" — ทุกแบบรวม: ปุ่ม 👁 แสดงรหัสผ่าน · แจ้งเซสชันหมดอายุในการ์ด · โลโก้จริง · OAuth เรนเดอร์ตาม providers จริง</p>
+  </section>
+
+</div>
+<script>
+  // ปุ่มตา 👁 toggle password visibility
+  document.querySelectorAll("[data-eye-btn]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const input = b.parentElement.querySelector("[data-eye]");
+      input.type = input.type === "password" ? "text" : "password";
+    })
+  );
+  // D: สลับแท็บ login/register
+  const tabs = document.getElementById("dtabs");
+  tabs?.addEventListener("click", (e) => {
+    const t = e.target.closest(".tab");
+    if (!t) return;
+    tabs.querySelectorAll(".tab").forEach((x) => x.classList.remove("on"));
+    t.classList.add("on");
+    const login = document.getElementById("d-login");
+    const register = document.getElementById("d-register");
+    const isLogin = t.dataset.pane === "login";
+    login.style.display = isLogin ? "block" : "none";
+    register.style.display = isLogin ? "none" : "block";
+    document.getElementById("d-switchnote").textContent = isLogin
+      ? 'ยังไม่มีบัญชี? แท็บ "สมัครสมาชิก" ด้านบน'
+      : 'มีบัญชีแล้ว? แท็บ "เข้าสู่ระบบ" ด้านบน';
+  });
+</script>
+</body>
+</html>

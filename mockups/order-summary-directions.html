@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Summary Directions · LNWTERMGAME frontend-new</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · component: order summary (×4) · theme: Warm Slate (locked)
+ * ข้อมูลจริง: MLBB MY — User ID/Zone ID fields จาก SEAGM API, แพ็กเกจ 254 Diamonds + 30 Bonus ฿158.20 (฿163.09)
+ * แก้ทุกแบบ: placeholder ไทย + สไตล์เข้าธีม
+ */
+:root{
+  --bg:#191618; --bg-deep:#141114; --surface:#211e22; --raised:#282429; --raised-2:#2e2a30;
+  --border:#35303a; --border-faint:#2a262b;
+  --text:#eceae9; --muted:#a8a1a6; --muted-2:#7f787e;
+  --primary:oklch(0.7 0.17 45); --primary-hi:oklch(0.755 0.165 45); --primary-ink:#2a1206;
+  --success:#5cbf8a;
+  --r-lg:14px; --r-md:10px; --r-sm:8px;
+  --shadow-tile:0 1px 0 rgba(255,255,255,.035) inset, 0 10px 28px -14px rgba(0,0,0,.55);
+  --font:"Noto Sans Thai","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{flex:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+
+/* doc chrome */
+.doc{max-width:1100px;margin:0 auto;padding:0 16px 96px}
+.doc-head{padding:44px 0 8px}
+.doc-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
+.doc-title{font-size:26px;font-weight:800;margin-top:6px}
+.doc-sub{color:var(--muted);margin-top:6px;max-width:78ch}
+.doc-nav{position:sticky;top:0;z-index:60;background:color-mix(in oklab,var(--bg-deep) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-faint);margin:26px -16px 0;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.doc-nav .lbl{font-size:12px;font-weight:600;color:var(--muted-2)}
+.jump{font-size:12.5px;font-weight:600;color:var(--muted);border:1px solid var(--border-faint);background:var(--surface);
+  border-radius:999px;padding:6px 14px;transition:color .15s,border-color .15s;white-space:nowrap}
+.jump:hover{color:var(--text);border-color:var(--border)}
+.dir{margin-top:60px;scroll-margin-top:64px}
+.dir-label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dir-letter{width:34px;height:34px;border-radius:10px;background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:16px;display:grid;place-items:center}
+.dir-name{font-size:19px;font-weight:700}
+.dir-tag{font-size:12px;font-weight:600;color:var(--muted-2);border:1px solid var(--border-faint);border-radius:999px;padding:3px 10px}
+.dir-desc{color:var(--muted);margin-top:8px;max-width:80ch}
+.frame{border:1px solid var(--border-faint);border-radius:var(--r-lg);overflow:hidden;margin-top:16px;box-shadow:var(--shadow-tile);background:var(--bg)}
+.frame-label{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--muted-2);
+  background:var(--surface);border-bottom:1px solid var(--border-faint)}
+.pros{list-style:none;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 20px}
+.pros li{font-size:13px;color:var(--muted);padding-left:20px;position:relative}
+.pros li::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:2px;background:var(--primary)}
+.pros li.warn::before{background:var(--muted-2)}
+.pros li b{color:var(--text);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--muted-2);font-weight:600;font-size:12px;text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-faint);white-space:nowrap}
+td{color:var(--muted);padding:11px 12px;border-bottom:1px solid var(--border-faint);vertical-align:top}
+td:first-child{font-weight:700;color:var(--text)}
+
+/* stage: ซ้ายจาง (บริบทแพ็กเกจ) + ขวาการ์ดจริง */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;padding:26px;background:var(--bg);align-items:start}
+.ghost{opacity:.4;display:flex;flex-direction:column;gap:8px}
+.ghost .bar{height:13px;border-radius:7px;background:var(--surface);border:1px solid var(--border-faint)}
+.ghost .pkgrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ghost .pkg{height:56px;border-radius:10px;background:var(--surface);border:1px solid var(--border-faint)}
+
+/* summary card atoms */
+.card{width:100%}
+.lbl{font-size:12.5px;font-weight:600;margin-bottom:6px;display:block}
+.inp{width:100%;height:42px;background:var(--raised);border:1px solid var(--border);border-radius:var(--r-md);
+  padding:0 13px;color:var(--text);font-size:13.5px;outline:none;transition:border-color .15s;font-variant-numeric:tabular-nums}
+.inp::placeholder{color:var(--muted-2)}
+.inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklab,var(--primary) 22%,transparent)}
+.btn-verify{width:100%;height:38px;margin-top:10px;border:1px solid var(--border);border-radius:var(--r-md);
+  font-size:13px;font-weight:700;color:var(--muted);transition:color .15s,border-color .15s}
+.btn-verify:hover{color:var(--text);border-color:var(--primary)}
+.btn-buy{width:100%;height:46px;border-radius:var(--r-md);background:var(--primary);color:var(--primary-ink);
+  font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+.btn-buy:hover{background:var(--primary-hi)}
+.btn-buy[disabled]{opacity:.5;cursor:not-allowed}
+.login-note{margin-top:10px;text-align:center;font-size:12px;color:var(--muted-2)}
+.login-note a{color:var(--primary);font-weight:700}
+.total .amt{font-size:22px;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.total .amt s{font-size:13px;color:var(--muted-2);font-weight:600;margin-right:7px}
+.seclbl{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--muted-2);text-transform:uppercase;margin-bottom:10px}
+.hr-dash{border-top:1px dashed var(--border);margin:16px 0}
+.okbadge{display:flex;align-items:center;gap:7px;margin-top:8px;border-radius:var(--r-sm);padding:7px 10px;font-size:12px;font-weight:700;
+  background:color-mix(in oklab,var(--success) 12%,transparent);color:var(--success);border:1px solid color-mix(in oklab,var(--success) 30%,transparent)}
+.statechip{display:inline-block;font-size:10px;font-weight:800;border-radius:999px;padding:2px 9px;background:var(--raised-2);color:var(--muted)}
+.statechip.go{background:color-mix(in oklab,var(--success) 15%,transparent);color:var(--success)}
+
+/* A/D soft receipt */
+.rec{border:1px solid var(--border-faint);border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-tile);overflow:hidden}
+.rec .pill{display:flex;align-items:center;justify-content:center;gap:8px;background:color-mix(in oklab,var(--primary) 12%,transparent);
+  border-bottom:1px solid color-mix(in oklab,var(--primary) 25%,transparent);padding:10px 14px;font-size:12.5px;font-weight:800;color:var(--primary)}
+.rec .body{padding:18px}
+.rec .totalrow{display:flex;align-items:center;justify-content:space-between;background:color-mix(in oklab,var(--primary) 8%,transparent);
+  border-radius:var(--r-md);padding:12px 14px}
+.rec .cta{width:100%;height:46px;border-radius:var(--r-md);background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:15px;
+  display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px -6px color-mix(in oklab,var(--primary) 45%,transparent);transition:background .15s}
+.rec .cta:hover{background:var(--primary-hi)}
+
+/* B steps */
+.bstep{display:flex;gap:10px;align-items:flex-start}
+.bstep .dot{width:22px;height:22px;border-radius:999px;display:grid;place-items:center;font-size:11px;font-weight:800;
+  background:var(--raised-2);color:var(--muted-2);border:1px solid var(--border);flex:none;margin-top:1px}
+.bstep.done .dot{background:color-mix(in oklab,var(--success) 15%,transparent);color:var(--success);border-color:color-mix(in oklab,var(--success) 35%,transparent)}
+.bstep.now .dot{background:color-mix(in oklab,var(--primary) 15%,transparent);color:var(--primary);border-color:color-mix(in oklab,var(--primary) 40%,transparent)}
+.bstep .body{flex:1;min-width:0;padding-bottom:14px}
+.bstep .t{font-size:12.5px;font-weight:700;display:flex;gap:8px;align-items:center}
+.bstep .t .statechip{margin-left:auto}
+
+/* C compact */
+.compact{border:1px solid var(--border-faint);border-radius:var(--r-lg);background:var(--surface);padding:16px}
+.pair{display:grid;grid-template-columns:1.6fr 1fr;gap:8px}
+.barlow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--raised);border:1px solid var(--border-faint);
+  border-radius:var(--r-md);padding:10px 12px}
+.barlow .amt{font-size:18px;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.barlow .amt s{font-size:12px;color:var(--muted-2);margin-right:6px}
+.barlow .buy{height:40px;padding:0 18px;border-radius:var(--r-sm);background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:13.5px;white-space:nowrap}
+
+/* D trust */
+.trust{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.trust span{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--muted-2)}
+.trust svg{color:var(--primary)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:900px){ .stage{grid-template-columns:1fr} .ghost{display:none} }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc-head">
+    <div class="doc-kicker">frontend-new · UX/UI pass 8 — OrderSummary (การ์ดสรุปคำสั่งซื้อ)</div>
+    <div class="doc-title">เลือกทิศทางดีไซน์การ์ดสั่งซื้อด้านขวา</div>
+    <p class="doc-sub">ข้อมูลจริง MLBB MY (User ID/Zone ID จาก SEAGM fields, แพ็กเกจ 254 Diamonds + 30 Bonus ฿158.20 จาก ฿163.09) —
+      ทุกแบบแก้ปัญหาเดิม: <b>placeholder ภาษาอังกฤษ</b> ("Please enter User ID") → ไทยทั้งหมด + สไตล์เข้าธีมใหม่
+      แผงจาง ๆ ซ้ายมือคือบริบทจริง (แพ็กเกจบนหน้า) — <b>กด "ตรวจสอบบัญชี" ทดลองได้ทุกแบบ</b> (ต้องกรอกครบก่อน แบบ logic จริง)</p>
+  </div>
+
+  <nav class="doc-nav">
+    <span class="lbl">กระโดดไป:</span>
+    <a class="jump" href="#a">A · ใบเสร็จนุ่ม (Soft Receipt)</a>
+    <a class="jump" href="#b">B · ทีละขั้น (Steps)</a>
+    <a class="jump" href="#c">C · กระชับ (Compact)</a>
+    <a class="jump" href="#d">D · ใบเสร็จ + ประกัน</a>
+  </nav>
+
+  <!-- ============ A ============ -->
+  <section class="dir" id="a">
+    <div class="dir-label"><span class="dir-letter">A</span><span class="dir-name">ใบเสร็จนุ่ม — Soft Receipt</span><span class="dir-tag">สไตล์ที่คุณเคยเลือกในแอปเก่า</span></div>
+    <p class="dir-desc">หัวการ์ดเป็น <b>pill ส้ม</b> บอกแพ็กเกจที่เลือก · เส้นคั่น<b>เส้นประ</b>แบบใบเสร็จจริง ·
+      ยอดรวมเป็นแถบ tinted ส้มอ่อน · ปุ่มซื้อมีแสงเรืองลงพื้น — อารมณ์ "ได้ใบเสร็จแล้ว กดจ่ายเลย"</p>
+    <div class="frame">
+      <div class="frame-label"><span>กดตรวจสอบ (กรอก ID ครบก่อน) ดูผลจริง</span><span>placeholder ไทยแล้ว</span></div>
+      <div class="stage">
+        <div class="ghost">
+          <div class="bar" style="width:45%"></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+        </div>
+        <div class="rec card" data-scope>
+          <div class="pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span data-pkgname>254 Diamonds + 30 Bonus</span>
+          </div>
+          <div class="body">
+            <span class="seclbl">ข้อมูลบัญชีเกม</span>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div><label class="lbl">User ID</label><input class="inp" placeholder="กรอกตัวเลข User ID" data-uid></div>
+              <div><label class="lbl">Zone ID</label><input class="inp" placeholder="เช่น 1234" data-zone></div>
+            </div>
+            <button class="btn-verify" data-verify>ตรวจสอบบัญชี</button>
+            <div class="okbadge" data-ok style="display:none">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              ยืนยันบัญชีสำเร็จ — พร้อมรับเพชรทันที
+            </div>
+            <div class="hr-dash"></div>
+            <div class="totalrow">
+              <span style="font-size:13px;color:var(--muted);font-weight:600">ยอดรวม</span>
+              <span class="num" style="font-size:20px;font-weight:800;color:var(--primary)"><s style="font-size:13px;color:var(--muted-2);margin-right:7px">฿163.09</s>฿158.20</span>
+            </div>
+            <button class="cta" style="margin-top:14px">ซื้อเลย
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            <p class="login-note">กรุณา<a href="#a">เข้าสู่ระบบ</a>ก่อนสั่งซื้อ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>รสนิยมที่คุณเคยเลือก</b>จากแอปเก่า (Soft Receipt) — พิสูจน์แล้วว่าถูกใจ</li>
+      <li>Pill หัวการ์ดบอกทันทีว่า "กำลังจะซื้ออะไร" ไม่ต้องเลื่อนกลับไปดูกริด</li>
+      <li>เส้นประ + tinted total ให้อารมณ์ใบเสร็จ = ความมั่นใจก่อนจ่าย</li>
+      <li class="warn">ชื่อแพ็กเกจยาว (6252 Diamonds + 1250 Bonus) ต้อง ellipsis บน pill</li>
+    </ul>
+  </section>
+
+  <!-- ============ B ============ -->
+  <section class="dir" id="b">
+    <div class="dir-label"><span class="dir-letter">B</span><span class="dir-name">ทีละขั้น — Step Tracker</span><span class="dir-tag">มือใหม่ไม่หลง</span></div>
+    <p class="dir-desc">การ์ดเป็น<b>เช็กลิสต์ 3 ขั้น</b>: ① เลือกแพ็กเกจ (เขียวเมื่อกดในกริดแล้ว) ② กรอก+ตรวจบัญชี (วงส้ม=กำลังทำ) ③ ชำระเงิน —
+      ปุ่มซื้อ disabled พร้อมเหตุผลจนกว่าบัญชีจะผ่านการตรวจสอบ</p>
+    <div class="frame">
+      <div class="frame-label"><span>ขั้น 1 เขียว · ขั้น 2 ส้ม (กำลังทำ) · ปุ่มซื้อปลดล็อกหลังตรวจผ่าน</span><span></span></div>
+      <div class="stage">
+        <div class="ghost">
+          <div class="bar" style="width:45%"></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+        </div>
+        <div class="card" style="border:1px solid var(--border-faint);border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-tile);padding:18px" data-scope>
+          <div style="display:flex;flex-direction:column">
+            <div class="bstep done">
+              <span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div class="body">
+                <div class="t">เลือกแพ็กเกจ <span class="statechip go">เรียบร้อย</span></div>
+                <p style="font-size:12px;color:var(--muted);margin-top:4px">254 Diamonds + 30 Bonus · ฿158.20</p>
+              </div>
+            </div>
+            <div class="bstep now" data-step2>
+              <span class="dot">2</span>
+              <div class="body">
+                <div class="t">กรอกและตรวจสอบบัญชี</div>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+                  <input class="inp" placeholder="กรอกตัวเลข User ID" data-uid>
+                  <input class="inp" placeholder="เช่น 1234" data-zone>
+                  <button class="btn-verify" data-verify>ตรวจสอบบัญชี</button>
+                  <div class="okbadge" data-ok style="display:none">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                    ยืนยันบัญชีสำเร็จ
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bstep">
+              <span class="dot">3</span>
+              <div class="body" style="padding-bottom:0">
+                <div class="t">ชำระเงิน</div>
+                <div style="height:1px;background:var(--border-faint);margin:12px 0"></div>
+                <div class="total" style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:13px;color:var(--muted);font-weight:600">ยอดรวม</span>
+                  <span class="amt num"><s>฿163.09</s>฿158.20</span>
+                </div>
+                <button class="btn-buy" style="margin-top:12px" disabled data-buy>กรอกบัญชีก่อนซื้อ</button>
+                <p class="login-note">กรุณา<a href="#b">เข้าสู่ระบบ</a>ก่อนสั่งซื้อ</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>บอกทางชัดที่สุด</b> — ผู้ใช้ใหม่เห็นเลยว่าต้องทำอะไรต่อ</li>
+      <li>ปุ่ม disabled พร้อมเหตุผล = กดแล้วพังน้อยลง</li>
+      <li>สถานะขั้น 1 ผูกกับการเลือกจริงในกริด</li>
+      <li class="warn">สูงสุด (~520px) — จอเตี้ย sticky อาจล้น</li>
+      <li class="warn">คนเซียนอาจรู้สึกถูกสอนมากเกิน</li>
+    </ul>
+  </section>
+
+  <!-- ============ C ============ -->
+  <section class="dir" id="c">
+    <div class="dir-label"><span class="dir-letter">C</span><span class="dir-name">กระชับ — Compact Bar</span><span class="dir-tag">เซียน · เร็วสุด</span></div>
+    <p class="dir-desc">ยุบทุกอย่างให้เตี้ยสุด: <b>User ID + Zone ID วางคู่กันแนวนอน</b> · ยอดรวม+ปุ่มซื้ออยู่<b>แถบเดียวกัน</b> ·
+      ไม่มีหัวการ์ด ไม่มี label ซ้ำซ้อน — สำหรับคนเติมทุกวัน อยากจบใน 10 วินาที</p>
+    <div class="frame">
+      <div class="frame-label"><span>ID + Zone คู่กัน · ยอด+ปุ่มในแถบเดียว</span><span></span></div>
+      <div class="stage">
+        <div class="ghost">
+          <div class="bar" style="width:45%"></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+        </div>
+        <div class="compact card" data-scope>
+          <div class="pair">
+            <input class="inp" style="height:44px" placeholder="User ID" data-uid>
+            <input class="inp" style="height:44px" placeholder="Zone ID" data-zone>
+          </div>
+          <button class="btn-verify" data-verify style="height:36px;margin-top:8px;font-size:12.5px">ตรวจสอบบัญชี</button>
+          <div class="okbadge" data-ok style="display:none">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+            บัญชีถูกต้อง
+          </div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted-2)">
+            <span>แพ็กเกจ</span>
+            <b style="color:var(--muted);font-weight:600">254 Diamonds + 30 Bonus</b>
+          </div>
+          <div class="barlow" style="margin-top:10px">
+            <span class="amt num"><s>฿163.09</s>฿158.20</span>
+            <button class="buy">ซื้อเลย</button>
+          </div>
+          <p class="login-note" style="margin-top:8px">กรุณา<a href="#c">เข้าสู่ระบบ</a>ก่อนสั่งซื้อ</p>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li><b>เตี้ยสุด (~330px)</b> — เห็นครบโดยไม่ต้องเลื่อน</li>
+      <li>ID+Zone คู่กัน = พิมพ์ครบในมุมมองเดียว</li>
+      <li class="warn">ผู้ใช้ใหม่ไม่มีสัญญาณนำ (ไม่รู้ว่าควรตรวจสอบก่อน)</li>
+      <li class="warn">มือถือ pair ต้องกลับเป็นแนวตั้ง</li>
+    </ul>
+  </section>
+
+  <!-- ============ D ============ -->
+  <section class="dir" id="d">
+    <div class="dir-label"><span class="dir-letter">D</span><span class="dir-name">ใบเสร็จนุ่ม + ประกันความมั่นใจ — Receipt + Trust</span><span class="dir-tag">A เสริมความอุ่นใจตรงจุดจ่าย</span></div>
+    <p class="dir-desc">โครงเดียวกับ A (Soft Receipt) เพิ่ม<b>แถวประกัน 3 ข้อใต้ปุ่มซื้อ</b>
+      (ส่งอัตโนมัติทันที · ไม่ต้องใช้รหัสผ่าน · ทักทีมงานได้ 24 ชม.) —
+      จุดก่อนกดจ่ายคือจุดที่คนลังเลที่สุด แถวนี้ตอบคำถามนั้นพอดีเวลา</p>
+    <div class="frame">
+      <div class="frame-label"><span>A + แถวประกันใต้ปุ่ม</span><span></span></div>
+      <div class="stage">
+        <div class="ghost">
+          <div class="bar" style="width:45%"></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+          <div class="pkgrow"><div class="pkg"></div><div class="pkg"></div><div class="pkg"></div></div>
+        </div>
+        <div class="rec card" data-scope>
+          <div class="pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span data-pkgname>254 Diamonds + 30 Bonus</span>
+          </div>
+          <div class="body">
+            <span class="seclbl">ข้อมูลบัญชีเกม</span>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div><label class="lbl">User ID</label><input class="inp" placeholder="กรอกตัวเลข User ID" data-uid></div>
+              <div><label class="lbl">Zone ID</label><input class="inp" placeholder="เช่น 1234" data-zone></div>
+            </div>
+            <button class="btn-verify" data-verify>ตรวจสอบบัญชี</button>
+            <div class="okbadge" data-ok style="display:none">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              ยืนยันบัญชีสำเร็จ — พร้อมรับเพชรทันที
+            </div>
+            <div class="hr-dash"></div>
+            <div class="totalrow">
+              <span style="font-size:13px;color:var(--muted);font-weight:600">ยอดรวม</span>
+              <span class="num" style="font-size:20px;font-weight:800;color:var(--primary)"><s style="font-size:13px;color:var(--muted-2);margin-right:7px">฿163.09</s>฿158.20</span>
+            </div>
+            <button class="cta" style="margin-top:14px">ซื้อเลย
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            <div class="trust">
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>ส่งเพชรอัตโนมัติทันทีหลังชำระเงิน</span>
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>ใช้เพียง User ID — ไม่ต้องใช้รหัสผ่านเกม</span>
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>มีปัญหาทักทีมงานได้ตลอด 24 ชม.</span>
+            </div>
+            <p class="login-note" style="margin-top:12px">กรุณา<a href="#d">เข้าสู่ระบบ</a>ก่อนสั่งซื้อ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pros">
+      <li>ได้ทุกอย่างของ A + <b>ปิดช่องลังเล</b>ตรงจุดจ่ายเงิน</li>
+      <li>ข้อความประกัน = claim จริงของร้าน (มีในเนื้อหาสินค้าอยู่แล้ว ไม่แต่ง)</li>
+      <li class="warn">สูงขึ้นจาก A ~50px</li>
+      <li class="warn">trust ซ้ำกับแถบอื่นของเว็บเล็กน้อย (แต่ตำแหน่งนี้คุ้ม)</li>
+    </ul>
+  </section>
+
+  <!-- ============ summary ============ -->
+  <section class="dir" id="summary">
+    <div class="dir-label"><span class="dir-letter" style="background:var(--raised-2);color:var(--text)">Σ</span><span class="dir-name">สรุปเปรียบเทียบ</span></div>
+    <div class="frame" style="overflow-x:auto;background:var(--bg)">
+      <table>
+        <thead><tr>
+          <th>แบบ</th><th>ความสูง</th><th>เหมาะกับ</th><th>จุดเด่น</th><th>ข้อควรระวัง</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>A · Soft Receipt</td><td>~430px</td><td>ทุกคน</td><td>สไตล์ที่คุณเคยเลือก + pill บอกแพ็กเกจ</td><td>ชื่อแพ็กเกจยาวต้อง ellipsis</td></tr>
+          <tr><td>B · Steps</td><td>~520px</td><td>ผู้ใช้ใหม่</td><td>เช็กลิสต์ 3 ขั้น + ปุ่ม disabled มีเหตุผล</td><td>สูงสุด / เซียนรู้สึกถูกสอน</td></tr>
+          <tr><td>C · Compact</td><td>~330px</td><td>เซียนเติมทุกวัน</td><td>ID+Zone คู่กัน ยอด+ปุ่มแถบเดียว</td><td>ผู้ใช้ใหม่ไม่มีสัญญาณนำ</td></tr>
+          <tr><td>D · Receipt+Trust</td><td>~480px</td><td>ร้านเน้นความมั่นใจ</td><td>A + ประกัน 3 ข้อใต้ปุ่มจ่าย</td><td>สูงขึ้น ซ้ำ trust เล็กน้อย</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot-note" style="font-size:12.5px;color:var(--muted-2);margin-top:6px">ทุกแบบ: placeholder ไทย · ผลตรวจสอบ inline (โหลด→เขียว) · ราคาขีดจริง · logic เดิมทั้งหมด (verify API / qty / buy flow / login gate) ใช้ต่อ · ผสมได้ เช่น "D แต่เอา ID+Zone คู่จาก C"</p>
+  </section>
+
+</div>
+<script>
+  // ทุก scope: กดตรวจสอบ → validate ครบ → โหลดสั้น ๆ → okbadge (จำลองผล verify จริง)
+  document.querySelectorAll("[data-scope]").forEach((scope) => {
+    const btn = scope.querySelector("[data-verify]");
+    btn?.addEventListener("click", () => {
+      const uid = scope.querySelector("[data-uid]")?.value.trim();
+      const zone = scope.querySelector("[data-zone]")?.value.trim();
+      if (!uid || !zone) {
+        btn.textContent = "กรอก User ID และ Zone ID ให้ครบก่อน";
+        setTimeout(() => (btn.textContent = "ตรวจสอบบัญชี"), 1600);
+        return;
+      }
+      btn.textContent = "กำลังตรวจสอบ…";
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = "ตรวจสอบแล้ว ✓";
+        scope.querySelector("[data-ok]").style.display = "flex";
+        const buy = scope.querySelector("[data-buy]");
+        if (buy) {
+          buy.disabled = false;
+          buy.textContent = "ซื้อเลย";
+        }
+      }, 900);
+    });
+  });
+</script>
+</body>
+</html>

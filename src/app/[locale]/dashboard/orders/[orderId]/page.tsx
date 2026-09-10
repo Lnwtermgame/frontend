@@ -40,10 +40,11 @@ import { cn } from "@/lib/utils";
 
 type StepState = "ok" | "bad" | "cur" | "off";
 
+/* พื้นจุดต้องทึบ (color-mix ลง --card) ไม่ใช้ alpha — ไม่งั้นเส้น connector ลอดผ่านวงกลมทำให้ดูใสแปลกๆ */
 const DOT_CLASS: Record<StepState, string> = {
-  ok: "border-status-success/70 bg-status-success/15 text-status-success",
-  bad: "border-destructive/70 bg-destructive/15 text-destructive",
-  cur: "border-status-warning/70 bg-status-warning/15 text-status-warning",
+  ok: "border-status-success bg-[color-mix(in_oklab,var(--status-success)_18%,var(--card))] text-status-success",
+  bad: "border-destructive bg-[color-mix(in_oklab,var(--destructive)_18%,var(--card))] text-destructive",
+  cur: "border-status-warning bg-[color-mix(in_oklab,var(--status-warning)_18%,var(--card))] text-status-warning",
   off: "border-border bg-secondary text-muted-foreground",
 };
 
@@ -62,9 +63,9 @@ const SUB_CLASS: Record<StepState, string> = {
 };
 
 const RAIL_DOT_CLASS: Record<StepState, string> = {
-  ok: "border-status-success/50 bg-status-success/15 text-status-success",
-  bad: "border-destructive/50 bg-destructive/15 text-destructive",
-  cur: "border-status-warning/50 bg-status-warning/15 text-status-warning",
+  ok: "border-status-success/50 bg-[color-mix(in_oklab,var(--status-success)_14%,var(--card))] text-status-success",
+  bad: "border-destructive/50 bg-[color-mix(in_oklab,var(--destructive)_14%,var(--card))] text-destructive",
+  cur: "border-status-warning/50 bg-[color-mix(in_oklab,var(--status-warning)_14%,var(--card))] text-status-warning",
   off: "border-border bg-secondary text-muted-foreground",
 };
 
@@ -329,11 +330,11 @@ export default function DashboardOrderDetailPage() {
               )}
             >
               {s.state === "ok" ? (
-                <Check className="size-3" aria-hidden />
+                <Check className="size-3.5" aria-hidden />
               ) : s.state === "bad" ? (
-                <X className="size-3" aria-hidden />
+                <X className="size-3.5" aria-hidden />
               ) : s.state === "cur" ? (
-                <Clock className="size-3" aria-hidden />
+                <Clock className="size-3.5" aria-hidden />
               ) : null}
             </span>
             <span

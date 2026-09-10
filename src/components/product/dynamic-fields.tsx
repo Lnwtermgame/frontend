@@ -12,17 +12,28 @@ import {
 } from "@/components/ui/select";
 import type { SeagmField } from "@/lib/api/products";
 
+/* placeholder จาก backend เป็นอังกฤษ ("Please enter User ID") — แปลงเป็นไทยตาม label */
+function thaiPlaceholder(field: SeagmField): string | undefined {
+  if (field.placeholder && /^please enter/i.test(field.placeholder)) {
+    return `กรอก ${field.label}`;
+  }
+  return field.placeholder;
+}
+
 export function DynamicFields({
   fields,
   values,
   errors,
   onChange,
+  disabled = false,
 }: {
   fields: SeagmField[];
   values: Record<string, string>;
   errors: Record<string, string>;
   onChange: (name: string, value: string) => void;
+  disabled?: boolean;
 }) {
+  const t = useTranslations("product");
   const sorted = [...fields].sort((a, b) => a.position - b.position);
 
   return (
@@ -39,9 +50,10 @@ export function DynamicFields({
               <Select
                 value={values[field.name] ?? ""}
                 onValueChange={(v) => onChange(field.name, v)}
+                disabled={disabled}
               >
                 <SelectTrigger id={`field-${field.name}`}>
-                  <SelectValue placeholder={field.placeholder} />
+                  <SelectValue placeholder={disabled ? undefined : thaiPlaceholder(field)} />
                 </SelectTrigger>
                 <SelectContent>
                   {field.options.map((opt) => (
@@ -54,17 +66,20 @@ export function DynamicFields({
             ) : field.multiline ? (
               <textarea
                 id={`field-${field.name}`}
-                className="min-h-[80px] rounded-[10px] border bg-transparent px-3 py-2 text-sm"
-                placeholder={field.placeholder}
+                className="min-h-[80px] rounded-[10px] border bg-transparent px-3 py-2 text-sm disabled:opacity-60"
+                placeholder={thaiPlaceholder(field)}
                 value={values[field.name] ?? ""}
                 onChange={(e) => onChange(field.name, e.target.value)}
+                disabled={disabled}
               />
             ) : (
               <Input
                 id={`field-${field.name}`}
                 value={values[field.name] ?? ""}
-                placeholder={field.placeholder}
+                placeholder={disabled ? undefined : thaiPlaceholder(field)}
                 onChange={(e) => onChange(field.name, e.target.value)}
+                disabled={disabled}
+                className="num disabled:opacity-60"
               />
             )}
             {error ? (
@@ -75,6 +90,9 @@ export function DynamicFields({
           </div>
         );
       })}
+      {disabled ? (
+        <p className="text-[11px] text-muted-foreground/70">{t("lockedHint")}</p>
+      ) : null}
     </div>
   );
 }

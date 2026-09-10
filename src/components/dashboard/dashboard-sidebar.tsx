@@ -8,7 +8,6 @@ import {
   Heart,
   Coins,
   User,
-  ShieldCheck,
   Bell,
 } from "lucide-react";
 import { Link, usePathname } from "@/i18n/routing";
@@ -16,7 +15,6 @@ import { Link, usePathname } from "@/i18n/routing";
 const ITEMS = [
   { href: "/dashboard/orders", key: "orders", Icon: Package },
   { href: "/dashboard/account", key: "account", Icon: User, exact: true },
-  { href: "/dashboard/account/security", key: "security", Icon: ShieldCheck },
   { href: "/dashboard/notifications", key: "notifications", Icon: Bell },
   { href: "/dashboard/invoice", key: "invoices", Icon: Receipt },
   { href: "/dashboard/coupons", key: "coupons", Icon: Ticket },

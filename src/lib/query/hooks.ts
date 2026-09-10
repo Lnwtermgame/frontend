@@ -229,30 +229,6 @@ export function useNewsArticle(slug: string) {
 
 // ── Account, Security & Notifications ──
 
-export function useUserDevices() {
-  return useQuery({
-    queryKey: qk.devices(),
-    queryFn: accountApi.getUserDevices,
-    staleTime: 30_000,
-  });
-}
-
-export function useSecuritySettings() {
-  return useQuery({
-    queryKey: qk.securitySettings(),
-    queryFn: accountApi.getSecuritySettings,
-    staleTime: 30_000,
-  });
-}
-
-export function useSecurityActivities() {
-  return useQuery({
-    queryKey: qk.securityActivities(),
-    queryFn: accountApi.getSecurityActivities,
-    staleTime: 30_000,
-  });
-}
-
 export function useNotifications(params: { page?: number; limit?: number } = {}) {
   return useQuery({
     queryKey: qk.notifications(params),

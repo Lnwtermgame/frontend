@@ -27,9 +27,6 @@ export const qk = {
   cmsPage: (slug: string) => ["cms", slug] as const,
   news: (params: { page?: number; limit?: number }) => ["news", params] as const,
   newsArticle: (slug: string) => ["news", "article", slug] as const,
-  devices: () => ["security", "devices"] as const,
-  securitySettings: () => ["security", "settings"] as const,
-  securityActivities: () => ["security", "activities"] as const,
   notifications: (params: { page?: number; limit?: number }) => ["notifications", params] as const,
   notificationPreferences: () => ["notifications", "preferences"] as const,
 };

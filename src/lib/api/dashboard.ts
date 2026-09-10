@@ -110,6 +110,8 @@ export interface CreditTransaction {
   amount: number;
   type: "TOPUP" | "PURCHASE" | "REFUND" | "BONUS";
   description?: string;
+  /* โค้ดอ้างอิงคำสั่งซื้อ (PURCHASE) — backend ส่งมาแล้ว ใช้เปิดออเดอร์จากรายการเครดิต */
+  referenceId?: string | null;
   createdAt: string;
 }
 

@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# env — track เฉพาะ .env.example
+.env
+.env.local
+.env.*.local
+
+# build info
+*.tsbuildinfo
+
+# logs / os
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store

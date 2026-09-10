@@ -26,7 +26,9 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="grid min-h-[calc(100vh-6.5rem)] lg:grid-cols-2">
+    // -mb-12 ทดของ footer (mt-12) เฉพาะหน้า auth — แผงแบรนด์เป็นบล็อกสีเต็มความกว้าง
+    // ถ้ามีช่องว่างคั่นก่อน footer จะดูเหมือนการ์ดหลุดจากผัง
+    <div className="grid min-h-[calc(100vh-6.5rem)] lg:-mb-12 lg:grid-cols-2">
       {/* แผงแบรนด์ — มือถือ: ส่วนหัวบาง / เดสก์ท็อป: เต็มความสูง */}
       <div
         className="relative overflow-hidden px-6 py-8 lg:flex lg:flex-col lg:justify-center lg:px-12 lg:py-12"

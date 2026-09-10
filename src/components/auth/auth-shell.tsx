@@ -2,17 +2,6 @@ import Image from "next/image";
 import { MessagesSquare, ShieldCheck, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-/** ตัวคั่น "หรือด้วยอีเมล" — ใช้ร่วมกันทั้ง login/register */
-export function AuthDivider({ label }: { label: string }) {
-  return (
-    <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground/70">
-      <span className="h-px flex-1 bg-border/60" />
-      {label}
-      <span className="h-px flex-1 bg-border/60" />
-    </div>
-  );
-}
-
 /** โครงหน้า auth แบบแยกครึ่งจอ (mockup B):
  *  เดสก์ท็อป = แผงแบรนด์ซ้าย + ฟอร์มขวา · มือถือ = แผงยุบเป็นส่วนหัวบาง */
 export function AuthShell({ children }: { children: React.ReactNode }) {

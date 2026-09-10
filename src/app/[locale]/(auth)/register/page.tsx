@@ -10,9 +10,9 @@ import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { OAuthSection } from "@/components/auth/oauth-buttons";
 import { PasswordInput } from "@/components/auth/password-input";
-import { AuthDivider, AuthShell } from "@/components/auth/auth-shell";
+import { AuthShell } from "@/components/auth/auth-shell";
 
 const registerSchema = z
   .object({
@@ -62,8 +62,7 @@ export default function RegisterPage() {
       <h1 className="text-xl font-extrabold tracking-tight">{t("register")}</h1>
       <p className="mt-1 mb-5 text-[13px] text-muted-foreground">{t("registerSub")}</p>
 
-      <OAuthButtons />
-      <AuthDivider label={t("orWithEmail")} />
+      <OAuthSection dividerLabel={t("orWithEmail")} />
 
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3.5">
         <div className="flex flex-col gap-1.5">

@@ -20,7 +20,12 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
-export function OAuthButtons() {
+/**
+ * บล็อก OAuth = ปุ่ม providers + เส้นคั่น "หรือด้วยอีเมล" — เป็นหน่วยเดียวกัน
+ * เพราะถ้าไม่มี OAuth เลย (providers ว่าง) เส้นคั่นก็ต้องหายไปด้วย
+ * ระหว่างโหลดยังไม่วาดอะไรเลย กัน divider แวบขึ้นแล้วหาย
+ */
+export function OAuthSection({ dividerLabel }: { dividerLabel: string }) {
   const { data: providers } = useQuery({
     queryKey: ["oauth-providers"],
     queryFn: getOAuthProviders,
@@ -30,18 +35,25 @@ export function OAuthButtons() {
   if (!providers?.length) return null;
 
   return (
-    <div className="flex w-full flex-col gap-2.5">
-      {providers.map((provider) => (
-        <button
-          key={provider.name}
-          type="button"
-          onClick={() => signIn(provider.name, { callbackUrl: "/th" })}
-          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[10px] border border-border bg-secondary text-sm font-semibold transition-colors hover:border-muted-foreground/40 hover:bg-accent"
-        >
-          {ICONS[provider.name] ?? null}
-          {provider.displayName}
-        </button>
-      ))}
-    </div>
+    <>
+      <div className="flex w-full flex-col gap-2.5">
+        {providers.map((provider) => (
+          <button
+            key={provider.name}
+            type="button"
+            onClick={() => signIn(provider.name, { callbackUrl: "/th" })}
+            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[10px] border border-border bg-secondary text-sm font-semibold transition-colors hover:border-muted-foreground/40 hover:bg-accent"
+          >
+            {ICONS[provider.name] ?? null}
+            {provider.displayName}
+          </button>
+        ))}
+      </div>
+      <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground/70">
+        <span className="h-px flex-1 bg-border/60" />
+        {dividerLabel}
+        <span className="h-px flex-1 bg-border/60" />
+      </div>
+    </>
   );
 }

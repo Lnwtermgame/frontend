@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { LoginForm } from "@/components/auth/login-form";
-import { OAuthButtons } from "@/components/auth/oauth-buttons";
-import { AuthDivider, AuthShell } from "@/components/auth/auth-shell";
+import { OAuthSection } from "@/components/auth/oauth-buttons";
+import { AuthShell } from "@/components/auth/auth-shell";
 
 function LoginContent() {
   const t = useTranslations("auth");
@@ -26,8 +26,7 @@ function LoginContent() {
         </p>
       )}
 
-      <OAuthButtons />
-      <AuthDivider label={t("orWithEmail")} />
+      <OAuthSection dividerLabel={t("orWithEmail")} />
       <LoginForm />
     </AuthShell>
   );

@@ -1,11 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { Suspense, useState } from "react";
 import { useTranslations } from "next-intl";
 import { signOut } from "next-auth/react";
 import {
   ChevronDown,
-  Gamepad2,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -57,10 +57,15 @@ function HeaderInner() {
   };
 
   const logo = (
-    <Link href="/" className="flex items-center gap-2.5">
-      <span className="grid size-[30px] shrink-0 place-items-center rounded-[9px] border bg-secondary text-primary">
-        <Gamepad2 className="size-4" />
-      </span>
+    <Link href="/" className="flex items-center gap-2">
+      <Image
+        src="/brand/logo-mark.png"
+        alt=""
+        width={1105}
+        height={910}
+        className="h-8 w-auto"
+        priority
+      />
       <span className="whitespace-nowrap text-sm font-extrabold tracking-wide">
         LNW<span className="text-primary">TERMGAME</span>
       </span>

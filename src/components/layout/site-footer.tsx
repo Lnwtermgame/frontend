@@ -1,4 +1,5 @@
-import { CreditCard, Gamepad2, QrCode, ShieldCheck, Wallet, Zap } from "lucide-react";
+import Image from "next/image";
+import { CreditCard, QrCode, ShieldCheck, Wallet, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
@@ -20,10 +21,14 @@ export function SiteFooter() {
       <div className="mx-auto w-full max-w-6xl px-4 py-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2.5">
-              <span className="grid size-[30px] shrink-0 place-items-center rounded-[9px] border bg-secondary text-primary">
-                <Gamepad2 className="size-4" />
-              </span>
+            <div className="flex items-center gap-2">
+              <Image
+                src="/brand/logo-mark.png"
+                alt=""
+                width={1105}
+                height={910}
+                className="h-8 w-auto"
+              />
               <span className="text-sm font-extrabold tracking-wide whitespace-nowrap">
                 LNW<span className="text-primary">TERMGAME</span>
               </span>

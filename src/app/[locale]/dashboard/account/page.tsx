@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/stores/auth";
-import { updateProfile, changePassword } from "@/lib/api/account";
+import { changePassword } from "@/lib/api/account";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,33 +12,12 @@ export default function DashboardAccountPage() {
   const t = useTranslations("dashboard");
   const user = useAuthStore((s) => s.user);
 
-  // Profile update form state
-  const [username, setUsername] = useState(user?.username ?? "");
-  const [email, setEmail] = useState(user?.email ?? "");
-  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
-  const [profileMsg, setProfileMsg] = useState<{ text: string; ok: boolean } | null>(null);
-
   // Change password form state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPass, setIsChangingPass] = useState(false);
   const [passMsg, setPassMsg] = useState<{ text: string; ok: boolean } | null>(null);
-
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsUpdatingProfile(true);
-    setProfileMsg(null);
-    try {
-      const updated = await updateProfile({ username, email });
-      useAuthStore.setState({ user: updated });
-      setProfileMsg({ text: "บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว", ok: true });
-    } catch (err: any) {
-      setProfileMsg({ text: err?.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล", ok: false });
-    } finally {
-      setIsUpdatingProfile(false);
-    }
-  };
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,46 +51,31 @@ export default function DashboardAccountPage() {
         <p className="mt-1 text-sm text-muted-foreground">จัดการข้อมูลบัญชีผู้ใช้และรหัสผ่านของคุณ</p>
       </div>
 
-      {/* Profile Card */}
+      {/* Profile Card — ข้อมูล identity อ่านอย่างเดียว ไม่ให้แก้ไข */}
       <div className="rounded-[14px] border bg-card p-6 shadow-(--shadow-tile)">
         <h2 className="text-base font-bold">ข้อมูลส่วนตัว</h2>
-        <form onSubmit={handleUpdateProfile} className="mt-4 space-y-4 max-w-md">
+        <div className="mt-4 max-w-md space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="username">ชื่อผู้ใช้</Label>
-            <Input
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            <Input id="username" value={user?.username ?? ""} readOnly disabled />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="email">อีเมล</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <Input id="email" type="email" value={user?.email ?? ""} readOnly disabled />
           </div>
 
-          {profileMsg ? (
-            <p
-              role="alert"
-              className={`text-xs font-semibold ${
-                profileMsg.ok ? "text-status-success" : "text-destructive"
-              }`}
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            ชื่อผู้ใช้และอีเมลใช้สำหรับเข้าสู่ระบบ จึงไม่สามารถแก้ไขได้ด้วยตัวเอง —
+            หากต้องการเปลี่ยน ติดต่อทีมงานผ่านหน้า{" "}
+            <a
+              href="/support/contact"
+              className="font-semibold text-primary hover:underline"
             >
-              {profileMsg.text}
-            </p>
-          ) : null}
-
-          <Button type="submit" disabled={isUpdatingProfile} size="sm">
-            {isUpdatingProfile ? "กำลังบันทึก…" : "บันทึกข้อมูล"}
-          </Button>
-        </form>
+              ติดต่อเรา
+            </a>
+          </p>
+        </div>
       </div>
 
       {/* Change Password Card */}
